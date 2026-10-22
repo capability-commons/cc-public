@@ -1096,6 +1096,83 @@ unconstrained_proxy_end(Relation, "target") :-
 
 
 % -----------------------------------------------------------------------------
+% The concept has a match of grade in the external class.
+%
+% decl match(concept: symbol,
+%            grade:   symbol,
+%            class:   symbol)
+
+match(Concept, "exact", Class) :-
+    primary_edge(Concept, "relation_has_exact_match", Class).
+
+match(Concept, "close", Class) :-
+    primary_edge(Concept, "relation_has_close_match", Class).
+
+match(Concept, "broad", Class) :-
+    primary_edge(Concept, "relation_has_broad_match", Class).
+
+match(Concept, "narrow", Class) :-
+    primary_edge(Concept, "relation_has_narrow_match", Class).
+
+match(Concept, "related", Class) :-
+    primary_edge(Concept, "relation_has_related_match", Class).
+
+
+% -----------------------------------------------------------------------------
+% Two grades of match that cannot both hold between one concept and one
+% class. SKOS makes an exact match disjoint from a broad, narrow or
+% related match, and a related match disjoint from a broad or narrow one.
+%
+% decl conflicting_grades(grade: symbol,
+%                         other: symbol)
+
+conflicting_grades("exact", "broad").
+conflicting_grades("exact", "narrow").
+conflicting_grades("exact", "related").
+conflicting_grades("related", "broad").
+conflicting_grades("related", "narrow").
+
+
+% -----------------------------------------------------------------------------
+% No two concepts have an exact match in the same external class, since
+% an exact match is transitive and would make them one concept.
+%
+% decl shared_exact_match(class:   symbol,
+%                         concept: symbol,
+%                         other:   symbol)
+% did  {concept} and {other} both have an exact match in {class}, which
+%      makes them one concept recorded twice.
+% fix  Merge the two concepts, or grade the match of the one that
+%      differs from the class as close, broad or narrow.
+#show shared_exact_match/3.
+
+shared_exact_match(Class, Concept, Other) :-
+    match(Concept, "exact", Class),
+    match(Other, "exact", Class),
+    Concept < Other.
+
+
+% -----------------------------------------------------------------------------
+% A concept has no two grades of match in one external class that
+% contradict each other.
+%
+% decl conflicting_match(concept: symbol,
+%                        class:   symbol,
+%                        grade:   symbol,
+%                        other:   symbol)
+% did  {concept} has both {grade} and {other} matches in {class}, which
+%      contradict each other.
+% fix  Keep the one grade that says how the concept and the class
+%      differ, and unlink the other edge.
+#show conflicting_match/4.
+
+conflicting_match(Concept, Class, Grade, Other) :-
+    match(Concept, Grade, Class),
+    match(Concept, Other, Class),
+    conflicting_grades(Grade, Other).
+
+
+% -----------------------------------------------------------------------------
 % The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)
