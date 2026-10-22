@@ -11,28 +11,27 @@ protective_mark:
 title:                  Trial name costly to rename
 brief:                  |
                         The name is in the id prefix, schema, checks
-                        and tests, and every determination item adds
+                        and tests, and every item of the type adds
                         more uses. A later rename touches every item,
-                        leaves guids unchanged, and becomes a large
+                        cannot keep their guids, and becomes a large
                         change to read in full.
 description:            |
                         Sources: owner's statement "Let's try
                         'Determination' for now"
-                        (2026-10-14T19:22:57Z); commit 7db4229 added
-                        230 lines over 8 files; at HEAD 89c74d8, 123
-                        lines in 12 files contain "determin" (git grep
-                        -i -c), mostly in check.lp,
-                        reg_data_item_type.yaml, test_check.py and the
-                        schema of determinations; prefix det and
-                        pattern ^det_[a-z][a-z0-9_]*$ in
-                        _data/register/reg_data_item_type.yaml lines
-                        800-801. These counts are at the tag
-                        pre_squash_20261014. cctool rename renames one
-                        id at a time in the documents that name it,
-                        and leaves code and the plain word in prose
-                        unchanged (src/cc_public/cli/editing.py lines
-                        285-295). This challenges the trial form of
-                        the choice, not the word.
+                        (2026-10-14T19:22:57Z). The rename came in
+                        commit 84045df, which changed 194 files,
+                        adding 1172 lines and removing 1206. It remade
+                        the 20 rulings with fresh guids, and renamed
+                        the type, concept, schema, role and
+                        restriction and the checks whose names held
+                        the word. cctool rename could not have made
+                        that change: it refuses a new id with another
+                        prefix, because a rename keeps the type
+                        (rename in src/cc_public/edit/edit.py), and it
+                        leaves python code and the plain word in prose
+                        unchanged (rename in
+                        src/cc_public/cli/editing.py). This challenges
+                        the trial form of the choice, not the word.
 
 edge:
 

@@ -16,25 +16,35 @@ brief:                  |
                         exist, and a person scanning ids can swap
                         them.
 description:            |
-                        Sources: prefixes in
-                        _data/register/reg_data_item_type.yaml lines
-                        462-463 and 800-801; the two types are linked
-                        directly by relation_upholds and
-                        relation_rejects, and relation_supersedes
-                        takes either type
-                        (_data/register/reg_relation.yaml lines
-                        247-268, 358-401); the writing rules prefer
-                        the ordinary word, though they exempt a term
-                        the concept register defines, as it defines
-                        this one
-                        (_data/register/reg_writing_style_rule.yaml
-                        lines 169-188); the owner calls the word
+                        Sources: the prefixes dec and ruling in the
+                        entries type_decision and type_ruling of
+                        _data/register/reg_data_item_type.yaml, where
+                        the note of type_ruling turns down rul for the
+                        same reason, since it would differ by one
+                        letter from rol. A ruling and a decision are
+                        not linked directly: relation_upholds and
+                        relation_rejects run from a ruling to an
+                        option, and the option reaches its decision by
+                        relation_is_option_for
+                        (_data/register/reg_relation.yaml), so a
+                        reader meets the two types one step apart.
+                        relation_supersedes takes neither type, since
+                        only options and interface control documents
+                        play rol_supersedable. The writing rule
+                        style_ordinary_words in
+                        _data/register/reg_writing_style_rule.yaml
+                        prefers the ordinary word, though it exempts a
+                        term the concept register defines, as the
+                        register defined determination before that
+                        term was deprecated; the owner calls the word
                         technical (2026-10-14T19:22:57Z). The checker
-                        rejects an edge of the wrong type
-                        (src/cc_public/check/check.lp lines 260-286),
-                        so the cost is mostly in reading and learning.
-                        ASSUMPTION: in ordinary English determination
-                        often reads as the act of deciding.
+                        rejects an edge whose end does not meet a role
+                        restriction of its relation (the check
+                        restriction_violation in
+                        src/cc_public/check/check.lp), so the cost is
+                        mostly in reading and learning. ASSUMPTION: in
+                        ordinary English determination often reads as
+                        the act of deciding.
 
 edge:
 
