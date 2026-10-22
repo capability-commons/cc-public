@@ -401,7 +401,7 @@ def test_a_ruling_that_supersedes_is_reported(tree):
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
     _item(tree, DIR_DECISION + 'ruling_y.yaml', 'ruling_y',
           [_edge(tree, 'relation_upholds', 'opt_y'), _edge(tree, 'relation_supersedes', 'ruling_x')])
-    assert ('ruling_y', 'relation_supersedes', 'ruling_x', 'source', 'rrs_is_supersedable') \
+    assert ('ruling_y', 'relation_supersedes', 'ruling_x', 'source', 'relcon_is_supersedable') \
         in _check(tree)['constraint_violation']
 
 
@@ -603,7 +603,7 @@ def test_an_edge_from_a_source_its_relation_constrains_is_reported(tree):
     _option(tree, 'opt_x')
     _option(tree, 'opt_y', [_edge(tree, 'relation_supports', 'opt_x')])
     assert _check(tree) == {'constraint_violation': [
-        ('opt_y', 'relation_supports', 'opt_x', 'source', 'rrs_is_argument')]}
+        ('opt_y', 'relation_supports', 'opt_x', 'source', 'relcon_is_argument')]}
 
 
 def test_an_edge_to_a_target_its_relation_constrains_is_reported(tree):
@@ -611,7 +611,7 @@ def test_an_edge_to_a_target_its_relation_constrains_is_reported(tree):
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', ID_ABOUT),
                                                          _edge(tree, 'relation_supports', ID_ABOUT)])
     assert _check(tree) == {'constraint_violation': [
-        ('ann_x', 'relation_supports', ID_ABOUT, 'target', 'rrs_can_be_target_of_an_argument')]}
+        ('ann_x', 'relation_supports', ID_ABOUT, 'target', 'relcon_can_be_target_of_an_argument')]}
 
 
 def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
@@ -624,7 +624,7 @@ def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
              '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
     assert _check(tree) == {'constraint_violation': [
         ('rqt_rename_keeps_guid', 'relation_has_subject', 'concern_cost', 'target',
-         'rrs_is_design_entity')]}
+         'relcon_is_design_entity')]}
 
 
 def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
@@ -643,7 +643,7 @@ def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
     assert {row[0] for row in failures['constraint_violation']} == {
         'rqt_edit_refuses_new_failure', 'rqt_format_keeps_formatted_file', 'rqt_rename_keeps_guid'}
     assert {row[3:] for row in failures['constraint_violation']} == {
-        ('source', 'rrs_is_requirement')}
+        ('source', 'relcon_is_requirement')}
 
 
 def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
@@ -1084,7 +1084,7 @@ def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
              'relation_e4f6185af9254a649126e121cb4edf5f\n        id_target:      sch_file\n')
     assert _check(tree) == {
         'constraint_violation': [
-            ('type_file', 'relation_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
+            ('type_file', 'relation_is_specified_by_schema', 'sch_file', 'source', 'relcon_is_register')],
         'schema_count':          [('type_file', '0')]}
 
 
