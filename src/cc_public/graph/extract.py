@@ -101,7 +101,7 @@ SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pat
 #
 REGEX_MENTION     = re.compile(r'(?<![A-Za-z0-9_$./-])[a-z]{1,8}_[a-z0-9][a-z0-9_]*'
                                r'(?:\.[a-z0-9_][a-z0-9_]*)*')
-REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|dl|toml|json|md)$')
+REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|lp|toml|json|md)$')
 MARK_GLOB         = '*'
 
 # A word, and a span in double quotes, which quotes another's words as
