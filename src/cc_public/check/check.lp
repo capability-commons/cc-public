@@ -1264,7 +1264,7 @@ input_fed_twice(Node, Port, Edges) :-
 % did  No edge ends at the input {port} of {node}, and the interface
 %      does not state that it is optional.
 % fix  Add an edge into the input, or state optional: true for it in the
-%      interface if a step may run without it.
+%      interface if an invocation may run without it.
 #show unfed_input/2.
 
 unfed_input(Node, Port) :-
