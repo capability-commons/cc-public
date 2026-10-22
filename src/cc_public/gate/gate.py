@@ -32,7 +32,10 @@ description:            |
 
                         A commit that stages no code, only data, is
                         not tested: the tests test the code. The gate
-                        of a push runs them on what is pushed.
+                        of a push runs them on what is pushed. The
+                        tests marked prepush, which test the commit
+                        and history machinery, are left to the gate of
+                        a push too.
 
                         The stages run side by side, and pytest-xdist
                         hands the tests out to one worker for each
@@ -60,6 +63,13 @@ import tarfile
 import tempfile
 
 
+# The tests that the gate of a push runs, and those that the gate of a
+# commit runs. The tests marked prepush test the commit and history
+# machinery, and are left to the gate of a push.
+#
+MARK_PUSH     = 'not slow'
+MARK_COMMIT   = 'not slow and not prepush'
+
 # Each stage: its name, and the command that runs it in the root of the
 # copy. {python} is the interpreter that runs the gate. The tests run on
 # one worker for each processor, each worker taking the next test when
@@ -69,7 +79,7 @@ import tempfile
 TUPLE_STAGE   = (('check', ('{python}', '-m', 'cc_public.cli.command', 'check')),
                  ('lint',  ('ruff', 'check', '--no-cache', 'src')),
                  ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider',
-                            '-n', 'auto', '--dist', 'worksteal', '-m', 'not slow')))
+                            '-n', 'auto', '--dist', 'worksteal', '-m', MARK_PUSH)))
 DIR_SOURCE    = 'src'
 NAME_TEST     = 'test'
 
@@ -135,14 +145,16 @@ def gate(root:        pathlib.Path,
 def stages(root: pathlib.Path) -> tuple:
     """
     Return the stages that gate the staged content of the repository at
-    root: TUPLE_STAGE, less the tests if no code is staged.
+    root: TUPLE_STAGE, with the tests marked prepush left out, and with
+    no tests at all if no code is staged.
 
     """
 
-    if is_code_staged(root):
-        return TUPLE_STAGE
+    if not is_code_staged(root):
+        return tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
 
-    return tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
+    return tuple((name, tuple(MARK_COMMIT if arg == MARK_PUSH else arg for arg in tuple_arg))
+                 for (name, tuple_arg) in TUPLE_STAGE)
 
 
 # -----------------------------------------------------------------------------

@@ -32,7 +32,11 @@ import pytest
 
 import cc_public.cli.command
 import cc_public.commit.message
+
 from cc_public.conftest import DIR_REPO
+
+
+pytestmark = pytest.mark.prepush
 
 
 NOW   = datetime.datetime(2026, 10, 14, 11, 20, 48, tzinfo = datetime.UTC)

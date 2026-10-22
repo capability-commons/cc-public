@@ -34,6 +34,9 @@ import cc_public.commit.history
 import cc_public.commit.message
 
 
+pytestmark = pytest.mark.prepush
+
+
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def repo(tree, monkeypatch):
