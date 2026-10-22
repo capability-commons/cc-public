@@ -1,0 +1,75 @@
+id_self:                ann_no_transcript_makes_the_contributor_repeat_themselves
+guid_self:              ann_817c9a2ea1994baeb8d992db542e9201
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Contributor asked to repeat what they already said
+brief:                  |
+                        Keeping no transcript forces the contributor
+                        to repeat earlier answers whenever the bot
+                        needs them again while the item is open.
+                        Keeping it until the item lands avoids that,
+                        and keeping it longer adds nothing for the
+                        contributor.
+description:            |
+                        The no-transcript option keeps only the draft
+                        and its checklist, never the messages
+                        (_data/decision/dec_chat_transcript_retention/opt_keep_no_transcript.yaml,
+                        brief). The delete-on-landing option keeps a
+                        transcript in private until its items land or
+                        its draft is dropped
+                        (_data/decision/dec_chat_transcript_retention/opt_delete_transcript_on_landing.yaml,
+                        brief). The chat core leads the conversation
+                        from a checklist, keeps the draft and judges
+                        it (_data/logical_component/lco_chat_core.yaml
+                        lines 12-17). The readback happens after any
+                        automated checks and corrections are applied
+                        (owner's statement). The eval is meant to give
+                        feedback when information is insufficient,
+                        inaccurate or poorly phrased (owner's
+                        statement). ASSUMPTION: a correction or an
+                        eval finding often needs what the contributor
+                        said beyond the field value, such as a
+                        qualifier or a remark, and the draft does not
+                        hold it. ASSUMPTION: a conversation over a
+                        messaging app spans breaks of hours or days,
+                        so the contributor does not recall their exact
+                        earlier words. ASSUMPTION: once an item lands,
+                        a later correction starts from the item
+                        itself, so a kept transcript saves the
+                        contributor no further effort. The concern
+                        asks how much time and attention a task takes
+                        a person and how well the design recovers from
+                        mistakes (_data/register/reg_concern.yaml
+                        lines 251-254). Holds at ten times the size:
+                        yes, because each item still has its own open
+                        conversation, and the repeat questions grow
+                        with the number of items under the
+                        no-transcript option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_transcript_retention
+    guid_target:        dec_27018135ec0245328b815072e0194054
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_delete_transcript_on_landing
+    guid_target:        opt_77d9b48a76ad46d887a764aaab81f5ce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_keep_no_transcript
+    guid_target:        opt_bc447d6b017343178527494d373f66cf
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

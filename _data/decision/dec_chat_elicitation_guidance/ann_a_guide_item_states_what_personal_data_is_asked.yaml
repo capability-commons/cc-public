@@ -1,0 +1,85 @@
+id_self:                ann_a_guide_item_states_what_personal_data_is_asked
+guid_self:              ann_f306aa844af8498d84cdf07a5deec1eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A reviewable list of the data a bot asks for
+brief:                  |
+                        An interview guide item names the fields a bot
+                        asks about, so the personal data each bot
+                        collects, and why, is written down once as an
+                        item that can be reviewed and kept to the
+                        needed subset of the schema. Guidance in a
+                        private deployment configuration hides that
+                        list, and schema descriptions alone leave the
+                        bot free to ask about every property the
+                        schema allows.
+description:            |
+                        The guide option gives each bot an item that
+                        names its type and holds prompts and the
+                        fields to ask about (opt_interview_guide_item,
+                        brief). The schema-first option uses the
+                        schema descriptions and adds a guide item only
+                        when an instance needs one
+                        (opt_schema_descriptions_first, brief). The
+                        deployment option keeps guidance beyond the
+                        schema in the private configuration of each
+                        deployment (opt_guidance_in_deployment_config,
+                        brief). A schema can declare more properties
+                        than it requires, as the descriptive trait
+                        requires only title and brief of its five
+                        properties
+                        (_data/schema/sch_trait_descriptive.yaml,
+                        lines 21-23 and 29-31). Almost every file of
+                        cc-public is a data item, and the graph is
+                        checked before it is committed (README.md,
+                        lines 3-8). A likely first instance holds
+                        member skill profiles, which are personal data
+                        (owner's statement). The LLM is free to choose
+                        what to talk about next while it tracks what
+                        it still needs (owner's statement).
+                        ASSUMPTION: a guide item names fields and
+                        prompts but holds no personal data itself, so
+                        it can be read by those who review the bot and
+                        shown to a contributor before the
+                        conversation. ASSUMPTION: a bot told which
+                        fields to ask about asks about those and not
+                        about other properties its schema allows.
+                        Holds at ten times the size: yes, because more
+                        bots and types mean more lists of collected
+                        fields to review, and one item per bot keeps
+                        each list in one known place, while private
+                        configurations multiply copies no reviewer
+                        sees.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_elicitation_guidance
+    guid_target:        dec_ec1af2d888f640dca5d8f9858ca652e8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_interview_guide_item
+    guid_target:        opt_334ff04b440d4f538b8dfaaf8917b4b4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_guidance_in_deployment_config
+    guid_target:        opt_8c7fb9f5e8e4454a830561775726a928
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_schema_descriptions_first
+    guid_target:        opt_4385906c526442c38ec0d616adcb50af
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
