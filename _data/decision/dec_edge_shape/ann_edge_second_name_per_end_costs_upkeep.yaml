@@ -11,34 +11,33 @@ protective_mark:
 title:                  Second name per edge end
 brief:                  |
                         Each edge end carries two names that must
-                        agree, and today the guid is only checked
-                        against the readable id. That adds a mechanism
-                        and upkeep that an id-only edge would not
-                        have.
+                        agree, and today the guid is checked against
+                        the readable id and used only to find renamed
+                        items. That adds a mechanism and upkeep that
+                        an id-only edge would not have.
 description:            |
                         An edge holds four required fields
                         (_data/schema/sch_trait_edge.yaml lines
-                        71-75). The repository holds 136 edges in 45
-                        files (facts extracted at commit 89c74d8). The
-                        editor looks up and writes two guids per new
-                        edge (src/cc_public/edit/edit.py lines
-                        1011-1020), and guid_mismatch exists only to
-                        find guid copies that disagree with their id
-                        (src/cc_public/check/check.lp lines 243-256).
-                        Rename safety is also had a third way, by
-                        register aliases
+                        75-81). The repository holds 4494 edges in
+                        1479 files. The editor looks up and writes two
+                        guids per new edge (src/cc_public/edit/edit.py
+                        lines 1339-1348). guid_mismatch finds guid
+                        copies that disagree with their id, and
+                        outdated_reference uses the guid to find a
+                        renamed item (src/cc_public/check/check.lp
+                        lines 547-550, 1087-1091). Rename safety is
+                        also had a third way, by register aliases
                         (_data/schema/sch_register_entry.yaml lines
-                        68-80). Will's principle is "one mechanism
-                        does one job and nothing is done twice"
-                        (memory/cc-public-design-principles.md line
-                        11). No code under src mentions federation. A
-                        rename rewrites the same files either way
-                        (edit.py lines 722-760). ASSUMPTION: most
-                        edges are added through cc edit link, so the
-                        upkeep falls mostly on tooling. The point
-                        weakens if federation tooling is built. Merged
-                        from the maintainability and simplicity
-                        advocates.
+                        67-80). concern_simplicity asks whether each
+                        mechanism does one job and whether anything is
+                        done twice (_data/register/reg_concern.yaml
+                        lines 463-465). No code under src mentions
+                        federation. A rename rewrites the same files
+                        either way. ASSUMPTION: most edges are added
+                        through cctool link, so the upkeep falls
+                        mostly on tooling. The point weakens if
+                        federation tooling is built. Merged from the
+                        maintainability and simplicity advocates.
 
 edge:
 

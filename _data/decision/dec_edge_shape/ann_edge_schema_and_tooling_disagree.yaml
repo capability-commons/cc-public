@@ -10,24 +10,27 @@ protective_mark:
 
 title:                  Documented edge model unlike the code
 brief:                  |
-                        The schema says the guid resolves and the
-                        readable id must never be used to resolve, but
-                        the tooling does the reverse. A newcomer who
-                        learns the design from the schema learns the
-                        opposite of what the code does.
+                        The edge schema says the guid alone resolves
+                        and the readable id must never resolve, but
+                        the tooling resolves by readable id first. A
+                        newcomer who learns the design from the edge
+                        schema learns the opposite of what the code
+                        does.
 description:            |
-                        The schema calls the guid "the sole resolvable
-                        reference in the edge" and says of id_target
-                        "Never resolve by this field"
-                        (_data/schema/sch_trait_edge.yaml lines 116
-                        and 131-132). The editor removes an edge by
-                        matching (id_relation, id_target)
-                        (src/cc_public/edit/edit.py lines 462-464).
-                        See ann_edge_tooling_resolves_by_readable_id
-                        for the checks. The gap widens as tools are
-                        added, since new tools written from the schema
-                        would resolve by guid. From the
-                        maintainability advocate.
+                        The edge schema calls the guid "the sole
+                        resolvable reference in the edge" and says of
+                        id_target "Never resolve by this field"
+                        (_data/schema/sch_trait_edge.yaml lines 119
+                        and 134). sch_trait_identity.yaml lines 43-54
+                        and the checks resolve by id first (see
+                        ann_edge_tooling_resolves_by_readable_id). The
+                        editor removes an edge by matching
+                        (id_relation, id_target)
+                        (src/cc_public/edit/edit.py lines 534-536).
+                        The gap widens as tools are added, since new
+                        tools written from the edge schema would
+                        resolve by guid. From the maintainability
+                        advocate.
 
 edge:
 

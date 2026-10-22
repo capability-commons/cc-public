@@ -8,26 +8,27 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  No resolving work for the guid in one repository
+title:                  Little resolving work for the guid in one repository
 brief:                  |
                         Inside one repository readable ids are checked
                         unique, and every trace the tooling follows is
-                        keyed by readable id. So an id-only edge would
-                        resolve and trace the same today, and the
-                        guid's benefit waits until the graph spans
-                        repositories.
+                        keyed by readable id. The guid's only
+                        resolving work here is to find an item whose
+                        id has changed, so most of its benefit waits
+                        until the graph spans repositories.
 description:            |
                         duplicate_id fails when one readable id names
                         two items (src/cc_public/check/check.lp lines
-                        92-103). The edge fact holds the source, the
+                        231-234). The edge fact holds the source, the
                         relation id and the target id, and no guid
-                        (src/cc_public/graph/extract.py lines 127-129
-                        and 459-462). primary_edge and the edge checks
+                        (src/cc_public/graph/extract.py lines
+                        1146-1149). primary_edge and the edge checks
                         are built from it and match relation ids as
                         strings (src/cc_public/graph/derive.lp lines
-                        56-66; check.lp lines 146, 150, 297, 314). The
-                        tree holds 203 items and 136 edges (facts
-                        extracted at commit 89c74d8). Holds at tenfold
+                        62-69). The guid finds an item only where its
+                        id names nothing, as after a rename (check.lp
+                        lines 524-529 and 1087-1091). The tree holds
+                        1862 items and 4494 edges. Holds at tenfold
                         size while the graph stays in one repository,
                         and fails once edges cross repositories.
                         Merged from the flexibility and traceability

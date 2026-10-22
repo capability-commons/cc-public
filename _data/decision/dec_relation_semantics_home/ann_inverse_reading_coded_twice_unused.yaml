@@ -8,23 +8,25 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Inverse reading coded twice with no user
+title:                  Inverse reading coded four times with no user
 brief:                  |
                         The inverse reading is coded in derive.lp and
-                        again by hand in edit.py, though no register
-                        entry declares an inverse, so the mechanism
-                        has a cost before its first use.
+                        again by hand in edit.py, sparql.py and
+                        impact.lp, though no register entry declares
+                        an inverse, so the mechanism has a cost before
+                        its first use.
 description:            |
                         primary_edge: src/cc_public/graph/derive.lp
-                        lines 53-66. edit.py reads raw edges and
+                        lines 62-69. edit.py reads raw edges and
                         resolves the inverse itself for
-                        relation_has_items_held_in_register
-                        (src/cc_public/edit/edit.py lines 920-937).
-                        Other support: sch_regentry_relation.yaml
-                        lines 69-93; extract.py lines 56, 136-137,
-                        563-566. No inverse key in reg_relation.yaml;
-                        only check tests declare one (test_check.py
-                        lines 458-466), and no edit test does. The
+                        relation_has_items_held_in_register (edit.py
+                        lines 1185-1200). Also
+                        src/cc_public/graph/sparql.py lines 95-121 and
+                        src/cc_public/commit/impact.lp lines 159-165.
+                        Schema: sch_regentry_relation.yaml lines
+                        78-102. No inverse key in reg_relation.yaml;
+                        only a check test declares one (test_check.py
+                        lines 688-700), and no edit test does. The
                         fixed part is small; the copy grows with each
                         tool that reads raw edges.
                         opt_paired_relations would need the same
