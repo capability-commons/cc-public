@@ -35,24 +35,24 @@ description:            |
                         title and standing, grouped by component under
                         the concerns that drive it, or in another
                         order. A decision opens to its question and
-                        the options that answer it, each with its mark
-                        and how much argument is for and against it. A
-                        filter keeps and opens the decisions it finds.
-                        The page of a decision opens with its decision
-                        matrix: a column for each option and a row for
-                        each concern, in the order of the Sankey
-                        diagram of pym_cc_public.web.sankey. Options
-                        are read from most supported to most opposed.
-                        Each concern row opens to the annotations that
-                        speak for it, numbered as the diagram numbers
-                        them, an annotation that speaks for several
-                        concerns under each. An annotation folds to
-                        its title, which opens to its brief, which
-                        opens to its description, which opens to the
-                        annotations that answer it. Opened parts set
-                        their text in the text column and their notes
-                        in the margin. The options, the diagram and
-                        the cross-references follow.
+                        the options that answer it, each with its
+                        glyph and how much argument is for and against
+                        it. A filter keeps and opens the decisions it
+                        finds. The page of a decision opens with its
+                        decision matrix: a column for each option and
+                        a row for each concern, in the order of the
+                        Sankey diagram of pym_cc_public.web.sankey.
+                        Options are read from most supported to most
+                        opposed. Each concern row opens to the
+                        annotations that speak for it, numbered as the
+                        diagram numbers them, an annotation that
+                        speaks for several concerns under each. An
+                        annotation folds to its title, which opens to
+                        its brief, which opens to its description,
+                        which opens to the annotations that answer it.
+                        Opened parts set their text in the text column
+                        and their notes in the margin. The options,
+                        the diagram and the cross-references follow.
 
                         The requirement list groups the requirements
                         by subject. The page of a requirement reads
@@ -208,21 +208,21 @@ MAP_SORT_NAME     = {SORT_COMPONENT:  'Component',
                      SORT_STANDING: 'Standing',
                      SORT_SIZE:     'Most argued',
                      SORT_TITLE:    'Title'}
-STANCE_UPHELD     = cc_public.web.argument.STANCE_UPHELD
-STANCE_REJECTED   = cc_public.web.argument.STANCE_REJECTED
-STANCE_OPEN       = cc_public.web.argument.STANCE_OPEN
-MAP_STANCE_MARK   = {STANCE_UPHELD:   '✓',
-                     STANCE_REJECTED: '✗',
-                     STANCE_OPEN:     '○'}
-STANDING_OPEN     = 'open'
-STANDING_NARROWED = 'narrowed'
-STANDING_SETTLED  = 'settled'
-LIST_STANDING     = [STANDING_OPEN, STANDING_NARROWED, STANDING_SETTLED]
-MAP_STANDING_STANCE = {STANDING_OPEN:     STANCE_OPEN,
-                       STANDING_NARROWED: STANCE_OPEN,
-                       STANDING_SETTLED:  STANCE_UPHELD}
+STANDING_UPHELD   = cc_public.web.argument.STANDING_UPHELD
+STANDING_REJECTED = cc_public.web.argument.STANDING_REJECTED
+STANDING_OPEN     = cc_public.web.argument.STANDING_OPEN
+MAP_STANDING_GLYPH = {STANDING_UPHELD:   '✓',
+                      STANDING_REJECTED: '✗',
+                      STANDING_OPEN:     '○'}
+DECISION_OPEN     = 'open'
+DECISION_NARROWED = 'narrowed'
+DECISION_SETTLED  = 'settled'
+LIST_DECISION_STANDING = [DECISION_OPEN, DECISION_NARROWED, DECISION_SETTLED]
+MAP_DECISION_STANDING  = {DECISION_OPEN:     STANDING_OPEN,
+                          DECISION_NARROWED: STANDING_OPEN,
+                          DECISION_SETTLED:  STANDING_UPHELD}
 MAP_SORT_KEY      = {
-    SORT_STANDING: lambda summary: (LIST_STANDING.index(summary.standing),
+    SORT_STANDING: lambda summary: (LIST_DECISION_STANDING.index(summary.standing),
                                     summary.decision.item.title),
     SORT_SIZE:     lambda summary: (-summary.size(), summary.decision.item.title),
     SORT_TITLE:    lambda summary: summary.decision.item.title}
@@ -604,22 +604,22 @@ class Summary:
                 self.map_against[unit.option] += 1
         self.subject = ', '.join(graph.title(id_component) for id_component
                                  in decision.item.targets(cc_public.web.argument.R_IS_ABOUT))
-        list_stance  = list(decision.map_stance.values())
-        if STANCE_UPHELD in list_stance:
-            self.standing = STANDING_SETTLED
-        elif STANCE_REJECTED in list_stance:
-            self.standing = STANDING_NARROWED
+        list_standing = list(decision.map_standing.values())
+        if STANDING_UPHELD in list_standing:
+            self.standing = DECISION_SETTLED
+        elif STANDING_REJECTED in list_standing:
+            self.standing = DECISION_NARROWED
         else:
-            self.standing = STANDING_OPEN
+            self.standing = DECISION_OPEN
 
     # -------------------------------------------------------------------------
-    def stance(self, id_option: str) -> str:
+    def standing_of(self, id_option: str) -> str:
         """
         Return the standing of the option id_option.
 
         """
 
-        return self.decision.map_stance.get(id_option, STANCE_OPEN)
+        return self.decision.map_standing.get(id_option, STANDING_OPEN)
 
     # -------------------------------------------------------------------------
     def size(self) -> int:
@@ -713,26 +713,26 @@ def _decision_controls(layout: str, sort: str, text: str) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _mark(stance: str) -> typing.Any:
+def _glyph(standing: str) -> typing.Any:
     """
-    Return the mark of the standing of an option: a tick if upheld, a
+    Return the glyph of the standing of an option: a tick if upheld, a
     cross if rejected, an open circle if open.
 
     """
 
-    return htpy.span(class_ = 'mark mark-' + stance,
-                     title  = stance)[MAP_STANCE_MARK[stance]]
+    return htpy.span(class_ = 'glyph glyph-' + standing,
+                     title  = standing)[MAP_STANDING_GLYPH[standing]]
 
 
 # -----------------------------------------------------------------------------
-def _standing(summary: Summary) -> typing.Any:
+def _decision_standing(summary: Summary) -> typing.Any:
     """
     Return the standing of the decision, as a word in the color of the
     standing of an option.
 
     """
 
-    return htpy.span(class_ = 'stance stance-' + MAP_STANDING_STANCE[summary.standing])[
+    return htpy.span(class_ = 'standing standing-' + MAP_DECISION_STANDING[summary.standing])[
         summary.standing]
 
 
@@ -756,27 +756,27 @@ def _decision_answers(list_summary: list[Summary],
     Return the decisions of list_summary, each folded to a line of its
     title, with its standing in the margin, unless is_open. Each opens
     to its question and the options that answer it, in full: each
-    option with its mark hung before it, its title run in and linked
+    option with its glyph hung before it, its title run in and linked
     to the option on the page of the decision, and its counts in the
     margin. A link after the options leads to the page of the decision.
 
     """
 
     def answer(summary: Summary, option: Item) -> typing.Any:
-        stance = summary.stance(option.id)
-        return _block([htpy.p[_mark(stance),
+        standing = summary.standing_of(option.id)
+        return _block([htpy.p[_glyph(standing),
                               htpy.a(class_ = 'run-in',
                                      href   = PATH_DECISION + summary.decision.item.id
                                               + '#' + option.id)[option.title],
                               ' ', _prose(option.brief)]],
                       [_counts(summary, option.id)],
-                      class_ = 'answer answer-' + stance)
+                      class_ = 'answer answer-' + standing)
 
     def entry(summary: Summary) -> typing.Any:
         item = summary.decision.item
         return htpy.details(class_ = 'decision-entry', id = item.id, open = is_open)[
             htpy.summary[_block([htpy.span(class_ = 'title')[item.title]],
-                                [_standing(summary),
+                                [_decision_standing(summary),
                                  htpy.span(class_ = 'subject')[summary.subject]
                                  if show_subject else None])],
             _block([htpy.p(class_ = 'question')[_prose(item.brief)]], []),
@@ -938,8 +938,8 @@ def _matrix(graph:    Graph,
                  for id_annotation in outline.list_other]]])
 
     list_row += [
-        row(['Standing'], [_stance(decision.map_stance.get(id_option,
-                                                        cc_public.web.argument.STANCE_OPEN))
+        row(['Standing'], [_standing(decision.map_standing.get(id_option,
+                                                               cc_public.web.argument.STANDING_OPEN))
                            for id_option in list_option], class_ = 'foot standing'),
         row([], [_controls(graph, decision, id_option) for id_option in list_option],
             class_ = 'foot controls')]
@@ -2260,11 +2260,11 @@ def _settlement(graph: Graph, decision: Decision) -> typing.Any:
 
     """
 
-    list_upheld = [id_option for (id_option, stance) in decision.map_stance.items()
-                   if stance == cc_public.web.argument.STANCE_UPHELD]
+    list_upheld = [id_option for (id_option, standing) in decision.map_standing.items()
+                   if standing == cc_public.web.argument.STANDING_UPHELD]
     if not list_upheld:
-        return _stance(cc_public.web.argument.STANCE_OPEN)
-    return [_stance(cc_public.web.argument.STANCE_UPHELD), ' ',
+        return _standing(cc_public.web.argument.STANDING_OPEN)
+    return [_standing(cc_public.web.argument.STANDING_UPHELD), ' ',
             ', '.join(graph.title(id_option) for id_option in list_upheld)]
 
 
@@ -2279,8 +2279,8 @@ def _option(graph: Graph, decision: Decision, option: Item) -> typing.Any:
     """
 
     block = _block([htpy.p[_prose(option.brief)]],
-                   [_stance(decision.map_stance.get(option.id,
-                                                 cc_public.web.argument.STANCE_OPEN)),
+                   [_standing(decision.map_standing.get(option.id,
+                                                        cc_public.web.argument.STANDING_OPEN)),
                     _id(option.id),
                     htpy.p(class_ = 'add')[
                         _pill('+ For', ROLE_FOR, 'Add an annotation for this option',
@@ -2734,13 +2734,13 @@ def _note_line(label: str, value: typing.Any) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _stance(stance: str) -> typing.Any:
+def _standing(standing: str) -> typing.Any:
     """
-    Return the mark of the stance of an option.
+    Return the standing of an option, as a word in its color.
 
     """
 
-    return htpy.span(class_ = 'stance stance-' + stance)[stance]
+    return htpy.span(class_ = 'standing standing-' + standing)[standing]
 
 
 # -----------------------------------------------------------------------------
