@@ -104,6 +104,41 @@ duplicate_prefix(Prefix, Type, Other) :-
 
 
 % -----------------------------------------------------------------------------
+% The regex_id of a type opens with its prefix, so that every id the
+% regex admits has the prefix of its type. sch_regentry_type leaves
+% this to a check, as JSON Schema cannot compare two fields.
+%
+% decl regex_without_prefix(type:   symbol,
+%                           prefix: symbol,
+%                           regex:  symbol)
+% did  The regex_id {regex} of {type} does not open with ^{prefix}_.
+% fix  Begin the regex_id with a caret, the prefix and an underscore.
+#show regex_without_prefix/3.
+
+regex_without_prefix(Type, Prefix, Regex) :-
+    type_prefix(Type, Prefix, Regex),
+    @match(@cat(@cat("\\^", Prefix), "_.*"), Regex) = 0.
+
+
+% -----------------------------------------------------------------------------
+% The $id of a schema ends with its id_self and .yaml, which is also the
+% name of its file. sch_schema leaves this to a check, as JSON Schema
+% cannot compare two fields.
+%
+% decl misnamed_schema(schema: symbol,
+%                      uri:    symbol,
+%                      file:   symbol,
+%                      line:   number)
+% did  The $id {uri} of {schema} does not end with /{schema}.yaml.
+% fix  End the $id with the id_self of the schema and .yaml.
+#show misnamed_schema/4.
+
+misnamed_schema(Schema, Uri, File, Line) :-
+    schema_uri(Schema, Uri, File, Line),
+    @match(@cat(@cat(".*/", Schema), "\\.yaml"), Uri) = 0.
+
+
+% -----------------------------------------------------------------------------
 % A prefix is three lower-case letters, one whole word of the preferred
 % term of the concept its type represents, or the first three letters of
 % each of two or three words of that term in a row, as relcon for

@@ -75,6 +75,7 @@ MAP_TERM_RATING   = {'term_preferred':  'preferred',
                      'term_admitted':   'admitted',
                      'term_deprecated': RATING_DEPRECATED}
 KEY_REF           = '$ref'
+KEY_SCHEMA_URI    = '$id'
 
 # The parts of a signature that an item may state, as an interface
 # member does.
@@ -266,6 +267,8 @@ PREDICATE         = {
     'reads_through':      (('relation', 'end'),
                            'An edge of relation is about the thing that the proxy at '
                            'its end, source or target, points at.'),
+    'schema_uri':         (('schema', 'uri', 'file', 'line:number'),
+                           'The schema gives uri as its $id, in file at line.'),
     'schema_ref':         (('holder', 'schema', 'file', 'line:number'),
                            'The schema holder refers to the schema with a $ref, in '
                            'file at line.'),
@@ -1148,12 +1151,15 @@ def _text(node:     dict[str, typing.Any],
           terms:    Terms) -> None:
     """
     Add a fact for each id and each of terms that the text of a field
-    of node mentions, and for each schema that node refers to with a
-    $ref. The fields that give terms are not searched for terms.
+    of node mentions, for each schema that node refers to with a $ref,
+    and for the $id that node gives. The fields that give terms are not
+    searched for terms.
 
     """
 
     for (key, value) in node.items():
+        if key == KEY_SCHEMA_URI and isinstance(value, str):
+            facts['schema_uri'].add((holder, value, location[0], _line(node, key, location)))
         if key == KEY_REF and isinstance(value, str):
             for match in REGEX_REF.finditer(value):
                 facts['schema_ref'].add((holder, match.group(1), location[0],

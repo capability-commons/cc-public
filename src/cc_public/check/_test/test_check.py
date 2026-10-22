@@ -519,6 +519,19 @@ def test_two_types_sharing_a_prefix_are_reported(tree):
                                                 ('ann', 'type_option', 'type_annotation')]
 
 
+def test_a_regex_id_that_does_not_open_with_the_prefix_is_reported(tree):
+    _replace(tree, '_data/register/reg_data_item_type.yaml',
+             'regex_id:           ^opt_[a-z][a-z0-9_]*$', 'regex_id:           ^.*$')
+    assert _check(tree)['regex_without_prefix'] == [('type_option', 'opt', '^.*$')]
+
+
+def test_a_schema_whose_id_ends_with_another_name_is_reported(tree):
+    _replace(tree, '_data/schema/sch_reg_role.yaml',
+             'schema/sch_reg_role.yaml', 'schema/sch_reg_other.yaml')
+    assert [row[:2] for row in _check(tree)['misnamed_schema']] == [
+        ('sch_reg_role', 'https://capability-commons.org/schema/sch_reg_other.yaml')]
+
+
 def test_a_prefix_neither_three_letters_nor_a_word_of_its_term_is_reported(tree):
     _replace(tree, '_data/register/reg_data_item_type.yaml',
              'prefix:             opt\n', 'prefix:             op\n')
