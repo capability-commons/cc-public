@@ -1057,10 +1057,10 @@ table:
         guid_target:    rol_a8f7e5b25c304e41a32e2c7517e8d738
 
   # ---------------------------------------------------------------------------
-  # type_relation_restriction -- Relation restriction type
+  # type_relation_constraint -- Relation restriction type
   #
-  type_relation_restriction:
-    id_self:            type_relation_restriction
+  type_relation_constraint:
+    id_self:            type_relation_constraint
     guid_self:          type_b0cc735b40154db0bbb77d2bf809ec7d
     title:              Relation restriction type
     brief:              |
@@ -1081,32 +1081,34 @@ table:
 
                         The shape of relation restriction data items
                         is defined by the
-                        sch_regentry_relation_restriction schema.
+                        sch_regentry_relation_constraint schema.
 
                         The shape of the relation restriction register
-                        is defined by the sch_reg_relation_restriction
+                        is defined by the sch_reg_relation_constraint
                         schema.
     prefix:             rrs
     regex_id:           ^rrs_[a-z][a-z0-9_]*$
-    id_concept:         concept_relation_restriction
+    id_concept:         concept_relation_constraint
     guid_concept:       concept_2f394dca3741439f8117350522409b06
-    alias:              []
+
+    alias:
+      - type_relation_restriction
 
     edge:
 
       - id_relation:    relation_has_items_held_in_register
         guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
-        id_target:      reg_relation_restriction
+        id_target:      reg_relation_constraint
         guid_target:    reg_52c7901d2dd7494f81285e6e8889a51c
 
       - id_relation:    relation_has_items_specified_by_schema
         guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
-        id_target:      sch_regentry_relation_restriction
+        id_target:      sch_regentry_relation_constraint
         guid_target:    sch_8735cac167a04016804daac1f6d5dc16
 
       - id_relation:    relation_has_items_that_play
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
-        id_target:      rol_relation_restriction
+        id_target:      rol_relation_constraint
         guid_target:    rol_0775dd9f7f1e40dd81f350bd1690298a
 
   # ---------------------------------------------------------------------------

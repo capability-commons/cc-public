@@ -110,7 +110,7 @@ import cc_public.web.description
 import cc_public.web.light
 import cc_public.web.network
 import cc_public.web.request
-import cc_public.web.restriction
+import cc_public.web.constraint
 import cc_public.web.sankey
 import cc_public.web.step
 
@@ -1139,7 +1139,7 @@ def item(graph: Graph, id_item: str) -> str:
     statement     = _statement(graph, item)
     list_prose    = (_paragraphs(item.brief) if statement else []) + _paragraphs(item.description)
     list_prose += [htpy.p[[_part(part) for part in sentence]]
-                   for sentence in cc_public.web.restriction.sentences(graph, id_item)]
+                   for sentence in cc_public.web.constraint.sentences(graph, id_item)]
     subtitle   = statement or _prose(item.brief)
 
     return _page(title,
@@ -1156,7 +1156,7 @@ def item(graph: Graph, id_item: str) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _part(part: cc_public.web.restriction.Part) -> typing.Any:
+def _part(part: cc_public.web.constraint.Part) -> typing.Any:
     """
     Return a part of a sentence: its text, or a link with its text to
     the page of the item it names.

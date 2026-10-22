@@ -539,7 +539,7 @@ satisfies(Type, Restriction) :-
 % Each end of an edge satisfies every restriction its relation names
 % for that end. An end that names none is open to any item.
 %
-% decl restriction_violation(source:      symbol,
+% decl constraint_violation(source:      symbol,
 %                            relation:    symbol,
 %                            target:      symbol,
 %                            end:         symbol,
@@ -549,17 +549,17 @@ satisfies(Type, Restriction) :-
 % fix  Point the edge at an item of a type the relation admits, or use
 %      the relation that fits. Its entry in reg_relation.yaml names its
 %      restrictions.
-#show restriction_violation/5.
+#show constraint_violation/5.
 
-restriction_violation(Source, Relation, Target, "source", Restriction) :-
+constraint_violation(Source, Relation, Target, "source", Restriction) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "relation_restricts_source", Restriction),
+    primary_edge(Relation, "relation_constrains_source", Restriction),
     has_type(Source, Type),
     not satisfies(Type, Restriction).
 
-restriction_violation(Source, Relation, Target, "target", Restriction) :-
+constraint_violation(Source, Relation, Target, "target", Restriction) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "relation_restricts_target", Restriction),
+    primary_edge(Relation, "relation_constrains_target", Restriction),
     has_type(Target, Type),
     not satisfies(Type, Restriction).
 

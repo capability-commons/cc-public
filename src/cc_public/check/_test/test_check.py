@@ -402,7 +402,7 @@ def test_a_ruling_that_supersedes_is_reported(tree):
     _item(tree, DIR_DECISION + 'ruling_y.yaml', 'ruling_y',
           [_edge(tree, 'relation_upholds', 'opt_y'), _edge(tree, 'relation_supersedes', 'ruling_x')])
     assert ('ruling_y', 'relation_supersedes', 'ruling_x', 'source', 'rrs_is_supersedable') \
-        in _check(tree)['restriction_violation']
+        in _check(tree)['constraint_violation']
 
 
 def test_a_copy_of_an_item_is_reported(tree):
@@ -598,19 +598,19 @@ def test_a_reference_with_a_stale_guid_is_reported(tree):
                                                  edge['guid_target'], location, LINE_TARGET)]}
 
 
-def test_an_edge_from_a_source_its_relation_restricts_is_reported(tree):
+def test_an_edge_from_a_source_its_relation_constrains_is_reported(tree):
     # Support runs from an argument. An option gives no reasons.
     _option(tree, 'opt_x')
     _option(tree, 'opt_y', [_edge(tree, 'relation_supports', 'opt_x')])
-    assert _check(tree) == {'restriction_violation': [
+    assert _check(tree) == {'constraint_violation': [
         ('opt_y', 'relation_supports', 'opt_x', 'source', 'rrs_is_argument')]}
 
 
-def test_an_edge_to_a_target_its_relation_restricts_is_reported(tree):
+def test_an_edge_to_a_target_its_relation_constrains_is_reported(tree):
     # Support runs to something arguable, not to a concern.
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', ID_ABOUT),
                                                          _edge(tree, 'relation_supports', ID_ABOUT)])
-    assert _check(tree) == {'restriction_violation': [
+    assert _check(tree) == {'constraint_violation': [
         ('ann_x', 'relation_supports', ID_ABOUT, 'target', 'rrs_can_be_target_of_an_argument')]}
 
 
@@ -622,7 +622,7 @@ def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
              '    guid_target:        ' + _guid_of(tree, 'lco_tooling') + '\n',
              'id_target:          concern_cost\n'
              '    guid_target:        ' + _guid_of(tree, 'concern_cost') + '\n')
-    assert _check(tree) == {'restriction_violation': [
+    assert _check(tree) == {'constraint_violation': [
         ('rqt_rename_keeps_guid', 'relation_has_subject', 'concern_cost', 'target',
          'rrs_is_design_entity')]}
 
@@ -633,16 +633,16 @@ def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
     literal = ('id_relation:    {relation}\n'
                '        guid_relation:  {guid}\n'
                '        id_target:      rol_requirement\n')
-    _replace(tree, '_data/register/reg_relation_restriction.yaml',
+    _replace(tree, '_data/register/reg_relation_constraint.yaml',
              literal.format(relation = 'relation_admits', guid = _guid_of(tree, 'relation_admits')),
              literal.format(relation = 'relation_excludes', guid = _guid_of(tree, 'relation_excludes')))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', ID_ABOUT),
                                                          _edge(tree, 'relation_has_subject', 'lco_tooling')])
     failures = _check(tree)
-    assert list(failures) == ['restriction_violation']
-    assert {row[0] for row in failures['restriction_violation']} == {
+    assert list(failures) == ['constraint_violation']
+    assert {row[0] for row in failures['constraint_violation']} == {
         'rqt_edit_refuses_new_failure', 'rqt_format_keeps_formatted_file', 'rqt_rename_keeps_guid'}
-    assert {row[3:] for row in failures['restriction_violation']} == {
+    assert {row[3:] for row in failures['constraint_violation']} == {
         ('source', 'rrs_is_requirement')}
 
 
@@ -1083,7 +1083,7 @@ def test_a_type_that_names_no_schema_for_its_items_is_reported(tree):
              'relation_is_specified_by_schema\n        guid_relation:  '
              'relation_e4f6185af9254a649126e121cb4edf5f\n        id_target:      sch_file\n')
     assert _check(tree) == {
-        'restriction_violation': [
+        'constraint_violation': [
             ('type_file', 'relation_is_specified_by_schema', 'sch_file', 'source', 'rrs_is_register')],
         'schema_count':          [('type_file', '0')]}
 
