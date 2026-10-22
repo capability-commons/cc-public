@@ -93,7 +93,7 @@ def test_an_answer_bears_on_its_annotation_and_speaks_for_no_concern(tree):
 
 
 def test_to_uphold_changes_the_one_ruling_of_the_decision(tree):
-    assert _operations(tree, kind = 'determine', target = ID_REJECTED, role = 'uphold',
+    assert _operations(tree, kind = 'rule', target = ID_REJECTED, role = 'uphold',
                        reason = 'Because.') == [
         {'set':    [ID_RULING, 'brief', 'Because.']},
         {'unlink': [ID_RULING, 'relation_rejects', ID_REJECTED]},
@@ -103,7 +103,7 @@ def test_to_uphold_changes_the_one_ruling_of_the_decision(tree):
 def test_to_reject_an_open_decision_makes_its_ruling(tree):
     graph = cc_public.web.argument.Graph(tree)
     [id_option, *_] = [option.id for option in graph.decision(ID_OPEN).list_option]
-    assert _operations(tree, kind = 'determine', target = id_option, role = 'reject',
+    assert _operations(tree, kind = 'rule', target = id_option, role = 'reject',
                        reason = 'Because.') == [
         {'new':   'ruling_tooling_language',
          'field': {'title': graph.title(ID_OPEN), 'brief': 'Because.'},
@@ -118,7 +118,7 @@ def test_a_form_holds_the_fields_of_its_kind(tree):
         assert 'name="{name}"'.format(name = name).encode() in body
     assert body.index(b'value="concern_maintainability"') < body.index(b'value="concern_privacy"')
 
-    query = cc_public.web.request.query('determine', ID_UPHELD, 'reject')
+    query = cc_public.web.request.query('rule', ID_UPHELD, 'reject')
     (_, _, body) = cc_public.web.server.respond(tree, '/edit?' + query)
     assert b'name="reason"' in body and b'name="title"' not in body
 
@@ -155,7 +155,7 @@ def test_an_argument_without_a_concern_is_refused_and_writes_nothing(tree):
 
 
 def test_an_uphold_sent_changes_the_ruling_in_place(tree):
-    (status, _, _, _) = _submit(tree, kind = 'determine', target = ID_REJECTED,
+    (status, _, _, _) = _submit(tree, kind = 'rule', target = ID_REJECTED,
                                 role = 'uphold', reason = 'Both, for now.')
     assert status == http.HTTPStatus.SEE_OTHER
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
@@ -168,7 +168,7 @@ def test_an_uphold_sent_changes_the_ruling_in_place(tree):
 def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
     for (kind, target, role) in (('option', ID_OPEN, ''), ('argument', ID_UPHELD, 'for'),
                                  ('answer', ID_ANNOTATION, 'against'),
-                                 ('determine', ID_UPHELD, 'uphold')):
+                                 ('rule', ID_UPHELD, 'uphold')):
         query = cc_public.web.request.query(kind, target, role)
         text  = cc_public.web.server.respond(tree, '/edit?' + query)[2].decode()
         for line in cc_public.web.request.MAP_LEAD[kind]:
