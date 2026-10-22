@@ -1,0 +1,87 @@
+id_self:                ann_guide_item_keeps_the_prompt_to_asked_fields
+guid_self:              ann_44a8dce518b64c738b65d8af93320943
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prompt limited to the fields that are asked about
+brief:                  |
+                        A guide item that lists only the fields to ask
+                        about lets the bot send a small prompt on each
+                        turn. Sending the resolved schema with all its
+                        descriptions sends about 32 KB per turn, most
+                        of it about fields the edit module fills by
+                        itself.
+description:            |
+                        The decision schema adds no fields of its own
+                        and takes identity, the descriptive fields and
+                        rights from sch_standalone and the edges from
+                        sch_trait_edge (_data/schema/sch_decision.yaml
+                        lines 17-41). sch_standalone in turn refers to
+                        sch_trait_identity, sch_trait_descriptive and
+                        sch_trait_rights
+                        (_data/schema/sch_standalone.yaml lines
+                        41-43), and the traits refer to sch_primitive
+                        (_data/schema/sch_trait_identity.yaml lines 81
+                        and 129). These six files hold 32018 bytes, of
+                        which sch_trait_identity, sch_trait_rights,
+                        sch_trait_edge and sch_primitive hold 25817
+                        bytes, about 81 percent, while
+                        sch_trait_descriptive holds 2499 bytes (wc -c
+                        on the snapshot, 2026-10-22). The edit module
+                        gives a new item its guid
+                        (src/cc_public/edit/edit.py lines 1343-1373)
+                        and its copyright and license from
+                        file_pyproject (src/cc_public/edit/edit.py
+                        line 104 and function _rights at line 1290).
+                        The guide option holds prompts and the fields
+                        to ask about (opt_interview_guide_item.yaml,
+                        brief). The schema-first option uses the
+                        descriptions in the schema and adds a guide
+                        item only when an instance needs one
+                        (opt_schema_descriptions_first.yaml, brief).
+                        ASSUMPTION: the bot sends its guidance with
+                        every model call, and a model call takes
+                        longer and costs more as its input grows.
+                        ASSUMPTION: code could also cut the resolved
+                        schema down to the elicited fields, so
+                        schema-first can match the guide's prompt
+                        size, but then the list of elicited fields
+                        lives in code rather than in a checked item.
+                        One more guide item per bot is small beside
+                        the 2090 YAML files under _data (find count on
+                        the snapshot, 2026-10-22), whose full check
+                        takes 24.6 s (context.md, measured
+                        2026-10-22), so the guide adds no noticeable
+                        check time. Holds at ten times the size: yes,
+                        because a larger schema or more traits grow
+                        the resolved schema sent per turn, while a
+                        guide grows only with the fields actually
+                        asked about, and ten guide items remain a
+                        small share of the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_elicitation_guidance
+    guid_target:        dec_ec1af2d888f640dca5d8f9858ca652e8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_interview_guide_item
+    guid_target:        opt_334ff04b440d4f538b8dfaaf8917b4b4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_schema_descriptions_first
+    guid_target:        opt_4385906c526442c38ec0d616adcb50af
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

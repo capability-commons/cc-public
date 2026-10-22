@@ -1,0 +1,83 @@
+id_self:                ann_contributor_never_asked_who_they_are
+guid_self:              ann_7568650396104d7a801c0653d00659b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No identity question for the contributor
+brief:                  |
+                        When the bot names a contributor by a guid it
+                        already holds, the contributor is never asked
+                        who they are and cannot mistype it. Naming
+                        them by name needs a question or a guess on
+                        every first contact, and the guid option moves
+                        the one-time cost to the maintainer who adds
+                        the register entry.
+description:            |
+                        Each team member gets an item in a team member
+                        register, and the commit trailer names a
+                        pseudonymous guid of that member (owner's
+                        statement). One admission option answers only
+                        accounts on a private list that the operator
+                        keeps
+                        (_data/decision/dec_chat_signal_admission/opt_admit_listed_contacts.yaml,
+                        brief). The name option writes the
+                        contributor's name in a Co-authored-by trailer
+                        (_data/decision/dec_chat_contributor_attribution/opt_contributor_by_name.yaml,
+                        brief). The bot-only option names only the bot
+                        in public and keeps who said what in its
+                        private store
+                        (_data/decision/dec_chat_contributor_attribution/opt_no_contributor_in_public.yaml,
+                        brief). ASSUMPTION: under the guid and
+                        bot-only options, the bot finds the
+                        contributor from the Signal account through a
+                        private table, so the conversation holds no
+                        identity question. ASSUMPTION: under the name
+                        option, the bot either asks for a name, which
+                        adds a turn and a chance of a typing error, or
+                        takes the Signal profile name, which the
+                        account holder sets freely and may be a
+                        nickname. ASSUMPTION: a member with no
+                        register entry yet cannot be named by guid, so
+                        someone must add the entry before that
+                        member's first item. The concern asks how much
+                        time and attention a task takes a person and
+                        how well the design prevents mistakes
+                        (_data/register/reg_concern.yaml lines
+                        251-254). Holds at ten times the size: yes,
+                        because the identity question and its error
+                        chance recur for every new contributor under
+                        the name option, while the guid lookup stays
+                        one silent step, and the register entry is a
+                        one-time cost per member.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_contributor_by_pseudonymous_guid
+    guid_target:        opt_7161a934227944ab9091e6d675d4fc48
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_contributor_in_public
+    guid_target:        opt_95a7c965aaf847c0b89fc4ec91fe2d3d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_by_name
+    guid_target:        opt_04d34801957840549b38f5bd6b8e128b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

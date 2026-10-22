@@ -1,0 +1,71 @@
+id_self:                ann_reworded_readback_asks_more_of_the_contributor
+guid_self:              ann_353dd33a04f0499a93c0f3c0bbbc2eb8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readback of the contributor's own words
+brief:                  |
+                        Rewording every answer means the contributor
+                        confirms text they did not write, which takes
+                        more attention and lets shifts in meaning
+                        pass. One assent question per contributor lets
+                        the bot keep their words, so the readback is
+                        mostly recognition.
+description:            |
+                        The facts-only option records the facts a
+                        contributor gives, reworded by the bot, and
+                        asks for no assent
+                        (_data/decision/dec_chat_rights_in_contributions/opt_record_facts_only.yaml,
+                        brief). The assent option asks each
+                        contributor once to agree that what they
+                        supply is recorded under the license of the
+                        repository
+                        (_data/decision/dec_chat_rights_in_contributions/opt_one_time_assent.yaml,
+                        brief). The owner intends a readback to the
+                        contributor before the item is written to the
+                        branch of the bot
+                        (_data/decision/dec_chat_review_gates/opt_readback_and_branch_review.yaml,
+                        brief, and owner's statement). The readback
+                        happens after any automated checks and
+                        corrections are applied (owner's statement).
+                        ASSUMPTION: a person checks text faster and
+                        more reliably when it is in their own words
+                        than when it is a paraphrase they must compare
+                        with what they meant. ASSUMPTION: the assent
+                        question costs one turn per contributor, asked
+                        once, and needs a plain-language summary of
+                        the license to be understood. The concern
+                        measures time to complete a task and errors
+                        per task (_data/register/reg_concern.yaml
+                        lines 256-258). Holds at ten times the size:
+                        yes, because the assent is asked once per
+                        contributor while the cost of checking a
+                        paraphrase recurs in every readback of every
+                        item.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_rights_in_contributions
+    guid_target:        dec_bc7bd2a1cfaa4b0aac50d05378b73676
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_time_assent
+    guid_target:        opt_11468128cf274927ae2d520874627ee8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_record_facts_only
+    guid_target:        opt_2d3dc599268f41e7b181345587a205f1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

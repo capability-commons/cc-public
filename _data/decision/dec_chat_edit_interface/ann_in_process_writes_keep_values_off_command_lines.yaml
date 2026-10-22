@@ -1,0 +1,73 @@
+id_self:                ann_in_process_writes_keep_values_off_command_lines
+guid_self:              ann_f1255b24a17d41baad8423697042b790
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Elicited values kept off the command line
+brief:                  |
+                        Called in process, the bot hands elicited
+                        values to the editing module in memory. As a
+                        subprocess, the simple commands carry each
+                        value as a command-line argument, which puts
+                        personal data where other local processes and
+                        logs may see it, unless every write goes
+                        through batch on stdin.
+description:            |
+                        The new and header commands take each field as
+                        a pair of command-line arguments, --field NAME
+                        VALUE (src/cc_public/cli/editing.py, lines
+                        101-107 and usage at lines 27-31). The set
+                        command takes VALUE as an argument, and reads
+                        it from stdin only when VALUE is -
+                        (src/cc_public/cli/editing.py, lines 233 and
+                        248-253). The batch command reads its
+                        operations from a file or from stdin
+                        (src/cc_public/cli/editing.py, lines 330-335).
+                        The in-process option calls the editing module
+                        in the process of the bot
+                        (opt_edit_module_in_process, brief). A likely
+                        first instance holds member skill profiles,
+                        which are personal data (owner's statement).
+                        Personal data lives only in private
+                        repositories (owner's statement). A Tree reads
+                        every document of the tree when it is made
+                        (src/cc_public/edit/edit.py, lines 174-182),
+                        so either option holds the whole private tree
+                        in memory while it writes, and a long-lived
+                        in-process bot may hold it between writes too.
+                        ASSUMPTION: on a default Linux host the
+                        arguments of a running process can be read by
+                        other local users through ps and
+                        /proc/PID/cmdline, and may be kept by process
+                        accounting or audit logs. Holds at ten times
+                        the size: yes, because each extra write and
+                        each extra contributor adds one more command
+                        line that carries personal data, while the
+                        in-process path adds none.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_edit_interface
+    guid_target:        dec_e376c063e78640aca3f696f71ff46eae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edit_module_in_process
+    guid_target:        opt_700e944befd44f5195e9a20b6ad8d03c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cctool_subprocess
+    guid_target:        opt_54381196407b444a9166736cc4356b91
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
