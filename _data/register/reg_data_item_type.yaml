@@ -1470,3 +1470,52 @@ table:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_proxy
         guid_target:    rol_2a876d5a023b42d981a1e87b3acce1fc
+
+  # ---------------------------------------------------------------------------
+  # type_external_class -- External class type
+  #
+  type_external_class:
+    id_self:            type_external_class
+    guid_self:          type_f51e819ea9aa4711920275ffe811ff36
+    title:              External class type
+    brief:              |
+                        Type of external class data items.
+    description:        |
+                        Each external class data item is a proxy for
+                        one class of an ontology held outside the
+                        graph, such as BFO or the Common Core
+                        Ontologies.
+    usage:              |
+                        External class data items let a concept entry
+                        be mapped to the classes of a standard
+                        ontology by edges, and let checks compare the
+                        hierarchy of those classes with the concept
+                        register.
+    note:               |
+                        External class data items travel on their own,
+                        one per file, in _data/external_class/.
+
+                        The shape of external class data items is
+                        defined by the sch_external_class schema.
+    prefix:             extcla
+    regex_id:           ^extcla_[a-z][a-z0-9_]*$
+    id_concept:         concept_external_class
+    guid_concept:       concept_d8b8e86caf0d45748ab199c90e8eb97c
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_external_class
+        guid_target:    sch_eb38df05e1e447e7a16dbd2b55593519
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_proxy
+        guid_target:    rol_2a876d5a023b42d981a1e87b3acce1fc
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_external_class
+        guid_target:    rol_f5e7945fb35e4fe683adafdc7f716f2c

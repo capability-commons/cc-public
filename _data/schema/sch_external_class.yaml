@@ -1,0 +1,76 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_external_class.yaml
+id_self:                sch_external_class
+guid_self:              sch_eb38df05e1e447e7a16dbd2b55593519
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  External class schema
+brief:                  |
+                        The shape of an external class, a proxy for a
+                        class of an ontology held outside the graph.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone; the rights are those
+                        of the data item. The edges come from
+                        sch_trait_edge. An external class requires a
+                        brief, the IRI of the class as its one
+                        identifier, and the label the class has in the
+                        release it was taken from.
+
+                        The definition of the class is not copied: it
+                        is read at the IRI, under the license of the
+                        ontology.
+usage:                  |
+                        Named by type_external_class as the schema of
+                        every item in _data/external_class/.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - brief
+      - identifier
+      - label
+
+    properties:
+
+      identifier:
+        type:           array
+        minItems:       1
+        maxItems:       1
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - scheme
+            - value
+
+          properties:
+
+            scheme:
+
+              enum:
+                - uri
+
+            value:
+              type:     string
+              format:   uri
+
+      label:
+        type:           string
+        minLength:      1
+
+unevaluatedProperties:  false
+edge:                   []
