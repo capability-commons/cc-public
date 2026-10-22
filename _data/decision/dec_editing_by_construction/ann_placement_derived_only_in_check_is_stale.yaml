@@ -1,0 +1,48 @@
+id_self:                ann_placement_derived_only_in_check_is_stale
+guid_self:              ann_337a0c8cc38742feb372b9ef7afbe6f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decision placement now derived in the checker alone
+brief:                  |
+                        ann_placement_rule_in_edit_and_check says
+                        edit.py restates decision_of in a function
+                        _folder, so a change to placement must be made
+                        in two places. edit.py no longer restates it:
+                        apply moves a new file to the place the
+                        checker names.
+description:            |
+                        src/cc_public/edit/edit.py has no _folder
+                        function and no SET_LINK_SETTLE constant. A
+                        new item is first written in the folder of its
+                        type (edit.py lines 274-278). The comment at
+                        lines 127-129 says that where the check says
+                        it belongs elsewhere, apply moves it there.
+                        apply calls _place (lines 1161-1183), and
+                        _place moves each new file that
+                        misplaced_document reports to the expected
+                        path (lines 1187-1205). misplaced_document
+                        builds that path from decision_of
+                        (src/cc_public/check/check.lp lines 581-595;
+                        src/cc_public/graph/derive.lp lines 132-147).
+                        So the decision branch of the rule is written
+                        once, in the logic programs. The type folder
+                        of a new file is still computed in edit.py.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_editing_by_construction
+    guid_target:        dec_b2d10a333b9c4acd9e1f6de2ce90e01b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_placement_rule_in_edit_and_check
+    guid_target:        ann_e7c2886aae8a44c8b5e4aac1be410e1b

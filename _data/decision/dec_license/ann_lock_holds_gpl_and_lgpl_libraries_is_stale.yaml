@@ -1,0 +1,44 @@
+id_self:                ann_lock_holds_gpl_and_lgpl_libraries_is_stale
+guid_self:              ann_a9bcad18b5fc422b8e53c0a92ca4b78e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Copyleft libraries now in the locked environments
+brief:                  |
+                        ann_permissive_dependencies_fit_any_license
+                        says every dependency is permissive, under the
+                        GCC runtime exception, or the ld_impl build
+                        tool. The lock now also holds GNU readline
+                        under GPL-3.0-only and two LGPL libraries, in
+                        the environments of the slow test run.
+description:            |
+                        pixi.lock lists readline-8.3 with license
+                        GPL-3.0-only for linux-64, osx-64 and
+                        osx-arm64 (lines 2510-2539), libnsl-2.0.1 with
+                        LGPL-2.1-only (lines 1590-1596) and
+                        libxcrypt-4.4.38 with LGPL-2.1-or-later (lines
+                        1786-1792). They come with the Python 3.12 to
+                        3.14 builds of the py312, py313 and py314
+                        environments (lines 195, 200 and 213), not the
+                        default one. The runtime dependencies are now
+                        seven, not three (pyproject.toml lines 42-48).
+                        Whether these libraries place any condition on
+                        the license of cc-public is not checked here.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_license
+    guid_target:        dec_b48b2abc169c4462936f2521af30eebc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_permissive_dependencies_fit_any_license
+    guid_target:        ann_3f38f62167c34efeab2ba0c458cc3fdf

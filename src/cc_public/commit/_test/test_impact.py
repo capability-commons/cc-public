@@ -109,6 +109,7 @@ def test_a_changed_annotation_shows_what_it_argues_about(tree, before):
         ('opt_tooling_in_rust',  '1', ANN, 'relation_challenges',         'out'),
         ('dec_tooling_language', '1', ANN, 'relation_is_about',           'out'),
         ('concern_cost',         '1', ANN, 'relation_speaks_for_concern', 'out'),
+        ('ann_tooling_line_count_is_stale', '1', ANN, 'relation_challenges', 'in'),
         ('mark_public',          '1', ANN, 'mark',                 'out'),
         ('type_annotation',         '1', ANN, 'has_type',             'out'),
         ('relation_challenges',         '1', ANN, 'uses',                 'out'),
@@ -124,7 +125,8 @@ def test_a_walk_keeps_its_direction(tree, before):
     result = cc_public.commit.impact.impact_trees(before, tree, depth = 2, direction = 'in')
 
     assert _touched(result) == [(ANN, 'changed', '')]
-    assert result['neighbor'] == []
+    assert {row[4] for row in result['neighbor']} <= {'in'}
+    assert 'opt_tooling_in_rust' not in {row[0] for row in result['neighbor']}
 
 
 # -----------------------------------------------------------------------------

@@ -1,0 +1,49 @@
+id_self:                ann_ruling_reuse_of_supersedes_is_stale
+guid_self:              ann_bf449fe0ec1c460681cc5ec99e3f7c5f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Supersedes relation no longer open to a ruling
+brief:                  |
+                        The old annotation says that a ruling reuses
+                        relation_supersedes, among other existing
+                        parts. Now a ruling cannot supersede or be
+                        superseded: a change of ruling edits the one
+                        ruling in place.
+description:            |
+                        relation_supersedes names
+                        relcon_is_supersedable on its source and its
+                        target, which admits rol_supersedable
+                        (_data/register/reg_relation.yaml lines
+                        265-297). Only type_option and
+                        type_interface_control_document play that role
+                        (_data/register/reg_data_item_type.yaml lines
+                        533 and 1262), so an edge of
+                        relation_supersedes from or to a ruling fails
+                        constraint_violation.
+                        ruling_change_of_a_ruling rules that a
+                        decision has at most one ruling, edited in
+                        place, and the check competing_rulings holds
+                        it (src/cc_public/check/check.lp lines
+                        1446-1457). The other parts the annotation
+                        names, the standalone item, the edges and the
+                        commit record, are still what a ruling is
+                        built from (_data/schema/sch_ruling.yaml).
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_outcome_stored_or_computed
+    guid_target:        dec_4de3062be8ee4a3fbb21cb29944d4629
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_ruling_reuses_existing_machinery
+    guid_target:        ann_b1d2b586880347e1a9d3e09de10289d0

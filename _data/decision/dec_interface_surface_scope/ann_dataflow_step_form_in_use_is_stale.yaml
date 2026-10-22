@@ -1,0 +1,46 @@
+id_self:                ann_dataflow_step_form_in_use_is_stale
+guid_self:              ann_8aa0634b02db4be3a9734f72d37f9289
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow step form now in use
+brief:                  |
+                        ann_unused_surfaces_go_untested says no
+                        engineering document uses the C, C++, dataflow
+                        step or artifact forms, so no check or test
+                        exercises them. Three documents now use the
+                        dataflow step form, and checks and a test read
+                        it. The C, C++ and artifact forms are still
+                        unused.
+description:            |
+                        icd_printer, icd_process_controller and
+                        icd_system_controller in
+                        _data/interface_control_document each hold a
+                        dataflow_step surface. The extractor turns
+                        their ports into interface_port facts
+                        (src/cc_public/graph/extract.py line 1482),
+                        which unknown_port reads
+                        (src/cc_public/check/check.lp line 2893), and
+                        test_dataflow_interface_page_draws_the_step_and_its_semantics
+                        (src/cc_public/web/_test/test_web.py line 807)
+                        draws one. The only native surface is python,
+                        in icd_cc_public_check, and no document holds
+                        an artifact surface. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_interface_surface_scope
+    guid_target:        dec_583cdc06cab142a08249342602753c2c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_unused_surfaces_go_untested
+    guid_target:        ann_66f806172ed14c4cbf29630687dda4bb

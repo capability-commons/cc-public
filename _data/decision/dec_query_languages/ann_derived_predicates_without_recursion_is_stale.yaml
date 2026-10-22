@@ -1,0 +1,44 @@
+id_self:                ann_derived_predicates_without_recursion_is_stale
+guid_self:              ann_53a99b46f34b4c6d9aeafcfe2c0e9c67
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recursive derived predicates now in derive.lp
+brief:                  |
+                        The old annotation says that the present
+                        derived predicates are non-recursive joins and
+                        one negation. Now derive.lp declares 13
+                        derived predicates, and downstream is
+                        recursive, so not all of them are plain SQL
+                        joins.
+description:            |
+                        src/cc_public/graph/derive.lp declares
+                        prefix_of, has_type, primary_edge, graph_edge,
+                        document_schema, settles, decision_of,
+                        node_interface, feeds, downstream, upstream,
+                        bears_on and blast_radius (decl lines 34-231).
+                        downstream calls itself (lines 183-187), and
+                        upstream and blast_radius are built on it
+                        (lines 197-198 and 234-240). The one negation
+                        is still in primary_edge (line 64). In SQL,
+                        downstream would need a recursive query. The
+                        measurement in the old annotation covered
+                        prefix_of only. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_query_languages
+    guid_target:        dec_9ef62648af59455cb14f77b64ac2f6a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_derived_relations_are_cheap_sql_joins
+    guid_target:        ann_fc164244179d406188d9560528f1fd09

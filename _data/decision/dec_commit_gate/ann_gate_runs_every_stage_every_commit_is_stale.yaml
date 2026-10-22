@@ -1,0 +1,46 @@
+id_self:                ann_gate_runs_every_stage_every_commit_is_stale
+guid_self:              ann_e7db0c3c5afc45059383d22f661c7818
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit gate now chooses stages by what is staged
+brief:                  |
+                        ann_gate_cost_scales_with_whole_graph says no
+                        gate stage is chosen by what the commit
+                        changes and pytest runs every test. The gate
+                        of a commit now skips the tests when no code
+                        is staged, leaves out tests marked slow or
+                        prepush, and reuses stored verdicts for
+                        unchanged files.
+description:            |
+                        src/cc_public/gate/gate.py: stages (lines
+                        157-170) drops the test stage when
+                        is_code_staged (lines 173-192) finds no staged
+                        path under TUPLE_CODE (line 99: src/,
+                        pyproject.toml, pixi.lock, .githooks/), and
+                        runs the commit tests with "not slow and not
+                        prepush" (lines 76-77). The gate of a commit
+                        sets a store (lines 142-144) that keeps layout
+                        and schema verdicts for unchanged text
+                        (src/cc_public/check/store.py). The check
+                        still extracts the whole tree and evaluates
+                        every rule, so its cost still grows with the
+                        graph. README.md lines 66-80 describe this.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commit_gate
+    guid_target:        dec_8ef6be254d2d4bba95d353c4c412a818
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_gate_cost_scales_with_whole_graph
+    guid_target:        ann_cb8dbe1785e04df7bc93bfca6ef04039

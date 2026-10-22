@@ -1,0 +1,43 @@
+id_self:                ann_sqlite_only_on_the_sql_path_is_stale
+guid_self:              ann_87adb7be29514776a74a6480a3273737
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  SQLite no longer used by the SQL path alone
+brief:                  |
+                        The old annotation says that the logic query
+                        path uses extract, the engine and derive.lp,
+                        and that only the SQL path adds SQLite. Now
+                        text search runs on SQLite, and cctool query
+                        logic --text takes its text_hit facts from it,
+                        so logic programs only would not remove
+                        SQLite.
+description:            |
+                        src/cc_public/graph/text.py imports sqlite3
+                        (line 44). search, behind cctool query text,
+                        opens its database with
+                        cc_public.graph.sql.connect (line 365). hits
+                        opens an in-memory SQLite database with an
+                        FTS5 table (lines 380-405), and cctool query
+                        logic adds its rows as text_hit facts when
+                        --text is given (src/cc_public/cli/querying.py
+                        lines 213-218). A plain logic query with no
+                        --text still runs without SQLite. Found in the
+                        review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_query_languages
+    guid_target:        dec_9ef62648af59455cb14f77b64ac2f6a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_datalog_only_has_fewest_query_parts
+    guid_target:        ann_9cc27d2d3afa4c05acb5c2572ca9be2f

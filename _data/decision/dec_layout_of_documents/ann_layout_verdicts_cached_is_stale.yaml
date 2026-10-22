@@ -1,0 +1,44 @@
+id_self:                ann_layout_verdicts_cached_is_stale
+guid_self:              ann_96563dd9d08847b69ce1e41ef23bbfc3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout verdicts now cached by file content
+brief:                  |
+                        ann_layout_pass_on_every_check says the layout
+                        check runs over every YAML document on each
+                        cctool check, with no cache, and that a cache
+                        keyed on content is not built. Layout verdicts
+                        are now kept by content digest, within a run
+                        and, under the gate of a commit, between runs.
+description:            |
+                        layout.violations
+                        (src/cc_public/edit/layout.py lines 133-164)
+                        keys each verdict on the path and the digest
+                        of the text. It keeps up to 4096 verdicts in
+                        MAP_VIOLATION (lines 105-106), and loads and
+                        saves them through the store of
+                        src/cc_public/check/store.py under the kind
+                        layout (line 111). The store is the folder
+                        that CC_PUBLIC_STORE names, which the gate of
+                        a commit sets; the gate of a push sets none.
+                        Each check still reads and hashes every file,
+                        but lays out only those it has not seen. Found
+                        in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_documents
+    guid_target:        dec_0dc8b3e1be164db2bbb6d697663d4c47
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_layout_pass_on_every_check
+    guid_target:        ann_a045545874644b67b3f200d31433ad49

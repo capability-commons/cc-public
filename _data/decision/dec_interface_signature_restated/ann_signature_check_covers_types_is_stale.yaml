@@ -1,0 +1,42 @@
+id_self:                ann_signature_check_covers_types_is_stale
+guid_self:              ann_28b5bb129270482095d3d4771a1c448c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Signature check that now covers types and returns
+brief:                  |
+                        ann_restated_signature_drifted_before says the
+                        check compares names and order, but not types,
+                        defaults or what is returned. The check
+                        signature_mismatch now compares each of these
+                        that a member states.
+description:            |
+                        signature_mismatch in
+                        src/cc_public/check/check.lp (rules at lines
+                        872-883) compares, for each part a member
+                        states, the type and default of each
+                        parameter, whether it is optional or variadic,
+                        and the type the function returns, with what
+                        the python function that realizes it says. The
+                        extractor reads these from the code
+                        (src/cc_public/graph/extract.py lines
+                        971-1015). A part the member does not state is
+                        still not compared. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_interface_signature_restated
+    guid_target:        dec_b251ef9da0244a71b42c7918318fc029
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_restated_signature_drifted_before
+    guid_target:        ann_c5e70c613861487093e2e9c2e71a568b

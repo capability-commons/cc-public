@@ -1,0 +1,43 @@
+id_self:                ann_sqlite_tables_hold_no_item_text_is_stale
+guid_self:              ann_0630f74c01ef4c1c949603da2d90102d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Item text now held in the SQLite graph
+brief:                  |
+                        ann_text_match_is_not_a_recorded_reason says
+                        the SQLite tables hold relations, not item
+                        text, so a text index would sit beside the
+                        edges. The SQLite database now holds the prose
+                        of every item in a full-text table.
+description:            |
+                        src/cc_public/graph/sql.py creates item_text
+                        as an FTS5 virtual table (lines 47-48) in the
+                        same in-memory database as the predicate
+                        tables, and connect fills it (lines 52-85).
+                        The module header says "The prose of each item
+                        is in item_text, a full-text table."
+                        src/cc_public/graph/text.py ranks hits by BM25
+                        and expands each one through the graph to its
+                        decision and ruling. cctool query text uses it
+                        (src/cc_public/cli/querying.py line 373). The
+                        rest of the annotation, that a text match is
+                        not recorded as an edge, still holds. Found in
+                        the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_agent_cross_examination
+    guid_target:        dec_2be9ee5dba28465b82b2692163fe92e8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_text_match_is_not_a_recorded_reason
+    guid_target:        ann_567e40858fc74e288c8ae858330094eb

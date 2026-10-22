@@ -1,0 +1,40 @@
+id_self:                ann_json_and_xml_no_longer_admitted_is_stale
+guid_self:              ann_cb6e4c0ef65b4cd2a6d2a192359eb2ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  JSON and XML items no longer admitted under _data
+brief:                  |
+                        ann_json_and_xml_items_are_not_read says the
+                        layout admits .json and .xml items, which git
+                        keeps but no tool reads. .gitignore now admits
+                        only .yaml files under _data, so a JSON or XML
+                        item is ignored by git as well as by the
+                        reader.
+description:            |
+                        The one admit rule for _data in .gitignore is
+                        "!_data/**/*.yaml" (line 72). .json and .xml
+                        are admitted only under src/**/_test, as test
+                        fixtures (lines 90 and 91). So the mismatch
+                        between what git keeps and what the reader
+                        parses is gone for _data. A JSON or XML item
+                        is now dropped without a word, as a .yml one
+                        is (ann_yml_item_is_dropped_silently). Found
+                        in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_item_placement_in_tree
+    guid_target:        dec_436cfdc5cc414e07b69e008590eb50d3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_json_and_xml_items_are_not_read
+    guid_target:        ann_6100f13eeb1243e0bcf820c67eb57d86

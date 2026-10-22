@@ -1,0 +1,39 @@
+id_self:                ann_extract_raises_on_parse_errors_is_stale
+guid_self:              ann_857806b87b094614a85e5609ec6546bf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unparsable files now kept by the extractor
+brief:                  |
+                        ann_commit_check_adds_parts_that_can_refuse
+                        says extract.py turns no YAML or Python parse
+                        error into an error the message check catches,
+                        its only except clause being for
+                        UnicodeDecodeError. The extractor now catches
+                        parse errors and keeps the file as unreadable.
+description:            |
+                        src/cc_public/graph/extract.py raises
+                        ErrorRead for a Python syntax error (lines
+                        1092-1096) and for a YAML error (lines
+                        1132-1138), and documents catches ErrorRead
+                        and keeps an Unreadable in place of the
+                        document (lines 459-462). So a file that does
+                        not parse no longer raises out of extraction.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_commit_against_graph
+    guid_target:        dec_0699124f44ef47d09dcce1979ce37bcc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_commit_check_adds_parts_that_can_refuse
+    guid_target:        ann_67ad74f23645400fbd72a4a207193717

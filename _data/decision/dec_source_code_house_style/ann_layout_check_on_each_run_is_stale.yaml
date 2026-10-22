@@ -1,0 +1,45 @@
+id_self:                ann_layout_check_on_each_run_is_stale
+guid_self:              ann_ef1e61f90ca0433daeddccf2069fa147
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout verdicts now kept between runs of the commit gate
+brief:                  |
+                        The old annotation says that the check lays
+                        out the item docstring of every Python file on
+                        each run. Now the gate of a commit keeps
+                        layout verdicts in a store and lays out again
+                        only the files whose text changed. A check
+                        with no store still lays out every file.
+description:            |
+                        violations in src/cc_public/edit/layout.py
+                        (lines 133-164) keys each verdict by the path
+                        and a digest of the text, reuses a verdict
+                        that the store holds, and saves the verdicts
+                        it used. pym_cc_public.check.store keeps them
+                        in the directory named by CC_PUBLIC_STORE,
+                        under a digest of the code of cc_public, so a
+                        verdict is reused only for the same text and
+                        the same code (src/cc_public/check/store.py).
+                        The gate sets the store for a commit and none
+                        for a push (src/cc_public/gate/gate.py lines
+                        28-32 and 141-144). A plain cctool check, and
+                        the gate of a push, still lay out every file.
+                        Found in the review of 2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_code_house_style
+    guid_target:        dec_c83765ef9d524ada914e0e7a70213415
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_docstring_relayout_cost_per_source_file
+    guid_target:        ann_ef44f9c2bc4d4309a2bc7b5d36aeb26d

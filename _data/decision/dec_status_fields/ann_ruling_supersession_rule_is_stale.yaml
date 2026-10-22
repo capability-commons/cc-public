@@ -1,0 +1,44 @@
+id_self:                ann_ruling_supersession_rule_is_stale
+guid_self:              ann_95ea9d0bf0fb4d32b93a8f6ea901ba6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ruling standing no longer derived from supersession
+brief:                  |
+                        The annotation says a current ruling is found
+                        by negation over all relation_supersedes
+                        edges. Now a decision has at most one ruling,
+                        a change of ruling edits it in place, and no
+                        ruling is superseded.
+description:            |
+                        No rule named current_ruling exists in
+                        src/cc_public/check/check.lp.
+                        competing_rulings (check.lp line 1465) reports
+                        a decision with two rulings, and its brief
+                        says "A change of ruling edits it in place".
+                        relation_supersedes admits only options and
+                        interface control documents at its ends
+                        (_data/register/reg_relation.yaml lines
+                        266-301), and supersession_across_types
+                        (check.lp line 1427) keeps it within one type.
+                        Whether an option stands is still read from
+                        the ruling of its decision, not from the
+                        option file. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_status_fields
+    guid_target:        dec_4ee246ee64104c8eabc6c2d7f56c1ad3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_outcome_absent_from_the_option_file
+    guid_target:        ann_28437ff093b043128b2470c006827b38

@@ -1,0 +1,48 @@
+id_self:                ann_bare_entry_deprecated_and_unchecked_is_stale
+guid_self:              ann_b9ec7bf1f7c34fc1a3e9286d7a872cf9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bare entry now admitted, and term ratings now read by checks
+brief:                  |
+                        The old annotation says that bare "entry" is
+                        deprecated and that no tool reads deprecated
+                        terms. Now entry is an admitted term for a
+                        register entry, and several checks read the
+                        rating of each term.
+description:            |
+                        concept_register_entry lists entry under
+                        term_admitted (_data/register/reg_concept.yaml
+                        lines 160-167), and
+                        opt_spelled_generic_abbreviated_specific
+                        records that the part on entry was reversed on
+                        2026-10-20. The extractor maps term_preferred,
+                        term_admitted and term_deprecated to a rating
+                        in designation facts
+                        (src/cc_public/graph/extract.py lines 75-78).
+                        term_sense leaves out deprecated terms
+                        (src/cc_public/check/check.lp lines
+                        1830-1836), term_rated_twice compares ratings
+                        (lines 1883-1889), and term_to_link leaves out
+                        deprecated terms too
+                        (src/cc_public/check/advise.lp lines 219-225).
+                        No check reports a deprecated term written in
+                        prose or in a name. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_register_naming
+    guid_target:        dec_05e07df2bf2a43178b6d2e932bb2725b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_bare_entry_deprecation_has_no_check
+    guid_target:        ann_d530ba00e3134c52ab6d45254f4cfce1

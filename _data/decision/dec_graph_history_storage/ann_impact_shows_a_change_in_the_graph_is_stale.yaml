@@ -1,0 +1,43 @@
+id_self:                ann_impact_shows_a_change_in_the_graph_is_stale
+guid_self:              ann_b705d42174d24ff4bb78d753dfe31ef6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph-level view of a change that now exists
+brief:                  |
+                        ann_no_graph_level_view_of_a_change says a
+                        reviewer sees only check failures and the text
+                        diff, not the items a commit adds, removes or
+                        changes. cctool impact now lists them, with
+                        the untouched items linked to them.
+description:            |
+                        cctool impact, defined in
+                        src/cc_public/cli/auditing.py (lines 187-232),
+                        lists each item a commit adds, removes,
+                        renames or changes against its first parent,
+                        and each untouched item within --depth links
+                        of one, with the links that reach it. It also
+                        runs on the staged content with --staged. The
+                        work is done by src/cc_public/commit/impact.py
+                        and the touched and neighbor rules of
+                        src/cc_public/commit/impact.lp (lines 103-118
+                        and 250). It reads the two graphs from git,
+                        with no stored history. Found in the review of
+                        2026-10-22.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_graph_history_storage
+    guid_target:        dec_16f31beb34dc46d58dc403b74a5e55b4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_no_graph_level_view_of_a_change
+    guid_target:        ann_a66dd709e66248f49be042168b68a2ad
