@@ -1694,3 +1694,46 @@ table:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_can_be_matched
         guid_target:    rol_078937217ccf4b63b12f5a30592ce8d5
+
+  # ---------------------------------------------------------------------------
+  # type_team_member -- Team member type
+  #
+  type_team_member:
+    id_self:            type_team_member
+    guid_self:          type_13a7b952a2714ad5abe092f4b6956154
+    title:              Team member type
+    brief:              |
+                        Type of team member data items.
+    description:        |
+                        Each team member data item stands for one
+                        person who contributes to the project.
+    usage:              |
+                        A Contributor trailer on a commit names a team
+                        member by guid.
+    note:               |
+                        Team member data items only ever exist as
+                        entries in a team member register, never as
+                        data items that travel on their own.
+
+                        The shape of team member data items is defined
+                        by the sch_regentry_team_member schema.
+
+                        The shape of the team member register is
+                        defined by the sch_reg_team_member schema.
+    prefix:             member
+    regex_id:           ^member_[a-z][a-z0-9_]*$
+    id_concept:         concept_team_member
+    guid_concept:       concept_b55d06c74cfa4c4e8bbd2a9779c39602
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
+        id_target:      reg_team_member
+        guid_target:    reg_02dd95f03c1e43a8bf6b80bcee9c343b
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_regentry_team_member
+        guid_target:    sch_590b60b3bda142879056ec0192bf7499
