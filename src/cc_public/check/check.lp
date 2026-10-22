@@ -15,13 +15,9 @@
 %                         Checks over the graph of data items.
 % description:            |
 %                         Each shown predicate is one check, and each
-%                         row of it is one failure. A check that reports
-%                         a file reports the line of it too.
-%
-%                         The checks come in this order: identity,
-%                         references and edges, prose and old ids, the
-%                         shape of the graph, and the completeness of
-%                         the kernel.
+%                         row of it is one failure. A check that points
+%                         at a place in a file reports the file, and the
+%                         line where there is one.
 % usage:                  |
 %                         Evaluated by pym_cc_public.check.check. The
 %                         facts of the base predicates and the rules of

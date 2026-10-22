@@ -18,9 +18,12 @@
 %                         and each row of it is one piece of advice.
 %                         Advice is reported by cctool check but is not
 %                         a failure: it names something that may be
-%                         right here and is known to be outside what
-%                         this tree can check, such as an entry held in
-%                         a partner's register.
+%                         right here and is worth a look, such as a
+%                         protective mark held in a partner's register,
+%                         a decision with no options yet, a concept an
+%                         item uses with no link to it, or a term
+%                         written without a link where the item declares
+%                         its concept.
 % usage:                  |
 %                         Evaluated by pym_cc_public.check.check in the
 %                         same program as lpf_cc_public.check.check,
