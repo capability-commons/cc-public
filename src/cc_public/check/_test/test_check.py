@@ -944,6 +944,25 @@ def test_a_schema_that_is_not_json_schema_is_reported_and_not_used(tree):
          "'objct' is not valid under any of the given schemas")]}
 
 
+def test_a_schema_changed_and_changed_back_is_judged_as_it_is_each_time(tree):
+    _option(tree, 'opt_x')
+    path     = tree / '_data/schema/sch_option.yaml'
+    text     = path.read_text()
+    good     = '  - type:               object'
+    bad      = '  - type:               objct'
+    line     = _line(tree, '_data/schema/sch_option.yaml', good)
+    expected = {'schema_violation': [
+        ('sch_option', 'sch_schema', '_data/schema/sch_option.yaml', line, 'allOf/2/type',
+         "'objct' is not valid under any of the given schemas")]}
+    assert _check(tree) == {}
+    path.write_text(text.replace(good, bad, 1))
+    assert _check(tree) == expected
+    path.write_text(text)
+    assert _check(tree) == {}
+    path.write_text(text.replace(good, bad, 1))
+    assert _check(tree) == expected
+
+
 def test_a_schema_with_a_string_for_a_subschema_is_reported(tree):
     _replace(tree, '_data/schema/sch_option.yaml',
              '  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml',

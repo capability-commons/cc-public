@@ -63,6 +63,21 @@ KEY_UNEVALUATED   = 'unevaluatedProperties'
 #
 META              = jsonschema.Draft202012Validator(
                         jsonschema.Draft202012Validator.META_SCHEMA)
+
+# The verdict of the metaschema on each schema checked so far, keyed by
+# the id of the schema, which is kept with it so that the id cannot be
+# reused while it is held. A document is never changed once read, so
+# its verdict holds for as long as it is the same object. The cache is
+# emptied when it holds COUNT_META.
+#
+MAP_META          = {}
+COUNT_META        = 4096
+
+# How many sets of schemas a cache keeps what the validations found
+# for. A run of tests moves between the schemas of the repository and
+# those that a test changes, and comes back to the first.
+#
+COUNT_SIGNATURE   = 4
 ESCAPE            = '\\'
 CLASS_OPEN        = '['
 CLASS_CLOSE       = ']'
@@ -168,7 +183,7 @@ def violations(map_document: cc_public.graph.extract.Documents,
             map_schema[id_document] = document
 
     set_invalid   = {id_schema for (id_schema, schema) in map_schema.items()
-                     if not META.is_valid(schema)}
+                     if not is_valid(schema)}
     set_url_bad   = {str(map_schema[id_schema][KEY_ID_SCHEMA]) for id_schema in set_invalid}
     registry      = registry_of([schema for (id_schema, schema) in map_schema.items()
                                  if id_schema not in set_invalid])
@@ -211,24 +226,46 @@ def violations(map_document: cc_public.graph.extract.Documents,
 
 
 # -----------------------------------------------------------------------------
+def is_valid(schema: dict) -> bool:
+    """
+    Return whether schema conforms to the metaschema of JSON Schema.
+
+    """
+
+    key = id(schema)
+    if key not in MAP_META or MAP_META[key][0] is not schema:
+        if len(MAP_META) >= COUNT_META:
+            MAP_META.clear()
+        MAP_META[key] = (schema, META.is_valid(schema))
+
+    return MAP_META[key][1]
+
+
+# -----------------------------------------------------------------------------
 def _cached(cache: dict | None, map_schema: dict[str, dict]) -> dict:
     """
     Return what the validations kept in cache found, keyed by YAML document
-    and schema, emptied first unless every schema is the same object as
-    when they were made. With no cache, return a mapping to throw away.
+    and schema, for validations made when every schema was the same
+    object as now. The cache keeps them for the last COUNT_SIGNATURE sets
+    of schemas, and the schemas with them, so that their ids are not
+    reused. With no cache, return a mapping to throw away.
 
     """
 
     if cache is None:
         return {}
 
-    signature = sorted((id_schema, id(schema)) for (id_schema, schema) in map_schema.items())
-    if cache.get('signature') != signature:
-        cache['signature'] = signature
-        cache['schema']    = list(map_schema.values())
-        cache['found']     = {}
+    signature = tuple(sorted((id_schema, id(schema))
+                             for (id_schema, schema) in map_schema.items()))
+    map_set   = cache.setdefault('set', {})
+    if signature in map_set:
+        map_set[signature] = map_set.pop(signature)
+    else:
+        if len(map_set) >= COUNT_SIGNATURE:
+            del map_set[next(iter(map_set))]
+        map_set[signature] = (list(map_schema.values()), {})
 
-    return cache['found']
+    return map_set[signature][1]
 
 
 # -----------------------------------------------------------------------------
