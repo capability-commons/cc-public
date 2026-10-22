@@ -1870,7 +1870,13 @@ term_has_sense(Holder, Term) :-
 % fix:                    |
 %                         Keep the one rating the concept means, and
 %                         take the term out of the other list.
-% edge:                   []
+%
+% edge:
+%
+%   - id_relation:        relation_cites
+%     guid_relation:      relation_51554b1012884a358e38a299ba3632e0
+%     id_target:          extdoc_iso_1087_2019
+%     guid_target:        extdoc_7963394b2f8f461183b91a27f8ca526c
 %
 % ...
 %
