@@ -10,23 +10,32 @@ protective_mark:
 
 title:                  Enforcement value with no named enforcer
 brief:                  |
-                        The enforcement field is a bare word. It does
-                        not say which check, formatter or judge holds
-                        the rule, so nothing shows when that tool
-                        changes or goes away.
+                        The enforcement field is a bare word, and the
+                        tool that holds a rule is named apart from it
+                        by an edge of relation_is_held_by. A check
+                        ties the two only one way, so a rule that
+                        reads none is never compared with the checks
+                        that hold it.
 description:            |
                         Enum at
                         _data/schema/sch_regentry_writing_style_rule.yaml
-                        lines 53-60. style_commit_title_template reads
-                        check with relation []
-                        (reg_writing_style_rule.yaml lines 442-444).
-                        The check is in
-                        src/cc_public/commit/message.py lines 24-26,
-                        and no non-test file in src names the rule.
-                        ASSUMPTION: an edge from rule to enforcer
-                        would let the dangling-reference checks catch
-                        a removed enforcer; no such relation was found
-                        in reg_relation.yaml.
+                        lines 71-78. style_commit_title_template reads
+                        check and names pym_cc_public.commit.message
+                        with an edge of relation_is_held_by
+                        (_data/register/reg_writing_style_rule.yaml
+                        lines 489-497), and relation_is_held_by is at
+                        _data/register/reg_relation.yaml line 1196.
+                        unheld_claim reports a rule marked check or
+                        formatter that names nothing holding it
+                        (src/cc_public/check/check.lp lines
+                        3354-3359), and an edge to a removed enforcer
+                        is a dangling reference (check.lp lines
+                        960-965). Nothing reports the other way:
+                        style_link_short_terms reads none and names no
+                        enforcer (reg_writing_style_rule.yaml line
+                        248), though unlinked_term holds its rule for
+                        the brief of a concept (check.lp lines
+                        1934-1948).
 
 edge:
 

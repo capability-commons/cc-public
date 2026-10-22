@@ -10,23 +10,30 @@ protective_mark:
 
 title:                  Unchecked naming rule
 brief:                  |
-                        No check reads the preferred or deprecated
-                        terms, so the rule rests on review, and names
-                        already drift from it. A reviewer must judge
-                        each name by hand.
+                        No check tests a name against the preferred or
+                        deprecated terms, so the rule on names rests
+                        on review, and names already drift from it. A
+                        reviewer must judge each name by hand.
 description:            |
-                        Rule: AGENTS.md lines 54-55. No file under
-                        src/ reads term_deprecated or term_preferred
-                        at 89c74d8; the only concept check is
-                        unused_concept (src/cc_public/check/check.lp
-                        lines 635-643). At 89c74d8,
-                        src/cc_public/graph/extract.py lines 431-435
-                        still name a register entry "entry", in the
-                        loop that writes register_entry_key facts, and
-                        edit.py lines 240, 398 and 1068 and
-                        cli/editing.py line 272 say "an entry" in
-                        docstrings. The one check of record is cctool
-                        history check (memory enforcement-approach.md,
+                        Rule: AGENTS.md lines 129-133. The term fields
+                        are read into designation facts
+                        (src/cc_public/graph/extract.py lines 75-78)
+                        for the link checks and the strict fields
+                        (unlinked_term, src/cc_public/check/check.lp
+                        line 1932; term_to_link,
+                        src/cc_public/check/advise.lp line 217), but
+                        no check tests an id or a code name against
+                        them, and a deprecated term is read only to be
+                        left out (check.lp lines 1834 and 2493). Names
+                        drift: src/cc_public/web/network.py lines
+                        78-80 and 422-428 call the type of an item its
+                        kind (map_kind, KIND_ANNOTATION), and
+                        src/cc_public/graph/extract.py lines 325 and
+                        1042 say "the prefix of its kind", though kind
+                        is deprecated for concept_type
+                        (_data/register/reg_concept.yaml lines 85-87).
+                        The one check of record is cctool history
+                        check (memory enforcement-approach.md,
                         maintainer's decision of 2026-10-14).
                         ASSUMPTION: review attention per line does not
                         grow with the code.
