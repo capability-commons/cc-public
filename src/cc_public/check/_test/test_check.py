@@ -687,7 +687,10 @@ def test_a_constraint_that_excludes_a_role_passes_only_types_without_it(tree):
              literal.format(relation = 'relation_excludes', guid = _guid_of(tree, 'relation_excludes')))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', ID_ABOUT),
                                                          _edge(tree, 'relation_has_subject', 'lco_tooling')])
+    # The exclude also admits types outside the domain of the CCO relation
+    # that relation_has_subject matches, which a test of its own covers.
     failures = _check(tree)
+    failures.pop('end_outside_release')
     assert list(failures) == ['constraint_violation']
     assert {row[0] for row in failures['constraint_violation']} == {
         'rqt_edit_refuses_new_failure', 'rqt_format_keeps_formatted_file', 'rqt_rename_keeps_guid'}
@@ -1498,14 +1501,14 @@ def test_a_citation_of_an_item_that_is_no_proxy_is_reported(tree):
 
 
 # -----------------------------------------------------------------------------
-def _add_match(root, id_concept, id_relation, id_target):
+def _add_match(root, id_concept, id_relation, id_target, register = 'reg_concept'):
     """
     Add an edge of id_relation to id_target at the end of the edges of
-    the concept entry id_concept, which has edges already.
+    the entry id_concept of register, which has edges already.
 
     """
 
-    path  = root / '_data/register/reg_concept.yaml'
+    path  = root / '_data/register/{register}.yaml'.format(register = register)
     text  = path.read_text()
     start = text.index('\n  {id}:\n'.format(id = id_concept))
     end   = text.find('\n  # ---', start)
@@ -1640,3 +1643,20 @@ def test_no_fix_names_a_column_since_a_fix_is_not_filled_in():
         map_wording = cc_public.graph.logic.worded(path.read_text(encoding = 'utf-8'))
         assert [name for (name, map_key) in map_wording.items()
                 if '{' in map_key.get('fix', '')] == []
+
+
+def test_a_relation_end_outside_its_external_relation_is_reported(tree):
+    _add_match(tree, 'relation_has_subject', 'relation_has_broad_match', 'extrel_bfo_realizes',
+               'reg_relation')
+    list_row = _check(tree)['end_outside_release']
+    assert ('relation_has_subject', 'source', 'type_requirement',
+            'extcla_cco_prescriptive_information_content_entity',
+            'extrel_bfo_realizes') in list_row
+    assert ('relation_has_subject', 'target', 'type_interface_control_document',
+            'extcla_cco_document_content_entity', 'extrel_bfo_realizes') in list_row
+
+
+def test_a_related_match_of_a_relation_is_not_compared(tree):
+    _add_match(tree, 'relation_has_subject', 'relation_has_related_match', 'extrel_bfo_realizes',
+               'reg_relation')
+    assert 'end_outside_release' not in _check(tree)

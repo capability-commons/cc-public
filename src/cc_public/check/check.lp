@@ -2386,6 +2386,7 @@ implied_narrower(Concept, Other, Class, OtherClass) :-
 implied_narrower(Concept, Other, Class, Class) :-
     match(Concept, "broad", Class),
     equivalent_match(Other, Class),
+    has_type(Class, "type_external_class"),
     Concept != Other.
 
 
@@ -2496,6 +2497,191 @@ false_friend(Concept, Term, Class) :-
     term_form(Label, Form),
     not equivalent_match(Concept, Class),
     not explained_pair(Concept, Class).
+
+
+% -----------------------------------------------------------------------------
+% The relation entry relates only pairs that the external relation
+% relates too: its match there is exact, close or broad.
+%
+% decl within_relation(relation: symbol,
+%                      external: symbol)
+
+within_relation(Relation, External) :-
+    equivalent_match(Relation, External),
+    has_type(External, "type_external_relation").
+
+within_relation(Relation, External) :-
+    match(Relation, "broad", External),
+    has_type(External, "type_external_relation").
+
+
+% -----------------------------------------------------------------------------
+% The release says that whatever the external relation relates at its
+% end, source or target, is an instance of the external class: the
+% class is its domain or its range, or one of a union of them.
+%
+% decl end_class(external: symbol,
+%                end:      symbol,
+%                class:    symbol)
+
+end_class(External, "source", Class) :-
+    primary_edge(External, "relation_has_domain", Class).
+
+end_class(External, "target", Class) :-
+    primary_edge(External, "relation_has_range", Class).
+
+
+% -----------------------------------------------------------------------------
+% The relation entry constrains its end, source or target, by the
+% relation constraint.
+%
+% decl end_constraint(relation:   symbol,
+%                     end:        symbol,
+%                     constraint: symbol)
+
+end_constraint(Relation, "source", Constraint) :-
+    primary_edge(Relation, "relation_constrains_source", Constraint).
+
+end_constraint(Relation, "target", Constraint) :-
+    primary_edge(Relation, "relation_constrains_target", Constraint).
+
+
+% -----------------------------------------------------------------------------
+% An item of the type fails one of the constraints of the relation entry
+% at its end.
+%
+% decl refused_at_end(relation: symbol,
+%                     end:      symbol,
+%                     type:     symbol)
+
+refused_at_end(Relation, End, Type) :-
+    end_constraint(Relation, End, Constraint),
+    type_prefix(Type, _, _),
+    not satisfies(Type, Constraint).
+
+
+% -----------------------------------------------------------------------------
+% The relation entry constrains its end, and an item of the type meets
+% every constraint there. An end that reads through a proxy is left out,
+% since what it relates is the thing the proxy points at, not an item of
+% the type.
+%
+% decl admitted_at_end(relation: symbol,
+%                      end:      symbol,
+%                      type:     symbol)
+
+admitted_at_end(Relation, End, Type) :-
+    end_constraint(Relation, End, _),
+    type_prefix(Type, _, _),
+    not refused_at_end(Relation, End, Type),
+    not reads_through(Relation, End).
+
+
+% -----------------------------------------------------------------------------
+% The items of the type all belong to the external class: the concept of
+% the type, or a concept it is narrower than, is within the class.
+%
+% decl type_within(type:  symbol,
+%                  class: symbol)
+
+type_within(Type, Class) :-
+    reference(Type, "concept", Concept, _, _, _),
+    within_class(Concept, Class),
+    has_type(Class, "type_external_class").
+
+type_within(Type, Class) :-
+    reference(Type, "concept", Concept, _, _, _),
+    reaches("relation_is_narrower_than", Concept, Broader),
+    within_class(Broader, Class),
+    has_type(Class, "type_external_class").
+
+
+% -----------------------------------------------------------------------------
+% The external class is the other, or the release places it below the
+% other.
+%
+% decl at_or_below(class: symbol,
+%                  other: symbol)
+
+at_or_below(Class, Class) :-
+    has_type(Class, "type_external_class").
+
+at_or_below(Class, Other) :-
+    reaches("relation_is_subclass_of", Class, Other).
+
+
+% -----------------------------------------------------------------------------
+% The external class is at or below, or at or above, a class that the
+% release gives for the end of the external relation, so the two may
+% share instances.
+%
+% decl fits_end(external: symbol,
+%               end:      symbol,
+%               class:    symbol)
+
+fits_end(External, End, Class) :-
+    end_class(External, End, Bound),
+    at_or_below(Class, Bound).
+
+fits_end(External, End, Class) :-
+    end_class(External, End, Bound),
+    at_or_below(Bound, Class).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cc_public.check.check.end_outside_release
+% guid_self:              lpp_d5cdddadf51a4583b0a219ca6dfd74b3
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  End outside release
+% brief:                  |
+%                         A relation entry that matches an external
+%                         relation admits at each of its ends only types
+%                         whose items the release lets that relation
+%                         relate there. A type is outside when its
+%                         concept is within a class that is neither at
+%                         or below nor at or above any class that the
+%                         release gives for the end. A type whose
+%                         concept has no match, or a class above the
+%                         bound, cannot be judged and is left alone.
+% did:                    |
+%                         {relation} admits {type} at its {end}, and the
+%                         concept of {type} is within {class}, but
+%                         {external}, which {relation} matches, relates
+%                         there only instances of classes that {class}
+%                         is neither at or below nor at or above.
+% fix:                    |
+%                         Correct the match of the relation entry, its
+%                         constraint at that end, or the match of the
+%                         concept of the type. Do not change the domain
+%                         or range of the external relation by hand;
+%                         cctool import keeps them as the release has
+%                         them.
+% edge:                   []
+%
+% ...
+%
+% decl end_outside_release(relation: symbol,
+%                          end:      symbol,
+%                          type:     symbol,
+%                          class:    symbol,
+%                          external: symbol)
+#show end_outside_release/5.
+
+end_outside_release(Relation, End, Type, Class, External) :-
+    within_relation(Relation, External),
+    end_class(External, End, _),
+    admitted_at_end(Relation, End, Type),
+    type_within(Type, Class),
+    not fits_end(External, End, Class).
 
 
 % -----------------------------------------------------------------------------
