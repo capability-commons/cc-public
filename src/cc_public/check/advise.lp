@@ -139,3 +139,33 @@ term_to_link(Holder, Field, Term, File, Line) :-
     designation(Concept, Term, Rating),
     Rating != "deprecated",
     not designation(Holder, Term, _).
+
+
+% -----------------------------------------------------------------------------
+% The concept of a type of data item has a match in an external class,
+% so that a reader who knows the release can place the type. A related
+% match does not place it. Until the mappings cover every type, a type
+% without one is advice, not a failure.
+%
+% decl unmapped_concept(type:    symbol,
+%                       concept: symbol)
+% did  {concept}, the concept of {type}, has no exact, close, broad or
+%      narrow match in an external class.
+% fix  Add the match that says how {concept} relates to the nearest
+%      class of the release, with an annotation that gives the reason.
+#show unmapped_concept/2.
+
+unmapped_concept(Type, Concept) :-
+    register_entry_key("reg_data_item_type", _, Type),
+    reference(Type, "concept", Concept, _, _, _),
+    not placed_concept(Concept).
+
+
+% -----------------------------------------------------------------------------
+% The concept has a match other than a related one.
+%
+% decl placed_concept(concept: symbol)
+
+placed_concept(Concept) :-
+    match(Concept, Grade, _),
+    Grade != "related".
