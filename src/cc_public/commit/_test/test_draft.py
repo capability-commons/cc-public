@@ -37,6 +37,9 @@ import cc_public.commit.change
 import cc_public.commit.message
 
 
+pytestmark = pytest.mark.prepush
+
+
 TEXT_ANN = ('id_self:                ann_x\n'
             'guid_self:              ann_{hex}\n'
             'copyright:              Copyright 2026 William Payne\n'

@@ -41,6 +41,9 @@ import cc_public.cli.command
 import cc_public.gate.gate
 
 
+pytestmark = pytest.mark.prepush
+
+
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def repo(tmp_path, monkeypatch):
@@ -160,7 +163,10 @@ def test_a_commit_that_stages_code_runs_the_tests(repo):
     _commit(repo)
     _git(repo, 'rm', '--quiet', '--cached', 'src/marker.py')
     assert cc_public.gate.gate.is_code_staged(repo)
-    assert cc_public.gate.gate.stages(repo) == cc_public.gate.gate.TUPLE_STAGE
+    map_stage = dict(cc_public.gate.gate.stages(repo))
+    assert list(map_stage) == ['check', 'lint', 'test']
+    assert cc_public.gate.gate.MARK_COMMIT in map_stage['test']
+    assert cc_public.gate.gate.MARK_PUSH in dict(cc_public.gate.gate.TUPLE_STAGE)['test']
 
 
 def test_the_first_commit_runs_the_tests(repo):

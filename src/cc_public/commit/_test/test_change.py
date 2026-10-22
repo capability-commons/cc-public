@@ -33,6 +33,9 @@ import pytest
 import cc_public.commit.change
 
 
+pytestmark = pytest.mark.prepush
+
+
 HOOK      = '.githooks/commit-msg'
 ID_HOOK   = 'shell_githooks_commit_msg'
 GUID_HOOK = 'shell_62b23a71a636401eb534266abaf6933d'

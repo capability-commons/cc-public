@@ -36,6 +36,9 @@ import cc_public.cli.command
 import cc_public.commit.impact
 
 
+pytestmark = pytest.mark.prepush
+
+
 DECISION   = '_data/decision/dec_tooling_language/'
 ANN        = 'ann_a_port_costs_a_rewrite'
 FILE_ANN   = DECISION + ANN + '.yaml'
