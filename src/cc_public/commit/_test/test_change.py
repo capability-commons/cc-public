@@ -115,8 +115,8 @@ def _replace(root, relative, old, new):
 
 
 def test_a_commit_that_changes_no_item_passes(repo):
-    _replace(repo, 'README.md', 'Capability commons', 'Capability Commons')
-    assert _check(repo, 'Change README.md so that its title is capitalized') == {}
+    _replace(repo, 'README.md', 'Capability Commons', 'Capability commons')
+    assert _check(repo, 'Change README.md so that its title is in sentence case') == {}
 
 
 def test_an_unannounced_removal_is_reported(repo):
@@ -203,7 +203,7 @@ def test_a_reformat_that_changes_only_layout_passes(repo):
 
 
 def test_a_reformat_that_changes_content_is_reported(repo):
-    _replace(repo, 'README.md', 'Capability commons', 'Capability Commons')
+    _replace(repo, 'README.md', 'Capability Commons', 'Capability commons')
     assert _check(repo, 'Reformat README.md') == {
         'reformat_changes_content': [('README.md',)]}
 
