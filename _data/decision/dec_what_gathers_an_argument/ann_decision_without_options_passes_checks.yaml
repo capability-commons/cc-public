@@ -10,14 +10,22 @@ protective_mark:
 
 title:                  Decision with no options
 brief:                  |
-                        A decision with no options passes every check,
-                        so a question with no alternatives is not
-                        reported.
+                        A decision with no options fails no check. It
+                        is reported only as advice, so a question with
+                        no alternatives never blocks a commit.
 description:            |
-                        The rules that name type_decision are
-                        decision_of and missing_about only (check.lp
-                        lines 141-155, 291-301; list of rule heads).
-                        One rule would close the gap.
+                        decision_without_options reports a decision
+                        with no options as advice, "so that it is not
+                        forgotten" (src/cc_public/check/advise.lp
+                        lines 111-113;
+                        test_a_decision_no_option_answers_is_advice,
+                        src/cc_public/check/_test/test_check.py line
+                        383, which finds no failures). The failing
+                        rules that name type_decision, missing_about
+                        and decision_about_non_component
+                        (src/cc_public/check/check.lp lines 1108-1114,
+                        1336-1340), test only its subject. A rule
+                        would make it a failure.
 
 edge:
 

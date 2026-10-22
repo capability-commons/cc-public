@@ -11,19 +11,26 @@ protective_mark:
 title:                  Mechanisms the glue form would spare
 brief:                  |
                         The glue form needs no decision type or
-                        relation_is_option_for, and an in-place update
-                        needs no supersession rules. The saving is a
-                        one-off build of a fixed handful of rules.
+                        relation_is_option_for. Its in-place update no
+                        longer spares anything, since rulings are
+                        already edited in place with no supersession
+                        rules. The saving is a one-off build of a
+                        fixed handful of rules.
 description:            |
                         Decision: type_decision, concept_decision,
                         sch_decision, relation_is_option_for (commit
                         52e3e6d, 147 lines). Supersession: commit
-                        89c74d8, 5 files, 109 insertions, adding
-                        current_ruling, competing_rulings,
-                        supersession_across_types and
-                        supersession_across_issues (check.lp lines
-                        364-415). ASSUMPTION: the glue form would
-                        still need an edge from options and
+                        89c74d8, 5 files, 109 insertions, added rules
+                        for a ruling that supersedes another, but
+                        these are gone. competing_rulings now allows
+                        one ruling for each decision, edited in place
+                        (src/cc_public/check/check.lp lines
+                        1467-1472), as ruling_change_of_a_ruling
+                        settled on 2026-10-19, and relation_supersedes
+                        admits only options and interface control
+                        documents (_data/register/reg_relation.yaml
+                        lines 264-301). ASSUMPTION: the glue form
+                        would still need an edge from options and
                         annotations to the glue item, so part of the
                         decision type's cost would recur.
 

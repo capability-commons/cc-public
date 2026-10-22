@@ -12,24 +12,34 @@ title:                  Folder that does not bind an annotation's bearing
 brief:                  |
                         The decision folder suggests that every
                         annotation bearing on the decision's options
-                        is in it, and only those. Neither is checked,
-                        so the folder can point a reader to the wrong
-                        reason or hide one.
+                        is in it, and only those. Only the second is
+                        checked, so an annotation outside the folder
+                        can still argue its options and count for its
+                        drivers, and a reader of the folder does not
+                        see it.
 description:            |
                         An annotation's folder follows only its
-                        relation_is_about edge (check.lp lines
-                        148-151). The driver check counts any
-                        annotation that supports or challenges an
-                        option for the decision, whatever it is about
-                        (check.lp lines 423-435). No rule compares the
-                        target of relation_supports or
-                        relation_challenges with the annotation's
-                        decision (grep of check.lp at 89c74d8). An
-                        annotation not about a decision sits in
-                        _data/annotation/ (reg_data_item_type.yaml
-                        lines 401-404). The comment at check.lp line
-                        162 states the aim that everything argued
-                        about one decision is kept together.
+                        relation_is_about edge
+                        (src/cc_public/graph/derive.lp lines 139-142;
+                        src/cc_public/check/check.lp lines 590-595).
+                        argument_across_decisions fails an annotation
+                        of one decision that argues an option of
+                        another (check.lp lines 1378-1384), but it
+                        needs a decision on both ends. The driver
+                        check counts any annotation that supports or
+                        challenges an option for the decision,
+                        whatever it is about (check.lp lines
+                        1482-1494). Tried on a copy of the tree
+                        (2026-10-22): an annotation in
+                        _data/annotation/ about lco_argumentation that
+                        supports opt_folder_per_type gives no failure.
+                        An annotation not about a decision sits in
+                        _data/annotation/
+                        (_data/register/reg_data_item_type.yaml lines
+                        439-442). The brief of misplaced_document
+                        states the aim that everything argued about
+                        one decision is kept together (check.lp lines
+                        562-563).
 
 edge:
 

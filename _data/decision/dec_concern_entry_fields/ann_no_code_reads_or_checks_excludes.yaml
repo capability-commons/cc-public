@@ -8,22 +8,29 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  No check on the excludes field
+title:                  No check on the out_of_scope field
 brief:                  |
                         Beyond schema validation of their shape, no
-                        code reads question, measure or excludes, so
-                        an advocate that argues a point its concern
-                        excludes is not caught.
+                        code reads question, measure or out_of_scope,
+                        so an advocate that argues a point its concern
+                        leaves to another is not caught.
 description:            |
-                        A search of src at 89c74d8 finds no
-                        "excludes"; "measure" appears only in test
-                        files under _test (2026-10-15). JSON Schema
-                        validation checks that question and measure
-                        are present and are lists of strings
-                        (src/cc_public/check/schema.py). The checker
-                        requires a practical annotation to speak for a
-                        concern but has no rule on excludes
-                        (src/cc_public/check/check.lp lines 566-576).
+                        A search of src at f11c1acf finds no
+                        "out_of_scope". "excludes" appears only for a
+                        relation between a relation constraint and a
+                        role (src/cc_public/check/check.lp line 1023),
+                        and "measure" and "question" appear as field
+                        names only in test files under _test. JSON
+                        Schema validation checks that question and
+                        measure are present and that each field is a
+                        list of strings
+                        (src/cc_public/check/schema.py;
+                        _data/schema/sch_regentry_concern.yaml lines
+                        39-73). The checker requires a practical
+                        annotation to speak for a concern
+                        (argument_without_concern,
+                        src/cc_public/check/check.lp lines 2549-2551)
+                        but has no rule on out_of_scope.
 
 edge:
 
