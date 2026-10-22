@@ -156,6 +156,15 @@ COUNT_READ        = 4096
 #
 MAP_DIGEST        = {}
 
+# The facts of each YAML document extracted so far, keyed by its file,
+# the line its first line is on, and the words that prose avoids and the
+# terms that text is searched for, with the document, so that a document
+# read again as the same object is not walked again. It is emptied when
+# it holds COUNT_FACTS.
+#
+MAP_FACTS         = {}
+COUNT_FACTS       = 8192
+
 # How much of the head of a file that is not YAML or python is read to
 # tell whether it has changed. A comment header is far shorter.
 #
@@ -488,6 +497,12 @@ def facts_of(map_document: Documents) -> Facts:
     facts                     = {name: set() for name in PREDICATE}
     facts['word_replacement'] = _replacements(map_document)
     terms                     = _terms(map_document)
+    context                   = (frozenset(row[1] for row in facts['word_replacement']),
+                                 frozenset(terms[0].items()),
+                                 frozenset(terms[1]))
+
+    if len(MAP_FACTS) >= COUNT_FACTS:
+        MAP_FACTS.clear()
 
     for (file, (document, base)) in map_document.items():
         if file == file_of(file):
@@ -497,9 +512,37 @@ def facts_of(map_document: Documents) -> Facts:
             continue
         if document is None:
             continue
-        _walk(document, '', (file, base), facts, terms)
-        if not isinstance(document, dict):
-            continue
+        key = (file, base, context)
+        if key not in MAP_FACTS or MAP_FACTS[key][0] is not document:
+            MAP_FACTS[key] = (document, _facts_of_document(file, document, base,
+                                                           facts['word_replacement'], terms))
+        for (name, set_row) in MAP_FACTS[key][1].items():
+            facts[name].update(set_row)
+
+    facts['term_form'] = _forms(facts)
+
+    return facts
+
+
+# -----------------------------------------------------------------------------
+def _facts_of_document(file:             str,
+                       document:         typing.Any,
+                       base:             int,
+                       word_replacement: set[tuple[str, str, str]],
+                       terms:            Terms) -> Facts:
+    """
+    Return the facts that document, read from file with its first line
+    at line base, holds, keyed by predicate, with the predicates it
+    holds no facts of left out. word_replacement holds the words that
+    prose avoids, and terms the terms that text is searched for.
+
+    """
+
+    facts                     = {name: set() for name in PREDICATE}
+    facts['word_replacement'] = word_replacement
+
+    _walk(document, '', (file, base), facts, terms)
+    if isinstance(document, dict):
         _ports(document, facts)
         _system(document, (file, base), facts)
         if file in MAP_DEFINITION:
@@ -516,9 +559,9 @@ def facts_of(map_document: Documents) -> Facts:
             facts['module_name'].add((str(document.get(KEY_ID_SELF)),
                                       module_name(pathlib.Path(file))))
 
-    facts['term_form'] = _forms(facts)
+    del facts['word_replacement']
 
-    return facts
+    return {name: set_row for (name, set_row) in facts.items() if set_row}
 
 
 # -----------------------------------------------------------------------------
