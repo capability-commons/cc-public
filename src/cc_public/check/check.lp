@@ -104,22 +104,26 @@ duplicate_prefix(Prefix, Type, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% A prefix is three lower-case letters, or one whole word of the
-% preferred term of the concept its type represents. A type whose
-% prefix is neither states why in its prefix_exception field.
+% A prefix is three lower-case letters, one whole word of the preferred
+% term of the concept its type represents, or the first three letters of
+% each of two or three words of that term in a row, as relcon for
+% relation constraint. A type whose prefix is none of these states why
+% in its prefix_exception field.
 %
 % decl prefix_form(type:   symbol,
 %                  prefix: symbol)
-% did  The prefix {prefix} of {type} is neither three letters nor a word of
-%      its preferred term.
-% fix  Choose three letters from the preferred term, or one whole word of
-%      it, or say in prefix_exception why the prefix must stay.
+% did  The prefix {prefix} of {type} is not three letters, a word of its
+%      preferred term, or the first three letters of words of it in a row.
+% fix  Choose three letters from the preferred term, one whole word of it,
+%      or the first three letters of two or three of its words in a row, or
+%      say in prefix_exception why the prefix must stay.
 #show prefix_form/2.
 
 prefix_form(Type, Prefix) :-
     type_prefix(Type, Prefix, _),
     @match("[a-z]{3}", Prefix) = 0,
     not prefix_is_word(Type),
+    not prefix_is_contraction(Type),
     not prefix_exception(Type, _).
 
 prefix_is_word(Type) :-
@@ -127,6 +131,23 @@ prefix_is_word(Type) :-
     reference(Type, "concept", Concept, _, _, _),
     designation(Concept, Term, "preferred"),
     @match(@cat("(.* )?", Prefix, "( .*)?"), Term) = 1.
+
+prefix_is_contraction(Type) :-
+    type_prefix(Type, Prefix, _),
+    @strlen(Prefix) = 6,
+    reference(Type, "concept", Concept, _, _, _),
+    designation(Concept, Term, "preferred"),
+    @match(@cat("(.* )?", @substr(Prefix, 0, 3), "[a-z]* ",
+                @substr(Prefix, 3, 3), "[a-z]*( .*)?"), Term) = 1.
+
+prefix_is_contraction(Type) :-
+    type_prefix(Type, Prefix, _),
+    @strlen(Prefix) = 9,
+    reference(Type, "concept", Concept, _, _, _),
+    designation(Concept, Term, "preferred"),
+    @match(@cat("(.* )?", @substr(Prefix, 0, 3), "[a-z]* ",
+                @substr(Prefix, 3, 3), "[a-z]* ",
+                @substr(Prefix, 6, 3), "[a-z]*( .*)?"), Term) = 1.
 
 
 % -----------------------------------------------------------------------------
