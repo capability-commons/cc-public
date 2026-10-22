@@ -627,8 +627,8 @@ def test_a_requirement_whose_subject_is_no_design_element_is_reported(tree):
          'relcon_is_design_entity')]}
 
 
-def test_a_restriction_that_excludes_a_role_passes_only_types_without_it(tree):
-    # With its literal turned to an exclude, the restriction on the source
+def test_a_constraint_that_excludes_a_role_passes_only_types_without_it(tree):
+    # With its literal turned to an exclude, the constraint on the source
     # of relation_has_subject passes an annotation and fails every requirement.
     literal = ('id_relation:    {relation}\n'
                '        guid_relation:  {guid}\n'

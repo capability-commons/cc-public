@@ -518,50 +518,50 @@ guid_mismatch(Holder, Field, Id, Guid, File, Line) :-
 
 
 % -----------------------------------------------------------------------------
-% A type satisfies a relation restriction if any one of its literals
-% holds: its items play a role the restriction admits, or do not play
+% A type satisfies a relation constraint if any one of its literals
+% holds: its items play a role the constraint admits, or do not play
 % a role it excludes.
 %
 % decl satisfies(type:        symbol,
-%                restriction: symbol)
+%                constraint: symbol)
 
-satisfies(Type, Restriction) :-
-    primary_edge(Restriction, "relation_admits", Role),
+satisfies(Type, Constraint) :-
+    primary_edge(Constraint, "relation_admits", Role),
     primary_edge(Type, "relation_has_items_that_play", Role).
 
-satisfies(Type, Restriction) :-
-    primary_edge(Restriction, "relation_excludes", Role),
+satisfies(Type, Constraint) :-
+    primary_edge(Constraint, "relation_excludes", Role),
     type_prefix(Type, _, _),
     not primary_edge(Type, "relation_has_items_that_play", Role).
 
 
 % -----------------------------------------------------------------------------
-% Each end of an edge satisfies every restriction its relation names
+% Each end of an edge satisfies every constraint its relation names
 % for that end. An end that names none is open to any item.
 %
 % decl constraint_violation(source:      symbol,
 %                            relation:    symbol,
 %                            target:      symbol,
 %                            end:         symbol,
-%                            restriction: symbol)
-% did  The edge {source} {relation} {target} breaks {restriction} at its
+%                            constraint: symbol)
+% did  The edge {source} {relation} {target} breaks {constraint} at its
 %      {end} end.
 % fix  Point the edge at an item of a type the relation admits, or use
 %      the relation that fits. Its entry in reg_relation.yaml names its
-%      restrictions.
+%      constraints.
 #show constraint_violation/5.
 
-constraint_violation(Source, Relation, Target, "source", Restriction) :-
+constraint_violation(Source, Relation, Target, "source", Constraint) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "relation_constrains_source", Restriction),
+    primary_edge(Relation, "relation_constrains_source", Constraint),
     has_type(Source, Type),
-    not satisfies(Type, Restriction).
+    not satisfies(Type, Constraint).
 
-constraint_violation(Source, Relation, Target, "target", Restriction) :-
+constraint_violation(Source, Relation, Target, "target", Constraint) :-
     primary_edge(Source, Relation, Target),
-    primary_edge(Relation, "relation_constrains_target", Restriction),
+    primary_edge(Relation, "relation_constrains_target", Constraint),
     has_type(Target, Type),
-    not satisfies(Type, Restriction).
+    not satisfies(Type, Constraint).
 
 
 % -----------------------------------------------------------------------------
