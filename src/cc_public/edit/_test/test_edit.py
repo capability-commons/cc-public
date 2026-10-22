@@ -660,7 +660,7 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
                                   "{'unlink': ['concept_concept']}"),
     ({'unlink': ['concept_concept', 'relation_is_about', 'concept_type']},
      'concept_concept has no edge of relation_is_about to concept_type.'),
-    ({'unset': ['concept_concept', 'note']}, 'concept_concept has no field note.'),
+    ({'unset': ['concept_type', 'note']}, 'concept_type has no field note.'),
     ({'unset': ['concept_concept', 'alias']}, ('The field alias is not set this way: cctool rename keeps the old id '
                                                   'as an alias.')),
     ({'set': ['concept_register_entry', 'term_admitted.9', 'x']},
