@@ -1517,3 +1517,20 @@ def test_a_mapping_against_the_hierarchy_of_the_release_is_reported(tree):
     _add_match(tree, 'concept_document', 'relation_has_close_match', 'extcla_bfo_entity')
     assert ('concept_document', 'concept_data_item', 'extcla_bfo_entity',
             'extcla_cco_information_content_entity') in _check(tree)['mapping_against_hierarchy']
+
+
+def test_a_narrower_edge_that_the_release_implies_is_reported_when_missing(tree):
+    _add_match(tree, 'concept_role', 'relation_has_broad_match',
+               'extcla_cco_document_content_entity')
+    list_row = _check(tree)['missing_narrower']
+    assert ('concept_role', 'concept_document', 'extcla_cco_document_content_entity',
+            'extcla_cco_document_content_entity') in list_row
+    assert ('concept_role', 'concept_data_item', 'extcla_cco_document_content_entity',
+            'extcla_cco_information_content_entity') in list_row
+
+
+def test_a_narrower_edge_that_the_register_has_already_is_not_reported(tree):
+    _add_match(tree, 'concept_file', 'relation_has_broad_match',
+               'extcla_cco_document_content_entity')
+    list_row = _check(tree)['missing_narrower']
+    assert [row[:2] for row in list_row] == [('concept_file', 'concept_document')]

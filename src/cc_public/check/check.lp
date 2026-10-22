@@ -1267,6 +1267,67 @@ mapping_against_hierarchy(Concept, Broader, Class, BroaderClass) :-
 
 
 % -----------------------------------------------------------------------------
+% The concept picks out things that all belong to the external class:
+% its match there is exact, close or broad. A broad match names a class
+% broader than the concept.
+%
+% decl within_class(concept: symbol,
+%                   class:   symbol)
+
+within_class(Concept, Class) :-
+    equivalent_match(Concept, Class).
+
+within_class(Concept, Class) :-
+    match(Concept, "broad", Class).
+
+
+% -----------------------------------------------------------------------------
+% The release implies that the concept is narrower than the other: the
+% concept is within a class that the release places below the match of
+% the other, or within the very class that the other matches, more
+% broadly. Only exact and close matches of the other are compared, since
+% they say the other and its class pick out the same things.
+%
+% decl implied_narrower(concept:     symbol,
+%                       other:       symbol,
+%                       class:       symbol,
+%                       other_class: symbol)
+
+implied_narrower(Concept, Other, Class, OtherClass) :-
+    within_class(Concept, Class),
+    equivalent_match(Other, OtherClass),
+    reaches("relation_is_subclass_of", Class, OtherClass),
+    Concept != Other.
+
+implied_narrower(Concept, Other, Class, Class) :-
+    match(Concept, "broad", Class),
+    equivalent_match(Other, Class),
+    Concept != Other.
+
+
+% -----------------------------------------------------------------------------
+% A concept that the release implies is narrower than another is
+% narrower than it here too, so that the concept register keeps the
+% hierarchy that the mappings claim.
+%
+% decl missing_narrower(concept:       symbol,
+%                       broader:       symbol,
+%                       class:         symbol,
+%                       broader_class: symbol)
+% did  {concept} is within {class}, which the release places at or below
+%      {broader_class}, the match of {broader}, but {concept} is not
+%      narrower than {broader}.
+% fix  Add an edge of relation_is_narrower_than from {concept} to
+%      {broader}, or to a concept narrower than {broader}, or correct
+%      the match of one of the two concepts.
+#show missing_narrower/4.
+
+missing_narrower(Concept, Broader, Class, BroaderClass) :-
+    implied_narrower(Concept, Broader, Class, BroaderClass),
+    not reaches("relation_is_narrower_than", Concept, Broader).
+
+
+% -----------------------------------------------------------------------------
 % The annotation supports or challenges an option.
 %
 % decl practical(id: symbol)
