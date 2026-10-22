@@ -1,0 +1,163 @@
+id_self:                reg_design_rule
+guid_self:              reg_5ce5bd3ee54b42458af9e397495e7cf4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Design rule register
+brief:                  |
+                        Register of the rules that the design of the
+                        system, and the record of that design,
+                        follows.
+description:            |
+                        The design rule register holds one entry per
+                        design rule. Each entry states the rule in one
+                        sentence and gives the reason for it.
+usage:                  |
+                        Whoever designs or records the system, a
+                        person or a model, follows these rules. The
+                        scheduled reviews judge the parts of each rule
+                        that no check holds.
+
+                        A [[finding]] is a [[nonconformity]], a
+                        [[tension]], an
+                        [[opportunity for improvement]] or a
+                        [[lesson learned]]. A [[correction]] removes
+                        one where it was found, and a
+                        [[corrective action]] removes its cause. A
+                        design rule is one kind of
+                        [[corrective action]], or is imposed by fiat.
+                        A rule is changed or retired by editing its
+                        entry; git holds its history.
+note:                   |
+                        The writing style rules are held in a register
+                        of their own. They are a choice guided by
+                        taste and readability, where design rules
+                        mostly come from experience.
+
+table:
+
+  rule_claim_only_what_is_held:
+    id_self:            rule_claim_only_what_is_held
+    guid_self:          rule_5d592bc1c4224e04bec40b12f0ebd399
+    title:              Claim only what is held
+    brief:              |
+                        A rule claims no more than something holds.
+                        Where nothing holds a part of it, the rule
+                        says so, or that part is cut.
+    description:        |
+                        A rule that is stated broadly and held loosely
+                        teaches its readers that rules are decoration,
+                        and so weakens the rules that are held. A
+                        narrow rule that is always held can be trusted
+                        and built on. Imposed by the maintainer on
+                        2026-10-22, in these words: "It is better to
+                        express a virtue in a way which is less
+                        expansive but more rigorously upheld than to
+                        express a virtue expansively and
+                        performatively - theatre without substance is
+                        no virtue at all, but a vice."
+    follows:            |
+                        A term is held to the sense of its concept
+                        where it is used as a term: in an id, a title,
+                        a requirement slot or a link.
+    breaks:             |
+                        Prose in the repository is judged against the
+                        concept register.
+    alias:              []
+    edge:               []
+
+  rule_fix_the_rule_not_the_exceptions:
+    id_self:            rule_fix_the_rule_not_the_exceptions
+    guid_self:          rule_ac0d52b3ba7a447aaceade2b4fe03a80
+    title:              Fix the rule, not the exceptions
+    brief:              |
+                        A rule that keeps needing exceptions is
+                        changed so that it no longer needs them.
+    description:        |
+                        Each exception is a sign that the rule does
+                        not say what is meant. Machinery that grows to
+                        carry exceptions hides the problem and
+                        multiplies the ways to fail. Adopted on
+                        2026-10-14, when the commit checks met the
+                        many ways git makes a commit.
+    follows:            |
+                        The rename check exempts a revert, because a
+                        revert names what it undoes.
+    breaks:             |
+                        A hook is added for each git command that
+                        skips the commit check.
+    alias:              []
+    edge:               []
+
+  rule_resolve_tensions_early:
+    id_self:            rule_resolve_tensions_early
+    guid_self:          rule_b7a4f7bc12bf451bb124a8ef714336df
+    title:              Resolve tensions early
+    brief:              |
+                        A [[tension]] is resolved while the change is
+                        still cheap. When in doubt, the larger change
+                        is made now.
+    description:        |
+                        Early in the life of a system, a change that
+                        touches much is still cheap, and each one
+                        resolved now removes friction from all later
+                        work and spares later changes with a larger
+                        blast radius. Adopted on 2026-10-21 as the
+                        annealing stance: tolerate churn while the
+                        temperature is high, and do not tolerate
+                        quirks.
+    follows:            |
+                        The term is renamed in every file now, while
+                        forty files use it.
+    breaks:             |
+                        The awkward term is kept, and each new text
+                        works around it.
+    alias:              []
+    edge:               []
+
+edge:
+
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
+    id_target:          sch_reg_design_rule
+    guid_target:        sch_edbfb601381e40169aecd9e1447de8d5
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_lesson_learned
+    guid_target:        concept_5fa8d2b1c9c74f319b91f29ac75f0194
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_corrective_action
+    guid_target:        concept_087a0a30815a49658d7e44e6ee486e6b
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_finding
+    guid_target:        concept_0445df84cf9e41f5b588b5ec25e766d5
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_nonconformity
+    guid_target:        concept_1a4f603522eb4644a549eaa2a8748822
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_tension
+    guid_target:        concept_765599511fc2459bbfb7b2bbea01c96f
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_opportunity_for_improvement
+    guid_target:        concept_5a0966aec0914a42b0d854e1ea4425aa
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_correction
+    guid_target:        concept_8b47352809fd4976992a03479ce2130e

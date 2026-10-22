@@ -2082,3 +2082,248 @@ table:
         guid_relation:  relation_15e3747dae8f4c7b80de194d99914504
         id_target:      extcla_cco_designative_information_content_entity
         guid_target:    extcla_0f28ee4cdf984e3d9ef3b481dae649e9
+
+  # ---------------------------------------------------------------------------
+  # concept_finding -- Finding
+  #
+  concept_finding:
+    id_self:            concept_finding
+    guid_self:          concept_0445df84cf9e41f5b588b5ec25e766d5
+    title:              Finding
+    brief:              |
+                        What a sensing of the repository, the work or
+                        the system in use finds, judged against what
+                        it should be: a [[nonconformity]], a
+                        [[tension]], an
+                        [[opportunity for improvement]] or a
+                        [[lesson learned]].
+    description:        |
+                        A finding is met with a response that fits its
+                        kind. Not every finding is recorded in the
+                        graph: one fixed at once needs no record
+                        beyond its commit, and one that needs a choice
+                        becomes a decision.
+    note:               |
+                        ISO 19011:2018, Guidelines for auditing
+                        management systems, clause 3.10, defines an
+                        audit finding as the results of the evaluation
+                        of the collected audit evidence against audit
+                        criteria, and notes that it may show
+                        conformity or nonconformity, or lead to an
+                        opportunity for improvement. Cited from public
+                        summaries.
+    term_preferred:     finding
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_nonconformity -- Nonconformity
+  #
+  concept_nonconformity:
+    id_self:            concept_nonconformity
+    guid_self:          concept_1a4f603522eb4644a549eaa2a8748822
+    title:              Nonconformity
+    brief:              |
+                        A [[finding]] that a [[requirement]], a
+                        [[design rule]] or a [[concept_check|check]]
+                        is not met.
+    description:        |
+                        A failure of a check is a nonconformity that a
+                        machine has found.
+    note:               |
+                        ISO 9000:2015, Quality management systems --
+                        Fundamentals and vocabulary, clause 3.6.9,
+                        defines nonconformity as the non-fulfillment
+                        of a requirement. Cited from public summaries.
+    term_preferred:     nonconformity
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_finding
+        guid_target:    concept_0445df84cf9e41f5b588b5ec25e766d5
+
+  # ---------------------------------------------------------------------------
+  # concept_tension -- Tension
+  #
+  concept_tension:
+    id_self:            concept_tension
+    guid_self:          concept_765599511fc2459bbfb7b2bbea01c96f
+    title:              Tension
+    brief:              |
+                        A [[finding]] that nothing is broken, but
+                        something is bent to fit an earlier choice,
+                        such as a definition reworded because a word
+                        it needs is the term of another [[concept]].
+    description:        |
+                        Tensions are found by friction: rewording
+                        forced by a check, a rule that needs
+                        exceptions, one word with two senses. They are
+                        cheapest to resolve early, while the
+                        temperature is high.
+    note:               |
+                        No standard term covers this. The word is kept
+                        for friction only; a finding is not a tension
+                        unless something is bent.
+    term_preferred:     tension
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_finding
+        guid_target:    concept_0445df84cf9e41f5b588b5ec25e766d5
+
+  # ---------------------------------------------------------------------------
+  # concept_opportunity_for_improvement -- Opportunity for improvement
+  #
+  concept_opportunity_for_improvement:
+    id_self:            concept_opportunity_for_improvement
+    guid_self:          concept_5a0966aec0914a42b0d854e1ea4425aa
+    title:              Opportunity for improvement
+    brief:              |
+                        A [[finding]] that something could be better,
+                        where nothing is broken or bent.
+    description:        |
+                        A coding agent notes these as it works, and
+                        the scheduled reviews look for them.
+    note:               |
+                        ISO 9001:2015, Quality management systems --
+                        Requirements, clause 10.1, asks an
+                        organization to determine and select
+                        opportunities for improvement. Cited from
+                        public summaries.
+    term_preferred:     opportunity for improvement
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_finding
+        guid_target:    concept_0445df84cf9e41f5b588b5ec25e766d5
+
+  # ---------------------------------------------------------------------------
+  # concept_lesson_learned -- Lesson learned
+  #
+  concept_lesson_learned:
+    id_self:            concept_lesson_learned
+    guid_self:          concept_5fa8d2b1c9c74f319b91f29ac75f0194
+    title:              Lesson learned
+    brief:              |
+                        A [[finding]] of knowledge gained from an
+                        episode of work, kept so that later work goes
+                        better.
+    description:        |
+                        Lessons come from retrospectives. A lesson is
+                        recorded as an annotation about what it
+                        concerns, and may lead to a design rule or a
+                        change in how the work is done.
+    note:               |
+                        The glossary of the PMBOK Guide, Project
+                        Management Institute, defines lessons learned
+                        as the knowledge gained during a project which
+                        shows how project events were addressed or
+                        should be addressed in the future. Cited from
+                        public summaries.
+    term_preferred:     lesson learned
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_finding
+        guid_target:    concept_0445df84cf9e41f5b588b5ec25e766d5
+
+  # ---------------------------------------------------------------------------
+  # concept_correction -- Correction
+  #
+  concept_correction:
+    id_self:            concept_correction
+    guid_self:          concept_8b47352809fd4976992a03479ce2130e
+    title:              Correction
+    brief:              |
+                        An action that removes one [[nonconformity]]
+                        or [[tension]] where it was found, and leaves
+                        its cause in place.
+    description:        |
+                        Most nonconformities that a check reports are
+                        met with a correction.
+    note:               |
+                        ISO 9000:2015, clause 3.12.3, defines
+                        correction as action to eliminate a detected
+                        nonconformity. Cited from public summaries.
+    term_preferred:     correction
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_corrective_action -- Corrective action
+  #
+  concept_corrective_action:
+    id_self:            concept_corrective_action
+    guid_self:          concept_087a0a30815a49658d7e44e6ee486e6b
+    title:              Corrective action
+    brief:              |
+                        An action that removes the cause of a
+                        [[nonconformity]] or [[tension]], so that it
+                        does not recur.
+    description:        |
+                        A new design rule, a new check or a change in
+                        how the work is done are corrective actions.
+    note:               |
+                        ISO 9000:2015, clause 3.12.2, defines
+                        corrective action as action to eliminate the
+                        cause of a nonconformity and to prevent
+                        recurrence. Cited from public summaries.
+    term_preferred:     corrective action
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_design_rule -- Design rule
+  #
+  concept_design_rule:
+    id_self:            concept_design_rule
+    guid_self:          concept_765d72b34b8a4ff38b6d5ca0488be765
+    title:              Design rule
+    brief:              |
+                        A rule that the design of the system, and the
+                        record of that design, follows across many
+                        [[decisions]].
+    description:        |
+                        A design rule binds whoever designs and
+                        records the system, a person or a model, and
+                        not one design entity, as a requirement does.
+                        It outlives the decisions it came from, and
+                        applies to decisions not yet made. Most design
+                        rules are broad, and are held in parts: a
+                        check holds what can be stated over the graph,
+                        and the scheduled reviews judge the rest.
+    note:               |
+                        ISO/IEC/IEEE 42010:2022, Software, systems and
+                        enterprise -- Architecture description, counts
+                        the governing principles of an entity as part
+                        of its architecture, but gives principles no
+                        element of their own. TOGAF, The Open Group
+                        Architecture Framework, records an
+                        architecture principle as a name, a statement,
+                        a rationale and implications. In the design of
+                        integrated circuits, design rules are
+                        constraints that a design rule check holds
+                        mechanically, which is the sense closest to
+                        this one. Baldwin and Clark, Design Rules,
+                        2000, use the term for the visible rules that
+                        let modules be designed apart: a narrower
+                        sense, not meant here.
+    term_preferred:     design rule
+
+    term_admitted:
+      - design principle
+
+    alias:              []
+    edge:               []
