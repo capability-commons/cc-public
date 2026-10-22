@@ -26,7 +26,7 @@ description:            |
 
                         Any message clingo gives is an error, a
                         warning included, and the program must have
-                        exactly one answer set. So a misspelt
+                        exactly one answer set. So a misspelled
                         predicate or a violated constraint is
                         reported, and never reads as an empty result.
 
@@ -378,7 +378,7 @@ def run(facts:      cc_public.graph.extract.Facts,
                                                        count = len(map_column[name])))
 
     # Every message clingo gives is an error, a warning included: an
-    # atom that occurs in no rule head is most often a misspelt
+    # atom that occurs in no rule head is most often a misspelled
     # predicate, and would otherwise make its rule silently never fire.
     # An input predicate may be empty, so each is declared defined.
     #
