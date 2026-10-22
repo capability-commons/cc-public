@@ -1259,3 +1259,168 @@ table:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_design_entity
         guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
+
+  # ---------------------------------------------------------------------------
+  # relation_has_domain -- Has domain relation
+  #
+  relation_has_domain:
+    id_self:            relation_has_domain
+    guid_self:          relation_7c251efdcbd2473d90ef149654051813
+    title:              Has domain relation
+    brief:              |
+                        SOURCE has the domain TARGET
+    description:        |
+                        Whatever the relation that the external
+                        relation identified by SOURCE points at
+                        relates is an instance of the class that
+                        TARGET points at, in the release both were
+                        taken from. Where a relation has several such
+                        edges, the release gives a union of classes,
+                        and whatever it relates is an instance of one
+                        of them.
+
+                        The edge reads through the proxies at both
+                        ends: it is about the relation and the class,
+                        not about the data items that stand for them.
+    note:               |
+                        RDFS calls this domain. The edges are copied
+                        from the release, as facts that checks can
+                        compare with the constraints of relation
+                        entries, and not as axioms to reason with.
+
+    reads_through:
+      - source
+      - target
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_external_relation
+        guid_target:    relcon_18eb121586504341b9ce6d8f6328f103
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_external_class
+        guid_target:    relcon_3209fa9becb44223b8b7f80213a51b00
+
+  # ---------------------------------------------------------------------------
+  # relation_has_range -- Has range relation
+  #
+  relation_has_range:
+    id_self:            relation_has_range
+    guid_self:          relation_ec56c5e6e5814493b2acbd83e00cd1df
+    title:              Has range relation
+    brief:              |
+                        SOURCE has the range TARGET
+    description:        |
+                        Whatever the relation that the external
+                        relation identified by SOURCE points at
+                        relates something to is an instance of the
+                        class that TARGET points at, in the release
+                        both were taken from. Where a relation has
+                        several such edges, the release gives a union
+                        of classes, and whatever it relates to is an
+                        instance of one of them.
+
+                        The edge reads through the proxies at both
+                        ends: it is about the relation and the class,
+                        not about the data items that stand for them.
+    note:               |
+                        RDFS calls this range. The edges are copied
+                        from the release, as facts that checks can
+                        compare with the constraints of relation
+                        entries, and not as axioms to reason with.
+
+    reads_through:
+      - source
+      - target
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_external_relation
+        guid_target:    relcon_18eb121586504341b9ce6d8f6328f103
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_external_class
+        guid_target:    relcon_3209fa9becb44223b8b7f80213a51b00
+
+  # ---------------------------------------------------------------------------
+  # relation_is_subproperty_of -- Is subproperty of relation
+  #
+  relation_is_subproperty_of:
+    id_self:            relation_is_subproperty_of
+    guid_self:          relation_08f022b60d7b4fe99968b28a67f83f2e
+    title:              Is subproperty of relation
+    brief:              |
+                        SOURCE is a subproperty of TARGET
+    description:        |
+                        Whatever the relation that the external
+                        relation identified by SOURCE points at
+                        relates, the relation that TARGET points at
+                        relates too, in the release both were taken
+                        from.
+
+                        The edge reads through the proxies at both
+                        ends: it is about the relations, not about the
+                        data items that stand for them.
+    note:               |
+                        RDFS calls this subPropertyOf. The edges are
+                        copied from the release, as facts, and not as
+                        axioms to reason with.
+    acyclic:            true
+
+    reads_through:
+      - source
+      - target
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_external_relation
+        guid_target:    relcon_18eb121586504341b9ce6d8f6328f103
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_proxy
+        guid_target:    relcon_44c406952ce3441d8611c8234ec96636
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_external_relation
+        guid_target:    relcon_18eb121586504341b9ce6d8f6328f103
