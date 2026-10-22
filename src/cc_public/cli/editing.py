@@ -366,22 +366,24 @@ def batch(path_file, root, is_dry_run):
               nargs    = 3,
               multiple = True,
               required = True,
-              help     = 'Classes whose IRI begins with IRI get ids extcla_SHORT_LABEL and '
-                         'cite the external document RELEASE. Name one for each namespace.')
+              help     = 'Classes and relations whose IRI begins with IRI get ids '
+                         'extcla_SHORT_LABEL and extrel_SHORT_LABEL and cite the external '
+                         'document RELEASE. Name one for each namespace.')
 @click.option('--check', 'is_check',
               is_flag = True,
-              help    = 'Name each way the external classes differ from the release, and '
-                        'write nothing. Without IRI, every external class the namespaces '
+              help    = 'Name each way the external classes and relations differ from the '
+                        'release, and write nothing. Without IRI, every one the namespaces '
                         'cover is compared. The exit status is 1 when any differs.')
 @_option
 def import_(path_ttl, list_iri, list_namespace, is_check, root, is_dry_run):
     """
     Make an external class for each class IRI of the ontology release
-    in the Turtle file FILEPATH, and for every class above it, or bring
-    the external classes made before up to date with the release. Only
-    labels and named superclasses are read; axioms are not. A file whose
-    digest differs from the fixity its release records is refused. For
-    example:
+    in the Turtle file FILEPATH, and an external relation for each
+    relation IRI, with everything they depend on, or bring those made
+    before up to date with the release. Only labels, named superclasses
+    and superproperties, and the domains and ranges of relations are
+    read; other axioms are not. A file whose digest differs from the
+    fixity its release records is refused. For example:
 
     \b
     cctool import CommonCoreOntologiesMerged.ttl \\
@@ -400,7 +402,8 @@ def import_(path_ttl, list_iri, list_namespace, is_check, root, is_dry_run):
             list_iri = cc_public.edit.ontology.known(tree, list_namespace)
         if not list_iri:
             raise cc_public.edit.edit.ErrorEdit(
-                'Give the IRI of at least one class to import, or use --check.')
+                'Give the IRI of at least one class or relation to import, or use '
+                '--check.')
         ontology       = cc_public.edit.ontology.Ontology(path_ttl)
         list_operation = cc_public.edit.ontology.operations(tree, ontology, list_namespace,
                                                             list_iri)
@@ -409,7 +412,7 @@ def import_(path_ttl, list_iri, list_namespace, is_check, root, is_dry_run):
         sys.exit(cc_public.cli.group.EXIT_ERROR)
 
     if not list_operation:
-        click.echo('The external classes agree with the release already.')
+        click.echo('The external classes and relations agree with the release already.')
         return
     if is_check:
         for sentence in cc_public.edit.ontology.differences(list_operation):

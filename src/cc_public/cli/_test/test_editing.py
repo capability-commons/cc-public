@@ -168,6 +168,12 @@ x:entity    a owl:Class ; rdfs:label "entity"@en .
 x:continuant a owl:Class ; rdfs:label "continuant"@en ; rdfs:subClassOf x:entity .
 x:record    a owl:Class ; rdfs:label "Record Entity"@en ; rdfs:subClassOf x:continuant .
 x:unused    a owl:Class ; rdfs:label "unused"@en ; rdfs:subClassOf x:entity .
+x:relates   a owl:ObjectProperty ; rdfs:label "relates"@en .
+x:about     a owl:ObjectProperty ; rdfs:label "is about"@en ; rdfs:subPropertyOf x:relates ;
+            rdfs:domain x:record ;
+            rdfs:range [ a owl:Class ; owl:unionOf ( x:continuant x:unused ) ] .
+x:twice     a owl:ObjectProperty ; rdfs:label "twice"@en ;
+            rdfs:domain x:record , x:unused .
 '''
 LIST_IMPORT   = ['--namespace', 'https://example.org/x/', 'x', 'extdoc_iso_1087_2019',
                  'https://example.org/x/record']
@@ -202,7 +208,7 @@ def test_import_again_changes_nothing(tree):
     assert _import(tree).exit_code == 0
     result = _import(tree)
     assert result.exit_code == 0
-    assert result.stdout == 'The external classes agree with the release already.\n'
+    assert result.stdout == 'The external classes and relations agree with the release already.\n'
 
 
 def test_import_of_a_new_release_changes_only_what_differs(tree):
@@ -217,14 +223,14 @@ def test_import_of_a_new_release_changes_only_what_differs(tree):
 def test_import_refuses_a_class_the_release_lacks(tree):
     result = _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/missing'])
     assert result.exit_code == 2
-    assert 'The release has no labelled class https://example.org/x/missing.' in result.stderr
+    assert 'The release has no labelled class or relation https://example.org/x/missing.' in result.stderr
 
 
 def test_import_refuses_a_class_no_namespace_covers(tree):
     result = _import(tree, list_arg = ['--namespace', 'https://example.org/y/', 'y',
                                        'extdoc_iso_1087_2019', 'https://example.org/x/record'])
     assert result.exit_code == 2
-    assert 'No --namespace covers the class https://example.org/x/' in result.stderr
+    assert 'No --namespace covers https://example.org/x/' in result.stderr
 
 
 def test_import_check_names_what_differs_and_writes_nothing(tree):
@@ -242,7 +248,7 @@ def test_import_check_passes_when_the_classes_agree(tree):
     assert _import(tree).exit_code == 0
     result = _import(tree, list_arg = [*LIST_IMPORT[:4], '--check'])
     assert result.exit_code == 0
-    assert result.stdout == 'The external classes agree with the release already.\n'
+    assert result.stdout == 'The external classes and relations agree with the release already.\n'
 
 
 def test_import_refuses_a_file_that_is_not_the_recorded_release(tree):
@@ -250,3 +256,36 @@ def test_import_refuses_a_file_that_is_not_the_recorded_release(tree):
                                        'extdoc_cco_2_2', 'https://example.org/x/record'])
     assert result.exit_code == 2
     assert 'but extdoc_cco_2_2 records a9453382' in result.stderr
+
+
+def test_import_makes_a_relation_with_its_domain_range_and_superproperty(tree):
+    result = _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/about'])
+    assert result.exit_code == 0, result.output
+    assert sorted(path.name for path in (tree / '_data/external_relation').glob('extrel_x_*')) == [
+        'extrel_x_is_about.yaml', 'extrel_x_relates.yaml']
+    text = (tree / '_data/external_relation/extrel_x_is_about.yaml').read_text()
+    assert 'brief:                  |\n                        The relation with the label' in text
+    for (relation, target) in [('relation_is_subproperty_of', 'extrel_x_relates'),
+                               ('relation_has_domain',        'extcla_x_record_entity'),
+                               ('relation_has_range',         'extcla_x_continuant'),
+                               ('relation_has_range',         'extcla_x_unused')]:
+        assert ('id_relation:        {relation}\n'.format(relation = relation) in text
+                and 'id_target:          {target}\n'.format(target = target) in text)
+    assert (tree / '_data/external_class/extcla_x_unused.yaml').exists()
+
+
+def test_import_check_compares_relations_too(tree):
+    assert _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/about']).exit_code == 0
+    text   = TEXT_ONTOLOGY.replace('rdfs:domain x:record ;', 'rdfs:domain x:unused ;')
+    result = _import(tree, text, [*LIST_IMPORT[:4], '--check'])
+    assert result.exit_code == 1
+    assert ('extrel_x_is_about: it lacks the edge relation_has_domain extcla_x_unused.\n'
+            in result.stdout)
+    assert ('extrel_x_is_about: it has the edge relation_has_domain extcla_x_record_entity, '
+            'which the release lacks.\n' in result.stdout)
+
+
+def test_import_refuses_a_relation_with_two_domains(tree):
+    result = _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/twice'])
+    assert result.exit_code == 2
+    assert 'would make an intersection' in result.stderr
