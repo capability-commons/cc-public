@@ -975,6 +975,27 @@ term_has_sense(Holder, Term) :-
 
 
 % -----------------------------------------------------------------------------
+% A concept rates each of its terms once: a term is preferred, admitted
+% or deprecated, never two of these, as ISO 1087 rates a designation.
+%
+% decl term_rated_twice(concept: symbol,
+%                       term:    symbol,
+%                       rating:  symbol,
+%                       other:   symbol)
+% did  {concept} rates the term "{term}" both {rating} and {other}.
+% fix  Keep the one rating the concept means, and take the term out of
+%      the other list.
+#show term_rated_twice/4.
+
+term_rated_twice(Concept, Term, Rating, Other) :-
+    designation(Concept, Term, Rating),
+    designation(Concept, Twin, Other),
+    Rating < Other,
+    term_form(Term, Form),
+    term_form(Twin, Form).
+
+
+% -----------------------------------------------------------------------------
 % A strict field links every term it uses. The definition of a concept
 % and the slots of a requirement statement are short, and they are
 % where a term is most often meant in its registered sense, so a term
