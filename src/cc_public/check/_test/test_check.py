@@ -1534,3 +1534,13 @@ def test_a_narrower_edge_that_the_register_has_already_is_not_reported(tree):
                'extcla_cco_document_content_entity')
     list_row = _check(tree)['missing_narrower']
     assert [row[:2] for row in list_row] == [('concept_file', 'concept_document')]
+
+
+def test_a_term_that_is_the_label_of_an_unmatched_class_is_a_false_friend(tree):
+    (tree / '_data/annotation/ann_mapping_of_os_process.yaml').unlink()
+    assert _check(tree)['false_friend'] == [
+        ('concept_os_process', 'process', 'extcla_bfo_process')]
+
+
+def test_a_false_friend_with_an_annotation_about_both_is_not_reported(tree):
+    assert 'false_friend' not in _check(tree)
