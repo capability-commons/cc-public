@@ -75,6 +75,11 @@ REGEX_COMMENT     = re.compile(r'^\s*#')
 # begins an item of a list, which is a paragraph of its own.
 #
 REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]{1,2}[.)]) ')
+
+# A word of prose to fill, with each link to a concept in it kept whole,
+# since a link may not break across lines.
+#
+REGEX_FILL_WORD   = re.compile(r'(?:[^\s\[]|\[\[[^\[\]\n]*\]\]|\[)+')
 INDENT_LIST_ITEM  = '  '
 
 # The lines that open and close a YAML document, and the blank lines
@@ -723,7 +728,7 @@ def _body(value: str, column: int) -> list[str]:
         if not list_para:
             return
         more = INDENT_LIST_ITEM if REGEX_LIST_ITEM.match(list_para[0]) else ''
-        list_out.extend(_fill(' '.join(list_para).split(), pad, pad + more))
+        list_out.extend(_fill(REGEX_FILL_WORD.findall(' '.join(list_para)), pad, pad + more))
         list_para.clear()
 
     for line in value.rstrip('\n').split('\n'):

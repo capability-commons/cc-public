@@ -755,6 +755,15 @@ def test_a_filled_line_never_opens_with_a_list_marker():
     assert cc_public.edit.layout.format(laid_out) == laid_out
 
 
+def test_a_link_to_a_concept_is_never_broken_across_lines():
+    text = ('note:                   |\n'
+            '                        A function or method defined in a [[python module]],\n'
+            '                        at the top.\n')
+    laid_out = cc_public.edit.layout.format(text)
+    assert '[[python module]],' in laid_out
+    assert cc_public.edit.layout.format(laid_out) == laid_out
+
+
 def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
     text = ('note:                   |\n'
             '                        A list:\n'
