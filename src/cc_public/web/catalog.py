@@ -62,7 +62,7 @@ TUPLE_GROUP       = (
                          ('type_requirement', 'type_logical_component',
                           'type_interface_control_document', 'type_interface_member')),
     ('Vocabulary',       ('type_concept', 'type_writing_style_rule', 'type_relation', 'type_role',
-                          'type_relation_restriction')),
+                          'type_relation_constraint')),
     ('Structure',        ('type_type', 'type_schema', 'type_register', 'type_protective_mark')),
     ('Code and history', ('type_python_package', 'type_python_module', 'type_python_class',
                           'type_python_function', 'type_logic_program_file',

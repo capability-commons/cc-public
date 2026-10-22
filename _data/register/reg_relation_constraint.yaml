@@ -1,4 +1,4 @@
-id_self:                reg_relation_restriction
+id_self:                reg_relation_constraint
 guid_self:              reg_52c7901d2dd7494f81285e6e8889a51c
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -17,8 +17,8 @@ description:            |
                         entry per condition. Each is an OR of roles
                         admitted or excluded. A relation names the
                         restrictions on its source and its target with
-                        relation_restricts_source and
-                        relation_restricts_target edges.
+                        relation_constrains_source and
+                        relation_constrains_target edges.
 usage:                  |
                         One restriction serves every relation that
                         needs the same condition, so the conditions
@@ -33,7 +33,7 @@ edge:
 
   - id_relation:        relation_is_specified_by_schema
     guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
-    id_target:          sch_reg_relation_restriction
+    id_target:          sch_reg_relation_constraint
     guid_target:        sch_e69aef76c8f444af83eb387b9a60307b
 
 table:
@@ -361,24 +361,26 @@ table:
         guid_target:    rol_a8f7e5b25c304e41a32e2c7517e8d738
 
   # ---------------------------------------------------------------------------
-  # rrs_is_relation_restriction -- Relation restriction restriction
+  # rrs_is_relation_constraint -- Relation restriction restriction
   #
-  rrs_is_relation_restriction:
-    id_self:            rrs_is_relation_restriction
+  rrs_is_relation_constraint:
+    id_self:            rrs_is_relation_constraint
     guid_self:          rrs_96d618138ba0482ca909ebbc8b9fc70b
     title:              Is-a-relation-restriction restriction
     brief:              |
                         is a relation restriction
     description:        |
                         Satisfied by an item whose type plays
-                        rol_relation_restriction.
-    alias:              []
+                        rol_relation_constraint.
+
+    alias:
+      - rrs_is_relation_restriction
 
     edge:
 
       - id_relation:    relation_admits
         guid_relation:  relation_96be98614fea4f3d857bfaeaf1bef396
-        id_target:      rol_relation_restriction
+        id_target:      rol_relation_constraint
         guid_target:    rol_0775dd9f7f1e40dd81f350bd1690298a
 
   # ---------------------------------------------------------------------------

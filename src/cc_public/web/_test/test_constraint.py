@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.web._test.test_restriction
+id_self:                pym_cc_public.web._test.test_constraint
 guid_self:              pym_55673c5342ee4f5ab59c0954a90953ab
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -28,7 +28,7 @@ edge:                   []
 import http
 
 import cc_public.web.argument
-import cc_public.web.restriction
+import cc_public.web.constraint
 import cc_public.web.server
 
 
@@ -53,7 +53,7 @@ def _excluded(tree, id_role):
 
     """
 
-    path = tree / '_data/register/reg_relation_restriction.yaml'
+    path = tree / '_data/register/reg_relation_constraint.yaml'
     text = path.read_text()
     old  = 'id_relation:    relation_admits\n'
     end  = 'id_target:      {id}\n'.format(id = id_role)
@@ -83,7 +83,7 @@ def test_a_role_page_names_its_players_and_the_relations_that_admit_it(tree):
 def test_a_role_page_names_the_relations_that_exclude_it(tree):
     _excluded(tree, 'rol_requirement')
     graph = cc_public.web.argument.Graph(tree)
-    assert cc_public.web.restriction.sentences(graph, 'rol_requirement')[1:] == [
+    assert cc_public.web.constraint.sentences(graph, 'rol_requirement')[1:] == [
         ['Excluded at the source of ',
          ('relation_has_actor', 'Has actor relation'), ', ',
          ('relation_has_process', 'Has process relation'), ' and ',
@@ -92,5 +92,5 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
 
 def test_an_item_that_is_neither_relation_nor_role_has_no_sentences(tree):
     graph = cc_public.web.argument.Graph(tree)
-    assert cc_public.web.restriction.sentences(graph, 'rrs_is_argument') == []
+    assert cc_public.web.constraint.sentences(graph, 'rrs_is_argument') == []
 

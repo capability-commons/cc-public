@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cc_public.web.restriction
+id_self:                pym_cc_public.web.constraint
 guid_self:              pym_86521e9d578546868f7c3fd34e85893c
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -37,8 +37,8 @@ import cc_public.web.argument
 R_HAS_ITEMS_THAT_PLAY = 'relation_has_items_that_play'
 R_ADMITS              = 'relation_admits'
 R_EXCLUDES            = 'relation_excludes'
-R_RESTRICTS_SOURCE    = 'relation_restricts_source'
-R_RESTRICTS_TARGET    = 'relation_restricts_target'
+R_RESTRICTS_SOURCE    = 'relation_constrains_source'
+R_RESTRICTS_TARGET    = 'relation_constrains_target'
 PREFIX_RELATION       = 'relation_'
 PREFIX_ROLE           = 'rol_'
 LIST_END              = (('source', R_RESTRICTS_SOURCE),
