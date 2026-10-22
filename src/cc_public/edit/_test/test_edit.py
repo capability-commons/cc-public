@@ -35,6 +35,7 @@ import cc_public.check.check
 import cc_public.edit.edit
 import cc_public.edit.layout
 import cc_public.graph.extract
+import cc_public.graph.logic
 from cc_public.conftest import DIR_REPO
 
 
@@ -593,13 +594,60 @@ def test_a_link_from_the_item_of_a_function_keeps_its_indentation(tree):
      'pyf_cc_public.graph.jq.query, not pyf_x.'),
     ({'header': 'src/cc_public/check/check.py::check'},
      'src/cc_public/check/check.py::check already holds an item.'),
-    ({'header': 'src/cc_public/check/check.lp::check'},
-     'src/cc_public/check/check.lp is not a python module.'),
+    ({'header': 'README.md::check'},
+     'README.md is not a python module or a logic program.'),
+    ({'header': 'src/cc_public/check/check.lp::nothing'},
+     'src/cc_public/check/check.lp declares no predicate nothing.'),
+    ({'header': 'src/cc_public/check/check.lp::bad_id'},
+     'src/cc_public/check/check.lp::bad_id already holds an item.'),
 ])
 def test_a_header_on_a_definition_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
         cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
     assert str(info.value) == message
+
+
+def test_header_turns_the_comment_and_wording_of_a_predicate_into_its_item(tree, zero):
+    path = tree / 'src/cc_public/edit/extra.lp'
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp', 'field': FIELD_HEADER}) == {}
+    path.write_text(path.read_text()
+                    + '\n\n% ' + '-' * 77 + '\n'
+                    + '% Every item is odd.\n'
+                    + '%\n'
+                    + '% decl odd(id: symbol)\n'
+                    + '% did  {id} is odd, and\n'
+                    + '%      stays odd.\n'
+                    + '% fix  Make it even.\n'
+                    + '#show odd/1.\n')
+    assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp::odd'}) == {}
+    text = path.read_text()
+    assert text[text.index('% ' + '-' * 77):] == (
+        '% ' + '-' * 77 + '\n'
+        '% ---\n'
+        '%\n'
+        '% id_self:                lpp_cc_public.edit.extra.odd\n'
+        '% guid_self:              lpp_' + HEX_ZERO + '\n'
+        + ''.join('% ' + line if line.strip() else '%\n'
+                  for line in TEXT_RIGHTS.splitlines(True)) +
+        '%\n'
+        '% title:                  Odd\n'
+        '% brief:                  |\n'
+        '%                         Every item is odd.\n'
+        '% did:                    |\n'
+        '%                         {id} is odd, and stays odd.\n'
+        '% fix:                    |\n'
+        '%                         Make it even.\n'
+        '% edge:                   []\n'
+        '%\n'
+        '% ...\n'
+        '%\n'
+        '% decl odd(id: symbol)\n'
+        '#show odd/1.\n')
+    documents = cc_public.graph.extract.documents(tree)
+    assert documents['src/cc_public/edit/extra.lp::odd'][0]['id_self'] == \
+        'lpp_cc_public.edit.extra.odd'
+    assert cc_public.graph.logic.worded(text) == {'odd': {'did': '{id} is odd, and stays odd.',
+                                                          'fix': 'Make it even.'}}
 
 
 def test_the_document_of_a_function_is_laid_out_at_its_indentation():

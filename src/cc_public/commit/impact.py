@@ -49,6 +49,10 @@ TUPLE_DIRECTION = ('in', 'out', 'both')
 TUPLE_DELTA     = ('added', 'removed', 'renamed', 'changed')
 DEPTH_DEFAULT   = 1
 
+# A section of a logic program opens with a comment of hyphens.
+#
+RULE_SECTION    = '-----'
+
 Impact          = dict[str, list[tuple[str, ...]]]
 
 
@@ -202,7 +206,8 @@ def _id_of(node: typing.Any) -> str | None:
 def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
     """
     Return the source text of what holds the YAML document keyed by key:
-    the text of the class or function for a key that names one, the text
+    the text of the class or function for a key that names one, the
+    section of a logic program for a key that names a predicate, the text
     of the file for any file but a YAML document, and nothing otherwise.
 
     """
@@ -218,6 +223,9 @@ def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
     if key == file:
         return text
 
+    if path.suffix == cc_public.graph.extract.SUFFIX_PROGRAM:
+        return _section(text, key.rpartition(cc_public.graph.extract.DELIM_DEFINITION)[2])
+
     if file not in map_module:
         map_module[file] = ast.parse(text)
     node = map_module[file]
@@ -227,3 +235,27 @@ def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
                     and child.name == name)
 
     return ast.get_source_segment(text, node) or ''
+
+
+# -----------------------------------------------------------------------------
+def _section(text: str, name: str) -> str:
+    """
+    Return the section of the logic program text that holds the
+    predicate name: from the item before its declaration to the rule of
+    hyphens that opens the next section, or to the end.
+
+    """
+
+    mark      = cc_public.graph.extract.MAP_MARK_COMMENT[cc_public.graph.extract.SUFFIX_PROGRAM]
+    list_line = text.split('\n')
+    list_hit  = [first for (first, found, _) in cc_public.graph.extract.blocks(text, mark)
+                 if found == name]
+
+    if not list_hit:
+        return ''
+
+    end = list_hit[0] + 1
+    while end < len(list_line) and not list_line[end].startswith(mark + ' ' + RULE_SECTION):
+        end += 1
+
+    return '\n'.join(list_line[list_hit[0]:end])

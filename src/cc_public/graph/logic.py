@@ -69,6 +69,7 @@ import cc_public.graph.extract
 
 
 PATH_DERIVE       = pathlib.Path(__file__).with_name('derive.lp')
+MARK_PROGRAM      = cc_public.graph.extract.MAP_MARK_COMMENT[cc_public.graph.extract.SUFFIX_PROGRAM]
 TYPE_NUMBER       = 'number'
 
 # A declaration is a comment that names a predicate and its columns.
@@ -79,10 +80,15 @@ REGEX_DECL        = re.compile(r'^[ \t]*%[ \t]*decl[ \t]+(\w+)[ \t]*\(((?:[^)\n]
                                re.MULTILINE)
 REGEX_SHOW        = re.compile(r'#show[ \t]+(\w+)[ \t]*/[ \t]*(\d+)[ \t]*\.')
 
-# The wording of a shown predicate is two comments after its
-# declaration: "% did", a sentence that says what a row of it records,
-# with each column named in braces, and "% fix", what to do about it.
-# Each may go on over more comment lines, indented.
+# The wording of a shown predicate is two fields of the item written in a
+# comment before its declaration: did, a sentence that says what a row of
+# it records, with each column named in braces, and fix, what to do
+# about it.
+#
+TUPLE_WORDING     = ('did', 'fix')
+
+# The older form of the wording, two comments after the declaration:
+# "% did" and "% fix", each going on over more comment lines, indented.
 #
 REGEX_WORDING     = re.compile(r'^[ \t]*%[ \t]*(did|fix)[ \t]+(.*(?:\n[ \t]*%[ \t]{2,}\S.*)*)',
                                re.MULTILINE)
@@ -204,9 +210,9 @@ def declared(text: str) -> dict[str, tuple[tuple[str, str], ...]]:
 # -----------------------------------------------------------------------------
 def worded(text: str) -> dict[str, dict[str, str]]:
     """
-    Return the did and the fix of each predicate that text declares
-    with them, keyed by predicate. The wording of a declaration runs to
-    the next declaration.
+    Return the did and the fix of each predicate that text gives them
+    to, in the item written before its declaration, or in the older form
+    of did and fix comments after it, keyed by predicate.
 
     """
 
@@ -219,6 +225,14 @@ def worded(text: str) -> dict[str, dict[str, str]]:
                    for each in REGEX_WORDING.finditer(text, match.end(), end)}
         if map_key:
             map_wording[match.group(1)] = map_key
+
+    for (_, name, (document, _)) in cc_public.graph.extract.blocks(text, MARK_PROGRAM):
+        if name is None or not isinstance(document, dict):
+            continue
+        map_key = {key: ' '.join(str(document[key]).split())
+                   for key in TUPLE_WORDING if key in document}
+        if map_key:
+            map_wording[name] = map_key
 
     return map_wording
 

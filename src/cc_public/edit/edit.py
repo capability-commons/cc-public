@@ -109,7 +109,7 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # name of the file gives the id, so new does not make them.
 #
 ID_HELD           = 'relation_has_items_held_in_register'
-SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'file', 'shell'}
+SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'lpp', 'file', 'shell'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
@@ -118,6 +118,13 @@ SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'file', 'shell'}
 #
 SET_SUFFIX_BARE   = {'.yaml', '.json', '.md'}
 QUOTE_DOCSTRING   = '"""'
+
+# Above the declaration of a predicate, a comment that says what it is,
+# set off from what comes before by a rule of hyphens. After it, the old
+# form of its wording: did and fix comments.
+#
+LINE_RULE         = '-----'
+REGEX_SAID        = re.compile(r'^(did|fix)[ \t]+(.*)$')
 
 # A new file is first written in the folder of its type. Where the
 # check says it belongs elsewhere, as an item of a decision belongs in
@@ -358,7 +365,8 @@ def header_definition(tree:       Tree,
                       list_link:  list[tuple[str, str]]) -> Edit:
     """
     Return the edit that gives the class or function key, such as
-    src/cc_public/graph/jq.py::query, a new item in its docstring. Its
+    src/cc_public/graph/jq.py::query, a new item in its docstring, or
+    the predicate key of a logic program, as header_predicate does. Its
     id follows from key. The text the docstring held becomes the brief,
     unless a brief is given, so that what the code says of itself is
     said once.
@@ -368,8 +376,11 @@ def header_definition(tree:       Tree,
     relative  = cc_public.graph.extract.file_of(key)
     list_name = key.split(cc_public.graph.extract.DELIM_DEFINITION)[1:]
 
+    if pathlib.Path(relative).suffix == cc_public.graph.extract.SUFFIX_PROGRAM:
+        return header_predicate(tree, key, id_self, list_field, list_link)
     if pathlib.Path(relative).suffix != cc_public.graph.extract.SUFFIX_PYTHON:
-        raise ErrorEdit('{file} is not a python module.'.format(file = relative))
+        raise ErrorEdit('{file} is not a python module or a logic program.'.format(
+                                                                            file = relative))
     if relative not in tree.map_document:
         raise ErrorEdit('There is no file {file}.'.format(file = relative))
     if key in tree.map_document:
@@ -403,6 +414,120 @@ def header_definition(tree:       Tree,
         list_line[first.lineno - 1:first.end_lineno] = list_new
 
     return {relative: _format('\n'.join(list_line), relative)}
+
+
+# -----------------------------------------------------------------------------
+def header_predicate(tree:       Tree,
+                     key:        str,
+                     id_self:    str | None,
+                     list_field: list[tuple[str, typing.Any]],
+                     list_link:  list[tuple[str, str]]) -> Edit:
+    """
+    Return the edit that gives the predicate key of a logic program,
+    such as src/cc_public/check/check.lp::bad_id, a new item in a
+    comment before its declaration. Its id follows from key. The comment
+    above the declaration becomes the brief, and the did and fix
+    comments after it become those fields, unless they are given, so
+    that what the program says of the predicate is said once. The title
+    is made from the name if none is given.
+
+    """
+
+    relative = cc_public.graph.extract.file_of(key)
+    name     = key.rsplit(cc_public.graph.extract.DELIM_DEFINITION, 1)[-1]
+    path     = pathlib.Path(relative)
+    mark     = cc_public.graph.extract.mark_comment(path)
+
+    if relative not in tree.map_document:
+        raise ErrorEdit('There is no file {file}.'.format(file = relative))
+    if key in tree.map_document:
+        raise ErrorEdit('{key} already holds an item.'.format(key = key))
+
+    expected = cc_public.graph.extract.predicate_id(path, name)
+    if id_self not in (None, expected):
+        raise ErrorEdit('The item of {key} has the id {expected}, not {id}.'.format(
+                                                    key = key, expected = expected, id = id_self))
+
+    list_line = tree.text(relative).split('\n')
+    list_decl = [index for (index, line) in enumerate(list_line)
+                 if (match := cc_public.graph.extract.REGEX_DECL_NAME.match(line))
+                 and match.group(1) == name]
+    if not list_decl:
+        raise ErrorEdit('{file} declares no predicate {name}.'.format(file = relative, name = name))
+
+    decl  = list_decl[0]
+    first = decl
+    while (first > 0 and list_line[first - 1].startswith(mark)
+           and not list_line[first - 1].startswith(mark + ' ' + LINE_RULE)):
+        first -= 1
+
+    list_prose = [_unmark(line, mark).strip() for line in list_line[first:decl]]
+    prose      = '\n\n'.join(' '.join(paragraph.split())
+                               for paragraph in '\n'.join(list_prose).split('\n\n')
+                               if paragraph.strip())
+
+    (map_said, set_drop) = _said(list_line, decl, mark)
+    map_given            = dict(list_field)
+    list_field           = list(list_field)
+
+    if 'title' not in map_given:
+        list_field.insert(0, ('title', name.replace('_', ' ').capitalize()))
+    if prose and 'brief' not in map_given:
+        list_field.append(('brief', ruamel.yaml.scalarstring.LiteralScalarString(prose + '\n')))
+    for (key_said, text) in map_said.items():
+        if key_said not in map_given:
+            list_field.append((key_said, ruamel.yaml.scalarstring.LiteralScalarString(text + '\n')))
+
+    map_field = _fields(tree, expected, list_field, list_link, None)
+    list_doc  = [cc_public.graph.extract.LINE_OPEN, '',
+                 *cc_public.edit.layout.dump(map_field, 0),
+                 '', cc_public.graph.extract.LINE_CLOSE, '']
+    list_new  = [mark + (' ' + line if line else '') for line in list_doc]
+    list_kept = [line for (index, line) in enumerate(list_line[decl:], decl)
+                 if index not in set_drop]
+
+    return {relative: _format('\n'.join([*list_line[:first], *list_new, *list_kept]), relative)}
+
+
+# -----------------------------------------------------------------------------
+def _said(list_line: list[str], decl: int, mark: str) -> tuple[dict[str, str], set[int]]:
+    """
+    Return what the did and fix comments after the declaration at decl
+    say, keyed by did and fix, and the indices of their lines. Each may
+    go on over more comment lines, indented.
+
+    """
+
+    map_said = {}
+    set_line = set()
+    key      = None
+    index    = decl + 1
+
+    while index < len(list_line) and list_line[index].startswith(mark):
+        text  = _unmark(list_line[index], mark)
+        match = REGEX_SAID.match(text)
+        if match:
+            key           = match.group(1)
+            map_said[key] = match.group(2).strip()
+            set_line.add(index)
+        elif key is not None and text.startswith('  ') and text.strip():
+            map_said[key] += ' ' + text.strip()
+            set_line.add(index)
+        else:
+            key = None
+        index += 1
+
+    return (map_said, set_line)
+
+
+# -----------------------------------------------------------------------------
+def _unmark(line: str, mark: str) -> str:
+    """
+    Return line without the comment marker that begins it.
+
+    """
+
+    return line[len(mark):].removeprefix(' ') if line.startswith(mark) else line
 
 
 # -----------------------------------------------------------------------------

@@ -251,12 +251,21 @@ def _spans(text: str, relative: pathlib.Path) -> list[tuple[int, int, str, str]]
     """
     Return the indices of the lines that open and close each YAML document
     in text, the content of the file at relative, other than a YAML file,
-    with what begins each of its lines: the comment marker of a header,
-    and the indentation of the docstring of a class or function.
+    with what begins each of its lines: the comment marker of a header or
+    of the item of a predicate, and the indentation of the docstring of a
+    class or function.
 
     """
 
     list_line = text.split('\n')
+
+    # A logic program holds an item in a comment before each predicate
+    # that has one, as well as in its header.
+    #
+    if relative.suffix == cc_public.graph.extract.SUFFIX_PROGRAM:
+        mark = cc_public.graph.extract.mark_comment(relative)
+        return [(first, last, mark, '')
+                for (first, last) in cc_public.graph.extract.spans_marked(list_line, mark)]
 
     if relative.suffix != cc_public.graph.extract.SUFFIX_PYTHON:
         mark          = cc_public.graph.extract.mark_comment(relative)
