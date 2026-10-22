@@ -1,0 +1,63 @@
+id_self:                ann_header_parse_time_in_every_check_stage
+guid_self:              ann_28e91e64ff9e4bd38aabd41dfd15811e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Header parse time in every commit check
+brief:                  |
+                        The check stage runs on every commit,
+                        data-only commits included, and runs the logic
+                        programs afresh each time, so a C++ check that
+                        parses headers with libclang adds its parse
+                        time to every commit unless its result is
+                        cached. Interfaces left unchecked at first
+                        cost nothing at the gate.
+description:            |
+                        Sources:
+                        - A data-only commit is still checked and
+                          linted (README.md
+                          lines 76-77).
+                        - The verdict store caches only layout and
+                          schema verdicts; the
+                          checks of the logic programs run afresh each time, and the
+                          gate of a push uses no store (README.md lines 94-100).
+                        - libclang is the planned route to a C++
+                          extractor
+                          (_sources/cc-patrol-notes/plan.md lines 78-80 and 99-101).
+                        - Patrol's code uses GStreamer and CUDA
+                          (_sources/cc-patrol-notes/plan.md lines 147-148).
+                        - Assumption: parsing a header that includes
+                          GStreamer or CUDA
+                          headers takes on the order of a second or more per translation
+                          unit.
+                        - Strength: moderate; a cache keyed on the
+                          header text and the
+                          check's code, as the store already does for schema verdicts,
+                          could remove most of it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_accept_unchecked_cpp_icds
+    guid_target:        opt_4266cad00ec24961add68a4f4512d07e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,59 @@
+id_self:                ann_layout_by_language_splits_engine_component
+guid_self:              ann_357281e6b8624c0fa8fe333938111af4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine component split across two language trees
+brief:                  |
+                        The dataflow engine component holds a Python
+                        generator and a C++ engine, so a by-language
+                        layout puts one component in two trees and a
+                        change to it touches both. Folders by
+                        component use one axis of layout where a split
+                        by language adds a second that such a
+                        component must straddle.
+description:            |
+                        Sources:
+                        - The dataflow engine component covers the C++
+                          engine and the
+                          generator (_data/logical_component/lco_dataflow_engine.yaml
+                          lines 12-15).
+                        - The schedule generator is planned as tooling
+                          that emits C++
+                          for the engine (_sources/cc-patrol-notes/plan.md lines
+                          103-105; _sources/cc-patrol-notes/variants.md lines 92-95).
+                        - Strength: moderate; it depends on how much
+                          code spans both
+                          languages.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_by_component_renamed
+    guid_target:        opt_58bca82f40e645448df2b92d0fa33bfb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_language
+    guid_target:        opt_a41368e5b75b439cb7a8d9ed8a1329f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

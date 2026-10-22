@@ -1,0 +1,56 @@
+id_self:                ann_code_rule_already_covers_cpp
+guid_self:              ann_7139467b312a41049ca710e15c9f3c97
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The existing code rule covering C++
+brief:                  |
+                        The gate tests a commit when it stages any
+                        path under src, and C++ under src is such a
+                        path, so building C++ on every code commit
+                        reuses that one rule with no change. Building
+                        only when C++ is staged adds a second
+                        classifier beside it, and building at pre-push
+                        adds another difference between the commit and
+                        push gates.
+description:            |
+                        Sources:
+                        - The code paths are src/, pyproject.toml,
+                          pixi.lock and
+                          .githooks/, and a commit that stages none of them is not
+                          tested (src/cc_public/gate/gate.py lines 94-99 and 157-170).
+                        - The commit gate already leaves out the tests
+                          marked prepush,
+                          which the push gate runs (README.md lines 77-80).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_the_gate_builds_cpp
+    guid_target:        dec_b63623ea1f6540aca21138b2ee8dece6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_build_cpp_every_code_commit
+    guid_target:        opt_af1f3802836d418795b072f88061aa84
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_build_cpp_when_staged
+    guid_target:        opt_1c2a66a2cb7c4721bc839dd5b8312231
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_build_cpp_at_pre_push
+    guid_target:        opt_cf0dfccddfdb410080280e047809c088
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

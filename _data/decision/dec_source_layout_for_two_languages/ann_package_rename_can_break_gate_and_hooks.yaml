@@ -1,0 +1,60 @@
+id_self:                ann_package_rename_can_break_gate_and_hooks
+guid_self:              ann_2636cbaf7f5c4543878a0172889701c1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Missed references that stop the gate or hooks
+brief:                  |
+                        Renaming cc_public touches the gate's own
+                        command line, the hooks, every module id and
+                        the pixi manifest, and the rename tool leaves
+                        some references for a person to fix, so one
+                        missed reference leaves the gate or the hooks
+                        unable to run. If the rename is wanted, now,
+                        before any release, is the cheapest time.
+description:            |
+                        Sources:
+                        - The gate runs the checker as -m
+                          cc_public.cli.command
+                          (src/cc_public/gate/gate.py line 87; AGENTS.md line 39).
+                        - cctool rename lists files that still name
+                          the old id outside a
+                          YAML document, to be changed by hand (AGENTS.md lines
+                          124-128).
+                        - The pixi manifest names the editable package
+                          cc_public
+                          (pyproject.toml line 62), and any edit to pyproject.toml needs
+                          a relock only the owner can do (context note,
+                          _sources/context.md line 30).
+                        - No release has ever been made (context note,
+                          _sources/context.md line 33).
+                        - Strength: weak; the risk is one-off and the
+                          gate would catch
+                          most misses at once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_engine_beside_cc_public
+    guid_target:        opt_c55debeb1a2f4ba081d550b3008a6f26
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_component_renamed
+    guid_target:        opt_58bca82f40e645448df2b92d0fa33bfb
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

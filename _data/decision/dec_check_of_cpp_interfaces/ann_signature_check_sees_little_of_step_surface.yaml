@@ -1,0 +1,68 @@
+id_self:                ann_signature_check_sees_little_of_step_surface
+guid_self:              ann_d778b033ae0f4a91b65c8148965f31b0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Narrow view of a signature check on step interfaces
+brief:                  |
+                        The drafted Patrol documents are all dataflow
+                        step surfaces, and every engine component
+                        exports the same C signature of untyped
+                        pointers, with slots picked by an enum inside
+                        the code. A libclang signature check would
+                        find the same five parameters in every
+                        component and miss the slot order and types
+                        the document states. The engine design checks
+                        the types in the generator; nothing yet checks
+                        the slot order.
+description:            |
+                        Sources:
+                        - All 18 drafted Patrol documents hold a
+                          dataflow_step surface
+                          and none holds a native surface (grep over
+                          _sources/cc-patrol-notes/draft/icd/*.yaml;
+                          _sources/cc-patrol-notes/decomposition-readiness.md line 197).
+                        - Every component exports reset, step and
+                          finalize with the same
+                          five arguments, inputs and outputs as void pointer arrays
+                          (_sources/axair-orchestrator/docs/component_interface.md lines
+                          21-38).
+                        - A component picks its slots by enums it
+                          defines, and slot
+                          order is the order in the component's spec
+                          (_sources/axair-orchestrator/docs/component_interface.md lines
+                          49 and 58-59).
+                        - Slot order matters to the native engine and
+                          nothing says so or
+                          checks it today (_sources/mapping.md lines 45-46).
+                        - The generator checks types from the specs
+                          before compiling and
+                          emits a static_assert that the dtype size equals sizeof(T)
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines 59
+                          and 98-101).
+                        - Strength: moderate; existing Patrol step
+                          functions are planned
+                          as native cpp surfaces, where a signature check would see real
+                          parameters.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_cpp_interfaces
+    guid_target:        dec_5b9a4f78f2ef4d3db5ae5a08f8d94e90
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_cpp_before_first_icd
+    guid_target:        opt_56651873a9b24464a58814a793270de6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

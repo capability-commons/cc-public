@@ -1,0 +1,57 @@
+id_self:                ann_every_layout_gives_cpp_its_own_path
+guid_self:              ann_158dd5b93d9e4cec9e68e4e091893149
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A path prefix of its own for the C++ in every layout
+brief:                  |
+                        The gate chooses what to run from the paths a
+                        commit stages, and each of the three layouts
+                        puts the C++ under a prefix of its own, so
+                        each lets the gate build C++ only when C++ is
+                        staged. The layouts do not differ in how the
+                        gate can choose to build the C++.
+description:            |
+                        Sources:
+                        - The gate chooses its stages from the staged
+                          paths, matched
+                          against src/, pyproject.toml, pixi.lock and .githooks/
+                          (src/cc_public/gate/gate.py lines 94-99 and 173-191).
+                        - The three layouts put the C++ under
+                          src/dataflow_engine,
+                          src/cpp and src/dataflow_engine (option briefs under
+                          _data/decision/dec_source_layout_for_two_languages/).
+                        - Strength: weak; it finds little difference
+                          among the options.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_engine_beside_cc_public
+    guid_target:        opt_c55debeb1a2f4ba081d550b3008a6f26
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_by_component_renamed
+    guid_target:        opt_58bca82f40e645448df2b92d0fa33bfb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_by_language
+    guid_target:        opt_a41368e5b75b439cb7a8d9ed8a1329f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

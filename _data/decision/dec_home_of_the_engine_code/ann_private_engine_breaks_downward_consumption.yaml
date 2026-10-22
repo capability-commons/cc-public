@@ -1,0 +1,50 @@
+id_self:                ann_private_engine_breaks_downward_consumption
+guid_self:              ann_70a273bbfd9747528da71de571246ca1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upward reference to a private engine
+brief:                  |
+                        Consumption runs only downward, so cc-public's
+                        schedule generator and dataflow checks could
+                        not refer to an engine kept in cc-patrol,
+                        which consumes cc-public. Keeping it there
+                        would need a second copy or an exception to
+                        the ruled direction.
+description:            |
+                        Sources:
+                        - A reference may run within a segment or into
+                          one it consumes,
+                          never upward or sideways
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          lines 12-18;
+                          _data/decision/dec_references_across_instances/ruling_references_across_instances.yaml
+                          lines 12-17).
+                        - cc-patrol is private, under Axair's
+                          copyright
+                          (_sources/cc-patrol-notes/plan.md line 109).
+                        - Strength: moderate; it holds if cc-public
+                          items must refer to
+                          the engine, which the plan for generated schedules implies.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_engine_code
+    guid_target:        dec_2ddc5f47766f4d52a75350025a963a3c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_code_in_cc_patrol
+    guid_target:        opt_a96dc6904d8343e9b08caf269edc0753
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

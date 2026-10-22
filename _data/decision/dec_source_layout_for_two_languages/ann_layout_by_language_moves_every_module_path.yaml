@@ -1,0 +1,72 @@
+id_self:                ann_layout_by_language_moves_every_module_path
+guid_self:              ann_c3291237f3e64db0b012e7e5a96222f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Moved paths and module ids under a by-language split
+brief:                  |
+                        Module ids follow from the path below src, so
+                        moving the Python package under src/python
+                        changes every module id unless the derivation
+                        changes too, and moves every Python file even
+                        though no behavior changes. Until every
+                        reference follows, the checks that tie items
+                        to modules report faults the move caused, and
+                        every later diff path differs.
+description:            |
+                        Sources:
+                        - The id of a module is its prefix and the
+                          dotted path below
+                          src, and module_name strips only a leading src folder
+                          (AGENTS.md lines 110-112; src/cc_public/graph/extract.py lines
+                          315 and 723-742).
+                        - There are 183 distinct ids of modules,
+                          packages, logic
+                          programs and the functions and predicates in them containing
+                          cc_public, in 106 files under _data and src (grep over the
+                          snapshot, 2026-10-22).
+                        - src holds 92 files, 80 of them Python (find
+                          over the snapshot,
+                          2026-10-22).
+                        - pytest's pythonpath and testpaths, and the
+                          gate's lint stage
+                          and source dir, name src (pyproject.toml lines 113-114;
+                          src/cc_public/gate/gate.py lines 88 and 91).
+                        - Strength: strong for maintainability;
+                          moderate for functional
+                          suitability and reviewability, since the breakage is
+                          mechanical and temporary and the owner tolerates renames
+                          before 1.0 (owner's statement, 2026-10-21, _sources/context.md
+                          line 26).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_language
+    guid_target:        opt_a41368e5b75b439cb7a8d9ed8a1329f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

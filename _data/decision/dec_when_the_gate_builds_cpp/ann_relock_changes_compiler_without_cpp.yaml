@@ -1,0 +1,56 @@
+id_self:                ann_relock_changes_compiler_without_cpp
+guid_self:              ann_048b0ea299fd49679c9335fcab798be3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Compiler changes arriving by relock
+brief:                  |
+                        An upstream change to the compiler or a C++
+                        library arrives in a commit that stages only
+                        pixi.lock or pyproject.toml, not C++ files. A
+                        gate that builds the C++ only when C++ is
+                        staged would not build it on that commit,
+                        unless the rule is widened to count the lock;
+                        building on every code commit, which counts
+                        the lock as code, would.
+description:            |
+                        Sources:
+                        - The gate treats a change to pyproject.toml
+                          or pixi.lock as
+                          code and runs the tests (README.md lines 74-77).
+                        - The when-staged option builds only in a gate
+                          whose commit
+                          stages C++ files
+                          (_data/decision/dec_when_the_gate_builds_cpp/opt_build_cpp_when_staged.yaml,
+                          brief).
+                        - Upstream versions are fixed in pixi.lock and
+                          change when it is
+                          relocked (pixi.lock lines 12-66; context note,
+                          _sources/context.md line 30).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_the_gate_builds_cpp
+    guid_target:        dec_b63623ea1f6540aca21138b2ee8dece6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_build_cpp_every_code_commit
+    guid_target:        opt_af1f3802836d418795b072f88061aa84
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_build_cpp_when_staged
+    guid_target:        opt_1c2a66a2cb7c4721bc839dd5b8312231
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
