@@ -42,6 +42,10 @@ pytestmark = pytest.mark.prepush
 NOW   = datetime.datetime(2026, 10, 14, 11, 20, 48, tzinfo = datetime.UTC)
 BRIEF = 'Each commit message holds a commit item.'
 
+# The guid of the maintainer's entry in reg_team_member.
+#
+GUID_MAINTAINER = 'member_f17345eec9064b44bacc60ddff63a697'
+
 
 # -----------------------------------------------------------------------------
 def _message(title = 'Add the commit-msg hook', **kwargs):
@@ -132,6 +136,25 @@ def test_a_verdict_field_is_reported():
     text = _message().replace('edge:', 'status:                 clean\nedge:')
     assert _found(text) == [
         "item: Unevaluated properties are not allowed ('status' was unexpected)"]
+
+
+def test_a_contributor_trailer_that_names_a_team_member_passes():
+    text = _message() + '\nContributor: {guid}\n'.format(guid = GUID_MAINTAINER)
+    assert cc_public.commit.message.contributors(text) == [GUID_MAINTAINER]
+    assert _found(text) == []
+
+
+def test_a_contributor_trailer_that_names_no_team_member_is_reported():
+    guid = 'member_' + '0' * 32
+    assert _found(_message() + '\nContributor: {guid}\n'.format(guid = guid)) == [
+        'The Contributor trailer names {guid}, which reg_team_member does not '
+        'hold.'.format(guid = guid)]
+
+
+def test_a_contributor_line_inside_the_item_is_not_a_trailer():
+    text = _message(description = 'Contributor: someone')
+    assert cc_public.commit.message.contributors(text) == []
+    assert _found(text) == []
 
 
 def test_lines_that_git_treats_as_comments_are_left_out():
