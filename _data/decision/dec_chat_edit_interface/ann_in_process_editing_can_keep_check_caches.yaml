@@ -1,0 +1,68 @@
+id_self:                ann_in_process_editing_can_keep_check_caches
+guid_self:              ann_f07a035e77b041508ac0b09a8d3b3859
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Warm check caches in a long-lived process
+brief:                  |
+                        The check keeps its schema and review caches
+                        only within one process. A bot that calls the
+                        editing module in process can hold them warm
+                        between writes, while a subprocess per write
+                        starts cold each time.
+description:            |
+                        CACHE_SCHEMA and CACHE_REVIEW are kept between
+                        checks in one process, and the review before
+                        an edit is found in CACHE_REVIEW when the tree
+                        is as it was last checked
+                        (src/cc_public/check/check.py lines 80-95).
+                        CACHE_REVIEW is keyed by the identity of the
+                        document objects (src/cc_public/check/check.py
+                        lines 247-262), and a new Tree re-reads every
+                        file into new objects
+                        (src/cc_public/edit/edit.py lines 169-180;
+                        src/cc_public/graph/extract.py lines 426-446).
+                        Schema verdicts survive across processes only
+                        when the environment variable CC_PUBLIC_STORE
+                        names a store, which the commit gate sets
+                        (src/cc_public/check/store.py, module
+                        docstring). The web server already writes
+                        through the editing module in its own process
+                        and warms the check once at start
+                        (src/cc_public/web/server.py lines 170-172 and
+                        356-369). Process start-up was about 0.19 s of
+                        a 2.25 s dry-run edit on 2026-10-15
+                        (_data/decision/dec_editing_by_construction/ann_each_edit_checks_the_whole_tree.yaml).
+                        The gain is not automatic: the bot must keep
+                        its documents between writes, or the review
+                        cache misses because the objects are new.
+                        Holds at ten times the size: yes, because the
+                        work a warm cache saves grows with the tree,
+                        while start-up stays fixed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_edit_interface
+    guid_target:        dec_e376c063e78640aca3f696f71ff46eae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edit_module_in_process
+    guid_target:        opt_700e944befd44f5195e9a20b6ad8d03c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cctool_subprocess
+    guid_target:        opt_54381196407b444a9166736cc4356b91
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

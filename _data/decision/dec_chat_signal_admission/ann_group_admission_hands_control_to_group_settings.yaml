@@ -1,0 +1,56 @@
+id_self:                ann_group_admission_hands_control_to_group_settings
+guid_self:              ann_f7870b44cde24236896e005900dd03df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Group admission depends on group settings
+brief:                  |
+                        If the bot answers members of a group, then
+                        whoever can join the group can use the bot.
+                        That control sits in Signal group settings
+                        outside the bot, such as group links.
+description:            |
+                        Under opt_admit_group_members, the bot answers
+                        only members of a Signal group that the
+                        operator runs [opt_admit_group_members.yaml
+                        brief]. Signal group links let people join a
+                        group without being added one by one
+                        [https://signal.org/blog/group-links/]. Admin
+                        approval for people joining by link is an
+                        option the group may or may not turn on
+                        [https://signal.org/blog/group-links/].
+                        Security asks who can read or change what, and
+                        how that is enforced [reg_concern.yaml lines
+                        159-161]. ASSUMPTION: members of the group see
+                        each other's numbers or profiles, so the group
+                        also exposes contributors to one another.
+                        Holds at ten times the size: yes, because a
+                        larger group is more likely to have its link
+                        shared or a lax setting changed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_admission
+    guid_target:        dec_d2248c4bb9aa4c2caaedbc5b43e9f6cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_admit_listed_contacts
+    guid_target:        opt_b7f5ef8be3b748d8b9680e201df46f48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_admit_group_members
+    guid_target:        opt_dde6c5de8f1944ec97a960064ba9e927
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,82 @@
+id_self:                ann_in_process_edit_returns_structured_failures
+guid_self:              ann_2b1986ebeb064ea489b7dfbd961380ca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Structured failures from the editing module
+brief:                  |
+                        In process, apply returns each failure as a
+                        row with its check and path, which the bot can
+                        map to a field and turn into a question about
+                        that field. As a subprocess, the bot gets
+                        described lines on stderr and an exit code,
+                        text that cctool says may change, and must
+                        parse it before it can ask.
+description:            |
+                        apply returns the failures an edit adds, keyed
+                        by check (src/cc_public/edit/edit.py lines
+                        1075-1098). edit.batch makes a list of
+                        operations (src/cc_public/edit/edit.py, batch
+                        at line 992). Failures is a dict of check name
+                        to rows (src/cc_public/check/check.py line
+                        78). A schema failure row has the columns id,
+                        schema, file, line, path and message
+                        (src/cc_public/check/schema.py line 60). The
+                        command line prints described failures on
+                        stderr and exits with 1 when the edit adds a
+                        failure and with 2 when it cannot be made
+                        (src/cc_public/cli/editing.py, function _run,
+                        lines 474-520; src/cc_public/cli/group.py
+                        lines 31-33). The name of a check is the
+                        stable code that scripts match on, and the
+                        sentences may change (AGENTS.md lines
+                        164-165). The checklist shows what failed a
+                        check (opt_checklist_led_conversation brief).
+                        The bot source lives in cc-public (owner's
+                        statement), and the gate runs the tests when
+                        code is staged (AGENTS.md, "Before you
+                        finish"). ASSUMPTION: a bot that parses text
+                        output can lose the link between a failure and
+                        the field that caused it when the wording
+                        changes. Holds at ten times the size: yes,
+                        because the form of a failure and the shape of
+                        the interface do not change with the number of
+                        items, and a change to the signature of apply
+                        fails a test in the same commit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_edit_interface
+    guid_target:        dec_e376c063e78640aca3f696f71ff46eae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edit_module_in_process
+    guid_target:        opt_700e944befd44f5195e9a20b6ad8d03c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cctool_subprocess
+    guid_target:        opt_54381196407b444a9166736cc4356b91
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,59 @@
+id_self:                ann_listed_contacts_need_the_least_admission_code
+guid_self:              ann_38d352c151a247f1a816d5b4c6e5c470
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Listed contacts need the least admission code
+brief:                  |
+                        A private list of accounts is a lookup that
+                        one test covers. Admitting anyone who accepts
+                        a notice adds a consent flow with its own
+                        state, and group membership must be read from
+                        Signal.
+description:            |
+                        The listed contacts option answers only
+                        accounts on a private list that the operator
+                        keeps (opt_admit_listed_contacts.yaml, brief).
+                        The consent option answers anyone who writes,
+                        once they accept the notice
+                        (opt_admit_anyone_with_consent.yaml, brief).
+                        The group option answers only members of a
+                        Signal group that the operator runs
+                        (opt_admit_group_members.yaml, brief).
+                        ASSUMPTION: a consent flow records who
+                        accepted which notice and when, and must
+                        handle a changed notice. ASSUMPTION: group
+                        membership is fetched from Signal through the
+                        route chosen in dec_chat_signal_route, so
+                        admission code depends on that route. Holds at
+                        ten times the size: yes, because the lookup
+                        stays the same size as the list grows, while
+                        the consent and group paths keep their extra
+                        parts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_admission
+    guid_target:        dec_d2248c4bb9aa4c2caaedbc5b43e9f6cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_admit_listed_contacts
+    guid_target:        opt_b7f5ef8be3b748d8b9680e201df46f48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_admit_anyone_with_consent
+    guid_target:        opt_eaade17aab474ca08961d40eedb5f078
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

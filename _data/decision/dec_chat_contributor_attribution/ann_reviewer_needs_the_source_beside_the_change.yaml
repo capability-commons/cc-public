@@ -1,0 +1,66 @@
+id_self:                ann_reviewer_needs_the_source_beside_the_change
+guid_self:              ann_30050e23eaf3436889b6d7e9fae51d44
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Source of an item visible to the reviewer
+brief:                  |
+                        A reviewer judges a supplied fact better when
+                        the change names who supplied it. Naming only
+                        the bot sends the reviewer to the private
+                        store of the bot for each change.
+description:            |
+                        Who and when of an item come from the commit
+                        that adds it
+                        (_data/decision/dec_author_and_time_of_items;
+                        context.md, line 55-56). The name option puts
+                        the contributor in a Co-authored-by trailer of
+                        the commit
+                        (_data/decision/dec_chat_contributor_attribution/opt_contributor_by_name.yaml,
+                        line 12-14). The pseudonymous option puts the
+                        guid of a person item held in a private
+                        repository in a trailer
+                        (opt_contributor_by_pseudonymous_guid.yaml,
+                        line 12-15). The bot-only option keeps who
+                        said what in the private store of the bot
+                        (opt_no_contributor_in_public.yaml, line
+                        12-15). The maintainer's workstation holds the
+                        repositories (context.md, line 57-58). A
+                        trailer adds one line to the commit message
+                        (ASSUMPTION: one trailer per contributor).
+                        Holds at ten times the size: yes, because a
+                        trailer stays one line per commit, while a
+                        lookup in a separate store is one extra step
+                        per change, and the steps add up with volume.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_contributor_by_name
+    guid_target:        opt_04d34801957840549b38f5bd6b8e128b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_contributor_by_pseudonymous_guid
+    guid_target:        opt_7161a934227944ab9091e6d675d4fc48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_contributor_in_public
+    guid_target:        opt_95a7c965aaf847c0b89fc4ec91fe2d3d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,57 @@
+id_self:                ann_checklist_keeps_required_fields_in_view
+guid_self:              ann_fa5747b73f1944caa048596e2f6a7a91
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checklist keeps missing fields in view
+brief:                  |
+                        A checklist of filled, needed and failed
+                        fields lets the bot finish an item that is
+                        complete and valid while letting the person
+                        answer in any order. Free conversation finds
+                        missing fields only at the end.
+description:            |
+                        A checklist worked well before: the LLM
+                        chooses what to talk about next but stays
+                        aware of what it still needs (owner's
+                        statement). Schemas name required fields, for
+                        example sch_decision requires a brief
+                        (_data/schema/sch_decision.yaml lines 36-39).
+                        cctool refuses an edit that adds a failure and
+                        writes nothing (src/cc_public/cli/editing.py
+                        lines 500-511). opt_free_conversation writes
+                        the item at the end (its brief). opt_form_walk
+                        asks one field at a time in schema order (its
+                        brief). ASSUMPTION: contributors often give
+                        several fields in one message, or out of
+                        order. Holds at ten times the size: yes,
+                        because a checklist is drawn from the schema
+                        of one item, whose size does not grow with the
+                        graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_conversation_control
+    guid_target:        dec_ff5347332cff466db395b0855080cdf1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_checklist_led_conversation
+    guid_target:        opt_3e84a5abf3924521b56f570e2bde0b99
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_free_conversation
+    guid_target:        opt_5f071af1e0ad4d119d4c216a73d249fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

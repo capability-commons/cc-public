@@ -1,0 +1,60 @@
+id_self:                ann_name_in_public_commit_cannot_be_removed
+guid_self:              ann_5b989086fa1844daaa32cc24c55da345
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Contributor name fixed in public history
+brief:                  |
+                        A contributor named in a commit trailer of a
+                        public repository is personal data in public,
+                        and it cannot be removed without rewriting
+                        history. Keeping who said what in the private
+                        store of the bot keeps the name out of public.
+description:            |
+                        cc-public is published under Apache-2.0
+                        [LICENSE line 2]. The option names the
+                        contributor by name in a Co-authored-by
+                        trailer of the commit
+                        [_data/decision/dec_chat_contributor_attribution/opt_contributor_by_name.yaml,
+                        brief]. Who and when of an item come from the
+                        commit that adds it [context.md lines 55-56,
+                        _data/decision/dec_author_and_time_of_items].
+                        Personal data lives only in private
+                        repositories [owner's statement]. A commit
+                        trailer is part of the commit, so changing it
+                        changes the commit id and every later commit
+                        [ASSUMPTION, standard git behavior]. The
+                        concern measures time to fulfill a request to
+                        remove data, in days
+                        [_data/register/reg_concern.yaml lines
+                        741-743]. Holds at ten times the size: yes,
+                        because more contributors and more commits
+                        make each history rewrite larger and harder to
+                        propagate to every clone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_contributor_attribution
+    guid_target:        dec_e2e30db3c5d74471a5caf4b8b110ed59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_contributor_in_public
+    guid_target:        opt_95a7c965aaf847c0b89fc4ec91fe2d3d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_contributor_by_name
+    guid_target:        opt_04d34801957840549b38f5bd6b8e128b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

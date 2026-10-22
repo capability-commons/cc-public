@@ -1,0 +1,61 @@
+id_self:                ann_weaker_model_costs_contributor_extra_turns
+guid_self:              ann_66fb7610286a4dd0a19e21f1238d02c1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Model quality sets the number of turns
+brief:                  |
+                        The contributor's time is mostly turns spent
+                        being understood. A small local model that
+                        misreads answers or asks again costs them more
+                        turns than a frontier hosted model.
+description:            |
+                        The local option runs an open-weights model on
+                        the host
+                        (_data/decision/dec_chat_llm_access/opt_local_open_weights_model.yaml,
+                        brief). The two hosted options call a hosted
+                        model through its maker or a cloud platform
+                        (_data/decision/dec_chat_llm_access/opt_hosted_api_zero_retention.yaml,
+                        brief)
+                        (_data/decision/dec_chat_llm_access/opt_cloud_platform_model.yaml,
+                        brief). The conversation is led by an LLM
+                        choosing what to ask next (owner's statement).
+                        ASSUMPTION: an open-weights model small enough
+                        for a workstation follows a checklist and
+                        extracts fields less reliably than a frontier
+                        hosted model. This is not measured here. Holds
+                        at ten times the size: yes, because the cost
+                        is per conversation and multiplies with the
+                        number of conversations.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_llm_access
+    guid_target:        dec_621560bd48c94ae6809067aa57337312
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_hosted_api_zero_retention
+    guid_target:        opt_1e628ee896984ae0b94e8d40e680e60c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cloud_platform_model
+    guid_target:        opt_dd638b8914544f1d9dcfbe805f511bb6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_local_open_weights_model
+    guid_target:        opt_9e9b65ac05c2420ca74e9b057395ddb6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

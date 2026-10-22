@@ -1,0 +1,69 @@
+id_self:                ann_landing_without_branch_review_skips_human_judge
+guid_self:              ann_ae494bbde8eb40249ba55cdf73d07690
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No person judges an item landed straight on dev
+brief:                  |
+                        Under readback then dev, no maintainer reads
+                        an item before it lands, so the change is
+                        never judged by a reviewer. Both branch
+                        options keep a person between the bot and dev.
+description:            |
+                        Readback then dev lands an item once the
+                        contributor confirms and the checks pass
+                        (_data/decision/dec_chat_review_gates/opt_readback_then_dev.yaml,
+                        line 13-15). The two other options write to
+                        the branch of the bot and rely on review of
+                        that branch (opt_branch_review_only.yaml, line
+                        13-15; opt_readback_and_branch_review.yaml,
+                        line 13-16). The repository rule is to land a
+                        branch only when its work is agreed
+                        (AGENTS.md, line 40). Data in the graph is
+                        expected to be almost entirely LLM generated,
+                        and humans mainly inspect and review it
+                        (owner's statement). Major decisions stay with
+                        the maintainer (owner's statement). A likely
+                        first contributor is a member of a volunteer
+                        team, not the maintainer (context.md, line
+                        59-60). The checks refuse an edit that adds a
+                        check failure, so they test form and
+                        consistency against the graph, not whether a
+                        fact is true (src/cc_public/edit/edit.py, line
+                        26-29). Holds at ten times the size: yes,
+                        because the gap is one of kind, not volume. At
+                        ten times the size the branch queue grows, but
+                        readback then dev answers that by removing
+                        review, not by making it fit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_review_gates
+    guid_target:        dec_9b9c64f85881461f83ada4fb8a81ab3b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_readback_and_branch_review
+    guid_target:        opt_02b87725578a48dda2e6513bf46d392e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_branch_review_only
+    guid_target:        opt_cb86b269d184421d89c4cb7bde73944c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_readback_then_dev
+    guid_target:        opt_7526dd89eb7b4dc089a454bfbb47a952
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

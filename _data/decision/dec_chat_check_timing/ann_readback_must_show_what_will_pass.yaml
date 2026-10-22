@@ -1,0 +1,59 @@
+id_self:                ann_readback_must_show_what_will_pass
+guid_self:              ann_b95aed2885b74e09b044ca707927beea
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readback that shows an item that will pass
+brief:                  |
+                        A contributor should confirm an item that the
+                        write will accept. JSON Schema alone misses
+                        the graph checks, so a full dry run is needed
+                        before the readback, and checking only at the
+                        write is too late.
+description:            |
+                        Schema validation is one part of the checks
+                        (src/cc_public/check/schema.py, module
+                        header). The logic program has 67 #show
+                        directives for checks beyond JSON Schema, such
+                        as dangling_reference and unlinked_term
+                        (src/cc_public/check/check.lp lines 522 and
+                        1045; grep count 2026-10-22). A refused edit
+                        writes nothing and reports the failures
+                        (src/cc_public/cli/editing.py lines 500-511).
+                        --dry-run prints the edit without writing it
+                        (src/cc_public/cli/editing.py lines 474-497).
+                        Holds at ten times the size: yes, because
+                        graph checks such as dangling references only
+                        grow in reach as the graph grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_per_answer_dry_run_at_readback
+    guid_target:        opt_fa05d8c663c9453f9b1cd2ccbf6efd6e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dry_run_every_turn
+    guid_target:        opt_e83e85e117af40bd89c6951ce16e05fd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_at_write_only
+    guid_target:        opt_e87fff38610745559a63837de7ea497b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

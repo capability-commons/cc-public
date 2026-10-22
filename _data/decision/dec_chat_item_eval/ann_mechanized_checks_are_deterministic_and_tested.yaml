@@ -1,0 +1,60 @@
+id_self:                ann_mechanized_checks_are_deterministic_and_tested
+guid_self:              ann_8d34e3998d0045c9b0cac9e64abe6a96
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  LLM judge criteria to keep in step with each type
+brief:                  |
+                        Mechanized checks already exist and are
+                        tested. An LLM judge adds criteria for each
+                        type that must change with its schema, and
+                        output that a deterministic test cannot pin
+                        down.
+description:            |
+                        The judge option judges each draft with an LLM
+                        against criteria for its type, together with
+                        the graph checks and the mechanized style
+                        rules (opt_llm_judge_and_checks.yaml, brief).
+                        Of the 16 writing style rules, 14 have
+                        enforcement none and 2 have enforcement check
+                        (_data/register/reg_writing_style_rule.yaml,
+                        enforcement lines 58-501). Each check in a
+                        logic program carries a did and a fix
+                        sentence, and a test fails a check that lacks
+                        either (AGENTS.md, "Failures and errors"). The
+                        owner expects an eval to give feedback on
+                        insufficient, inaccurate or poorly phrased
+                        information (owner's statement). ASSUMPTION:
+                        the output of an LLM judge varies between runs
+                        and model versions, so a test of it checks a
+                        tolerance rather than an exact result. Holds
+                        at ten times the size: yes, because criteria
+                        grow with the number of types, while the
+                        mechanized checks are shared by all types.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_item_eval
+    guid_target:        dec_918a00778b424525a2f58930707b2cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mechanized_checks_only
+    guid_target:        opt_ac1f2f77237c43b1ae2fab683adce969
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

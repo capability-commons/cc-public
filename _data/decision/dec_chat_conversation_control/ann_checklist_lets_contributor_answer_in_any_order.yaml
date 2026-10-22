@@ -1,0 +1,63 @@
+id_self:                ann_checklist_lets_contributor_answer_in_any_order
+guid_self:              ann_c6cdf3ad88244262838f1ec5cb38cbe0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checklist lets the contributor lead without gaps
+brief:                  |
+                        A checklist-led conversation accepts facts in
+                        the order the contributor offers them and
+                        still asks for what is missing. A form walk
+                        forces an order, and free conversation finds
+                        gaps only at the end.
+description:            |
+                        The checklist option lets the LLM choose what
+                        to ask next and shows it on every turn what is
+                        filled, what is still needed and what failed a
+                        check
+                        (_data/decision/dec_chat_conversation_control/opt_checklist_led_conversation.yaml,
+                        brief). The form walk asks for one field at a
+                        time in the order of the schema
+                        (_data/decision/dec_chat_conversation_control/opt_form_walk.yaml,
+                        brief). Free conversation writes the item only
+                        at the end
+                        (_data/decision/dec_chat_conversation_control/opt_free_conversation.yaml,
+                        brief). ASSUMPTION: a person describing a
+                        colleague or a skill tends to give several
+                        fields in one message and not in schema order.
+                        Holds at ten times the size: yes, because the
+                        checklist is drawn from the schema of each
+                        type and its cost per turn does not grow with
+                        the number of items or bots.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_conversation_control
+    guid_target:        dec_ff5347332cff466db395b0855080cdf1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_checklist_led_conversation
+    guid_target:        opt_3e84a5abf3924521b56f570e2bde0b99
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_form_walk
+    guid_target:        opt_8b7834a0c59e461bb3fc50e7dda21de4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_free_conversation
+    guid_target:        opt_5f071af1e0ad4d119d4c216a73d249fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

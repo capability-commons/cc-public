@@ -1,0 +1,56 @@
+id_self:                ann_local_model_speed_depends_on_host_hardware
+guid_self:              ann_19e60eb9ba3548d499a84388c170fec0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Local model speed set by the host
+brief:                  |
+                        A local open-weights model makes reply time
+                        and memory depend on the host that runs the
+                        bot. With a checklist and history in every
+                        prompt, a host without a suitable GPU may
+                        answer much more slowly than a hosted model.
+description:            |
+                        The local option runs an open-weights model on
+                        the host so that no message leaves it
+                        (_data/decision/dec_chat_llm_access/opt_local_open_weights_model.yaml).
+                        The development VM has no network access, and
+                        the maintainer's workstation, atlas, holds the
+                        repositories (context.md, facts). The
+                        checklist option sends the checklist on every
+                        turn
+                        (_data/decision/dec_chat_conversation_control/opt_checklist_led_conversation.yaml).
+                        The hardware of atlas is not recorded in the
+                        snapshot or in context.md. ASSUMPTION: a
+                        capable open-weights model needs many
+                        gigabytes of memory, and on CPU alone it
+                        processes long prompts and generates replies
+                        far more slowly than a hosted model.
+                        ASSUMPTION: a hosted model adds a network
+                        round trip, which is small beside generation
+                        time. Holds at ten times the size: no for the
+                        local option under ten times the
+                        conversations, because one host serves them in
+                        turn, while a hosted model scales out.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_llm_access
+    guid_target:        dec_621560bd48c94ae6809067aa57337312
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_local_open_weights_model
+    guid_target:        opt_9e9b65ac05c2420ca74e9b057395ddb6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,57 @@
+id_self:                ann_checklist_cost_follows_the_schema
+guid_self:              ann_e8424f5c35c641c4970311044431c5c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checklist cost bounded by the schema
+brief:                  |
+                        A checklist shown on every turn costs prompt
+                        tokens in proportion to the fields of one
+                        schema, not to the graph. It stays cheap only
+                        if its "failed a check" part comes from
+                        in-memory schema checks, not from a cctool run
+                        per turn.
+description:            |
+                        The checklist option shows on every turn what
+                        is filled, what is still needed and what
+                        failed a check
+                        (_data/decision/dec_chat_conversation_control/opt_checklist_led_conversation.yaml).
+                        The checklist is drawn from the schema of one
+                        item type (same file). The 45 schema files
+                        total about 155 KB, and the largest,
+                        sch_interface_control_document.yaml, is about
+                        27 KB (wc -c on _data/schema, 2026-10-22). A
+                        dry-run batch of 4 items took 17 s
+                        (context.md, facts measured 2026-10-22).
+                        ASSUMPTION: the conversation history sent each
+                        turn is larger than the checklist after a few
+                        turns, so the checklist adds a modest share of
+                        tokens per turn. Free conversation and the
+                        form walk send no checklist, but each still
+                        resends the history on every turn (ASSUMPTION:
+                        a stateless chat API is used). Holds at ten
+                        times the size: yes, because ten times the
+                        graph leaves the checklist the same size; only
+                        a larger schema grows it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_conversation_control
+    guid_target:        dec_ff5347332cff466db395b0855080cdf1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_checklist_led_conversation
+    guid_target:        opt_3e84a5abf3924521b56f570e2bde0b99
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

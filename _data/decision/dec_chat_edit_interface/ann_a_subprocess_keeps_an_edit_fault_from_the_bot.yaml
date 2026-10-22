@@ -1,0 +1,59 @@
+id_self:                ann_a_subprocess_keeps_an_edit_fault_from_the_bot
+guid_self:              ann_4baa65bf7bc042c28e8b57546cfe3177
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A subprocess keeps an edit fault from the bot
+brief:                  |
+                        Running cctool as a separate process for each
+                        write means a crash, hang or leftover state in
+                        the editing code ends only that one write.
+                        Called in process, the same fault ends the bot
+                        and every conversation it holds.
+description:            |
+                        The command line reads a fresh Tree for each
+                        edit and reports the result as exit status 0,
+                        1 or 2 (src/cc_public/cli/editing.py, function
+                        _run, lines 474-515). A Tree reads every
+                        document of the tree when it is made
+                        (src/cc_public/edit/edit.py, line 176). The
+                        checker keeps module-level caches across
+                        checks in one process
+                        (src/cc_public/check/check.py, CACHE_SCHEMA at
+                        line 84 and CACHE_REVIEW at line 93). The
+                        write replaces staged files one by one with
+                        os.replace, so a process killed between two
+                        replaces leaves some files new and some old
+                        (src/cc_public/edit/edit.py, function _write,
+                        lines 1123-1154). Holds at ten times the size:
+                        yes, because more conversations in one bot
+                        raise the cost of a fault that ends the bot,
+                        though the subprocess must then not be killed
+                        during its write.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_edit_interface
+    guid_target:        dec_e376c063e78640aca3f696f71ff46eae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cctool_subprocess
+    guid_target:        opt_54381196407b444a9166736cc4356b91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edit_module_in_process
+    guid_target:        opt_700e944befd44f5195e9a20b6ad8d03c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

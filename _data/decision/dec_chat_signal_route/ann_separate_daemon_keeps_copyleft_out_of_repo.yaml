@@ -1,0 +1,67 @@
+id_self:                ann_separate_daemon_keeps_copyleft_out_of_repo
+guid_self:              ann_38a61e835c0145cdb1cadd40c79ecc24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A separate daemon keeps copyleft code out of the repository
+brief:                  |
+                        Running signal-cli as its own process behind
+                        JSON-RPC lets cc-public stay Apache-2.0 and
+                        leaves the Signal protocol to a maintained
+                        client. An own client on libsignal puts AGPL
+                        code that is unsupported outside Signal into
+                        the bot's source.
+description:            |
+                        cc-public is licensed Apache-2.0 [LICENSE line
+                        2; pyproject.toml line 40]. The bot's source
+                        lives in cc-public [owner's statement].
+                        libsignal is licensed under the GNU AGPLv3
+                        [https://git.tjdev.de/mirror/libsignal/raw/branch/main/README.md,
+                        a mirror of the libsignal README]. The
+                        libsignal README says "Use outside of Signal
+                        is unsupported" [same URL]. The libsignal
+                        README says "All APIs and implementations are
+                        subject to change without notice" [same URL].
+                        signal-cli is licensed GPLv3 and has a daemon
+                        mode with a JSON-RPC interface
+                        [https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md].
+                        ASSUMPTION: talking to a GPL program over
+                        JSON-RPC from a separate process does not make
+                        the Apache-2.0 bot a derivative work. This is
+                        the common reading of the GPL, not a ruling.
+                        ASSUMPTION: with an own client, the project
+                        itself must track every libsignal and Signal
+                        server change, while with the daemon the
+                        signal-cli maintainers do that tracking and
+                        the project only bumps a version. Holds at ten
+                        times the size: yes, because the number of
+                        bots does not change which code links
+                        libsignal. More bots share one upgrade of the
+                        daemon.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_route
+    guid_target:        dec_61e4c477ce8f4ef29cb310255fb979cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_signal_cli_daemon
+    guid_target:        opt_d348bfb6205f4a8a9966d0a0ec86a675
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_own_client_on_libsignal
+    guid_target:        opt_d5180bb412f24d118f8e71fa423bae21
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

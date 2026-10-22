@@ -1,0 +1,52 @@
+id_self:                ann_an_llm_judge_adds_a_failing_part_to_the_gate
+guid_self:              ann_4e6006099459488cbe716380744d05ca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An LLM judge adds a failing part to the gate
+brief:                  |
+                        Mechanized checks give the same verdict each
+                        time and need no outside service. An LLM judge
+                        adds a model call that can fail or time out,
+                        so if the judge gates the readback, the bot
+                        stops whenever the model does.
+description:            |
+                        The mechanized checks run in cctool on the
+                        local tree (src/cc_public/edit/edit.py,
+                        function apply, lines 1075-1098). The judge
+                        option judges each draft with an LLM against
+                        criteria for its type, together with the
+                        checks (opt_llm_judge_and_checks, brief). A
+                        model call over a network can fail, time out
+                        or return a malformed answer (ASSUMPTION).
+                        Holds at ten times the size: yes, because more
+                        drafts mean more judge calls and so more
+                        failed calls, unless a failed judgment lets
+                        the readback go ahead with the checks alone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_item_eval
+    guid_target:        dec_918a00778b424525a2f58930707b2cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mechanized_checks_only
+    guid_target:        opt_ac1f2f77237c43b1ae2fab683adce969
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

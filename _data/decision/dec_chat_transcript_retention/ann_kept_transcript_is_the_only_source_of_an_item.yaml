@@ -1,0 +1,70 @@
+id_self:                ann_kept_transcript_is_the_only_source_of_an_item
+guid_self:              ann_ee6465c52f8c426397d191dbe08f17bf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transcript as the only record of why an item says what it says
+brief:                  |
+                        A kept transcript is the one record that links
+                        an item to what the contributor actually said.
+                        Deleting it on landing, or never keeping it,
+                        leaves the item with no source to trace back
+                        to.
+description:            |
+                        Data in the graph is expected to be almost
+                        entirely LLM generated, with humans mainly
+                        inspecting and reviewing (owner's statement).
+                        A bot elicits the fields of one item type in
+                        conversation and proposes the item through
+                        cctool editing commands (context.md, "What is
+                        being designed"). A commit item records one
+                        change and why it was made
+                        (_data/schema/sch_commit.yaml lines 15-16),
+                        and its brief is written when the commit is
+                        made, here by the bot (ASSUMPTION). The edit
+                        commands refuse only an edit that adds a check
+                        failure (src/cc_public/edit/edit.py, function
+                        apply at line 1075), so they do not test an
+                        item against what was said.
+                        opt_delete_transcript_on_landing deletes the
+                        transcript once its items land (its option
+                        file), and opt_keep_no_transcript keeps only
+                        the draft and its checklist (its option file).
+                        Questions about why an item says something
+                        tend to arise after it lands, when it is used
+                        (ASSUMPTION). Holds at ten times the size:
+                        yes, because each item still has exactly one
+                        conversation as its source, and storage grows
+                        only in the private store.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_transcript_retention
+    guid_target:        dec_27018135ec0245328b815072e0194054
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_keep_transcript_privately
+    guid_target:        opt_a3bfdb5b3f6b41d08064c25258b29458
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_delete_transcript_on_landing
+    guid_target:        opt_77d9b48a76ad46d887a764aaab81f5ce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_keep_no_transcript
+    guid_target:        opt_bc447d6b017343178527494d373f66cf
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

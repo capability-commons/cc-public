@@ -1,0 +1,56 @@
+id_self:                ann_answer_checked_when_given_not_after_readback
+guid_self:              ann_bf8914aeb476473893ac9a31adfe99b8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failures shown while the answer is fresh
+brief:                  |
+                        Checking each answer against the schema as it
+                        is given lets the bot ask again at once.
+                        Checking only at the write reports failures
+                        after the contributor has already confirmed
+                        the readback, so they must reopen an item they
+                        thought was done.
+description:            |
+                        The command line reports a refused edit as
+                        "Refused: the edit adds N failures. Nothing
+                        was written." (src/cc_public/cli/editing.py
+                        line 506). The option of checks only at the
+                        write checks nothing until cctool writes the
+                        item
+                        (_data/decision/dec_chat_check_timing/opt_check_at_write_only.yaml,
+                        brief). The schema-per-answer option checks
+                        each answer against the JSON Schema inside the
+                        bot and runs cctool once at the readback
+                        (_data/decision/dec_chat_check_timing/opt_schema_per_answer_dry_run_at_readback.yaml,
+                        brief). Holds at ten times the size: yes,
+                        because the per-answer check is local to one
+                        draft and does not depend on the size of the
+                        graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_schema_per_answer_dry_run_at_readback
+    guid_target:        opt_fa05d8c663c9453f9b1cd2ccbf6efd6e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_at_write_only
+    guid_target:        opt_e87fff38610745559a63837de7ea497b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_interaction_capability
+    guid_target:        concern_7c525ec6beee404bbf327469a5fbc281

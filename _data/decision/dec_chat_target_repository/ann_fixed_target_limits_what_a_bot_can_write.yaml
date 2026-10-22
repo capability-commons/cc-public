@@ -1,0 +1,54 @@
+id_self:                ann_fixed_target_limits_what_a_bot_can_write
+guid_self:              ann_9bdc052ceb1a488d9dcc919af6b67ff2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed target bounds a manipulated bot
+brief:                  |
+                        A bot fixed to one repository holds write
+                        access to that repository only, so no input
+                        can route personal data to a public one.
+                        Routing by mark trusts a label that the bot
+                        itself sets from untrusted chat.
+description:            |
+                        Under opt_target_by_protective_mark, the
+                        repository for each item is chosen from the
+                        protective mark it is given
+                        [opt_target_by_protective_mark.yaml brief].
+                        Under opt_target_fixed_per_deployment, a
+                        public repository is allowed only for a type
+                        that holds no personal data
+                        [opt_target_fixed_per_deployment.yaml brief].
+                        ASSUMPTION: routing by mark needs the bot to
+                        hold write credentials for every repository it
+                        may route to. Holds at ten times the size:
+                        yes, because more types and repositories
+                        multiply the routes a wrong mark can take,
+                        while a fixed target stays one route.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_target_repository
+    guid_target:        dec_8614f5f232634acd8f9705591f608f87
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_target_fixed_per_deployment
+    guid_target:        opt_37652d8a6e35402fbcbbd070744661e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_target_by_protective_mark
+    guid_target:        opt_b104ec8c8ab349c0a252561c4a26ea9f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

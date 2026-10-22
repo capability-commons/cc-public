@@ -1,0 +1,65 @@
+id_self:                ann_group_admission_depends_on_signal_groups
+guid_self:              ann_6c5f0d8dee1645969a069b9afbbde72c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Group admission depends on Signal group state
+brief:                  |
+                        Admitting members of a Signal group means
+                        reading the rule from Signal group state
+                        through the client. A private list or a notice
+                        keeps the rule in the operator's own data.
+description:            |
+                        The group option answers only the members of a
+                        Signal group that the operator runs
+                        [_data/decision/dec_chat_signal_admission/opt_admit_group_members.yaml
+                        line 13]. The listed contacts option answers
+                        only accounts on a private list the operator
+                        keeps
+                        [_data/decision/dec_chat_signal_admission/opt_admit_listed_contacts.yaml
+                        line 13]. The consent option answers anyone
+                        who accepts the notice
+                        [_data/decision/dec_chat_signal_admission/opt_admit_anyone_with_consent.yaml
+                        line 13]. signal-cli releases older than three
+                        months may not work correctly because the
+                        server may change
+                        [https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md].
+                        ASSUMPTION: the bot learns group membership
+                        only through the Signal client it uses, so a
+                        change in how that client or the server
+                        reports groups changes who is admitted. The
+                        list and the notice need only the sender's
+                        identity, which the Signal adapter knows for
+                        each contributor
+                        (_data/logical_component/lco_chat_signal.yaml
+                        lines 12-15). Holds at ten times the size:
+                        yes, because the dependency is per mechanism,
+                        not per member. A larger group widens the
+                        effect of a membership read that goes wrong.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_admission
+    guid_target:        dec_d2248c4bb9aa4c2caaedbc5b43e9f6cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_admit_listed_contacts
+    guid_target:        opt_b7f5ef8be3b748d8b9680e201df46f48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_admit_group_members
+    guid_target:        opt_dde6c5de8f1944ec97a960064ba9e927
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

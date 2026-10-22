@@ -1,0 +1,55 @@
+id_self:                ann_own_account_needs_a_number_provider
+guid_self:              ann_2be0c8fa7b994f51b10908b853c1f3e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An own account adds a phone number provider
+brief:                  |
+                        A bot with its own account needs a phone
+                        number that can take SMS or a voice call, so
+                        it adds a carrier or number service as a
+                        dependency. It also faces a captcha at
+                        registration.
+description:            |
+                        The own account option registers a phone
+                        number of the bot's own
+                        [_data/decision/dec_chat_signal_account/opt_account_of_its_own.yaml
+                        line 13]. signal-cli registration needs a
+                        phone number that can receive SMS or a voice
+                        call [context.md, summary of the signal-cli
+                        0.14.1 README]. "Registering may require
+                        solving a CAPTCHA challenge"
+                        [https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md].
+                        signal-cli says that an account deleted with
+                        --delete-account cannot be reactivated
+                        [https://mirrors.edge.kernel.org/gentoo/distfiles/f0/signal-cli-bin-0.13.19.signal-cli.1.adoc].
+                        ASSUMPTION: if the number lapses and is
+                        reassigned, its new holder can register it
+                        with Signal and take over the bot's account.
+                        The own account does not depend on any other
+                        Signal account staying active (ASSUMPTION).
+                        Holds at ten times the size: yes, because each
+                        bot needs its own number, so ten bots mean ten
+                        numbers to keep paid and reachable.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_account
+    guid_target:        dec_731ab981c3f04e67b8fc395e7c37237e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_account_of_its_own
+    guid_target:        opt_91850f23adfe45ed9ad1e2782b7d068a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

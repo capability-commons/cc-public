@@ -1,0 +1,59 @@
+id_self:                ann_local_model_keeps_messages_on_the_host
+guid_self:              ann_83170ea62daf40558c1c61817d6e0ccb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Messages that never leave the host
+brief:                  |
+                        A local open-weights model is the only option
+                        under which no message, and so no personal
+                        data, reaches a third party. Zero retention
+                        from a maker is an arrangement to be
+                        requested, not a default.
+description:            |
+                        The local option runs an open-weights model on
+                        the host so that no message leaves it
+                        [_data/decision/dec_chat_llm_access/opt_local_open_weights_model.yaml,
+                        brief]. Anthropic says that to request zero
+                        data retention an organization contacts its
+                        sales team, and that it is enabled per
+                        organization
+                        [https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md,
+                        line 23 of the fetched text]. The same page
+                        says that on Amazon Bedrock and Google Cloud
+                        the cloud provider is the data processor
+                        [https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md,
+                        opening paragraph]. A likely first instance is
+                        member skill profiles, which hold personal
+                        data [context.md lines 59-60]. Holds at ten
+                        times the size: yes, because every extra
+                        conversation sent to a hosted model is one
+                        more transfer of personal data, while a local
+                        model sends none.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_llm_access
+    guid_target:        dec_621560bd48c94ae6809067aa57337312
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_local_open_weights_model
+    guid_target:        opt_9e9b65ac05c2420ca74e9b057395ddb6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cloud_platform_model
+    guid_target:        opt_dd638b8914544f1d9dcfbe805f511bb6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
