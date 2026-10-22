@@ -35,6 +35,7 @@ import cc_public.cli.group
 import cc_public.commit.change
 import cc_public.commit.message
 import cc_public.gate.gate
+import cc_public.graph.extract
 import cc_public.graph.logic
 
 
@@ -46,6 +47,13 @@ OPTION_ROOT = click.option('--root',
                                                 path_type = pathlib.Path),
                            help    = 'The tree whose sch_commit is used. Defaults to the '
                                      'working directory.')
+
+# A title that fits no template is reported with this sentence, and
+# then the templates are listed, from the description of the title in
+# sch_commit, whose second paragraph names them.
+#
+PREFIX_TEMPLATE = 'The title is not built from a template'
+KEY_TEMPLATE    = ('allOf', 'properties', 'title', 'description')
 
 
 # -----------------------------------------------------------------------------
@@ -70,13 +78,52 @@ def new(title: str, brief: str, description: str | None, root: pathlib.Path) -> 
     TITLE is the subject line, built from one of the templates in
     sch_commit, such as "Add OBJECT" or "Change OBJECT so that
     STATEMENT". The message is checked before it is printed. Add any
-    trailers after it.
+    trailers after it. A message that fails sch_commit is not printed:
+    each way it fails is, with the templates if the title fits none,
+    and the exit status is 2.
 
     """
 
-    text = cc_public.commit.message.compose(title, brief, description)
-    _report(cc_public.commit.message.violations(root.resolve(), text))
+    text       = cc_public.commit.message.compose(title, brief, description)
+    list_found = cc_public.commit.message.violations(root.resolve(), text)
+
+    for found in list_found:
+        click.echo(found, err = True)
+    if any(found.startswith(PREFIX_TEMPLATE) for found in list_found):
+        templates = _templates(root.resolve())
+        if templates:
+            click.echo('Build the title from one of these templates, with no full stop: '
+                       '{templates}'.format(templates = templates), err = True)
+    if list_found:
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
     click.echo(text, nl = False)
+
+
+# -----------------------------------------------------------------------------
+def _templates(root: pathlib.Path) -> str | None:
+    """
+    Return the templates that a title is built from, as the description
+    of the title in sch_commit in the tree at root names them, or None
+    if they cannot be found.
+
+    """
+
+    (key_all, key_property, key_title, key_description) = KEY_TEMPLATE
+
+    for (document, _) in cc_public.graph.extract.documents(root).values():
+        if not (isinstance(document, dict)
+                and document.get('id_self') == cc_public.commit.message.ID_SCHEMA):
+            continue
+        for part in document.get(key_all) or []:
+            if not isinstance(part, dict):
+                continue
+            title          = (part.get(key_property) or {}).get(key_title) or {}
+            list_paragraph = str(title.get(key_description, '')).split('\n\n')
+            if len(list_paragraph) > 1:
+                return ' '.join(list_paragraph[1].split())
+
+    return None
 
 
 # -----------------------------------------------------------------------------

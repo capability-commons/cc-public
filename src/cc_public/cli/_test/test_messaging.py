@@ -28,6 +28,7 @@ edge:                   []
 import click.testing
 
 import cc_public.cli.command
+import cc_public.conftest
 
 
 # -----------------------------------------------------------------------------
@@ -54,3 +55,12 @@ def test_draft_of_a_message_that_is_not_utf_8_is_reported_and_left(tmp_path):
     assert result.exit_code == 0
     assert result.stderr.startswith('No draft:')
     assert path.read_bytes() == b'Merge \xff\n'
+
+
+def test_new_with_a_title_that_fits_no_template_lists_the_templates():
+    result = _run('new', 'Added a thing', '--brief', 'A thing.',
+                  '--root', str(cc_public.conftest.DIR_REPO))
+    assert result.exit_code == 2
+    assert 'not built from a template in sch_commit: Added a thing' in result.stderr
+    assert 'Add OBJECT. Remove OBJECT.' in result.stderr
+    assert result.stdout == ''
