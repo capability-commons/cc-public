@@ -386,6 +386,7 @@ def test_a_decision_no_option_answers_is_advice(tree):
     failures.pop('unformatted_file', None)
     assert failures == {}
     advice.pop('unmapped_concept', None)
+    advice.pop('unrecorded_genus', None)
     assert advice == {'decision_without_options': [('dec_x',)]}
 
 
@@ -1660,3 +1661,13 @@ def test_a_related_match_of_a_relation_is_not_compared(tree):
     _add_match(tree, 'relation_has_subject', 'relation_has_related_match', 'extrel_bfo_realizes',
                'reg_relation')
     assert 'end_outside_release' not in _check(tree)
+
+
+def test_a_definition_that_opens_with_its_genus_needs_an_edge_to_it(tree):
+    _replace(tree, '_data/register/reg_concept.yaml',
+             'Holding a thing as it is, so that it does not\n',
+             'A [[file]] held as it is, so that it does not\n')
+    (_, advice) = cc_public.check.check.review(tree)
+    list_row = advice['unrecorded_genus']
+    assert ('concept_keep', 'concept_file') in list_row
+    assert [row for row in list_row if row[0] in ('concept_type', 'concept_document')] == []

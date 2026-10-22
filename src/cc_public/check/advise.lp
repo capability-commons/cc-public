@@ -329,3 +329,64 @@ redundant_hierarchy_edge(Source, Relation, Target) :-
 
 hierarchy_relation("relation_is_narrower_than").
 hierarchy_relation("relation_is_subclass_of").
+
+
+% -----------------------------------------------------------------------------
+% The definition of the concept names the other as its genus, the
+% broader concept that it narrows, by the link it opens with.
+%
+% decl genus(concept: symbol,
+%            genus:   symbol)
+
+genus(Concept, Genus) :-
+    genus_link(Concept, _, Genus),
+    Genus != "".
+
+genus(Concept, Genus) :-
+    genus_link(Concept, Term, ""),
+    term_sense(Concept, Term, Genus).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cc_public.check.advise.unrecorded_genus
+% guid_self:              lpp_c627e85816734e96a7991fa16aab1dff
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unrecorded genus
+% brief:                  |
+%                         A concept whose definition opens with its
+%                         genus is narrower than that genus in the
+%                         concept register, so that the register keeps
+%                         the hierarchy that the definitions state. A
+%                         definition may open with a link that is not
+%                         its genus, so this is advice, not a failure.
+% did:                    |
+%                         The definition of {concept} opens with
+%                         {genus}, but {concept} is not narrower than
+%                         {genus}.
+% fix:                    |
+%                         Add an edge of relation_is_narrower_than from
+%                         the concept to the one its definition opens
+%                         with. If that one is not its genus, reword the
+%                         definition so that it opens with the genus.
+% edge:                   []
+%
+% ...
+%
+% decl unrecorded_genus(concept: symbol,
+%                       genus:   symbol)
+#show unrecorded_genus/2.
+
+unrecorded_genus(Concept, Genus) :-
+    has_type(Concept, "type_concept"),
+    genus(Concept, Genus),
+    Genus != Concept,
+    not reaches("relation_is_narrower_than", Concept, Genus).
