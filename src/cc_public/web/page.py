@@ -231,7 +231,7 @@ R_IS_DRIVEN_BY    = 'relation_is_driven_by'
 KIND_OPTION       = cc_public.web.request.KIND_OPTION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
 KIND_ANSWER       = cc_public.web.request.KIND_ANSWER
-KIND_DETERMINE    = cc_public.web.request.KIND_DETERMINE
+KIND_RULE         = cc_public.web.request.KIND_RULE
 ROLE_UPHOLD       = cc_public.web.request.ROLE_UPHOLD
 ROLE_REJECT       = cc_public.web.request.ROLE_REJECT
 KEY_KIND          = cc_public.web.request.KEY_KIND
@@ -252,8 +252,8 @@ MAP_HEADING       = {(KIND_OPTION,  ''):           'Add an option',
                      (KIND_ARGUMENT,  ROLE_AGAINST): 'Add an annotation against',
                      (KIND_ANSWER,    ROLE_FOR):     'Support',
                      (KIND_ANSWER,    ROLE_AGAINST): 'Challenge',
-                     (KIND_DETERMINE, ROLE_UPHOLD):  'Uphold',
-                     (KIND_DETERMINE, ROLE_REJECT):  'Reject'}
+                     (KIND_RULE,      ROLE_UPHOLD):  'Uphold',
+                     (KIND_RULE,      ROLE_REJECT):  'Reject'}
 
 Graph             = cc_public.web.argument.Graph
 Decision          = cc_public.web.argument.Decision
@@ -1055,7 +1055,7 @@ def _controls(graph: Graph, decision: Decision, id_option: str) -> typing.Any:
 
     """
 
-    kind          = KIND_DETERMINE
+    kind          = KIND_RULE
     list_unspoken = decision.unspoken()
     if list_unspoken:
         uphold = htpy.span(class_ = 'pill for waiting',
@@ -1064,7 +1064,7 @@ def _controls(graph: Graph, decision: Decision, id_option: str) -> typing.Any:
     else:
         uphold = _pill('Uphold', ROLE_FOR, 'Uphold this option',
                        _edit_href(kind, id_option, ROLE_UPHOLD))
-    return htpy.div(class_ = 'determine')[
+    return htpy.div(class_ = 'rule')[
         uphold,
         _pill('Reject', ROLE_AGAINST, 'Reject this option',
               _edit_href(kind, id_option, ROLE_REJECT))]
@@ -2056,7 +2056,7 @@ def edit(graph:      Graph,
     def field(label: str, key: str, value: str, is_long: bool = False) -> typing.Any:
         return _field(label, key, value, is_long, cc_public.web.request.hint(request.kind, key))
 
-    if request.kind == KIND_DETERMINE:
+    if request.kind == KIND_RULE:
         existing = cc_public.web.request.ruling(graph, id_decision)
         reason   = (existing.brief or '').strip() if existing is not None else ''
         list_field.append(field('Reason', KEY_REASON, request.map_text.get(KEY_REASON, reason),
@@ -2238,7 +2238,7 @@ def _decision_table(graph: Graph, list_decision: list[Decision]) -> typing.Any:
                            htpy.th(class_ = 'number')['Options'],
                            htpy.th(class_ = 'number')['Annotations'],
                            htpy.th(class_ = 'number')['Concerns'],
-                           htpy.th['Determined']]],
+                           htpy.th['Ruled']]],
         htpy.tbody[[
             htpy.tr[
                 htpy.td[htpy.a(href = PATH_DECISION + decision.item.id)[decision.item.title]],

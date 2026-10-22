@@ -62,8 +62,8 @@ import cc_public.web.argument
 KIND_OPTION       = 'option'
 KIND_ARGUMENT     = 'argument'
 KIND_ANSWER       = 'answer'
-KIND_DETERMINE    = 'determine'
-TUPLE_KIND        = (KIND_OPTION, KIND_ARGUMENT, KIND_ANSWER, KIND_DETERMINE)
+KIND_RULE         = 'rule'
+TUPLE_KIND        = (KIND_OPTION, KIND_ARGUMENT, KIND_ANSWER, KIND_RULE)
 
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
@@ -72,7 +72,7 @@ ROLE_REJECT       = 'reject'
 MAP_ROLE          = {KIND_OPTION:  ('',),
                      KIND_ARGUMENT:  (ROLE_FOR, ROLE_AGAINST),
                      KIND_ANSWER:    (ROLE_FOR, ROLE_AGAINST),
-                     KIND_DETERMINE: (ROLE_UPHOLD, ROLE_REJECT)}
+                     KIND_RULE:      (ROLE_UPHOLD, ROLE_REJECT)}
 
 KEY_KIND          = 'kind'
 KEY_TARGET        = 'target'
@@ -129,7 +129,7 @@ MAP_LEAD          = {
                      'An answer settles a fact, so it speaks for no concern.',
                      'If what you write is a rule or a commitment, it may belong in an option '
                      'instead.'),
-    KIND_DETERMINE: ('Say why this option is better than its rivals, not only why it is '
+    KIND_RULE:      ('Say why this option is better than its rivals, not only why it is '
                      'good.',
                      'Name the challenge you found strongest, and say why it does not change '
                      'the ruling.',
@@ -284,7 +284,7 @@ def id_new(graph: Graph, request: Request) -> str:
 
     """
 
-    if request.kind == KIND_DETERMINE:
+    if request.kind == KIND_RULE:
         id_decision = decision_of(graph, request)
         existing    = ruling(graph, id_decision)
         if existing is not None:
@@ -323,8 +323,8 @@ def operations(graph: Graph, request: Request) -> list:
     id_decision = decision_of(graph, request)
     id_item     = id_new(graph, request)
 
-    if request.kind == KIND_DETERMINE:
-        return _determine(graph, request, id_decision, id_item)
+    if request.kind == KIND_RULE:
+        return _rule(graph, request, id_decision, id_item)
 
     map_field = {key: request.text(key) for key in (KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION)
                  if request.text(key)}
@@ -341,10 +341,10 @@ def operations(graph: Graph, request: Request) -> list:
 
 
 # -----------------------------------------------------------------------------
-def _determine(graph:    Graph,
-               request:     Request,
-               id_decision: str,
-               id_item:     str) -> list:
+def _rule(graph:       Graph,
+          request:     Request,
+          id_decision: str,
+          id_item:     str) -> list:
     """
     Return the operations that uphold or reject the option of request
     in the ruling id_item of the decision id_decision, with the reason
@@ -386,7 +386,7 @@ def address(graph: Graph, request: Request, id_item: str) -> str:
 
     if request.kind == KIND_OPTION:
         list_pair = [(KEY_TO, id_item)]
-    elif request.kind == KIND_DETERMINE:
+    elif request.kind == KIND_RULE:
         list_pair = [(KEY_TO, request.target)]
     elif request.kind == KIND_ARGUMENT and request.list_concern:
         key       = DELIM_KEY.join((request.list_concern[0], id_item))
