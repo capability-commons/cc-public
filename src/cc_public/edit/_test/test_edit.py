@@ -31,6 +31,7 @@ import pathlib
 import pytest
 import ruamel.yaml.scalarstring
 
+import cc_public.check.check
 import cc_public.edit.edit
 import cc_public.edit.layout
 import cc_public.graph.extract
@@ -38,6 +39,7 @@ from cc_public.conftest import DIR_REPO
 
 
 HEX_ZERO      = '0' * 32
+GUID_CONCEPT  = 'concept_4c11efe184cd47289cfa3941377d4807'
 TEXT_ABOUT    = ('edge:\n'
                  '\n'
                  '  - id_relation:        relation_is_about\n'
@@ -195,8 +197,10 @@ def test_an_edit_that_adds_a_failure_is_refused_and_not_written(tree):
 
 def test_a_failure_the_tree_already_has_is_not_added(tree):
     path = tree / '_data/register/reg_concept.yaml'
-    path.write_text(path.read_text().replace('guid_self:          concept_820f9604',
-                                             'guid_self:          concept_820f9605'))
+    text = path.read_text()
+    path.write_text(text.replace('guid_self:          {guid}'.format(guid = GUID_CONCEPT),
+                                 'guid_self:          concept_' + HEX_ZERO))
+    assert 'guid_mismatch' in cc_public.check.check.check(tree)
     assert _edit(tree, {'set': ['concept_concept', 'note', 'A note.']}) == {}
 
 
