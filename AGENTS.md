@@ -14,23 +14,23 @@ unfinished edits of another.
   stays on `dev`. Nobody edits files there; it is only where finished
   branches land.
 - Read the claims before you start. In the main checkout,
-  `cat .git/worktrees/*/locked` lists each worktree with its owner and
-  the area it changes. If another worktree claims files you need,
-  agree it with the owner, or ask Will, first.
+  `cat .git/worktrees/*/locked` lists each worktree with its claimant
+  and the area it changes. If another worktree claims files you need,
+  agree it with the claimant, or ask the maintainer, Will, first.
 - Start a topic from the main checkout. TOPIC is a short name for the
   work, in lower case with hyphens:
 
   ```bash
   git worktree add -b TOPIC ../cc-public-TOPIC dev
   echo "gitdir: ../cc-public/.git/worktrees/cc-public-TOPIC" > ../cc-public-TOPIC/.git
-  echo "OWNER: AREA" > .git/worktrees/cc-public-TOPIC/locked
+  echo "CLAIMANT: AREA" > .git/worktrees/cc-public-TOPIC/locked
   ```
 
   The second line makes the link from the worktree relative. Git
   writes an absolute path, and the folder has a different path on
   each machine and in each remote session, so an absolute link
   breaks. The third line locks the worktree, so git never prunes it,
-  and records who owns it and what it changes. Do not run
+  and records who claims it and what it changes. Do not run
   `git worktree repair` or `git worktree move`: both write absolute
   paths again.
 - Work, check and commit in your worktree. The first `pixi run` there

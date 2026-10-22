@@ -19,14 +19,14 @@ description:            |
                         The description of an annotation is one run of
                         prose that cites its sources in brackets: a
                         file and its lines, a commit, a date, a web
-                        address, or a statement by the owner. Each
-                        such bracket is taken out of the prose and set
-                        as a numbered note in the margin, so the prose
-                        reads as an argument and the sources stay
-                        beside it. An assumption, marked ASSUMPTION,
-                        is set apart from what was checked, and each
-                        id the prose names links to its item, shown by
-                        its title.
+                        address, or a statement by the maintainer.
+                        Each such bracket is taken out of the prose
+                        and set as a numbered note in the margin, so
+                        the prose reads as an argument and the sources
+                        stay beside it. An assumption, marked
+                        ASSUMPTION, is set apart from what was
+                        checked, and each id the prose names links to
+                        its item, shown by its title.
 edge:                   []
 
 ...
