@@ -151,8 +151,26 @@ unannounced_removal(Id, Guid) :-
 
 % -----------------------------------------------------------------------------
 % The commit item names each item that the commit gives a new id, by
-% its old id or its new one.
+% its old id or its new one. An item embedded in another, such as an
+% interface member, takes its id from what holds it, so it is named
+% with the item that holds it when that is renamed and named too.
 %
+% decl announced_rename(other: symbol)
+
+announced_rename(Other) :-
+    renamed(_, Id, Other),
+    commit_mention(Id).
+
+announced_rename(Other) :-
+    renamed(_, _, Other),
+    commit_mention(Other).
+
+announced_rename(Other) :-
+    renamed(_, _, Other),
+    item(Other, _, Holder, _, _),
+    not register_entry_key(_, _, Other),
+    announced_rename(Holder).
+
 % decl unannounced_rename(id:    symbol,
 %                         other: symbol)
 % did  The commit renames {id} to {other} and names neither.
@@ -162,8 +180,7 @@ unannounced_removal(Id, Guid) :-
 
 unannounced_rename(Id, Other) :-
     renamed(_, Id, Other),
-    not commit_mention(Id),
-    not commit_mention(Other).
+    not announced_rename(Other).
 
 
 % -----------------------------------------------------------------------------
