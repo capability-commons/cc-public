@@ -121,7 +121,10 @@ unfinished edits of another.
   any file, such as a test, that still names the old id outside a YAML
   document; change those by hand.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
-  in names and in prose. Never use a term it lists as deprecated.
+  in names and in prose. Never use a term it lists as deprecated. A term
+  is held to its concept's sense where it is used as a term: in an id, a
+  requirement slot, a title or a link. Elsewhere an everyday word, such
+  as keep or refuse, keeps its everyday senses.
 - A short term may stand for a longer preferred term in prose, written
   as a wiki link: `[[item]]` for an admitted term, or
   `[[concept_identifiable_data_item|item]]` (target first) where the
