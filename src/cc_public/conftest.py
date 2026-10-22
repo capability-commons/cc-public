@@ -152,7 +152,7 @@ def _is_skipped(path: pathlib.Path) -> bool:
 def _module_of(word: str, map_module: dict[str, pathlib.Path]) -> pathlib.Path | None:
     """
     Return the module or logic program that the id word names, or holds
-    the class or function it names, or None if it names none.
+    the class, function or predicate it names, or None if it names none.
 
     """
 
@@ -161,6 +161,9 @@ def _module_of(word: str, map_module: dict[str, pathlib.Path]) -> pathlib.Path |
     tuple_prefix      = (*cc_public.graph.extract.MAP_PREFIX_MODULE.values(),
                          cc_public.graph.extract.PREFIX_PACKAGE)
     tuple_prefix      = (prefix,) if prefix in tuple_prefix else tuple_prefix
+    if prefix == cc_public.graph.extract.PREFIX_PREDICATE:
+        tuple_prefix  = (cc_public.graph.extract.MAP_PREFIX_MODULE[
+                             cc_public.graph.extract.SUFFIX_PROGRAM],)
     list_part         = name.split(cc_public.graph.extract.DELIM_MODULE)
     while list_part:
         dotted = cc_public.graph.extract.DELIM_MODULE.join(list_part)
