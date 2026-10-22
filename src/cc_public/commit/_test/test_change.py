@@ -31,6 +31,7 @@ import subprocess
 import pytest
 
 import cc_public.commit.change
+import cc_public.edit.edit
 
 
 pytestmark = pytest.mark.prepush
@@ -90,6 +91,17 @@ def _check(root, title, brief = 'A change.'):
 
     _git(root, 'add', '--all')
     return cc_public.commit.change.check(root, {'title': title, 'brief': brief})
+
+
+def _rename(root, id_old, id_new):
+    """
+    Rename id_old to id_new in root with cctool rename, as one edit.
+
+    """
+
+    tree = cc_public.edit.edit.Tree(root)
+    cc_public.edit.edit.batch(tree, [{'rename': [id_old, id_new]}])
+    assert cc_public.edit.edit.apply(tree) == {}
 
 
 def _replace(root, relative, old, new):
@@ -152,6 +164,26 @@ def test_an_unannounced_rename_of_a_member_asks_for_no_alias(repo):
     _replace(repo, ICD, ID_MEMBER, 'icm_cc_public_check.failure_map')
     assert _check(repo, 'Change the interface so that it is tidy') == {
         'unannounced_rename': [(ID_MEMBER, 'icm_cc_public_check.failure_map')]}
+
+
+@pytest.mark.parametrize(('id_old', 'id_new'), [
+    (ID_MEMBER,                            'icm_cc_public_check.failure_map'),
+    ('dfn_stableflow_smoketest.ctrl_proc', 'dfn_stableflow_smoketest.proc_ctrl'),
+    ('icd_cc_public_check',                'icd_cc_public_checks'),
+    ('dfg_stableflow_smoketest',           'dfg_stableflow_smoke'),
+])
+def test_a_rename_made_with_cctool_passes(repo, id_old, id_new):
+    _rename(repo, id_old, id_new)
+    assert _check(repo, 'Rename {old} to {new}'.format(old = id_old, new = id_new)) == {}
+
+
+def test_the_members_of_a_renamed_document_are_named_with_it(repo):
+    _rename(repo, 'icd_cc_public_check', 'icd_cc_public_checks')
+    assert _check(repo, 'Change the interface so that it is tidy',
+                  'Renames icd_cc_public_check.') == {}
+    _git(repo, 'reset', '--quiet')
+    assert _check(repo, 'Change the interface so that it is tidy')[
+        'unannounced_rename'][0] == ('icd_cc_public_check', 'icd_cc_public_checks')
 
 
 def test_a_guid_given_another_prefix_is_reported(repo):
