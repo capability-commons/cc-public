@@ -18,21 +18,21 @@ description:            |
                         The checker reports a register fault at the
                         path "table/concern_cost/title"
                         (src/cc_public/check/_test/test_check.py lines
-                        521-530). The editor looks an entry up by
-                        document[KEY_TABLE][id_item]
-                        (src/cc_public/edit/edit.py lines 1129-1132).
+                        944-953). The editor finds an entry in its
+                        register's table by its readable id
+                        (src/cc_public/edit/edit.py lines 787-789).
                         JSON Schema uniqueItems compares whole items,
                         so an array would need a uniqueness rule of
                         its own (json-schema-validation 2020-12
                         section 6.4.3). Weak spot: a duplicate key is
-                        not a located finding. Tested 2026-10-15 on a
-                        copy of the tree with concern_security
-                        repeated: cctool check ends in an uncaught
-                        DuplicateKeyError traceback (its message gives
-                        the line). An edit that adds a duplicate key
-                        is refused as "The edit leaves {file}
-                        unreadable" (src/cc_public/edit/edit.py lines
-                        186-191). From the maintainability advocate.
+                        reported as unreadable_file at its line, but
+                        the register drops out and every reference to
+                        its entries dangles. Tested 2026-10-22 on a
+                        copy of the tree with concern_cost repeated.
+                        An edit that adds a duplicate key is refused
+                        as "The edit leaves {file} unreadable"
+                        (src/cc_public/edit/edit.py lines 199-201).
+                        From the maintainability advocate.
 
 edge:
 

@@ -10,23 +10,25 @@ protective_mark:
 
 title:                  Rights per file as in licensing practice
 brief:                  |
-                        Each standalone item is one file today, so the
-                        chosen rule puts rights on files, as common
-                        open-source licensing practice does.
+                        Each standalone item is one file, except
+                        function items, which share their module's
+                        file. So the chosen rule puts rights on files,
+                        as open-source licensing practice does.
 description:            |
                         Registers and schemas hold one standalone item
                         per file with rights at the top
                         (_data/register/reg_concept.yaml lines 1-10).
-                        The license is an SPDX expression
+                        src/cc_public/check/check.py holds a module
+                        item and six function items, each with its own
+                        rights (one is at lines 98-126). The license
+                        is an SPDX expression
                         (_data/schema/sch_trait_rights.yaml lines
-                        129-150). The REUSE spec says "Each Covered
-                        File MUST have Licensing Information
-                        associated with it"
+                        129-150). REUSE asks that each covered file
+                        have licensing information
                         (https://reuse.software/spec-3.3/). The YAML
                         keys are not the REUSE SPDX tags, so the REUSE
-                        tool does not read them as they stand. The
-                        point weakens if several standalone items ever
-                        share one file.
+                        tool does not read them. The point is weaker
+                        now that items share a file.
 
 edge:
 
