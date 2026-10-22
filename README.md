@@ -110,6 +110,7 @@ would send; a pushed tag names history already made, and is passed over.
 ## cctool
 
     cctool check                            check the tree
+    cctool friction                         report signals of friction
     cctool gate                             check, lint and test what is staged
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILEPATH           check a commit message
