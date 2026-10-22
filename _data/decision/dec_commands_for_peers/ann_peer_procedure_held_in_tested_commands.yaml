@@ -1,0 +1,84 @@
+id_self:                ann_peer_procedure_held_in_tested_commands
+guid_self:              ann_33ebe7a211f84325912e81df3f1ffa8f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer procedure held in tested commands
+brief:                  |
+                        Manual procedures in this repository already
+                        carry traps each reader must learn, nothing in
+                        the gate runs documented steps, and steps for
+                        a peer would differ by platform and by network
+                        access. A command group turns setting up and
+                        upgrading a peer into the same few commands on
+                        every supported platform, held in code the
+                        gate tests.
+description:            |
+                        Sources:
+                        - The worktree procedure is documented as
+                          manual shell steps with warnings such as "Do
+                          not run git worktree repair or git worktree
+                          move" (AGENTS.md lines 20-35), and the
+                          bundle procedure warns never to use git
+                          format-patch and git am (AGENTS.md lines
+                          49-60).
+                        - Procedures for agents are kept as skills
+                          (AGENTS.md lines 175-182); the tests check
+                          only that the commands, pixi tasks and ids
+                          the guides name exist, and nothing runs the
+                          steps
+                          (src/cc_public/cli/_test/test_guidance.py
+                          lines 15-25 and 151-198), while the gate
+                          runs the tests under src only when code is
+                          staged (src/cc_public/gate/gate.py lines 99
+                          and 173-191).
+                        - Setting up a peer needs at least a
+                          dependency pinned to a release and a path
+                          override for local work
+                          (_sources/cc-patrol-notes/plan.md lines
+                          69-72).
+                        - The workspace locks osx-arm64, osx-64 and
+                          linux-64 (pyproject.toml line 59), and the
+                          atlas VM has no network (context note,
+                          _sources/context.md line 30).
+                        - The owner will move to main "before outside
+                          partners use us" (owner's statement,
+                          2026-10-22T16:30).
+                        - Assumption: manual steps differ by platform
+                          and by network access, so a reader must pick
+                          the right variant on each new host.
+                          Strength: moderate; the saving grows with
+                          the number of peers and hosts, and today
+                          there is one peer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_manual_steps
+    guid_target:        opt_7b0a69fc0da047aa92ec2550fe5dba1d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

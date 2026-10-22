@@ -1,0 +1,90 @@
+id_self:                ann_queries_need_a_live_service_per_segment
+guid_self:              ann_0ea1e0c12bd840f9bff3e1de6ad659a7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Live service in every answering segment
+brief:                  |
+                        Queries need each segment to host a service
+                        reachable from every consumer while it checks,
+                        so a commit's gate can no longer run over a
+                        copy of the staged content alone, and a host
+                        without network cannot take part. Each service
+                        is new running code to test and a network
+                        surface to defend, while cctool's only server
+                        today has no authentication, binds to the
+                        local host by default and takes forms only
+                        from it. Against that, a service scales to
+                        segments too large to copy whole.
+description:            |
+                        Sources:
+                        - The queries option has each segment answer
+                          queries from the others through a service
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
+                          brief).
+                        - The checks are logic program rules evaluated
+                          over the extracted facts (README.md lines
+                          22-23 and 54-56).
+                        - The gate copies the staged content and runs
+                          the check, the lint and the tests over the
+                          copy (README.md lines 71-74;
+                          src/cc_public/gate/gate.py lines 120-152).
+                        - The atlas VM has no network (context note,
+                          _sources/context.md line 30).
+                        - The web server binds to 127.0.0.1 by
+                          default, though --host can change it
+                          (src/cc_public/web/server.py line 65;
+                          src/cc_public/cli/serving.py lines 45-47),
+                          and refuses forms not from a local host
+                          (src/cc_public/web/server.py lines 159-162
+                          and 189-199); it has no authentication.
+                        - A standard query protocol exists, which a
+                          graph database partner might already offer
+                          (SPARQL 1.1 Protocol,
+                          https://www.w3.org/TR/sparql11-protocol/).
+                        - The owner expects most changes to the graph
+                          to move into partner segments over time
+                          (owner's statement, 2026-10-22T16:20).
+                        - Assumption: a consuming segment loads all
+                          the facts of a segment it consumes, so what
+                          it loads grows with that segment. Strength:
+                          moderate; a partner with a SPARQL endpoint
+                          pays little, but every other partner pays
+                          for a service.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_answer_queries
+    guid_target:        opt_5ece0891c1904abf873550f2b8a4b00c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

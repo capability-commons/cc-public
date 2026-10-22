@@ -1,0 +1,57 @@
+id_self:                ann_package_adds_build_and_release_upkeep
+guid_self:              ann_8ecd27cfce814b8192163dcb393c46fd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build and release machinery to maintain
+brief:                  |
+                        A package needs a release process, a build
+                        that bundles Python, C++ and data, and a path
+                        for working against an unreleased cc-public,
+                        each of them new machinery to keep working.
+                        Testing a change to cc-public inside a peer
+                        then takes a rebuild or an override, which
+                        slows changing both together.
+description:            |
+                        Sources:
+                        - "This means we also need to design and
+                          implement the release process for cc-public
+                          right now." (owner's statement,
+                          2026-10-22T15:14)
+                        - No release has ever been made (context note,
+                          _sources/context.md line 33), and the
+                          publishing route is undecided (owner's
+                          statement, 2026-10-22T16:29).
+                        - The plan recommends a dependency pinned to a
+                          tag "with a path override for local work"
+                          (_sources/cc-patrol-notes/plan.md lines
+                          69-72).
+                        - Any edit to pyproject.toml makes pixi.lock
+                          stale, and only the owner can relock on the
+                          offline host (context note,
+                          _sources/context.md line 30). Strength:
+                          moderate; the costs are largely one-time,
+                          and the override already has a recommended
+                          form.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

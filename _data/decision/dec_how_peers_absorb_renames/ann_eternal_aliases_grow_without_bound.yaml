@@ -1,0 +1,52 @@
+id_self:                ann_eternal_aliases_grow_without_bound
+guid_self:              ann_8fe5cfeabbfc43e7bbca4a625770d32d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unbounded growth of alias rows
+brief:                  |
+                        Keeping every old id for ever makes the graph
+                        each environment loads grow with history
+                        rather than with content, and every backing
+                        store a segment uses must resolve the same
+                        aliases.
+description:            |
+                        Sources:
+                        - The owner expects many renames and prefix
+                          changes before 1.0 (owner's memory note,
+                          2026-10-21; _sources/context.md line 26).
+                        - Partner segments will likely use a graph
+                          database or similar as their backing
+                          (owner's statement, 2026-10-22T16:20).
+                        - Extraction reads the whole tree into base
+                          predicates each time
+                          (src/cc_public/graph/extract.py lines 18-32
+                          and 430-436).
+                        - Assumption: an alias kept for ever is a row
+                          that every extraction and every consuming
+                          store carries, whether or not a peer still
+                          uses it. Strength: moderate; each alias is
+                          small, but the cost grows with history and
+                          with the number of stores.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_aliases_resolve_for_ever
+    guid_target:        opt_2ebd1612aacc4cad839f5f5014d71964
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

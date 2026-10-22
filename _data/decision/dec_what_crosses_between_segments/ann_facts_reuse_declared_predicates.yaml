@@ -1,0 +1,61 @@
+id_self:                ann_facts_reuse_declared_predicates
+guid_self:              ann_33aa3dda91a04744880a4ee52f47aa3a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reuse of the one declared predicate interface
+brief:                  |
+                        Every check and query in cc-public already
+                        reads base predicates declared in one place,
+                        so exchanging those rows lets the same checks
+                        run over the union of segments with no second
+                        reader. A query service adds a server and a
+                        protocol beside that one form.
+description:            |
+                        Sources:
+                        - The predicate table "names each base
+                          predicate, its columns and what a row of it
+                          means, and is the one place they are
+                          declared, for logic programs and for SQL
+                          alike." (src/cc_public/graph/extract.py
+                          lines 24-28, table at line 184)
+                        - The SQL, SPARQL, jq and text queries run
+                          over the graph, and the checks are logic
+                          program rules (README.md lines 22-23).
+                        - The queries option has each segment answer
+                          queries from the others through a service
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
+                          brief). Strength: strong; it adds only a
+                          serialized form of rows that already exist.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_answer_queries
+    guid_target:        opt_5ece0891c1904abf873550f2b8a4b00c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

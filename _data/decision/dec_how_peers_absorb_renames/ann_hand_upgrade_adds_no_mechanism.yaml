@@ -1,0 +1,57 @@
+id_self:                ann_hand_upgrade_adds_no_mechanism
+guid_self:              ann_d39f8e063bba4ce49ed842c6563995a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hand upgrade with no new code
+brief:                  |
+                        Upgrading by hand from the release notes adds
+                        no command and no map to cc-public, and the
+                        checker already reports a reference whose id
+                        names nothing, so a missed rename is still
+                        found, though only when the peer's check
+                        fails. Its cost grows with the renames between
+                        two releases, so it holds only while peers and
+                        renames are few.
+description:            |
+                        Sources:
+                        - A reference to an old id fails the check
+                          (_data/decision/dec_rename_safety/ann_rename_old_id_reference_fails_check.yaml).
+                        - The release notes can be generated
+                          mechanically from the graph (owner's
+                          statement, 2026-10-22T16:28).
+                        - The owner tolerates renames and prefix
+                          changes before 1.0 (owner's memory note,
+                          2026-10-21; _sources/context.md line 26),
+                          and after 1.0 bundles breaking changes into
+                          one major release (owner's statement,
+                          2026-10-22T16:23). Strength: moderate; it is
+                          the fewest mechanisms, but the cost per
+                          release is not yet measured.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_hand
+    guid_target:        opt_31a51dc6f9ac4b03a326b6b1a4f03c5e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

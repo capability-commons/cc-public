@@ -1,0 +1,68 @@
+id_self:                ann_package_ships_one_snapshot_not_history
+guid_self:              ann_1768f93e69754681a55d9c14b80c9538
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One release snapshot rather than git history
+brief:                  |
+                        A package holds the files of one release, so
+                        data removed from the shared data before that
+                        release never reaches peers who take it. A
+                        submodule or a sibling checkout is a git clone
+                        that carries every past commit, so data once
+                        committed and later removed still sits in
+                        every peer's copy.
+description:            |
+                        Sources:
+                        - The versioned package holds the tooling, the
+                          shared data and the engine of one release
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml,
+                          brief).
+                        - The release ships "the whole of _data"
+                          (owner's statement, 2026-10-22T16:30).
+                        - A git clone copies the repository's full
+                          history unless a shallow clone is asked for
+                          (https://git-scm.com/docs/git-clone).
+                        - A git submodule is a full repository held
+                          inside another at a pinned commit
+                          (https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+                        - The graph is "currently backed by the
+                          filesystem and stored in git" (owner's
+                          statement, 2026-10-22T16:20).
+                        - Assumption: the shared data holds no
+                          personal data today beyond the copyright
+                          holder's name, so the gain matters mainly if
+                          personal data is ever committed by mistake.
+                          Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_take_a_submodule
+    guid_target:        opt_f2b5ad0a43ce49529fbd77acb4546cb3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_read_a_sibling_checkout
+    guid_target:        opt_a7be740118c34b2c8cba834a3b6ea76c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

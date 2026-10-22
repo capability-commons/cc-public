@@ -1,0 +1,55 @@
+id_self:                ann_rename_maps_reuse_existing_machinery
+guid_self:              ann_e76e846d0cd1454287d834813da36e6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Existing rename machinery behind rename maps
+brief:                  |
+                        The tooling already records every rename in
+                        commit items, matches an old id to its item by
+                        guid, and rewrites every reference in a tree.
+                        A rename map applied by a command reuses these
+                        three parts, so a peer upgrade becomes one
+                        checked step instead of a hand edit per
+                        renamed id.
+description:            |
+                        Sources:
+                        - Every commit carries a commit item, and the
+                          commit check already detects renames and
+                          removals (context note, _sources/context.md
+                          line 34).
+                        - A commit item must name the id of every item
+                          the commit removes or renames (AGENTS.md
+                          lines 98-102).
+                        - The outdated reference rule finds a
+                          reference by an old id through the guid,
+                          "which decides", where the old id names
+                          nothing (src/cc_public/check/check.lp lines
+                          2003-2007 and 2031-2035).
+                        - cctool rename rewrites the id in every YAML
+                          document that names it
+                          (src/cc_public/edit/edit.py lines 951-981
+                          and 1014-1034). Strength: strong; each part
+                          the option needs already exists.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

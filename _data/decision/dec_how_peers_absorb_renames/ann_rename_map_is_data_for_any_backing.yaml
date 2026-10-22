@@ -1,0 +1,49 @@
+id_self:                ann_rename_map_is_data_for_any_backing
+guid_self:              ann_95494492ba704dba90301b1cfcbf827c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rename map as data for any backing store
+brief:                  |
+                        A rename map keyed by guid is plain data, so a
+                        segment backed by files and one backed by a
+                        graph database can each apply it; only the
+                        command that applies it is tied to the file
+                        tree, and a database segment would need its
+                        own applier.
+description:            |
+                        Sources:
+                        - The option ships a map of renamed ids
+                          matched by guid, and a command applies the
+                          maps
+                          (_data/decision/dec_how_peers_absorb_renames/opt_upgrade_by_rename_maps.yaml,
+                          brief).
+                        - Partner segments will likely use a graph
+                          database or similar, while the graph today
+                          is backed by the filesystem and stored in
+                          git (owner's statement, 2026-10-22T16:20).
+                          Strength: moderate; it keeps the upgrade
+                          path open to backings that do not exist yet,
+                          at the price of one applier per backing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

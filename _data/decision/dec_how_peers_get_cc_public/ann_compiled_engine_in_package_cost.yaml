@@ -1,0 +1,85 @@
+id_self:                ann_compiled_engine_in_package_cost
+guid_self:              ann_a25b965f04fa41c3a1498f67422298f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Compiled engine inside the package
+brief:                  |
+                        If the package carries the compiled C++
+                        engine, each release needs a build for each
+                        platform a peer runs on, including ARM Linux
+                        for the Jetson, which the workspace does not
+                        lock today, and a peer runs binary code it
+                        cannot read unless the build is reproducible
+                        or signed. A submodule built from a pinned
+                        commit reaches any host with a C++17 toolchain
+                        and runs the source it pins. Both costs fall
+                        away if the package ships engine sources
+                        rather than binaries.
+description:            |
+                        Sources:
+                        - The workspace platforms are osx-arm64,
+                          osx-64 and linux-64, with no linux-aarch64
+                          (pyproject.toml line 59).
+                        - The Jetson Orin Nano has six A78 cores
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 72-74), and Patrol already builds on
+                          it under JetPack 7.2
+                          (_sources/cc-patrol-notes/plan.md lines
+                          147-148).
+                        - C++17 is supported by the toolchains the
+                          project is likely to meet, including CUDA's
+                          nvcc
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 155-158).
+                        - The submodule option holds cc-public at a
+                          pinned commit and builds the tooling and
+                          engine from source
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_submodule.yaml,
+                          brief); a submodule records a specific
+                          commit
+                          (https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+                        - The engine is new C++ (owner's statement,
+                          2026-10-21, paraphrase; _sources/context.md
+                          line 9).
+                        - All peers are the owner's own for now
+                          (owner's statement, 2026-10-22T16:21).
+                        - Assumption: the package would carry compiled
+                          engine code rather than only its sources and
+                          headers. Strength: moderate; the build
+                          matrix and the unreadable binary are real,
+                          but both can be avoided or narrowed by
+                          shipping sources or by a build the
+                          maintainer controls.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_get_cc_public
+    guid_target:        dec_4fcd9a2d40224989a9513b9efbc1d1fb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peers_take_a_submodule
+    guid_target:        opt_f2b5ad0a43ce49529fbd77acb4546cb3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peers_take_a_versioned_package
+    guid_target:        opt_ab230c56db8a4cd7924a2a81e0dbe755
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
