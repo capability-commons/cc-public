@@ -130,10 +130,9 @@ def test_schema_validation_reuses_the_verdict_the_store_keeps(tree, dir_store, m
     assert cc_public.check.check.check(tree).get('schema_violation') is None
 
     def change(map_verdict):
-        [map_found] = map_verdict.values()
-        key         = min(map_found)
-        row         = [*key.split(cc_public.check.store.DELIM_KEY)[:3], '1', 'title', 'Kept.']
-        map_found[key] = [row]
+        key              = min(map_verdict)
+        row              = [*key.split(cc_public.check.store.DELIM_KEY)[:3], '1', 'title', 'Kept.']
+        map_verdict[key] = [row]
         return tuple(row)
 
     row = _rewrite(dir_store, cc_public.check.schema.KIND_STORE, change)

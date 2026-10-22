@@ -41,6 +41,8 @@ edge:                   []
 import functools
 import json
 import re
+import typing
+import urllib.parse
 
 import jsonschema
 import jsonschema.exceptions
@@ -54,6 +56,7 @@ import cc_public.graph.extract
 
 KEY_ID_SCHEMA     = '$id'
 KEY_REF           = '$ref'
+MARK_FRAGMENT     = '#'
 COLUMNS           = ('id', 'schema', 'file', 'line', 'path', 'message')
 LENGTH_MESSAGE    = 200
 DELIM_PATH        = '/'
@@ -66,20 +69,15 @@ KEY_UNEVALUATED   = 'unevaluatedProperties'
 META              = jsonschema.Draft202012Validator(
                         jsonschema.Draft202012Validator.META_SCHEMA)
 
-# The verdict of the metaschema on each schema checked so far, keyed by
-# the id of the schema, which is kept with it so that the id cannot be
-# reused while it is held. A document is never changed once read, so
-# its verdict holds for as long as it is the same object. The cache is
-# emptied when it holds COUNT_META.
+# What is known of each schema read so far: whether it conforms to the
+# metaschema, the $refs it holds, and its digest. It is keyed by the id
+# of the schema, which is kept with it so that the id cannot be reused
+# while it is held. A document is never changed once read, so what is
+# known of it holds for as long as it is the same object. It is emptied
+# when it holds COUNT_SCHEMA.
 #
-MAP_META          = {}
-COUNT_META        = 4096
-
-# How many sets of schemas a cache keeps what the validations found
-# for. A run of tests moves between the schemas of the repository and
-# those that a test changes, and comes back to the first.
-#
-COUNT_SIGNATURE   = 4
+MAP_SCHEMA        = {}
+COUNT_SCHEMA      = 4096
 
 # The kind of verdict that the store of the checker keeps for schema
 # validation.
@@ -238,7 +236,10 @@ class _Kept:
     """
     What validations found before: those that cache keeps, made in this
     process, and those that the store of the checker keeps, made in an
-    earlier run. Each is reused only with the same schemas.
+    earlier run. What a document was found to violate under a schema is
+    reused only while that schema, and each schema it refers to, is as
+    it was, so a change to one schema validates again only the
+    documents that depend on it.
 
     """
 
@@ -249,12 +250,14 @@ class _Kept:
 
         """
 
-        self.map_found  = _cached(cache, map_schema)
+        self.map_schema = map_schema
+        self.map_url    = {str(schema[KEY_ID_SCHEMA]): id_schema
+                           for (id_schema, schema) in map_schema.items()}
+        self.map_found  = {} if cache is None else cache.setdefault('found', {})
         self.is_stored  = cc_public.check.store.directory() is not None
-        self.digest_set = _digest_set(map_schema) if self.is_stored else ''
-        self.map_stored = (cc_public.check.store.load(KIND_STORE).get(self.digest_set, {})
-                           if self.is_stored else {})
+        self.map_stored = cc_public.check.store.load(KIND_STORE) if self.is_stored else {}
         self.map_used   = {}
+        self.map_reach  = {}
 
     # -------------------------------------------------------------------------
     def get(self, id_document, id_schema, file, document) -> list | None:
@@ -265,13 +268,14 @@ class _Kept:
         """
 
         found = self.map_found.get((id_document, id_schema))
+        reach = self._reach(id_schema)
         key   = self._key(id_document, id_schema, file, document)
 
-        if found is not None and found[0] is document:
-            list_row = found[1]
+        if found is not None and found[0] is document and _same(found[1], reach):
+            list_row = found[2]
         elif key in self.map_stored:
             list_row = [tuple(row) for row in self.map_stored[key]]
-            self.map_found[(id_document, id_schema)] = (document, list_row)
+            self.map_found[(id_document, id_schema)] = (document, reach, list_row)
         else:
             return None
 
@@ -287,7 +291,7 @@ class _Kept:
 
         """
 
-        self.map_found[(id_document, id_schema)] = (document, list_row)
+        self.map_found[(id_document, id_schema)] = (document, self._reach(id_schema), list_row)
         key = self._key(id_document, id_schema, file, document)
         if key:
             self.map_used[key] = [list(row) for row in list_row]
@@ -301,7 +305,36 @@ class _Kept:
         """
 
         if self.is_stored and self.map_used != self.map_stored:
-            cc_public.check.store.save(KIND_STORE, {self.digest_set: self.map_used})
+            cc_public.check.store.save(KIND_STORE, self.map_used)
+
+    # -------------------------------------------------------------------------
+    def _reach(self, id_schema: str) -> tuple:
+        """
+        Return the schema id_schema and each schema it refers to, at
+        any depth, as pairs of a name and the schema, in order of name.
+        A $ref that names no schema of the tree is a pair of its url and
+        None.
+
+        """
+
+        if id_schema not in self.map_reach:
+            map_seen  = {}
+            list_todo = [id_schema]
+            while list_todo:
+                name = list_todo.pop()
+                if name in map_seen:
+                    continue
+                map_seen[name] = self.map_schema.get(name)
+                schema = map_seen[name]
+                if schema is not None:
+                    base = str(schema[KEY_ID_SCHEMA])
+                    for ref in _known(schema)[1]:
+                        url = urllib.parse.urljoin(base, ref).partition(MARK_FRAGMENT)[0]
+                        list_todo.append(self.map_url.get(url, url))
+            self.map_reach[id_schema] = tuple(sorted(map_seen.items(),
+                                                     key = lambda pair: pair[0]))
+
+        return self.map_reach[id_schema]
 
     # -------------------------------------------------------------------------
     def _key(self, id_document, id_schema, file, document) -> str | None:
@@ -315,19 +348,24 @@ class _Kept:
         digest = cc_public.graph.extract.digest_of(document) if self.is_stored else None
         if digest is None:
             return None
-        return cc_public.check.store.key(id_document, id_schema, file, digest)
+        list_digest = ['{name}={digest}'.format(name   = name,
+                                                digest = _known(schema)[2] if schema else '')
+                       for (name, schema) in self._reach(id_schema)]
+        return cc_public.check.store.key(id_document, id_schema, file, digest,
+                                         cc_public.check.store.digest(' '.join(list_digest)))
 
 
 # -----------------------------------------------------------------------------
-def _digest_set(map_schema: dict[str, dict]) -> str:
+def _same(reach: tuple, other: tuple) -> bool:
     """
-    Return a digest of the schemas of map_schema, which what a document
-    is found to violate depends on.
+    Return whether reach and other name the same schemas, each the same
+    object.
 
     """
 
-    return cc_public.check.store.digest(json.dumps(sorted(map_schema.items()),
-                                                   sort_keys = True, default = str))
+    return len(reach) == len(other) and all(
+        name == name_other and schema is schema_other
+        for ((name, schema), (name_other, schema_other)) in zip(reach, other, strict = True))
 
 
 # -----------------------------------------------------------------------------
@@ -337,40 +375,46 @@ def is_valid(schema: dict) -> bool:
 
     """
 
-    key = id(schema)
-    if key not in MAP_META or MAP_META[key][0] is not schema:
-        if len(MAP_META) >= COUNT_META:
-            MAP_META.clear()
-        MAP_META[key] = (schema, META.is_valid(schema))
-
-    return MAP_META[key][1]
+    return _known(schema)[0]
 
 
 # -----------------------------------------------------------------------------
-def _cached(cache: dict | None, map_schema: dict[str, dict]) -> dict:
+def _known(schema: dict) -> tuple[bool, tuple[str, ...], str]:
     """
-    Return what the validations kept in cache found, keyed by YAML document
-    and schema, for validations made when every schema was the same
-    object as now. The cache keeps them for the last COUNT_SIGNATURE sets
-    of schemas, and the schemas with them, so that their ids are not
-    reused. With no cache, return a mapping to throw away.
+    Return what is known of schema: whether it conforms to the
+    metaschema, the url of each $ref it holds, and its digest.
 
     """
 
-    if cache is None:
-        return {}
+    key = id(schema)
+    if key not in MAP_SCHEMA or MAP_SCHEMA[key][0] is not schema:
+        if len(MAP_SCHEMA) >= COUNT_SCHEMA:
+            MAP_SCHEMA.clear()
+        text            = json.dumps(schema, sort_keys = True, default = str)
+        MAP_SCHEMA[key] = (schema,
+                           (META.is_valid(schema),
+                            tuple(sorted(set(_refs(schema)))),
+                            cc_public.check.store.digest(text)))
 
-    signature = tuple(sorted((id_schema, id(schema))
-                             for (id_schema, schema) in map_schema.items()))
-    map_set   = cache.setdefault('set', {})
-    if signature in map_set:
-        map_set[signature] = map_set.pop(signature)
-    else:
-        if len(map_set) >= COUNT_SIGNATURE:
-            del map_set[next(iter(map_set))]
-        map_set[signature] = (list(map_schema.values()), {})
+    return MAP_SCHEMA[key][1]
 
-    return map_set[signature][1]
+
+# -----------------------------------------------------------------------------
+def _refs(node: typing.Any) -> typing.Iterator[str]:
+    """
+    Yield the url of each $ref in node, at any depth.
+
+    """
+
+    if isinstance(node, dict):
+        for (key, value) in node.items():
+            if key == KEY_REF and isinstance(value, str):
+                yield value
+            else:
+                yield from _refs(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _refs(value)
 
 
 # -----------------------------------------------------------------------------
