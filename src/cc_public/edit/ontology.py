@@ -39,6 +39,7 @@ edge:                   []
 
 
 import collections
+import hashlib
 import pathlib
 import re
 
@@ -55,6 +56,9 @@ NODE_THING        = pyoxigraph.NamedNode(NS_OWL + 'Thing')
 LANGUAGE          = 'en'
 
 PREFIX_ITEM       = 'extcla'
+KEY_FIXITY        = 'fixity'
+KEY_DIGEST        = 'digest'
+SIZE_BLOCK        = 1 << 20
 ID_CITES          = 'relation_cites'
 ID_SUBCLASS_OF    = 'relation_is_subclass_of'
 SCHEME_URI        = 'uri'
@@ -188,6 +192,74 @@ def operations(tree:           cc_public.edit.edit.Tree,
         list_operation.extend(_item_operations(tree, map_id[iri], map_field, set_link))
 
     return list_operation
+
+
+# -----------------------------------------------------------------------------
+def known(tree: cc_public.edit.edit.Tree, list_namespace: list[Namespace]) -> list[str]:
+    """
+    Return, in sorted order, the IRI of every external class in tree
+    that one of list_namespace covers.
+
+    """
+
+    return sorted(iri for iri in _known(tree)
+                  if any(iri.startswith(namespace.iri) for namespace in list_namespace))
+
+
+# -----------------------------------------------------------------------------
+def differences(list_operation: list[dict]) -> list[str]:
+    """
+    Return a sentence for each operation of list_operation, saying how
+    an external class differs from the release.
+
+    """
+
+    list_sentence = []
+    for operation in list_operation:
+        if 'new' in operation:
+            list_sentence.append('{id} is missing.'.format(id = operation['new']))
+        elif 'set' in operation:
+            (id_item, key, _) = operation['set']
+            list_sentence.append('{id}: its {key} differs from the release.'.format(
+                                                                    id = id_item, key = key))
+        elif 'link' in operation:
+            (id_item, id_relation, id_target) = operation['link']
+            list_sentence.append('{id}: it lacks the edge {relation} {target}.'.format(
+                                    id = id_item, relation = id_relation, target = id_target))
+        else:
+            (id_item, id_relation, id_target) = operation['unlink']
+            list_sentence.append('{id}: it has the edge {relation} {target}, which the release '
+                                 'lacks.'.format(id       = id_item,
+                                                 relation = id_relation,
+                                                 target   = id_target))
+    return list_sentence
+
+
+# -----------------------------------------------------------------------------
+def refuse_other_release(tree:           cc_public.edit.edit.Tree,
+                         path:           pathlib.Path,
+                         list_namespace: list[Namespace]) -> None:
+    """
+    Refuse a Turtle file at path whose digest differs from the fixity
+    that the external document of a release in list_namespace records.
+
+    """
+
+    digest = hashlib.sha256()
+    with path.open('rb') as file:
+        for block in iter(lambda: file.read(SIZE_BLOCK), b''):
+            digest.update(block)
+
+    for id_release in sorted({namespace.release for namespace in list_namespace}):
+        fixity = _document(tree, id_release).get(KEY_FIXITY) or {}
+        if fixity and str(fixity.get(KEY_DIGEST)) != digest.hexdigest():
+            raise cc_public.edit.edit.ErrorEdit(
+                '{file} has the sha256 digest {found}, but {release} records {digest}. Import '
+                'from the file of that release, or give the new release an external document '
+                'of its own.'.format(file    = path,
+                                     found   = digest.hexdigest(),
+                                     release = id_release,
+                                     digest  = fixity.get(KEY_DIGEST)))
 
 
 # -----------------------------------------------------------------------------

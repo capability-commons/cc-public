@@ -225,3 +225,28 @@ def test_import_refuses_a_class_no_namespace_covers(tree):
                                        'extdoc_iso_1087_2019', 'https://example.org/x/record'])
     assert result.exit_code == 2
     assert 'No --namespace covers the class https://example.org/x/' in result.stderr
+
+
+def test_import_check_names_what_differs_and_writes_nothing(tree):
+    assert _import(tree).exit_code == 0
+    text   = TEXT_ONTOLOGY.replace('"continuant"', '"enduring entity"')
+    result = _import(tree, text, [*LIST_IMPORT[:4], '--check'])
+    assert result.exit_code == 1
+    assert result.stdout.startswith('extcla_x_continuant: its title differs from the release.\n')
+    assert 'extcla_x_continuant: its label differs from the release.\n' in result.stdout
+    assert 'label:                  continuant\n' in (
+                        tree / '_data/external_class/extcla_x_continuant.yaml').read_text()
+
+
+def test_import_check_passes_when_the_classes_agree(tree):
+    assert _import(tree).exit_code == 0
+    result = _import(tree, list_arg = [*LIST_IMPORT[:4], '--check'])
+    assert result.exit_code == 0
+    assert result.stdout == 'The external classes agree with the release already.\n'
+
+
+def test_import_refuses_a_file_that_is_not_the_recorded_release(tree):
+    result = _import(tree, list_arg = ['--namespace', 'https://example.org/x/', 'x',
+                                       'extdoc_cco_2_2', 'https://example.org/x/record'])
+    assert result.exit_code == 2
+    assert 'but extdoc_cco_2_2 records a9453382' in result.stderr
