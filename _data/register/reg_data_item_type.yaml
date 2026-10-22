@@ -1624,3 +1624,53 @@ table:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_implementation
         guid_target:    rol_991702df92e147e9915b344c4297f972
+
+  # ---------------------------------------------------------------------------
+  # type_external_relation -- External relation type
+  #
+  type_external_relation:
+    id_self:            type_external_relation
+    guid_self:          type_7cbcfe022778445fbc08441720c2c8d5
+    title:              External relation type
+    brief:              |
+                        Type of external relation data items.
+    description:        |
+                        Each external relation data item is a proxy
+                        for one relation of an ontology held outside
+                        the graph, such as BFO or the Common Core
+                        Ontologies.
+    usage:              |
+                        External relation data items let a relation
+                        entry be mapped to the relations of a standard
+                        ontology by edges, and let checks compare the
+                        domain and range of those relations with the
+                        constraints of the relation entry.
+    note:               |
+                        External relation data items travel on their
+                        own, one per file, in
+                        _data/external_relation/.
+
+                        The shape of external relation data items is
+                        defined by the sch_external_relation schema.
+    prefix:             extrel
+    regex_id:           ^extrel_[a-z][a-z0-9_]*$
+    id_concept:         concept_external_relation
+    guid_concept:       concept_8ff4483c8d74429aaee25cdee218b5cc
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_external_relation
+        guid_target:    sch_9e24f686f8b345769dc9acc3272f0932
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_proxy
+        guid_target:    rol_2a876d5a023b42d981a1e87b3acce1fc
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_external_relation
+        guid_target:    rol_9ace7487bf874d43aaebbaf08e38e640

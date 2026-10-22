@@ -2350,3 +2350,42 @@ table:
     term_preferred:     logic program predicate
     alias:              []
     edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_external_relation -- External relation
+  #
+  concept_external_relation:
+    id_self:            concept_external_relation
+    guid_self:          concept_8ff4483c8d74429aaee25cdee218b5cc
+    title:              External relation
+    brief:              |
+                        A [[concept_proxy|proxy]] for a [[relation]]
+                        of an ontology held outside the [[graph]],
+                        such as one of BFO or of the Common Core
+                        Ontologies.
+    description:        |
+                        An external relation data item stands in the
+                        graph for the relation, so that a relation
+                        entry can be mapped to it by an edge. Its id
+                        and guid address the data item. What
+                        identifies the relation itself is its IRI.
+
+                        OWL calls such a relation an object property.
+                        Its domain and range are copied from the
+                        release as edges to external classes, so that
+                        checks can compare them with the constraints
+                        of the relation entries mapped to it.
+    term_preferred:     external relation
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_proxy
+        guid_target:    concept_36dffd88734d4aa8a93f38c97b228ae2
+
+      - id_relation:    relation_has_broad_match
+        guid_relation:  relation_15e3747dae8f4c7b80de194d99914504
+        id_target:      extcla_cco_designative_information_content_entity
+        guid_target:    extcla_0f28ee4cdf984e3d9ef3b481dae649e9
