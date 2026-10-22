@@ -768,29 +768,39 @@ table:
   concept_relation_constraint:
     id_self:            concept_relation_constraint
     guid_self:          concept_2f394dca3741439f8117350522409b06
-    title:              Relation restriction
+    title:              Relation constraint
     brief:              |
                         A condition on the items that may stand at one
                         end of a relation, stated in terms of roles.
     description:        |
-                        A relation restriction is satisfied by an item
+                        A relation constraint is satisfied by an item
                         whose type plays any role it admits, or does
                         not play any role it excludes. A relation
-                        names restrictions for its source and for its
-                        target. An end must satisfy every restriction
+                        names constraints for its source and for its
+                        target. An end must satisfy every constraint
                         it names, and an end that names none is open
                         to any item. The conditions on an end are
                         therefore in conjunctive normal form, with
                         negation.
     note:               |
-                        The name follows the property restrictions of
-                        OWL 2, W3C OWL 2 Web Ontology Language
-                        Structural Specification, section 8, which
-                        state conditions on the values of a property.
-                        A restriction here names roles, never types,
-                        so that a partner in the federation can meet
-                        it by giving its own types a role.
-    term_preferred:     relation restriction
+                        What a relation constraint means is what the
+                        domain and range axioms of OWL 2 mean (W3C OWL
+                        2 Web Ontology Language Structural
+                        Specification, sections 9.2.5 and 9.2.6), but
+                        it is checked, not used to infer types. It is
+                        checked the way the Shapes Constraint Language
+                        checks a shape (W3C SHACL, sections 2.1.3,
+                        4.1.1 and 4.6), and its name follows the
+                        constraint components of SHACL. It is not a
+                        property restriction of OWL 2 (section 8.2),
+                        which is local to a class. A relation
+                        constraint names roles, never types, so that a
+                        partner in the federation can meet it by
+                        giving its own types a role.
+    term_preferred:     relation constraint
+
+    term_deprecated:
+      - relation restriction
 
     alias:
       - concept_relation_restriction

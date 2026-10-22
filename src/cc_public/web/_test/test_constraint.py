@@ -64,8 +64,8 @@ def _excluded(tree, id_role):
 
 def test_a_relation_page_reads_each_end_by_its_restrictions(tree):
     body = _body(tree, 'relation_supports')
-    assert 'The source <a href="/item/rrs_is_argument">is an argument</a>.' in body
-    assert 'The target <a href="/item/rrs_can_be_target_of_an_argument">can be the target of an argument</a>.' in body
+    assert 'The source <a href="/item/relcon_is_argument">is an argument</a>.' in body
+    assert 'The target <a href="/item/relcon_can_be_target_of_an_argument">can be the target of an argument</a>.' in body
 
 
 def test_a_relation_page_says_an_end_without_restrictions_is_open(tree):
@@ -92,5 +92,5 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
 
 def test_an_item_that_is_neither_relation_nor_role_has_no_sentences(tree):
     graph = cc_public.web.argument.Graph(tree)
-    assert cc_public.web.constraint.sentences(graph, 'rrs_is_argument') == []
+    assert cc_public.web.constraint.sentences(graph, 'relcon_is_argument') == []
 
