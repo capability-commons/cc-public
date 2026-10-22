@@ -117,6 +117,12 @@ REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 # where the concept is named by its id and the label is shown in its place.
 #
 REGEX_TERM_LINK   = re.compile(r'\[\[([^\[\]|\n]+?)(?:\|([^\[\]|\n]+?))?\]\]')
+
+# A definition that opens with an article and then a link names its
+# genus there, the broader concept it narrows: "A [[file]] that ...".
+#
+KEY_DEFINITION    = 'brief'
+REGEX_GENUS       = re.compile(r'\s*(?:A|An|One|The)\s+$')
 MAP_PLURAL        = {'ies': 'y', 'es': '', 's': ''}
 
 PREFIX_ID         = 'id_'
@@ -225,6 +231,11 @@ PREDICATE         = {
                            'concept, in file at line. A link written [[term]] leaves '
                            'concept empty, to be found by the term; one written '
                            '[[concept|term]] names it.'),
+    'genus_link':         (('holder', 'term', 'concept'),
+                           'The brief of the item holder opens with an article and a '
+                           'link of term to a concept, which names its genus. As for '
+                           'term_link, concept is empty when the link finds it by the '
+                           'term.'),
     'term_form':          (('text', 'form'),
                            'The text, a term of a concept, the label of an external '
                            'class or the term of a link, has form when lower-cased, '
@@ -1343,6 +1354,8 @@ def _mention(text:      str,
             (term, concept) = (target, '') if label is None else (label.strip(), target)
             facts['term_link'].add((holder, term, concept, file,
                                     str(line + offset + text.count('\n', 0, match.start()))))
+            if field[0] == KEY_DEFINITION and REGEX_GENUS.fullmatch(unquoted[:match.start()]):
+                facts['genus_link'].add((holder, term, concept))
 
     if not is_judged:
         return
