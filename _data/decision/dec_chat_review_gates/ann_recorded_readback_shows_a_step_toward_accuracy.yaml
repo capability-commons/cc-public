@@ -1,0 +1,81 @@
+id_self:                ann_recorded_readback_shows_a_step_toward_accuracy
+guid_self:              ann_8563a63daaac4175af4d35cb7dfadc00
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorded readback as evidence of accuracy
+brief:                  |
+                        The law asks the controller to take every
+                        reasonable step to keep personal data
+                        accurate, and to be able to show it. A
+                        readback whose outcome is recorded is such a
+                        step with a record. Review of the branch alone
+                        has no step in which the person the data is
+                        about confirms it.
+description:            |
+                        Personal data must be accurate, and every
+                        reasonable step must be taken to erase or
+                        correct inaccurate data without delay [UK GDPR
+                        Art 5(1)(d),
+                        https://www.legislation.gov.uk/eur/2016/679/chapter/II].
+                        The controller must be able to show that it
+                        complies [UK GDPR Art 5(2), same URL]. A
+                        person may have inaccurate data about them
+                        corrected and incomplete data completed [UK
+                        GDPR Art 16,
+                        https://www.legislation.gov.uk/eur/2016/679/article/16].
+                        Two options read the item back to the
+                        contributor before it lands
+                        [_data/decision/dec_chat_review_gates/opt_readback_and_branch_review.yaml
+                        and opt_readback_then_dev.yaml, briefs]. The
+                        branch-only option writes the item with no
+                        readback
+                        [_data/decision/dec_chat_review_gates/opt_branch_review_only.yaml,
+                        brief]. The readback happens after any
+                        automated checks and corrections [owner's
+                        statement]. Data in the graph is expected to
+                        be almost entirely LLM generated [owner's
+                        statement]. A likely first instance is member
+                        skill profiles, which hold personal data
+                        [context.md lines 59-60]. ASSUMPTION: the
+                        contributor is often the person the item is
+                        about, as with a member's own skill profile.
+                        ASSUMPTION: the bot records the outcome of
+                        each readback, for example in the commit item,
+                        otherwise the step leaves no evidence. Holds
+                        at ten times the size: yes, because each item
+                        still needs its own confirmation, and a
+                        reviewer of the branch cannot confirm facts
+                        about each of ten times as many people.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_review_gates
+    guid_target:        dec_9b9c64f85881461f83ada4fb8a81ab3b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_readback_and_branch_review
+    guid_target:        opt_02b87725578a48dda2e6513bf46d392e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_readback_then_dev
+    guid_target:        opt_7526dd89eb7b4dc089a454bfbb47a952
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_branch_review_only
+    guid_target:        opt_cb86b269d184421d89c4cb7bde73944c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_regulatory_compliance
+    guid_target:        concern_63ba3503fd2a4026910ba56b22d984a8
