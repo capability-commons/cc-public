@@ -1,0 +1,57 @@
+id_self:                ann_conda_channel_binds_partners_to_conda_tools
+guid_self:              ann_4dbe8a37931641a9b6660bd012782a11
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Conda tools required of partners by a channel
+brief:                  |
+                        Conda packages are installed by
+                        conda-compatible clients such as conda, mamba
+                        and pixi, so a channel alone asks a partner on
+                        pip or another manager to adopt one of them. A
+                        channel also cannot carry a SemVer pre-release
+                        spelling unchanged, since a conda version may
+                        not contain a hyphen.
+description:            |
+                        Sources: a conda package version "May not
+                        contain '-'"
+                        (https://github.com/conda/conda-build/blob/main/docs/source/resources/package-spec.rst
+                        line 90). SemVer 2.0.0 marks a pre-release
+                        with a hyphen
+                        (https://semver.org/#spec-item-9). cc-public's
+                        own environment is pixi over conda-forge, with
+                        cc_public installed as a PyPI-style editable
+                        package (pyproject.toml lines 57-62). Channel
+                        hosting "Will require further discussion"
+                        (owner's statement, 2026-10-22T16:29).
+                        Assumption: pip cannot install a conda
+                        package. Strength: moderate; a partner on
+                        conda-forge style tooling pays nothing, and
+                        the staged option inherits the issue later.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_conda_channel
+    guid_target:        opt_edf84187cc424525ba40431a7c9847d3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_then_channel
+    guid_target:        opt_5cbfac86902e46e0ac04d3a1c0a38eff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

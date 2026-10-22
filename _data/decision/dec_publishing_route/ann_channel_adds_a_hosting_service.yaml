@@ -1,0 +1,75 @@
+id_self:                ann_channel_adds_a_hosting_service
+guid_self:              ann_4133ca8b046e43e6931330025d3e02a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hosting service and pipeline added by a channel
+brief:                  |
+                        A conda channel adds a build pipeline, an
+                        upload step and a host that must be up for a
+                        peer to install or recover an environment, on
+                        top of the git host the repository already
+                        uses. Git tags, which every peer already
+                        handles, add no new service or mechanism.
+description:            |
+                        Sources: origin is on github.com (context
+                        note, _sources/context.md line 32). On a
+                        channel: "Will require further discussion.
+                        Hosting can be arranged." (owner's statement,
+                        2026-10-22T16:29). "All peers are my own, so
+                        this is acceptable for now." (owner's
+                        statement, 2026-10-22T16:21). pixi can add a
+                        dependency from a git repository at a tag
+                        (https://pixi.prefix.dev/dev/reference/cli/pixi/add/).
+                        The cc-patrol plan recommends a pixi git
+                        dependency pinned to a tag, with a path
+                        override for local work
+                        (_sources/cc-patrol-notes/plan.md lines
+                        69-72). cc-public is already a Python package
+                        built by hatchling (pyproject.toml lines
+                        35-55). Strength: strong for simplicity,
+                        moderate for reliability and dependency risk,
+                        since it is one mature host and the owner says
+                        hosting can be arranged.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_git_tags_only
+    guid_target:        opt_4b11ea3f16e14deea2f43f853e01ee99
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_then_channel
+    guid_target:        opt_5cbfac86902e46e0ac04d3a1c0a38eff
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_conda_channel
+    guid_target:        opt_edf84187cc424525ba40431a7c9847d3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

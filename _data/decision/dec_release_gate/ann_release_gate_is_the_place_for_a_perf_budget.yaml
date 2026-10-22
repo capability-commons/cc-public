@@ -1,0 +1,51 @@
+id_self:                ann_release_gate_is_the_place_for_a_perf_budget
+guid_self:              ann_ffbd1b3616da4caa888db0ab0a8e2dd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release gate as the home of a performance budget
+brief:                  |
+                        The repository has no benchmark or timing
+                        test, and the commit gate's time depends on
+                        what is already cached. A gate run with no
+                        cache in a fresh environment is the one point
+                        where response time and memory can be measured
+                        under the same conditions each time, so it is
+                        where a performance regression could be caught
+                        before peers see it.
+description:            |
+                        Sources: no module under src mentions
+                        benchmark, timeit or perf_counter (grep of
+                        src, 2026-10-22). The commit gate reuses
+                        cached layout and schema verdicts from a store
+                        every worktree shares (README.md lines 94-99).
+                        The full gate option runs every check and test
+                        with no cached verdicts in a fresh environment
+                        (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml).
+                        The owner expects "even more extensive
+                        testing" (owner's statement,
+                        2026-10-22T16:31). Strength: moderate; the
+                        benefit appears only if a timing check is
+                        added.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

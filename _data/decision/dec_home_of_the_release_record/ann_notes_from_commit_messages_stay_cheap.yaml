@@ -1,0 +1,52 @@
+id_self:                ann_notes_from_commit_messages_stay_cheap
+guid_self:              ann_b641b6562cdf49c1a7c5fa940935d21e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cheap derivation of notes from commit messages
+brief:                  |
+                        Release notes derived from commit items need
+                        one read of the messages since the last
+                        release, with no tree extracted, so the cost
+                        grows slowly with the number of commits. This
+                        holds only if the notes come from commit
+                        items; notes from a diff of the graphs must
+                        extract each end of the range.
+description:            |
+                        Sources: every commit carries a commit item
+                        with a templated verb (context note,
+                        _sources/context.md line 34). The history code
+                        reads the messages of many commits with one
+                        git log call and lists commits with one git
+                        rev-list call (src/cc_public/commit/history.py
+                        lines 55, 70-77 and 150). Checking a change
+                        between two trees extracts the full graph of
+                        each (src/cc_public/commit/change.py lines
+                        131-132); _data holds 1633 files, about 3.5 MB
+                        of text and 7.3 MB on disk (count of files
+                        under _data, 2026-10-22). Assumption: the
+                        notes would be derived from commit items,
+                        which the option does not say. Strength: weak;
+                        both ways cost seconds at a rare release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

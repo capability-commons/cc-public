@@ -1,0 +1,92 @@
+id_self:                ann_only_full_gate_tests_the_built_package
+guid_self:              ann_7262cb2b37ef404b80cb2818d4b31dc0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Built package tested only by the full gate
+brief:                  |
+                        Every test today runs against an editable
+                        install of the source tree, so a wheel that
+                        leaves out files such as the shipped _data
+                        passes every check and fails only at a peer.
+                        Only the full gate builds the package from the
+                        tagged tree, installs it fresh and has a peer
+                        consume it, which is what partners receive and
+                        the need behind releases. These are the only
+                        new stages; rerunning the normal gate on a
+                        release repeats work every commit already did.
+description:            |
+                        Sources: cc_public is installed in editable
+                        mode from the repository (pyproject.toml lines
+                        18-21 and 61-62). The commit gate checks,
+                        lints and tests the staged content, and runs
+                        tests only when code is staged (README.md
+                        lines 71-80; AGENTS.md lines 79-83); the
+                        pre-push hook runs the history check with the
+                        gate (README.md lines 105-108). pyproject.toml
+                        has no build target settings beyond the
+                        hatchling backend (pyproject.toml lines
+                        53-55), and hatchling's wheel target, given no
+                        file selection, includes only the detected
+                        package
+                        (https://hatch.pypa.io/latest/plugins/builder/wheel/;
+                        https://hatch.pypa.io/latest/config/build/).
+                        _data lies outside src/cc_public (README.md
+                        lines 12-21), and the owner wants "the whole
+                        of _data" shipped (owner's statement,
+                        2026-10-22T16:30). The owner chose a versioned
+                        package and said the release process is needed
+                        now (owner's statement, 2026-10-22T15:14). The
+                        full gate option builds, installs and checks a
+                        fixture peer
+                        (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml
+                        lines 12-16). No release has been made
+                        (context note, _sources/context.md line 33),
+                        and no pixi task or git hook builds or
+                        installs the package from a tag
+                        (pyproject.toml lines 73-87; .githooks).
+                        Assumption: a wheel built today would leave
+                        out _data; not tried. Strength: strong; the
+                        package build path is wholly untested.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_normal_gate_for_release
+    guid_target:        opt_f70397f5624447e48e291747391761ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

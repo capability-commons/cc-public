@@ -1,0 +1,53 @@
+id_self:                ann_git_tag_is_a_movable_reference
+guid_self:              ann_764d6f15af35410ba819a2bba2251573
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Git tag as a movable reference
+brief:                  |
+                        A git tag can be deleted or moved by whoever
+                        controls the repository host, so a peer pinned
+                        to a tag depends on that host and on that
+                        discipline holding. A package in a channel is
+                        a fixed file recorded with a hash.
+description:            |
+                        Sources: git tag -d deletes a tag and git tag
+                        -f replaces one
+                        (https://git-scm.com/docs/git-tag). Conda
+                        packages in the lock are recorded by URL with
+                        a sha256 and md5 (pixi.lock lines 735-737).
+                        All peers are the owner's own today (owner's
+                        statement, 2026-10-22T16:21). Assumption: pixi
+                        records the resolved commit of a git
+                        dependency in its lock, which would limit a
+                        moved tag's effect to the next relock; not
+                        checked. Strength: weak; while every peer is
+                        the owner's own, one person controls both the
+                        tags and the peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_conda_channel
+    guid_target:        opt_edf84187cc424525ba40431a7c9847d3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_git_tags_only
+    guid_target:        opt_4b11ea3f16e14deea2f43f853e01ee99
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

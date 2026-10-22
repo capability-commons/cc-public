@@ -1,0 +1,66 @@
+id_self:                ann_uncached_verdicts_belong_to_the_tagged_tree
+guid_self:              ann_3cc4e11d3b734c8a97a7bb3caac4459d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Verdicts recomputed on the tagged tree
+brief:                  |
+                        The commit gate reuses verdicts from a store
+                        shared by every worktree, and a stale or
+                        damaged store could pass a file that would now
+                        fail. Recomputing every verdict on the tagged
+                        tree rules this out where a fault would spread
+                        to peers, and makes the verdict of the release
+                        trace to exactly what was released.
+description:            |
+                        Sources: the commit gate keeps layout and
+                        schema verdicts in .git/cc_public_store,
+                        shared by every worktree (README.md lines
+                        94-99). The gate of a push uses no store, on
+                        purpose (README.md lines 99-100;
+                        src/cc_public/gate/gate.py lines 31-32;
+                        context note, _sources/context.md line 31).
+                        The normal commit gate leaves out the slow and
+                        prepush tests and the run on three Python
+                        versions (README.md lines 64-69 and 77-80;
+                        pyproject.toml lines 81-87), and README.md
+                        lines 66-67 already say to run the slow run
+                        before a release. The full gate runs every
+                        check and test "with no cached verdicts"
+                        (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml
+                        lines 12-13). Strength: moderate; since the
+                        push gate already drops the store, the gain
+                        over a normal gate at push is mainly the slow
+                        and multi-Python tests.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_normal_gate_for_release
+    guid_target:        opt_f70397f5624447e48e291747391761ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,77 @@
+id_self:                ann_release_record_in_tree_ships_in_package
+guid_self:              ann_150916f1512642f3a8fc8851da00479e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release record that travels inside the package
+brief:                  |
+                        A release item committed as a file under _data
+                        ships inside the package with the rest of
+                        _data, so a peer that installed the release
+                        can read the record and its rename map with
+                        the tools it already has. A record held only
+                        in a tag message stays in git and reaches only
+                        a peer that fetched the tag, unless the build
+                        copies it in, and a plain tag gives a peer
+                        nothing to read.
+description:            |
+                        Sources: the owner chose to ship "the whole of
+                        _data" (owner's statement, 2026-10-22T16:30,
+                        _sources/context.md line 22). Peers take
+                        cc-public as a versioned package holding the
+                        tooling, the shared data and the engine
+                        (owner's statement, 2026-10-22T15:14;
+                        _data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml).
+                        git archive writes the tree structure of the
+                        named tree
+                        (https://git-scm.com/docs/git-archive); an
+                        annotated tag's message is held in the tag
+                        object (https://git-scm.com/docs/git-tag). The
+                        release component includes the notes and
+                        rename maps derived for each release
+                        (_data/logical_component/lco_release.yaml
+                        lines 12-16). Assumption: a build from a tree
+                        does not read tag messages unless a step is
+                        written to do so. Limit: under the route the
+                        owner accepts for now, peers build from a tag
+                        and so hold the tag anyway (owner's statement,
+                        2026-10-22T16:21). Strength: moderate for
+                        partners who install packages, weak while
+                        every peer builds from a tag.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_file_in_data
+    guid_target:        opt_9992b9fe32dd44318c32f41dd89fcc57
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_plain_release_tag
+    guid_target:        opt_092d384f798740f8a08672ea995badfd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

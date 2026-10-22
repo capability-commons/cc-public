@@ -1,0 +1,76 @@
+id_self:                ann_person_between_a_change_and_ranged_peers
+guid_self:              ann_0d19c7ece7c94b448730b2468441656e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Person between a change and the peers that admit it
+brief:                  |
+                        Peers pinned to a SemVer range take every
+                        minor and patch release automatically, so an
+                        automatic release passes on whatever the last
+                        relock or a misclassified change brought in
+                        with no person deciding it is acceptable. A
+                        major release changes what partners must adapt
+                        to and needs timing with them, so a person
+                        deciding each release keeps that judgment in
+                        the loop.
+description:            |
+                        Sources: "Major releases require coordination
+                        and will likely always require human
+                        involvement." and "It should stay my decision
+                        for now." (owner's statement,
+                        2026-10-22T16:33, _sources/context.md line
+                        24). Under SemVer, minor and patch releases
+                        are backward compatible, and peers taking
+                        ranges below the next major admit them all
+                        (https://semver.org/, items 6-8;
+                        pyproject.toml lines 42-48 for the same
+                        practice with most dependencies). The
+                        triggered option cuts minor and patch releases
+                        automatically from the start when the checks
+                        pass
+                        (_data/decision/dec_who_may_release/opt_triggered_minor_and_patch_now.yaml).
+                        The bump is to be computed from commit items
+                        (_data/decision/dec_version_scheme/opt_semver_computed.yaml
+                        lines 12-15). Strength: moderate; checks catch
+                        upstream changes that break tests but not
+                        those the tests miss, and with a correct
+                        computed bump automatic minor and patch
+                        releases would not harm a ranged partner.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_may_release
+    guid_target:        dec_90b9fce2338b487aade5b163702eee6d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maintainer_decides_each_release
+    guid_target:        opt_545e0b3fc14e4b19a4732ddb15ef57da
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_triggered_minor_and_patch_now
+    guid_target:        opt_745bf03807734bfb84f2423ea28e28c9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_scheduled_release
+    guid_target:        opt_a125806ebd984b419e95dc01ce6e988e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

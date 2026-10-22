@@ -1,0 +1,70 @@
+id_self:                ann_version_held_once_in_the_tag
+guid_self:              ann_eb604323db0e47ff892939c6600cb81e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Single holder of the version number
+brief:                  |
+                        Read from the tag, the version has one holder,
+                        so the tag and the package metadata cannot
+                        disagree and every version traces to one
+                        release. Written in pyproject.toml, it has two
+                        holders that a hand edit at each release must
+                        keep equal, and that edit can drift.
+description:            |
+                        Sources: the decision asks where the version
+                        should be held "so that the tag and the
+                        package agree"
+                        (_data/decision/dec_source_of_the_version_number/dec_source_of_the_version_number.yaml
+                        lines 11-15). pyproject.toml says version
+                        0.1.0 and no release has been made
+                        (pyproject.toml line 38; context note,
+                        _sources/context.md line 33). hatch-vcs is a
+                        hatchling plugin that sets the version from
+                        git tags (https://github.com/ofek/hatch-vcs).
+                        For a partner who installs a built package,
+                        both options put the version in the package
+                        metadata, so agreement of tag and metadata is
+                        what the partner's resolver relies on. The tag
+                        must exist in either option, so the pyproject
+                        field is the only copy that can be removed.
+                        Strength: strong for simplicity, moderate
+                        otherwise, since a check or the release gate's
+                        build from the tag could hold the two equal.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_in_pyproject
+    guid_target:        opt_27a3b53a8c8f40aea67a32d53a10bc1f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

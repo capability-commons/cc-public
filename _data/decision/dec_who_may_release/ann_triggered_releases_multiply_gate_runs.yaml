@@ -1,0 +1,47 @@
+id_self:                ann_triggered_releases_multiply_gate_runs
+guid_self:              ann_af2996a7c3624d7cba5f1f1af9a3df7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release gate runs multiplied by triggered releases
+brief:                  |
+                        A release triggered whenever the checks pass
+                        may run the release gate on every passing
+                        change rather than only on changes a person
+                        chooses to ship. If the release gate is the
+                        full gate, the compute spent grows with the
+                        commit rate.
+description:            |
+                        Sources: the full gate option runs every test
+                        with no cached verdicts, builds the package
+                        and installs it fresh
+                        (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml).
+                        The slow run is "too slow for every commit"
+                        (README.md line 66). Assumption: a trigger
+                        would fire on each change that lands on the
+                        release line and is eligible for a minor or
+                        patch bump. Strength: weak; a trigger could
+                        batch changes, and compute is cheap on a
+                        one-maintainer project.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_may_release
+    guid_target:        dec_90b9fce2338b487aade5b163702eee6d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_triggered_minor_and_patch_now
+    guid_target:        opt_745bf03807734bfb84f2423ea28e28c9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

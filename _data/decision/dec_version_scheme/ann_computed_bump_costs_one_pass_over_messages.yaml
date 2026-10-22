@@ -1,0 +1,53 @@
+id_self:                ann_computed_bump_costs_one_pass_over_messages
+guid_self:              ann_87c8b1de6ab8415db7df4973e85a9166
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Negligible compute cost of a computed bump
+brief:                  |
+                        A bump computed from commit items needs one
+                        read of the messages since the last release,
+                        since each item already names its verb and
+                        what it removes or renames. A hand-chosen or
+                        calendar number costs nothing, so the
+                        difference among the options is seconds at
+                        most.
+description:            |
+                        Sources: every commit item has a templated
+                        title verb, and the commit check already
+                        detects renames and removals (context note,
+                        _sources/context.md line 34). A commit item
+                        names the id of every item it removes or
+                        renames (AGENTS.md lines 98-102). The history
+                        code reads the messages of many commits with
+                        one git log call
+                        (src/cc_public/commit/history.py lines 55 and
+                        150). Re-checking each commit instead would
+                        extract two full graphs per commit
+                        (src/cc_public/commit/change.py lines
+                        131-132), a cost that grows with the commits
+                        since the release. Strength: weak, since no
+                        option costs enough to matter at the rate
+                        releases are cut.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_version_scheme
+    guid_target:        dec_527664463a1c4bc3b14fe1674fe6a73b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_semver_computed
+    guid_target:        opt_b4e5e12839114b09b432000ff179b5e1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

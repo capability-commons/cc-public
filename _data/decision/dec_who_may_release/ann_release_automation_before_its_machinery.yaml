@@ -1,0 +1,95 @@
+id_self:                ann_release_automation_before_its_machinery
+guid_self:              ann_3c801f558c0b455387d14cdc07f47f7b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release automation ahead of its machinery
+brief:                  |
+                        No release has been made, the repository has
+                        no CI, every gate runs as a local hook, and
+                        the telemetry the owner ties automation to
+                        does not exist. Triggered or scheduled
+                        releases now would add a trigger or timer and
+                        a hosted service, let a fault in untried
+                        release machinery publish broken releases with
+                        nobody watching, and could name only passing
+                        checks, not the reported problem a release
+                        answers. A person running a scripted release
+                        keeps one path and a check in the loop until
+                        the machinery has a record.
+description:            |
+                        Sources: no release has ever been made
+                        (context note, _sources/context.md line 33).
+                        The repository root holds .githooks and no
+                        .github or other CI configuration (listing of
+                        the repository;
+                        _data/decision/dec_commit_gate/ann_ci_only_needs_a_new_mechanism.yaml
+                        lines 18-20). The gate runs from git hooks
+                        that pixi run hooks turns on (README.md lines
+                        71-73; pyproject.toml line 78). "It should
+                        stay my decision for now." and "Point and
+                        patch releases may get a level of automation,
+                        depending on how we build out our telemetry
+                        infrastructure." (owner's statement,
+                        2026-10-22T16:33). "Add a type, relation,
+                        field or command only when a real instance
+                        needs it." (AGENTS.md lines 234-238). The
+                        triggered option cuts minor and patch releases
+                        automatically from the start when the checks
+                        pass
+                        (_data/decision/dec_who_may_release/opt_triggered_minor_and_patch_now.yaml
+                        lines 11-14). Assumptions: an automatic
+                        trigger would run on a hosted CI service; no
+                        telemetry or problem-report item type exists
+                        in the tree. Strength: strong for reliability
+                        and simplicity; weak for dependency risk,
+                        since the service could be self-hosted, and
+                        for traceability, since commit items still
+                        trace a triggered release to its changes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_may_release
+    guid_target:        dec_90b9fce2338b487aade5b163702eee6d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maintainer_decides_each_release
+    guid_target:        opt_545e0b3fc14e4b19a4732ddb15ef57da
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_triggered_minor_and_patch_now
+    guid_target:        opt_745bf03807734bfb84f2423ea28e28c9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_scheduled_release
+    guid_target:        opt_a125806ebd984b419e95dc01ce6e988e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

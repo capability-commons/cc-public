@@ -1,0 +1,58 @@
+id_self:                ann_release_record_survives_a_lost_tag
+guid_self:              ann_95e7e2499d06484fbb9d8a7c3c834e99
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recovery of the release record after a lost tag
+brief:                  |
+                        An annotated tag can be deleted or re-created,
+                        and with it goes the record held in its
+                        message, unless another clone still holds the
+                        old tag. A release file stays in the
+                        forward-only branch history, so the record can
+                        be recovered and the tag re-made from it; a
+                        plain tag leaves nothing to recover beyond the
+                        commit.
+description:            |
+                        Sources: git tag -d deletes a tag and git tag
+                        -f replaces one of the same name
+                        (https://git-scm.com/docs/git-tag, options and
+                        "On Re-tagging"). git push sends tags when
+                        given --tags or --follow-tags
+                        (https://git-scm.com/docs/git-push). dev only
+                        moves forward and its history stays linear
+                        (AGENTS.md lines 46-47). Strength: moderate;
+                        tag loss is uncommon, but the tag-only options
+                        then leave nothing to recover from.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_file_in_data
+    guid_target:        opt_9992b9fe32dd44318c32f41dd89fcc57
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_plain_release_tag
+    guid_target:        opt_092d384f798740f8a08672ea995badfd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

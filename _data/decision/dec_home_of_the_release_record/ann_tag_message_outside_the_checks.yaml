@@ -1,0 +1,74 @@
+id_self:                ann_tag_message_outside_the_checks
+guid_self:              ann_0634b3d3598a4539b744b543b83facb7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tag message outside the checks and the graph
+brief:                  |
+                        The push check of record skips every pushed
+                        tag and the extractor skips the .git
+                        directory, so a release item in a tag message
+                        could be malformed and still reach the remote,
+                        and no item in the tree can be checked to
+                        point at it. A release file in the tree passes
+                        the commit hooks and the history check like
+                        any other item and can carry edges to what it
+                        meets.
+description:            |
+                        Sources: "A pushed tag is not checked: it
+                        names history already made"
+                        (src/cc_public/commit/history.py lines 31-33;
+                        tags skipped at line 95; README.md lines
+                        107-108). The pre-push hook is the check of
+                        record (.githooks/pre-push lines 26-28 and 33;
+                        AGENTS.md lines 93-95). Every committed file
+                        under _data is checked by the gate and by the
+                        history check (README.md lines 71-80 and
+                        103-108). The extractor skips the .git
+                        directory (src/cc_public/graph/extract.py line
+                        147). A commit item is held in the commit
+                        message, not in a file of the tree
+                        (_data/register/reg_data_item_type.yaml lines
+                        807-812). An earlier annotation found the
+                        reason for a removed element living only in a
+                        commit message no graph item links to
+                        (_data/decision/dec_graph_history_storage/ann_removed_elements_lose_their_reasons.yaml
+                        lines 11-28). git push sends tags when given
+                        --tags or --follow-tags
+                        (https://git-scm.com/docs/git-push).
+                        Assumption: no check of a release item in a
+                        tag message exists yet. Strength: strong on
+                        today's code, moderate if a tag reader and
+                        check are built with the release tooling.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_the_release_record
+    guid_target:        dec_f3a833bb3bcc4b72bac70c1d1cef25bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_file_in_data
+    guid_target:        opt_9992b9fe32dd44318c32f41dd89fcc57
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_item_in_tag
+    guid_target:        opt_fda50194692d432fa8225e727807e28f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
