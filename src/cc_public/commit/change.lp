@@ -168,10 +168,12 @@ unannounced_rename(Id, Other) :-
 
 % -----------------------------------------------------------------------------
 % A register entry given a new id keeps its old id in its alias list,
-% so that references by the old id can be found and resolved. A revert
-% is the exception: it restores an entry as it was, with the id and
-% the aliases it had then, and that content passed when it was first
-% committed.
+% so that references by the old id can be found and resolved. An item
+% embedded in another, such as an interface member or a dataflow node,
+% is not a register entry: its schema allows no alias, and what refers
+% to it carries its guid. A revert is the exception: it restores an
+% entry as it was, with the id and the aliases it had then, and that
+% content passed when it was first committed.
 %
 % decl rename_without_alias(id:    symbol,
 %                           other: symbol)
@@ -182,9 +184,8 @@ unannounced_rename(Id, Other) :-
 #show rename_without_alias/2.
 
 rename_without_alias(Id, Other) :-
-    renamed(Guid, Id, Other),
-    item(Other, Guid, Holder, _, _),
-    Holder != "",
+    renamed(_, Id, Other),
+    register_entry_key(_, _, Other),
     not alias(Other, Id),
     not commit_verb("Revert"),
     not commit_verb("Reapply").
