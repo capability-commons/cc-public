@@ -1,0 +1,72 @@
+id_self:                ann_patch_releases_while_breaking_work_waits
+guid_self:              ann_c6c081c1e944428489e996f476e9b3aa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Patch releases while breaking work waits
+brief:                  |
+                        After 1.0 a fix must be releasable at once
+                        even while breaking work is under way. A
+                        separate branch for breaking work keeps the
+                        release line always fit for a patch; one trunk
+                        holds both, so a fix must wait or be cut from
+                        a branch made at the time.
+description:            |
+                        Sources:
+                        - Under the dev, main and next option,
+                          breaking work collects on next until a major
+                          release
+                          (_data/decision/dec_branch_lines/opt_dev_then_main_then_next.yaml,
+                          brief).
+                        - Git flow keeps separate develop, release,
+                          hotfix and main branches
+                          (_data/decision/dec_branch_lines/opt_git_flow.yaml,
+                          brief); a hotfix branch is made from main
+                          and merged back into main and develop
+                          (https://nvie.com/posts/a-successful-git-branching-model/).
+                        - Under one trunk, one branch carries all work
+                          and releases are tags on it
+                          (_data/decision/dec_branch_lines/opt_trunk_with_release_tags.yaml,
+                          brief).
+                        - Owner's statement (2026-10-22T16:23): after
+                          1.0, breaking changes are bundled "into one
+                          release and make it a major version bump"
+                          (_sources/context.md line 16).
+                        - Owner's statement (2026-10-22T16:33): "I'd
+                          like to be able to respond to reported
+                          problems quickly and largely automatically"
+                          (_sources/context.md line 24). Strength:
+                          strong after 1.0; before 1.0 every option
+                          can release fixes at once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_git_flow
+    guid_target:        opt_28deab81f9d744d6af75d9d8793eb19e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_trunk_with_release_tags
+    guid_target:        opt_6edb5ffc035d47b2bf0270a2147fe2b0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

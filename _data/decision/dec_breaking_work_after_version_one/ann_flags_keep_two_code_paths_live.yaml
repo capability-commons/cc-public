@@ -1,0 +1,69 @@
+id_self:                ann_flags_keep_two_code_paths_live
+guid_self:              ann_db7479f6f08842c3843b45de4de2f955
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two live code paths under switches
+brief:                  |
+                        A breaking change behind a switch carries the
+                        old behavior, the new behavior and the switch
+                        logic in one diff, and needs a second change
+                        later to remove the switch. Both paths stay in
+                        the tree until the major release, one of them
+                        barely exercised, and testing both states
+                        grows the test stage of every gate.
+description:            |
+                        Sources:
+                        - The option lands breaking changes on dev
+                          behind switches that stay off until a major
+                          release
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_behind_flags.yaml,
+                          brief).
+                        - Feature toggles "require you to introduce
+                          new abstractions or conditional logic into
+                          your code", add a testing burden, and are
+                          inventory with a carrying cost to be removed
+                          when no longer needed
+                          (https://martinfowler.com/articles/feature-toggles.html).
+                        - The tests run in every gate of a code commit
+                          (README.md lines 74-77); a code commit's
+                          gate takes about 78 s on atlas
+                          (_sources/context.md line 31).
+                        - Assumption: each switch needs tests in both
+                          of its states. Strength: strong for review,
+                          since the extra code is inherent to the
+                          mechanism; weak for run time, since a switch
+                          costs little to evaluate and most of the
+                          cost falls on the gate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_behind_flags
+    guid_target:        opt_1fbe338e636d440085812c858e945f2c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

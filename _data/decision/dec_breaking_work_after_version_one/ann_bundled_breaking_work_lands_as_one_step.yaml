@@ -1,0 +1,61 @@
+id_self:                ann_bundled_breaking_work_lands_as_one_step
+guid_self:              ann_69d2412544ee4bc98209d069619111bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bundled breaking work as one large step
+brief:                  |
+                        Collecting breaking work on next and landing
+                        it together makes the major release one large
+                        step for anyone who reviews or absorbs it. A
+                        warning on dev lets each breaking commit be
+                        read where it lands, one at a time, with the
+                        release refusing a wrong bump.
+description:            |
+                        Sources:
+                        - The option has breaking work collect on next
+                          and land together in a major release
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_waits_on_next.yaml
+                          lines 12-15).
+                        - The warned option has the release refuse a
+                          minor or patch bump that holds a breaking
+                          commit
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_warned_only.yaml
+                          lines 12-15).
+                        - Owner's statement (2026-10-22T16:33): major
+                          releases "require coordination and will
+                          likely always require human involvement"
+                          (_sources/context.md line 24).
+                        - Assumption: the commits on next are reviewed
+                          as they land there, so the step that remains
+                          large is the merge and the release notes,
+                          not each commit. Strength: weak; if each
+                          commit on next is reviewed when it lands,
+                          only the merge is new to the reviewer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_warned_only
+    guid_target:        opt_7ea2ad6b72434751a5bab7b1cfcc4d47
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

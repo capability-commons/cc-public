@@ -1,0 +1,60 @@
+id_self:                ann_move_to_main_must_keep_release_tags_reachable
+guid_self:              ann_6df97daabf294811865ae0346fcbcf16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release tags kept reachable across the move to main
+brief:                  |
+                        main now holds the legacy September iteration.
+                        If releases are cut from dev first and from
+                        main later, the move must keep those release
+                        tags in main's history, or the range since the
+                        last release has no known start for the first
+                        release from main.
+description:            |
+                        Sources:
+                        - origin's main branch still holds the legacy
+                          September iteration (_sources/context.md
+                          line 32).
+                        - Owner's statement (2026-10-22T16:17): "what
+                          is currently on dev will very shortly move
+                          over to main. Likely with the first public
+                          release." (_sources/context.md line 13).
+                        - The computed bump reads the commit items
+                          since the last release
+                          (_data/decision/dec_version_scheme/opt_semver_computed.yaml
+                          lines 11-15).
+                        - Assumption: the move from dev to main is not
+                          yet specified, so it is not known whether
+                          main will take dev's history or join it to
+                          the legacy history. Strength: weak, because
+                          the owner expects the move near the first
+                          release, so few or no releases may be cut
+                          from dev before it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trunk_with_release_tags
+    guid_target:        opt_6edb5ffc035d47b2bf0270a2147fe2b0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

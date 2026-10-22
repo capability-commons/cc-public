@@ -1,0 +1,81 @@
+id_self:                ann_history_check_refuses_breaking_commits_on_dev
+guid_self:              ann_515159ebc7684c128a0e51c1db72a261
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal of breaking commits on the release line
+brief:                  |
+                        The history check already detects renames and
+                        removals, so failing a breaking commit on dev
+                        is one rule in a check of record that exists,
+                        and it lets a reviewer know mechanically that
+                        every commit on dev is non-breaking. A warning
+                        only does the same job at two points and lets
+                        a breaking commit land, after which the
+                        release refuses any minor or patch bump and an
+                        urgent fix is blocked until the commit is
+                        reverted.
+description:            |
+                        Sources:
+                        - Every commit carries a commit item and the
+                          commit check already detects renames and
+                          removals (_sources/context.md line 34).
+                        - The history check is the check of record,
+                          checks each commit from what it records, and
+                          runs at pre-push (README.md lines 103-108;
+                          AGENTS.md lines 93-97).
+                        - Under the warned option the release refuses
+                          a minor or patch bump that holds a breaking
+                          commit
+                          (_data/decision/dec_breaking_work_after_version_one/opt_breaking_work_warned_only.yaml,
+                          brief).
+                        - A revert is not gated and its message is
+                          first checked at push (README.md lines
+                          89-92).
+                        - The owner says the graph can mechanically
+                          determine the right SemVer bump on a release
+                          (owner's statement, 2026-10-22T16:24;
+                          _sources/context.md line 17). Strength:
+                          strong for reliability, since the failure it
+                          prevents falls when a fix is most urgent;
+                          moderate for review and simplicity, since
+                          next is itself a second line, so the count
+                          is one rule plus one branch against two
+                          rules.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_warned_only
+    guid_target:        opt_7ea2ad6b72434751a5bab7b1cfcc4d47
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

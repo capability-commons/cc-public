@@ -1,0 +1,67 @@
+id_self:                ann_prefix_changes_cannot_sit_behind_a_switch
+guid_self:              ann_d1ee0ea8313a40cbbb231146846cd221
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prefix changes that no switch can hold back
+brief:                  |
+                        The breaking changes the owner names are to
+                        the graph, such as prefix changes and renames,
+                        which edit ids in files across the tree rather
+                        than code paths. Nothing in cctool switches
+                        items on or off, so holding one back would
+                        mean two forms of every renamed item, and
+                        without that the break reaches peers in a
+                        minor release anyway.
+description:            |
+                        Sources:
+                        - Owner's statement (2026-10-22T16:23):
+                          breaking changes to bundle include "e.g.
+                          prefix changes" (_sources/context.md line
+                          16).
+                        - A guid is the prefix of the type and 32 hex
+                          digits, minted once and never changed
+                          (AGENTS.md lines 114-115).
+                        - cctool rename changes every YAML document
+                          that names the id and moves the file of a
+                          standalone item (AGENTS.md lines 124-126).
+                        - Nothing in cctool's commands switches items
+                          on or off (README.md lines 110-138).
+                        - Assumption: no mechanism exists to keep two
+                          ids or two prefixes live behind a switch;
+                          none appears in the repository. Strength:
+                          strong; the kind of breaking change the
+                          owner names as an example does not fit the
+                          option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_behind_flags
+    guid_target:        opt_1fbe338e636d440085812c858e945f2c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
