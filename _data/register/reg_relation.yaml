@@ -1224,3 +1224,38 @@ table:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_implementation
         guid_target:    relcon_93bd73e89b474e1e8f5dd82b2bf2e8de
+
+  # ---------------------------------------------------------------------------
+  # relation_is_part_of -- Is part of relation
+  #
+  relation_is_part_of:
+    id_self:            relation_is_part_of
+    guid_self:          relation_7053d805ba7444e6a5cd70192b04f3b6
+    title:              Is part of relation
+    brief:              |
+                        SOURCE is part of TARGET
+    description:        |
+                        The design entity identified by SOURCE is one
+                        of the parts that the design entity identified
+                        by TARGET is broken down into.
+
+                        A chain of these edges may not lead back to
+                        where it began.
+    note:               |
+                        Arcadia breaks a logical component down into
+                        logical components, in a breakdown that is a
+                        tree. This relation records that breakdown.
+    acyclic:            true
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_design_entity
+        guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_design_entity
+        guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
