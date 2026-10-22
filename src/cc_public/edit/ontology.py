@@ -13,22 +13,31 @@ protective_mark:
 
 title:                  Ontology import
 brief:                  |
-                        Make or refresh the external classes for named
-                        classes of an ontology release, and for every
-                        class above them.
+                        Make or refresh the external classes and
+                        external relations for named classes and
+                        relations of an ontology release, and for
+                        everything they depend on.
 description:            |
                         An ontology release is read from a Turtle
-                        file: the label of each named class, and its
-                        named superclasses. operations returns the
-                        batch operations that make an external class
-                        for each class asked for and each class above
-                        it, citing the external document of its
-                        release and linked to its superclasses by
-                        relation_is_subclass_of. Where the external
-                        class exists already, only what differs from
-                        the release is changed, so that moving to a
-                        new release is a reviewable diff. The
-                        definitions of the classes are not copied.
+                        file: the label of each named class and
+                        relation, the named superclasses of each
+                        class, and the named superproperties, domain
+                        and range of each relation. operations returns
+                        the batch operations that make an external
+                        class for each class asked for and each class
+                        above it, linked to its superclasses by
+                        relation_is_subclass_of, and an external
+                        relation for each relation asked for and each
+                        relation above it, linked to its
+                        superproperties by relation_is_subproperty_of
+                        and to the classes of its domain and range by
+                        relation_has_domain and relation_has_range.
+                        Each cites the external document of its
+                        release. Where an item exists already, only
+                        what differs from the release is changed, so
+                        that moving to a new release is a reviewable
+                        diff. The definitions are not copied, and the
+                        inverses of relations are not brought in.
 usage:                  |
                         Called by the import command of
                         pym_cc_public.cli.editing.
@@ -48,22 +57,39 @@ import pyoxigraph
 import cc_public.edit.edit
 
 
+NS_RDF            = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 NS_RDFS           = 'http://www.w3.org/2000/01/rdf-schema#'
 NS_OWL            = 'http://www.w3.org/2002/07/owl#'
+NODE_TYPE         = pyoxigraph.NamedNode(NS_RDF + 'type')
+NODE_FIRST        = pyoxigraph.NamedNode(NS_RDF + 'first')
+NODE_REST         = pyoxigraph.NamedNode(NS_RDF + 'rest')
 NODE_LABEL        = pyoxigraph.NamedNode(NS_RDFS + 'label')
 NODE_SUBCLASS_OF  = pyoxigraph.NamedNode(NS_RDFS + 'subClassOf')
+NODE_SUBPROPERTY  = pyoxigraph.NamedNode(NS_RDFS + 'subPropertyOf')
+NODE_DOMAIN       = pyoxigraph.NamedNode(NS_RDFS + 'domain')
+NODE_RANGE        = pyoxigraph.NamedNode(NS_RDFS + 'range')
 NODE_THING        = pyoxigraph.NamedNode(NS_OWL + 'Thing')
+NODE_PROPERTY     = pyoxigraph.NamedNode(NS_OWL + 'ObjectProperty')
+NODE_UNION        = pyoxigraph.NamedNode(NS_OWL + 'unionOf')
 LANGUAGE          = 'en'
 
+# The prefixes of the external items made for classes and for relations.
+#
 PREFIX_ITEM       = 'extcla'
+PREFIX_RELATION   = 'extrel'
 KEY_FIXITY        = 'fixity'
 KEY_DIGEST        = 'digest'
 SIZE_BLOCK        = 1 << 20
 ID_CITES          = 'relation_cites'
 ID_SUBCLASS_OF    = 'relation_is_subclass_of'
+ID_SUBPROPERTY    = 'relation_is_subproperty_of'
+ID_DOMAIN         = 'relation_has_domain'
+ID_RANGE          = 'relation_has_range'
+TUPLE_IMPORTED    = (ID_CITES, ID_SUBCLASS_OF, ID_SUBPROPERTY, ID_DOMAIN, ID_RANGE)
 SCHEME_URI        = 'uri'
 TEMPLATE_TITLE    = '{short} {label}'
 TEMPLATE_BRIEF    = 'The class with the label "{label}" in {release}.'
+TEMPLATE_RELATION = 'The relation with the label "{label}" in {release}.'
 
 # A run of anything but lower-case letters and digits becomes one
 # underscore in an id.
@@ -77,7 +103,8 @@ Namespace         = collections.namedtuple('Namespace', ['iri', 'short', 'releas
 class Ontology:
     """
     The labels and direct superclasses of the named classes in an
-    ontology release, read from a Turtle file.
+    ontology release, and the labels, direct superproperties, domains
+    and ranges of its named relations, read from a Turtle file.
 
     """
 
@@ -88,8 +115,11 @@ class Ontology:
 
         """
 
-        self.map_label  = {}
-        self.map_parent = collections.defaultdict(set)
+        self.map_label    = {}
+        self.map_parent   = collections.defaultdict(set)
+        self.set_relation = set()
+        self.map_end      = collections.defaultdict(list)
+        self.map_node     = collections.defaultdict(dict)
 
         try:
             iter_quad = pyoxigraph.parse(path   = str(path),
@@ -108,9 +138,22 @@ class Ontology:
 
         """
 
+        if isinstance(quad.subject, pyoxigraph.BlankNode):
+            if quad.predicate in (NODE_UNION, NODE_FIRST, NODE_REST):
+                self.map_node[quad.subject][quad.predicate] = quad.object
+            return
         if not isinstance(quad.subject, pyoxigraph.NamedNode):
             return
         iri = quad.subject.value
+
+        if quad.predicate == NODE_TYPE and quad.object == NODE_PROPERTY:
+            self.set_relation.add(iri)
+
+        if quad.predicate in (NODE_DOMAIN, NODE_RANGE):
+            self.map_end[(iri, quad.predicate)].append(quad.object)
+
+        if quad.predicate == NODE_SUBPROPERTY and isinstance(quad.object, pyoxigraph.NamedNode):
+            self.map_parent[iri].add(quad.object.value)
 
         if quad.predicate == NODE_LABEL and isinstance(quad.object, pyoxigraph.Literal):
             language = quad.object.language
@@ -123,10 +166,67 @@ class Ontology:
             self.map_parent[iri].add(quad.object.value)
 
     # -------------------------------------------------------------------------
+    def classes(self, iri: str, node: pyoxigraph.NamedNode) -> list[str]:
+        """
+        Return the named classes of the domain, or of the range, of the
+        relation iri, as node says. A union of classes gives each of
+        them. owl:Thing gives none, since it constrains nothing.
+
+        """
+
+        list_end = self.map_end.get((iri, node), [])
+        if len(list_end) > 1:
+            raise cc_public.edit.edit.ErrorEdit(
+                'The release gives the relation {iri} {count} statements of its {end}, which '
+                'would make an intersection. Only a single class or a union is '
+                'read.'.format(iri = iri, count = len(list_end), end = node.value.split('#')[-1]))
+
+        list_class = []
+        for end in list_end:
+            list_member = self._members(end) if isinstance(end, pyoxigraph.BlankNode) else [end]
+            list_class.extend(member.value for member in list_member
+                              if isinstance(member, pyoxigraph.NamedNode)
+                              and member != NODE_THING)
+        return sorted(set(list_class))
+
+    # -------------------------------------------------------------------------
+    def _members(self, node: pyoxigraph.BlankNode) -> list:
+        """
+        Return the members of the union that node gives, or none if it
+        gives no union.
+
+        """
+
+        list_member = []
+        item = self.map_node[node].get(NODE_UNION)
+        while isinstance(item, pyoxigraph.BlankNode):
+            map_link = self.map_node[item]
+            if NODE_FIRST in map_link:
+                list_member.append(map_link[NODE_FIRST])
+            item = map_link.get(NODE_REST)
+        return list_member
+
+    # -------------------------------------------------------------------------
+    def depends(self, iri: str) -> list[str]:
+        """
+        Return what iri depends on: the classes above a class, or the
+        relations above a relation and the classes of its domain and
+        range.
+
+        """
+
+        set_depend = set(self.map_parent[iri])
+        if iri in self.set_relation:
+            set_depend.update(self.classes(iri, NODE_DOMAIN))
+            set_depend.update(self.classes(iri, NODE_RANGE))
+        return sorted(set_depend)
+
+    # -------------------------------------------------------------------------
     def closure(self, list_iri: list[str]) -> list[str]:
         """
-        Return the classes of list_iri and every class above them, each
-        after the classes above it, and otherwise in sorted order.
+        Return the classes and relations of list_iri and everything they
+        depend on, each after what it depends on, and otherwise in
+        sorted order.
 
         """
 
@@ -139,8 +239,8 @@ class Ontology:
     # -------------------------------------------------------------------------
     def _visit(self, iri: str, list_class: list[str], set_seen: set[str]) -> None:
         """
-        Add iri to list_class after every class above it, unless it is
-        there already.
+        Add iri to list_class after everything it depends on, unless it
+        is there already.
 
         """
 
@@ -148,11 +248,11 @@ class Ontology:
             return
         if iri not in self.map_label:
             raise cc_public.edit.edit.ErrorEdit(
-                'The release has no labelled class {iri}. Give the IRI of a class '
-                'it defines.'.format(iri = iri))
+                'The release has no labelled class or relation {iri}. Give the IRI of a '
+                'class or relation it defines.'.format(iri = iri))
         set_seen.add(iri)
-        for parent in sorted(self.map_parent[iri]):
-            self._visit(parent, list_class, set_seen)
+        for depend in self.depends(iri):
+            self._visit(depend, list_class, set_seen)
         list_class.append(iri)
 
 
@@ -163,32 +263,42 @@ def operations(tree:           cc_public.edit.edit.Tree,
                list_iri:       list[str]) -> list[dict]:
     """
     Return the batch operations that make an external class for each
-    class of list_iri and each class above it, or bring an existing one
-    up to date with the release: its label, its title, its brief, the
-    release it cites and the classes it is a subclass of. A new
-    external class takes its id from its label; an existing one keeps
-    its id.
+    class of list_iri and an external relation for each relation of it,
+    and the same for everything they depend on, or bring an existing
+    one up to date with the release: its label, its title, its brief,
+    the release it cites, and its edges to what is above it and to the
+    classes of its domain and range. A new item takes its id from its
+    label; an existing one keeps its id.
 
     """
 
     list_class = ontology.closure(list_iri)
     map_known  = _known(tree)
-    map_id     = {iri: map_known.get(iri) or _id(iri, ontology.map_label[iri], list_namespace)
+    map_id     = {iri: map_known.get(iri) or _id(iri,
+                                                 ontology.map_label[iri],
+                                                 list_namespace,
+                                                 iri in ontology.set_relation)
                   for iri in list_class}
     _refuse_shared(map_id)
 
     list_operation = []
     for iri in list_class:
-        namespace = _namespace(iri, list_namespace)
-        label     = ontology.map_label[iri]
-        map_field = {'title':      TEMPLATE_TITLE.format(short = namespace.short.upper(),
-                                                         label = label),
-                     'brief':      TEMPLATE_BRIEF.format(label   = label,
-                                                         release = namespace.release),
-                     'identifier': [{'scheme': SCHEME_URI, 'value': iri}],
-                     'label':      label}
-        set_link  = {(ID_CITES, namespace.release)}
-        set_link |= {(ID_SUBCLASS_OF, map_id[parent]) for parent in ontology.map_parent[iri]}
+        namespace   = _namespace(iri, list_namespace)
+        label       = ontology.map_label[iri]
+        is_relation = iri in ontology.set_relation
+        template    = TEMPLATE_RELATION if is_relation else TEMPLATE_BRIEF
+        map_field   = {'title':      TEMPLATE_TITLE.format(short = namespace.short.upper(),
+                                                           label = label),
+                       'brief':      template.format(label   = label,
+                                                     release = namespace.release),
+                       'identifier': [{'scheme': SCHEME_URI, 'value': iri}],
+                       'label':      label}
+        id_parent   = ID_SUBPROPERTY if is_relation else ID_SUBCLASS_OF
+        set_link    = {(ID_CITES, namespace.release)}
+        set_link   |= {(id_parent, map_id[parent]) for parent in ontology.map_parent[iri]}
+        if is_relation:
+            set_link |= {(ID_DOMAIN, map_id[each]) for each in ontology.classes(iri, NODE_DOMAIN)}
+            set_link |= {(ID_RANGE, map_id[each]) for each in ontology.classes(iri, NODE_RANGE)}
         list_operation.extend(_item_operations(tree, map_id[iri], map_field, set_link))
 
     return list_operation
@@ -197,8 +307,8 @@ def operations(tree:           cc_public.edit.edit.Tree,
 # -----------------------------------------------------------------------------
 def known(tree: cc_public.edit.edit.Tree, list_namespace: list[Namespace]) -> list[str]:
     """
-    Return, in sorted order, the IRI of every external class in tree
-    that one of list_namespace covers.
+    Return, in sorted order, the IRI of every external class and
+    external relation in tree that one of list_namespace covers.
 
     """
 
@@ -210,7 +320,7 @@ def known(tree: cc_public.edit.edit.Tree, list_namespace: list[Namespace]) -> li
 def differences(list_operation: list[dict]) -> list[str]:
     """
     Return a sentence for each operation of list_operation, saying how
-    an external class differs from the release.
+    an external class or external relation differs from the release.
 
     """
 
@@ -285,7 +395,7 @@ def _item_operations(tree:      cc_public.edit.edit.Tree,
                       if _comparable(document.get(key)) != _comparable(value)]
 
     set_old = {(row[1], row[2]) for row in tree.facts['edge']
-               if row[0] == id_item and row[1] in (ID_CITES, ID_SUBCLASS_OF)}
+               if row[0] == id_item and row[1] in TUPLE_IMPORTED}
     list_operation.extend({'link': [id_item, *link]} for link in sorted(set_link - set_old))
     list_operation.extend({'unlink': [id_item, *link]} for link in sorted(set_old - set_link))
     return list_operation
@@ -294,9 +404,9 @@ def _item_operations(tree:      cc_public.edit.edit.Tree,
 # -----------------------------------------------------------------------------
 def _known(tree: cc_public.edit.edit.Tree) -> dict[str, str]:
     """
-    Return the id of each external class in tree, by the IRI of its
-    class. A class keeps the id it was first given, even when its label
-    changes.
+    Return the id of each external class and external relation in tree,
+    by the IRI of what it stands for. An item keeps the id it was first
+    given, even when its label changes.
 
     """
 
@@ -305,7 +415,7 @@ def _known(tree: cc_public.edit.edit.Tree) -> dict[str, str]:
         if not isinstance(document, dict):
             continue
         id_item = str(document.get('id_self', ''))
-        if not id_item.startswith(PREFIX_ITEM + '_'):
+        if not id_item.startswith((PREFIX_ITEM + '_', PREFIX_RELATION + '_')):
             continue
         for identifier in document.get('identifier') or []:
             if identifier.get('scheme') == SCHEME_URI:
@@ -356,21 +466,26 @@ def _namespace(iri: str, list_namespace: list[Namespace]) -> Namespace:
     list_match = [namespace for namespace in list_namespace if iri.startswith(namespace.iri)]
     if not list_match:
         raise cc_public.edit.edit.ErrorEdit(
-            'No --namespace covers the class {iri}. Give one for the IRI it begins '
+            'No --namespace covers {iri}. Give one for the IRI it begins '
             'with.'.format(iri = iri))
     return max(list_match, key = lambda namespace: len(namespace.iri))
 
 
 # -----------------------------------------------------------------------------
-def _id(iri: str, label: str, list_namespace: list[Namespace]) -> str:
+def _id(iri:            str,
+        label:          str,
+        list_namespace: list[Namespace],
+        is_relation:    bool) -> str:
     """
-    Return the id of the external class for iri: the prefix of the
-    type, the short name of its namespace, and its label in lower case.
+    Return the id of the external class or external relation for iri:
+    the prefix of its type, the short name of its namespace, and its
+    label in lower case.
 
     """
 
     slug = re.sub(PATTERN_SLUG, '_', label.lower()).strip('_')
-    return '{prefix}_{short}_{slug}'.format(prefix = PREFIX_ITEM,
+    return '{prefix}_{short}_{slug}'.format(prefix = PREFIX_RELATION if is_relation
+                                                     else PREFIX_ITEM,
                                             short  = _namespace(iri, list_namespace).short,
                                             slug   = slug)
 
@@ -378,7 +493,8 @@ def _id(iri: str, label: str, list_namespace: list[Namespace]) -> str:
 # -----------------------------------------------------------------------------
 def _refuse_shared(map_id: dict[str, str]) -> None:
     """
-    Refuse an import in which two classes would get the same id.
+    Refuse an import in which two classes or relations would get the
+    same id.
 
     """
 
@@ -388,6 +504,6 @@ def _refuse_shared(map_id: dict[str, str]) -> None:
     for (id_item, list_iri) in sorted(map_iri.items()):
         if len(list_iri) > 1:
             raise cc_public.edit.edit.ErrorEdit(
-                'The classes {list} would all get the id {id}. Import them from '
+                'The IRIs {list} would all get the id {id}. Import them from '
                 'namespaces with different short names.'.format(list = ', '.join(sorted(list_iri)),
                                                                 id   = id_item))
