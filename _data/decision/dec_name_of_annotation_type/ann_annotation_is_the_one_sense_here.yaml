@@ -1,0 +1,65 @@
+id_self:                ann_annotation_is_the_one_sense_here
+guid_self:              ann_bb5613087ab84d37b6d0b449b67fbe97
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One sense of annotation in the data
+brief:                  |
+                        In the data of the repository annotation
+                        designates only the item type, while note and
+                        comment each already designate something else.
+                        Outside the data it keeps other senses: a
+                        SysML relationship, a Python type hint and a
+                        JSON Schema result.
+description:            |
+                        concern_terminological_quality asks whether a
+                        term designates one concept, and whether it is
+                        already used, here or in a cited source, for
+                        something else
+                        (_data/register/reg_concern.yaml lines 784,
+                        786). Under _data, outside decision folders,
+                        every use of annotation is the graph sense
+                        (for example _data/schema/sch_option.yaml line
+                        30, _data/schema/sch_trait_descriptive.yaml
+                        line 73,
+                        _data/register/reg_writing_style_rule.yaml
+                        line 185). No other concept rates annotation
+                        as a term, and shared_term reports no row for
+                        it (src/cc_public/check/friction.lp lines
+                        66-73; friction run on a copy of c71515b0: one
+                        row, for item). concept_annotation already
+                        rates note and comment deprecated
+                        (_data/register/reg_concept.yaml lines
+                        321-325). Note designates the descriptive
+                        field (_data/schema/sch_trait_descriptive.yaml
+                        lines 65-73), and comment the text after a
+                        comment marker (src/cc_public/graph/extract.py
+                        lines 136-137). Outside the data annotation
+                        keeps other senses: the SysML v2 relationship,
+                        the Python type hint the extractor reads
+                        (extract.py line 997) and JSON Schema results.
+                        A related match can mark such a false friend
+                        (_data/register/reg_relation.yaml lines
+                        1143-1157).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_name_of_annotation_type
+    guid_target:        dec_d900e5300ad6469e85478b8bd8d798a8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_call_it_annotation
+    guid_target:        opt_f435c8e05f81461b9372c6754a67e5a7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_terminological_quality
+    guid_target:        concern_d8bf19d2c1a144dd8e38c2ac81e5f3ef

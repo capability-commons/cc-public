@@ -1,0 +1,57 @@
+id_self:                ann_preferred_term_keeps_one_term_per_concept
+guid_self:              ann_ec93377d193242cf94abee5814e9a865
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One term in use for each concept
+brief:                  |
+                        A preferred term in each name that refers to a
+                        concept keeps one term in use for that
+                        concept, and holding a deprecated term to its
+                        concept's sense leaves the word free for its
+                        other senses, as ISO 704 and ISO 1087 ask of
+                        terms.
+description:            |
+                        concern_terminological_quality asks whether
+                        each term designates one concept, and counts
+                        concepts with more than one term in use
+                        (_data/register/reg_concern.yaml lines 764-766
+                        and 788-790). ISO 1087 rates a deprecated term
+                        as undesired for its concept, not as a banned
+                        word (_data/schema/sch_regentry_concept.yaml
+                        lines 44-45 and 75-77), and the register notes
+                        that one term may name several concepts
+                        (_data/register/reg_concept.yaml lines 48-49).
+                        The tooling already reports terms that two
+                        concepts share (shared_term,
+                        src/cc_public/check/friction.lp lines 64-73)
+                        and fails a term rated twice
+                        (term_rated_twice,
+                        src/cc_public/check/check.lp lines 1881-1888),
+                        but nothing counts names that use a deprecated
+                        term for its concept. Free naming lets several
+                        terms for one concept come into use, and an
+                        every-word rule would register words that
+                        designate no concept.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_preferred_terms_in_names
+    guid_target:        dec_893305b610734102b4012f1631a8b77e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_preferred_terms_in_names
+    guid_target:        opt_13df523d457244469e486dcd2cac731d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_terminological_quality
+    guid_target:        concern_d8bf19d2c1a144dd8e38c2ac81e5f3ef
