@@ -1582,3 +1582,54 @@ def test_the_concept_of_a_type_with_no_match_is_advice(tree):
     assert ('type_decision', 'concept_decision') in list_row
     assert ('type_role', 'concept_role') in list_row
     assert ('type_requirement', 'concept_requirement') not in list_row
+
+
+# -----------------------------------------------------------------------------
+def _unhold(root, id_target):
+    """
+    Take from the design rule register the one edge of
+    relation_is_held_by to id_target, which is the only edge of its
+    rule.
+
+    """
+
+    path  = root / '_data/register/reg_design_rule.yaml'
+    regex = re.compile(r'\n    edge:\n\n      - id_relation:    relation_is_held_by\n.*\n'
+                       r'        id_target:      {target}\n.*\n'.format(
+                                                            target = re.escape(id_target)))
+    (text, count) = regex.subn('\n    edge:               []\n', path.read_text())
+    assert count == 1
+    path.write_text(text)
+
+
+def test_a_design_rule_that_names_nothing_holding_it_is_reported(tree):
+    _unhold(tree, 'lpp_cc_public.check.friction.shared_term')
+    assert [row[0] for row in _check(tree)['unheld_design_rule']] == [
+        'rule_resolve_tensions_early']
+
+
+def test_a_design_rule_that_a_ruling_leaves_to_review_is_not_reported(tree):
+    _unhold(tree, 'lpp_cc_public.check.friction.shared_term')
+    _replace(tree, '_data/decision/dec_cross_item_checks_engine/dec_cross_item_checks_engine.yaml',
+             'edge:\n\n',
+             'edge:\n\n'
+             '  - id_relation:        relation_is_about\n'
+             '    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f\n'
+             '    id_target:          rule_resolve_tensions_early\n'
+             '    guid_target:        {guid}\n\n'.format(
+                                    guid = _guid_of(tree, 'rule_resolve_tensions_early')))
+    assert 'unheld_design_rule' not in _check(tree)
+
+
+def test_more_design_rules_left_to_review_than_the_cap_are_reported(tree, monkeypatch):
+    _unhold(tree, 'lpp_cc_public.check.friction.shared_term')
+    _replace(tree, 'src/cc_public/check/check.lp', 'unheld_rule_cap(3).', 'unheld_rule_cap(0).')
+    monkeypatch.setattr(cc_public.check.check, 'RULES', tree / 'src/cc_public/check/check.lp')
+    assert _check(tree)['too_many_unheld_rules'] == [('1', '0')]
+
+
+def test_a_style_rule_that_claims_a_check_and_names_none_is_reported(tree):
+    _replace(tree, '_data/register/reg_writing_style_rule.yaml',
+             'enforcement:        none', 'enforcement:        check')
+    assert [row[:2] for row in _check(tree)['unheld_claim']] == [
+        ('style_say_the_thing', 'check')]

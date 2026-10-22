@@ -3206,3 +3206,153 @@ unplaced(Graph, Node, Process) :-
 unplaced(Graph, Process, Host) :-
     os_process(Graph, Process, Host),
     not host(Graph, Host).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cc_public.check.check.unheld_design_rule
+% guid_self:              lpp_acc545a491734217811a99d7aa317e3b
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unheld design rule
+% brief:                  |
+%                         A design rule names an implementation that
+%                         holds it, in whole or in part, with an edge of
+%                         relation_is_held_by. A rule that names none is
+%                         held by the scheduled reviews alone, and that
+%                         is accepted only by a ruling on a decision
+%                         about the rule.
+% did:                    |
+%                         {rule} names nothing that holds it, and no
+%                         ruling settles a decision about it.
+% fix:                    |
+%                         Add an edge of relation_is_held_by to the
+%                         check, advice or code that finds where the
+%                         rule is broken. If only the scheduled reviews
+%                         can judge it, raise a decision about the rule
+%                         and leave it to a ruling. Do not narrow the
+%                         rule to a sentence that nothing breaks.
+% edge:                   []
+%
+% ...
+%
+% decl unheld_design_rule(rule: symbol,
+%                         file: symbol,
+%                         line: number)
+#show unheld_design_rule/3.
+
+% decl rule_held(rule: symbol)
+
+rule_held(Rule) :-
+    primary_edge(Rule, "relation_is_held_by", _).
+
+% decl rule_left_to_review(rule: symbol)
+
+rule_left_to_review(Rule) :-
+    primary_edge(Decision, "relation_is_about", Rule),
+    has_type(Decision, "type_decision"),
+    settles(_, Option),
+    decision_of(Option, Decision).
+
+unheld_design_rule(Rule, File, Line) :-
+    has_type(Rule, "type_design_rule"),
+    item(Rule, _, _, File, Line),
+    not rule_held(Rule),
+    not rule_left_to_review(Rule).
+
+
+% -----------------------------------------------------------------------------
+% No more design rules are left to the scheduled reviews alone than the
+% cap, however each was accepted, so that accepting one stays rare. The
+% cap is raised only by a ruling.
+%
+% decl unheld_rule_cap(cap: number)
+
+unheld_rule_cap(3).
+
+% ---
+%
+% id_self:                lpp_cc_public.check.check.too_many_unheld_rules
+% guid_self:              lpp_d66677765831409eafe44046b264490f
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Too many unheld rules
+% brief:                  |
+%                         No more design rules are held by the scheduled
+%                         reviews alone than the cap, however each was
+%                         accepted, so that accepting one stays rare.
+% did:                    |
+%                         {count} design rules are held by the scheduled
+%                         reviews alone, more than the cap of {cap}.
+% fix:                    |
+%                         Hold one of them with a check, or cut the part
+%                         of a rule that nothing holds. Raise the cap
+%                         only by a ruling.
+% edge:                   []
+%
+% ...
+%
+% decl too_many_unheld_rules(count: number,
+%                            cap:   number)
+#show too_many_unheld_rules/2.
+
+too_many_unheld_rules(Count, Cap) :-
+    unheld_rule_cap(Cap),
+    Count = #count { Rule : has_type(Rule, "type_design_rule"), not rule_held(Rule) },
+    Count > Cap.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cc_public.check.check.unheld_claim
+% guid_self:              lpp_336c7dd1f29d41e9a18ba876b602c17c
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unheld claim
+% brief:                  |
+%                         A writing style rule that says a check or the
+%                         formatter holds it names what holds it, with
+%                         an edge of relation_is_held_by.
+% did:                    |
+%                         {rule} says that {mechanism} holds it, and
+%                         names nothing that does.
+% fix:                    |
+%                         Add an edge of relation_is_held_by to what
+%                         holds the rule, or set its enforcement to what
+%                         does.
+% edge:                   []
+%
+% ...
+%
+% decl unheld_claim(rule:      symbol,
+%                   mechanism: symbol,
+%                   file:      symbol,
+%                   line:      number)
+#show unheld_claim/4.
+
+unheld_claim(Rule, Mechanism, File, Line) :-
+    enforcement(Rule, Mechanism),
+    Mechanism != "none",
+    Mechanism != "judge",
+    item(Rule, _, _, File, Line),
+    not rule_held(Rule).
