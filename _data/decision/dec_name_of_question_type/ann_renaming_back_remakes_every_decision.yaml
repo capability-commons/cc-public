@@ -1,0 +1,115 @@
+id_self:                ann_renaming_back_remakes_every_decision
+guid_self:              ann_01c78f1c22ed41e182a1603634090e16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of renaming the question type back
+brief:                  |
+                        The tree already names the question type
+                        "decision", so only opt_call_it_decision asks
+                        for no change. Calling it "issue" or
+                        "question" now remakes all 92 decision items
+                        under new guids, rewrites the edges in about
+                        1300 files that point at them, and makes a
+                        change too large for a person to read in one
+                        sitting.
+description:            |
+                        The question type has the prefix "dec" and the
+                        concept concept_decision has the preferred
+                        term "decision", the admitted term "question"
+                        and the deprecated term "issue"
+                        (_data/register/reg_data_item_type.yaml lines
+                        929-954; _data/register/reg_concept.yaml lines
+                        670-676). The snapshot holds 92 decision
+                        folders under _data/decision/, one dec_ item
+                        each, with 1442 files in them (count of the
+                        snapshot tree). A guid keeps its type, so a
+                        guid cannot be given another prefix; to change
+                        the type of an item, the item is removed and a
+                        new one is made (retyped_guid in
+                        src/cc_public/commit/change.lp lines 120-155).
+                        Each removed item must be named in the commit
+                        item (unannounced_removal,
+                        src/cc_public/commit/change.lp lines 161-191).
+                        1299 of the 1660 files in the snapshot hold an
+                        edge whose guid_target is a dec_ guid, and
+                        1403 hold a dec_ id token (count of the
+                        snapshot tree). 15 files under src/ name
+                        type_decision, decision_of, _data/decision or
+                        DIR_DECISION, including the placement rule in
+                        src/cc_public/check/check.lp line 594 and the
+                        derived predicate in
+                        src/cc_public/graph/derive.lp lines 129-146
+                        (count of the snapshot tree). A test fixture
+                        relies on "issue" being a deprecated term of
+                        concept_decision
+                        (src/cc_public/check/_test/test_friction.py
+                        lines 40-47), so opt_call_it_issue also breaks
+                        that test. The project asks that each change
+                        be small enough to read in one sitting, since
+                        the previous iteration grew faster than it
+                        could be reviewed (AGENTS.md lines 234-238).
+                        Content is almost entirely generated and only
+                        reviewed by people (maintainer's statement,
+                        2026-10-18, as cited in
+                        ann_old_prose_reads_inverted_after_a_swap).
+                        ann_size_of_each_rename measured the same kind
+                        of cost before the swap and then favored
+                        keeping "issue"; the swap has since been
+                        applied, with a phased rename and a squash of
+                        history
+                        (ruling_names_of_decision_and_option_types),
+                        so the cost now falls on opt_call_it_issue and
+                        opt_call_it_question instead. ASSUMPTION: a
+                        rename back would follow the same
+                        remove-and-remake path as the swap, since no
+                        tool was found that retypes a guid.
+                        ASSUMPTION: a rename back would not be
+                        squashed out of review. If it were, no diff of
+                        it is read and the reviewability part of this
+                        point weakens. ASSUMPTION: prose that now says
+                        "decision" for the question would also need
+                        rewriting under opt_call_it_issue or
+                        opt_call_it_question, and no check can find
+                        it, so a person must read that rewrite in
+                        full. Holds at ten times the size: yes,
+                        because the number of items, edges and files a
+                        rename touches grows with the graph, while
+                        opt_call_it_decision touches none at any size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_name_of_question_type
+    guid_target:        dec_86ad2f9534884e98baccdddffcab78c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_call_it_decision
+    guid_target:        opt_19edd563f2f44a489b36a9966350ab11
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_call_it_issue
+    guid_target:        opt_930ff7457bf9468baafbb17171a07211
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_call_it_question
+    guid_target:        opt_838df070d5984548b405e7e4addfb4c8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
