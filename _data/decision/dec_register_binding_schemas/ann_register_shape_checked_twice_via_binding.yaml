@@ -10,29 +10,33 @@ protective_mark:
 
 title:                  Register shape checked twice
 brief:                  |
-                        Each register is checked against sch_register
-                        through its type and again through its
-                        binding, so a fault in the shared register
-                        shape is reported twice. A fault in an
-                        entry-specific field is reported once, by the
-                        binding.
+                        Each register is validated against
+                        sch_register through its type and again
+                        through its binding. A fault in the shared
+                        register shape is found twice, and the checker
+                        drops one of the two reports.
 description:            |
                         type_register names sch_register
                         (_data/register/reg_data_item_type.yaml lines
-                        178-182). Each binding composes sch_register
+                        193-196). Each binding composes sch_register
                         (_data/schema/sch_reg_concern.yaml line 25). A
                         YAML document meets both its type's schema and
                         its own (src/cc_public/graph/derive.lp lines
-                        70-85). A test expects two schema_violation
-                        rows for one bad title in reg_concern
+                        98-106), so a register is validated against
+                        both. The checker then keeps one row per
+                        fault, the one under the schema that reaches
+                        more schemas (src/cc_public/check/schema.py
+                        lines 235-253). A test expects one
+                        schema_violation row, under sch_reg_concern,
+                        for one bad title in reg_concern
                         (src/cc_public/check/_test/test_check.py lines
-                        520-532). It can be fixed inside the chosen
-                        option by dropping the allOf on sch_register
-                        from the bindings. ASSUMPTION: validation
-                        stays complete, since the type edge still
-                        applies sch_register. From the simplicity
-                        advocate; the maintainability advocate cites
-                        the same test.
+                        954-963). It could be simplified inside the
+                        chosen option by dropping the allOf on
+                        sch_register from the bindings. ASSUMPTION:
+                        validation stays complete, since the type edge
+                        still applies sch_register. From the
+                        simplicity advocate; the maintainability
+                        advocate cites the same test.
 
 edge:
 

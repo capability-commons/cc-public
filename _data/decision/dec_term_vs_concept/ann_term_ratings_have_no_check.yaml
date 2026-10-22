@@ -10,23 +10,33 @@ protective_mark:
 
 title:                  Term ratings that no check reads
 brief:                  |
-                        No check reads term_preferred, term_admitted
-                        or term_deprecated, so a deprecated term in
-                        prose or a conflicting rating is caught only
-                        by a reader, a load that grows with the
-                        register.
+                        No check flags a deprecated term in use, so a
+                        deprecated term in a name or in prose is
+                        caught only by a reader, a load that grows
+                        with the register. A term rated twice in one
+                        concept is now a failure.
 description:            |
-                        Sources: grep of src at 89c74d8. Neither
-                        src/cc_public/check/check.lp nor check.py
-                        mentions the term fields; outside tests only
-                        src/cc_public/cli/editing.py line 324 does.
-                        AGENTS.md lines 54-55 forbid deprecated terms.
-                        Style rules style_ordinary_words and
+                        Sources: src/cc_public/check/check.lp lines
+                        1883-1888 (term_rated_twice fails a term that
+                        one concept rates twice;
+                        src/cc_public/check/_test/test_check.py line
+                        1450). Deprecated terms are left out of term
+                        matching (src/cc_public/graph/extract.py lines
+                        626-627; src/cc_public/graph/text.py lines
+                        65-69), and no rule in check.lp, advise.lp or
+                        friction.lp flags one in use. On a copy of the
+                        tree, "Datalog source file" written in an
+                        option brief gave no failure or advice.
+                        AGENTS.md lines 129-130 forbid deprecated
+                        terms. Style rules style_ordinary_words and
                         style_plain_names have enforcement none
                         (_data/register/reg_writing_style_rule.yaml
-                        lines 169-220). The register has 19 entries; 7
-                        carry term_deprecated and 5 term_admitted; no
-                        term appears in two entries. ASSUMPTION: a
+                        lines 169-220). The register has 72 entries; 9
+                        carry term_deprecated and 18 term_admitted;
+                        "item" is preferred for concept_item and
+                        admitted for concept_identifiable_data_item,
+                        which src/cc_public/check/friction.lp lines
+                        66-73 report as a shared term. ASSUMPTION: a
                         reviewer cannot recall dozens of deprecated
                         lists while reading a diff. This argues for a
                         check, not for another alternative; the gap

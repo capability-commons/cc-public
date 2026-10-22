@@ -11,24 +11,23 @@ protective_mark:
 title:                  Unresolved mark reported as a failure
 brief:                  |
                         The register says an unresolved partner mark
-                        is reported as advisory, but the generic
-                        reference check reports it as a failure that
-                        blocks a commit. The federated case the rule
-                        exists for cannot pass the gate.
+                        is reported as advisory. The checker now does
+                        this through a mark-specific exception to the
+                        generic reference check, but no decision
+                        records that exception.
 description:            |
                         reg_protective_mark.yaml lines 43-53
-                        (advisory). extract.py lines 62-63 and 442-457
-                        read any id_/guid_ pair as a reference.
-                        check.lp lines 229-239 report
-                        dangling_reference with no exception for
-                        marks. Every row is a failure (check.py lines
-                        21-24, 84-106). The check exits 1
-                        (cli/checking.py lines 46-53), the gate runs
-                        it (gate/gate.py line 64), and the pre-commit
-                        hook runs the gate. Latent with one mark and
-                        no partner. Honoring the rule needs a
-                        mark-specific exception that no decision
-                        records.
+                        (advisory). extract.py lines 1253-1268 read
+                        any id_/guid_ pair as a reference.
+                        dangling_reference skips the mark field
+                        (check.lp lines 960-965), and unresolved_mark
+                        reports it as advice (advise.lp lines 73-79).
+                        Advice neither fails the check nor refuses an
+                        edit (check.py lines 27-31), so the gate
+                        passes. Test: test_check.py line 631. On a
+                        copy of the tree, a made-up partner mark gave
+                        one advice and no failure. The exception is
+                        built, but no decision records it.
 
 edge:
 

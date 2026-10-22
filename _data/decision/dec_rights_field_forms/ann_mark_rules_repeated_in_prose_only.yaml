@@ -10,19 +10,25 @@ protective_mark:
 
 title:                  Mark rules stated in prose but not built
 brief:                  |
-                        The conjunctive, most-restrictive and
-                        unresolved-mark rules are written in several
+                        The conjunctive and most-restrictive rules,
+                        and the rule to read an unresolved mark as
+                        more restrictive, are written in several
                         places in prose, and no code applies them.
                         Each copy must be changed by hand and can
                         drift from the checker.
 description:            |
                         Stated in _data/schema/sch_trait_rights.yaml
-                        lines 26-31, 61-66 and 68-72, and in
+                        lines 26-31, 61-66 and 68-72, in
                         reg_protective_mark.yaml usage and note
-                        blocks. A mark entry holds authority and level
-                        as plain values with no ordering. Nothing in
+                        blocks, and in the unresolved_mark advice text
+                        (src/cc_public/check/advise.lp lines 50-63). A
+                        mark entry holds authority and level as plain
+                        names with no ordering
+                        (sch_regentry_protective_mark.yaml lines
+                        33-48). Code reports an unresolved mark as
+                        advice (advise.lp lines 73-79), but nothing in
                         src/ reads authority or level or compares
-                        marks (git grep for "level", "restrictive",
+                        marks (grep for "level", "restrictive",
                         "authority").
 
 edge:
