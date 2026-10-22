@@ -1,0 +1,87 @@
+id_self:                ann_one_type_source_for_model_check_and_engine
+guid_self:              ann_007f1328d4d1422ca01e5d46cd95b9cb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One type source for the model check and the engine
+brief:                  |
+                        The engine drafts check edges by a type id
+                        that hashes the data layout, generated with
+                        the C++ struct from a data dictionary spec, so
+                        a reordered or resized struct is a different
+                        type. A spelling cannot carry that, so the
+                        model's check and the engine's could disagree
+                        about the same edge; port types that name
+                        dictionary entries let one entry drive both
+                        checks, the generated C++ and its Python view.
+description:            |
+                        Sources:
+                        - The type id is a hash of the canonical dtype
+                          description (field names, types, shapes,
+                          offsets); tentatively decided 2026-10-16.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 98-99, 224-225)
+                        - "The data dictionary already maps types to
+                          NumPy ..., so the generator can emit both
+                          the C++ struct and its canonical dtype
+                          string from the same spec."
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 95-96)
+                        - The engine's component spec uses the data
+                          dictionary syntax for slot order, buffer
+                          sizes, presets and type checking.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 16-19, 100-113)
+                        - The type id is shared by C++ and Python.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 82-103)
+                        - A port type has nowhere today to name a data
+                          dictionary id or a dtype hash.
+                          (_sources/mapping.md lines 47-48) Strength:
+                          strong for functional suitability,
+                          simplicity and compatibility (two notions of
+                          type equality otherwise); moderate for
+                          maintainability, since it rests on a
+                          decision recorded as tentative.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_port_types
+    guid_target:        dec_5fea943b36994061a4dabfebe423837a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_types_from_data_dictionaries
+    guid_target:        opt_cd105a59510b44f3ad5adcb2b7d24f1b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_port_types_by_spelling
+    guid_target:        opt_23ae5ba220ee45f49c372ca3e61008e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

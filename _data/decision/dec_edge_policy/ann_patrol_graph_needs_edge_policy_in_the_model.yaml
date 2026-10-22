@@ -1,0 +1,100 @@
+id_self:                ann_patrol_graph_needs_edge_policy_in_the_model
+guid_self:              ann_6e6075e2f2f446a49970b5b9b0dc94d9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge policy needed by the first Patrol graph
+brief:                  |
+                        The first real dataflow graph planned with
+                        cc-public's dataflow model, Patrol's, states a
+                        policy on every edge, and today's edge schema
+                        refuses any field beyond its two ends and a
+                        direction, while the plan lets the model work
+                        start before the engine port lands. Deferring
+                        leaves a stated need with nothing in the graph
+                        that meets it, and adding the fields now lets
+                        the Patrol graph be ported once, in its final
+                        shape, rather than ported and then changed
+                        again on every edge.
+description:            |
+                        Sources:
+                        - A dataflow edge allows only source, target
+                          and an optional direction, and allows no
+                          other property.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          173-203)
+                        - The Patrol base graph draft has 41 edges,
+                          and each states a policy such as newest
+                          frame, latest value, ordered, GStreamer
+                          link, RTP or HTTP; a count of policy lines
+                          gives 41. (_sources/cc-patrol-notes/draft,
+                          the base graph file and its edge section;
+                          _sources/cc-patrol-notes/draft/README.md
+                          lines 22-23)
+                        - The cc-patrol drafts need edge capacity,
+                          initial tokens and named adapters. (context
+                          note, 2026-10-22, _sources/context.md line
+                          35; _sources/cc-patrol-notes/plan.md lines
+                          81-84)
+                        - The plan's steps 1 to 3 (architecture as
+                          items, vocabulary, decisions) can start
+                          before the engine port lands.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          37-38)
+                        - The Patrol draft uses old shapes and will be
+                          regenerated when ported.
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 235-238)
+                        - "A tension is resolved while the change is
+                          still cheap. When in doubt, the larger
+                          change is made now."
+                          (_data/register/reg_design_rule.yaml lines
+                          117-121)
+                        - The later option waits "until the engine
+                          runs graphs that need it", so the trigger
+                          for meeting the need is at least recorded.
+                          (_data/decision/dec_edge_policy/opt_edge_policy_later.yaml
+                          lines 11-14) Strength: strong for functional
+                          suitability (schema fact and policy-bearing
+                          edges both checked in files); moderate for
+                          maintainability (the rework saved rests on
+                          the Patrol port happening soon); weak for
+                          traceability (the later option already names
+                          its trigger).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

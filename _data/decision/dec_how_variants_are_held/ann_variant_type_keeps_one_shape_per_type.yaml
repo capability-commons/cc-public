@@ -1,0 +1,107 @@
+id_self:                ann_variant_type_keeps_one_shape_per_type
+guid_self:              ann_6cdab4c075094f20910db1219c9b81ba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One shape per type for checks and readers
+brief:                  |
+                        A dataflow graph must hold at least one node,
+                        and the dataflow checks are only right on a
+                        runnable graph. A separate variant type keeps
+                        every dataflow graph item whole, so the
+                        checks, any other reader and the engine see
+                        only complete graphs, and makes "a variant
+                        holds no nodes of its own" a schema rule. A
+                        base field gives one type two shapes, so every
+                        check and reader must first ask which one it
+                        has.
+description:            |
+                        Sources:
+                        - The dataflow graph schema requires a node
+                          list with at least one entry.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          61-63, 87-89)
+                        - There are eleven dataflow checks, including
+                          input fed twice and unfed input.
+                          (src/cc_public/check/check.lp lines
+                          2720-3209)
+                        - The Patrol base is not runnable: two
+                          decoders feed one analysis branch, so it
+                          would fail the input-fed-twice check unless
+                          exempt or marked abstract.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          124-127;
+                          _sources/cc-patrol-notes/drawing-lessons.md
+                          line 11)
+                        - "A variant cannot hold its own nodes
+                          directly, only through operations; keeping
+                          the types apart keeps that rule simple."
+                          (_sources/cc-patrol-notes/variants.md lines
+                          74-78)
+                        - The checks run on every resolved variant,
+                          with failures naming the variant and the
+                          operation that introduced the fault.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - The base-field option lets a graph hold
+                          operations in place of its own sections.
+                          (_data/decision/dec_how_variants_are_held/opt_base_field_on_dataflow_graph.yaml
+                          lines 11-14)
+                        - In the draft, the engine never sees
+                          variants; cctool resolves them to plain
+                          configurations.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          92-95)
+                        - The draft Patrol tree has six variants,
+                          including variants of variants.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 24-34) Strength: strong for
+                          maintainability (the draft states the
+                          simplification and real instances exist);
+                          moderate for functional suitability,
+                          simplicity and compatibility (either option
+                          can be made to give right results, the type
+                          counts are small, and few readers exist
+                          yet).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_variants_are_held
+    guid_target:        dec_5a846a1bbb4a49b0814caa702fa3c717
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_type_with_operations
+    guid_target:        opt_f163e710bf0344308b320612897c373d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_base_field_on_dataflow_graph
+    guid_target:        opt_02561cb3dd5c48dea23ba21a7cac96da
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

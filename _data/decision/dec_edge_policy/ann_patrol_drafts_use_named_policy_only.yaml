@@ -1,0 +1,64 @@
+id_self:                ann_patrol_drafts_use_named_policy_only
+guid_self:              ann_3cb74337866b47f19603c7de126171f0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named policies without capacities in the Patrol drafts
+brief:                  |
+                        The option adds capacity, initial tokens and a
+                        named adapter together, but the Patrol drafts
+                        fill only a policy name, give no capacity on
+                        any edge and have no feedback edge. A capacity
+                        declared before any engine honors it is a
+                        claim nothing yet makes true; the named policy
+                        is the part with a real instance.
+description:            |
+                        Sources:
+                        - No edge in the Patrol base draft or its
+                          variant drafts states a capacity or initial
+                          tokens, and the base draft has no feedback
+                          edge. (_sources/cc-patrol-notes/draft, base
+                          and variant files; a search for capacity,
+                          initial, token and feedback finds none)
+                        - The draft's policy names mix buffering
+                          adapters (newest frame, latest value) with
+                          transports (RTP, HTTP, GStreamer link).
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 45-51)
+                        - The cross-host edge policy (capacity,
+                          latest-value or ordered, acknowledgment) is
+                          still a proposal to write.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          144-146)
+                        - The engine does not exist yet; its design is
+                          in drafts.
+                          (_sources/axair-orchestrator/README.md lines
+                          12-15; context note, _sources/context.md
+                          line 36)
+                        - A type, relation or field is added only when
+                          a real instance needs it. (AGENTS.md lines
+                          234-238) Strength: moderate; it challenges
+                          the bundle as worded, not the need for a
+                          named policy.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

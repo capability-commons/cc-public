@@ -1,0 +1,55 @@
+id_self:                ann_first_value_of_feedback_edge_unstated
+guid_self:              ann_9e2428e70c2844229ddbcdb79b72fc17
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unstated first value of a feedback edge
+brief:                  |
+                        A feedback edge carries the value from the
+                        invocation before, but nothing in the graph
+                        says what it carries at the first invocation;
+                        the engine drafts leave that to the framework,
+                        which primes it on reset. An initial-token
+                        declaration on the edge would make the first
+                        step's result something the model states and a
+                        check can hold.
+description:            |
+                        Sources:
+                        - The schema says a feedback edge's value
+                          comes from the invocation before, and says
+                          nothing of the first invocation.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          33-35, 193-203)
+                        - The engine draft has the framework fill
+                          feedback buffers and prime them on reset, as
+                          Stableflow does.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 41-44)
+                        - The one dataflow graph in cc-public has a
+                          feedback edge.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 125-137) Strength: moderate; a real
+                          gap in what the model states, but only one
+                          recorded graph has a feedback edge today.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

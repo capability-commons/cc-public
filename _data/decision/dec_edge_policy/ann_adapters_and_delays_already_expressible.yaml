@@ -1,0 +1,56 @@
+id_self:                ann_adapters_and_delays_already_expressible
+guid_self:              ann_12e009ddcdb44d96aa8c574036e2c4e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Adapters and delays already expressible without edge fields
+brief:                  |
+                        A converting node already does what a named
+                        adapter on an edge would do, and a feedback
+                        edge already means a value from the invocation
+                        before, which is one initial token. Adding
+                        adapter and initial tokens to the edge now
+                        gives two ways to say each.
+description:            |
+                        Sources:
+                        - The fix of the port type mismatch check says
+                          to add a node that converts the value.
+                          (src/cc_public/check/check.lp lines
+                          3014-3017)
+                        - A feedback edge closes a loop, and its value
+                          comes from the invocation before.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          33-35, 200-203)
+                        - The cc-patrol drafts ask for capacity,
+                          initial tokens and named adapters on edges.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          81-84) Strength: moderate; capacity has no
+                          existing counterpart, and adapters at a
+                          runtime boundary may not be plain nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
