@@ -28,10 +28,12 @@ edge:                   []
 """
 
 
+import gc
 import io
 import pathlib
 import re
 import uuid
+import weakref
 
 import click.testing
 import pytest
@@ -265,6 +267,22 @@ def test_a_schema_ref_to_no_schema_is_reported(tree):
         'sch_annotation', 'sch_annotation', '_data/schema/sch_annotation.yaml', '1', '$ref',
         'The $ref https://capability-commons.org/schema/sch_missing.yaml names no schema, '
         'so nothing is validated against sch_annotation.')]}
+
+
+# A review is kept by the ids of the documents it reviewed, so it keeps
+# them too. A document it let go could give its id to a new one, which
+# would then be given the old review.
+#
+def test_a_review_keeps_the_documents_it_reviewed(tree):
+    relative     = '_data/register/reg_concept.yaml'
+    map_document = dict(cc_public.graph.extract.documents(tree))
+    map_document.update(cc_public.graph.extract.parse_all((tree / relative).read_text(),
+                                                          pathlib.Path(relative)))
+    reviewed     = weakref.ref(map_document[relative][0])
+    cc_public.check.check.review_documents(map_document)
+    del map_document
+    gc.collect()
+    assert reviewed() is not None
 
 
 def test_a_pattern_end_matches_only_at_the_end_of_the_text():
