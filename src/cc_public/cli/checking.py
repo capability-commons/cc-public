@@ -19,7 +19,9 @@ description:            |
                         runs the checker over a tree and prints every
                         failure, one line for each. A checker that
                         cannot run is an error, with its own exit
-                        status, never a pass.
+                        status, never a pass. It also holds the
+                        friction command, which reports what may be
+                        worth deciding about, and never fails.
 edge:                   []
 
 ...
@@ -32,6 +34,7 @@ import sys
 import click
 
 import cc_public.check.check
+import cc_public.check.friction
 import cc_public.cli.group
 import cc_public.graph.logic
 
@@ -76,3 +79,44 @@ def check(root: pathlib.Path) -> None:
     click.echo('{count} failures'.format(count = count))
     sys.exit(cc_public.cli.group.EXIT_NONCONFORMITY if count
              else cc_public.cli.group.EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
+@click.option('--root',
+              metavar = 'DIRPATH',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The tree to read. Defaults to the working directory.')
+def friction(root: pathlib.Path) -> None:
+    """
+    Report the signals of friction in the tree under --root.
+
+    Each signal is a place where something may be bent to fit an
+    earlier choice, or may be waiting for a decision: a term two
+    concepts share, a rule that needs an exception, a decision with no
+    ruling, and the count of each kind of advice. Each row is printed as
+    cctool check prints a failure, then a count of each signal. The
+    report is read by the scheduled reviews. It never fails: the exit
+    status is 0, or 2 when the rules cannot be run.
+
+    """
+
+    try:
+        report = cc_public.check.friction.friction(root.resolve())
+    except cc_public.graph.logic.ErrorLogic as error:
+        click.echo('The friction report could not be made: {error}'.format(error = error),
+                   err = True)
+        sys.exit(cc_public.cli.group.EXIT_ERROR)
+
+    for line in cc_public.graph.logic.described(report,
+                                                cc_public.check.friction.columns(),
+                                                cc_public.check.friction.wording()):
+        click.echo(line)
+
+    for (name, list_row) in report.items():
+        click.echo('{name}: {count}'.format(name = name, count = len(list_row)))
+
+    sys.exit(cc_public.cli.group.EXIT_OK)

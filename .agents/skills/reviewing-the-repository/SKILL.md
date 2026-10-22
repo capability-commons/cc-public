@@ -36,11 +36,15 @@ choice; do not call everything a tension.
 1. Read the commits since the last daily review: `git log` and
    `cctool impact REV` for each.
 2. Run `cctool check` and read the advice as well as the failures.
-3. Look for friction in the day's work: text reworded to get past a
-   check, exceptions added to a rule, words put in double quotes to
-   dodge a check, links written only to settle which concept is
-   meant, large renames.
-4. Write the report (below). Keep it short.
+3. Run `cctool friction` and compare its counts with the last report.
+   It lists terms that two concepts share, rules that need
+   exceptions, decisions with no ruling, and the count of each kind of
+   advice.
+4. Look for the friction it cannot see yet in the day's work: text
+   reworded to get past a check, words put in double quotes to dodge
+   a check, links written only to settle which concept is meant,
+   large renames.
+5. Write the report (below). Keep it short.
 
 ## The weekly review (in depth)
 
