@@ -41,6 +41,8 @@ ID_HOOK   = 'shell_githooks_commit_msg'
 GUID_HOOK = 'shell_62b23a71a636401eb534266abaf6933d'
 REGISTER  = '_data/register/reg_writing_style_rule.yaml'
 ID_STYLE  = 'style_commit_title_template'
+ICD       = '_data/interface_control_document/icd_cc_public_check.yaml'
+ID_MEMBER = 'icm_cc_public_check.failures'
 
 
 # -----------------------------------------------------------------------------
@@ -138,6 +140,18 @@ def test_an_unannounced_rename_is_reported(repo):
     assert _check(repo, 'Change the register so that it is tidy') == {
         'rename_without_alias': [(ID_STYLE, 'style_commit_titles')],
         'unannounced_rename':   [(ID_STYLE, 'style_commit_titles')]}
+
+
+def test_a_renamed_member_needs_no_alias(repo):
+    _replace(repo, ICD, ID_MEMBER, 'icm_cc_public_check.failure_map')
+    assert _check(repo, 'Rename {id} to icm_cc_public_check.failure_map'.format(
+                                                                    id = ID_MEMBER)) == {}
+
+
+def test_an_unannounced_rename_of_a_member_asks_for_no_alias(repo):
+    _replace(repo, ICD, ID_MEMBER, 'icm_cc_public_check.failure_map')
+    assert _check(repo, 'Change the interface so that it is tidy') == {
+        'unannounced_rename': [(ID_MEMBER, 'icm_cc_public_check.failure_map')]}
 
 
 def test_a_guid_given_another_prefix_is_reported(repo):
