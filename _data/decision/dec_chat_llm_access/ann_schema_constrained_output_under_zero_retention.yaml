@@ -1,0 +1,62 @@
+id_self:                ann_schema_constrained_output_under_zero_retention
+guid_self:              ann_9d39ff0457bc4c899de636a4aabdc150
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replies held to the schema under zero retention
+brief:                  |
+                        The API of a model maker can hold each reply
+                        to the JSON Schema of the item type, and under
+                        zero data retention it stores neither prompts
+                        nor replies. A draft then matches its schema
+                        by construction, though the most capable
+                        models of that maker are not offered under
+                        zero retention.
+description:            |
+                        Each type of item has a JSON Schema (README.md
+                        line 15), and a bot elicits the fields of one
+                        type using its schema (owner's statement).
+                        Anthropic lists structured outputs, which also
+                        cover strict tool use, as eligible for zero
+                        data retention with a qualification: prompts
+                        and outputs are not stored, and only the JSON
+                        schema is cached, for up to 24 hours since
+                        last use
+                        (https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md,
+                        feature eligibility table, fetched
+                        2026-10-23). The schemas of the types in this
+                        repository are public files (_data/schema), so
+                        a cached schema holds no personal data. The
+                        same page says that four Covered Models
+                        require 30-day retention and are not available
+                        under zero data retention unless Anthropic
+                        expressly authorizes it (section
+                        Model-specific data retention requirements).
+                        ASSUMPTION: local runtimes for open-weights
+                        models can also hold output to a JSON schema,
+                        with a less capable model behind it. Holds at
+                        ten times the size: yes, because the
+                        constraint applies to each reply whatever the
+                        number of conversations.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_llm_access
+    guid_target:        dec_621560bd48c94ae6809067aa57337312
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_hosted_api_zero_retention
+    guid_target:        opt_1e628ee896984ae0b94e8d40e680e60c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

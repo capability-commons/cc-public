@@ -1,0 +1,55 @@
+id_self:                ann_local_model_adds_a_runtime_to_maintain
+guid_self:              ann_d9acfb744d8b48c387f4d27e3f3105fc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Model runtime kept by the project
+brief:                  |
+                        A local open-weights model makes the project
+                        keep a model runtime and its weights on the
+                        host, and update them, beside the bot. A
+                        hosted model is reached through one client,
+                        and its maker keeps the model.
+description:            |
+                        The local option runs an open-weights model on
+                        the host
+                        (_data/decision/dec_chat_llm_access/opt_local_open_weights_model.yaml,
+                        brief). The runtime dependencies of cc-public
+                        today are seven Python packages, none of them
+                        a model client or a model runtime
+                        (pyproject.toml lines 42-48). The host is one
+                        container image with one volume, its host
+                        chosen per deployment (ruling_chat_host), so
+                        the hardware differs from one deployment to
+                        the next. ASSUMPTION: a local model needs an
+                        inference server or library and a weights file
+                        of many gigabytes, each with releases of its
+                        own, and a change of model means a new
+                        download and a check that the host can run it.
+                        ASSUMPTION: a hosted model is changed by a
+                        model name in the configuration. Holds at ten
+                        times the size: yes, because the runtime is
+                        kept once per host, and more hosts multiply
+                        it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_llm_access
+    guid_target:        dec_621560bd48c94ae6809067aa57337312
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_local_open_weights_model
+    guid_target:        opt_9e9b65ac05c2420ca74e9b057395ddb6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
