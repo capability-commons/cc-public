@@ -116,10 +116,10 @@ class Question(typing.NamedTuple):
 
 
 # -----------------------------------------------------------------------------
-def questions(requirement: Requirement, process: str) -> list[Question]:
+def questions(requirement: Requirement, process_word: str) -> list[Question]:
     """
     Return the questions raised of requirement, whose process word is
-    process, in the order of LIST_CATEGORY and then of the words.
+    process_word, in the order of LIST_CATEGORY and then of the words.
 
     """
 
@@ -129,7 +129,7 @@ def questions(requirement: Requirement, process: str) -> list[Question]:
 
     list_question = [Question(CATEGORY_DELETION,
                               'Is ‘{process}’ fully specified: done to what, '
-                              'when, and with what result?'.format(process = process))]
+                              'when, and with what result?'.format(process = process_word))]
     if KEY_CONDITION not in requirement:
         list_question.append(Question(CATEGORY_DELETION,
                                       'It has no condition. Does it hold in every '
@@ -184,7 +184,7 @@ def characteristics(requirement:   Requirement,
         'C3': ('{count} word{s} asked after below.'.format(count = count_open,
                                                            s = '' if count_open == 1 else 's')
                if count_open else 'No words asked after below.'),
-        'C5': 'Composed from one process and one object.',
+        'C5': 'Composed from one process word and one object.',
         'C7': ('By {method}, {approach}.'.format(
                    method   = method,
                    approach = 'with an approach' if requirement.get(KEY_APPROACH)

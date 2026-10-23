@@ -20,7 +20,7 @@ description:            |
                         adds the facts and a program made of two
                         parts, the derived predicates of derive.lp and
                         the rules given, to one clingo control, in the
-                        same process. It returns the rows of every
+                        same OS process. It returns the rows of every
                         predicate the rules given name in a #show
                         directive, in the order they are named.
 

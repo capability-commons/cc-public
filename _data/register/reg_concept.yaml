@@ -881,12 +881,18 @@ entries:
                         Holding a thing as it is, so that it does not
                         change.
     description:        |
-                        A process word: the verb a requirement obliges
-                        its subject to do. What is kept is named by
-                        the object of the requirement.
+                        A [[process word]]: the verb a requirement
+                        obliges its subject to do. What is kept is
+                        named by the object of the requirement.
     term_preferred:     keep
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_uses_concept
+        guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+        id_target:      concept_process_word
+        guid_target:    concept_b3c10c29f0cc4dac99c2a05135b34c87
 
   # ---------------------------------------------------------------------------
   # concept_refuse -- Refusing
@@ -899,12 +905,18 @@ entries:
                         Declining to carry out what was asked, so that
                         none of it is done.
     description:        |
-                        A process word: the verb a requirement obliges
-                        its subject to do. What is refused is named by
-                        the object of the requirement.
+                        A [[process word]]: the verb a requirement
+                        obliges its subject to do. What is refused is
+                        named by the object of the requirement.
     term_preferred:     refuse
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_uses_concept
+        guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+        id_target:      concept_process_word
+        guid_target:    concept_b3c10c29f0cc4dac99c2a05135b34c87
 
   # ---------------------------------------------------------------------------
   # concept_role -- Role
@@ -1239,8 +1251,8 @@ entries:
                         of a Kahn process network (Kahn, The semantics
                         of a simple language for parallel programming,
                         IFIP 1974), which the engine supports first,
-                        it is a process of that network. It is a node
-                        in the sense of Stableflow (software
+                        it is a Kahn process of that network. It is a
+                        node in the sense of Stableflow (software
                         architecture description 2.0.0, clause 5.1).
                         It is one kind of node of the graph
                         (concept_node), and is qualified because node
@@ -2761,6 +2773,51 @@ entries:
         guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
         id_target:      concept_identifiable_data_item
         guid_target:    concept_a125aa49d2a145368ebb6c79d85c375b
+
+      - id_relation:    relation_uses_concept
+        guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+        id_target:      concept_concept
+        guid_target:    concept_4c11efe184cd47289cfa3941377d4807
+
+  # ---------------------------------------------------------------------------
+  # concept_process_word -- Process word
+  #
+  concept_process_word:
+    id_self:            concept_process_word
+    guid_self:          concept_b3c10c29f0cc4dac99c2a05135b34c87
+    title:              Process word
+    brief:              |
+                        The verb of a [[requirement]]: what it obliges
+                        its subject to do, written as the preferred
+                        term of the [[concept]] that designates it.
+    description:        |
+                        A [[requirement]] has exactly one process
+                        word, given by its edge of
+                        relation_has_process. The word "process" is
+                        admitted for it, since the template it comes
+                        from uses it, and it is shared with
+                        concept_os_process. Where the bare word is
+                        used as a term, a wiki link names which of the
+                        two is meant.
+    note:               |
+                        The process word (Prozesswort) of the SOPHIST
+                        MASTER template: Rupp and the SOPHISTs,
+                        "Requirements-Engineering und -Management".
+                        ISO/IEC/IEEE 29148:2018 calls the same slot
+                        the action.
+    term_preferred:     process word
+
+    term_admitted:
+      - process
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_uses_concept
+        guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+        id_target:      concept_requirement
+        guid_target:    concept_d556c2dba87a402daf54bfd892f432b8
 
       - id_relation:    relation_uses_concept
         guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
