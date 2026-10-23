@@ -56,6 +56,13 @@ DIR_DECISION        = DIR_REPO / '_data' / 'decision'
 TUPLE_DECISION_KEPT = ('dec_cross_item_checks_engine', 'dec_tooling_language')
 
 
+# The decisions a copy keeps open: their rulings are left out, so that
+# the tests have an open decision to work on whatever is ruled in the
+# repository.
+#
+TUPLE_DECISION_OPEN = ('dec_tooling_language',)
+
+
 # The source a copy keeps: only the modules and logic programs that the
 # rest of the copy names, and those that they name in turn, so that each
 # check of a copy reads and checks less.
@@ -75,7 +82,8 @@ def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
     """
     Return the names in dir_from that a copy leaves out: those that
     match TUPLE_SKIP; in _data/decision, the decisions the tests do not
-    name; and in src, what _source_kept does not keep.
+    name, and the rulings of those kept open; and in src, what
+    _source_kept does not keep.
 
     """
 
@@ -83,6 +91,8 @@ def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
     dir_here = pathlib.Path(dir_from)
     if dir_here == DIR_DECISION:
         set_skip |= {name for name in list_name if name not in TUPLE_DECISION_KEPT}
+    if dir_here.parent == DIR_DECISION and dir_here.name in TUPLE_DECISION_OPEN:
+        set_skip |= {name for name in list_name if name.startswith('ruling_')}
     if dir_here == DIR_SOURCE or DIR_SOURCE in dir_here.parents:
         set_kept  = _source_kept()
         set_skip |= {name for name in list_name if dir_here / name not in set_kept}
