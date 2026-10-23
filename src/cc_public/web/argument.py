@@ -20,12 +20,12 @@ description:            |
                         Graph reads every item in a tree, with its
                         title, brief, description and edges as
                         written. Graph.decision gathers a decision:
-                        the options that answer it, the annotations
-                        about it, the rulings that settle its options,
-                        and the driver concerns of its subject. The
-                        standing of each option, upheld, rejected or
-                        open, follows from the ruling of the decision,
-                        of which there is at most one.
+                        the options for it, the annotations about it,
+                        the rulings that settle its options, and the
+                        driver concerns of its subject. The standing
+                        of each option, upheld, rejected or open,
+                        follows from the ruling of the decision, of
+                        which there is at most one.
 edge:                   []
 
 ...
@@ -106,7 +106,7 @@ class Item:
 @dataclasses.dataclass
 class Decision:
     """
-    A decision and the deliberation gathered on it: the options that answer
+    A decision and the deliberation gathered on it: the options for
     it, the annotations about it, and the rulings that settle
     its options.
 

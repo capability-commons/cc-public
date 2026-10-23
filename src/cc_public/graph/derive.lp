@@ -123,8 +123,8 @@ settles(Ruling, Option) :-
 
 % -----------------------------------------------------------------------------
 % The item belongs to the decision: it is the decision, an option that
-% answers it, an annotation about it, or a ruling that settles
-% an option that answers it.
+% is an option for it, an annotation about it, or a ruling that
+% settles an option for it.
 %
 % decl decision_of(id:       symbol,
 %                  decision: symbol)

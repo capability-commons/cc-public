@@ -35,24 +35,24 @@ description:            |
                         title and standing, grouped by component under
                         the concerns that drive it, or in another
                         order. A decision opens to its question and
-                        the options that answer it, each with its
-                        glyph and how much argument is for and against
-                        it. A filter keeps and opens the decisions it
-                        finds. The page of a decision opens with its
-                        decision matrix: a column for each option and
-                        a row for each concern, in the order of the
-                        Sankey diagram of pym_cc_public.web.sankey.
-                        Options are read from most supported to most
-                        opposed. Each concern row opens to the
-                        annotations that speak for it, numbered as the
-                        diagram numbers them, an annotation that
-                        speaks for several concerns under each. An
-                        annotation folds to its title, which opens to
-                        its brief, which opens to its description,
-                        which opens to the annotations that answer it.
-                        Opened parts set their text in the text column
-                        and their notes in the margin. The options,
-                        the diagram and the cross-references follow.
+                        the options for it, each with its glyph and
+                        how much argument is for and against it. A
+                        filter keeps and opens the decisions it finds.
+                        The page of a decision opens with its decision
+                        matrix: a column for each option and a row for
+                        each concern, in the order of the Sankey
+                        diagram of pym_cc_public.web.sankey. Options
+                        are read from most supported to most opposed.
+                        Each concern row opens to the annotations that
+                        speak for it, numbered as the diagram numbers
+                        them, an annotation that speaks for several
+                        concerns under each. An annotation folds to
+                        its title, which opens to its brief, which
+                        opens to its description, which opens to the
+                        annotations that reply to it. Opened parts set
+                        their text in the text column and their notes
+                        in the margin. The options, the diagram and
+                        the cross-references follow.
 
                         The requirement list groups the requirements
                         by subject. The page of a requirement reads
@@ -83,7 +83,7 @@ description:            |
                         The pills of the page of a decision lead to
                         the forms that add to its deliberation or
                         settle it, which edit renders: an option, an
-                        annotation for or against an option, an answer
+                        annotation for or against an option, a reply
                         to an annotation, and the upholding or
                         rejecting of an option with a reason. Uphold
                         waits, greyed, while a driver of the decision
@@ -198,7 +198,7 @@ LAYOUT_OPEN            = 'open'
 LAYOUT_COUNTS          = 'counts'
 LIST_LAYOUT            = [LAYOUT_FOLDED, LAYOUT_OPEN, LAYOUT_COUNTS]
 MAP_LAYOUT_NAME        = {LAYOUT_FOLDED: 'Titles',
-                          LAYOUT_OPEN:   'Questions and answers',
+                          LAYOUT_OPEN:   'Decisions and options',
                           LAYOUT_COUNTS: 'Before'}
 SORT_COMPONENT         = 'component'
 SORT_STANDING          = 'standing'
@@ -231,7 +231,7 @@ RELATION_IS_DRIVEN_BY  = 'relation_is_driven_by'
 
 KIND_OPTION       = cc_public.web.request.KIND_OPTION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
-KIND_ANSWER       = cc_public.web.request.KIND_ANSWER
+KIND_REPLY       = cc_public.web.request.KIND_REPLY
 KIND_RULE         = cc_public.web.request.KIND_RULE
 ROLE_UPHOLD       = cc_public.web.request.ROLE_UPHOLD
 ROLE_REJECT       = cc_public.web.request.ROLE_REJECT
@@ -251,8 +251,8 @@ KEY_CONCERN       = cc_public.web.request.KEY_CONCERN
 MAP_HEADING       = {(KIND_OPTION,  ''):           'Add an option',
                      (KIND_ARGUMENT,  ROLE_FOR):     'Add an annotation for',
                      (KIND_ARGUMENT,  ROLE_AGAINST): 'Add an annotation against',
-                     (KIND_ANSWER,    ROLE_FOR):     'Support',
-                     (KIND_ANSWER,    ROLE_AGAINST): 'Challenge',
+                     (KIND_REPLY,    ROLE_FOR):     'Support',
+                     (KIND_REPLY,    ROLE_AGAINST): 'Challenge',
                      (KIND_RULE,      ROLE_UPHOLD):  'Uphold',
                      (KIND_RULE,      ROLE_REJECT):  'Reject'}
 
@@ -533,7 +533,7 @@ def decisions(graph: Graph, query: str = '') -> str:
     filtered as query asks.
 
     Each decision folds to a line of its title and standing, which opens
-    to its question and the options that answer it; a filter opens
+    to its brief and the options for it; a filter opens
     the decisions it finds. The layouts are
     prototypes to compare: every decision folded, every decision open, and
     the table of counts the page had before.
@@ -552,7 +552,7 @@ def decisions(graph: Graph, query: str = '') -> str:
     def render(list_summary: list[Summary]) -> typing.Any:
         if layout == LAYOUT_COUNTS:
             return _decision_table(graph, [summary.decision for summary in list_summary])
-        return _decision_answers(list_summary,
+        return _decision_options(list_summary,
                               show_subject = sort != SORT_COMPONENT,
                               is_open      = layout == LAYOUT_OPEN or bool(text))
 
@@ -750,20 +750,20 @@ def _counts(summary: Summary, id_option: str) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
-def _decision_answers(list_summary: list[Summary],
+def _decision_options(list_summary: list[Summary],
                    show_subject: bool,
                    is_open:      bool) -> typing.Any:
     """
     Return the decisions of list_summary, each folded to a line of its
     title, with its standing in the margin, unless is_open. Each opens
-    to its question and the options that answer it, in full: each
+    to its brief and the options for it, in full: each
     option with its glyph hung before it, its title run in and linked
     to the option on the page of the decision, and its counts in the
     margin. A link after the options leads to the page of the decision.
 
     """
 
-    def answer(summary: Summary, option: Item) -> typing.Any:
+    def line(summary: Summary, option: Item) -> typing.Any:
         standing = summary.standing_of(option.id)
         return _block([htpy.p[_glyph(standing),
                               htpy.a(class_ = 'run-in',
@@ -771,7 +771,7 @@ def _decision_answers(list_summary: list[Summary],
                                               + '#' + option.id)[option.title],
                               ' ', _prose(option.brief)]],
                       [_counts(summary, option.id)],
-                      class_ = 'answer answer-' + standing)
+                      class_ = 'option option-' + standing)
 
     def entry(summary: Summary) -> typing.Any:
         item = summary.decision.item
@@ -780,13 +780,13 @@ def _decision_answers(list_summary: list[Summary],
                                 [_decision_standing(summary),
                                  htpy.span(class_ = 'subject')[summary.subject]
                                  if show_subject else None])],
-            _block([htpy.p(class_ = 'question')[_prose(item.brief)]], []),
-            [answer(summary, option) for option in summary.list_option],
+            _block([htpy.p(class_ = 'brief')[_prose(item.brief)]], []),
+            [line(summary, option) for option in summary.list_option],
             _block([htpy.p(class_ = 'onward')[
                         htpy.a(href = PATH_DECISION + item.id)['Decision matrix'],
                         ' ', GLYPH_NEXT]], [])]
 
-    return htpy.div(class_ = 'decision-answers')[[entry(summary) for summary in list_summary]]
+    return htpy.div(class_ = 'decision-options')[[entry(summary) for summary in list_summary]]
 
 
 # -----------------------------------------------------------------------------
@@ -1096,14 +1096,14 @@ def _edit_href(kind: str, target: str, role: str = '', at: str = '') -> str:
 
 
 # -----------------------------------------------------------------------------
-def _add_answer(id_annotation: str, key: str) -> typing.Any:
+def _add_reply(id_annotation: str, key: str) -> typing.Any:
     """
-    Return the controls that add an annotation answering id_annotation,
+    Return the controls that add an annotation replying to id_annotation,
     at key on the page, in support or in challenge, set in the margin.
 
     """
 
-    kind = KIND_ANSWER
+    kind = KIND_REPLY
     return _block([], [htpy.p(class_ = 'add')[
                            _pill('+ Support', ROLE_FOR, 'Add an annotation that supports this',
                                  _edit_href(kind, id_annotation, ROLE_FOR, key)),
@@ -1192,7 +1192,7 @@ def _statement(graph: Graph, item: Item) -> str:
 def _decisions_of(graph: Graph, item: Item) -> list[str]:
     """
     Return the decisions whose deliberation the item belongs to: those an
-    option answers, an annotation is about, or a ruling settles through
+    option is for, an annotation is about, or a ruling settles through
     its options.
 
     """
@@ -2409,11 +2409,11 @@ def _annotation(graph:         Graph,
     """
     Return an annotation folded to one line: its number, title and what
     it bears on. Open, it shows its brief, which opens to its
-    description, which opens to the annotations that answer it, folded
+    description, which opens to the annotations that reply to it, folded
     the same way. key places it in the outline, under id_concern if it
-    is not an answer; set_path holds the annotations above it. It is
+    is not a reply; set_path holds the annotations above it. It is
     opened if a key in set_show is key or lies within it, and opened
-    down to its answers if one lies within it. Its own text is in the
+    down to its replies if one lies within it. Its own text is in the
     chains of drawing that reach key.
 
     """
@@ -2431,14 +2431,14 @@ def _annotation(graph:         Graph,
 
     list_concern = annotation.targets(cc_public.web.argument.RELATION_SPEAKS_FOR_CONCERN)
     list_also    = [id_other for id_other in list_concern if id_other != id_concern]
-    list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
-                    if id_answer not in set_path]
+    list_reply  = [id_reply for (id_reply, _) in outline.replies(id_annotation)
+                    if id_reply not in set_path]
     in_concern   = key.partition(cc_public.web.sankey.DELIM_KEY)[0] in outline.list_concern
     list_lit     = drawing.css_path(key) if in_concern else []
     css          = ' '.join([CSS_MUTES, *list_lit])
     css_margin   = ' '.join([CSS_FADES, *list_lit])
 
-    return htpy.details(class_ = 'annotation answer' if set_path else 'annotation',
+    return htpy.details(class_ = 'annotation reply' if set_path else 'annotation',
                         id     = key,
                         open   = _is_within(set_show, key))[
         htpy.summary[_block(
@@ -2447,7 +2447,7 @@ def _annotation(graph:         Graph,
                     ' ',
                     htpy.span(class_ = 'run-in')[annotation.title]]],
             [htpy.ul(class_ = 'bearing')[list_bearing],
-             _summary_note(graph, list_also, len(list_answer))],
+             _summary_note(graph, list_also, len(list_reply))],
             css_main   = css,
             css_margin = css_margin)],
         htpy.div(class_ = 'body')[
@@ -2455,10 +2455,10 @@ def _annotation(graph:         Graph,
                    [None if id_concern
                     else htpy.p(class_ = 'concerns')[_titles(graph, list_concern) or 'fact'],
                     _id(annotation.id)],
-                   [_annotation(graph, outline, drawing, id_answer,
-                                cc_public.web.sankey.DELIM_KEY.join((key, id_answer)),
+                   [_annotation(graph, outline, drawing, id_reply,
+                                cc_public.web.sankey.DELIM_KEY.join((key, id_reply)),
                                 None, set_path | {id_annotation}, set_show)
-                    for id_answer in list_answer],
+                    for id_reply in list_reply],
                    _is_inside(set_show, key),
                    css,
                    css_margin)]]
@@ -2486,10 +2486,10 @@ def _is_inside(set_show: set[str], key: str) -> bool:
 
 
 # -----------------------------------------------------------------------------
-def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typing.Any:
+def _summary_note(graph: Graph, list_also: list[str], count_reply: int) -> typing.Any:
     """
     Return the note under what a folded annotation bears on: the other
-    concerns it sits under, and how many annotations answer it. None if
+    concerns it sits under, and how many annotations reply to it. None if
     there is neither.
 
     """
@@ -2497,10 +2497,10 @@ def _summary_note(graph: Graph, list_also: list[str], count_answer: int) -> typi
     list_part = []
     if list_also:
         list_part.append('also ' + _titles(graph, list_also))
-    if count_answer:
-        list_part.append('{count} {noun}'.format(count = count_answer,
-                                                 noun  = 'answer' if count_answer == 1
-                                                         else 'answers'))
+    if count_reply:
+        list_part.append('{count} {noun}'.format(count = count_reply,
+                                                 noun  = 'reply' if count_reply == 1
+                                                         else 'replies'))
     if not list_part:
         return None
     return htpy.p(class_ = 'note')[' · '.join(list_part)]
@@ -2511,16 +2511,16 @@ def _brief(graph:       Graph,
            annotation:  Item,
            key:         str,
            list_margin: list,
-           list_answer: list,
+           list_reply: list,
            is_open:     bool,
            css_main:    str = '',
            css_margin:  str = '') -> typing.Any:
     """
     Return the brief of the annotation with list_margin beside it,
     folded over its description, which is folded in turn over
-    list_answer, the annotations that answer it. A level with nothing
-    under it does not fold. The controls that answer the annotation
-    come after its last level of prose, before its answers, so they
+    list_reply, the annotations that reply to it. A level with nothing
+    under it does not fold. The controls that reply to the annotation
+    come after its last level of prose, before its replies, so they
     show only when it is fully open. is_open opens every level. css_main
     classes the text of the brief and the description, and css_margin
     their margins.
@@ -2530,14 +2530,14 @@ def _brief(graph:       Graph,
     block = _block([htpy.p[_prose(annotation.brief)]], list_margin,
                    css_main   = css_main,
                    css_margin = css_margin)
-    add   = _add_answer(annotation.id, key)
+    add   = _add_reply(annotation.id, key)
     if annotation.description:
         under = [_description(graph, annotation, key, css_main, css_margin), add]
-        if list_answer:
+        if list_reply:
             under = htpy.details(class_ = 'description', open = is_open)[
-                htpy.summary[under[0]], add, htpy.div(class_ = 'answers')[list_answer]]
-    elif list_answer:
-        under = [add, htpy.div(class_ = 'answers')[list_answer]]
+                htpy.summary[under[0]], add, htpy.div(class_ = 'replies')[list_reply]]
+    elif list_reply:
+        under = [add, htpy.div(class_ = 'replies')[list_reply]]
     else:
         return [block, add]
     return htpy.details(class_ = 'brief', open = is_open)[htpy.summary[block], under]

@@ -148,7 +148,7 @@ def _subject(root):
 # -----------------------------------------------------------------------------
 def _option(root, id_self, list_edge = (), guid = None):
     """
-    Write an option that answers dec_x, in the folder of dec_x, and
+    Write an option for dec_x, in the folder of dec_x, and
     return its location. dec_x is written too, about ID_SUBJECT, if it
     is not there yet.
 
@@ -332,7 +332,7 @@ def test_an_annotation_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('ann_x',)]}
 
 
-def test_an_option_that_answers_no_decision_is_reported(tree):
+def test_an_option_for_no_decision_is_reported(tree):
     _item(tree, '_data/option/opt_x.yaml', 'opt_x')
     assert _check(tree) == {'option_count': [('opt_x', '0')]}
 
@@ -380,7 +380,7 @@ def test_an_argument_across_two_decisions_is_reported(tree):
     assert failures['argument_across_decisions'] == [('ann_x', 'dec_y', 'opt_x', 'dec_x')]
 
 
-def test_a_decision_no_option_answers_is_advice(tree):
+def test_a_decision_with_no_option_is_advice(tree):
     _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_subject(tree)])
     (failures, advice) = cc_public.check.check.review(tree)
     failures.pop('unformatted_file', None)
@@ -458,7 +458,7 @@ def test_a_ruling_of_nothing_is_reported(tree):
 def _driven_options(tree):
     """
     Write lco_x, driven by concern_cost, a decision about it, and two
-    options that answer the decision.
+    options for the decision.
 
     """
 

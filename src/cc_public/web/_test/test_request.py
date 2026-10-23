@@ -67,7 +67,7 @@ def test_an_id_is_made_from_the_title_in_whole_words():
     assert len(cc_public.web.request.slug('ann_', 'word ' * 30)) <= 4 + 48
 
 
-def test_an_option_answers_its_decision(tree):
+def test_an_option_is_for_its_decision(tree):
     assert _operations(tree, kind = 'option', target = ID_OPEN,
                        title = 'Tooling in Go', brief = 'Write it in Go.') == [
         {'new':   'opt_tooling_in_go',
@@ -86,8 +86,8 @@ def test_an_argument_bears_on_its_option_and_speaks_for_its_concerns(tree):
                                  ['relation_speaks_for_concern', 'concern_simplicity']]
 
 
-def test_an_answer_bears_on_its_annotation_and_speaks_for_no_concern(tree):
-    [operation] = _operations(tree, kind = 'answer', target = ID_ANNOTATION, role = 'for',
+def test_a_reply_bears_on_its_annotation_and_speaks_for_no_concern(tree):
+    [operation] = _operations(tree, kind = 'reply', target = ID_ANNOTATION, role = 'for',
                               title = 'A', brief = 'B', concern = 'concern_cost')
     assert operation['link'] == [['relation_is_about', ID_DECISION], ['relation_supports', ID_ANNOTATION]]
 
@@ -167,7 +167,7 @@ def test_an_uphold_sent_changes_the_ruling_in_place(tree):
 
 def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
     for (kind, target, role) in (('option', ID_OPEN, ''), ('argument', ID_UPHELD, 'for'),
-                                 ('answer', ID_ANNOTATION, 'against'),
+                                 ('reply', ID_ANNOTATION, 'against'),
                                  ('rule', ID_UPHELD, 'uphold')):
         query = cc_public.web.request.query(kind, target, role)
         text  = cc_public.web.server.respond(tree, '/edit?' + query)[2].decode()
@@ -176,4 +176,4 @@ def test_a_form_says_what_to_write_and_what_each_field_is_for(tree):
         assert '<section class="edit-form">' in text
     assert cc_public.web.request.hint('argument', 'title') != cc_public.web.request.hint(
                                                                 'option', 'title')
-    assert cc_public.web.request.hint('answer', 'brief') == 'One or two sentences.'
+    assert cc_public.web.request.hint('reply', 'brief') == 'One or two sentences.'

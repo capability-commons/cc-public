@@ -251,7 +251,7 @@ details p {
 /* The argument under a row of the matrix: annotations, each folded to
    one line, its title, that opens to its brief. The brief and the
    description each have a mark of their own and open in turn to the
-   description and to the answers. */
+   description and to the replies. */
 
 details.annotation {
   font-size: inherit;
@@ -940,45 +940,45 @@ section.matrix a.cell:hover {
    the first annotation's rule is that rule. */
 
 /* Everything a row opens to sits at one indent, however deep the
-   answers go: depth is read from what each annotation bears on, in its
+   replies go: depth is read from what each annotation bears on, in its
    margin, not from how far it is pushed in. */
 
-/* Answers stand on a darker shade, and answers to answers, however
+/* Replies stand on a darker shade, and replies to replies, however
    deep, on a darker one still, out to the edges of the shading above
    them. */
 
-section.matrix .drill .answers {
+section.matrix .drill .replies {
   display: flow-root;
   margin-left: -1.3rem;
   padding-left: 1.3rem;
   background: var(--shade-deep);
 }
 
-section.matrix .drill .answers .answers {
+section.matrix .drill .replies .replies {
   background: var(--shade-deeper);
 }
 
-/* The shade of answers holds the space below the last of them, and
+/* The shade of replies holds the space below the last of them, and
    when they end the row it reaches the rule below with no gap: the
    row drops its own padding. */
 
 section.matrix .drill:has(
-    > details.annotation:last-child > .body > details.brief[open] > .answers,
+    > details.annotation:last-child > .body > details.brief[open] > .replies,
     > details.annotation:last-child > .body > details.brief[open]
-      > details.description[open] > .answers) {
+      > details.description[open] > .replies) {
   padding-bottom: 0;
 }
 
-/* Open answers end the body of what they answer, so its shade meets
+/* Open replies end the body of what they reply to, so its shade meets
    the rule below with no gap. */
 
 section.matrix .drill details.annotation > .body:has(
-    > details.brief[open] > .answers,
-    > details.brief[open] > details.description[open] > .answers) {
+    > details.brief[open] > .replies,
+    > details.brief[open] > details.description[open] > .replies) {
   margin-bottom: 0;
 }
 
-section.matrix .drill details.annotation.answer > summary .main > p {
+section.matrix .drill details.annotation.reply > summary .main > p {
   margin-left: 0;
 }
 
@@ -1859,7 +1859,7 @@ form.search.masthead {
 }
 
 /* The decision list: each decision folds to a line of its title and
-   standing, which opens to its question and the options that answer
+   standing, which opens to its brief and the options for
    it. Controls above the list choose folded or open, the order and a
    filter. */
 
@@ -1911,103 +1911,103 @@ h2 .drivers {
 .glyph-rejected { color: var(--ink-rejected); }
 .glyph-open { color: var(--ink-faint); }
 
-.decision-answers .answer-rejected .main,
-.decision-answers .answer-rejected .main a {
+.decision-options .option-rejected .main,
+.decision-options .option-rejected .main a {
   color: var(--ink-muted);
 }
 
-.decision-answers .counts {
+.decision-options .counts {
   font-size: 0.95rem;
   color: var(--ink-faint);
 }
 
-.decision-answers .counts .for { color: var(--ink-for); }
-.decision-answers .counts .against { color: var(--ink-against); }
+.decision-options .counts .for { color: var(--ink-for); }
+.decision-options .counts .against { color: var(--ink-against); }
 
-.decision-answers {
+.decision-options {
   border-bottom: 1px solid var(--rule);
 }
 
-.decision-answers details.decision-entry {
+.decision-options details.decision-entry {
   font-size: inherit;
   margin: 0;
   border-top: 1px solid var(--rule);
 }
 
-.decision-answers details.decision-entry > summary {
+.decision-options details.decision-entry > summary {
   list-style: none;
   font-style: normal;
   color: var(--ink);
 }
 
-.decision-answers details.decision-entry > summary::-webkit-details-marker {
+.decision-options details.decision-entry > summary::-webkit-details-marker {
   display: none;
 }
 
-.decision-answers .block {
+.decision-options .block {
   margin: 0;
 }
 
-.decision-answers summary .block {
+.decision-options summary .block {
   padding: 0.25rem 0;
 }
 
-.decision-answers summary .title {
+.decision-options summary .title {
   font-size: 1.25rem;
 }
 
-.decision-answers summary .main {
+.decision-options summary .main {
   position: relative;
 }
 
-.decision-answers summary .title::before {
+.decision-options summary .title::before {
   content: "\25B8";
   position: absolute;
   left: -1.1em;
   color: var(--ink-faint);
 }
 
-.decision-answers details[open] > summary .title::before {
+.decision-options details[open] > summary .title::before {
   content: "\25BE";
 }
 
-.decision-answers summary .margin {
+.decision-options summary .margin {
   padding-top: 0.2rem;
 }
 
-.decision-answers summary .subject {
+.decision-options summary .subject {
   margin-left: 0.8em;
   font-size: 1rem;
   color: var(--ink-muted);
 }
 
-.decision-answers .question {
+.decision-options .brief {
   font-size: 1.25rem;
   font-style: italic;
   margin: 0 0 0.5rem;
 }
 
-.decision-answers .answer .main p {
+.decision-options .option .main p {
   position: relative;
   margin: 0 0 0.45rem;
   padding-left: 1.2em;
   font-size: 1.1rem;
 }
 
-.decision-answers .answer .main p > .glyph {
+.decision-options .option .main p > .glyph {
   position: absolute;
   left: 0;
 }
 
-.decision-answers .answer .run-in {
+.decision-options .option .run-in {
   margin-right: 0.3em;
 }
 
-.decision-answers .answer .margin {
+.decision-options .option .margin {
   padding-top: 0.15rem;
 }
 
-.decision-answers .onward {
+.decision-options .onward {
   margin: 0.1rem 0 0.7rem;
   padding-left: 1.2em;
   font-size: 1rem;

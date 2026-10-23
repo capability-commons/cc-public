@@ -110,15 +110,15 @@ unresolved_mark(Holder, Id, Guid, File, Line) :-
 
 decision_without_options(Decision) :-
     has_type(Decision, "type_decision"),
-    not answers_some(Decision).
+    not has_some_option(Decision).
 
 
 % -----------------------------------------------------------------------------
 % The decision has an option.
 %
-% decl answers_some(decision: symbol)
+% decl has_some_option(decision: symbol)
 
-answers_some(Decision) :-
+has_some_option(Decision) :-
     primary_edge(_, "relation_is_option_for", Decision).
 
 
