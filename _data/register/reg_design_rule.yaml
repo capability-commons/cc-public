@@ -143,6 +143,64 @@ entries:
         id_target:      lpp_cc_public.check.friction.shared_term
         guid_target:    lpp_43bcc111334a4d92a4298c2a8118fb92
 
+  # ---------------------------------------------------------------------------
+  # rule_qualify_an_entrenched_overloaded_term -- Qualify an entrenched overloaded term
+  #
+  rule_qualify_an_entrenched_overloaded_term:
+    id_self:            rule_qualify_an_entrenched_overloaded_term
+    guid_self:          rule_204aff7ac33949dcb30579c81dac404b
+    title:              Qualify an entrenched overloaded term
+    brief:              |
+                        Where a word has two senses that are each
+                        entrenched outside the project, both are kept,
+                        and every use of the word as a term says which
+                        sense it has.
+    description:        |
+                        Many words of software and systems engineering
+                        carry more than one established sense. Taking
+                        the word from either sense would set the
+                        project against the readers who know it, so
+                        the cost of the overload is paid in
+                        qualification instead. Each sense is a concept
+                        with a qualified preferred term and the bare
+                        word admitted, and a wiki link to the bare
+                        word names its concept. The choice is made
+                        only when both senses are entrenched, in a
+                        standard, a widely used method or common
+                        practice. Where one sense is the project's
+                        own, it gives up the word, as
+                        rule_resolve_tensions_early asks. Imposed by
+                        the maintainer on 2026-10-23, in these words:
+                        "We can't stop using the "OS process" term, as
+                        the use is too common in software engineering.
+                        We also can't stop using the "process words"
+                        term in requirements engineering, as the use
+                        is too common and expected there as well. So
+                        we have to accept the ambiguity and qualify
+                        our usages."
+    follows:            |
+                        concept_os_process and concept_process_word
+                        both admit "process", prefer "OS process" and
+                        "process word", and each link to the bare word
+                        names one of them.
+    breaks:             |
+                        The requirement slot is renamed to action to
+                        free "process", though its readers know it as
+                        the process word.
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_held_by
+        guid_relation:  relation_e08e6be076454189bc9d611097f60aeb
+        id_target:      lpp_cc_public.check.check.ambiguous_term
+        guid_target:    lpp_59460c8c8bfa47039fe4c33e747f0935
+
+      - id_relation:    relation_is_held_by
+        guid_relation:  relation_e08e6be076454189bc9d611097f60aeb
+        id_target:      lpp_cc_public.check.friction.shared_term
+        guid_target:    lpp_43bcc111334a4d92a4298c2a8118fb92
+
 edge:
 
   - id_relation:        relation_is_specified_by_schema
