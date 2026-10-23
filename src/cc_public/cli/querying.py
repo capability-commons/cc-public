@@ -363,7 +363,7 @@ def predicates():
 @_option
 @click.option('--match', 'is_match',
               is_flag = True,
-              help    = 'Read QUERY as an FTS5 match expression, such as "status NEAR field".')
+              help    = 'Read QUERY as an FTS5 match expression, such as "NEAR(status field)".')
 @click.option('--decision', 'is_decision',
               is_flag = True,
               help    = 'Print one row for each decision, ranked by its best match.')
@@ -393,7 +393,7 @@ def text(text, path_file, root, limit, is_json, is_match, is_decision, is_exact)
     Examples:
       cctool query text "status field on an option"
       cctool query text --decision "checks engine"
-      cctool query text --match '"commit" NEAR "title"'
+      cctool query text --match 'NEAR(commit title)'
 
     """
 
