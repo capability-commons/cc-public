@@ -1,0 +1,35 @@
+id_self:                ruling_test_style
+guid_self:              ruling_4dd7f637042d48cb8b609929c037e5bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  pytest tests with exact expected failures
+brief:                  |
+                        Each check test copies a fixed slice of the
+                        repository, breaks one thing and expects
+                        exactly the failures of that fault, so a check
+                        that fires where it should not fails a test as
+                        surely as one that stays silent. This catches
+                        false alarms before they stop every commit at
+                        the gate, and a changed literal shows a
+                        reviewer what a check now reports. Asking only
+                        for some failure is looser and no faster,
+                        since one call computes every check. Ruled by
+                        William Payne on 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_pytest_exact_failures
+    guid_target:        opt_4d577563623d4f3caf60fac0fe86e14a
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_assert_failure_present
+    guid_target:        opt_cc9d6cab754c4d5a994e0e6ed44792ef
