@@ -22,11 +22,10 @@ description:            |
                         fields typed into it. There are four kinds. An
                         option is offered for a decision. An argument
                         is an annotation for or against an option,
-                        which speaks for one or more concerns. An
-                        answer is an annotation that supports or
-                        challenges another, and speaks for none. A
-                        ruling upholds or rejects an option, with a
-                        reason.
+                        which speaks for one or more concerns. A reply
+                        is an annotation that supports or challenges
+                        another, and speaks for none. A ruling upholds
+                        or rejects an option, with a reason.
 
                         operations returns the batch for a request. An
                         decision has at most one ruling, so to uphold
@@ -62,9 +61,9 @@ import cc_public.graph.prefix
 
 KIND_OPTION       = 'option'
 KIND_ARGUMENT     = 'argument'
-KIND_ANSWER       = 'answer'
+KIND_REPLY        = 'reply'
 KIND_RULE         = 'rule'
-TUPLE_KIND        = (KIND_OPTION, KIND_ARGUMENT, KIND_ANSWER, KIND_RULE)
+TUPLE_KIND        = (KIND_OPTION, KIND_ARGUMENT, KIND_REPLY, KIND_RULE)
 
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
@@ -72,7 +71,7 @@ ROLE_UPHOLD       = 'uphold'
 ROLE_REJECT       = 'reject'
 MAP_ROLE          = {KIND_OPTION:  ('',),
                      KIND_ARGUMENT:  (ROLE_FOR, ROLE_AGAINST),
-                     KIND_ANSWER:    (ROLE_FOR, ROLE_AGAINST),
+                     KIND_REPLY:    (ROLE_FOR, ROLE_AGAINST),
                      KIND_RULE:      (ROLE_UPHOLD, ROLE_REJECT)}
 
 KEY_KIND          = 'kind'
@@ -125,7 +124,7 @@ MAP_LEAD          = {
                      'Tick the concern it speaks for: the one it would weigh for in a ruling.',
                      'Say where it comes from in the description: a file and line, a commit, '
                      'an engineering document, or your own judgment.'),
-    KIND_ANSWER:    ('Say what in the annotation is wrong, missing or out of date, and how '
+    KIND_REPLY:    ('Say what in the annotation is wrong, missing or out of date, and how '
                      'you know.',
                      'An answer settles a fact, so it speaks for no concern.',
                      'If what you write is a rule or a commitment, it may belong in an option '
@@ -144,7 +143,7 @@ MAP_HINT          = {
     (KIND_OPTION, KEY_TITLE):  'A short name for the choice.',
     (KIND_OPTION, KEY_BRIEF):  'The choice itself, in one or two sentences.',
     (KIND_ARGUMENT, KEY_TITLE):  'A short phrase that states the claim.',
-    (KIND_ANSWER,   KEY_TITLE):  'A short phrase that states what you found.',
+    (KIND_REPLY,   KEY_TITLE):  'A short phrase that states what you found.',
     KEY_BRIEF:                   'One or two sentences.',
     KEY_DESCRIPTION:             'Optional. Where it comes from, and what a reader needs to '
                                  'check it.',
@@ -248,7 +247,7 @@ def decision_of(graph: Graph, request: Request) -> str:
 
     if request.kind == KIND_OPTION:
         list_decision = [request.target] if request.target.startswith(PREFIX_DECISION) else []
-    elif request.kind == KIND_ANSWER:
+    elif request.kind == KIND_REPLY:
         list_decision = [id_decision for id_decision in item.targets(RELATION_IS_ABOUT)
                       if request.target.startswith(PREFIX_ANNOTATION)
                       and id_decision.startswith(PREFIX_DECISION)]
@@ -393,7 +392,7 @@ def address(graph: Graph, request: Request, id_item: str) -> str:
     elif request.kind == KIND_ARGUMENT and request.list_concern:
         key       = DELIM_KEY.join((request.list_concern[0], id_item))
         list_pair = [(KEY_SHOW, key), (KEY_TO, key)]
-    elif request.kind == KIND_ANSWER and request.at:
+    elif request.kind == KIND_REPLY and request.at:
         key       = DELIM_KEY.join((request.at, id_item))
         list_pair = [(KEY_SHOW, key), (KEY_TO, key)]
     else:

@@ -103,16 +103,16 @@ def test_decision_list_folds_each_decision_to_its_title_and_standing(tree):
     assert '<span class="drivers">Driven by ' in text
 
 
-def test_a_decision_opens_to_its_question_and_its_options(tree):
+def test_a_decision_opens_to_its_brief_and_its_options(tree):
     graph    = cc_public.web.argument.Graph(tree)
     decision = graph.decision(ID_DECISION)
     (_, _, body) = cc_public.web.server.respond(tree, '/decisions')
     text = body.decode()
-    assert '<p class="question">{brief}</p>'.format(
+    assert '<p class="brief">{brief}</p>'.format(
         brief = cc_public.web.page._prose(decision.item.brief)) in text
     for option in decision.list_option:
         assert 'href="/decision/{decision}#{id}"'.format(decision = ID_DECISION, id = option.id) in text
-    assert re.search(r'answer-upheld"><div class="main"><p><span class="glyph glyph-upheld" '
+    assert re.search(r'option-upheld"><div class="main"><p><span class="glyph glyph-upheld" '
                      r'title="upheld">✓</span><a class="run-in" href="/decision/{decision}#{id}"'.format(
                          decision = ID_DECISION, id = ID_UPHELD), text)
     assert '<span class="glyph glyph-rejected" title="rejected">✗</span>' in text
@@ -301,7 +301,7 @@ def test_a_concern_row_opens_to_the_annotations_that_argue_for_it(tree):
             assert 'id="{c}/{a}"'.format(c = id_concern, a = id_annotation) in text[start:]
 
 
-def test_answers_sit_under_the_description_of_what_they_answer(tree):
+def test_replies_sit_under_the_description_of_what_they_reply_to(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.decision(ID_DECISION))
     (_, _, body) = cc_public.web.server.respond(tree, '/decision/' + ID_DECISION)
@@ -309,16 +309,16 @@ def test_answers_sit_under_the_description_of_what_they_answer(tree):
     count   = 0
     for id_concern in outline.list_concern:
         for id_annotation in outline.map_annotation[id_concern]:
-            list_answer = outline.answers(id_annotation)
-            if not list_answer or not graph.map_item[id_annotation].description:
+            list_reply = outline.replies(id_annotation)
+            if not list_reply or not graph.map_item[id_annotation].description:
                 continue
             key   = id_concern + '/' + id_annotation
             start = text.index('id="{key}"'.format(key = key))
             inner = text[start:text.index('id="{key}/{a}"'.format(key = key,
-                                                                  a   = list_answer[0][0]))]
+                                                                  a   = list_reply[0][0]))]
             assert inner.index('<details class="brief">') \
                 < inner.index('<details class="description">') \
-                < inner.rindex('<div class="answers">')
+                < inner.rindex('<div class="replies">')
             count += 1
             key_found = key
     assert count > 0
@@ -495,13 +495,13 @@ def test_graph_node_lights_both_its_chains(tree):
     assert 'lit-for-' + name in css('ann_cross_item_checks_run_in_clingo')
     assert 'lit-' + name in css('opt_tooling_in_python')
     assert 'lit-' + name not in css('opt_tooling_in_rust')
-    answer = 'ann_cross_item_checks_run_in_clingo'
-    assert 'lit-' + answer in css('ann_graphs_will_grow')
-    assert 'lit-' + answer in css('opt_tooling_in_rust')
-    assert 'lit-' + answer not in css('ann_types_catch_errors_early')
+    reply = 'ann_cross_item_checks_run_in_clingo'
+    assert 'lit-' + reply in css('ann_graphs_will_grow')
+    assert 'lit-' + reply in css('opt_tooling_in_rust')
+    assert 'lit-' + reply not in css('ann_types_catch_errors_early')
 
 
-def test_sankey_inks_an_answer_by_its_net_effect_on_an_option(tree):
+def test_sankey_inks_a_reply_by_its_net_effect_on_an_option(tree):
     graph   = cc_public.web.argument.Graph(tree)
     outline = cc_public.web.sankey.Outline(graph, graph.decision('dec_tooling_language'))
     key     = 'concern_performance_efficiency/ann_python_is_fast_enough'

@@ -26,7 +26,7 @@ description:            |
                         most supported to most opposed. Each concern
                         is open by default, showing its annotations,
                         and an annotation opens into the annotations
-                        that answer it. Links that name the parts
+                        that reply to it. Links that name the parts
                         toggled from their default in the address of
                         the page open and close them, so no script is
                         needed. The title of an annotation links to
@@ -111,7 +111,7 @@ def figure(graph:      Graph,
     Return the Sankey diagram of the deliberation in outline: its options
     on the left, each joined to the concerns that are argued on it,
     with support above challenge. A concern opens into its
-    annotations, and an annotation into the annotations that answer
+    annotations, and an annotation into the annotations that reply to
     it. The title of an annotation links to it, opened, in the list
     below; set_show holds those the page shows opened.
 
@@ -188,7 +188,7 @@ class Outline:
 
     The concerns run from most supportive to most opposed, then drivers
     no annotation speaks for. Each concern holds its annotations, most
-    supportive first, and each annotation the annotations that answer
+    supportive first, and each annotation the annotations that reply to
     it, support first. An annotation is numbered where it first
     appears with everything open, read from the top down; those the
     concerns do not reach come last.
@@ -209,15 +209,15 @@ class Outline:
         map_annotation = {annotation.id: annotation for annotation in decision.list_annotation}
         self.map_title = {id_item: item.title for (id_item, item) in map_annotation.items()}
 
-        self.map_answer = {}
+        self.map_reply = {}
         for annotation in decision.list_annotation:
             for (id_relation, role) in MAP_ROLE.items():
                 for id_target in annotation.targets(id_relation):
                     if id_target in map_annotation:
-                        self.map_answer.setdefault(id_target, []).append((annotation.id, role))
-        for list_answer in self.map_answer.values():
-            list_answer.sort(key = lambda answer: (answer[1] != ROLE_FOR,
-                                                   self.map_title[answer[0]]))
+                        self.map_reply.setdefault(id_target, []).append((annotation.id, role))
+        for list_reply in self.map_reply.values():
+            list_reply.sort(key = lambda reply: (reply[1] != ROLE_FOR,
+                                                   self.map_title[reply[0]]))
 
         set_argued        = {unit.concern for unit in self.list_unit}
         self.list_concern = (sorted(set_argued,
@@ -241,14 +241,14 @@ class Outline:
             self._number(id_annotation, set())
 
     # -------------------------------------------------------------------------
-    def answers(self, id_annotation: str) -> list[tuple[str, str]]:
+    def replies(self, id_annotation: str) -> list[tuple[str, str]]:
         """
-        Return the annotations that answer id_annotation, each with its
+        Return the annotations that reply to id_annotation, each with its
         role, support first.
 
         """
 
-        return self.map_answer.get(id_annotation, [])
+        return self.map_reply.get(id_annotation, [])
 
     # -------------------------------------------------------------------------
     def units(self,
@@ -287,16 +287,16 @@ class Outline:
     def _number(self, id_annotation: str, set_path: set[str]) -> None:
         """
         Number id_annotation if it has no number yet, then the
-        annotations that answer it, in order. set_path holds those
-        above it, so a loop of answers stops.
+        annotations that reply to it, in order. set_path holds those
+        above it, so a loop of replies stops.
 
         """
 
         if id_annotation in set_path:
             return
         self.map_number.setdefault(id_annotation, len(self.map_number) + 1)
-        for (id_answer, _) in self.answers(id_annotation):
-            self._number(id_answer, set_path | {id_annotation})
+        for (id_reply, _) in self.replies(id_annotation):
+            self._number(id_reply, set_path | {id_annotation})
 
 
 # -----------------------------------------------------------------------------
@@ -555,13 +555,13 @@ class _Drawing:
 
             height = len(list_own) * UNIT
             self._label(key, id_annotation, 2, y, height)
-            y = self._answers(key, id_annotation, 3, y, height,
+            y = self._replies(key, id_annotation, 3, y, height,
                               y + max(height, ROW) + 4)
 
         return y
 
     # -------------------------------------------------------------------------
-    def _answers(self,
+    def _replies(self,
                  key:           str,
                  id_annotation: str,
                  index_column:  int,
@@ -570,7 +570,7 @@ class _Drawing:
                  bottom:        float) -> float:
         """
         If the annotation at key is open, draw the annotations that
-        answer it in column index_column, splitting its height among
+        reply to it in column index_column, splitting its height among
         them, support first. Return the bottom of what is drawn.
 
         """
@@ -578,20 +578,20 @@ class _Drawing:
         if not self._is_open(key, id_annotation) or index_column >= len(LIST_X):
             return bottom
 
-        list_answer = self.outline.answers(id_annotation)
-        width       = height / len(list_answer)
+        list_reply = self.outline.replies(id_annotation)
+        width       = height / len(list_reply)
         y           = top
 
-        for (index, (id_answer, role)) in enumerate(list_answer):
-            key_answer = DELIM_KEY.join((key, id_answer))
-            y         += ROOM_LABEL if self._is_open(key_answer, id_answer) else 0
-            list_css   = self.css_path(key_answer)
+        for (index, (id_reply, role)) in enumerate(list_reply):
+            key_reply = DELIM_KEY.join((key, id_reply))
+            y         += ROOM_LABEL if self._is_open(key_reply, id_reply) else 0
+            list_css   = self.css_path(key_reply)
             self._band(LIST_X[index_column - 1] + WIDTH_BAR, top + index * width,
                        LIST_X[index_column], y, width, role, list_css)
             self._bar(LIST_X[index_column], y, width, role, list_css,
-                      cc_public.web.light.chain(id_answer))
-            self._label(key_answer, id_answer, index_column, y, width)
-            y = self._answers(key_answer, id_answer, index_column + 1, y, width,
+                      cc_public.web.light.chain(id_reply))
+            self._label(key_reply, id_reply, index_column, y, width)
+            y = self._replies(key_reply, id_reply, index_column + 1, y, width,
                               y + max(width, ROW) + 4)
 
         return max(bottom, y)
@@ -606,14 +606,14 @@ class _Drawing:
         """
         Label the annotation at key with its number and title, linked to
         the annotation opened in the list: above its bar if it is open,
-        beside it otherwise. If anything answers it, a mark beside the
+        beside it otherwise. If anything replies to it, a mark beside the
         title opens or closes it in the diagram.
 
         """
 
         x       = LIST_X[index_column]
         self.index_column_last = max(self.index_column_last, index_column)
-        count   = len(self.outline.answers(id_annotation))
+        count   = len(self.outline.replies(id_annotation))
         css     = ' '.join(['annotation shown' if key in self.set_show else 'annotation',
                             cc_public.web.light.CSS_DIMS,
                             cc_public.web.light.show(cc_public.web.light.chain(id_annotation))]
@@ -659,16 +659,16 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def _closure(self, id_annotation: str, set_path: set[str]) -> set[str]:
         """
-        Return id_annotation and every annotation that answers it,
+        Return id_annotation and every annotation that replies to it,
         directly or not. set_path holds those above it, so a loop of
-        answers stops.
+        replies stops.
 
         """
 
         set_out = {id_annotation}
-        for (id_answer, _) in self.outline.answers(id_annotation):
-            if id_answer not in set_path:
-                set_out |= self._closure(id_answer, set_path | {id_annotation})
+        for (id_reply, _) in self.outline.replies(id_annotation):
+            if id_reply not in set_path:
+                set_out |= self._closure(id_reply, set_path | {id_annotation})
         return set_out
 
     # -------------------------------------------------------------------------
@@ -677,7 +677,7 @@ class _Drawing:
         Return the classes of a mark of unit: in the chains of its
         option and of the part of its bar for its role, inked by its
         role, as it is in the chains of its concern, and in the chains
-        of its annotation and of every annotation that answers it,
+        of its annotation and of every annotation that replies to it,
         unshaded.
 
         """
@@ -700,14 +700,14 @@ class _Drawing:
         annotation of key, of the concern of key, and of each
         annotation above it in key, each inked by its net effect
         there; and, unshaded, in its own chain and the chains of the
-        annotations that answer it.
+        annotations that reply to it.
 
         """
 
         list_part  = key.split(DELIM_KEY)
         id_concern = list_part[0]
         list_path  = list_part[1:]
-        list_role  = [dict(self.outline.answers(id_above)).get(id_below, ROLE_FOR)
+        list_role  = [dict(self.outline.replies(id_above)).get(id_below, ROLE_FOR)
                       for (id_above, id_below) in zip(list_path, list_path[1:], strict = False)]
 
         def net(list_role_part: list[str]) -> str:
@@ -815,11 +815,11 @@ class _Drawing:
     # -------------------------------------------------------------------------
     def _is_open(self, key: str, id_annotation: str) -> bool:
         """
-        Return True if the annotation at key is open and has answers.
+        Return True if the annotation at key is open and has replies.
 
         """
 
-        return self._open(key) and bool(self.outline.answers(id_annotation))
+        return self._open(key) and bool(self.outline.replies(id_annotation))
 
     # -------------------------------------------------------------------------
     def _open(self, key: str) -> bool:

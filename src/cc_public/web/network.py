@@ -17,7 +17,7 @@ brief:                  |
                         for each option: its concerns as small ports
                         beside it, and from each port the annotations
                         that speak for that concern on it, with the
-                        annotations that answer them beyond.
+                        annotations that reply to them beyond.
 description:            |
                         The drawing follows the diagrams of Mark
                         Lombardi: circles joined by thin lines, with
@@ -28,11 +28,11 @@ description:            |
                         while it is lit. From each concern run lines
                         to the annotations that speak for it on that
                         option, and from each annotation to those that
-                        answer it. As in the Sankey diagram, an
+                        reply to it. As in the Sankey diagram, an
                         annotation is drawn once for each place it
                         argues, so no two lines cross. A leaf has its
                         title to its right, and an annotation with
-                        answers has its title above it.
+                        replies has its title above it.
 edge:                   []
 
 ...
@@ -169,30 +169,30 @@ class _Tree:
     def _annotation(self, id_annotation: str, depth: int, set_path: set[str], key: str) -> float:
         """
         Place a copy of id_annotation at depth, with the branches of
-        the annotations that answer it, and return its height. It
-        stands level with its first answer, if it has any. key names
+        the annotations that reply to it, and return its height. It
+        stands level with its first reply, if it has any. key names
         the same place in the deliberation under the decision matrix.
 
         """
 
         x           = X_FIRST + depth * COLUMN
-        list_answer = [(id_answer, role)
-                       for (id_answer, role) in self.outline.answers(id_annotation)
-                       if id_answer not in set_path]
-        if not list_answer:
+        list_reply = [(id_reply, role)
+                       for (id_reply, role) in self.outline.replies(id_annotation)
+                       if id_reply not in set_path]
+        if not list_reply:
             y      = self.y
             self.y = y + ROW
             self._node_annotation(id_annotation, x, y, False, key)
             return y
         self.y   += GAP_PARENT
-        list_y    = [(self._annotation(id_answer, depth + 1, set_path | {id_answer},
-                                       cc_public.web.sankey.DELIM_KEY.join((key, id_answer))),
-                      id_answer, role)
-                     for (id_answer, role) in list_answer]
+        list_y    = [(self._annotation(id_reply, depth + 1, set_path | {id_reply},
+                                       cc_public.web.sankey.DELIM_KEY.join((key, id_reply))),
+                      id_reply, role)
+                     for (id_reply, role) in list_reply]
         y         = list_y[0][0]
-        for (y_to, id_answer, role) in list_y:
+        for (y_to, id_reply, role) in list_y:
             self._path(x + RADIUS_ANNOTATION, y, x + COLUMN - RADIUS_ANNOTATION, y_to, role,
-                       self.map_sign_edge[(id_answer, id_annotation, role)])
+                       self.map_sign_edge[(id_reply, id_annotation, role)])
         self._node_annotation(id_annotation, x, y, True, key)
         return y
 
@@ -456,7 +456,7 @@ def _chains(map_kind: dict[str, str], list_edge: list[tuple[str, str, str]]) -> 
 def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
     """
     Return the edges of the deliberation, each from its source to its target
-    with its role: from an annotation to what it answers, from an
+    with its role: from an annotation to what it replies to, from an
     annotation to the hub of each concern it speaks for on an option
     in each role, and from each hub to its option in that role. The
     edge into a hub passes the effect on unchanged.
@@ -465,7 +465,7 @@ def _edges(outline: Outline, list_row: list[str]) -> list[tuple[str, str, str]]:
 
     list_edge = []
     for id_annotation in list_row:
-        for (id_target, role) in _answered(outline, id_annotation):
+        for (id_target, role) in _replied_to(outline, id_annotation):
             list_edge.append((id_annotation, id_target, role))
         for unit in outline.units(annotation = id_annotation):
             edge = (id_annotation, _hub(unit.option, unit.concern, unit.role), ROLE_LINK)
@@ -550,7 +550,7 @@ def _light(map_sign_node: dict[str, dict[str, set[str]]],
 def _onward(list_edge: list[tuple[str, str, str]], id_node: str) -> set[tuple]:
     """
     Return the edges of the paths from id_node onward: to what it
-    answers, through the hubs it argues through, to the options.
+    replies to, through the hubs it argues through, to the options.
 
     """
 
@@ -638,16 +638,16 @@ def _chain(list_edge: list[tuple[str, str, str]],
 
 
 # -----------------------------------------------------------------------------
-def _answered(outline: Outline, id_annotation: str) -> list[tuple[str, str]]:
+def _replied_to(outline: Outline, id_annotation: str) -> list[tuple[str, str]]:
     """
-    Return the annotations id_annotation answers, each with its role.
+    Return the annotations id_annotation replies to, each with its role.
 
     """
 
     return [(id_target, role)
-            for (id_target, list_answer) in outline.map_answer.items()
-            for (id_answer, role) in list_answer
-            if id_answer == id_annotation and id_target in outline.map_number]
+            for (id_target, list_reply) in outline.map_reply.items()
+            for (id_reply, role) in list_reply
+            if id_reply == id_annotation and id_target in outline.map_number]
 
 
 # -----------------------------------------------------------------------------
