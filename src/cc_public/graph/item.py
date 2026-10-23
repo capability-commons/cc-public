@@ -228,7 +228,7 @@ def paragraphs(text: str) -> list[str]:
 # -----------------------------------------------------------------------------
 def terms(text: str, link: typing.Callable[[str, str], str] | None = None) -> str:
     """
-    Return text with each link to a concept, [[term]] or [[concept|term]],
+    Return text with each wiki link to a concept, [[term]] or [[concept|term]],
     replaced by link of its term and concept, or by its term alone if
     link is None. The concept is empty for a link written [[term]].
 

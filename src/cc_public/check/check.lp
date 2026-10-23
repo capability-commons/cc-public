@@ -1683,8 +1683,8 @@ word_to_replace(Holder, Word, Preferred, Rule, File, Line) :-
 %
 % title:                  Unresolved term
 % brief:                  |
-%                         A link "[[term]]" finds its concept among the
-%                         concepts that the item holding it uses, or
+%                         A wiki link "[[term]]" finds its concept among
+%                         the concepts that the item holding it uses, or
 %                         that an item holding that item uses: the one
 %                         with a preferred or admitted term of the same
 %                         form.
@@ -1725,9 +1725,10 @@ unresolved_term(Holder, Term, File, Line) :-
 %
 % title:                  Ambiguous term
 % brief:                  |
-%                         A link "[[term]]" finds one concept. Where the
-%                         item uses two concepts with that term, each
-%                         link to either is written "[[concept|term]]".
+%                         A wiki link "[[term]]" finds one concept.
+%                         Where the item uses two concepts with that
+%                         term, each link to either is written
+%                         "[[concept|term]]".
 % did:                    |
 %                         {holder} links "[[{term}]]", and {concepts}
 %                         concepts it uses have that term.
@@ -1766,8 +1767,8 @@ ambiguous_term(Holder, Term, Concepts, File, Line) :-
 %
 % title:                  Unused linked concept
 % brief:                  |
-%                         A link "[[concept|term]]" names a concept that
-%                         the item uses.
+%                         A wiki link "[[concept|term]]" names a concept
+%                         that the item uses.
 % did:                    |
 %                         {holder} links to {concept}, which it does not
 %                         use.
@@ -1823,7 +1824,7 @@ declares_concept(Holder, Concept) :-
 
 
 % -----------------------------------------------------------------------------
-% A link "[[term]]" in the item could mean the concept: the item uses it,
+% A wiki link "[[term]]" in the item could mean the concept: the item uses it,
 % and one of its preferred or admitted terms has a form of the term.
 %
 % decl term_sense(holder:  symbol,
@@ -1840,7 +1841,7 @@ term_sense(Holder, Term, Concept) :-
 
 
 % -----------------------------------------------------------------------------
-% The link "[[term]]" in the item finds at least one concept.
+% The wiki link "[[term]]" in the item finds at least one concept.
 %
 % decl term_has_sense(holder: symbol,
 %                     term:   symbol)
@@ -1924,7 +1925,7 @@ term_rated_twice(Concept, Term, Rating, Other) :-
 %                         The {field} of {holder} uses the term "{term}"
 %                         without a link.
 % fix:                    |
-%                         Write the term as a link "[[term]]", or
+%                         Write the term as a wiki link "[[term]]", or
 %                         "[[concept|term]]" where two concepts have the
 %                         term, with an edge of relation_uses_concept to
 %                         the concept if the item has none. If the word

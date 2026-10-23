@@ -21,9 +21,9 @@
 %                         right here and is worth a look, such as a
 %                         protective mark held in a partner's register,
 %                         a decision with no options yet, a concept an
-%                         item uses with no link to it, or a term
-%                         written without a link where the item declares
-%                         its concept.
+%                         item uses with no wiki link to it, or a term
+%                         written without a wiki link where the item
+%                         declares its concept.
 % usage:                  |
 %                         Evaluated by pym_cc_public.check.check in the
 %                         same program as lpf_cc_public.check.check,
@@ -141,11 +141,11 @@ has_some_option(Decision) :-
 %                         terms somewhere in its text, or the edge says
 %                         nothing a reader can see.
 % did:                    |
-%                         {holder} uses {concept}, and no link in its
-%                         text is to it.
+%                         {holder} uses {concept}, and no wiki link in
+%                         its text is to it.
 % fix:                    |
-%                         Write a link "[[term]]" where the text means
-%                         the concept, or take the edge out.
+%                         Write a wiki link "[[term]]" where the text
+%                         means the concept, or take the edge out.
 % edge:                   []
 %
 % ...
@@ -193,18 +193,19 @@ links_to(Holder, Concept) :-
 % title:                  Term to link
 % brief:                  |
 %                         An item that declares it uses a concept, and
-%                         writes a term of the concept without a link,
-%                         may mean the concept there. Prose outside the
-%                         strict fields may use the word in its everyday
-%                         sense, so this is advice, not a failure.
-%                         Titles are left to the checks of titles.
+%                         writes a term of the concept without a wiki
+%                         link, may mean the concept there. Prose
+%                         outside the strict fields may use the word in
+%                         its everyday sense, so this is advice, not a
+%                         failure. Titles are left to the checks of
+%                         titles.
 % did:                    |
 %                         The {field} of {holder} uses "{term}", a term
-%                         of a concept it declares, without a link.
+%                         of a concept it declares, without a wiki link.
 % fix:                    |
-%                         Write the term as a link if the concept is
-%                         meant, or nothing if the word is meant in its
-%                         everyday sense.
+%                         Write the term as a wiki link if the concept
+%                         is meant, or nothing if the word is meant in
+%                         its everyday sense.
 % edge:                   []
 %
 % ...
