@@ -26,12 +26,24 @@ description:            |
                         Every sequence and buffer in the engine has a
                         fixed capacity known before the system starts
                         (_sources/axair-orchestrator/docs/component_interface.md
-                        lines 145-151). Patrol's graph needs edge
-                        capacity and initial delay tokens
+                        lines 145-151). The plan said Patrol's graph
+                        needs edge capacity and initial delay tokens
                         (_sources/cc-patrol-notes/plan.md lines
-                        81-84). The option as stated uses synchronous
-                        steps in which a feedback edge carries the
-                        value of the step before
+                        81-84), but the later graph draft sets a named
+                        delivery policy on each of its 41 edges and no
+                        capacity or initial token
+                        (_sources/cc-patrol-notes/draft/dfg_patrol.yaml;
+                        _sources/cc-patrol-notes/draft/README.md lines
+                        45-51). Its policies include latest_value,
+                        newest_frame, bounded_counted_loss, ordered
+                        and ordered_acknowledged, and none states a
+                        buffer size or a blocking write. Its four
+                        edges that cross hosts are camera RTP, the
+                        track stream and HTTP both ways, all facing
+                        the outside world (same README, lines 75-78
+                        and 94-96). The option as stated uses
+                        synchronous steps in which a feedback edge
+                        carries the value of the step before
                         (_data/decision/dec_first_semantics/opt_kpn_first.yaml
                         lines 12-14). ASSUMPTION: a synchronous
                         stepped schedule with one-step feedback delays
@@ -39,7 +51,8 @@ description:            |
                         the risk sits on edges between processes,
                         whose transport is still open
                         (_sources/axair-orchestrator/docs/execution_levels.md
-                        lines 222-223). Strength: weak.
+                        lines 222-223), and only where such an edge
+                        blocks rather than drops. Strength: weak.
 
 edge:
 

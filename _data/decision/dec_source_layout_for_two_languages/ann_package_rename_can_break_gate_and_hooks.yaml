@@ -10,13 +10,18 @@ protective_mark:
 
 title:                  Missed references that stop the gate or hooks
 brief:                  |
-                        Renaming cc_public touches the gate's own
-                        command line, the hooks, every module id and
-                        the pixi manifest, and the rename tool leaves
-                        some references for a person to fix, so one
-                        missed reference leaves the gate or the hooks
-                        unable to run. If the rename is wanted, now,
-                        before any release, is the cheapest time.
+                        Renaming cc_public changes the entry point of
+                        the cctool command that every hook runs, the
+                        gate's own command line, every module id and
+                        the pixi manifest. cctool rename refuses the
+                        id of a module or a logic program, so every
+                        reference is moved by hand or by script, and
+                        one missed reference leaves the gate or the
+                        hooks unable to run. Every hook runs pixi with
+                        --locked, so after the manifest changes the
+                        hooks refuse until the owner relocks. If the
+                        rename is wanted, now, before any release, is
+                        the cheapest time.
 description:            |
                         Sources:
                         - The gate runs the checker as -m

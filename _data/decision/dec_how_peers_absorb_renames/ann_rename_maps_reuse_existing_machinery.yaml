@@ -12,17 +12,23 @@ title:                  Existing rename machinery behind rename maps
 brief:                  |
                         The tooling already records every rename in
                         commit items, matches an old id to its item by
-                        guid, and rewrites every reference in a tree.
-                        A rename map applied by a command reuses these
-                        three parts, so a peer upgrade becomes one
-                        checked step instead of a hand edit per
-                        renamed id.
+                        guid, and rewrites every reference to an id in
+                        a tree. A rename map applied by a command
+                        reuses these three parts, so a peer upgrade
+                        becomes one checked step instead of a hand
+                        edit per renamed id. The command would call
+                        the rewrite itself, since cctool rename
+                        refuses an id that its tree does not hold and
+                        a change of prefix.
 description:            |
                         Sources:
                         - Every commit carries a commit item, and the
                           commit check already detects renames and
                           removals (context note, _sources/context.md
-                          line 34).
+                          line 34); each commit is checked against the
+                          graph before and after it
+                          (_data/decision/dec_check_commit_against_graph/ruling_check_commit_against_graph.yaml,
+                          brief).
                         - A commit item must name the id of every item
                           the commit removes or renames (AGENTS.md
                           lines 98-102).
@@ -30,12 +36,16 @@ description:            |
                           reference by an old id through the guid,
                           "which decides", where the old id names
                           nothing (src/cc_public/check/check.lp lines
-                          2003-2007 and 2031-2035).
+                          2015-2018 and 2041-2045).
                         - cctool rename rewrites the id in every YAML
                           document that names it
-                          (src/cc_public/edit/edit.py lines 951-981
-                          and 1014-1034). Strength: strong; each part
-                          the option needs already exists.
+                          (src/cc_public/edit/edit.py lines 960-1021
+                          and 1023-1044), but refuses an id the tree
+                          does not hold and a new id with another
+                          prefix (edit.py lines 908-913). Strength:
+                          strong; each part exists, though the command
+                          would call the rewrite without the guards of
+                          cctool rename.
 
 edge:
 

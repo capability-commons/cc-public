@@ -11,15 +11,15 @@ protective_mark:
 title:                  Refusal of breaking commits on the release line
 brief:                  |
                         The history check already detects renames and
-                        removals, so failing a breaking commit on dev
-                        is one rule in a check of record that exists,
-                        and it lets a reviewer know mechanically that
-                        every commit on dev is non-breaking. A warning
-                        only does the same job at two points and lets
-                        a breaking commit land, after which the
-                        release refuses any minor or patch bump and an
-                        urgent fix is blocked until the commit is
-                        reverted.
+                        removals, so refusing a push that moves the
+                        release line over a breaking commit reuses
+                        detection that exists, and it lets a reviewer
+                        know mechanically that every commit on that
+                        line is non-breaking. A warning only does the
+                        same job at two points and lets a breaking
+                        commit land, after which the release refuses
+                        any minor or patch bump and an urgent fix is
+                        blocked until the commit is reverted.
 description:            |
                         Sources:
                         - Every commit carries a commit item and the
