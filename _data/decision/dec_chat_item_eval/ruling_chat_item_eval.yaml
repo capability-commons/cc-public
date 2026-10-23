@@ -1,0 +1,44 @@
+id_self:                ruling_chat_item_eval
+guid_self:              ruling_d6c329b912ff4c689feb680cb9f59a8d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  LLM judge with the checks
+brief:                  |
+                        An LLM judge, run with the graph checks and
+                        the mechanized style rules, tells the
+                        contributor while they are still in the
+                        conversation that an answer is insufficient,
+                        vague or badly phrased, which the checks
+                        cannot do. The judge does not block the
+                        readback: the contributor may use its feedback
+                        to improve the item or override it and leave
+                        the item as it is. The judge uses the same
+                        model access as the conversation. A type's
+                        judge criteria live in an eval item of their
+                        own, not in the interview guide. The reviewer
+                        still reviews the branch, but is not the only
+                        judge of quality. Ruled by William Payne on
+                        2026-10-23.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_mechanized_checks_only
+    guid_target:        opt_ac1f2f77237c43b1ae2fab683adce969
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_reviewer_judges_quality
+    guid_target:        opt_bb0596368c25475f830e8a1fca1780fa
