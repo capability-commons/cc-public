@@ -20,13 +20,13 @@ description:            |
                         keyword of its kind: If, As soon as or As long
                         as. Then come the subject, by its title, and
                         the modal verb. An interaction provides the
-                        actor with the ability to do the process, and
-                        an interface is able to do it. The process is
-                        the preferred term of its concept, and the
-                        object and the qualifier follow it. A slot
-                        shows each term it links as the term alone.
-                        Slots that do not compose are refused with
-                        ErrorCompose.
+                        actor with the ability to do what the process
+                        word names, and an interface is able to do it.
+                        The process word is the preferred term of its
+                        concept, and the object and the qualifier
+                        follow it. A slot shows each term it links as
+                        the term alone. Slots that do not compose are
+                        refused with ErrorCompose.
 edge:                   []
 
 ...
@@ -53,7 +53,7 @@ KEY_ID_TARGET        = 'id_target'
 
 PREFIX_REQUIREMENT   = cc_public.graph.prefix.stem('type_requirement')
 SLOT_SUBJECT         = 'subject'
-SLOT_PROCESS         = 'process'
+SLOT_PROCESS_WORD    = 'process_word'
 
 RELATION_HAS_SUBJECT = 'relation_has_subject'
 RELATION_HAS_ACTOR   = 'relation_has_actor'
@@ -100,7 +100,7 @@ def statement(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> 
 
     node_of returns the document of the item with a given id, or None.
     The subject and the actor are named by their titles, and the
-    process by the preferred term of its concept.
+    process word by the preferred term of its concept.
 
     """
 
@@ -117,10 +117,10 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
     """
 
     id_subject = _target(requirement, RELATION_HAS_SUBJECT)
-    id_process = _target(requirement, RELATION_HAS_PROCESS)
-    subject    = _name(node_of, id_subject, KEY_TITLE)
-    process    = _name(node_of, id_process, KEY_TERM_PREFERRED)
-    activity   = requirement.get(KEY_ACTIVITY)
+    id_process_word = _target(requirement, RELATION_HAS_PROCESS)
+    subject         = _name(node_of, id_subject, KEY_TITLE)
+    process_word    = _name(node_of, id_process_word, KEY_TERM_PREFERRED)
+    activity        = requirement.get(KEY_ACTIVITY)
 
     list_part = []
     if KEY_CONDITION in requirement:
@@ -145,7 +145,7 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
     elif activity == ACTIVITY_INTERFACE:
         list_part.append(Part(KEY_ACTIVITY, 'be able to'))
 
-    list_part += [Part(SLOT_PROCESS, process, id_process),
+    list_part += [Part(SLOT_PROCESS_WORD, process_word, id_process_word),
                   Part(KEY_OBJECT, _slot(requirement, KEY_OBJECT))]
     if KEY_QUALIFIER in requirement:
         list_part.append(Part(KEY_QUALIFIER, _slot(requirement, KEY_QUALIFIER)))

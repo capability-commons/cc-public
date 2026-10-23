@@ -3380,14 +3380,14 @@ missing_setting(Node, Setting) :-
 %
 % title:                  Unplaced
 % brief:                  |
-%                         A node runs on a process of its dataflow
-%                         graph, and a process on a host of it.
+%                         A node runs on an OS process of its dataflow
+%                         graph, and an OS process on a host of it.
 % did:                    |
 %                         {holder} in {graph} runs on {key}, which the
 %                         dataflow graph does not list.
 % fix:                    |
-%                         Name a process or host the dataflow graph
-%                         lists, or add it to the process or host
+%                         Name an OS process or host the dataflow graph
+%                         lists, or add it to the os_process or host
 %                         section.
 % edge:                   []
 %

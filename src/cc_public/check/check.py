@@ -78,12 +78,12 @@ WORDING_LAYOUT    = {'did': '{file} is not laid out as cctool format lays it out
 Failures          = dict[str, list[tuple[str, ...]]]
 
 # What validation against the schemas has found, kept between checks in
-# one process, for the YAML documents that are the same objects as the
+# one OS process, for the YAML documents that are the same objects as the
 # last time they were read.
 #
 CACHE_SCHEMA      = {}
 
-# The failures and advice of the last reviews, kept in one process and
+# The failures and advice of the last reviews, kept in one OS process and
 # keyed by the YAML documents reviewed, as objects, and by the rules.
 # The review before an edit is that of the tree as it was last checked,
 # so it is found here. It is emptied when it holds this many. Each

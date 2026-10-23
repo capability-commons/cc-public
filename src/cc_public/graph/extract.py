@@ -364,7 +364,7 @@ TUPLE_PORT_KIND   = ('input', 'output', 'state', 'settings')
 KEY_NAME          = 'name'
 KEY_NODE          = 'dataflow_node'
 KEY_EDGE          = 'dataflow_edge'
-KEY_PROCESS       = 'os_process'
+KEY_OS_PROCESS    = 'os_process'
 KEY_HOST          = 'host'
 KEY_SETTINGS      = 'settings'
 KEY_SOURCE        = 'source'
@@ -1522,13 +1522,13 @@ def _dataflow_graph(document: dict[str, typing.Any],
 
     for (key, node) in map_node.items():
         id_node = str(node[KEY_ID_SELF])
-        process = str(node.get(KEY_PROCESS, ''))
-        facts['dataflow_node'].add((graph, str(key), id_node, process))
+        os_process = str(node.get(KEY_OS_PROCESS, ''))
+        facts['dataflow_node'].add((graph, str(key), id_node, os_process))
         for name in _map(node.get(KEY_SETTINGS)):
             facts['dataflow_setting'].add((id_node, str(name)))
 
-    for (key, process) in _map(document.get(KEY_PROCESS)).items():
-        host = process.get(KEY_HOST, '') if isinstance(process, dict) else ''
+    for (key, os_process) in _map(document.get(KEY_OS_PROCESS)).items():
+        host = os_process.get(KEY_HOST, '') if isinstance(os_process, dict) else ''
         facts['os_process'].add((graph, str(key), str(host)))
 
     for key in _map(document.get(KEY_HOST)):

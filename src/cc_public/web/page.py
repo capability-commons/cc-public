@@ -1308,9 +1308,9 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
         return None
 
     node          = item.node
-    process       = next(part.text for part in list_part
-                         if part.slot == cc_public.requirement.compose.SLOT_PROCESS)
-    list_question = cc_public.requirement.review.questions(node, process)
+    process_word  = next(part.text for part in list_part
+                         if part.slot == cc_public.requirement.compose.SLOT_PROCESS_WORD)
+    list_question = cc_public.requirement.review.questions(node, process_word)
     list_said     = cc_public.requirement.review.characteristics(
                         node, list_question, item.targets(RELATION_TRACES_TO_PARENT))
 
@@ -1326,14 +1326,14 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
                                  for each in list_item],
                          item.id, 'requirement'),
                   htpy.p(class_ = 'subtitle')[_statement(graph, item)]],
-                 [_requirement_facts(graph, item, process)])
+                 [_requirement_facts(graph, item, process_word)])
 
 
 # -----------------------------------------------------------------------------
-def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
+def _requirement_facts(graph: Graph, item: Item, process_word: str) -> typing.Any:
     """
     Return the table of facts that stands beside the statement of a
-    requirement: its modal verb, subject, process, verification and
+    requirement: its modal verb, subject, process word, verification and
     what it traces to.
 
     """
@@ -1350,8 +1350,8 @@ def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
                                 word = modal_verb, meaning = MAP_MODAL_VERB.get(modal_verb, ''))),
         row('Subject',      [_link(graph, id_subject)
                              for id_subject in item.targets(RELATION_HAS_SUBJECT)]),
-        row('Process',      [htpy.a(href = _href(id_process))[process]
-                             for id_process in item.targets(RELATION_HAS_PROCESS)]),
+        row('Process word', [htpy.a(href = _href(id_process_word))[process_word]
+                             for id_process_word in item.targets(RELATION_HAS_PROCESS)]),
         row('Verification', str(node.get('verification_method', '')).capitalize()),
         row('Traced to',    [htpy.span(class_ = 'line')[_link(graph, id_trace)]
                              for id_trace in list_trace]
@@ -1488,7 +1488,7 @@ def _characteristics(list_said: list) -> typing.Any:
 def _requirement_references(graph: Graph, item: Item) -> typing.Any:
     """
     Return the cross-references at the foot of the page of a
-    requirement: its subject and process, the other requirements and
+    requirement: its subject and process word, the other requirements and
     the decisions on its subject, and the items that point at it or that
     its prose names.
 
@@ -1509,7 +1509,7 @@ def _requirement_references(graph: Graph, item: Item) -> typing.Any:
                            for id_source in list_source})
 
     return _references(graph, [('Subject',          list_subject),
-                               ('Process',          item.targets(RELATION_HAS_PROCESS)),
+                               ('Process word',     item.targets(RELATION_HAS_PROCESS)),
                                ('Same subject',     list_same),
                                ('Decisions on subject', list_decision),
                                ('Mentions',         graph.mentions(item.id)),

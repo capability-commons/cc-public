@@ -18,7 +18,7 @@ brief:                  |
 description:            |
                         A test that a verdict is reused writes a
                         verdict into the store that the check would
-                        not find, and empties the caches of the
+                        not find, and empties the caches of the OS
                         process, so that the check can only have it
                         from the store.
 edge:                   []
@@ -43,7 +43,7 @@ import cc_public.graph.extract
 def dir_store(tmp_path_factory, monkeypatch):
     """
     Return the directory of a store that the checker uses, with the
-    caches of the process emptied.
+    caches of the OS process emptied.
 
     """
 
@@ -56,7 +56,7 @@ def dir_store(tmp_path_factory, monkeypatch):
 # -----------------------------------------------------------------------------
 def _forget(monkeypatch):
     """
-    Empty what the checker keeps in the process from one check to the
+    Empty what the checker keeps in the OS process from one check to the
     next.
 
     """

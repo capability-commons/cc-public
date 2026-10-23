@@ -759,7 +759,7 @@ def test_requirement_page_reads_down_its_trace(tree):
     assert status == http.HTTPStatus.OK
     text = body.decode()
     list_slot = re.findall(r'<span class="slot">(\w+)</span>', text)
-    assert list_slot == ['condition', 'subject', 'modal_verb', 'process', 'object']
+    assert list_slot == ['condition', 'subject', 'modal_verb', 'process_word', 'object']
     list_station = re.findall(r'<div class="block (station[^"]*)">.*?<span class="label">(\w+)',
                               text)
     assert list_station == [('station gap', 'Source'), ('station gap', 'Parent'),

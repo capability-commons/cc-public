@@ -257,7 +257,7 @@ def _once(set_row: set[tuple[str, ...]], kept: '_Kept') -> list[tuple[str, ...]]
 class _Kept:
     """
     What validations found before: those that cache keeps, made in this
-    process, and those that the store of the checker keeps, made in an
+    OS process, and those that the store of the checker keeps, made in an
     earlier run. What a document was found to violate under a schema is
     reused only while that schema, and each schema it refers to, is as
     it was, so a change to one schema validates again only the
