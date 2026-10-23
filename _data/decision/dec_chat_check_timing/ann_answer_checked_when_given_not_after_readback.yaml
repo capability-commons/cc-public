@@ -20,13 +20,15 @@ description:            |
                         The command line reports a refused edit as
                         "Refused: the edit adds N failures. Nothing
                         was written." (src/cc_public/cli/editing.py
-                        line 506). The option of checks only at the
+                        line 509). The option of checks only at the
                         write checks nothing until cctool writes the
                         item
                         (_data/decision/dec_chat_check_timing/opt_check_at_write_only.yaml,
                         brief). The schema-per-answer option checks
                         each answer against the JSON Schema inside the
-                        bot and runs cctool once at the readback
+                        bot, through cc_public.check.schema, and dry
+                        runs the whole draft once, at the readback,
+                        through the editing module in its own process
                         (_data/decision/dec_chat_check_timing/opt_schema_per_answer_dry_run_at_readback.yaml,
                         brief). Holds at ten times the size: yes,
                         because the per-answer check is local to one
