@@ -162,11 +162,11 @@ def test_a_new_entry_is_written_at_the_end_of_its_register(tree, zero):
 
 def test_a_new_entry_is_written_as_the_first_in_an_empty_register(tree, zero):
     path = tree / '_data/register/reg_concern.yaml'
-    head = path.read_text().split('table:')[0]
-    path.write_text(head + 'table:                  {}\n')
+    head = path.read_text().split('entries:')[0]
+    path.write_text(head + 'entries:                {}\n')
     assert _edit(tree, {'new': 'concern_x', 'field': FIELD_CONCERN}) == {}
     assert path.read_text() == head + (
-        'table:\n'
+        'entries:\n'
         '\n'
         '  # ---------------------------------------------------------------------------\n'
         '  # concern_x -- Reviewability\n'
@@ -462,8 +462,8 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
      'by hand.'),
     ({'remove': 'concept_none'}, 'No item has the id concept_none.'),
     ({'remove': 'icm_cc_public_check.failures'},
-     'icm_cc_public_check.failures is embedded in icd_cc_public_check and is not an entry of '
-     'its table, so take it out of icd_cc_public_check with cctool unset.'),
+     'icm_cc_public_check.failures is embedded in icd_cc_public_check and is not one of '
+     'its entries, so take it out of icd_cc_public_check with cctool unset.'),
 ])
 def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:

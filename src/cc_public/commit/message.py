@@ -87,7 +87,7 @@ KEY_TITLE       = 'title'
 KEY_BRIEF       = 'brief'
 KEY_DESCRIPTION = 'description'
 KEY_EDGE        = 'edge'
-KEY_TABLE       = 'table'
+KEY_ENTRIES     = 'entries'
 ID_MEMBERS      = 'reg_team_member'
 
 # A trailer that names the team member who supplied the content of the
@@ -336,7 +336,7 @@ def _members(map_document: dict) -> set[str]:
     for (document, _) in map_document.values():
         if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
             return {str(entry.get(KEY_GUID_SELF))
-                    for entry in (document.get(KEY_TABLE) or {}).values()
+                    for entry in (document.get(KEY_ENTRIES) or {}).values()
                     if isinstance(entry, dict)}
 
     return set()

@@ -704,7 +704,7 @@ def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
     # being about opt_x, so ann_x is about something.
     path     = tree / '_data/register/reg_relation.yaml'
     register = ruamel.yaml.YAML().load(path.read_text())
-    register['table']['relation_is_about']['inverse'] = {
+    register['entries']['relation_is_about']['inverse'] = {
         'id_self':   'relation_is_subject_of',
         'guid_self': _guid('relation'),
         'brief':     'SOURCE is the subject of TARGET'}
@@ -958,11 +958,11 @@ def test_a_field_no_schema_allows_is_reported(tree):
 def test_a_violation_inside_a_register_is_reported_once_at_its_line(tree):
     path     = tree / '_data/register/reg_concern.yaml'
     register = ruamel.yaml.YAML().load(path.read_text())
-    register['table']['concern_cost']['title'] = 7
+    register['entries']['concern_cost']['title'] = 7
     path.write_text(_dump(register))
     line     = next(index + 1 for (index, text) in enumerate(path.read_text().splitlines())
                     if text.strip() == 'title: 7')
-    row      = ('_data/register/reg_concern.yaml', str(line), 'table/concern_cost/title',
+    row      = ('_data/register/reg_concern.yaml', str(line), 'entries/concern_cost/title',
                 "7 is not of type 'string'")
     assert _check(tree) == {'schema_violation': [('reg_concern', 'sch_reg_concern', *row)]}
 

@@ -62,7 +62,7 @@ KEY_ID_SELF       = 'id_self'
 KEY_GUID_SELF     = 'guid_self'
 KEY_EDGE          = 'edge'
 KEY_ALIAS         = 'alias'
-KEY_TABLE         = 'table'
+KEY_ENTRIES       = 'entries'
 KEY_ID_RELATION   = 'id_relation'
 KEY_GUID_RELATION = 'guid_relation'
 KEY_ID_TARGET     = 'id_target'
@@ -261,7 +261,7 @@ def new(tree:       Tree,
     """
     Return the edit that makes a new item with id_self, the fields in
     list_field, and an edge for each relation and target in list_link.
-    A type held in a register gets an entry at the end of the table of
+    A type held in a register gets an entry at the end of the entries of
     its register. Any other gets a file of its own under _data.
 
     """
@@ -869,7 +869,7 @@ def remove(tree: Tree, id_item: str) -> Edit:
     (_, _, holder, relative, _) = tree.map_item[id_item]
 
     if holder and not any(row[2] == id_item for row in tree.facts['register_entry_key']):
-        raise ErrorEdit('{id} is embedded in {holder} and is not an entry of its table, so '
+        raise ErrorEdit('{id} is embedded in {holder} and is not one of its entries, so '
                         'take it out of {holder} with cctool unset.'.format(
                                                                 id = id_item, holder = holder))
 
@@ -880,7 +880,7 @@ def remove(tree: Tree, id_item: str) -> Edit:
         return {relative: None}
 
     item         = _Item(tree, holder)
-    item.node    = item.node[KEY_TABLE]
+    item.node    = item.node[KEY_ENTRIES]
     (start, end) = item.extent(id_item)
 
     while start > 0 and item.line(start - 1).strip().startswith(MARK_COMMENT):
@@ -1490,27 +1490,27 @@ def _format(text: str, relative: str) -> str:
 def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
     """
     Return the edit that adds an entry with map_field at the end of the
-    table of the register id_register, under a banner. An empty table
-    is written out in full with the entry as its first.
+    entries of the register id_register, under a banner. Empty entries
+    are written out in full with the entry as their first.
 
     """
 
-    item  = _Item(tree, id_register)
-    table = item.node.get(KEY_TABLE)
+    item      = _Item(tree, id_register)
+    map_entry = item.node.get(KEY_ENTRIES)
 
-    if not isinstance(table, dict):
-        raise ErrorEdit('{id} has no table to add to.'.format(id = id_register))
+    if not isinstance(map_entry, dict):
+        raise ErrorEdit('{id} has no entries to add to.'.format(id = id_register))
 
-    if table:
-        item.node    = table
-        (_, end)     = item.extent(list(table.keys())[-1])
-        column       = item.column(list(table.keys())[-1])
+    if map_entry:
+        item.node    = map_entry
+        (_, end)     = item.extent(list(map_entry.keys())[-1])
+        column       = item.column(list(map_entry.keys())[-1])
         start        = end
         list_line    = ['']
     else:
-        (start, end) = item.extent(KEY_TABLE)
-        column       = item.column(KEY_TABLE) + 2
-        list_line    = [' ' * (column - 2) + KEY_TABLE + ':']
+        (start, end) = item.extent(KEY_ENTRIES)
+        column       = item.column(KEY_ENTRIES) + 2
+        list_line    = [' ' * (column - 2) + KEY_ENTRIES + ':']
 
     id_self     = map_field[KEY_ID_SELF]
     head        = ' ' * column + '# '
@@ -1529,7 +1529,7 @@ def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
 def _node(node: typing.Any, id_item: str) -> typing.Any:
     """
     Return the mapping within node whose id_self is id_item: a register
-    entry in its table, or an item embedded at any depth, such as an
+    entry among its entries, or an item embedded at any depth, such as an
     interface member or a dataflow node. Return None if there is none.
 
     """

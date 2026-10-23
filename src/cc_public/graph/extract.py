@@ -58,7 +58,7 @@ KEY_ID_SELF       = 'id_self'
 KEY_GUID_SELF     = 'guid_self'
 KEY_ID_RELATION   = 'id_relation'
 KEY_ID_TARGET     = 'id_target'
-KEY_TABLE         = 'table'
+KEY_ENTRIES       = 'entries'
 KEY_PREFIX        = 'prefix'
 KEY_REGEX_ID      = 'regex_id'
 KEY_INVERSE       = 'inverse'
@@ -633,8 +633,8 @@ def _terms(map_document: Documents) -> Terms:
     set_first = set()
 
     for (document, _) in map_document.values():
-        table = document.get(KEY_TABLE) if isinstance(document, dict) else None
-        for entry in _map(table).values():
+        map_entry = document.get(KEY_ENTRIES) if isinstance(document, dict) else None
+        for entry in _map(map_entry).values():
             if not isinstance(entry, dict):
                 continue
             for key in (key for (key, rating) in MAP_TERM_RATING.items()
@@ -713,8 +713,8 @@ def _replacements(map_document: Documents) -> set[tuple[str, str, str]]:
     set_row = set()
 
     for (document, _) in map_document.values():
-        table = document.get(KEY_TABLE) if isinstance(document, dict) else None
-        for entry in _map(table).values():
+        map_entry = document.get(KEY_ENTRIES) if isinstance(document, dict) else None
+        for entry in _map(map_entry).values():
             if isinstance(entry, dict):
                 for (avoided, preferred) in _map(entry.get(KEY_REPLACEMENT)).items():
                     set_row.add((str(entry.get(KEY_ID_SELF)), str(avoided), str(preferred)))
@@ -1250,10 +1250,10 @@ def _walk(node:     typing.Any,
     _reference(node, holder, location, facts)
     _text(node, holder, location, facts, terms)
 
-    table = node.get(KEY_TABLE)
+    map_entry = node.get(KEY_ENTRIES)
 
-    if isinstance(id_self, str) and isinstance(table, dict):
-        for (key, entry) in table.items():
+    if isinstance(id_self, str) and isinstance(map_entry, dict):
+        for (key, entry) in map_entry.items():
             if isinstance(entry, dict):
                 facts['register_entry_key'].add((id_self,
                                                  str(key),
