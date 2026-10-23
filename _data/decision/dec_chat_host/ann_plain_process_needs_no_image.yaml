@@ -1,0 +1,50 @@
+id_self:                ann_plain_process_needs_no_image
+guid_self:              ann_a41d7c21ed784ceaa68f00313e57b4d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain process with no image to build
+brief:                  |
+                        A plain process on a VM needs no container
+                        image to build, publish or patch, so it is the
+                        simplest bot to ship where the data owner
+                        offers a VM.
+description:            |
+                        Under the plain process option the bot is set
+                        up by a script on a Linux VM
+                        [opt_host_plain_process_on_vm, brief]. Under
+                        the container option a container image is
+                        built and run on each host
+                        [opt_host_container_with_volume, brief].
+                        ASSUMPTION: an image adds a build step, a
+                        registry to publish to, and a base image to
+                        keep patched. Holds at ten times the size: no,
+                        since at many deployments one image is less
+                        work than many hand-set VMs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_host
+    guid_target:        dec_83b0d4aa49f44c899aca3fc74dca2e5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_host_plain_process_on_vm
+    guid_target:        opt_ec3e4e94f5cf4b55bf27f55459462de8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_host_container_with_volume
+    guid_target:        opt_63d92a51b0d0452eac529ba89d9d2294
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
