@@ -17,8 +17,10 @@ description:            |
                         A schema data item is a JSON Schema, and it is
                         also a standalone data item. This schema
                         composes the draft 2020-12 meta-schema with
-                        sch_standalone to assert both, and pins the
-                        dialect and the form of the $id.
+                        sch_standalone and sch_trait_edge to assert
+                        both, and pins the dialect and the form of the
+                        $id. Every schema carries an edge field, empty
+                        where it has no outgoing edges.
 usage:                  |
                         Named by the
                         relation_has_items_specified_by_schema edge of
@@ -43,6 +45,7 @@ type:                   object
 allOf:
   - $ref:               https://json-schema.org/draft/2020-12/schema
   - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
 
 required:
   - $schema
@@ -62,3 +65,10 @@ properties:
     description:        |
                         The canonical URI of this schema, and the
                         target of any $ref that names it.
+
+edge:
+
+  - id_relation:        relation_cites
+    guid_relation:      relation_51554b1012884a358e38a299ba3632e0
+    id_target:          extdoc_json_schema_2020_12
+    guid_target:        extdoc_c9fccd94b7e9497c9f32ad4d19cbb5b7
