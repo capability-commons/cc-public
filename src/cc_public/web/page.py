@@ -34,11 +34,11 @@ description:            |
                         The decision list folds each decision to its
                         title and standing, grouped by component under
                         the concerns that drive it, or in another
-                        order. A decision opens to its question and
-                        the options for it, each with its glyph and
-                        how much argument is for and against it. A
-                        filter keeps and opens the decisions it finds.
-                        The page of a decision opens with its decision
+                        order. A decision opens to its brief and the
+                        options for it, each with its glyph and how
+                        much argument is for and against it. A filter
+                        keeps and opens the decisions it finds. The
+                        page of a decision opens with its decision
                         matrix: a column for each option and a row for
                         each concern, in the order of the Sankey
                         diagram of pym_cc_public.web.sankey. Options
