@@ -1,0 +1,42 @@
+id_self:                ruling_chat_signal_route
+guid_self:              ruling_2c761b9c106448a584c05fa33e43ce24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  signal-cli daemon
+brief:                  |
+                        A signal-cli daemon leaves the Signal protocol
+                        to a maintained client and keeps its GPL code
+                        in its own process, so cc-public stays
+                        Apache-2.0. The adapter reaches it only over a
+                        local UNIX socket, never TCP, since the daemon
+                        offers no authentication. The Matrix bridge
+                        adds a homeserver, a database and a bridge
+                        that each hold messages and need upkeep; it
+                        may be revisited if many more messengers are
+                        added. An own client on libsignal would make
+                        this project keep a Signal client on a library
+                        its maker does not support outside Signal.
+                        Ruled by William Payne on 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_signal_cli_daemon
+    guid_target:        opt_d348bfb6205f4a8a9966d0a0ec86a675
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_matrix_bridge
+    guid_target:        opt_8a143394a49d49a492e0959082e99cbd
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_own_client_on_libsignal
+    guid_target:        opt_d5180bb412f24d118f8e71fa423bae21
