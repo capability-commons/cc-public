@@ -51,8 +51,8 @@ import cc_public.web.light
 
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
-MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
-                     cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
+MAP_ROLE          = {cc_public.web.argument.RELATION_SUPPORTS:   ROLE_FOR,
+                     cc_public.web.argument.RELATION_CHALLENGES: ROLE_AGAINST}
 
 # Sizes, in units of the drawing. A unit of weight is one annotation
 # speaking for one concern on one option.
@@ -71,8 +71,8 @@ LIST_X            = (270, 500, 730, 960, 1190)
 DELIM_KEY         = '/'
 KEY_TOGGLE        = 'toggle'
 KEY_SHOW          = 'show'
-MARK_OPEN         = '▾'
-MARK_CLOSED       = '▸'
+GLYPH_OPEN        = '▾'
+GLYPH_CLOSED      = '▸'
 
 Graph             = cc_public.web.argument.Graph
 Decision          = cc_public.web.argument.Decision
@@ -158,7 +158,8 @@ def units(decision: Decision) -> list[Unit]:
             for (id_relation, role) in MAP_ROLE.items()
             for id_target in annotation.targets(id_relation)
             if id_target in set_option
-            for id_concern in annotation.targets(cc_public.web.argument.R_SPEAKS_FOR)]
+            for id_concern in annotation.targets(
+                cc_public.web.argument.RELATION_SPEAKS_FOR_CONCERN)]
 
 
 # -----------------------------------------------------------------------------
@@ -424,11 +425,11 @@ class _Drawing:
                     htpy.tspan(class_ = 'standing-' + standing)['● ' + standing],
                     ' ',
                     htpy.tspan(class_ = 'for')[
-                        '{mark}{count}'.format(mark  = cc_public.web.light.MARK_FOR,
+                        '{mark}{count}'.format(mark  = cc_public.web.light.GLYPH_FOR,
                                                count = count_for)],
                     ' ',
                     htpy.tspan(class_ = 'against')[
-                        '{mark}{count}'.format(mark  = cc_public.web.light.MARK_AGAINST,
+                        '{mark}{count}'.format(mark  = cc_public.web.light.GLYPH_AGAINST,
                                                count = count_total - count_for)]])
             y = y_next
 
@@ -483,13 +484,13 @@ class _Drawing:
             elif is_open:
                 self.list_label.append(self._toggle(
                     id_concern, LIST_X[1] - 2, y - 4, css,
-                    [MARK_OPEN, ' ', title]))
+                    [GLYPH_OPEN, ' ', title]))
             else:
                 count = len({unit.annotation for unit in list_unit})
                 self.list_label.append(self._toggle(
                     id_concern, LIST_X[1] + WIDTH_BAR + 8, y + height / 2 + 4, css,
                     [title, ' ', htpy.tspan(class_ = 'note')[
-                                     '{mark} {count}'.format(mark = MARK_CLOSED,
+                                     '{mark} {count}'.format(mark = GLYPH_CLOSED,
                                                              count = count)]]))
             bottom = self._annotations(id_concern, y) if is_open else 0.0
             y      = max(y + height, bottom) + GAP
@@ -624,12 +625,12 @@ class _Drawing:
                       self.map_title.get(id_annotation, id_annotation)]
 
         if self._is_open(key, id_annotation):
-            content = [htpy.a(href = self._href_toggle(key))[MARK_OPEN], ' ', title]
+            content = [htpy.a(href = self._href_toggle(key))[GLYPH_OPEN], ' ', title]
             (x, y)  = (x - 2, top - 4)
         elif count:
             content = [title, ' ', htpy.a(href = self._href_toggle(key))[
                                        htpy.tspan(class_ = 'note')[
-                                           '{mark} {count}'.format(mark  = MARK_CLOSED,
+                                           '{mark} {count}'.format(mark  = GLYPH_CLOSED,
                                                                    count = count)]]]
             (x, y)  = (x + WIDTH_BAR + 8, top + height / 2 + 4)
         else:

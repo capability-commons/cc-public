@@ -92,17 +92,17 @@ PREFIX_ANNOTATION = cc_public.web.argument.PREFIX_ANNOTATION
 PREFIX_RULING     = 'ruling_'
 PREFIX_CONCERN    = 'concern_'
 
-R_IS_OPTION_FOR   = cc_public.web.argument.R_IS_OPTION_FOR
-R_IS_ABOUT        = cc_public.web.argument.R_IS_ABOUT
-R_SUPPORTS        = cc_public.web.argument.R_SUPPORTS
-R_CHALLENGES      = cc_public.web.argument.R_CHALLENGES
-R_UPHOLDS         = cc_public.web.argument.R_UPHOLDS
-R_REJECTS         = cc_public.web.argument.R_REJECTS
-R_SPEAKS_FOR      = cc_public.web.argument.R_SPEAKS_FOR
-MAP_RELATION      = {ROLE_FOR:     R_SUPPORTS,
-                     ROLE_AGAINST: R_CHALLENGES,
-                     ROLE_UPHOLD:  R_UPHOLDS,
-                     ROLE_REJECT:  R_REJECTS}
+RELATION_IS_OPTION_FOR      = cc_public.web.argument.RELATION_IS_OPTION_FOR
+RELATION_IS_ABOUT           = cc_public.web.argument.RELATION_IS_ABOUT
+RELATION_SUPPORTS           = cc_public.web.argument.RELATION_SUPPORTS
+RELATION_CHALLENGES         = cc_public.web.argument.RELATION_CHALLENGES
+RELATION_UPHOLDS            = cc_public.web.argument.RELATION_UPHOLDS
+RELATION_REJECTS            = cc_public.web.argument.RELATION_REJECTS
+RELATION_SPEAKS_FOR_CONCERN = cc_public.web.argument.RELATION_SPEAKS_FOR_CONCERN
+MAP_RELATION                = {ROLE_FOR:     RELATION_SUPPORTS,
+                               ROLE_AGAINST: RELATION_CHALLENGES,
+                               ROLE_UPHOLD:  RELATION_UPHOLDS,
+                               ROLE_REJECT:  RELATION_REJECTS}
 
 # An id made from a title keeps whole words, up to this many
 # characters after its prefix.
@@ -248,11 +248,11 @@ def decision_of(graph: Graph, request: Request) -> str:
     if request.kind == KIND_OPTION:
         list_decision = [request.target] if request.target.startswith(PREFIX_DECISION) else []
     elif request.kind == KIND_ANSWER:
-        list_decision = [id_decision for id_decision in item.targets(R_IS_ABOUT)
+        list_decision = [id_decision for id_decision in item.targets(RELATION_IS_ABOUT)
                       if request.target.startswith(PREFIX_ANNOTATION)
                       and id_decision.startswith(PREFIX_DECISION)]
     else:
-        list_decision = [id_decision for id_decision in item.targets(R_IS_OPTION_FOR)
+        list_decision = [id_decision for id_decision in item.targets(RELATION_IS_OPTION_FOR)
                       if request.target.startswith(PREFIX_OPTION)]
 
     if not list_decision:
@@ -330,12 +330,13 @@ def operations(graph: Graph, request: Request) -> list:
                  if request.text(key)}
 
     if request.kind == KIND_OPTION:
-        list_link = [[R_IS_OPTION_FOR, id_decision]]
+        list_link = [[RELATION_IS_OPTION_FOR, id_decision]]
     else:
-        list_link = [[R_IS_ABOUT, id_decision],
+        list_link = [[RELATION_IS_ABOUT, id_decision],
                      [MAP_RELATION[request.role], request.target]]
     if request.kind == KIND_ARGUMENT:
-        list_link += [[R_SPEAKS_FOR, id_concern] for id_concern in request.list_concern]
+        list_link += [[RELATION_SPEAKS_FOR_CONCERN, id_concern]
+                      for id_concern in request.list_concern]
 
     return [{'new': id_item, 'field': map_field, 'link': list_link}]
 
@@ -354,7 +355,7 @@ def _rule(graph:       Graph,
     """
 
     id_relation = MAP_RELATION[request.role]
-    id_other    = R_REJECTS if id_relation == R_UPHOLDS else R_UPHOLDS
+    id_other    = RELATION_REJECTS if id_relation == RELATION_UPHOLDS else RELATION_UPHOLDS
     reason      = request.text(KEY_REASON)
     existing    = ruling(graph, id_decision)
 

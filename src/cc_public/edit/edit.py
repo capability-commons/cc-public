@@ -108,8 +108,8 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # with one of these prefixes has its items in source files, where the
 # name of the file gives the id, so new does not make them.
 #
-ID_HELD           = 'relation_has_items_held_in_register'
-SET_PREFIX_SOURCE = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'lpp', 'file', 'shell'}
+RELATION_HAS_ITEMS_HELD_IN_REGISTER = 'relation_has_items_held_in_register'
+SET_PREFIX_SOURCE                   = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'lpp', 'file', 'shell'}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A
@@ -1275,10 +1275,11 @@ def _register(tree: Tree, id_type: str) -> str | None:
 
     """
 
-    set_inverse = {row[0] for row in tree.facts['inverse_relation'] if row[1] == ID_HELD}
+    set_inverse = {row[0] for row in tree.facts['inverse_relation']
+                   if row[1] == RELATION_HAS_ITEMS_HELD_IN_REGISTER}
 
     for (source, relation, target) in sorted(tree.facts['edge']):
-        if source == id_type and relation == ID_HELD:
+        if source == id_type and relation == RELATION_HAS_ITEMS_HELD_IN_REGISTER:
             return target
         if target == id_type and relation in set_inverse:
             return source
