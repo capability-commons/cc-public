@@ -12,14 +12,23 @@ title:                  SQL tables reused by the search
 brief:                  |
                         The search is one FTS5 table in the database
                         query sql already builds, and its expansion is
-                        SQL over the has_type and primary_edge tables.
-                        It adds no base relation, so the checks read
-                        the tree as fast as before.
+                        SQL over tables that database already holds:
+                        has_type, primary_edge and the derived
+                        decision_of and settles. It adds no base
+                        relation, so the checks read the tree as fast
+                        as before.
 description:            |
-                        pym_cc_public.graph.text is about 250 lines,
-                        most of them one SQL statement. item_text is
-                        filled only when a query is made; the facts
-                        that the checks use are unchanged.
+                        pym_cc_public.graph.text is 407 lines: six SQL
+                        statements, the code that fills item_text, and
+                        the code that widens a query by the terms of a
+                        concept (src/cc_public/graph/text.py).
+                        item_text is filled only when a query is made,
+                        by query sql, query text and query logic with
+                        --text (src/cc_public/cli/querying.py lines
+                        157-158 and 213-217;
+                        src/cc_public/graph/sql.py lines 84-85;
+                        src/cc_public/graph/text.py lines 393-398);
+                        the facts that the checks use are unchanged.
 
 edge:
 

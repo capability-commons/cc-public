@@ -17,16 +17,19 @@ brief:                  |
                         shown and a check against that record.
 description:            |
                         src/cc_public/graph/sql.py loads the graph
-                        with sqlite3.connect(':memory:'). sqlite3 is
+                        with sqlite3.connect(':memory:') (line 70) and
+                        fills item_text, an FTS5 table (lines 47-48,
+                        85), and src/cc_public/graph/text.py ranks it
+                        with bm25() for cctool query text. sqlite3 is
                         in the Python standard library; the pixi
                         python has SQLite 3.54.1 with FTS5 and bm25()
                         working (device VM, 2026-10-19). Runtime
                         dependencies today are click, clingo, htpy,
-                        jsonschema, referencing and ruamel.yaml
-                        (pyproject.toml). Assumption: the shown set
-                        must be kept until commit time, for example in
-                        a file in the worktree; nothing does this
-                        today.
+                        jsonschema, pyoxigraph, referencing and
+                        ruamel.yaml (pyproject.toml lines 42-48).
+                        Assumption: the shown set must be kept until
+                        commit time, for example in a file in the
+                        worktree; nothing does this today.
 
 edge:
 

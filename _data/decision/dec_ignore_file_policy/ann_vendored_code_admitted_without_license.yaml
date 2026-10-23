@@ -11,24 +11,30 @@ protective_mark:
 title:                  Vendored code admitted without its license
 brief:                  |
                         The whitelist admits source files under src/
-                        by extension but no LICENSE or NOTICE file
-                        there, so vendored code would be tracked
+                        by extension but no license or notice file
+                        there outside the static folder of the review
+                        pages, so vendored code would be tracked
                         without its license text.
 description:            |
                         git check-ignore -v reports
                         src/cc_public/vendor/foo.py as tracked by line
-                        92 and src/cc_public/vendor/LICENSE as ignored
-                        by line 37 (hypothetical paths, run on the
-                        clone, 2026-10-15). Only the root LICENSE and
-                        NOTICE are admitted (lines 68, 70). Apache-2.0
-                        section 4(a) and 4(d) and the MIT license
-                        require the license or notice to go with
-                        copies
+                        77 and src/cc_public/vendor/LICENSE as ignored
+                        by line 36 (hypothetical paths, run on a copy
+                        of the snapshot, git 2.43.0, 2026-10-23).
+                        Besides the root LICENSE and NOTICE (lines 64,
+                        65), the only license files admitted are those
+                        named LICENSE-* in a _static folder under src
+                        (line 85), which admits the license of the
+                        vendored ET Book fonts (see
+                        ann_vendored_fonts_keep_their_license_is_stale).
+                        Apache-2.0 section 4(a) and 4(d) and the MIT
+                        license require the license or notice to go
+                        with copies
                         (https://www.apache.org/licenses/LICENSE-2.0,
-                        https://opensource.org/license/mit). Nothing
+                        https://opensource.org/license/mit). No code
                         is vendored today; dependencies are declared
                         in pyproject and pixi (memory/MEMORY.md line
-                        31). ASSUMPTION: future tooling might copy in
+                        32). ASSUMPTION: future tooling might copy in
                         third-party code. The fix is one admit line.
 
 edge:

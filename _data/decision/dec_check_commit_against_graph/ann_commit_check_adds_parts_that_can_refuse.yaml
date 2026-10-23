@@ -17,21 +17,26 @@ brief:                  |
                         message parser alone.
 description:            |
                         src/cc_public/commit/change.py lines 66-74,
-                        85-86, 129-160. The evaluator changed to
-                        clingo in 6230e98, after the check was added.
-                        message check catches only ErrorGate and
-                        ErrorLogic (src/cc_public/cli/messaging.py
-                        lines 101-105), and extract.py turns no YAML
-                        or Python parse error into either (its only
-                        except clause, line 348, is for
-                        UnicodeDecodeError). A revert of a rename was
-                        refused within three hours of the check being
-                        added (a0a519f, after 7520f91). ASSUMPTION
-                        (from the code, not run): a file at HEAD that
-                        does not parse makes every later commit fail
-                        the hook until --no-verify is used, which
-                        AGENTS.md line 14 forbids to agents. The cost
-                        is lost time, not lost data.
+                        85-86, 131-139 and 156-161. The evaluator
+                        changed to clingo in 6230e98, after the check
+                        was added. message check catches only
+                        ErrorGate and ErrorLogic
+                        (src/cc_public/cli/messaging.py lines
+                        149-153), so any other fault of the layout
+                        printer or the evaluator stops the commit. A
+                        revert of a rename was refused within three
+                        hours of the check being added (a0a519f, after
+                        7520f91). A file that does not parse no longer
+                        stops later commits: the extractor keeps it as
+                        unreadable (src/cc_public/graph/extract.py
+                        lines 473-476). Tried 2026-10-23 on copies of
+                        the snapshot with one annotation made
+                        unparsable: a commit that breaks the file is
+                        refused as an unannounced removal of its item,
+                        and a commit from the broken tree passes
+                        whether it fixes the file or leaves it.
+                        AGENTS.md lines 82-83 forbid --no-verify. The
+                        cost is lost time, not lost data.
 
 edge:
 

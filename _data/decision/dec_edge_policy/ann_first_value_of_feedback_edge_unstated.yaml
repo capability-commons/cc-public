@@ -19,23 +19,32 @@ brief:                  |
                         step's result something the model states and a
                         check can hold.
 description:            |
-                        Sources:
-                        - The schema says a feedback edge's value
-                          comes from the invocation before, and says
-                          nothing of the first invocation.
-                          (_data/schema/sch_dataflow_graph.yaml lines
-                          33-35, 193-203)
-                        - The engine draft has the framework fill
-                          feedback buffers and prime them on reset, as
-                          Stableflow does.
-                          (_sources/axair-orchestrator/docs/component_interface.md
-                          lines 41-44)
-                        - The one dataflow graph in cc-public has a
-                          feedback edge.
-                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
-                          lines 125-137) Strength: moderate; a real
-                          gap in what the model states, but only one
-                          recorded graph has a feedback edge today.
+                        The schema says a feedback edge's value comes
+                        from the invocation before, and says nothing
+                        of the first invocation
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        33-35, 193-203). An interface can state an
+                        input optional, so that an invocation may run
+                        with no value there
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 447-451), and the unfed input check then
+                        lets it go unfed (src/cc_public/check/check.lp
+                        lines 3183-3188). The feedback input in the
+                        smoke test is optional
+                        (_data/interface_control_document/icd_system_controller.yaml
+                        line 85). That says the first value may be
+                        absent, not what it is, and nothing requires
+                        the target of a feedback edge to be optional.
+                        The engine draft has the framework fill
+                        feedback buffers and prime them on reset, as
+                        Stableflow does
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44). The one dataflow graph in
+                        cc-public has a feedback edge
+                        (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                        lines 125-137). Strength: moderate; a real gap
+                        in what the model states, but only one
+                        recorded graph has a feedback edge today.
 
 edge:
 

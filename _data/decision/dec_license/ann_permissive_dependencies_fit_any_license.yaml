@@ -10,28 +10,39 @@ protective_mark:
 
 title:                  Permissive dependencies fit either license
 brief:                  |
-                        Every dependency of cc-public is under a
-                        permissive license, under the GCC runtime
-                        exception, or (ld_impl, GPL-3.0-only) a build
-                        tool, so Apache-2.0 and MIT are equally open
-                        on this side.
+                        Every direct dependency of cc-public is under
+                        a permissive license. The locked environments
+                        also hold the GCC runtime under its exception,
+                        the ld_impl linker under GPL-3.0-only, and GPL
+                        and LGPL libraries that come with the Python
+                        builds of the slow test run, so Apache-2.0 and
+                        MIT are equally open on this side.
 description:            |
-                        Runtime dependencies: click, jsonschema and
-                        ruamel.yaml (pyproject.toml lines 39-41).
-                        Environment: clingo, python, pytest and ruff
-                        (pyproject.toml lines 57-61). PyPI gives click
-                        as BSD-3-Clause and jsonschema, its
-                        dependencies and ruamel.yaml as MIT
+                        Runtime dependencies: click, clingo, htpy,
+                        jsonschema, pyoxigraph, referencing and
+                        ruamel.yaml (pyproject.toml lines 42-48).
+                        Environment: clingo, jq, python, pytest,
+                        pytest-xdist and ruff (pyproject.toml lines
+                        66-71), and playwright from PyPI (line 63).
+                        PyPI gives click as BSD-3-Clause, htpy,
+                        jsonschema, referencing and ruamel.yaml as
+                        MIT, pyoxigraph as MIT OR Apache-2.0 and
+                        playwright as Apache-2.0
                         (https://pypi.org/pypi/<name>/json, read
-                        2026-10-15). clingo is MIT (pixi.lock lines
-                        191-203). The GPL-3.0 entries are ld_impl and
+                        2026-10-23). clingo, jq, pytest-xdist and ruff
+                        are MIT (pixi.lock lines 935, 1300, 2146,
+                        2634). The GPL-3.0 entries are ld_impl and
                         libgcc, libgomp and libstdcxx, the last three
-                        WITH GCC-exception-3.1 (pixi.lock lines 299,
-                        394, 404, 509). Dependencies are fetched by
-                        pixi, not copied into the repository.
-                        ASSUMPTION: these toolchain terms, including
-                        the plain GPL-3.0 of the ld_impl linker, place
-                        no condition on the license of cc-public
+                        WITH GCC-exception-3.1 (pixi.lock lines 1371,
+                        1510, 1520, 1770), and readline (lines 2517,
+                        2528, 2539). libnsl is LGPL-2.1-only and
+                        libxcrypt LGPL-2.1-or-later (lines 1596,
+                        1792). No entry is GPL-2.0-only. Dependencies
+                        are fetched by pixi, not copied into the
+                        repository. ASSUMPTION: these toolchain and
+                        system library terms, including the plain
+                        GPL-3.0 of the ld_impl linker and of readline,
+                        place no condition on the license of cc-public
                         source; not checked with counsel. Each new
                         dependency needs the same check.
 

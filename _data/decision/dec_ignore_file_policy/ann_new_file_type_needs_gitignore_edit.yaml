@@ -13,8 +13,10 @@ brief:                  |
                         Under the whitelist, a change that adds a new
                         kind of tracked file, or brings in a partner's
                         file in a new format, must also edit
-                        .gitignore. Every later edit to the file so
-                        far is such an admit rule.
+                        .gitignore. Every edit to the file through
+                        2026-10-14 was such an admit rule; later edits
+                        added more and removed rules for files that do
+                        not exist.
 description:            |
                         Six commits after bb8c338 change .gitignore,
                         and each adds, removes or changes an admit
@@ -24,13 +26,19 @@ description:            |
                         `!/AGENTS.md`, 653e172 `!/.githooks/*`,
                         6230e98 replaces `*.dl` with `*.lp` (git log
                         of .gitignore, tag pre_squash_20261014 and
-                        HEAD; 2026-10-13 to 2026-10-14). Data under
-                        _data is admitted only as json, xml or yaml
-                        (lines 79-87), so a .reqif or .csv file needs
-                        a new rule. ASSUMPTION: no partner has yet
-                        sent such a file. Each edit is one line. It
-                        grows with tooling, not with the number of
-                        data items of known types.
+                        HEAD; 2026-10-13 to 2026-10-14). Since then
+                        the review pages added four admit rules for
+                        their style sheet, script, fonts and font
+                        license (lines 82-85), and a cleanup removed
+                        admit and exclude rules for files that do not
+                        exist (diff of .gitignore at 89c74d8 against
+                        the snapshot at 9119fe46). Data under _data is
+                        now admitted only as yaml (line 72), so a
+                        .json, .xml, .reqif or .csv file needs a new
+                        rule. ASSUMPTION: no partner has yet sent such
+                        a file. Each edit is one line. It grows with
+                        tooling, not with the number of data items of
+                        known types.
 
 edge:
 

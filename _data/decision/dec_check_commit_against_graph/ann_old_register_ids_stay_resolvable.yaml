@@ -11,18 +11,23 @@ protective_mark:
 title:                  Old register ids kept resolvable after a rename
 brief:                  |
                         A renamed register entry must carry its old id
-                        as an alias, and the checks resolve references
-                        through aliases, so a link made before a
-                        rename still finds its item. The rule covers
-                        register entries only.
+                        as an alias, and the checks resolve an old id
+                        through it while asking that it be brought up
+                        to date, so a link made before a rename still
+                        finds its item. The rule covers register
+                        entries only.
 description:            |
-                        rename_without_alias, condition Holder != ""
+                        rename_without_alias, condition
+                        register_entry_key
                         (src/cc_public/commit/change.lp lines
-                        159-165). dangling_reference and
+                        291-296). dangling_reference and
                         dangling_mention accept an alias
-                        (src/cc_public/check/check.lp lines 236-239,
-                        466-472). alias is defined only in
-                        _data/schema/sch_register_entry.yaml line 68.
+                        (src/cc_public/check/check.lp lines 963-968,
+                        1621-1627), and outdated_reference and
+                        outdated_mention fail a reference or mention
+                        by an old id (lines 2035-2045, 2081-2085).
+                        alias is defined only in
+                        _data/schema/sch_register_entry.yaml line 67.
                         ASSUMPTION: a renamed item that is a whole
                         file has no field for its old id, so
                         references to it from outside the tree, such

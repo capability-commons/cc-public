@@ -19,33 +19,35 @@ brief:                  |
 description:            |
                         The first rule `*` ignores everything; files
                         are admitted only by `!` rules
-                        (repo/.gitignore lines 37, 49, 58-102). A
-                        souffle binary, libffi.so.7 from Ubuntu focal
-                        and repository tarballs sit in _tools/ and are
-                        recorded as gitignored (memory/MEMORY.md lines
-                        21, 31, 54), yet no line of .gitignore names
-                        _tools (grep). git check-ignore -v reports
+                        (repo/.gitignore lines 36, 48, 59-92). A
+                        souffle binary is kept in _tools/, which is
+                        recorded as gitignored, and repository
+                        tarballs have been put there (memory/MEMORY.md
+                        lines 32, 55; memory/review-tool.md lines 19,
+                        29), yet no line of .gitignore names _tools
+                        (grep). git check-ignore -v reports
                         _tools/souffle, _tools/libffi.so.7,
                         node_modules/x/index.js and a root notes.txt
-                        as ignored by line 37 (run on the clone,
-                        2026-10-15). In a scratch repository with this
-                        .gitignore, `git add .` adds an admitted yaml
-                        file and skips an unlisted file under _tools/
-                        and a stray notes.md (git 2.43.0, 2026-10-15).
-                        Under exclusions only, a path is tracked
-                        unless a pattern names it
+                        as ignored by line 36 (run on a copy of the
+                        snapshot, git 2.43.0, 2026-10-23). In a
+                        scratch repository with this .gitignore, `git
+                        add .` adds an admitted yaml file and skips an
+                        unlisted file under _tools/ and a stray
+                        notes.md (git 2.43.0, 2026-10-15). Under
+                        exclusions only, a path is tracked unless a
+                        pattern names it
                         (https://git-scm.com/docs/gitignore). The file
-                        already names caches and editor files for
-                        about a dozen tools (lines 111-152). No line
-                        names .DS_Store, Thumbs.db or desktop.ini, and
-                        git check-ignore -v reports all three as
-                        ignored by line 37 (2026-10-15);
-                        pyproject.toml line 52 declares the platforms
-                        osx-arm64 and linux-64. ASSUMPTION: macOS
-                        Finder and Windows Explorer write such files
-                        into folders they open. Grows with more tools,
-                        platforms and graph output. Merged from five
-                        advocates.
+                        already names caches, build output and editor
+                        files for about a dozen tools (lines 101-136).
+                        No line names .DS_Store, Thumbs.db or
+                        desktop.ini, and git check-ignore -v reports
+                        all three as ignored by line 36 (2026-10-23);
+                        pyproject.toml line 59 declares the platforms
+                        osx-arm64, osx-64 and linux-64. ASSUMPTION:
+                        macOS Finder and Windows Explorer write such
+                        files into folders they open. Grows with more
+                        tools, platforms and graph output. Merged from
+                        five advocates.
 
 edge:
 
