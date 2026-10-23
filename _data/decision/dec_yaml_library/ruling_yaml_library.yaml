@@ -1,0 +1,36 @@
+id_self:                ruling_yaml_library
+guid_self:              ruling_fd46b9a557b34950abe05fe5983bff4a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  ruamel.yaml in round-trip mode
+brief:                  |
+                        The data items are read with ruamel.yaml in
+                        round-trip mode, since one load gives the
+                        values with the line of each key, which the
+                        checks, the edits and the schema errors
+                        report, and it reads YAML 1.2 as JSON Schema
+                        expects and refuses a repeated key. PyYAML
+                        reads YAML 1.1, keeps the last of a repeated
+                        key and gives lines only on its nodes, so it
+                        would need more code of our own. A cold read
+                        about twice as slow and a single upstream
+                        maintainer are the accepted costs. Ruled by
+                        William Payne on 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_ruamel_round_trip
+    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_pyyaml
+    guid_target:        opt_3ce01cad603b4fd0a4d7e24c76474ffc
