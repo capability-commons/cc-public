@@ -16,29 +16,42 @@ brief:                  |
                         on does not exist yet.
 description:            |
                         Commit 7db4229 says the evaluation "is to be
-                        computed and never stored". check.lp has rules
-                        on rulings (settles, current_ruling,
-                        competing_rulings, unargued_driver) but none
-                        that evaluates arguments or compares an
-                        evaluation with a ruling
-                        (src/cc_public/check/check.lp lines 319-455;
-                        grep for acceptab, grounded, attack, defeat,
-                        rank in src finds nothing). Ranking appears
-                        only in prose (reg_concept.yaml line 513;
-                        reg_relation.yaml lines 298, 311). Effects by
+                        computed and never stored", and concept_ruling
+                        now says "No evaluator exists yet"
+                        (_data/register/reg_concept.yaml lines
+                        682-691). The rules on rulings check only the
+                        stored ruling: settles
+                        (src/cc_public/graph/derive.lp lines 115-121)
+                        and no_option_in_ruling,
+                        decisions_mixed_in_ruling,
+                        upholds_and_rejects, competing_rulings and
+                        unargued_driver (src/cc_public/check/check.lp
+                        lines 1185, 1221, 1296, 1467, 1536). None
+                        evaluates arguments or compares an evaluation
+                        with a ruling: grep for acceptab, grounded,
+                        attack and defeat in src finds nothing, and
+                        rank finds only the rank of a text search
+                        (src/cc_public/graph/text.py). The review
+                        pages shade each annotation by the net effect
+                        of its chain of supports and challenges, for
+                        display only (src/cc_public/web/light.py lines
+                        80-87). A ranking of concerns appears only in
+                        prose (reg_concept.yaml line 686;
+                        reg_relation.yaml line 334). Effects by
                         concern: a ruling can go stale with nothing to
                         report it (functional suitability); a reviewer
-                        must read the whole decision folder, 639 lines
-                        in 19 files for dec_cross_item_checks_engine
-                        (reviewability); the half has no reader, the
-                        pattern for which status was removed in
-                        44034ef (simplicity); the stated need has
-                        nothing that meets it (traceability); the
-                        evaluator, ranking and comparison are unbuilt
-                        and unestimated work (cost). The same gap
-                        falls on opt_computed_evaluation_only.
-                        ASSUMPTION: an evaluator can be written as
-                        clingo rules on the existing facts; not tried.
+                        must read the whole decision folder, 1009
+                        lines in 26 files for
+                        dec_cross_item_checks_engine (reviewability);
+                        the half has no reader, the pattern for which
+                        status was removed in 44034ef (simplicity);
+                        the stated need has nothing that meets it
+                        (traceability); the evaluator, ranking and
+                        comparison are unbuilt and unestimated work
+                        (cost). The same gap falls on
+                        opt_computed_evaluation_only. ASSUMPTION: an
+                        evaluator can be written as clingo rules on
+                        the existing facts; not tried.
 
 edge:
 

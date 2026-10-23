@@ -8,30 +8,29 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  No test of unparseable input
+title:                  No test of a file that is not UTF-8
 brief:                  |
-                        Each test breaks one thing in well-formed
-                        items, so no test shows whether the checker
-                        survives a file it cannot parse. A syntax
-                        error in one item may stop the whole check
-                        rather than be reported.
+                        The checker now reports a file it cannot parse
+                        as unreadable_file, and tests feed it a
+                        repeated key and a module that is not Python.
+                        No checker test feeds a YAML, Python or logic
+                        program file that is not UTF-8, so that path
+                        of the reader is untested.
 description:            |
-                        test_check.py lines 18-23 say each test "adds
-                        or breaks one thing"; the helpers _item and
-                        _replace write well-formed YAML (lines
-                        112-224). No checker test feeds a file it
-                        cannot parse; the one syntax error any test
-                        feeds is a YAML value given to cctool set
-                        (src/cc_public/cli/_test/test_editing.py lines
-                        117-120). The "malformed" test at
-                        test_check.py line 385 uses a well-formed file
-                        with a bad guid. The extractor calls YAML.load
-                        and ast.parse with no handler for a parse
-                        error (src/cc_public/graph/extract.py lines
-                        305, 322, 334, 388); the only handler is for
-                        UnicodeDecodeError (line 348). ASSUMPTION: one
-                        such file ends the check with a traceback; not
-                        run. The other option has the same gap.
+                        src/cc_public/check/_test/test_check.py lines
+                        303-320 feed the checker a document with a
+                        repeated key and a module that is not Python,
+                        and expect one unreadable_file row each. The
+                        reader turns a parse error into that row
+                        (src/cc_public/graph/extract.py lines
+                        1104-1105, 1144-1145) and does the same for a
+                        checked file that is not UTF-8 (lines
+                        770-781). No test writes such a file: the only
+                        bytes a checker test writes are to blob.bin,
+                        which is not a checked kind of file
+                        (test_check.py line 941). ASSUMPTION: the not
+                        UTF-8 path works; not run. The other option
+                        has the same gap.
 
 edge:
 

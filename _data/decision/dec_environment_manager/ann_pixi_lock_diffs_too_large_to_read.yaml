@@ -23,7 +23,8 @@ description:            |
                         change (git show --stat e232fb3, 21c315c,
                         afac39c, c464728, 5665ace). pixi install
                         writes the lock, and Will ran it
-                        (2026-10-13T20:50:13Z). There is no
+                        (2026-10-13T20:50:13Z). The lock has since
+                        grown to 2767 lines. There is no
                         .gitattributes, so the lock is not marked as
                         generated in diffs. Will calls the review
                         burden "huge (and practically impossible)"
@@ -33,11 +34,12 @@ description:            |
                         Mitigation: four of the five commits touch
                         pixi.lock only, so a reviewer can skip them.
                         ASSUMPTION: the lock can be trusted by
-                        checking it came from the reviewed manifest;
-                        nothing in the gate checks this (see
-                        ann_frozen_lock_makes_gate_runs_repeatable).
-                        The point grows with the tooling, not the
-                        graph.
+                        checking it came from the reviewed manifest.
+                        The hooks now run pixi run --locked, which
+                        refuses a lock that does not match the
+                        manifest (.githooks/pre-commit line 30; see
+                        ann_hooks_run_with_locked_is_stale). The point
+                        grows with the tooling, not the graph.
 
 edge:
 

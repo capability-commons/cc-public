@@ -8,29 +8,31 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  No fault test for the newest check
+title:                  No fault test for one check
 brief:                  |
                         No test plants the fault of the check
-                        supersession_across_issues, and nothing in the
-                        suite requires each check to have such a test.
+                        word_to_replace, and nothing in the suite
+                        requires each check to have such a test.
                         Neither option asks that every check be shown
                         to fire.
 description:            |
-                        check.lp shows 33 checks (#show lines);
+                        check.lp shows 71 checks (#show lines);
                         check.py adds schema_violation and
-                        unformatted_file (lines 48, 54).
-                        supersession_across_issues is declared and
-                        shown at check.lp lines 375-385 and came in
-                        commit 89c74d8 (HEAD, 2026-10-14). The name
-                        appears in no file under src/ but check.lp;
-                        every other shown check is named in some
-                        expected result in test_check.py. The suite
-                        tests that every check names its columns
-                        (test_check.py lines 614-618) but not that
-                        every check appears in some expected failure
-                        set. Maintainer's statement: "with a lot of
-                        test coverage, I can move faster and more
-                        confidently" (will-messages.md line 457,
+                        unformatted_file (src/cc_public/check/check.py
+                        lines 61, 67). The supersession check, now
+                        supersession_across_types (check.lp lines
+                        1399-1427), is tested at
+                        src/cc_public/check/_test/test_check.py lines
+                        428-432. word_to_replace (check.lp lines
+                        1630-1661) is named in no test file under src
+                        (grep -rw over test_*.py); every other shown
+                        check of check.lp and advise.lp is. The suite
+                        tests that every shown check is declared and
+                        worded (test_check.py lines 1068-1087) but not
+                        that every check appears in some expected
+                        failure set. Maintainer's statement: "with a
+                        lot of test coverage, I can move faster and
+                        more confidently" (will-messages.md line 457,
                         2026-10-14T07:22:55Z). ASSUMPTION: the check
                         works; it was not run against a planted fault.
                         A test comparing the #show names with the keys

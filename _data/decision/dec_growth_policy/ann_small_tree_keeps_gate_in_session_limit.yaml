@@ -10,28 +10,36 @@ protective_mark:
 
 title:                  Gate time within the session limit
 brief:                  |
-                        The small regrown tree keeps the commit gate
-                        near 75 seconds, inside the 180 second limit
-                        of a remote session, and every commit passes
-                        the check of record, so each is a known-good
-                        point.
+                        The commit gate takes about 78 seconds for a
+                        code commit and about 10 for a data-only one
+                        on the maintainer's machine, inside the 180
+                        second limit of a remote session, and every
+                        pushed commit passes the check of record, so
+                        each is a known-good point. Gate time grows
+                        with the tree, so a smaller tree keeps it
+                        there.
 description:            |
                         Device tool calls die at 180 s
-                        (memory/MEMORY.md line 45). The gate took
-                        about 75 s after the clingo switch (lines 47,
-                        54). The history check passes on all commits
-                        (line 55). The legacy tree is kept under tag
-                        baseline_20260918 (line 6), so the restart
-                        lost no data. ASSUMPTION: a gate over the
-                        legacy tree would take longer; its time is not
-                        recorded. The point weakens as the regrown
-                        tree grows. Most of the gate time is the test
-                        suite, which runs beside the whole-tree check
-                        and lint (src/cc_public/gate/gate.py lines
-                        64-66); the whole-tree check itself takes
-                        about 4.5 s (see
-                        ann_tree_size_sets_check_time), so tree size
-                        sets only part of the gate time.
+                        (memory/MEMORY.md line 46). On 2026-10-22 the
+                        gate took 2m13s on the maintainer's 2-CPU
+                        machine; after the caches and test marks
+                        approved that day, a code commit took 78 s and
+                        a data-only commit about 10 s with a warm
+                        store (memory/gate-speed.md). The history
+                        check passed on all commits when last recorded
+                        (memory/MEMORY.md line 55). The legacy tree is
+                        kept under tag baseline_20260918 (line 7), so
+                        the restart lost no data. ASSUMPTION: a gate
+                        over the legacy tree would take longer; its
+                        time is not recorded. The point weakens as the
+                        regrown tree grows: at e3a198e5 it holds 2,141
+                        YAML files, against 665 in the legacy tree.
+                        Most of the gate time is the test suite, which
+                        runs beside the whole-tree check and lint
+                        (src/cc_public/gate/gate.py lines 87-90); the
+                        check stage took 18 to 22 s on 2026-10-22
+                        (memory/gate-speed.md), so tree size sets only
+                        part of the gate time.
 
 edge:
 

@@ -11,28 +11,36 @@ protective_mark:
 title:                  Second gate run on an ordinary push
 brief:                  |
                         For a commit made the ordinary way, pre-commit
-                        has already gated its content and the push
+                        has already checked and linted its content,
+                        and tested it when it holds code, and the push
                         gates the same tip again. Path independence
-                        costs about one extra gate run per push.
+                        costs about one extra gate run per push, most
+                        of it a repeat.
 description:            |
-                        .githooks/pre-commit line 28 runs the gate;
+                        .githooks/pre-commit line 30 runs the gate;
                         .githooks/pre-push line 33 runs it again on
-                        each ref tip (auditing.py lines 95-96 and
-                        145-147). The gate takes about 75 s (memory
-                        MEMORY.md, "Clingo switch done"). Remote
-                        device tool calls die at 180 s (MEMORY.md,
-                        "Gate parallel"). ASSUMPTION: a push of 10
-                        commits from a remote session, about 35 s of
-                        history check plus 75 s of gate, is already
-                        about 110 s (about 120 to 130 s with the
-                        verifier's re-run figures). The sum adds a
-                        4-CPU container measurement to a figure from
-                        Will's 2-CPU VM. After a rebase the push gate
-                        is the only gate, so it cannot be dropped; a
-                        cache of passed gates keyed on tree hash would
-                        remove the repeat. ASSUMPTION: no such cache
-                        exists; none was found in gate.py. Adds the
-                        time of the repetition stated in
+                        each ref tip (src/cc_public/cli/auditing.py
+                        lines 96-99 and 148-150). The gate of a commit
+                        leaves out the tests marked prepush, and all
+                        tests when no code is staged
+                        (src/cc_public/gate/gate.py lines 74-79 and
+                        157-169); the gate of a push runs every test
+                        but the slow ones (lines 87-90), so part of
+                        the push gate is new work. The gate of a code
+                        commit takes about 78 s on Will's 2-CPU VM,
+                        and a push about 5 s per commit plus one full
+                        gate per ref (notes of 2026-10-22 on gate
+                        speed). Remote device tool calls die at 180 s
+                        (MEMORY.md, "Gate parallel"). ASSUMPTION: a
+                        push of 10 commits, about 50 s of history
+                        check plus 78 s of gate, takes about 130 s on
+                        that VM. After a rebase the push gate is the
+                        only gate, so it cannot be dropped. The gate
+                        of a commit keeps verdicts in a store, but the
+                        gate of a push uses none (gate.py lines 28-32
+                        and 141-144), and no cache of passed gates
+                        keyed on tree hash exists. Adds the time of
+                        the repetition stated in
                         ann_same_check_run_from_several_hooks.
 
 edge:

@@ -10,14 +10,16 @@ protective_mark:
 
 title:                  Hand restyles confirmed by no tool
 brief:                  |
-                        No tool produces the house layout, so a
-                        restyle is made by hand or by an agent, and
-                        only the tests and a full line by line read
-                        can confirm it changes nothing else. Under the
-                        common style a formatter check could confirm a
-                        pure layout diff, and black also checks that
-                        its output has the same syntax tree as its
-                        input.
+                        No tool produces the house layout of code, so
+                        a restyle of code is made by hand or by an
+                        agent, and only the tests and a full line by
+                        line read can confirm it changes nothing else.
+                        A commit titled Reformat is checked only up to
+                        the layout cctool format writes, which leaves
+                        code alone. Under the common style a formatter
+                        check could confirm a pure layout diff, and
+                        black also checks that its output has the same
+                        syntax tree as its input.
 description:            |
                         Sources: commit 09ac7a6 restyles check.py with
                         206 added and 95 removed lines, still 205 and
@@ -30,10 +32,20 @@ description:            |
                         commit as a new item type, a new schema and an
                         extractor change. The gate runs check, ruff
                         check and pytest and no formatter
-                        (src/cc_public/gate/gate.py lines 64-66); 161
-                        test functions exist under src at 89c74d8. The
-                        restyle commits carry a Claude co-author line,
-                        so a person must judge a model's layout.
+                        (src/cc_public/gate/gate.py lines 87-90); 161
+                        test functions existed under src at 89c74d8,
+                        and 471 on the snapshot of 2026-10-23. A
+                        commit titled Reformat fails if it changes the
+                        content of a file beyond what the layout
+                        printer changes
+                        (src/cc_public/commit/change.lp lines 395-400;
+                        src/cc_public/commit/change.py lines 145-161),
+                        and that printer lays out only YAML documents,
+                        docstrings and comment headers
+                        (src/cc_public/edit/layout.py lines 29-33), so
+                        a restyle of code cannot be titled Reformat.
+                        The restyle commits carry a Claude co-author
+                        line, so a person must judge a model's layout.
                         Black: "By default, Black performs an AST
                         safety check after formatting your code"
                         (https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html).

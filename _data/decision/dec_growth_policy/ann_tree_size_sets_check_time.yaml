@@ -14,26 +14,36 @@ brief:                  |
                         reading, validating and laying out each file,
                         not on the rules. Check time grows with the
                         data in the tree, so a small tree keeps it
-                        short.
+                        short, and a store of verdicts now spares the
+                        files that have not changed.
 description:            |
-                        cctool check at 89c74d8 takes 4.3 s, 4.4 s and
-                        4.6 s in three runs. Under cProfile (19.3 s in
-                        all) YAML loading takes 11.4 s, JSON Schema
-                        validation 9.0 s and the layout check 7.4 s
-                        (these overlap); the clingo evaluation takes
-                        0.69 s, about 4 percent (advocate measurements
-                        2026-10-15, cloud container with 4 CPUs;
-                        Will's VM has 2, memory/MEMORY.md line 45).
+                        Measured 2026-10-15 at 89c74d8: cctool check
+                        took 4.3 s, 4.4 s and 4.6 s in three runs, and
+                        under cProfile the clingo evaluation took
+                        about 4 percent (advocate measurements, cloud
+                        container with 4 CPUs). On 2026-10-22 the
+                        check stage took 18 to 22 s on the
+                        maintainer's 2-CPU machine: layout about 40
+                        percent, schema validation about 30 percent,
+                        extraction about 28 percent and clingo about 3
+                        percent (memory/gate-speed.md). At e3a198e5,
+                        with no store, one review of the tree took 97
+                        s wall and 61 s CPU in a shared 4-CPU
+                        container (check.review, measured 2026-10-23).
                         check reads, validates and lays out every file
-                        on each call (src/cc_public/check/check.py
-                        lines 66-82). The tree at 89c74d8 holds 75
-                        tracked YAML files; the legacy tree held 665
-                        (note cc-public-session-context.md line 48).
-                        ASSUMPTION: per-file cost is roughly constant,
-                        so a check over a legacy-sized tree takes
-                        about nine times as long. Legacy file sizes
-                        are not recorded, and the legacy tree used a
-                        different checker.
+                        (src/cc_public/check/check.py lines 161-168);
+                        with a store set, as the gate of a commit sets
+                        it, layout and schema verdicts are reused for
+                        files with the same digest
+                        (src/cc_public/check/store.py lines 14-35).
+                        The tree at 89c74d8 held 75 tracked YAML
+                        files; at e3a198e5 it holds 2,141, of which
+                        1,986 are under _data/decision, against 665 in
+                        the legacy tree (note
+                        cc-public-session-context.md line 48).
+                        ASSUMPTION: per-file cost is roughly constant.
+                        Legacy file sizes are not recorded, and the
+                        legacy tree used a different checker.
 
 edge:
 

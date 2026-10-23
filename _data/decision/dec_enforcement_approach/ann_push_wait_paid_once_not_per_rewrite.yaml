@@ -20,28 +20,30 @@ description:            |
                         .githooks/pre-push line 33 runs "cctool
                         history check --gate --pre-push". It checks
                         message and change per commit sent
-                        (src/cc_public/cli/auditing.py lines 122-125)
+                        (src/cc_public/cli/auditing.py lines 125-128)
                         and runs the gate once per ref tip
-                        (auditing.py lines 145-147). The gate takes
-                        about 75 s on Will's 2-CPU VM (memory
-                        MEMORY.md, "Clingo switch done"). pre-commit
-                        runs the full gate per commit
-                        (.githooks/pre-commit line 28). Measured for
-                        this note in a scratch clone at 89c74d8 on a
-                        4-CPU container, not Will's machine: history
-                        check without --gate took 36.8 s for the last
-                        10 commits and 7.4 s for one. A verifier
-                        re-run in its own scratch clone of 89c74d8
-                        (4-CPU container under load) took 41 to 56 s
-                        for the last 10 commits and 5.5 s for one. An
-                        amend is a git commit and already runs the
-                        commit hooks, so it adds no gate run.
-                        ASSUMPTION: a rebase or squash guard would run
-                        the gate and the message check for each
-                        replayed commit, so a rebase of 10 commits
-                        would cost about 10 x 75 s, some 12 minutes,
-                        against about 75 s plus 35 s at push. Grows at
-                        tenfold, since gate cost grows with the tree.
+                        (auditing.py lines 148-150). The gate of a
+                        code commit takes about 78 s on Will's 2-CPU
+                        VM, and a push about 5 s per commit plus one
+                        full gate per ref (notes of 2026-10-22 on gate
+                        speed). pre-commit runs the gate on each
+                        commit (.githooks/pre-commit line 30), without
+                        the tests marked prepush, and with no tests
+                        when no code is staged
+                        (src/cc_public/gate/gate.py lines 157-169).
+                        Measured 2026-10-15 in scratch clones of
+                        89c74d8 on a 4-CPU container, not Will's
+                        machine: history check without --gate took 31
+                        to 56 s for the last 10 commits and 5.5 to 7.4
+                        s for one. An amend is a git commit and
+                        already runs the commit hooks, so it adds no
+                        gate run. ASSUMPTION: a rebase or squash guard
+                        would run the gate and the message check for
+                        each replayed commit, so a rebase of 10 code
+                        commits would cost about 10 x 78 s, some 13
+                        minutes, against about 78 s plus 50 s at push.
+                        Grows at tenfold, since gate cost grows with
+                        the tree.
 
 edge:
 

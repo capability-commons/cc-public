@@ -16,15 +16,18 @@ brief:                  |
                         case and the fault cases share one form.
 description:            |
                         check() returns a dict from check name to
-                        rows, passing checks left out
-                        (src/cc_public/check/check.py lines 56,
-                        66-80). Fault tests assert equality with one
-                        literal (test_check.py lines 239-241,
-                        244-246); the sound case uses check(DIR_REPO)
-                        == {} (lines 227-228). ASSUMPTION: asking only
-                        for some failure would need a second form, a
-                        membership test on one key; no code for it
-                        exists.
+                        rows, the checks that pass left out
+                        (src/cc_public/check/check.py lines 98-128,
+                        291-292). 90 of the 149 tests in
+                        src/cc_public/check/_test/test_check.py
+                        compare that dict, less layout failures, with
+                        one literal, such as lines 403-408; 27 of them
+                        expect {}. The sound case is check(DIR_REPO)
+                        == {} (lines 248-250), marked slow, so the
+                        gate leaves it to its check stage. A second
+                        form now exists beside the first: 41 tests
+                        read the rows of one check only, and one asks
+                        only whether a check fired at all (line 1509).
 
 edge:
 

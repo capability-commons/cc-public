@@ -11,44 +11,54 @@ protective_mark:
 title:                  Change check cost paid on every commit
 brief:                  |
                         Checking one commit item against its parent
-                        takes about 3 to 8 seconds at 129 files, on
-                        each commit and on each commit pushed. Free
-                        text messages run no change check and pay
-                        nothing.
+                        took about 3 to 8 seconds at 129 files on
+                        2026-10-15. On the tree of 2026-10-22 it takes
+                        about 5 s a commit on the maintainer's machine
+                        and about 19 s in a cloud copy, on each commit
+                        and on each commit pushed. Free text messages
+                        run no change check and pay nothing.
 description:            |
                         The commit-msg hook runs cctool message check
                         (.githooks/commit-msg line 29), which checks
                         the staged tree against HEAD
-                        (src/cc_public/commit/ change.py lines 59-74);
+                        (src/cc_public/commit/change.py lines 59-74);
                         the pre-push hook runs cctool history check on
                         each commit the remote lacks
                         (.githooks/pre-push line 33); with no range
                         the history check covers the whole history
-                        (src/cc_public/cli/auditing.py lines 77-78).
-                        Each check copies both trees, extracts both
-                        graphs and lays out every file of both
-                        (src/cc_public/commit/history.py lines
-                        105-121; src/cc_public/commit/change.py lines
-                        115-123 and 129-161). Measured by the
-                        performance efficiency advocate, 2026-10-15,
-                        at 89c74d8 (33 commits, 129 files, 660 KB),
-                        single runs without pixi start-up:
-                        history.check median 3.07 s, slowest 6.62 s,
-                        whole history 114.6 s. Re-run by the verifier,
-                        2026-10-15, in a fresh clone at 89c74d8 with
-                        the same scripts: median 3.95 s, slowest 7.69
-                        s, whole history 140.6 s. Will has acted on
-                        gate speed before: 5836f80 and 93a1428, both
-                        2026-10-14. ASSUMPTION: the cost grows about
-                        linearly with file count, so a tenfold tree
-                        puts one check near 30 s, which would invite
-                        --no-verify. The pre-push hook checks only
-                        unpushed commits, which bounds day-to-day
-                        cost. Bears equally on any alternative that
-                        keeps the change check. Not the same point as
-                        the argument, in the decision on the form of
-                        commit titles, that finer commits multiply
-                        this cost.
+                        (src/cc_public/cli/auditing.py lines 80-81 and
+                        95). Each check copies both trees and extracts
+                        both graphs (src/cc_public/commit/history.py
+                        lines 116-133; src/cc_public/commit/change.py
+                        lines 131-132), and since 5acf7c2 it lays out
+                        only the files whose bytes differ (change.py
+                        lines 145-161). Measured by the performance
+                        efficiency advocate, 2026-10-15, at 89c74d8
+                        (33 commits, 129 files, 660 KB), single runs
+                        without pixi start-up: history.check median
+                        3.07 s, slowest 6.62 s, whole history 114.6 s.
+                        Re-run by the verifier, 2026-10-15, in a fresh
+                        clone at 89c74d8: median 3.95 s, slowest 7.69
+                        s, whole history 140.6 s. On 2026-10-22, after
+                        the rule on retyped guids was fixed, a push
+                        took about 5 s a commit on the maintainer's
+                        machine. Measured 2026-10-23 in a cloud copy
+                        of the snapshot (about 2270 files, 2591
+                        items), check_trees over two copies of the
+                        tree took 18.8 and 19.6 s, single runs without
+                        the git copy or pixi start-up; one cold
+                        extraction of the tree alone took 17.6 s. So
+                        the cost is about one extraction of the whole
+                        tree, and grows with the tree, not with the
+                        commit. Will has acted on gate speed before:
+                        5836f80 and 93a1428, both 2026-10-14, and the
+                        changes of 2026-10-22. The pre-push hook
+                        checks only unpushed commits, which bounds
+                        day-to-day cost. Bears equally on any
+                        alternative that keeps the change check. Not
+                        the same point as the argument, in the
+                        decision on the form of commit titles, that
+                        finer commits multiply this cost.
 
 edge:
 

@@ -10,22 +10,25 @@ protective_mark:
 
 title:                  Small development-only test runner
 brief:                  |
-                        pytest is a development dependency that pulls
-                        in seven packages of its own, all under
-                        permissive licenses. Use of its API grows with
-                        the suite.
+                        pytest and pytest-xdist are development
+                        dependencies that pull in eight packages of
+                        their own, all under permissive licenses. Use
+                        of the pytest API grows with the suite.
 description:            |
-                        pytest is in the pixi environment only, not in
-                        the runtime dependencies (pyproject.toml lines
-                        39-41 and 57-61). pytest 9.1.1 is MIT and
-                        depends on colorama, pygments, iniconfig,
-                        packaging, pluggy, tomli and exceptiongroup,
-                        which nothing else in pixi.lock needs
-                        (pixi.lock lines 639-657). Their licenses are
-                        BSD-3-Clause, BSD-2-Clause, MIT, Apache-2.0
-                        and "MIT and PSF-2.0". The tests call
-                        pytest.fixture, pytest.mark.parametrize and
-                        pytest.raises 21 times across 8 files.
+                        pytest and pytest-xdist are in the pixi
+                        environment only, not in the runtime
+                        dependencies (pyproject.toml lines 42-48 and
+                        65-71). pytest 9.1.1 is MIT and depends on
+                        colorama, pygments, iniconfig, packaging,
+                        pluggy, tomli and exceptiongroup (pixi.lock
+                        lines 2116-2136); pytest-xdist 3.8.0 is MIT
+                        and depends on execnet, MIT (lines 2137-2150,
+                        1142-1147). Nothing else in pixi.lock needs
+                        these eight. The licenses of the first seven
+                        are BSD-3-Clause, BSD-2-Clause, MIT,
+                        Apache-2.0 and "MIT and PSF-2.0". The tests
+                        call pytest.fixture, pytest.mark.parametrize
+                        and pytest.raises 46 times across 15 files.
                         ASSUMPTION: the other option would keep pytest
                         too, so this point does not separate them.
 

@@ -12,23 +12,28 @@ title:                  One manifest for every tool
 brief:                  |
                         Under pixi one file and its lock declare
                         Python, the libraries, the linter, the test
-                        runner and the rule engine, so a tool change
-                        touches two files. A tool on the PATH needs
-                        its own setup steps, kept outside the
-                        repository.
+                        runner, jq and the rule engine, so a tool
+                        change touches two files. A tool on the PATH
+                        needs its own setup steps, kept outside the
+                        repository. git and the Chromium of the
+                        browser tests still stay outside the lock.
 description:            |
-                        pyproject.toml lines 39-41 and 57-61 declare
-                        every dependency; pixi.lock pins them and is
-                        committed (.gitignore line 71, commit
+                        pyproject.toml lines 42-48 and 61-71 declare
+                        the dependencies; pixi.lock pins them and is
+                        committed (.gitignore line 66, commit
                         e232fb3). Adding clingo changed one line of
                         pyproject.toml and 134 lines of pixi.lock (git
-                        show --stat 5665ace). README.md lines 32-36
-                        give one install command. While Souffle sat
-                        outside pixi it needed a hand-copied binary in
-                        a gitignored _tools folder, a libffi.so.7 from
-                        Ubuntu 20.04, LD_LIBRARY_PATH and a SOUFFLE
-                        variable read in three places
-                        (memory/MEMORY.md line 21;
+                        show --stat 5665ace). README.md lines 58-64
+                        give the install and run commands; one of
+                        them, pixi run browsers, downloads Chromium
+                        for the browser tests outside the lock
+                        (pyproject.toml line 79). git is taken from
+                        the PATH (src/cc_public/gate/gate.py line
+                        182). While Souffle sat outside pixi it needed
+                        a hand-copied binary in a gitignored _tools
+                        folder, a libffi.so.7 from Ubuntu 20.04,
+                        LD_LIBRARY_PATH and a SOUFFLE variable read in
+                        three places (memory/MEMORY.md line 21;
                         ann_souffle_is_outside_the_locked_environment).
                         ASSUMPTION: future tools are on conda-forge or
                         PyPI; each tool on neither brings a PATH setup

@@ -14,19 +14,25 @@ brief:                  |
                         that flag likely bugs and keep functions
                         small, and the gate runs them before every
                         commit. Default ruff 0.16 already selects most
-                        of these families, but not C90 or ARG, so the
-                        gap is narrow.
+                        of these families, but not C90, ARG or SLF,
+                        nor the size limits of PL, so the gap is
+                        narrow.
 description:            |
-                        Sources: pyproject.toml lines 92-112 (E, W, F,
-                        B, C90, N, PL, UP, SIM, RET, ARG, S, DTZ, PIE,
-                        FURB and others; max-complexity 11); ruff
-                        0.16.0 widened the default selection from E4,
-                        E7, E9 and F to several hundred rules, which
-                        include E, W, F, B, N, PL, UP, SIM, RET, S,
-                        DTZ, PIE and FURB but not C90, ARG or SLF
+                        Sources: pyproject.toml lines 131-151 (E, W,
+                        F, B, C90, N, PL, UP, SIM, RET, ARG, S, DTZ,
+                        PIE, FURB, SLF, RUF100 and PTH119;
+                        max-complexity 11; max-branches 10,
+                        max-statements 40); ruff 0.16.0 widened the
+                        default selection from E4, E7, E9 and F to
+                        several hundred rules, which include E, W, F,
+                        B, N, UP, SIM, RET, S, DTZ, PIE and FURB but
+                        not C90, ARG or SLF
                         (https://docs.astral.sh/ruff/default-rules/);
-                        the pin ">=0.16.6,<0.17" means the new default
-                        applies; src/cc_public/gate/gate.py line 65;
+                        ruff check --isolated --show-settings with
+                        ruff 0.16.8 lists no C901, no ARG, no SLF and
+                        no PLR0912 to PLR0917 rule; the pin
+                        ">=0.16.6,<0.17" means the new default
+                        applies; src/cc_public/gate/gate.py line 88;
                         commit 09ac7a6 message (the limits forced
                         _walk to be split). The rule selection is
                         separable from the layout, so this holds only
