@@ -1,0 +1,52 @@
+id_self:                ann_image_definition_is_reviewed_once
+guid_self:              ann_14c5e83046044c819c0b154e1cdc88e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host setup reviewed as one file
+brief:                  |
+                        What the bot asks of its host is written in
+                        one container definition, reviewed like any
+                        other file. A VM gathers changes made by hand
+                        that no review sees.
+description:            |
+                        Under the container option the bot is one
+                        image on each host
+                        [opt_host_container_with_volume, brief]; under
+                        the plain process option it is set up by a
+                        script on a VM the data owner provides
+                        [opt_host_plain_process_on_vm, brief].
+                        ASSUMPTION: the image is built from a
+                        definition kept in the repository, so a change
+                        to it goes through review. ASSUMPTION: a VM
+                        that runs for months is changed by hand at
+                        times, and those changes are not in the
+                        script. Holds at ten times the size: yes,
+                        since each deployment's VM drifts on its own.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_host
+    guid_target:        dec_83b0d4aa49f44c899aca3fc74dca2e5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_host_container_with_volume
+    guid_target:        opt_63d92a51b0d0452eac529ba89d9d2294
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_host_plain_process_on_vm
+    guid_target:        opt_ec3e4e94f5cf4b55bf27f55459462de8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
