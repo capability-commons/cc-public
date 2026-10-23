@@ -418,12 +418,11 @@ def _span_header(list_line: list[str], mark: str) -> tuple[int | None, int | Non
     """
     Return the indices of the lines that open and close the YAML document
     in the comment header the lines open with, or None if there is none.
-    A line that names an interpreter may come before the header.
+    A line that is_lead may come before the header.
 
     """
 
-    start = int(bool(list_line) and list_line[0].startswith(
-                                            cc_public.graph.extract.MARK_SHEBANG))
+    start = int(bool(list_line) and cc_public.graph.extract.is_lead(list_line[0]))
     end   = start
     while end < len(list_line) and list_line[end].startswith(mark):
         end += 1

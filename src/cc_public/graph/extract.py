@@ -134,20 +134,28 @@ DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
 SUFFIX_PROGRAM    = '.lp'
+SUFFIX_SCRIPT     = '.js'
+SUFFIX_STYLE      = '.css'
 
 # A YAML document opens with this line and closes with the next. In a
 # comment header each line also begins with the comment marker: # in
-# most files, and % in a logic program.
+# most files, % in a logic program, // in a script, and * in a style
+# sheet, whose comments are blocks.
 #
 LINE_OPEN         = '---'
 LINE_CLOSE        = '...'
 MARK_COMMENT      = '#'
-MAP_MARK_COMMENT  = {SUFFIX_PROGRAM: '%'}
+MAP_MARK_COMMENT  = {SUFFIX_PROGRAM: '%',
+                     SUFFIX_SCRIPT:  '//',
+                     SUFFIX_STYLE:   ' *'}
 
-# A script may open with a line that names its interpreter. Its comment
-# header then opens on the line after.
+# A script may open with a line that names its interpreter, and a style
+# sheet with the line that opens its comment block, which the line after
+# the header closes. The comment header then opens on the line after.
 #
 MARK_SHEBANG      = '#!'
+LINE_BLOCK_OPEN   = '/*'
+LINE_BLOCK_CLOSE  = ' */'
 
 # Directories that hold no items: version control, environments,
 # caches and local tools.
@@ -889,7 +897,7 @@ def predicates(text: str, relative: pathlib.Path) -> list[tuple]:
     list_found = []
 
     for (first, name, document) in blocks(text, mark_comment(relative)):
-        if first == 0 or (first == 1 and text.startswith(MARK_SHEBANG)):
+        if first == 0 or (first == 1 and is_lead(text.split('\n', 1)[0])):
             continue
         if name is None:
             raise ErrorRead('The YAML document in this comment is not followed by the '
@@ -1178,12 +1186,23 @@ def mark_comment(relative: pathlib.Path) -> str:
 
 
 # -----------------------------------------------------------------------------
+def is_lead(line: str) -> bool:
+    """
+    Return True if line may come before a comment header: a line that
+    names an interpreter, or one that opens a comment block.
+
+    """
+
+    return line.startswith(MARK_SHEBANG) or line.rstrip() == LINE_BLOCK_OPEN
+
+
+# -----------------------------------------------------------------------------
 def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int]:
     """
     Return the YAML document in the comment header that the lines open
     with, each line beginning with mark, or None if they do not open
     with one, and the line of the file that its first line is on. A
-    line that names an interpreter may come before the header.
+    line that is_lead may come before the header.
 
     """
 
@@ -1192,7 +1211,7 @@ def _header(iter_line: typing.Iterator[str], mark: str) -> tuple[typing.Any, int
 
     for line in iter_line:
         text = line.rstrip('\n')
-        if base == 1 and (not list_line) and text.startswith(MARK_SHEBANG):
+        if base == 1 and (not list_line) and is_lead(text):
             base = 2
             continue
         if not text.startswith(mark):

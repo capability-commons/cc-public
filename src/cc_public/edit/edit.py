@@ -303,7 +303,8 @@ def header(tree:       Tree,
     """
     Return the edit that gives the file at relative a new item, at its
     head: in its module docstring if it is a python module, and in a
-    comment header if not, after any line that names an interpreter.
+    comment header if not, after any line that names an interpreter or
+    opens a comment block.
     The file is made if there is none.
 
     The id of a python module or logic program file follows from its
@@ -339,10 +340,25 @@ def header(tree:       Tree,
                  *cc_public.edit.layout.dump(map_field, 0),
                  '', cc_public.graph.extract.LINE_CLOSE]
     text      = tree.text(relative) if relative in tree.map_document else ''
+
+    if path.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
+        _refuse_docstring(text, relative)
+
+    return {relative: _format('\n'.join(_with_header(path, list_doc, text)), relative)}
+
+
+# -----------------------------------------------------------------------------
+def _with_header(path: pathlib.Path, list_doc: list[str], text: str) -> list[str]:
+    """
+    Return the lines of text, the file at path, with the lines of the
+    YAML document list_doc as its header, laid out as header says.
+
+    """
+
     list_line = text.split('\n') if text else []
     list_head = []
 
-    if list_line and list_line[0].startswith(cc_public.graph.extract.MARK_SHEBANG):
+    if list_line and cc_public.graph.extract.is_lead(list_line[0]):
         list_head = [list_line.pop(0)]
     while list_line and not list_line[0].strip():
         list_line.pop(0)
@@ -351,7 +367,6 @@ def header(tree:       Tree,
     # as a definition is, and a comment header by one.
     #
     if path.suffix == cc_public.graph.extract.SUFFIX_PYTHON:
-        _refuse_docstring(text, relative)
         list_new   = [QUOTE_DOCSTRING, *list_doc, QUOTE_DOCSTRING]
         list_blank = ['', '']
     else:
@@ -359,9 +374,18 @@ def header(tree:       Tree,
         list_new   = [mark + (' ' + line if line else '') for line in list_doc]
         list_blank = ['']
 
-    list_new = [*list_head, *list_new, *([*list_blank, *list_line] if list_line else [''])]
+    # A style sheet holds its header in a comment block: in the block it
+    # opens with, set apart from the rest of it by a bare marker, or in a
+    # block of its own.
+    #
+    if path.suffix == cc_public.graph.extract.SUFFIX_STYLE:
+        if list_head:
+            list_blank = [mark]
+        else:
+            list_head  = [cc_public.graph.extract.LINE_BLOCK_OPEN]
+            list_new  += [cc_public.graph.extract.LINE_BLOCK_CLOSE]
 
-    return {relative: _format('\n'.join(list_new), relative)}
+    return [*list_head, *list_new, *([*list_blank, *list_line] if list_line else [''])]
 
 
 # -----------------------------------------------------------------------------
