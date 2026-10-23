@@ -56,7 +56,7 @@ import cc_public.web.argument
 
 PREFIX_INTERFACE  = 'icd_'
 PREFIX_MEMBER     = 'icm_'
-R_REALIZES        = 'relation_realizes'
+RELATION_REALIZES = 'relation_realizes'
 KEY_ID_SELF       = cc_public.web.argument.KEY_ID_SELF
 KEY_EDGE          = cc_public.web.argument.KEY_EDGE
 KEY_PARAMETER     = 'parameter'
@@ -452,7 +452,7 @@ def _member(graph: Graph, code: _Code, group: str, name: str, node: dict) -> Mem
     """
 
     id_self       = node[KEY_ID_SELF]
-    list_realizer = graph.sources(R_REALIZES, id_self)
+    list_realizer = graph.sources(RELATION_REALIZES, id_self)
     id_function   = next((id_item for id_item in list_realizer if id_item in code.map_name
                           or id_item in code.map_returns), None)
     stated        = code.map_stated.get(id_self, {})

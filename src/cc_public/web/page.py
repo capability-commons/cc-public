@@ -146,25 +146,25 @@ FILE_SCRIPT       = 'review.js'
 CSS_MUTES         = cc_public.web.light.CSS_MUTES
 CSS_FADES         = cc_public.web.light.CSS_FADES
 
-MARK_FOR          = cc_public.web.light.MARK_FOR
-MARK_AGAINST      = cc_public.web.light.MARK_AGAINST
-MARK_NONE         = '·'
-MARK_PREVIOUS     = '←'
-MARK_NEXT         = '→'
+GLYPH_FOR         = cc_public.web.light.GLYPH_FOR
+GLYPH_AGAINST     = cc_public.web.light.GLYPH_AGAINST
+GLYPH_NONE        = '·'
+GLYPH_PREVIOUS    = '←'
+GLYPH_NEXT        = '→'
 
 ROLE_FOR          = 'for'
 ROLE_AGAINST      = 'against'
-MAP_ROLE          = {cc_public.web.argument.R_SUPPORTS:   ROLE_FOR,
-                     cc_public.web.argument.R_CHALLENGES: ROLE_AGAINST}
+MAP_ROLE          = {cc_public.web.argument.RELATION_SUPPORTS:   ROLE_FOR,
+                     cc_public.web.argument.RELATION_CHALLENGES: ROLE_AGAINST}
 
-R_HAS_SUBJECT     = cc_public.requirement.compose.R_HAS_SUBJECT
-R_HAS_PROCESS     = cc_public.requirement.compose.R_HAS_PROCESS
-R_TO_PARENT       = cc_public.requirement.review.R_TRACES_TO_PARENT
-R_TO_SOURCE       = cc_public.requirement.review.R_TRACES_TO_SOURCE
-R_SUPERSEDES      = 'relation_supersedes'
-COLUMN_REALIZED   = cc_public.web.contract.COLUMN_REALIZED
-COLUMN_RETURNS    = cc_public.web.contract.COLUMN_RETURNS
-AGREES            = cc_public.web.contract.AGREES
+RELATION_HAS_SUBJECT      = cc_public.requirement.compose.RELATION_HAS_SUBJECT
+RELATION_HAS_PROCESS      = cc_public.requirement.compose.RELATION_HAS_PROCESS
+RELATION_TRACES_TO_PARENT = cc_public.requirement.review.RELATION_TRACES_TO_PARENT
+RELATION_TRACES_TO_SOURCE = cc_public.requirement.review.RELATION_TRACES_TO_SOURCE
+RELATION_SUPERSEDES       = 'relation_supersedes'
+COLUMN_REALIZED           = cc_public.web.contract.COLUMN_REALIZED
+COLUMN_RETURNS            = cc_public.web.contract.COLUMN_RETURNS
+AGREES                    = cc_public.web.contract.AGREES
 
 # How the mark of each verdict of the contract reads.
 #
@@ -190,43 +190,43 @@ MAP_CONDITION     = {'logic': 'a logical condition',
 # How the decision list shows its decisions and the orders it can take, the
 # first of each the default.
 #
-KEY_LAYOUT        = 'show'
-KEY_SORT          = 'sort'
-LAYOUT_FOLDED     = 'folded'
-LAYOUT_OPEN       = 'open'
-LAYOUT_COUNTS     = 'counts'
-LIST_LAYOUT       = [LAYOUT_FOLDED, LAYOUT_OPEN, LAYOUT_COUNTS]
-MAP_LAYOUT_NAME   = {LAYOUT_FOLDED: 'Titles',
-                     LAYOUT_OPEN:   'Questions and answers',
-                     LAYOUT_COUNTS: 'Before'}
-SORT_COMPONENT    = 'component'
-SORT_STANDING     = 'standing'
-SORT_SIZE         = 'size'
-SORT_TITLE        = 'title'
-LIST_SORT         = [SORT_COMPONENT, SORT_STANDING, SORT_SIZE, SORT_TITLE]
-MAP_SORT_NAME     = {SORT_COMPONENT:  'Component',
-                     SORT_STANDING: 'Standing',
-                     SORT_SIZE:     'Most argued',
-                     SORT_TITLE:    'Title'}
-STANDING_UPHELD   = cc_public.web.argument.STANDING_UPHELD
-STANDING_REJECTED = cc_public.web.argument.STANDING_REJECTED
-STANDING_OPEN     = cc_public.web.argument.STANDING_OPEN
-MAP_STANDING_GLYPH = {STANDING_UPHELD:   '✓',
-                      STANDING_REJECTED: '✗',
-                      STANDING_OPEN:     '○'}
-DECISION_OPEN     = 'open'
-DECISION_NARROWED = 'narrowed'
-DECISION_SETTLED  = 'settled'
+KEY_LAYOUT             = 'show'
+KEY_SORT               = 'sort'
+LAYOUT_FOLDED          = 'folded'
+LAYOUT_OPEN            = 'open'
+LAYOUT_COUNTS          = 'counts'
+LIST_LAYOUT            = [LAYOUT_FOLDED, LAYOUT_OPEN, LAYOUT_COUNTS]
+MAP_LAYOUT_NAME        = {LAYOUT_FOLDED: 'Titles',
+                          LAYOUT_OPEN:   'Questions and answers',
+                          LAYOUT_COUNTS: 'Before'}
+SORT_COMPONENT         = 'component'
+SORT_STANDING          = 'standing'
+SORT_SIZE              = 'size'
+SORT_TITLE             = 'title'
+LIST_SORT              = [SORT_COMPONENT, SORT_STANDING, SORT_SIZE, SORT_TITLE]
+MAP_SORT_NAME          = {SORT_COMPONENT:  'Component',
+                          SORT_STANDING: 'Standing',
+                          SORT_SIZE:     'Most argued',
+                          SORT_TITLE:    'Title'}
+STANDING_UPHELD        = cc_public.web.argument.STANDING_UPHELD
+STANDING_REJECTED      = cc_public.web.argument.STANDING_REJECTED
+STANDING_OPEN          = cc_public.web.argument.STANDING_OPEN
+MAP_STANDING_GLYPH     = {STANDING_UPHELD:   '✓',
+                          STANDING_REJECTED: '✗',
+                          STANDING_OPEN:     '○'}
+DECISION_OPEN          = 'open'
+DECISION_NARROWED      = 'narrowed'
+DECISION_SETTLED       = 'settled'
 LIST_DECISION_STANDING = [DECISION_OPEN, DECISION_NARROWED, DECISION_SETTLED]
 MAP_DECISION_STANDING  = {DECISION_OPEN:     STANDING_OPEN,
                           DECISION_NARROWED: STANDING_OPEN,
                           DECISION_SETTLED:  STANDING_UPHELD}
-MAP_SORT_KEY      = {
-    SORT_STANDING: lambda summary: (LIST_DECISION_STANDING.index(summary.standing),
-                                    summary.decision.item.title),
-    SORT_SIZE:     lambda summary: (-summary.size(), summary.decision.item.title),
-    SORT_TITLE:    lambda summary: summary.decision.item.title}
-R_IS_DRIVEN_BY    = 'relation_is_driven_by'
+MAP_SORT_KEY           = {
+         SORT_STANDING: lambda summary: (LIST_DECISION_STANDING.index(summary.standing),
+                                         summary.decision.item.title),
+         SORT_SIZE:     lambda summary: (-summary.size(), summary.decision.item.title),
+         SORT_TITLE:    lambda summary: summary.decision.item.title}
+RELATION_IS_DRIVEN_BY  = 'relation_is_driven_by'
 
 KIND_OPTION       = cc_public.web.request.KIND_OPTION
 KIND_ARGUMENT     = cc_public.web.request.KIND_ARGUMENT
@@ -354,7 +354,7 @@ def components(graph: Graph) -> str:
         return htpy.tr[
             htpy.td[htpy.a(href = PATH_COMPONENT + id_component)[component.title or id_component],
                     htpy.span(class_ = 'statement')[_prose(component.brief)]],
-            htpy.td[_titles(graph, component.targets(cc_public.web.argument.R_IS_DRIVEN_BY))],
+            htpy.td[_titles(graph, component.targets(RELATION_IS_DRIVEN_BY))],
             htpy.td(class_ = 'number')[
                 str(sum(len(list_item) for (_, list_item) in catalog.about(id_component)))]]
 
@@ -401,7 +401,7 @@ def component(graph: Graph, id_component: str) -> str | None:
                      htpy.tr[htpy.th(scope = 'row')['Concerns'],
                              htpy.td[[htpy.span(class_ = 'line')[graph.title(id_concern)]
                                       for id_concern in item.targets(
-                                          cc_public.web.argument.R_IS_DRIVEN_BY)]]],
+                                          cc_public.web.argument.RELATION_IS_DRIVEN_BY)]]],
                      htpy.tr[htpy.th(scope = 'row')['Id'],
                              htpy.td[htpy.a(href = PATH_ITEM + id_component)[id_component]]]]]])
 
@@ -603,7 +603,7 @@ class Summary:
             else:
                 self.map_against[unit.option] += 1
         self.subject = ', '.join(graph.title(id_component) for id_component
-                                 in decision.item.targets(cc_public.web.argument.R_IS_ABOUT))
+                                 in decision.item.targets(cc_public.web.argument.RELATION_IS_ABOUT))
         list_standing = list(decision.map_standing.values())
         if STANDING_UPHELD in list_standing:
             self.standing = DECISION_SETTLED
@@ -667,7 +667,7 @@ def _drivers(graph: Graph, id_component: str) -> str:
 
     if not id_component or id_component not in graph.map_item:
         return ''
-    list_concern = graph.map_item[id_component].targets(R_IS_DRIVEN_BY)
+    list_concern = graph.map_item[id_component].targets(RELATION_IS_DRIVEN_BY)
     if not list_concern:
         return ''
     return 'Driven by ' + ', '.join(graph.title(id_concern).lower()
@@ -744,8 +744,8 @@ def _counts(summary: Summary, id_option: str) -> typing.Any:
     """
 
     return htpy.span(class_ = 'counts')[
-        htpy.span(class_ = 'for')[str(summary.map_for[id_option]), MARK_FOR], ' ',
-        htpy.span(class_ = 'against')[str(summary.map_against[id_option]), MARK_AGAINST]]
+        htpy.span(class_ = 'for')[str(summary.map_for[id_option]), GLYPH_FOR], ' ',
+        htpy.span(class_ = 'against')[str(summary.map_against[id_option]), GLYPH_AGAINST]]
 
 
 # -----------------------------------------------------------------------------
@@ -783,7 +783,7 @@ def _decision_answers(list_summary: list[Summary],
             [answer(summary, option) for option in summary.list_option],
             _block([htpy.p(class_ = 'onward')[
                         htpy.a(href = PATH_DECISION + item.id)['Decision matrix'],
-                        ' ', MARK_NEXT]], [])]
+                        ' ', GLYPH_NEXT]], [])]
 
     return htpy.div(class_ = 'decision-answers')[[entry(summary) for summary in list_summary]]
 
@@ -804,7 +804,7 @@ def decision(graph:      Graph,
     item         = decision.item
     outline      = cc_public.web.sankey.Outline(graph, decision)
     list_subject = [graph.title(id_component)
-                    for id_component in item.targets(cc_public.web.argument.R_IS_ABOUT)]
+                    for id_component in item.targets(cc_public.web.argument.RELATION_IS_ABOUT)]
 
     return _page(item.title,
                  [_lighting(graph, outline),
@@ -1009,7 +1009,7 @@ def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
     """
 
     if not list_unit:
-        return htpy.span(class_ = 'none')[MARK_NONE]
+        return htpy.span(class_ = 'none')[GLYPH_NONE]
 
     list_for      = [unit for unit in list_unit if unit.is_for()]
     list_against  = [unit for unit in list_unit if not unit.is_for()]
@@ -1017,8 +1017,8 @@ def _cell(list_unit: list, drawing: typing.Any) -> typing.Any:
                      title  = '{f} for, {a} against'.format(f = len(list_for),
                                                             a = len(list_against)))[
         [htpy.span(class_ = ' '.join(['unit', role, CSS_FADES, *drawing.css_unit(unit)]))[mark]
-         for (list_role, role, mark) in ((list_for, ROLE_FOR, MARK_FOR),
-                                         (list_against, ROLE_AGAINST, MARK_AGAINST))
+         for (list_role, role, mark) in ((list_for, ROLE_FOR, GLYPH_FOR),
+                                         (list_against, ROLE_AGAINST, GLYPH_AGAINST))
          for unit in list_role]]
 
 
@@ -1196,14 +1196,14 @@ def _decisions_of(graph: Graph, item: Item) -> list[str]:
 
     """
 
-    list_option = (item.targets(cc_public.web.argument.R_UPHOLDS)
-                     + item.targets(cc_public.web.argument.R_REJECTS))
-    list_target   = (item.targets(cc_public.web.argument.R_IS_OPTION_FOR)
-                     + item.targets(cc_public.web.argument.R_IS_ABOUT)
+    list_option = (item.targets(cc_public.web.argument.RELATION_UPHOLDS)
+                     + item.targets(cc_public.web.argument.RELATION_REJECTS))
+    list_target   = (item.targets(cc_public.web.argument.RELATION_IS_OPTION_FOR)
+                     + item.targets(cc_public.web.argument.RELATION_IS_ABOUT)
                      + [id_decision for id_option in list_option
                         if id_option in graph.map_item
                         for id_decision in graph.map_item[id_option].targets(
-                                            cc_public.web.argument.R_IS_OPTION_FOR)])
+                                            cc_public.web.argument.RELATION_IS_OPTION_FOR)])
 
     return [id_target for id_target in dict.fromkeys(list_target)
             if id_target.startswith(cc_public.web.argument.PREFIX_DECISION)]
@@ -1246,7 +1246,7 @@ def _requirement_groups(graph: Graph) -> list[tuple[str, list[Item]]]:
     map_group = collections.defaultdict(list)
     for item in sorted(graph.map_item.values(), key = lambda item: item.title or item.id):
         if item.id.startswith(cc_public.requirement.compose.PREFIX_REQUIREMENT):
-            for id_subject in item.targets(R_HAS_SUBJECT) or ['']:
+            for id_subject in item.targets(RELATION_HAS_SUBJECT) or ['']:
                 map_group[id_subject].append(item)
 
     return [(id_subject, map_group[id_subject])
@@ -1263,8 +1263,8 @@ def _requirement_table(graph: Graph, list_item: list[Item]) -> typing.Any:
     """
 
     def traced(item: Item) -> typing.Any:
-        list_trace = [name for (name, id_relation) in (('Parent', R_TO_PARENT),
-                                                       ('Source', R_TO_SOURCE))
+        list_trace = [name for (name, id_relation) in (('Parent', RELATION_TRACES_TO_PARENT),
+                                                       ('Source', RELATION_TRACES_TO_SOURCE))
                       if item.targets(id_relation)]
         return ', '.join(list_trace) or htpy.span(class_ = 'gap')['None']
 
@@ -1311,7 +1311,7 @@ def requirement(graph: Graph, id_requirement: str) -> str | None:
                          if part.slot == cc_public.requirement.compose.SLOT_PROCESS)
     list_question = cc_public.requirement.review.questions(node, process)
     list_said     = cc_public.requirement.review.characteristics(
-                        node, list_question, item.targets(R_TO_PARENT))
+                        node, list_question, item.targets(RELATION_TRACES_TO_PARENT))
 
     return _page(item.title,
                  [_block(_paragraphs(item.brief) + _paragraphs(item.description),
@@ -1342,15 +1342,15 @@ def _requirement_facts(graph: Graph, item: Item, process: str) -> typing.Any:
 
     node       = item.node
     modal_verb = node.get('modal_verb', '')
-    list_trace = item.targets(R_TO_PARENT) + item.targets(R_TO_SOURCE)
+    list_trace = item.targets(RELATION_TRACES_TO_PARENT) + item.targets(RELATION_TRACES_TO_SOURCE)
 
     return htpy.table(class_ = 'facts')[htpy.tbody[
         row('Obligation',   '{word}, {meaning}'.format(
                                 word = modal_verb, meaning = MAP_MODAL_VERB.get(modal_verb, ''))),
         row('Subject',      [_link(graph, id_subject)
-                             for id_subject in item.targets(R_HAS_SUBJECT)]),
+                             for id_subject in item.targets(RELATION_HAS_SUBJECT)]),
         row('Process',      [htpy.a(href = _href(id_process))[process]
-                             for id_process in item.targets(R_HAS_PROCESS)]),
+                             for id_process in item.targets(RELATION_HAS_PROCESS)]),
         row('Verification', str(node.get('verification_method', '')).capitalize()),
         row('Traced to',    [htpy.span(class_ = 'line')[_link(graph, id_trace)]
                              for id_trace in list_trace]
@@ -1384,21 +1384,21 @@ def _trace(graph: Graph, item: Item, list_part: list) -> typing.Any:
                        if id_target in graph.map_item else None]
                 for id_target in item.targets(id_relation)]
 
-    list_subject = item.targets(R_HAS_SUBJECT)
+    list_subject = item.targets(RELATION_HAS_SUBJECT)
     list_driver  = [id_concern for id_subject in list_subject
                     if id_subject in graph.map_item
                     for id_concern in graph.map_item[id_subject].targets(
-                                          cc_public.web.argument.R_IS_DRIVEN_BY)]
+                                          cc_public.web.argument.RELATION_IS_DRIVEN_BY)]
     list_note    = [_note_line('Driven by', [
                         [', ' if index else '', _link(graph, id_concern)]
                         for (index, id_concern) in enumerate(list_driver)])]
 
     return htpy.section(class_ = 'trace')[
         htpy.h2['Trace'],
-        station('Source', traced(R_TO_SOURCE),
+        station('Source', traced(RELATION_TRACES_TO_SOURCE),
                 [htpy.p['Where it was found: a stakeholder, an engineering document or a '
                         'standard.']]),
-        station('Parent', traced(R_TO_PARENT),
+        station('Parent', traced(RELATION_TRACES_TO_PARENT),
                 [htpy.p['The need or requirement it helps to meet.']]),
         station('Rationale', _paragraphs(str(node.get('rationale', ''))),
                 [htpy.p['Why it is needed.']]),
@@ -1493,12 +1493,12 @@ def _requirement_references(graph: Graph, item: Item) -> typing.Any:
 
     """
 
-    list_subject = item.targets(R_HAS_SUBJECT)
+    list_subject = item.targets(RELATION_HAS_SUBJECT)
     list_same    = sorted({id_other for id_subject in list_subject
-                           for id_other in graph.sources(R_HAS_SUBJECT, id_subject)
+                           for id_other in graph.sources(RELATION_HAS_SUBJECT, id_subject)
                            if id_other != item.id})
     list_decision   = sorted({id_other for id_subject in list_subject
-                           for id_other in graph.sources(cc_public.web.argument.R_IS_ABOUT,
+                           for id_other in graph.sources(cc_public.web.argument.RELATION_IS_ABOUT,
                                                          id_subject)
                            if id_other.startswith(cc_public.web.argument.PREFIX_DECISION)},
                           key = graph.title)
@@ -1508,7 +1508,7 @@ def _requirement_references(graph: Graph, item: Item) -> typing.Any:
                            for id_source in list_source})
 
     return _references(graph, [('Subject',          list_subject),
-                               ('Process',          item.targets(R_HAS_PROCESS)),
+                               ('Process',          item.targets(RELATION_HAS_PROCESS)),
                                ('Same subject',     list_same),
                                ('Decisions on subject', list_decision),
                                ('Mentions',         graph.mentions(item.id)),
@@ -1549,7 +1549,7 @@ def _interface_table(graph: Graph, list_item: list[Item]) -> typing.Any:
     def realized(item: Item) -> typing.Any:
         list_member = cc_public.web.contract.members(item.node)
         count       = sum(1 for id_member in list_member
-                          if graph.sources(cc_public.web.contract.R_REALIZES, id_member))
+                          if graph.sources(cc_public.web.contract.RELATION_REALIZES, id_member))
         text        = '{count} of {total}'.format(count = count, total = len(list_member))
         return text if count == len(list_member) else htpy.span(class_ = 'gap')[text]
 
@@ -1716,7 +1716,7 @@ def _verdict(graph: Graph, member: Member, column: str) -> typing.Any:
 
     verdict = member.map_verdict.get(column)
     if verdict is None:
-        return htpy.span(class_ = 'none')[MARK_NONE]
+        return htpy.span(class_ = 'none')[GLYPH_NONE]
 
     title = MAP_VERDICT[verdict]
     if column == COLUMN_REALIZED and member.list_realizer:
@@ -1803,7 +1803,7 @@ def _parameters(member: Member) -> typing.Any:
     def part(parameter: Parameter, name: str) -> typing.Any:
         stated = parameter.map_part.get(name)
         if stated is None:
-            return htpy.span(class_ = 'none')[MARK_NONE]
+            return htpy.span(class_ = 'none')[GLYPH_NONE]
         code = parameter.map_code.get(name, '') if parameter.differs(name) else None
         return _stated(stated, code)
 
@@ -1891,8 +1891,8 @@ def _interface_references(graph: Graph, contract: Contract) -> typing.Any:
                            for id_source in list_source})
 
     return _references(graph, [('Realized by',   list_realize),
-                               ('Supersedes',    item.targets(R_SUPERSEDES)),
-                               ('Superseded by', graph.sources(R_SUPERSEDES, item.id)),
+                               ('Supersedes',    item.targets(RELATION_SUPERSEDES)),
+                               ('Superseded by', graph.sources(RELATION_SUPERSEDES, item.id)),
                                ('Mentions',      graph.mentions(item.id)),
                                ('Mentioned by',  graph.mentioned_by(item.id)),
                                ('Cited by',      list_cited)])
@@ -2335,9 +2335,9 @@ def _rulings(graph: Graph, decision: Decision) -> typing.Any:
         [_block([htpy.p[htpy.span(class_ = 'run-in')[ruling.title], ' ',
                         _prose(ruling.brief)]],
                 [_note_line('Upholds', _titles(graph, ruling.targets(
-                                                   cc_public.web.argument.R_UPHOLDS))),
+                                                   cc_public.web.argument.RELATION_UPHOLDS))),
                  _note_line('Rejects', _titles(graph, ruling.targets(
-                                                   cc_public.web.argument.R_REJECTS))),
+                                                   cc_public.web.argument.RELATION_REJECTS))),
                  _id(ruling.id)])
          for ruling in decision.list_ruling]]
 
@@ -2353,7 +2353,7 @@ def _groups(graph: Graph) -> list[tuple[str, list[Decision]]]:
 
     map_group = collections.defaultdict(list)
     for decision in graph.list_decision():
-        for id_component in decision.item.targets(cc_public.web.argument.R_IS_ABOUT) or ['']:
+        for id_component in decision.item.targets(cc_public.web.argument.RELATION_IS_ABOUT) or ['']:
             map_group[id_component].append(decision)
 
     return [(id_component, map_group[id_component])
@@ -2391,9 +2391,9 @@ def _steps(graph: Graph, list_id: list[str], id_item: str, noun: str) -> typing.
                                    title = graph.title(id_other)))[mark]
 
     return htpy.nav(class_ = 'sequence')[
-        step(-1, MARK_PREVIOUS, 'prev'),
+        step(-1, GLYPH_PREVIOUS, 'prev'),
         ' {place} of {count} '.format(place = index + 1, count = len(list_id)),
-        step(1, MARK_NEXT, 'next')]
+        step(1, GLYPH_NEXT, 'next')]
 
 
 # -----------------------------------------------------------------------------
@@ -2426,9 +2426,9 @@ def _annotation(graph:         Graph,
             name = ('#{number}'.format(number = map_number[id_target])
                     if id_target in map_number else graph.title(id_target))
             list_bearing.append(htpy.li(class_ = role)[
-                MARK_FOR if role == ROLE_FOR else MARK_AGAINST, ' ', name])
+                GLYPH_FOR if role == ROLE_FOR else GLYPH_AGAINST, ' ', name])
 
-    list_concern = annotation.targets(cc_public.web.argument.R_SPEAKS_FOR)
+    list_concern = annotation.targets(cc_public.web.argument.RELATION_SPEAKS_FOR_CONCERN)
     list_also    = [id_other for id_other in list_concern if id_other != id_concern]
     list_answer  = [id_answer for (id_answer, _) in outline.answers(id_annotation)
                     if id_answer not in set_path]
@@ -2604,7 +2604,7 @@ def _decision_references(graph: Graph, decision: Decision) -> typing.Any:
 
     """
 
-    is_about     = cc_public.web.argument.R_IS_ABOUT
+    is_about     = cc_public.web.argument.RELATION_IS_ABOUT
     list_shown   = ([decision.item] + decision.list_option + decision.list_annotation
                    + decision.list_ruling)
     set_shown    = {shown.id for shown in list_shown}

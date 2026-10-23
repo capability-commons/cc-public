@@ -54,9 +54,9 @@ PREFIX_REQUIREMENT   = 'rqt_'
 SLOT_SUBJECT         = 'subject'
 SLOT_PROCESS         = 'process'
 
-R_HAS_SUBJECT        = 'relation_has_subject'
-R_HAS_ACTOR          = 'relation_has_actor'
-R_HAS_PROCESS        = 'relation_has_process'
+RELATION_HAS_SUBJECT = 'relation_has_subject'
+RELATION_HAS_ACTOR   = 'relation_has_actor'
+RELATION_HAS_PROCESS = 'relation_has_process'
 
 ACTIVITY_INTERACTION = 'interaction'
 ACTIVITY_INTERFACE   = 'interface'
@@ -115,8 +115,8 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
 
     """
 
-    id_subject = _target(requirement, R_HAS_SUBJECT)
-    id_process = _target(requirement, R_HAS_PROCESS)
+    id_subject = _target(requirement, RELATION_HAS_SUBJECT)
+    id_process = _target(requirement, RELATION_HAS_PROCESS)
     subject    = _name(node_of, id_subject, KEY_TITLE)
     process    = _name(node_of, id_process, KEY_TERM_PREFERRED)
     activity   = requirement.get(KEY_ACTIVITY)
@@ -136,7 +136,7 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
                   Part(KEY_MODAL_VERB, _slot(requirement, KEY_MODAL_VERB))]
 
     if activity == ACTIVITY_INTERACTION:
-        id_actor = _target(requirement, R_HAS_ACTOR)
+        id_actor = _target(requirement, RELATION_HAS_ACTOR)
         actor    = _name(node_of, id_actor, KEY_TITLE)
         list_part.append(Part(KEY_ACTIVITY,
                               'provide the {actor} with the ability to'.format(actor = actor),

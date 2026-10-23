@@ -75,21 +75,25 @@ LANGUAGE          = 'en'
 
 # The prefixes of the external items made for classes and for relations.
 #
-PREFIX_ITEM       = 'extcla'
-PREFIX_RELATION   = 'extrel'
-KEY_FIXITY        = 'fixity'
-KEY_DIGEST        = 'digest'
-SIZE_BLOCK        = 1 << 20
-ID_CITES          = 'relation_cites'
-ID_SUBCLASS_OF    = 'relation_is_subclass_of'
-ID_SUBPROPERTY    = 'relation_is_subproperty_of'
-ID_DOMAIN         = 'relation_has_domain'
-ID_RANGE          = 'relation_has_range'
-TUPLE_IMPORTED    = (ID_CITES, ID_SUBCLASS_OF, ID_SUBPROPERTY, ID_DOMAIN, ID_RANGE)
-SCHEME_URI        = 'uri'
-TEMPLATE_TITLE    = '{short} {label}'
-TEMPLATE_BRIEF    = 'The class with the label "{label}" in {release}.'
-TEMPLATE_RELATION = 'The relation with the label "{label}" in {release}.'
+PREFIX_ITEM                = 'extcla'
+PREFIX_RELATION            = 'extrel'
+KEY_FIXITY                 = 'fixity'
+KEY_DIGEST                 = 'digest'
+SIZE_BLOCK                 = 1 << 20
+RELATION_CITES             = 'relation_cites'
+RELATION_IS_SUBCLASS_OF    = 'relation_is_subclass_of'
+RELATION_IS_SUBPROPERTY_OF = 'relation_is_subproperty_of'
+RELATION_HAS_DOMAIN        = 'relation_has_domain'
+RELATION_HAS_RANGE         = 'relation_has_range'
+TUPLE_IMPORTED             = (RELATION_CITES,
+                              RELATION_IS_SUBCLASS_OF,
+                              RELATION_IS_SUBPROPERTY_OF,
+                              RELATION_HAS_DOMAIN,
+                              RELATION_HAS_RANGE)
+SCHEME_URI                 = 'uri'
+TEMPLATE_TITLE             = '{short} {label}'
+TEMPLATE_BRIEF             = 'The class with the label "{label}" in {release}.'
+TEMPLATE_RELATION          = 'The relation with the label "{label}" in {release}.'
 
 # A run of anything but lower-case letters and digits becomes one
 # underscore in an id.
@@ -293,12 +297,14 @@ def operations(tree:           cc_public.edit.edit.Tree,
                                                      release = namespace.release),
                        'identifier': [{'scheme': SCHEME_URI, 'value': iri}],
                        'label':      label}
-        id_parent   = ID_SUBPROPERTY if is_relation else ID_SUBCLASS_OF
-        set_link    = {(ID_CITES, namespace.release)}
+        id_parent   = RELATION_IS_SUBPROPERTY_OF if is_relation else RELATION_IS_SUBCLASS_OF
+        set_link    = {(RELATION_CITES, namespace.release)}
         set_link   |= {(id_parent, map_id[parent]) for parent in ontology.map_parent[iri]}
         if is_relation:
-            set_link |= {(ID_DOMAIN, map_id[each]) for each in ontology.classes(iri, NODE_DOMAIN)}
-            set_link |= {(ID_RANGE, map_id[each]) for each in ontology.classes(iri, NODE_RANGE)}
+            set_link |= {(RELATION_HAS_DOMAIN, map_id[each])
+                         for each in ontology.classes(iri, NODE_DOMAIN)}
+            set_link |= {(RELATION_HAS_RANGE, map_id[each])
+                         for each in ontology.classes(iri, NODE_RANGE)}
         list_operation.extend(_item_operations(tree, map_id[iri], map_field, set_link))
 
     return list_operation

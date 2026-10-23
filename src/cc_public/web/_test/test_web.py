@@ -62,7 +62,7 @@ def test_decision_gathers_only_annotations_about_it(tree):
     decision = cc_public.web.argument.Graph(tree).decision(ID_DECISION)
     assert decision.list_annotation
     for annotation in decision.list_annotation:
-        assert ID_DECISION in annotation.targets(cc_public.web.argument.R_IS_ABOUT)
+        assert ID_DECISION in annotation.targets(cc_public.web.argument.RELATION_IS_ABOUT)
 
 
 def test_decision_lists_the_drivers_of_its_subject(tree):

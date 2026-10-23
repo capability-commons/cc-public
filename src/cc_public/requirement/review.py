@@ -54,8 +54,8 @@ KEY_RATIONALE        = 'rationale'
 KEY_METHOD           = 'verification_method'
 KEY_APPROACH         = 'verification_approach'
 
-R_TRACES_TO_PARENT   = 'relation_traces_to_parent'
-R_TRACES_TO_SOURCE   = 'relation_traces_to_source'
+RELATION_TRACES_TO_PARENT = 'relation_traces_to_parent'
+RELATION_TRACES_TO_SOURCE = 'relation_traces_to_source'
 
 CATEGORY_DELETION    = 'deletion'
 CATEGORY_GENERAL     = 'generalization'

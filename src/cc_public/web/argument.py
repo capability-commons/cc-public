@@ -56,15 +56,15 @@ PREFIX_OPTION     = 'opt_'
 PREFIX_ANNOTATION = 'ann_'
 PREFIX_CONCEPT    = 'concept_'
 
-R_IS_OPTION_FOR   = 'relation_is_option_for'
-R_IS_ABOUT        = 'relation_is_about'
-R_SUPPORTS        = 'relation_supports'
-R_CHALLENGES      = 'relation_challenges'
-R_UPHOLDS         = 'relation_upholds'
-R_USES_CONCEPT    = 'relation_uses_concept'
-R_REJECTS         = 'relation_rejects'
-R_SPEAKS_FOR      = 'relation_speaks_for_concern'
-R_IS_DRIVEN_BY    = 'relation_is_driven_by'
+RELATION_IS_OPTION_FOR      = 'relation_is_option_for'
+RELATION_IS_ABOUT           = 'relation_is_about'
+RELATION_SUPPORTS           = 'relation_supports'
+RELATION_CHALLENGES         = 'relation_challenges'
+RELATION_UPHOLDS            = 'relation_upholds'
+RELATION_USES_CONCEPT       = 'relation_uses_concept'
+RELATION_REJECTS            = 'relation_rejects'
+RELATION_SPEAKS_FOR_CONCERN = 'relation_speaks_for_concern'
+RELATION_IS_DRIVEN_BY       = 'relation_is_driven_by'
 
 STANDING_UPHELD   = 'upheld'
 STANDING_REJECTED = 'rejected'
@@ -256,7 +256,7 @@ class Graph:
         item     = self.map_item.get(id_item)
 
         while item is not None:
-            set_used.update(item.targets(R_USES_CONCEPT))
+            set_used.update(item.targets(RELATION_USES_CONCEPT))
             item = self.map_item.get(item.container)
 
         if id_item.startswith(PREFIX_CONCEPT):
@@ -309,22 +309,22 @@ class Graph:
         if item is None or not id_decision.startswith(PREFIX_DECISION):
             return None
 
-        list_option        = self._items(self.sources(R_IS_OPTION_FOR, id_decision))
+        list_option        = self._items(self.sources(RELATION_IS_OPTION_FOR, id_decision))
         set_option         = {option.id for option in list_option}
         list_annotation    = self._items(id_item for id_item in
-                                         self.sources(R_IS_ABOUT, id_decision)
+                                         self.sources(RELATION_IS_ABOUT, id_decision)
                                          if id_item.startswith(PREFIX_ANNOTATION))
         list_ruling = self._items(
                                  {id_item
                                   for id_option in set_option
-                                  for id_relation in (R_UPHOLDS, R_REJECTS)
+                                  for id_relation in (RELATION_UPHOLDS, RELATION_REJECTS)
                                   for id_item in self.sources(id_relation, id_option)})
         list_driver        = sorted({id_concern
-                                     for subject in self._items(item.targets(R_IS_ABOUT))
-                                     for id_concern in subject.targets(R_IS_DRIVEN_BY)})
+                                     for subject in self._items(item.targets(RELATION_IS_ABOUT))
+                                     for id_concern in subject.targets(RELATION_IS_DRIVEN_BY)})
         set_spoken         = {id_concern
                               for annotation in list_annotation
-                              for id_concern in annotation.targets(R_SPEAKS_FOR)}
+                              for id_concern in annotation.targets(RELATION_SPEAKS_FOR_CONCERN)}
 
         decision = Decision(item               = item,
                       list_option        = list_option,
@@ -336,9 +336,9 @@ class Graph:
 
         decision.map_standing = {option.id: STANDING_OPEN for option in list_option}
         for ruling in decision.list_ruling:
-            for id_option in ruling.targets(R_UPHOLDS):
+            for id_option in ruling.targets(RELATION_UPHOLDS):
                 decision.map_standing[id_option] = STANDING_UPHELD
-            for id_option in ruling.targets(R_REJECTS):
+            for id_option in ruling.targets(RELATION_REJECTS):
                 decision.map_standing[id_option] = STANDING_REJECTED
 
         return decision

@@ -33,17 +33,17 @@ edge:                   []
 import cc_public.web.argument
 
 
-R_HAS_ITEMS_THAT_PLAY = 'relation_has_items_that_play'
-R_ADMITS              = 'relation_admits'
-R_EXCLUDES            = 'relation_excludes'
-R_RESTRICTS_SOURCE    = 'relation_constrains_source'
-R_RESTRICTS_TARGET    = 'relation_constrains_target'
-PREFIX_RELATION       = 'relation_'
-PREFIX_ROLE           = 'rol_'
-LIST_END              = (('source', R_RESTRICTS_SOURCE),
-                         ('target', R_RESTRICTS_TARGET))
-LIST_LITERAL          = (('Admitted', R_ADMITS),
-                         ('Excluded', R_EXCLUDES))
+RELATION_HAS_ITEMS_THAT_PLAY = 'relation_has_items_that_play'
+RELATION_ADMITS              = 'relation_admits'
+RELATION_EXCLUDES            = 'relation_excludes'
+RELATION_CONSTRAINS_SOURCE   = 'relation_constrains_source'
+RELATION_CONSTRAINS_TARGET   = 'relation_constrains_target'
+PREFIX_RELATION              = 'relation_'
+PREFIX_ROLE                  = 'rol_'
+LIST_END                     = (('source', RELATION_CONSTRAINS_SOURCE),
+                                ('target', RELATION_CONSTRAINS_TARGET))
+LIST_LITERAL                 = (('Admitted', RELATION_ADMITS),
+                                ('Excluded', RELATION_EXCLUDES))
 
 Graph = cc_public.web.argument.Graph
 
@@ -104,7 +104,7 @@ def _role(graph: Graph, id_role: str) -> list[Sentence]:
 
     """
 
-    list_type = graph.sources(R_HAS_ITEMS_THAT_PLAY, id_role)
+    list_type = graph.sources(RELATION_HAS_ITEMS_THAT_PLAY, id_role)
 
     if list_type:
         list_sentence = [['Played by the items of ']
