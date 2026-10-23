@@ -55,6 +55,7 @@ import ruamel.yaml.scalarstring
 import cc_public.check.check
 import cc_public.edit.layout
 import cc_public.graph.extract
+import cc_public.graph.prefix
 
 
 KEY_ID_SELF       = 'id_self'
@@ -109,7 +110,15 @@ TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 # name of the file gives the id, so new does not make them.
 #
 RELATION_HAS_ITEMS_HELD_IN_REGISTER = 'relation_has_items_held_in_register'
-SET_PREFIX_SOURCE                   = {'pym', 'pyp', 'pycls', 'pyf', 'lpf', 'lpp', 'file', 'shell'}
+SET_PREFIX_SOURCE                   = {cc_public.graph.prefix.MAP_PREFIX[id_type]
+                                       for id_type in ('type_python_module',
+                                                       'type_python_package',
+                                                       'type_python_class',
+                                                       'type_python_function',
+                                                       'type_logic_program_file',
+                                                       'type_logic_program_predicate',
+                                                       'type_file',
+                                                       'type_shell_script')}
 
 # A file of any other type takes its item in a header: a python module
 # in its module docstring, and any other file in a comment header. A

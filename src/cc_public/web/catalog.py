@@ -42,11 +42,12 @@ import collections
 import re
 
 import cc_public.web.argument
+import cc_public.graph.prefix
 
 
 KEY_PREFIX        = 'prefix'
-PREFIX_TYPE       = 'type_'
-PREFIX_SUBJECT    = 'lco_'
+PREFIX_TYPE       = cc_public.graph.prefix.stem('type_type')
+PREFIX_SUBJECT    = cc_public.graph.prefix.stem('type_logical_component')
 ID_COMPONENT_TYPE = 'type_logical_component'
 DELIM_PREFIX      = '_'
 NAME_OTHER        = 'Other'

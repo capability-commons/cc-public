@@ -55,6 +55,7 @@ import re
 import pyoxigraph
 
 import cc_public.edit.edit
+import cc_public.graph.prefix
 
 
 NS_RDF            = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
@@ -75,8 +76,8 @@ LANGUAGE          = 'en'
 
 # The prefixes of the external items made for classes and for relations.
 #
-PREFIX_ITEM                = 'extcla'
-PREFIX_RELATION            = 'extrel'
+PREFIX_ITEM                = cc_public.graph.prefix.MAP_PREFIX['type_external_class']
+PREFIX_RELATION            = cc_public.graph.prefix.MAP_PREFIX['type_external_relation']
 KEY_FIXITY                 = 'fixity'
 KEY_DIGEST                 = 'digest'
 SIZE_BLOCK                 = 1 << 20

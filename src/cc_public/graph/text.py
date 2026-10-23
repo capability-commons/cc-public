@@ -47,6 +47,7 @@ import typing
 import cc_public.graph.logic
 import cc_public.graph.extract
 import cc_public.graph.sql
+import cc_public.graph.prefix
 
 
 # The fields whose text is not prose: names, patterns, rights and the
@@ -67,7 +68,7 @@ REGEX_WORD        = re.compile(r'[A-Za-z0-9]+')
 # other senses.
 #
 TUPLE_KEY_TERM    = ('term_preferred', 'term_admitted')
-PREFIX_CONCEPT    = 'concept_'
+PREFIX_CONCEPT    = cc_public.graph.prefix.stem('type_concept')
 
 # The query on its own, stemmed as item_text is, so that a term can be
 # looked for in it as a phrase.

@@ -39,6 +39,7 @@ import re
 import typing
 
 import cc_public.graph.extract
+import cc_public.graph.prefix
 
 
 KEY_ID_SELF       = 'id_self'
@@ -51,10 +52,10 @@ KEY_ID_TARGET     = 'id_target'
 KEY_PREFERRED     = 'term_preferred'
 KEY_ADMITTED      = 'term_admitted'
 
-PREFIX_DECISION   = 'dec_'
-PREFIX_OPTION     = 'opt_'
-PREFIX_ANNOTATION = 'ann_'
-PREFIX_CONCEPT    = 'concept_'
+PREFIX_DECISION   = cc_public.graph.prefix.stem('type_decision')
+PREFIX_OPTION     = cc_public.graph.prefix.stem('type_option')
+PREFIX_ANNOTATION = cc_public.graph.prefix.stem('type_annotation')
+PREFIX_CONCEPT    = cc_public.graph.prefix.stem('type_concept')
 
 RELATION_IS_OPTION_FOR      = 'relation_is_option_for'
 RELATION_IS_ABOUT           = 'relation_is_about'

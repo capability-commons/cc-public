@@ -52,10 +52,11 @@ import pathlib
 
 import cc_public.graph.extract
 import cc_public.web.argument
+import cc_public.graph.prefix
 
 
-PREFIX_INTERFACE  = 'icd_'
-PREFIX_MEMBER     = 'icm_'
+PREFIX_INTERFACE  = cc_public.graph.prefix.stem('type_interface_control_document')
+PREFIX_MEMBER     = cc_public.graph.prefix.stem('type_interface_member')
 RELATION_REALIZES = 'relation_realizes'
 KEY_ID_SELF       = cc_public.web.argument.KEY_ID_SELF
 KEY_EDGE          = cc_public.web.argument.KEY_EDGE

@@ -32,6 +32,7 @@ import pytest
 import cc_public.graph.item
 import cc_public.graph.logic
 import cc_public.graph.extract
+import cc_public.graph.prefix
 import cc_public.graph.sql
 import cc_public.graph.text
 
@@ -249,3 +250,9 @@ def test_a_term_is_found_in_text_by_its_longest_form_and_not_in_links_or_ids(tre
                                                             plain)
     assert cc_public.graph.extract._term_words(plain, terms) == [('data item', 0),
                                                                   ('entry', 16)]
+
+
+def test_the_prefix_of_each_type_is_the_one_its_register_entry_gives(tree):
+    facts = cc_public.graph.extract.extract(tree)
+    map_register = {row[0]: row[1] for row in facts['type_prefix']}
+    assert map_register == cc_public.graph.prefix.MAP_PREFIX

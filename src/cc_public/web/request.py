@@ -57,6 +57,7 @@ import re
 import urllib.parse
 
 import cc_public.web.argument
+import cc_public.graph.prefix
 
 
 KIND_OPTION       = 'option'
@@ -89,8 +90,8 @@ TUPLE_KEY_TEXT    = (KEY_ID, KEY_TITLE, KEY_BRIEF, KEY_DESCRIPTION, KEY_REASON)
 PREFIX_DECISION   = cc_public.web.argument.PREFIX_DECISION
 PREFIX_OPTION     = cc_public.web.argument.PREFIX_OPTION
 PREFIX_ANNOTATION = cc_public.web.argument.PREFIX_ANNOTATION
-PREFIX_RULING     = 'ruling_'
-PREFIX_CONCERN    = 'concern_'
+PREFIX_RULING     = cc_public.graph.prefix.stem('type_ruling')
+PREFIX_CONCERN    = cc_public.graph.prefix.stem('type_concern')
 
 RELATION_IS_OPTION_FOR      = cc_public.web.argument.RELATION_IS_OPTION_FOR
 RELATION_IS_ABOUT           = cc_public.web.argument.RELATION_IS_ABOUT
