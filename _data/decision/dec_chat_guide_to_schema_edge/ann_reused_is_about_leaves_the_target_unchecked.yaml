@@ -1,0 +1,54 @@
+id_self:                ann_reused_is_about_leaves_the_target_unchecked
+guid_self:              ann_ce8399fe8a1b436f9e98fd53a6fa10d2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reused about-edge that leaves its target unchecked
+brief:                  |
+                        relation_is_about constrains only its source
+                        and admits any target, so a guide about the
+                        wrong item would pass the checks. It also
+                        needs the guide type to take a role meant for
+                        annotations and decisions.
+description:            |
+                        relation_is_about names one constraint, on its
+                        source (_data/register/reg_relation.yaml lines
+                        190-195), and none on its target. Its source
+                        must play rol_can_be_about_an_item, an item
+                        that states something about another item
+                        (_data/register/reg_role.yaml lines 121-130),
+                        which only the annotation and decision types
+                        play (_data/register/reg_data_item_type.yaml
+                        lines 489-491 and 973-975).
+                        constraint_violation refuses an edge whose end
+                        breaks a constraint of its relation
+                        (src/cc_public/check/check.lp lines
+                        1068-1078). A new relation constrained to a
+                        schema or to a type, as relcon_is_schema and
+                        relcon_is_type already allow, would let that
+                        check refuse a guide that points at anything
+                        else. Holds at ten times the size: yes,
+                        because more guides mean more edges that the
+                        constraint would check.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_guide_to_schema_edge
+    guid_target:        dec_f339b3db51c14b34980fb81e0a92c896
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_reuse_is_about_for_the_schema
+    guid_target:        opt_0da6527b0e8840be998c8bd2d22fb8ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

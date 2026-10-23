@@ -1,0 +1,56 @@
+id_self:                ann_type_edge_gives_the_write_path_its_type
+guid_self:              ann_7d6fe212f6ff49ca8d1e56d11257d35b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type edge that gives the write path its type
+brief:                  |
+                        The chat core writes through the editing
+                        commands, which work from the type of an item.
+                        An edge from the guide to the type hands the
+                        core the type, and through it the schema and
+                        the register, with no reverse lookup.
+description:            |
+                        The chat core writes the draft through the
+                        editing commands
+                        (_data/logical_component/lco_chat_core.yaml
+                        lines 12-17). The command that makes a new
+                        item maps its id prefix to a type, and the
+                        type to its register or its folder
+                        (src/cc_public/edit/edit.py lines 269-281 and
+                        1280-1294). schema_count requires every type
+                        to name exactly one schema for its items
+                        (src/cc_public/check/check.lp lines
+                        2819-2823), and the tree finds the schema of
+                        an item through its type
+                        (src/cc_public/graph/derive.lp lines 99-106).
+                        No check requires a schema to be named by at
+                        most one type, although none of the 34 types
+                        shares one today
+                        (_data/register/reg_data_item_type.yaml). An
+                        edge to the schema would leave the core to
+                        find the type by the reverse of that edge.
+                        Holds at ten times the size: yes, because the
+                        lookup is per guide.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_guide_to_schema_edge
+    guid_target:        dec_f339b3db51c14b34980fb81e0a92c896
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_new_relation_to_the_type
+    guid_target:        opt_78c121b0d11b47719a4975982e247a39
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
