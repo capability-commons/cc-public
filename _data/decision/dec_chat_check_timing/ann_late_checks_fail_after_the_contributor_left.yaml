@@ -16,21 +16,23 @@ brief:                  |
                         contributor returns. Checking each answer in
                         the bot and dry running once at the readback
                         finds the fault while the contributor is still
-                        there, with few runs of cctool.
+                        there, with few whole-tree checks.
 description:            |
                         The dry-run-every-turn option runs cctool on
                         the whole draft after every message
                         (opt_dry_run_every_turn, brief). The readback
                         option checks each answer against the JSON
-                        Schema inside the bot and runs cctool once at
-                        the readback
+                        Schema inside the bot, through
+                        cc_public.check.schema, and dry runs the whole
+                        draft once, at the readback, through the
+                        editing module in its own process
                         (opt_schema_per_answer_dry_run_at_readback,
                         brief). A contributor on a messaging app may
                         stop replying at any time (ASSUMPTION). Holds
                         at ten times the size: yes, because a larger
-                        tree makes each cctool run slower, which makes
-                        per-turn runs worse and leaves one run at the
-                        readback tolerable.
+                        tree makes each whole-tree check slower, which
+                        makes per-turn runs worse and leaves one run
+                        at the readback tolerable.
 
 edge:
 

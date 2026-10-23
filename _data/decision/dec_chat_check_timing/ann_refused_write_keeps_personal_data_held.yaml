@@ -1,0 +1,62 @@
+id_self:                ann_refused_write_keeps_personal_data_held
+guid_self:              ann_a03387366af14b63998ee10261f0cb2c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refused writes keeping personal data held
+brief:                  |
+                        If nothing is checked until the write, a write
+                        refused after the conversation has ended
+                        leaves the draft and its transcript held in
+                        private with no end date, since they are
+                        deleted only when the item lands or the draft
+                        is dropped. Finding the fault before the
+                        contributor leaves lets the item land and its
+                        transcript be deleted on time.
+description:            |
+                        A transcript is kept in private until its
+                        items land or its draft is dropped, and is
+                        then deleted
+                        (_data/decision/dec_chat_transcript_retention/ruling_chat_transcript_retention.yaml
+                        lines 12-17). A refused edit writes nothing
+                        (src/cc_public/edit/edit.py lines 1189-1190;
+                        src/cc_public/cli/editing.py lines 503-513),
+                        so the draft stays with the bot. The option of
+                        checks only at the write checks nothing until
+                        cctool writes the item
+                        (_data/decision/dec_chat_check_timing/opt_check_at_write_only.yaml,
+                        brief). A likely first instance holds member
+                        skill profiles, which are personal data
+                        (owner's statement). The concern measures
+                        personal data fields held, by count, and time
+                        to fulfill a request to remove data, in days
+                        (_data/register/reg_concern.yaml lines
+                        746-748). ASSUMPTION: a contributor who has
+                        left seldom returns to mend a refused item, so
+                        its draft waits until someone drops it by
+                        hand. Holds at ten times the size: yes,
+                        because each write refused after the
+                        contributor left adds one more held draft, and
+                        more contributors mean more of them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_check_timing
+    guid_target:        dec_9aa897c472bb425c9ecf60ff7e179006
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_check_at_write_only
+    guid_target:        opt_e87fff38610745559a63837de7ea497b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

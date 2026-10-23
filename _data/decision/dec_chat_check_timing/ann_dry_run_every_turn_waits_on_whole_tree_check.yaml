@@ -10,41 +10,51 @@ protective_mark:
 
 title:                  Whole-tree dry run on every message
 brief:                  |
-                        A cctool dry run reads and checks the whole
-                        tree, so running one after every message adds
-                        about 17 s or more to every reply. Checking
-                        each answer against the JSON Schema in memory,
-                        and running cctool once at the readback, pays
-                        that cost once per item.
+                        A dry run checks the whole tree, so running
+                        one after every message adds seconds to every
+                        reply: 4 to 5 s when repeated in the bot's own
+                        process, and 17 s or more in a new cctool
+                        process. Checking each answer against the JSON
+                        Schema in memory, and dry running once at the
+                        readback, pays that cost once per item.
 description:            |
                         A dry-run batch of 4 items took 17 s, and
                         cctool check took 24.6 s, in the maintainer's
                         development VM (context.md, facts measured
-                        2026-10-22). Tree.__init__ reads every
-                        document of the tree for each edit
-                        (src/cc_public/edit/edit.py lines 169-180;
-                        src/cc_public/graph/extract.py lines 426-446).
-                        apply checks the tree before and after the
-                        edit, and a third time when it moves a new
-                        file that the check finds misplaced
-                        (src/cc_public/edit/edit.py lines 1085-1090
-                        and _place, lines 1101-1120). Each evaluation
-                        re-grounds the whole graph in clingo, and only
-                        parsing and schema validation of unchanged
-                        documents are cached
-                        (_data/decision/dec_checker_approach/ann_rules_checker_regrounds_the_whole_tree.yaml).
-                        The snapshot holds 1601 YAML files under _data
-                        (find, counted 2026-10-22). ASSUMPTION:
-                        validating one answer against one item schema
-                        in memory takes well under a second, because
-                        it reads no file of the tree. ASSUMPTION: a
-                        conversation for one item takes ten or more
-                        messages, so a dry run per turn costs ten or
-                        more whole-tree checks per item, against one
-                        at the readback. Holds at ten times the size:
-                        yes, because the per-turn cost follows the
-                        tree while the per-answer schema check follows
-                        only the item.
+                        2026-10-22). The bot calls the editing module
+                        in its own process
+                        (ruling_chat_edit_interface). A Tree reads
+                        every file of the tree for each edit, and
+                        reuses the parsed documents of a file whose
+                        content has not changed
+                        (src/cc_public/edit/edit.py lines 183-193;
+                        src/cc_public/graph/extract.py lines 454-478
+                        and 759-789). apply checks the tree before and
+                        after the edit, and a third time when it moves
+                        a new file that the check finds misplaced
+                        (src/cc_public/edit/edit.py lines 1170-1192
+                        and _place, lines 1196-1214). In one process
+                        the review of an unchanged tree is kept, so
+                        the check before the edit is reused, but the
+                        check after it re-grounds the whole graph in
+                        clingo (src/cc_public/check/check.py lines
+                        86-94 and 247-263;
+                        _data/decision/dec_checker_approach/ann_rules_checker_regrounds_the_whole_tree.yaml).
+                        In a copy of dev at e1a6b2b4, with 2159 YAML
+                        files under _data, an in-process dry run of
+                        one set took 41 to 47 s cold and 4 to 5 s each
+                        time it was repeated with a new value, on a
+                        4-core container (measured 2026-10-23).
+                        ASSUMPTION: validating one answer against one
+                        item schema in memory takes well under a
+                        second, because it reads no file of the tree.
+                        ASSUMPTION: a conversation for one item takes
+                        ten or more messages, so a dry run per turn
+                        costs ten or more whole-tree checks per item,
+                        against one at the readback. Holds at ten
+                        times the size: yes, because the per-turn cost
+                        follows the tree while the per-answer schema
+                        check follows only the item.
 
 edge:
 
