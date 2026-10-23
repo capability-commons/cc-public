@@ -1,0 +1,62 @@
+id_self:                ann_judge_on_the_conversation_model_adds_no_holder
+guid_self:              ann_3f62351c5ef64f6dbc595a8e5e45f613
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No new holder of personal data for a judge on the conversation model
+brief:                  |
+                        A judge that reaches the same model as the
+                        conversation reads only a draft drawn from
+                        messages that model has already read, so it
+                        adds no holder of personal data. A judge
+                        reached through another service would add one.
+description:            |
+                        The judge option judges each draft with an LLM
+                        (_data/decision/dec_chat_item_eval/opt_llm_judge_and_checks.yaml,
+                        brief). The conversation already passes the
+                        messages of the contributor to an LLM, which
+                        chooses what to ask next
+                        (ruling_chat_conversation_control, brief). The
+                        draft the judge reads is drawn from those
+                        messages, so a judge reached through the same
+                        model access sends personal data to no holder
+                        that does not already have it. Each deployment
+                        names the model that serves it
+                        (ruling_chat_llm_access, brief). The
+                        mechanized checks run in the process of the
+                        bot (ruling_chat_edit_interface, brief;
+                        src/cc_public/edit/edit.py lines 1170-1192)
+                        and send the draft nowhere. Leaving quality to
+                        the reviewer adds no holder either, since the
+                        reviewer reads the branch under every option
+                        (ruling_chat_review_gates, brief). The privacy
+                        concern asks who can see personal data
+                        (_data/register/reg_concern.yaml lines
+                        721-750). ASSUMPTION: the judge's prompt holds
+                        the draft and its criteria, and no personal
+                        data beyond the draft. Holds at ten times the
+                        size: yes, because the judge reads only what
+                        the conversation model has already read,
+                        whatever the number of items.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_item_eval
+    guid_target:        dec_918a00778b424525a2f58930707b2cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_llm_judge_and_checks
+    guid_target:        opt_b7bb95ce1e9c46db924bb41d74f6c2ed
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
