@@ -1,0 +1,48 @@
+id_self:                ann_serverless_split_costs_too_much
+guid_self:              ann_d919ca4e2c2e4e67a048ca4a9327d891
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Serverless split not worth its complexity
+brief:                  |
+                        Reaching serverless hosts would split the bot
+                        into a long-running Signal adapter and a core
+                        that fetches the repository for each message.
+                        The extra parts cost more than a higher level
+                        host gains, so a container is the upper bound.
+description:            |
+                        Signal holds a connection open and a
+                        conversation spans hours or days, and the
+                        in-process check needs a full working copy on
+                        local disk [ruling_chat_edit_interface, brief;
+                        ASSUMPTION for the rest]. A serverless handler
+                        keeps neither between calls. The Axair website
+                        runs on an AWS serverless service, but the
+                        complexity a serverless bot needs is not worth
+                        it, which makes a container the upper bound on
+                        the level of host to target [owner's
+                        statement]. Holds at ten times the size: yes,
+                        since a fetch of the whole tree per message
+                        grows with the tree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_host
+    guid_target:        dec_83b0d4aa49f44c899aca3fc74dca2e5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_host_container_with_volume
+    guid_target:        opt_63d92a51b0d0452eac529ba89d9d2294
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
