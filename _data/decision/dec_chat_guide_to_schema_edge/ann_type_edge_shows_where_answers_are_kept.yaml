@@ -1,0 +1,53 @@
+id_self:                ann_type_edge_shows_where_answers_are_kept
+guid_self:              ann_fbcadcc802ab4fe0844259f5da3cb0de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Type edge that shows where answers are kept
+brief:                  |
+                        From the type, a reviewer of a bot sees not
+                        only which fields it asks for but where the
+                        answers land: a shared register or a folder of
+                        files. A schema shows the fields only.
+description:            |
+                        A guide names the fields a bot asks about
+                        (opt_interview_guide_item.yaml lines 13-15). A
+                        schema states the shape of an item, and its
+                        type states where items are kept: ten types
+                        hold their items in a register with
+                        relation_has_items_held_in_register
+                        (_data/register/reg_relation.yaml lines
+                        135-162), and the rest give each item a file
+                        in a folder named after the type
+                        (src/cc_public/edit/edit.py lines 279-294). A
+                        first instance may hold member skill profiles,
+                        which are personal data (owner's statement,
+                        recorded in
+                        ann_a_guide_item_states_what_personal_data_is_asked).
+                        An edge to the type lets one read of the guide
+                        show both what personal data is asked and
+                        where it is stored. Holds at ten times the
+                        size: yes, because each bot has one guide and
+                        one type.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_guide_to_schema_edge
+    guid_target:        dec_f339b3db51c14b34980fb81e0a92c896
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_new_relation_to_the_type
+    guid_target:        opt_78c121b0d11b47719a4975982e247a39
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

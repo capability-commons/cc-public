@@ -1,0 +1,49 @@
+id_self:                ann_either_edge_costs_one_lookup
+guid_self:              ann_4e2f59e2749e4a53905bc346ccc84cba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Either edge costs one lookup
+brief:                  |
+                        The edge choice costs at most one lookup in a
+                        table of a few dozen types per conversation,
+                        which no volunteer will notice. The type edge
+                        needs no extra lookup, since the write path
+                        loads the type anyway.
+description:            |
+                        The command that makes a new item already
+                        finds its type and its register
+                        (src/cc_public/edit/edit.py lines 269-281 and
+                        1280-1294). The type register holds 34 types
+                        (_data/register/reg_data_item_type.yaml). From
+                        a type, the schema is one edge away
+                        (src/cc_public/graph/derive.lp lines 99-102).
+                        From a schema, the type is the reverse of that
+                        edge, a scan of those 34 entries. ASSUMPTION:
+                        a conversation turn waits on the LLM for
+                        seconds, so a scan of a few dozen entries is
+                        lost in it. Holds at ten times the size: yes,
+                        because a few hundred types still scan in well
+                        under a millisecond.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_guide_to_schema_edge
+    guid_target:        dec_f339b3db51c14b34980fb81e0a92c896
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_new_relation_to_the_type
+    guid_target:        opt_78c121b0d11b47719a4975982e247a39
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
