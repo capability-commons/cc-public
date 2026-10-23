@@ -115,7 +115,7 @@ REGEX_WORD        = re.compile(r'[A-Za-z]+')
 REGEX_QUOTED      = re.compile(r'"[^"\n]*"')
 REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
-# A link to a concept, written as in a wiki: [[term]], or [[concept|label]]
+# A wiki link to a concept: [[term]], or [[concept|label]]
 # where the concept is named by its id and the label is shown in its place.
 #
 REGEX_TERM_LINK   = re.compile(r'\[\[([^\[\]|\n]+?)(?:\|([^\[\]|\n]+?))?\]\]')
@@ -230,7 +230,7 @@ PREDICATE         = {
                            'it was brought in from.'),
     'term_link':          (('holder', 'term', 'concept', 'file', 'line:number'),
                            'The text of a field of the item holder links term to a '
-                           'concept, in file at line. A link written [[term]] leaves '
+                           'concept, in file at line. A wiki link written [[term]] leaves '
                            'concept empty, to be found by the term; one written '
                            '[[concept|term]] names it.'),
     'genus_link':         (('holder', 'term', 'concept'),
