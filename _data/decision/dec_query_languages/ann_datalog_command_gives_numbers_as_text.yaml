@@ -10,28 +10,35 @@ protective_mark:
 
 title:                  Numbers returned as text by the Datalog command
 brief:                  |
-                        Over the one fact set, SQL returns and sorts a
-                        number as an integer, while the Datalog
-                        command returns and sorts it as text, so the
-                        two languages give differently typed and
-                        ordered results for the same question.
+                        At 89c74d8, over the one fact set, SQL
+                        returned and sorted a number as an integer,
+                        while the logic command returned and sorted it
+                        as text, so the two languages gave differently
+                        typed and ordered results for the same
+                        question. A declared number column now comes
+                        back as a number; an undeclared one is still
+                        text.
 description:            |
-                        The query group says both languages see the
-                        same relations (querying.py lines 63-67); a
-                        :number column is an integer in SQL
-                        (querying.py lines 210-211; sql.py line 41).
-                        The Datalog command turns every value into
-                        text (datalog.py lines 256-266, _field) and
-                        sorts rows as text (datalog.py line 309).
-                        Advocate's test, 2026-10-15: Datalog gave
-                        ('10',), ('9',) and a #count over a declared
-                        number gave ('203',); SQL gave (9,), (10,).
-                        With --json, Datalog numbers are strings and
-                        SQL numbers are numbers (querying.py lines
-                        134-135, 179-181). Weak: it affects only
-                        numeric columns and ordering, and loses no
-                        value. It points at a fix in the Datalog
-                        adapter, not at another language set.
+                        The query group says SQL and logic programs
+                        see the same predicates (querying.py lines
+                        85-87); a :number column is an integer in SQL
+                        (sql.py line 42). At 89c74d8 the Datalog
+                        command turned every value into text and
+                        sorted rows as text. Advocate's test,
+                        2026-10-15: Datalog gave ('10',), ('9',) and a
+                        #count over a declared number gave ('203',);
+                        SQL gave (9,), (10,). Commit 0e4408b fixed
+                        this for declared columns: logic.py still
+                        reads each value as text (_field, lines
+                        341-351), and querying.py converts and sorts
+                        the columns declared a number (lines 229-230,
+                        441-453; test at test_querying.py line 100). A
+                        column with no declaration, such as an
+                        undeclared count, still comes back as text,
+                        while SQL gives it as a number. Weak: it
+                        affects only undeclared numeric columns and
+                        ordering, and loses no value. It points at the
+                        logic adapter, not at another language set.
 
 edge:
 

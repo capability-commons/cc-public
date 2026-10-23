@@ -11,29 +11,36 @@ protective_mark:
 title:                  Slow round-trip parsing
 brief:                  |
                         Round-trip loading with pure-Python
-                        ruamel.yaml takes about twenty times as long
-                        as PyYAML with libyaml on the same files, and
-                        about 1.7 times pure-Python PyYAML. Reading
-                        and validating YAML documents was most of the
-                        time of a check before the read cache.
+                        ruamel.yaml took about twenty times as long as
+                        PyYAML with libyaml on the same files, and
+                        takes about 1.7 to 1.9 times pure-Python
+                        PyYAML. A cold read of the whole tree now
+                        takes about 8 s. Reading and validating YAML
+                        documents was most of the time of a check
+                        before the read cache.
 description:            |
                         Best of 5 over the 75 YAML files under _data
-                        (269,421 bytes), Python 3.13, ruamel.yaml
-                        0.19.1, PyYAML 6.0.2: ruamel rt 421-427 ms;
-                        ruamel safe 318-326 ms; PyYAML SafeLoader
-                        240-253 ms; PyYAML CSafeLoader 20 ms. Memory
-                        held: 2.9 MB against 0.5 MB. Script:
-                        scratchpad bench_adv_perf/b.py. Commit
-                        93a1428: reading and validating YAML documents
-                        "took most of the time of each check". The
-                        lock has the pure-Python wheel (pixi.lock
-                        lines 54, 743-749). The old lock had PyYAML
-                        only as a source archive and no libyaml
-                        package (afac39c^:pixi.lock). ASSUMPTION:
-                        PyYAML built there would likely have been pure
-                        Python, so the 1.7 times figure is the nearer
-                        comparison. ASSUMPTION: about 4 s per full
-                        read at tenfold size, by linear extrapolation.
+                        on 2026-10-15 (269,421 bytes), Python 3.13,
+                        ruamel.yaml 0.19.1, PyYAML 6.0.2: ruamel rt
+                        421-427 ms; ruamel safe 318-326 ms; PyYAML
+                        SafeLoader 240-253 ms; PyYAML CSafeLoader 20
+                        ms. Memory held: 2.9 MB against 0.5 MB.
+                        Script: scratchpad bench_adv_perf/b.py. Best
+                        of 3 over the 2103 YAML files under _data on
+                        2026-10-22 (4,682,444 bytes), Python 3.13.16,
+                        ruamel.yaml 0.19.1, PyYAML 6.0.1 without
+                        libyaml: ruamel rt 8.2 s; PyYAML SafeLoader
+                        4.4 s. So a cold read grew about in line with
+                        the bytes. Commit 93a1428: reading and
+                        validating YAML documents "took most of the
+                        time of each check". The lock has the
+                        pure-Python wheel in every environment
+                        (pixi.lock lines 65 and 2614-2624). The old
+                        lock had PyYAML only as a source archive and
+                        no libyaml package (afac39c^:pixi.lock).
+                        ASSUMPTION: PyYAML built there would likely
+                        have been pure Python, so the 1.7 to 1.9 times
+                        figure is the nearer comparison.
 
 edge:
 

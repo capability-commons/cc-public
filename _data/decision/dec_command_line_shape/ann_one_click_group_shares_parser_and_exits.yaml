@@ -22,11 +22,12 @@ description:            |
                         through them (grep EXIT_
                         src/cc_public/cli/*.py). Each kind of command
                         has its own module (auditing, checking,
-                        editing, gating, messaging, querying), and
-                        command.py only imports them (lines 31-40), so
-                        a new command adds one import line. Before
-                        6c8d3d5, check.py read list_arg[1] by hand and
-                        returned 1 or 0 itself (git show
+                        editing, exporting, gating, messaging,
+                        querying, serving), and command.py only
+                        imports them (lines 31-39), so a new command
+                        module adds one import line. Before 6c8d3d5,
+                        check.py read list_arg[1] by hand and returned
+                        1 or 0 itself (git show
                         6c8d3d5^:src/check/check.py lines 343-365).
                         ASSUMPTION: further scripts would have
                         repeated this; no second script existed before

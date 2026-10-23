@@ -16,18 +16,21 @@ brief:                  |
                         latent: none of the scalars they read
                         differently occurs today.
 description:            |
-                        Local test, 2026-10-15: all 75 YAML files
-                        under _data loaded with YAML(typ='rt') and
-                        with yaml.safe_load, converted to plain types
-                        and compared; 0 files differ. Leaf values are
-                        only str, int and bool; no dates, floats or
-                        nulls. rt loads all 75 without
-                        DuplicateKeyError, so no file holds a repeated
-                        key. The case for the chosen library on
-                        correctness therefore rests on future input,
-                        not on a present misreading. This may change
-                        as the data grows. Raised by the functional
-                        suitability advocate as weak support.
+                        Local test, 2026-10-22, ruamel.yaml 0.19.1 and
+                        PyYAML 6.0.1: all 2103 YAML files under _data
+                        loaded with YAML(typ='rt') and with
+                        yaml.safe_load, converted to plain types and
+                        compared; 0 files differ. Leaf values are only
+                        str, int and bool (46992, 84 and 75); no
+                        dates, floats or nulls. rt loads all 2103
+                        without DuplicateKeyError, so no file holds a
+                        repeated key. On 2026-10-15 the same held for
+                        the 75 files then present. The case for the
+                        chosen library on correctness therefore rests
+                        on future input, not on a present misreading.
+                        This may change as the data grows. Raised by
+                        the functional suitability advocate as weak
+                        support.
 
 edge:
 

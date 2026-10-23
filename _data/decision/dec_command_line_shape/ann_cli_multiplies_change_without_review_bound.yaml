@@ -11,10 +11,12 @@ protective_mark:
 title:                  Force-multiplier without a bound on change volume
 brief:                  |
                         The shape was chosen to multiply what an agent
-                        can do, and the maintainer now calls the
-                        review burden huge. No command limits, groups
-                        or summarizes change for a person, so the
-                        shape serves the rate of change, not its
+                        can do, and the maintainer calls the review
+                        burden huge. cctool impact lists what a commit
+                        touches and cctool serve shows each decision
+                        for review, but no command limits or measures
+                        the volume of change, so the shape still
+                        serves the rate of change more than its
                         review.
 description:            |
                         Maintainer's statements, 2026-10-13T21:57:52Z
@@ -26,12 +28,17 @@ description:            |
                         alone adds 11910 (git log --numstat, measured
                         2026-10-15). The agent conventions
                         (tab-separated output, --json, --limit;
-                        cli/querying.py lines 46-47, 92-99) serve a
-                        program; no command reports the size of a
-                        staged change (README.md lines 64-80).
-                        ASSUMPTION: no measurement links commit volume
-                        to cctool. Scripts run directly do no better
-                        here.
+                        cli/querying.py lines 53-54, 116-123) serve a
+                        program. Two commands now serve a person:
+                        cctool impact lists the items a commit or the
+                        staged content touches and the items near them
+                        (auditing.py lines 159-209), and cctool serve
+                        serves a review page for each decision
+                        (serving.py lines 37-68). No command caps
+                        change or reports its size (README.md lines
+                        112-138). ASSUMPTION: no measurement links
+                        commit volume to cctool. Scripts run directly
+                        do no better here.
 
 edge:
 

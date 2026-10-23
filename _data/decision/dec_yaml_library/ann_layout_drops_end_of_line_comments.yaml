@@ -11,20 +11,27 @@ protective_mark:
 title:                  End-of-line comments lost on edit
 brief:                  |
                         Every edit lays the whole file out again, and
-                        the layout keeps comments on their own lines
-                        but drops a comment at the end of a line,
-                        without any failure.
+                        the layout cannot keep a comment at the end of
+                        a line. It now refuses such a file, so an edit
+                        or format of it fails rather than keeping the
+                        comment.
 description:            |
-                        edit.py lines 1182-1193 pass each new file
-                        text to _format. layout.format("#
+                        edit.py lines 1466-1476 pass each new file
+                        text to the layout and turn a refusal into a
+                        refused edit. On 2026-10-15 layout.format("#
                         lead\nid_self: a # trailing\nrelation: []\n")
-                        returns the text without the trailing comment
-                        (local test against the repo source,
-                        2026-10-15). No file under _data has an
-                        end-of-line comment today. The fault is in the
-                        layout, not the library: ruamel keeps the
-                        comment, so a fix stays possible, while PyYAML
-                        keeps no comments.
+                        returned the text without the trailing
+                        comment. In the tree of 2026-10-22 the same
+                        call raises Unsupported, "The document has a
+                        comment at the end of line 2" (layout.py lines
+                        345-383), and cctool check reports such a file
+                        as unformatted_file (layout.py lines 168-183).
+                        No file under _data has an end-of-line comment
+                        today: the layout refuses none of the 2103
+                        YAML files. The limit is in the layout, not
+                        the library: ruamel keeps the comment, so
+                        keeping it stays possible, while PyYAML keeps
+                        no comments.
 
 edge:
 

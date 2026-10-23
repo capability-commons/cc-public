@@ -15,21 +15,32 @@ brief:                  |
                         about as much as extraction, and it grows with
                         the tree.
 description:            |
-                        check calls layout.violations over every YAML
-                        document (src/cc_public/check/check.py lines
-                        66-79 at 89c74d8, added in b544e09), with no
-                        cache (src/cc_public/edit/layout.py lines
-                        106-128). Advocate measurement, 2026-10-15, at
-                        89c74d8 on 122 YAML documents: layout pass
-                        0.81 s and 0.91 s, extraction 0.59 s and 0.73
-                        s, check_documents 1.17 s. format_file costs
-                        about 90 us per line (79 ms for 849 lines of
-                        reg_data_item_type.yaml). ASSUMPTION: linear
-                        growth puts a tenfold tree near 8 to 9 s per
-                        check. A cache keyed on file content would
-                        remove most of it (not built or measured), so
-                        the point argues for a cache more than against
-                        the printer.
+                        check calls layout.violations over every file
+                        that holds a YAML document
+                        (src/cc_public/check/check.py line 164, added
+                        in b544e09). At 89c74d8 there was no cache.
+                        Layout verdicts are now kept by path and
+                        content digest, in memory and, under the gate
+                        of a commit, in the store between runs
+                        (src/cc_public/edit/layout.py lines 101-164;
+                        ann_layout_verdicts_cached_is_stale). Each
+                        check still reads and hashes every file, and a
+                        check with no store lays out every file once.
+                        Advocate measurement, 2026-10-15, at 89c74d8
+                        on 122 YAML documents: layout pass 0.81 s and
+                        0.91 s, extraction 0.59 s and 0.73 s. Review
+                        measurement, 2026-10-22, on a copy of the tree
+                        with no store, 2196 files: layout pass 14.4 s,
+                        extraction 9.7 s, a second pass in the same
+                        process 0.06 s. format_file now costs about
+                        115 us per line (0.20 s for the 1706 lines of
+                        reg_data_item_type.yaml). Growth from 122 to
+                        2196 files was close to linear. The cache
+                        removes the cost for unchanged files in the
+                        gate of a commit, but not for a check with no
+                        store or the gate of a push, so the point
+                        argues for the store more than against the
+                        printer.
 
 edge:
 

@@ -15,19 +15,23 @@ brief:                  |
                         than a logic query and scales with the clingo
                         engine.
 description:            |
-                        sql.py lines 54-59; the connection is rebuilt
-                        per query (sql.py lines 61, 87-94). Measured
+                        sql.py lines 63-68 run clingo on derive.lp
+                        before any table is filled; the connection,
+                        with an FTS5 table of all prose, is rebuilt
+                        per query (sql.py lines 70-87, 101). Measured
                         by an advocate on 2026-10-15 at HEAD 89c74d8,
                         median of 7 runs on one machine (scratchpad
                         advperf/m.py): SQL query about 89 ms, clingo
                         derivation alone about 87-90 ms, logic query
                         about 77 ms. At ten times the items and edges:
                         derivation about 437 ms, SQL query about 425
-                        ms. Most of the gap between clingo and Souffle
-                        is regex matching called from Python
-                        (ann_clingo_is_slower_at_this_size). The
-                        SQLite load and the command layout add only
-                        about 2 ms.
+                        ms. Rerun on 2026-10-22 over the tree, 2549
+                        items, median of 5 runs in one container: SQL
+                        query about 1610 ms, derivation about 1350 ms,
+                        logic query about 1140 ms, extraction about
+                        240 ms. Most of the gap between clingo and
+                        Souffle is regex matching called from Python
+                        (ann_clingo_is_slower_at_this_size).
 
 edge:
 

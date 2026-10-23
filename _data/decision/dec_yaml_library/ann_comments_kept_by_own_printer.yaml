@@ -21,15 +21,16 @@ description:            |
                         "can write a file back with its comments, key
                         order and layout intact". Commit b544e09
                         (pre-squash) brought in the layout printer.
-                        layout.py gathers comment lines from the text
-                        and re-emits them by line (lines 203-224,
-                        344-372, 388-425); no module reads ruamel's
-                        .ca comment records (grep of src). Edits
-                        splice line ranges and reformat the file
-                        (edit.py lines 447-449, 561-566, 1159-1193).
+                        layout.py gathers whole-line comments from the
+                        text and puts them back by line (_lead and
+                        _emit_lead, lines 483-546). It reads ruamel's
+                        .ca comment records only to refuse a comment
+                        at the end of a line (_refuse, lines 345-383).
+                        Edits splice line ranges and lay the file out
+                        again (edit.py lines 1466-1476 and 1609-1642).
                         ruamel dump is used only for fresh fragments
-                        and one scalar (layout.py lines 227-241,
-                        520-531).
+                        and one scalar (layout.py lines 386-403 and
+                        657-682).
 
 edge:
 

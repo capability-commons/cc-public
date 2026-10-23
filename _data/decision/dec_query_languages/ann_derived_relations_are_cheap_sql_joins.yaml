@@ -10,24 +10,33 @@ protective_mark:
 
 title:                  Derived predicates as cheap SQL joins
 brief:                  |
-                        The present derived predicates are
-                        non-recursive joins and one negation, which
-                        SQLite computes in a few milliseconds, so SQL
-                        as their home would cut the query step of the
-                        SQL path from about 89 ms to about 5 ms; the
-                        extraction of facts, about 46 ms, stays in
-                        every command.
+                        Most derived predicates are joins that SQLite
+                        computes in a few milliseconds, so SQL as
+                        their home would cut much of the query step of
+                        the SQL path, whose derivation by clingo took
+                        about 87 ms of an 89 ms query at 89c74d8.
+                        downstream and the predicates built on it are
+                        recursive and would need recursive SQL.
 description:            |
-                        derive.lp has no recursion; primary_edge uses
-                        one negation. Measured by an advocate on
-                        2026-10-15 (advperf/m.py): loading facts and
-                        computing prefix_of in SQLite took about 5 ms
-                        (10 ms at ten times the size) and gave the
-                        same 203 rows as clingo. Only prefix_of was
-                        prototyped; ASSUMPTION: the other three cost
-                        about the same. Speeds queries, not the check
-                        gate, which stays in clingo. Recursive queries
-                        over much larger graphs are unmeasured.
+                        derive.lp declares 13 derived predicates
+                        (lines 34-231); primary_edge uses the one
+                        negation (line 64), and downstream calls
+                        itself (lines 183-187), with upstream and
+                        blast_radius built on it. Measured by an
+                        advocate on 2026-10-15 at 89c74d8
+                        (advperf/m.py): loading facts and computing
+                        prefix_of in SQLite took about 5 ms (10 ms at
+                        ten times the size) and gave the same 203 rows
+                        as clingo. Only prefix_of was prototyped;
+                        ASSUMPTION: the other plain joins cost about
+                        the same. On 2026-10-22, with 2549 items, a
+                        median of 5 runs in one container gave about
+                        1350 ms for the clingo derivation, 1610 ms for
+                        an SQL query and 240 ms for extraction, so the
+                        share to save has grown. Speeds queries, not
+                        the check gate, which stays in clingo.
+                        Recursive queries over much larger graphs are
+                        unmeasured.
 
 edge:
 

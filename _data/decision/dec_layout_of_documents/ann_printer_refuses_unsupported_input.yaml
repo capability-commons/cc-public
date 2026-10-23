@@ -10,36 +10,42 @@ protective_mark:
 
 title:                  Refusal of input the printer cannot lay out
 brief:                  |
-                        The printer refuses some YAML documents
-                        outside its subset rather than guessing:
-                        nested sequences, folded and multi-line plain
+                        The printer refuses YAML documents outside its
+                        subset rather than guessing: anchors, aliases,
+                        tags, comments at the end of a line, nested
+                        sequences, folded and multi-line plain
                         scalars, and documents that are not YAML
                         mappings. Such input stops an edit with a
                         message instead of being rewritten wrongly.
 description:            |
                         Unsupported is raised for documents that are
-                        not YAML or not mappings, nested sequences,
-                        folded scalars and plain scalars that need
-                        more than one line
-                        (src/cc_public/edit/layout.py lines 213, 217,
-                        480, 499, 543). The class docstring (lines
-                        96-103) also names anchors and tags, but they
-                        are not refused: a run of format on 2026-10-15
-                        kept tags as written, wrote an alias of a
-                        scalar as a second copy of its anchor and
-                        expanded an alias of a mapping, with the data
-                        kept. No YAML document in the repository uses
-                        them. An edit that would leave a refused file
-                        is refused (edit.py _format, lines 1052-1062).
+                        not YAML or not mappings, for anchors,
+                        aliases, tags and comments at the end of a
+                        line (src/cc_public/edit/layout.py lines 328,
+                        332, 345-382), and for folded scalars, nested
+                        sequences and plain scalars that need more
+                        than one line (lines 615, 634, 678). Tests
+                        show the new refusals
+                        (src/cc_public/edit/_test/test_edit.py lines
+                        846-856). At 89c74d8 anchors and tags were not
+                        refused: a run of format on 2026-10-15 kept
+                        tags, wrote an alias of a scalar as a second
+                        copy of its anchor and expanded an alias of a
+                        mapping. No YAML document in the repository
+                        uses them: a check of a copy of the tree on
+                        2026-10-22 gave no unformatted_file row. An
+                        edit that would leave a refused file is
+                        refused (edit.py _format, lines 1466-1476).
                         cctool check reports a refused file as one
                         unformatted_file row (layout.py lines
-                        106-129). Only block scalars are refilled
-                        (layout.py lines 469-478). Layout is tested as
-                        a fixpoint over the repository (test_edit.py
-                        lines 468-476). violations catches only
-                        Unsupported (layout.py lines 120-124).
-                        ASSUMPTION: whether other exceptions can arise
-                        on valid YAML is not shown.
+                        168-182). Only block scalars are refilled
+                        (layout.py lines 604-612). Layout is tested
+                        over the repository as a fixpoint that keeps
+                        the data (test_edit.py lines 823-828).
+                        violations catches only Unsupported (layout.py
+                        lines 175-178). ASSUMPTION: whether other
+                        exceptions can arise on valid YAML is not
+                        shown.
 
 edge:
 

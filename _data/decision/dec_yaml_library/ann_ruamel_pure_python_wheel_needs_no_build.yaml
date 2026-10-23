@@ -10,26 +10,32 @@ protective_mark:
 
 title:                  ruamel.yaml as one pure-Python wheel
 brief:                  |
-                        In the locked environment ruamel.yaml installs
-                        as one pure-Python wheel with no required
-                        dependencies, while PyYAML had to be built
-                        from a source archive. Both are MIT licensed.
+                        In every locked environment ruamel.yaml
+                        installs as one pure-Python wheel with no
+                        required dependencies. Before the switch
+                        PyYAML had to be built from a source archive
+                        on Python 3.15, which still has no PyYAML
+                        wheel. Both are MIT licensed.
 description:            |
-                        Python 3.15 on linux-64 and osx-arm64
-                        (pixi.lock line 40; pyproject.toml line 52).
+                        The lock has four environments, the default on
+                        Python 3.15 and the slow run on 3.12, 3.13 and
+                        3.14, each on linux-64, osx-64 and osx-arm64
+                        (pyproject.toml lines 59, 67 and 81-101;
+                        pixi.lock lines 3, 45, 169, 332 and 496).
                         Before the switch the lock resolved
-                        pyyaml-6.0.3.tar.gz (commit afac39c, pixi.lock
-                        diff); PyYAML 6.0.3 has wheels for cp38 to
-                        cp314 only
-                        (https://pypi.org/pypi/pyyaml/6.0.3/json,
-                        fetched 2026-10-15).
-                        ruamel_yaml-0.19.1-py3-none-any.whl,
-                        dependencies only behind optional extras
-                        (pixi.lock lines 743-751). The ruamel.yaml
-                        README says the C extensions bring no
-                        advantage with typ='rt'. ASSUMPTION: MIT is
-                        compatible with an Apache-2.0 project; no
-                        legal source cited.
+                        pyyaml-6.0.3.tar.gz for Python 3.15 (commit
+                        afac39c, pixi.lock diff). PyYAML 6.0.3, still
+                        the latest, has wheels for cp38 to cp314 only
+                        (https://pypi.org/pypi/pyyaml/json, fetched
+                        2026-10-22), so a build would now be needed
+                        only in the default environment.
+                        ruamel_yaml-0.19.1-py3-none-any.whl is locked
+                        in all twelve, with dependencies only behind
+                        optional extras (pixi.lock lines 2614-2624).
+                        The ruamel.yaml README says the C extensions
+                        bring no advantage with typ='rt'. ASSUMPTION:
+                        MIT is compatible with an Apache-2.0 project;
+                        no legal source cited.
 
 edge:
 
