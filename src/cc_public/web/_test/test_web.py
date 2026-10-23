@@ -746,7 +746,9 @@ def test_requirement_index_groups_requirements_by_subject(tree):
     (status, _, body) = cc_public.web.server.respond(tree, '/requirements')
     assert status == http.HTTPStatus.OK
     assert b'<h2>Tooling</h2>' in body
-    assert body.count(b'href="/requirement/rqt_') == 3
+    assert b'<h2>Chat</h2>' in body
+    assert body.count(b'href="/requirement/rqt_') == len(
+                            list((tree / '_data' / 'requirement').glob('rqt_*.yaml')))
     assert (b'If an edit would add a failure to the tree, the Tooling shall refuse the '
             b'edit.') in body
 
