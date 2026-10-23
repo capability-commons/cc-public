@@ -1,0 +1,67 @@
+id_self:                ann_package_ships_shared_data_as_files
+guid_self:              ann_6ddb14ed21d5467ea3285d24766e610b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared data shipped as files in the package
+brief:                  |
+                        cc-public's own content will reach a peer as
+                        the YAML of its _data inside the release
+                        package, and the planned multi-root check
+                        reads a second tree as files, so a segment
+                        held as files can cross as its tree with no
+                        fact format and no exporter. This does not
+                        serve a segment held in a graph database, and
+                        it gives the producer no say over which items
+                        leave, which costs little for cc-public, whose
+                        items are all public.
+description:            |
+                        Drafted by Claude on 2026-10-23, in the review
+                        against the tree, from a ruling no annotation
+                        on this decision had used. Sources: peers
+                        bring in cc-public as a versioned package
+                        (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml,
+                        brief), one package holding the tooling, the
+                        shared data and the engine
+                        (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml,
+                        brief). The release ships "the whole of _data"
+                        (owner's statement, 2026-10-22T16:30,
+                        _sources/context.md line 22). The plan names
+                        cctool check --root A --root B as the
+                        multi-root check
+                        (_sources/cc-patrol-notes/plan.md lines
+                        65-68). Every item in cc-public's _data
+                        carries mark_public (a grep of id_mark under
+                        _data finds no other mark). Partner segments
+                        are likely to use a graph database or similar
+                        as their backing (owner's statement,
+                        2026-10-22T16:20). Strength: moderate; it
+                        settles how cc-public itself crosses, not how
+                        a partner held in a database does.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_files
+    guid_target:        opt_0cb976f756af487c8e4d03352fc3928b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

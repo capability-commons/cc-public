@@ -1,0 +1,88 @@
+id_self:                ann_tag_version_changes_at_every_commit
+guid_self:              ann_c73cb5afa52a4f8b9317be5fb447deeb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Version from the tag that changes at every commit
+brief:                  |
+                        Read from the tag, the version of a commit
+                        after a release is not the release number but
+                        one made from the next version, the distance
+                        from the tag and the commit hash, so it
+                        changes at every commit. The lock records the
+                        version of the local package, so if pixi
+                        compares that version, each commit makes the
+                        lock stale and every hook run with --locked
+                        refuses; if it does not, the lock holds a
+                        version that is wrong between releases. A
+                        version written in pyproject.toml stays the
+                        same between releases. A short test with pixi
+                        settles which holds.
+description:            |
+                        Sources: the default scheme of setuptools-scm
+                        gives the tag itself at a tagged commit, and
+                        "{next_version}.dev{distance}+{scm
+                        letter}{revision hash}" at a later one, with a
+                        date added when the working copy has changes
+                        (https://setuptools-scm.readthedocs.io/en/latest/usage/,
+                        section "Default versioning scheme").
+                        hatch-vcs takes the version through
+                        setuptools-scm, which it requires at 8.2.0 or
+                        later (https://pypi.org/pypi/hatch-vcs/json,
+                        requires_dist). The lock records the local
+                        package at version 0.1.0 with a sha256
+                        (pixi.lock lines 722-725). Every hook runs
+                        pixi with --locked (.githooks/pre-commit line
+                        30; .githooks/pre-push line 33), and a
+                        manifest changed without a new lock is refused
+                        (_data/decision/dec_environment_manager/ruling_environment_manager.yaml
+                        lines 13-19). pixi checks that "All hashes for
+                        the pypi editable packages are correct"
+                        (https://pixi.prefix.dev/dev/workspace/lock_file/).
+                        Lock file version 7 removes the input hashes
+                        of source trees, and its satisfiability check
+                        agrees with the resolution
+                        (https://prefix.dev/blog/lock-file-v7); this
+                        lock is at version 6 (pixi.lock line 1).
+                        Assumptions: under lock version 6 pixi
+                        compares only the hash of the manifest, so a
+                        changing version leaves the lock fresh but
+                        wrong; under version 7 it may compare the
+                        version and refuse. Not tested in this review,
+                        since the pixi on the review machine only runs
+                        tasks. Strength: moderate; a test of a few
+                        minutes settles it, and a local scheme with no
+                        local version narrows the change to the
+                        distance but does not remove it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_in_pyproject
+    guid_target:        opt_27a3b53a8c8f40aea67a32d53a10bc1f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

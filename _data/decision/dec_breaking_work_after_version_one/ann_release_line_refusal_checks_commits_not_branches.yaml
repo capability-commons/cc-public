@@ -1,0 +1,91 @@
+id_self:                ann_release_line_refusal_checks_commits_not_branches
+guid_self:              ann_4a53953c0ae2451ca937a28fe8a6de2b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal on the release line that the history check cannot yet make
+brief:                  |
+                        The history check judges commits, not
+                        branches. A commit does not record the branch
+                        it is on, and at push the check reads only the
+                        commits that no branch of the remote already
+                        has. A breaking commit first pushed on next or
+                        on a topic branch is then not checked again
+                        when the release line moves over it, and the
+                        landing of next at a major release must be let
+                        through. Refusing breaking work on the release
+                        line needs a new check over the range a push
+                        moves that line, with one exception at each
+                        major release, while a warning and a computed
+                        bump need neither.
+description:            |
+                        Sources:
+                        - The check of record judges each commit from
+                          what it records, however git made it
+                          (_data/decision/dec_enforcement_approach/ruling_enforcement_approach.yaml
+                          lines 13-15). Its per-commit check reads the
+                          message and the change against the first
+                          parent (src/cc_public/commit/history.py
+                          lines 15-26), and nothing there names a
+                          branch.
+                        - At pre-push it takes the commits a push
+                          would send, and a commit any ref of the
+                          remote already has is not sent; it reads the
+                          local ref and commit of each line git gives
+                          it, not the remote ref
+                          (src/cc_public/commit/history.py lines
+                          81-101).
+                        - Topic branches land on dev by fast-forward
+                          merge (AGENTS.md lines 40-48), so a commit
+                          already pushed elsewhere reaches the release
+                          line with no new commit.
+                        - A rule that keeps needing exceptions is
+                          fixed in the rule (AGENTS.md lines 96-97).
+                        - The bump is computed from the commit items
+                          since the last release
+                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml
+                          lines 13-14; opt_semver_computed.yaml lines
+                          12-15), so a breaking commit in that range
+                          makes the bump major under either option.
+                        - Assumption: next would be pushed to the
+                          remote between major releases, as the owner
+                          works from several machines and sessions.
+                          Strength: moderate. The pre-push lines give
+                          the remote ref and its old commit, so the
+                          range check is small to write, and the
+                          exception comes once per major release; it
+                          changes how the option is built, not whether
+                          it meets the owner's aim. Drafted by Claude
+                          in the review of 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_breaking_work_after_version_one
+    guid_target:        dec_1f3aca38bd434486892ede233ca5345c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_breaking_work_waits_on_next
+    guid_target:        opt_d85bc617845a43da9d154ab3c8366bb5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_breaking_work_warned_only
+    guid_target:        opt_7ea2ad6b72434751a5bab7b1cfcc4d47
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

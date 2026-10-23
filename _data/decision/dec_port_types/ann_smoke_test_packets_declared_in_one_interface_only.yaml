@@ -1,0 +1,94 @@
+id_self:                ann_smoke_test_packets_declared_in_one_interface_only
+guid_self:              ann_fb0d82e0564c48909defd7bcd685a9b1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Smoke test packets declared in one interface only
+brief:                  |
+                        The smoke test in cc-public already has the
+                        gap the Patrol drafts show. The system
+                        controller declares a control packet and a
+                        feedback packet, but the process controller at
+                        the other end of both edges can only spell
+                        them dict, since a type reference names a
+                        declaration of its own document only. The
+                        check compares spellings, so an edge from the
+                        control output of the process controller into
+                        the feedback input of the system controller
+                        would pass. A shared entry would serve an item
+                        already in the tree.
+description:            |
+                        Sources:
+                        - The system controller interface declares
+                          control_packet and feedback_packet, and its
+                          feedback input and control output name them
+                          as declarations, each also spelled dict.
+                          (_data/interface_control_document/icd_system_controller.yaml
+                          lines 33-63, 74-98)
+                        - The ctrl input and the control and feedback
+                          outputs of the process controller are
+                          spelled dict and name no declaration.
+                          (_data/interface_control_document/icd_process_controller.yaml
+                          lines 42-73)
+                        - The smoke test joins the control output of
+                          the system controller to the ctrl input of
+                          the process controller, and the feedback
+                          output of the process controller to the
+                          feedback input of the system controller.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 99-137)
+                        - A declaration in a type reference is the key
+                          of a type the same document shares.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 119-145)
+                        - The stated type of a port is the spelling of
+                          its type reference only, and the check
+                          compares the stated types at the two ends of
+                          an edge. (src/cc_public/graph/extract.py
+                          lines 1459, 1570-1580;
+                          src/cc_public/check/check.lp lines
+                          3229-3233)
+                        - A type, relation, field or command is added
+                          only when a real instance needs it.
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml,
+                          brief) Strength: moderate; the case is in
+                          the tree and the check misses it, but the
+                          two packets are Python mappings with no
+                          fixed layout yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_port_types
+    guid_target:        dec_5fea943b36994061a4dabfebe423837a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_types_from_data_dictionaries
+    guid_target:        opt_cd105a59510b44f3ad5adcb2b7d24f1b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_port_types_by_spelling
+    guid_target:        opt_23ae5ba220ee45f49c372ca3e61008e9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_no_data_dictionary_entry_exists_yet
+    guid_target:        ann_89b47b6602034f89a95a313b221832ea
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

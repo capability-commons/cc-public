@@ -1,0 +1,65 @@
+id_self:                ann_legacy_tag_lets_main_take_dev_history
+guid_self:              ann_be14d4a14b544e5992e08516dfb8fd6b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Legacy history under a tag, freeing main to take dev's history
+brief:                  |
+                        The legacy tree is now kept under a tag, so
+                        the move to main need not keep the legacy
+                        history on main. main can take dev's history
+                        whole, and every release tag made on dev then
+                        stays in main's history, which gives the first
+                        release from main a known start. This holds
+                        only if dev is not squashed again once a
+                        release is tagged on it.
+description:            |
+                        Sources:
+                        - Ruling of 2026-10-23: "the legacy tree is
+                          kept under a tag and not pruned"
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-14); the tag is baseline_20260918
+                          (_data/decision/dec_growth_policy/opt_continue_and_prune_legacy.yaml
+                          lines 13-15).
+                        - origin's main branch still holds the legacy
+                          September iteration (_sources/context.md
+                          line 32).
+                        - The bump is computed from the commit items
+                          since the last release
+                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml
+                          lines 13-14; opt_semver_computed.yaml lines
+                          12-15).
+                        - dev was squashed into one root commit on
+                          2026-10-20, with the earlier history under
+                          tag pre_squash_20261020
+                          (_data/decision/dec_growth_policy/ann_seed_reaches_main_as_one_commit.yaml
+                          lines 24-28).
+                        - Assumption: the move points main at dev's
+                          tip rather than merging dev into the legacy
+                          history. Strength: moderate. It answers the
+                          traceability challenge to this option only
+                          if the move is made this way, which the
+                          option does not yet say. Drafted by Claude
+                          in the review of 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_branch_lines
+    guid_target:        dec_7417da58555042c2b147bc00f5d7e782
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_then_main_then_next
+    guid_target:        opt_b00159d50c3146cf918e6a22a16d1828
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
