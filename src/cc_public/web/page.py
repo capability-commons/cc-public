@@ -162,6 +162,7 @@ RELATION_HAS_PROCESS      = cc_public.requirement.compose.RELATION_HAS_PROCESS
 RELATION_TRACES_TO_PARENT = cc_public.requirement.review.RELATION_TRACES_TO_PARENT
 RELATION_TRACES_TO_SOURCE = cc_public.requirement.review.RELATION_TRACES_TO_SOURCE
 RELATION_SUPERSEDES       = 'relation_supersedes'
+PREFIX_RELATION           = cc_public.web.constraint.PREFIX_RELATION
 COLUMN_REALIZED           = cc_public.web.contract.COLUMN_REALIZED
 COLUMN_RETURNS            = cc_public.web.contract.COLUMN_RETURNS
 AGREES                    = cc_public.web.contract.AGREES
@@ -2664,7 +2665,7 @@ def _relation(id_relation: str) -> str:
 
     """
 
-    words = id_relation.removeprefix('relation_').replace('_', ' ')
+    words = id_relation.removeprefix(PREFIX_RELATION).replace('_', ' ')
     return words[:1].upper() + words[1:]
 
 

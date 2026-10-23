@@ -36,6 +36,7 @@ edge:                   []
 import typing
 
 import cc_public.graph.item
+import cc_public.graph.prefix
 
 
 KEY_CONDITION_KIND   = 'condition_kind'
@@ -50,7 +51,7 @@ KEY_EDGE             = 'edge'
 KEY_ID_RELATION      = 'id_relation'
 KEY_ID_TARGET        = 'id_target'
 
-PREFIX_REQUIREMENT   = 'rqt_'
+PREFIX_REQUIREMENT   = cc_public.graph.prefix.stem('type_requirement')
 SLOT_SUBJECT         = 'subject'
 SLOT_PROCESS         = 'process'
 

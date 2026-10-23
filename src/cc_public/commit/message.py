@@ -71,10 +71,11 @@ import cc_public.check.schema
 import cc_public.commit.change
 import cc_public.edit.layout
 import cc_public.graph.extract
+import cc_public.graph.prefix
 
 
 ID_SCHEMA       = 'sch_commit'
-PREFIX          = 'cmt'
+PREFIX          = cc_public.graph.prefix.MAP_PREFIX['type_commit']
 FORMAT_TIME     = '%Y%m%d%H%M%S'
 LENGTH_SUFFIX   = 6
 MARK_COMMENT    = '#'

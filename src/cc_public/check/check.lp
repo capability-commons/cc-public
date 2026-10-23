@@ -678,7 +678,10 @@ unrecorded_module(File) :-
 
 member_stem(Holder, Stem) :-
     has_type(Holder, "type_interface_control_document"),
-    Stem = @cat("icm_", @substr(Holder, 4, @strlen(Holder) - 4)).
+    type_prefix("type_interface_control_document", Prefix, _),
+    type_prefix("type_interface_member", Member, _),
+    Start = @strlen(Prefix) + 1,
+    Stem = @cat(Member, "_", @substr(Holder, Start, @strlen(Holder) - Start)).
 
 member_stem(Holder, Holder) :-
     has_type(Holder, "type_interface_member").
@@ -2944,7 +2947,10 @@ unused_concept(Id) :-
 
 misnamed_node(Node, Expected) :-
     dataflow_node(Graph, Key, Node, _),
-    Expected = @cat("dfn_", @substr(Graph, 4, @strlen(Graph) - 4), ".", Key),
+    type_prefix("type_dataflow_graph", Prefix, _),
+    type_prefix("type_dataflow_node", Member, _),
+    Start = @strlen(Prefix) + 1,
+    Expected = @cat(Member, "_", @substr(Graph, Start, @strlen(Graph) - Start), ".", Key),
     Node != Expected.
 
 

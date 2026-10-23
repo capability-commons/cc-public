@@ -46,6 +46,8 @@ import typing
 import ruamel.yaml
 import ruamel.yaml.scalarstring
 
+import cc_public.graph.prefix
+
 
 # Round trip loading keeps the line and column of every key and value,
 # so that a fact can later be traced to where it is written.
@@ -324,8 +326,9 @@ PREDICATE         = {
 # A logic program file is named in the same way as a python module.
 #
 DIR_IMPORT_ROOT   = 'src'
-MAP_PREFIX_MODULE = {SUFFIX_PYTHON: 'pym_', SUFFIX_PROGRAM: 'lpf_'}
-PREFIX_PACKAGE    = 'pyp_'
+MAP_PREFIX_MODULE = {SUFFIX_PYTHON:  cc_public.graph.prefix.stem('type_python_module'),
+                     SUFFIX_PROGRAM: cc_public.graph.prefix.stem('type_logic_program_file')}
+PREFIX_PACKAGE    = cc_public.graph.prefix.stem('type_python_package')
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
 
@@ -344,12 +347,12 @@ DELIM_DEFINITION  = '::'
 # of its logic program file and the name of the predicate, under this
 # prefix.
 #
-PREFIX_PREDICATE  = 'lpp_'
+PREFIX_PREDICATE  = cc_public.graph.prefix.stem('type_logic_program_predicate')
 REGEX_DECL_NAME   = re.compile(r'^%[ \t]*decl[ \t]+(\w+)[ \t]*\(')
 
-MAP_PREFIX_KIND   = {ast.ClassDef:        'pycls_',
-                     ast.FunctionDef:     'pyf_',
-                     ast.AsyncFunctionDef: 'pyf_'}
+MAP_PREFIX_KIND   = {ast.ClassDef:         cc_public.graph.prefix.stem('type_python_class'),
+                     ast.FunctionDef:      cc_public.graph.prefix.stem('type_python_function'),
+                     ast.AsyncFunctionDef: cc_public.graph.prefix.stem('type_python_function')}
 
 # Where a dataflow step surface lists its ports and settings, and the
 # fields of a dataflow graph and of the ends of its dataflow

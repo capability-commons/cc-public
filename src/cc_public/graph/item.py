@@ -38,6 +38,7 @@ import typing
 
 import cc_public.graph.logic
 import cc_public.graph.extract
+import cc_public.graph.prefix
 
 
 KEY_ID_SELF       = 'id_self'
@@ -46,7 +47,7 @@ KEY_TITLE         = 'title'
 KEY_BRIEF         = 'brief'
 PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
-PREFIX_TYPE       = 'type_'
+PREFIX_TYPE       = cc_public.graph.prefix.stem('type_type')
 NAME_NO_TYPE      = 'Item'
 MARK_SOURCE       = 'SOURCE'
 MARK_TARGET       = 'TARGET'

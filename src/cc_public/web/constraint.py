@@ -31,6 +31,7 @@ edge:                   []
 
 
 import cc_public.web.argument
+import cc_public.graph.prefix
 
 
 RELATION_HAS_ITEMS_THAT_PLAY = 'relation_has_items_that_play'
@@ -38,8 +39,8 @@ RELATION_ADMITS              = 'relation_admits'
 RELATION_EXCLUDES            = 'relation_excludes'
 RELATION_CONSTRAINS_SOURCE   = 'relation_constrains_source'
 RELATION_CONSTRAINS_TARGET   = 'relation_constrains_target'
-PREFIX_RELATION              = 'relation_'
-PREFIX_ROLE                  = 'rol_'
+PREFIX_RELATION              = cc_public.graph.prefix.stem('type_relation')
+PREFIX_ROLE                  = cc_public.graph.prefix.stem('type_role')
 LIST_END                     = (('source', RELATION_CONSTRAINS_SOURCE),
                                 ('target', RELATION_CONSTRAINS_TARGET))
 LIST_LITERAL                 = (('Admitted', RELATION_ADMITS),
