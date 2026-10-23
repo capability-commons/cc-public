@@ -506,6 +506,39 @@ def test_header_writes_a_comment_header_after_the_interpreter_line(tree, zero):
     assert text.endswith('#\n# ...\n\necho run\n')
 
 
+def test_header_writes_a_style_sheet_header_in_a_comment_block_of_its_own(tree, zero):
+    path = tree / 'tool/look.css'
+    path.parent.mkdir()
+    path.write_text('p {\n  color: black;\n}\n')
+    assert _edit(tree, {'header': 'tool/look.css', 'id': 'file_tool_look',
+                        'field': FIELD_HEADER}) == {}
+    text = path.read_text()
+    assert text.startswith('/*\n * ---\n *\n * id_self:                file_tool_look\n')
+    assert text.endswith(' *\n * ...\n */\n\np {\n  color: black;\n}\n')
+
+
+def test_header_writes_a_style_sheet_header_into_the_block_it_opens_with(tree, zero):
+    path = tree / 'tool/look.css'
+    path.parent.mkdir()
+    path.write_text('/*\n * Plain.\n */\n\np {}\n')
+    assert _edit(tree, {'header': 'tool/look.css', 'id': 'file_tool_look',
+                        'field': FIELD_HEADER}) == {}
+    text = path.read_text()
+    assert text.startswith('/*\n * ---\n')
+    assert text.endswith(' * ...\n *\n * Plain.\n */\n\np {}\n')
+
+
+def test_header_writes_a_script_header_after_its_line_marker(tree, zero):
+    path = tree / 'tool/run.js'
+    path.parent.mkdir()
+    path.write_text('var x = 1;\n')
+    assert _edit(tree, {'header': 'tool/run.js', 'id': 'file_tool_run',
+                        'field': FIELD_HEADER}) == {}
+    text = path.read_text()
+    assert text.startswith('// ---\n//\n// id_self:                file_tool_run\n')
+    assert text.endswith('//\n// ...\n\nvar x = 1;\n')
+
+
 def test_header_makes_a_logic_program_file_that_is_not_there(tree, zero):
     assert _edit(tree, {'header': 'src/cc_public/edit/extra.lp', 'field': FIELD_HEADER}) == {}
     text = (tree / 'src/cc_public/edit/extra.lp').read_text()
