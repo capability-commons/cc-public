@@ -1,0 +1,84 @@
+id_self:                ann_moved_package_leaves_path_citations_stale
+guid_self:              ann_3dada0cd18494fc3b8bae33fef7394b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Path citations left pointing nowhere by a moved package
+brief:                  |
+                        The layout by component and the layout by
+                        language both move the folder src/cc_public,
+                        and 577 annotations cite a file under it as
+                        their evidence. A path written in prose is not
+                        an id, so no command follows the move, and
+                        each citation then names a file that is not
+                        there until it is rewritten. A rewrite by
+                        script keeps every line number, since a move
+                        changes no line, but it adds those 577
+                        arguments to the change a person must read.
+                        Leaving cc_public where it is moves no cited
+                        path.
+description:            |
+                        Sources: 577 annotation files under
+                        _data/decision, 1,070 lines in all, cite a
+                        path that starts with src/cc_public (grep over
+                        dev at e46c32b5, 2026-10-23). cctool rename
+                        changes the YAML documents that name an id,
+                        and refuses the id of a python module,
+                        package, class or function, or of a logic
+                        program file or predicate, saying to move the
+                        file by hand (src/cc_public/edit/edit.py lines
+                        908 and 1072-1083; AGENTS.md lines 124-128). A
+                        condition is stated with its date and source
+                        inside the argument that rests on it
+                        (_data/decision/dec_changing_conditions_in_arguments/ruling_changing_conditions_in_arguments.yaml,
+                        brief), and a review against the current tree
+                        adds what went stale before a person rules
+                        (_data/decision/dec_concern_advocate_process/ruling_concern_advocate_process.yaml,
+                        brief). Each change is to be small enough to
+                        read in one sitting
+                        (_data/decision/dec_growth_policy/ruling_growth_policy.yaml,
+                        brief; AGENTS.md lines 234-238). Assumption:
+                        the rewrite would be one sed over
+                        _data/decision in the same commit as the move.
+                        Strength: moderate; the rewrite is mechanical,
+                        but it edits the evidence of hundreds of
+                        arguments at once. Drafted by Claude in the
+                        review of 2026-10-23, for William Payne to
+                        accept or strike.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_layout_for_two_languages
+    guid_target:        dec_b819eefaddd84388bdb5d535d8540fa1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_layout_engine_beside_cc_public
+    guid_target:        opt_c55debeb1a2f4ba081d550b3008a6f26
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_component_renamed
+    guid_target:        opt_58bca82f40e645448df2b92d0fa33bfb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_layout_by_language
+    guid_target:        opt_a41368e5b75b439cb7a8d9ed8a1329f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
