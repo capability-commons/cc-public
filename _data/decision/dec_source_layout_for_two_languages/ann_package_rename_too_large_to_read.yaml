@@ -14,28 +14,37 @@ brief:                  |
                         ids of modules, programs and the functions and
                         predicates in them, and touches about 2,500
                         lines across more than a hundred files, far
-                        more than a person reads in one sitting, and
-                        the part outside YAML must be changed and read
-                        by hand. Leaving cc_public as it is adds the
-                        engine folder with no rename at all.
+                        more than a person reads in one sitting.
+                        cctool rename refuses the ids of modules and
+                        programs, so every one of those lines, YAML
+                        included, is changed by hand or by script and
+                        must be read. Leaving cc_public as it is adds
+                        the engine folder with no rename at all.
 description:            |
                         Sources:
                         - 183 distinct ids of modules, packages, logic
-                          programs and the
-                          functions and predicates in them contain cc_public, named in
-                          106 files under _data and src (grep over the snapshot,
-                          2026-10-22).
+                          programs and the functions and predicates in
+                          them contain cc_public, named in 106 files
+                          under _data and src (grep over the snapshot,
+                          2026-10-22). At e46c32b5 on 2026-10-23, 185
+                          items of these types in src have an id that
+                          contains cc_public.
                         - 2,573 lines in _data, src, README.md,
-                          AGENTS.md and
-                          pyproject.toml contain cc_public (grep -c over the snapshot,
-                          2026-10-22).
-                        - cctool rename changes every YAML document
-                          that names an id and
-                          lists other files, such as tests, that must be changed by hand
-                          (AGENTS.md lines 124-128).
+                          AGENTS.md and pyproject.toml contain
+                          cc_public (grep -c over the snapshot,
+                          2026-10-22); 3,095 on 2026-10-23, 1,198 of
+                          them in files under _data/decision.
+                        - cctool rename refuses the id of a python
+                          module, package, class or function, and of a
+                          logic program file or predicate, saying to
+                          move the file by hand
+                          (src/cc_public/edit/edit.py lines 908 and
+                          1072-1083; AGENTS.md lines 124-128).
                         - The repository asks that each change be
-                          small enough to read
-                          in one sitting (AGENTS.md lines 234-238).
+                          small enough to read in one sitting
+                          (AGENTS.md lines 234-238;
+                          _data/decision/dec_growth_policy/ruling_growth_policy.yaml,
+                          brief).
 
 edge:
 

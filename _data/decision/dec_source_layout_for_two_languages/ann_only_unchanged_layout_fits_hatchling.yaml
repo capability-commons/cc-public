@@ -12,11 +12,16 @@ title:                  Fit with hatchling's default package discovery
 brief:                  |
                         hatchling finds the package to ship from the
                         project name, at src/cc_public, with no
-                        configuration. Renaming the package to cctool
-                        or moving it to src/python breaks that match,
-                        so the build needs explicit file selection
-                        that must then track hatchling's options; the
-                        effect on dependencies is small.
+                        configuration, so an unchanged cc_public needs
+                        no file selection for the tooling. Peers take
+                        cc-public as a versioned package and are to
+                        use the engine too, and a dataflow_engine
+                        folder outside cc_public is not found by that
+                        default either. So every layout needs explicit
+                        file selection for the engine, and renaming
+                        the package or moving it to src/python adds
+                        the tooling to that list. The effect on
+                        dependencies is small.
 description:            |
                         Sources:
                         - Without file selection options, hatchling's

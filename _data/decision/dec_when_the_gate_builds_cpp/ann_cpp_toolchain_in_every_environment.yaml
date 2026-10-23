@@ -11,13 +11,16 @@ protective_mark:
 title:                  Toolchain in every working environment
 brief:                  |
                         If every code commit builds the C++, every
-                        working environment, including one used only
-                        for Python, must carry the compiler and build
-                        tools. Building at pre-push still needs them
-                        where the push happens but keeps the commit
-                        gate free of them, though with one pixi
-                        environment per project the toolchain enters
-                        the lock either way.
+                        gate that runs the tests needs the compiler
+                        and build tools, including one run for a
+                        change to Python alone. Building at pre-push
+                        still needs them where the push happens but
+                        keeps the commit gate free of them. pixi can
+                        hold the toolchain in a feature of its own, as
+                        the project already holds environments for
+                        three Python versions, but the lock records
+                        every environment, so the toolchain enters the
+                        lock either way.
 description:            |
                         Sources:
                         - The current environment holds no C++
