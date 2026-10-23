@@ -1,0 +1,47 @@
+id_self:                ruling_chat_host
+guid_self:              ruling_5fc94cad33fb43219a03ddc850434cc1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One container image with one volume
+brief:                  |
+                        The bots ship as one container image with one
+                        volume, and each deployment chooses its host
+                        inside its data owner's infrastructure, as
+                        rqt_chat_deployment_stays_with_data_owner
+                        requires. Every kind of host named can run it,
+                        from a workstation to ECS on Fargate. A
+                        serverless split would reach more hosts at a
+                        cost in complexity not worth paying, so a
+                        container is the upper bound; a plain process
+                        would mean EC2 on AWS. It follows that each
+                        deployment holds its own Signal number and
+                        keys, and names its own review process. Ruled
+                        by William Payne on 2026-10-23.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_host_container_with_volume
+    guid_target:        opt_63d92a51b0d0452eac529ba89d9d2294
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_host_plain_process_on_vm
+    guid_target:        opt_ec3e4e94f5cf4b55bf27f55459462de8
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_host_maintainer_workstation
+    guid_target:        opt_e6fa507282824050ab5fdf2e8f7b8024
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_host_small_server
+    guid_target:        opt_d954a2d387424d0a9ceeec23f26f3e45
