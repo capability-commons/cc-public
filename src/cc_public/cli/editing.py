@@ -17,12 +17,12 @@ brief:                  |
                         tree.
 description:            |
                         This module holds the new, header, link,
-                        unlink, set, unset, remove, rename, batch,
-                        import and format commands. Each makes its
-                        edit, checks the tree with the edit in place,
-                        and writes it only if it adds no failure. With
-                        --dry-run, each prints the edit as a diff and
-                        writes nothing.
+                        unlink, set, unset, remove, rename, move,
+                        batch, import and format commands. Each makes
+                        its edit, checks the tree with the edit in
+                        place, and writes it only if it adds no
+                        failure. With --dry-run, each prints the edit
+                        as a diff and writes nothing.
 usage:                  |
                         cctool new ID [--field NAME VALUE]... [--link
                         RELATION TARGET]...
@@ -41,6 +41,8 @@ usage:                  |
                         cctool remove ID
 
                         cctool rename OLD NEW
+
+                        cctool move OLDPATH NEWPATH
 
                         cctool batch FILEPATH
 
@@ -327,6 +329,47 @@ def rename(id_old, id_new, root, is_dry_run):
 
 # -----------------------------------------------------------------------------
 @cc_public.cli.group.main.command()
+@click.argument('path_old', metavar = 'OLDPATH')
+@click.argument('path_new', metavar = 'NEWPATH')
+@_option
+def move(path_old, path_new, root, is_dry_run):
+    """
+    Move the file or folder OLDPATH to NEWPATH. An item that lives in
+    the file it names, such as a python module or a logic program file,
+    gets the id of its new place, and keeps its guid, in every YAML
+    document that names it and in the strings of the logic programs. A
+    python module or package under src gets the dotted name of its new
+    place in the code of every python module, and in the spelling of
+    each type that a YAML document spells as code does.
+
+    Other text, such as a path written in prose or the name of a module
+    in a manifest, is not changed. Each file that still names the old
+    path or the old dotted name is listed afterwards.
+
+    """
+
+    _run(root, is_dry_run, [{'move': [path_old, path_new]}])
+    if is_dry_run:
+        return
+
+    list_pattern = [re.escape(path_old.rstrip('/'))]
+    dotted       = cc_public.edit.edit.dotted(pathlib.PurePosixPath(path_old))
+    if dotted:
+        list_pattern.append(cc_public.edit.edit.PATTERN_DOTTED.format(name = re.escape(dotted)))
+    regex = re.compile('|'.join(list_pattern))
+    for relative in sorted({cc_public.graph.extract.file_of(key) for key
+                            in cc_public.graph.extract.documents(root.resolve())}):
+        try:
+            text = (root / relative).read_text(encoding = 'utf-8')
+        except UnicodeDecodeError:
+            continue
+        if regex.search(text):
+            click.echo('Still names {path}: {file}'.format(path = path_old, file = relative),
+                       err = True)
+
+
+# -----------------------------------------------------------------------------
+@cc_public.cli.group.main.command()
 @click.argument('path_file', metavar = 'FILEPATH', type = click.File(encoding = 'utf-8'))
 @_option
 def batch(path_file, root, is_dry_run):
@@ -493,6 +536,10 @@ def _run(root, is_dry_run, list_operation):
     if is_dry_run:
         for (relative, text) in tree.edit.items():
             path = tree.root / relative
+            if isinstance(text, bytes) or (path.exists() and not _is_text(path)):
+                click.echo('Binary {file} {verb}'.format(
+                               file = relative, verb = 'removed' if text is None else 'written'))
+                continue
             old  = path.read_text(encoding = 'utf-8') if path.exists() else ''
             click.echo(''.join(difflib.unified_diff(old.splitlines(True),
                                                     (text or '').splitlines(True),
@@ -516,3 +563,17 @@ def _run(root, is_dry_run, list_operation):
         for (relative, text) in tree.edit.items():
             click.echo('{verb} {file}'.format(verb = 'Removed' if text is None else 'Wrote',
                                               file = relative))
+
+
+# -----------------------------------------------------------------------------
+def _is_text(path: pathlib.Path) -> bool:
+    """
+    Return True if the file at path is text that can be read as utf-8.
+
+    """
+
+    try:
+        path.read_text(encoding = 'utf-8')
+    except UnicodeDecodeError:
+        return False
+    return True

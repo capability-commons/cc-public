@@ -27,6 +27,7 @@ edge:                   []
 
 
 import pathlib
+import re
 
 import pytest
 import ruamel.yaml.scalarstring
@@ -471,6 +472,70 @@ def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, messa
     assert str(info.value) == message
 
 
+def test_move_of_a_module_gives_its_items_the_ids_of_its_new_place(tree):
+    guid = 'pym_' + (tree / 'src/cc_public/edit/layout.py').read_text().split(
+                                                'guid_self:              pym_')[1][:32]
+    assert _edit(tree, {'move': ['src/cc_public/edit/layout.py',
+                                 'src/cc_public/edit/printer.py']}) == {}
+    assert not (tree / 'src/cc_public/edit/layout.py').exists()
+    text = (tree / 'src/cc_public/edit/printer.py').read_text()
+    assert ('id_self:                pym_cc_public.edit.printer\n'
+            'guid_self:              ' + guid + '\n') in text
+    text = (tree / 'src/cc_public/check/check.py').read_text()
+    assert 'import cc_public.edit.printer\n' in text
+    assert 'cc_public.edit.layout' not in text
+    assert 'pym_cc_public.edit.layout' not in (tree / 'src/cc_public/edit/edit.py').read_text()
+
+
+def test_move_of_a_package_moves_its_files_and_renames_what_they_hold(tree):
+    assert _edit(tree, {'move': ['src/cc_public/check',
+                                 'src/cc_public/audit']}) == {}
+    assert not (tree / 'src/cc_public/check').exists()
+    text = (tree / 'src/cc_public/audit/__init__.py').read_text()
+    assert 'id_self:                pyp_cc_public.audit\n' in text
+    text = (tree / 'src/cc_public/audit/check.py').read_text()
+    assert 'id_self:                pym_cc_public.audit.check\n' in text
+    text = (tree / 'src/cc_public/audit/check.lp').read_text()
+    assert 'id_self:                lpf_cc_public.audit.check\n' in text
+    assert re.search(r'cc_public\.check\b', (tree / 'src/cc_public/edit/edit.py').read_text()) is None
+
+
+def test_move_of_a_module_changes_the_spelling_of_the_types_it_holds(tree):
+    assert _edit(tree, {'move': ['src/cc_public/graph/extract.py',
+                                 'src/cc_public/graph/reading.py']}) == {}
+    text = (tree / '_data/interface_control_document/icd_cc_public_check.yaml').read_text()
+    assert 'spelling:  cc_public.graph.reading.Documents\n' in text
+
+
+def test_a_moved_name_keeps_the_lines_aligned_inside_its_brackets():
+    text  = ('x = cc_public.a.f(alpha,\n'
+             '                  beta(cc_public.b.g(1,\n'
+             '                                     2)),\n'
+             '                  gamma)\n'
+             'y = (1,\n'
+             '     2)\n')
+    regex = re.compile(cc_public.edit.edit.PATTERN_DOTTED.format(name = 'cc_public'))
+    assert cc_public.edit.edit._realigned(text, regex, 'cctool') == (
+             'x = cctool.a.f(alpha,\n'
+             '               beta(cctool.b.g(1,\n'
+             '                               2)),\n'
+             '               gamma)\n'
+             'y = (1,\n'
+             '     2)\n')
+
+
+@pytest.mark.parametrize(('operation', 'message'), [
+    ({'move': ['src/cc_public/none.py', 'src/cc_public/some.py']},
+     'No file of the tree is at src/cc_public/none.py.'),
+    ({'move': ['src/cc_public/edit/layout.py', 'src/cc_public/edit/edit.py']},
+     'A file is at src/cc_public/edit/edit.py already.'),
+])
+def test_a_move_that_cannot_be_made_says_why(tree, operation, message):
+    with pytest.raises(cc_public.edit.edit.ErrorEdit) as info:
+        cc_public.edit.edit.batch(cc_public.edit.edit.Tree(tree), [operation])
+    assert str(info.value) == message
+
+
 def test_header_puts_a_module_docstring_above_the_code(tree, zero):
     path = tree / 'src/cc_public/edit/extra.py'
     path.write_text('import os\n')
@@ -809,7 +874,7 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
     ({'set': ['concept_concept', 'id_self', 'concept_y']}, 'The field id_self is not set this way: cctool rename changes an id.'),
     ({'set': ['concept_none', 'note', 'x']}, 'No item has the id concept_none.'),
     ({'unlink': ['concept_concept']}, "An operation of a batch is not one of new, header, link, "
-                                  "unlink, set, unset, remove or rename: "
+                                  "unlink, set, unset, remove, rename or move: "
                                   "{'unlink': ['concept_concept']}"),
     ({'unlink': ['concept_concept', 'relation_is_about', 'concept_type']},
      'concept_concept has no edge of relation_is_about to concept_type.'),

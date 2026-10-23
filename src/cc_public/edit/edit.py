@@ -43,9 +43,11 @@ edge:                   []
 
 import ast
 import collections
+import io
 import os
 import pathlib
 import re
+import tokenize
 import typing
 import uuid
 
@@ -77,6 +79,7 @@ KEY_SET           = 'set'
 KEY_UNSET         = 'unset'
 KEY_REMOVE        = 'remove'
 KEY_RENAME        = 'rename'
+KEY_MOVE          = 'move'
 SUFFIX_STAGED     = '.cctool-staged'
 COLUMN_LINE       = 'line'
 
@@ -158,7 +161,22 @@ DELIM_NAME        = '.'
 #
 PATTERN_WHOLE_ID  = r'(?<![A-Za-z0-9_$.-]){id}(?![A-Za-z0-9_])'
 
-Edit              = dict[str, str | None]
+# A dotted name as a word of its own, as python code writes the name
+# of a module: not the tail of a longer name, and not the head of a
+# longer word.
+#
+PATTERN_DOTTED    = r'(?<![A-Za-z0-9_.]){name}(?![A-Za-z0-9_])'
+DIR_CACHE         = '__pycache__'
+
+# The line of a YAML document that spells a type as code does, such as
+# the type of a member of an interface, with its key and its value.
+#
+REGEX_SPELLING    = re.compile(r'^(\s*(?:- )?spelling:\s+)(.*)$', re.MULTILINE)
+
+# The text of a file, or its bytes when it is not text, such as a font
+# that a move carries along. None removes the file.
+#
+Edit              = dict[str, str | bytes | None]
 YAML              = ruamel.yaml.YAML(typ = 'rt')
 
 
@@ -204,8 +222,8 @@ class Tree:
             for key in [key for key in self.map_document
                         if cc_public.graph.extract.file_of(key) == relative]:
                 del self.map_document[key]
-            if text is None:
-                self.edit[relative] = None
+            if text is None or isinstance(text, bytes):
+                self.edit[relative] = text
                 continue
             try:
                 self.map_document.update(cc_public.graph.extract.parse_all(
@@ -1093,6 +1111,285 @@ def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> 
 
 
 # -----------------------------------------------------------------------------
+def move(tree: Tree, path_old: str, path_new: str) -> Edit:
+    """
+    Return the edit that moves the file or folder at path_old to
+    path_new, with what follows from the place of each file it holds.
+
+    An item that lives in the file it names, such as a python module or
+    a logic program file, takes its id from the place of its file, and
+    so do the classes, functions and predicates it holds. Each gets the
+    id its new place gives it, and keeps its guid, in every YAML
+    document that names it and in the strings of the logic programs.
+    A python module or package under src is imported by a dotted name
+    that follows from its place too, so that name is changed in the
+    code of every python module of the tree, and in the spelling of
+    each type that a YAML document spells as code does.
+
+    Text outside these, such as a path written in prose or the name of
+    a module in a manifest, is not changed.
+
+    """
+
+    old      = pathlib.PurePosixPath(path_old)
+    new      = pathlib.PurePosixPath(path_new)
+    set_file = {cc_public.graph.extract.file_of(key) for key in tree.map_document}
+    set_file = {file for file in set_file | set(tree.edit) if tree.edit.get(file, '') is not None}
+    map_move = _moves(set_file, old, new)
+    map_id   = _moved_ids(tree, map_move)
+
+    for id_new in map_id.values():
+        if id_new in tree.map_item:
+            raise ErrorEdit('An item with the id {id} exists.'.format(id = id_new))
+
+    edit = _renamed_ids(tree, map_id)
+    tree.update(edit)
+    edit.update(_redotted(tree, set_file, dotted(old), dotted(new)))
+    tree.update(edit)
+
+    edit_move = {}
+    for (file_old, file_new) in map_move.items():
+        edit_move[file_new] = edit[file_old] if file_old in edit else _content(tree, file_old)
+        edit_move[file_old] = None
+    edit.update(edit_move)
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _moves(set_file: set[str],
+           old:      pathlib.PurePosixPath,
+           new:      pathlib.PurePosixPath) -> dict[str, str]:
+    """
+    Return the new path of each file of set_file that a move of old to
+    new moves, keyed by its old path. Refuse a move of nothing, and one
+    onto a file that is there.
+
+    """
+
+    map_move = {}
+
+    for file in sorted(set_file):
+        path = pathlib.PurePosixPath(file)
+        if path == old:
+            map_move[file] = str(new)
+        elif old in path.parents:
+            map_move[file] = str(new / path.relative_to(old))
+
+    if not map_move:
+        raise ErrorEdit('No file of the tree is at {path}.'.format(path = old))
+    for file in map_move.values():
+        if file in set_file:
+            raise ErrorEdit('A file is at {path} already.'.format(path = file))
+
+    return map_move
+
+
+# -----------------------------------------------------------------------------
+def _redotted(tree: Tree, set_file: set[str], dotted_old: str, dotted_new: str) -> Edit:
+    """
+    Return the edit that writes dotted_new for the dotted name
+    dotted_old, wherever it stands as a name of its own, in the code of
+    each python module of set_file, and in the spelling of a type in
+    each other file, such as that of an interface member.
+
+    """
+
+    edit = {}
+
+    if not dotted_old or not dotted_new or dotted_old == dotted_new:
+        return edit
+
+    regex = re.compile(PATTERN_DOTTED.format(name = re.escape(dotted_old)))
+    for file in sorted(set_file):
+        text = _content(tree, file)
+        if isinstance(text, bytes) or not regex.search(text):
+            continue
+        if pathlib.PurePosixPath(file).suffix == cc_public.graph.extract.SUFFIX_PYTHON:
+            edit[file] = _realigned(text, regex, dotted_new)
+            continue
+        text_new = REGEX_SPELLING.sub(lambda match: match.group(1) + regex.sub(dotted_new,
+                                                                             match.group(2)),
+                                      text)
+        if text_new != text:
+            edit[file] = text_new
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _realigned(text: str, regex: re.Pattern, replacement: str) -> str:
+    """
+    Return text with each match of regex replaced by replacement, and
+    each line that continues a bracket, and was aligned just inside it,
+    moved as far as the bracket moves, so that the alignment holds.
+
+    """
+
+    list_old   = text.split('\n')
+    list_new   = [regex.sub(replacement, line) for line in list_old]
+    list_shift = [[(match.end(), len(replacement) - len(match.group(0)))
+                   for match in regex.finditer(line)] for line in list_old]
+    map_indent = {}
+
+    for (row, column, row_close) in _brackets(text):
+        column_new = column + map_indent.get(row, 0) + sum(
+                        delta for (end, delta) in list_shift[row] if end <= column)
+        for row_inner in range(row + 1, row_close + 1):
+            line = list_old[row_inner]
+            if line.strip() and len(line) - len(line.lstrip(' ')) == column + 1:
+                map_indent.setdefault(row_inner, column_new - column)
+
+    for (row, delta) in map_indent.items():
+        line = list_new[row]
+        if delta > 0:
+            list_new[row] = ' ' * delta + line
+        elif delta < 0 and not line[:-delta].strip():
+            list_new[row] = line[-delta:]
+
+    return '\n'.join(list_new)
+
+
+# -----------------------------------------------------------------------------
+def _brackets(text: str) -> list[tuple[int, int, int]]:
+    """
+    Return each bracket of the python code text that is closed on a
+    later line than it opens on, as the line and column it opens at and
+    the line it closes on, counted from 0, in the order they open. Code
+    that cannot be read gives none.
+
+    """
+
+    list_open    = []
+    list_bracket = []
+
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(text).readline):
+            if token.type != tokenize.OP:
+                continue
+            if token.string in '([{':
+                list_open.append(token.start)
+            elif token.string in ')]}' and list_open:
+                (row, column) = list_open.pop()
+                if token.end[0] > row:
+                    list_bracket.append((row - 1, column, token.end[0] - 1))
+    except (tokenize.TokenError, SyntaxError):
+        return []
+
+    return sorted(list_bracket)
+
+
+# -----------------------------------------------------------------------------
+def _moved_ids(tree: Tree, map_move: dict[str, str]) -> dict[str, str]:
+    """
+    Return the new id of each item that takes its id from the place of
+    a file map_move moves, keyed by its old id: the item of a python
+    module or logic program file, and each item it holds whose id is
+    the name of the module, a full stop and a name of its own.
+
+    """
+
+    map_id   = {}
+    map_name = {}
+
+    for (file_old, file_new) in map_move.items():
+        suffix = pathlib.PurePosixPath(file_old).suffix
+        if suffix not in cc_public.graph.extract.MAP_PREFIX_MODULE:
+            continue
+        name_old = cc_public.graph.extract.module_name(pathlib.Path(file_old))
+        name_new = cc_public.graph.extract.module_name(pathlib.Path(file_new))
+        map_name[file_old] = (name_old.partition(DELIM_PREFIX)[2],
+                              name_new.partition(DELIM_PREFIX)[2])
+
+    for (id_item, row) in tree.map_item.items():
+        file = cc_public.graph.extract.file_of(row[3])
+        if file not in map_name:
+            continue
+        (prefix, _, name) = id_item.partition(DELIM_PREFIX)
+        if prefix not in SET_PREFIX_SOURCE:
+            continue
+        (name_old, name_new) = map_name[file]
+        if name_old == name_new:
+            continue
+        if name == name_old or name.startswith(name_old + DELIM_NAME):
+            map_id[id_item] = prefix + DELIM_PREFIX + name_new + name[len(name_old):]
+
+    return map_id
+
+
+# -----------------------------------------------------------------------------
+def _renamed_ids(tree: Tree, map_id: dict[str, str]) -> Edit:
+    """
+    Return the edit that gives each item named in map_id its new id in
+    every YAML document that names it, in every string of a logic
+    program that is its id, and anywhere in the code of a python module,
+    as a test names the item it reads, all in one pass, the longest ids
+    first.
+
+    """
+
+    if not map_id:
+        return {}
+
+    alternation = '|'.join(re.escape(id_old) for id_old in sorted(map_id, key = len,
+                                                                   reverse = True))
+    regex       = re.compile(PATTERN_WHOLE_ID.format(id = '(?:' + alternation + ')'))
+    regex_rule  = re.compile('"(' + alternation + ')"')
+    edit        = {}
+
+    for file in cc_public.graph.extract.files(tree.map_document):
+        text      = tree.text(file)
+        list_line = text.split('\n')
+        list_span = cc_public.edit.layout.spans(text, pathlib.Path(file))
+        if pathlib.Path(file).suffix == cc_public.graph.extract.SUFFIX_PYTHON:
+            list_span = [(0, len(list_line) - 1)]
+        for (first, last) in list_span:
+            list_line[first:last + 1] = [regex.sub(lambda match: map_id[match.group(0)], line)
+                                         for line in list_line[first:last + 1]]
+        renamed = '\n'.join(list_line)
+        if pathlib.Path(file).suffix == cc_public.graph.extract.SUFFIX_PROGRAM:
+            renamed = regex_rule.sub(lambda match: '"' + map_id[match.group(1)] + '"', renamed)
+        if renamed != text:
+            edit[file] = _format(renamed, file)
+
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def dotted(path: pathlib.PurePosixPath) -> str:
+    """
+    Return the dotted name that python imports the module or package at
+    path by, or an empty string if path is not under src.
+
+    """
+
+    is_module = path.suffix == cc_public.graph.extract.SUFFIX_PYTHON
+    list_part = list(path.with_suffix('').parts if is_module else path.parts)
+    if len(list_part) < 2 or list_part[0] != cc_public.graph.extract.DIR_IMPORT_ROOT:
+        return ''
+    if list_part[-1] == cc_public.graph.extract.NAME_PACKAGE:
+        list_part = list_part[:-1]
+    return '.'.join(list_part[1:])
+
+
+# -----------------------------------------------------------------------------
+def _content(tree: Tree, relative: str) -> str | bytes:
+    """
+    Return the text of the file at relative, or its bytes if it is not
+    text.
+
+    """
+
+    if relative in tree.edit:
+        return tree.edit[relative]
+    data = (tree.root / relative).read_bytes()
+    try:
+        return data.decode('utf-8')
+    except UnicodeDecodeError:
+        return data
+
+
+# -----------------------------------------------------------------------------
 def _refuse_source(tree: Tree, id_item: str) -> None:
     """
     Refuse an item that is written in the file it names, whose id
@@ -1133,6 +1430,8 @@ def batch(tree: Tree, list_operation: list) -> None:
         remove: ID
 
         rename: [OLD, NEW]
+
+        move:   [OLDPATH, NEWPATH]
 
     """
 
@@ -1180,14 +1479,15 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
             return set_field(tree, str(list_arg[0]), str(list_arg[1]), _plain(list_arg[2]))
 
     for (key, function, count) in ((KEY_LINK, link, 3), (KEY_UNLINK, unlink, 3),
-                                   (KEY_UNSET, unset_field, 2), (KEY_RENAME, rename, 2)):
+                                   (KEY_UNSET, unset_field, 2), (KEY_RENAME, rename, 2),
+                                   (KEY_MOVE, move, 2)):
         if isinstance(operation, dict) and set(operation) == {key}:
             list_arg = operation[key]
             if isinstance(list_arg, list) and len(list_arg) == count:
                 return function(tree, *map(str, list_arg))
 
     raise ErrorEdit('An operation of a batch is not one of new, header, link, unlink, set, '
-                    'unset, remove or rename: {operation}'.format(operation = operation))
+                    'unset, remove, rename or move: {operation}'.format(operation = operation))
 
 
 # -----------------------------------------------------------------------------
@@ -1258,7 +1558,10 @@ def _write(tree: Tree) -> None:
             staged = path.with_name(path.name + SUFFIX_STAGED)
             path.parent.mkdir(parents = True, exist_ok = True)
             list_staged.append((staged, path))
-            staged.write_text(text, encoding = 'utf-8')
+            if isinstance(text, bytes):
+                staged.write_bytes(text)
+            else:
+                staged.write_text(text, encoding = 'utf-8')
     except OSError as error:
         for (staged, _) in list_staged:
             staged.unlink(missing_ok = True)
@@ -1271,6 +1574,28 @@ def _write(tree: Tree) -> None:
     for (relative, text) in tree.edit.items():
         if text is None:
             (tree.root / relative).unlink(missing_ok = True)
+            _prune(tree.root, (tree.root / relative).parent)
+
+
+# -----------------------------------------------------------------------------
+def _prune(root: pathlib.Path, path: pathlib.Path) -> None:
+    """
+    Remove the folder at path, and each folder above it below root, for
+    as long as it holds nothing but a cache of compiled python, as a
+    move or a removal can leave it.
+
+    """
+
+    while path != root and root in path.parents and path.is_dir():
+        list_name = [child.name for child in path.iterdir()]
+        if any(name != DIR_CACHE for name in list_name):
+            return
+        if DIR_CACHE in list_name:
+            for child in (path / DIR_CACHE).iterdir():
+                child.unlink()
+            (path / DIR_CACHE).rmdir()
+        path.rmdir()
+        path = path.parent
 
 
 # -----------------------------------------------------------------------------
