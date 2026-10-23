@@ -1,0 +1,61 @@
+id_self:                ann_own_account_is_repaired_by_the_operator_alone
+guid_self:              ann_9fcee2f7bd5c4ea7b8ec038a3a97c284
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Own account repaired by the operator alone
+brief:                  |
+                        A bot with its own number can be set up again,
+                        or copied to a test deployment, by the
+                        operator alone. A linked bot needs the holder
+                        of the primary phone each time it is linked
+                        anew, after a long outage or on a new host.
+description:            |
+                        The own account option registers a phone
+                        number of the bot's own
+                        (_data/decision/dec_chat_signal_account/opt_account_of_its_own.yaml
+                        line 13), and the linked device option links
+                        the bot as a secondary device of an existing
+                        account (opt_linked_device.yaml lines 13-14).
+                        Maintainability covers how readily the system
+                        can be repaired and tested
+                        (_data/register/reg_concern.yaml lines
+                        376-386). signal-cli registers a number that
+                        can receive SMS or a voice call
+                        (https://raw.githubusercontent.com/AsamK/signal-cli/master/README.md),
+                        and has a link command for joining an existing
+                        account instead
+                        (https://raw.githubusercontent.com/AsamK/signal-cli/master/man/signal-cli.1.adoc).
+                        A linked device unlinks after 45 days of
+                        inactivity
+                        (https://support.signal.org/hc/en-us/articles/360007320551).
+                        ASSUMPTION: linking again needs the primary
+                        phone to approve the new device, so the
+                        operator cannot restore or reproduce a linked
+                        bot without the account holder. The adapter
+                        code is about the same under both options; the
+                        difference lies in repair and test setup.
+                        Holds at ten times the size: yes, because each
+                        relink of each bot needs the account holder.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_chat_signal_account
+    guid_target:        dec_731ab981c3f04e67b8fc395e7c37237e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_account_of_its_own
+    guid_target:        opt_91850f23adfe45ed9ad1e2782b7d068a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
