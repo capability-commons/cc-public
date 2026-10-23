@@ -53,7 +53,7 @@ choice; do not call everything a tension.
    decisions, code, logic programs, skills and AGENTS.md. Split the
    areas between agents if the work is large, and merge their findings.
 3. Judge the design rules. List them with
-   `cctool query jq '.[] | select(.file=="_data/register/reg_design_rule.yaml") | .document.table[] | {id: .id_self, brief}'`
+   `cctool query jq '.[] | select(.file=="_data/register/reg_design_rule.yaml") | .document.entries[] | {id: .id_self, brief}'`
    and, for each, report where the repository breaks the parts of it
    that no check holds. Do the same for the writing style rules in
    `reg_writing_style_rule.yaml`.
