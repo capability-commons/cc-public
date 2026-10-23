@@ -11,9 +11,11 @@ protective_mark:
 title:                  Least admission code needed for listed contacts
 brief:                  |
                         A private list of accounts is a lookup that
-                        one test covers. Admitting anyone who accepts
-                        a notice adds a consent flow with its own
-                        state, and group membership must be read from
+                        one test covers. Every option already keeps a
+                        license assent and a register entry for each
+                        contributor, but admitting anyone who accepts
+                        a notice must also track strangers before they
+                        accept, and group membership must be read from
                         Signal.
 description:            |
                         The listed contacts option answers only
@@ -24,17 +26,31 @@ description:            |
                         (opt_admit_anyone_with_consent.yaml, brief).
                         The group option answers only members of a
                         Signal group that the operator runs
-                        (opt_admit_group_members.yaml, brief).
-                        ASSUMPTION: a consent flow records who
-                        accepted which notice and when, and must
-                        handle a changed notice. ASSUMPTION: group
-                        membership is fetched from Signal through the
-                        route chosen in dec_chat_signal_route, so
-                        admission code depends on that route. Holds at
-                        ten times the size: yes, because the lookup
-                        stays the same size as the list grows, while
-                        the consent and group paths keep their extra
-                        parts.
+                        (opt_admit_group_members.yaml, brief). Under
+                        every option each contributor is asked once to
+                        assent to the license, and the assent is kept
+                        in private
+                        (_data/decision/dec_chat_rights_in_contributions/ruling_chat_rights_in_contributions.yaml
+                        lines 12-16). A commit names its contributor
+                        by the guid of their entry in a team member
+                        register
+                        (_data/decision/dec_chat_contributor_attribution/ruling_chat_contributor_attribution.yaml
+                        lines 12-18), and the message check fails a
+                        guid the register does not hold
+                        (src/cc_public/commit/message.py lines
+                        300-304). So every contributor needs a
+                        register entry and an assent record whichever
+                        option is chosen. ASSUMPTION: the consent
+                        option must also hold state for senders who
+                        are not yet in the register, add their entry
+                        once they accept, and handle a changed notice.
+                        ASSUMPTION: group membership is fetched from
+                        Signal through the route chosen in
+                        dec_chat_signal_route, so admission code
+                        depends on that route. Holds at ten times the
+                        size: yes, because the lookup stays the same
+                        size as the list grows, while the consent and
+                        group paths keep their extra parts.
 
 edge:
 
