@@ -10,18 +10,25 @@ protective_mark:
 
 title:                  Decision an item belongs to, written twice
 brief:                  |
-                        Which decision an item belongs to is defined
+                        Which decision an item belongs to was defined
                         in check.lp for the checks, and again in SQL
-                        in the search. A change to one that is not
-                        made to the other gives the search a different
-                        answer from the checks.
+                        in the search. A change to one that was not
+                        made to the other would have given the search
+                        a different answer from the checks.
 description:            |
-                        decision_of is a rule in
+                        decision_of was a rule in
                         src/cc_public/check/check.lp and a common
                         table expression in pym_cc_public.graph.text.
-                        The point weakens if decision_of moves to
-                        derive.lp, which fills the derived tables of
-                        SQL too.
+                        It has since moved to
+                        src/cc_public/graph/derive.lp (lines 125-146),
+                        which fills the derived tables of SQL too
+                        (src/cc_public/graph/sql.py lines 63-67), and
+                        the search reads that table
+                        (src/cc_public/graph/text.py lines 100-138).
+                        check.lp no longer defines it, so the point
+                        has weakened as this annotation foresaw;
+                        ann_decision_of_is_derived_once records the
+                        move.
 
 edge:
 

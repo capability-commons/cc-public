@@ -13,20 +13,26 @@ brief:                  |
                         The skill restates the cctool commands and
                         rules that AGENTS.md also states, so a reader
                         meets them twice and a change must be made in
-                        both by hand, with nothing to check that it
-                        was.
+                        both by hand, with nothing to check that the
+                        two agree.
 description:            |
-                        Commands: AGENTS.md lines 36-55 and
+                        Commands: AGENTS.md lines 106-109 and
                         .agents/skills/editing-data-items/SKILL.md
-                        lines 32-55. The guid rule: AGENTS.md lines
-                        44-45 and SKILL.md lines 110-111. The rename
-                        rule: AGENTS.md lines 49-53 and SKILL.md lines
-                        103-106. SKILL.md line 13 makes AGENTS.md the
-                        reference, which keeps them from conflicting
-                        today. No YAML, Python or logic file refers to
-                        .agents, SKILL.md or editing-data-items, so
-                        cctool check does not see the skill. SKILL.md
-                        also names 13 failure ids, 11 from
+                        lines 32-48. The guid rule: AGENTS.md lines
+                        114-115 and SKILL.md lines 57-58 and 134-138.
+                        The rename rule: AGENTS.md lines 124-128 and
+                        SKILL.md lines 127-130. SKILL.md line 13 makes
+                        AGENTS.md the reference, which keeps them from
+                        conflicting today. A test reads AGENTS.md and
+                        every SKILL.md and fails on any cctool
+                        command, pixi task, id, name or path that the
+                        code lacks
+                        (src/cc_public/cli/_test/test_guidance.py
+                        lines 49, 151-224), but nothing checks that
+                        the two guides say the same thing, and cctool
+                        check does not read them (grep for AGENTS and
+                        SKILL in src/cc_public/check finds nothing).
+                        SKILL.md names 14 failure ids, 12 from
                         src/cc_public/check/check.lp and 2
                         (schema_violation, unformatted_file) from
                         check.py. SKILL.md changed in 10 of 33 commits
