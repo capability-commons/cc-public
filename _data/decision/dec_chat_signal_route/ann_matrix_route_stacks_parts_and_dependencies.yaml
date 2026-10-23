@@ -23,35 +23,35 @@ description:            |
                         homeserver and reaches Signal through the
                         mautrix-signal bridge
                         [_data/decision/dec_chat_signal_route/opt_matrix_bridge.yaml
-                        line 13]. mautrix-signal is "A Matrix-Signal
-                        puppeting bridge" licensed AGPL-3.0
+                        lines 12-14]. mautrix-signal is "A
+                        Matrix-Signal puppeting bridge" licensed
+                        AGPL-3.0
                         [https://pkg.go.dev/github.com/element-hq/mautrix-signal].
                         mautrix-signal depends on libsignal, and its
                         license notice says "A license exception for
                         libsignal must be acquired separately from
                         Signal"
-                        [https://git.sudo.is/matrix/mautrix-signal/src/branch/main/LICENSE.exceptions].
+                        [https://raw.githubusercontent.com/mautrix/signal/main/LICENSE.exceptions].
                         A mautrix Go bridge needs a homeserver that
                         supports application services, a PostgreSQL
                         server v16 or higher, a registered appservice,
                         a Signal client that can add linked devices,
                         and ffmpeg
-                        [https://raw.githubusercontent.com/mautrix/docs/master/bridges/go/setup.md].
-                        The signal-cli daemon option runs one program
-                        and talks to it over JSON-RPC
+                        [https://raw.githubusercontent.com/mautrix/docs/master/bridges/go/setup.md
+                        lines 26-37]. The signal-cli daemon option
+                        runs one program and talks to it over JSON-RPC
                         [_data/decision/dec_chat_signal_route/opt_signal_cli_daemon.yaml
-                        line 13]. signal-cli has a daemon mode with
-                        JSON-RPC and D-Bus, and needs JRE 25 or its
-                        native binary [context.md, facts gathered,
-                        signal-cli 0.14.1 README]. signal-cli also
-                        bundles libsignal-client
-                        [https://ftp.fau.de/gentoo/distfiles/72/signal-cli-bin-0.14.1.README.md].
-                        So both routes rest on libsignal, and the
-                        Matrix route adds a homeserver and a bridge on
-                        top. signal-cli must keep pace with the Signal
-                        server, since releases older than three months
-                        may not work correctly [context.md, facts
-                        gathered, signal-cli 0.14.1 README].
+                        lines 12-14]. signal-cli has a daemon mode
+                        with JSON-RPC and D-Bus interfaces, and needs
+                        a Java Runtime Environment 25 and the native
+                        library libsignal-client
+                        [https://raw.githubusercontent.com/AsamK/signal-cli/master/README.md
+                        lines 11-12 and 27-28]. So both routes rest on
+                        libsignal, and the Matrix route adds a
+                        homeserver and a bridge on top. signal-cli
+                        must keep pace with the Signal server, since
+                        releases older than three months may not work
+                        correctly [same README, lines 16-17].
                         ASSUMPTION: the bridge must keep pace too; the
                         mautrix setup page does not say so.
                         ASSUMPTION: a Matrix client library for the
