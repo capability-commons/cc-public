@@ -11,20 +11,21 @@ protective_mark:
 title:                  One status value per option
 brief:                  |
                         A status gives one value per option, so it
-                        cannot settle a set of alternatives in one act
-                        or keep the earlier outcome when the outcome
-                        changes.
+                        cannot settle a set of alternatives in one
+                        act, as one ruling does.
 description:            |
                         One ruling can uphold one option and reject
-                        its alternatives (reg_data_item_type.yaml
-                        lines 781-785). A later ruling supersedes the
-                        earlier, which stays on record;
-                        competing_rulings refuses two current ones
-                        (commit 89c74d8; check.lp lines 388-413). A
-                        status edit overwrites the value, so the
-                        earlier outcome survives only in git history.
-                        ASSUMPTION: no status design with history was
-                        ever written down.
+                        its alternatives
+                        (_data/register/reg_data_item_type.yaml lines
+                        898-900). A decision has at most one ruling,
+                        and competing_rulings reports a second
+                        (src/cc_public/check/check.lp lines
+                        1467-1472). A change of ruling edits it in
+                        place, so a ruling, like a status edit, keeps
+                        the earlier outcome only in git history
+                        (ruling_change_of_a_ruling). ASSUMPTION: no
+                        status design with history was ever written
+                        down.
 
 edge:
 

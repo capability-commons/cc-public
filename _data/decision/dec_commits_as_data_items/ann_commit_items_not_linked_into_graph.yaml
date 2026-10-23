@@ -11,31 +11,47 @@ protective_mark:
 title:                  Commit items not linked into the graph
 brief:                  |
                         The commit item is said to be linked like any
-                        other item, but no relation allows a commit as
-                        source, every commit item has an empty edge
-                        list, and a tree text naming a commit id fails
-                        the check. So no commit traces by an edge to
-                        what called for it.
+                        other item, but nothing reads commit items
+                        into the graph, every commit item is written
+                        with an empty edge list, and a tree text
+                        naming a commit id fails the check. So no
+                        commit traces by an edge to what called for
+                        it.
 description:            |
-                        _data/register/reg_data_item_type.yaml lines
-                        701-704; no relation in reg_relation.yaml has
-                        type_commit in its domain; all 33 items on
-                        main at 89c74d8 held "relation: []", and the
-                        17 since, written after the field was renamed
-                        edge, hold "edge: []"; extract.py reads only
-                        the tree; check.lp lines 457-472
-                        (dangling_mention). Will deferred graph
-                        history: "We will probably want
-                        graph-changes-over-time history to build a
-                        graph-aware-history-aware browser, but that's
-                        something for later, not for now"
-                        (maintainer's statement 2026-10-14T12:39:46Z);
-                        the per-commit check (7520f91) was built next
-                        and graph history deferred (memory MEMORY.md
-                        line 43). Reading git log into the graph would
-                        close the gap without moving the item.
-                        ASSUMPTION: that is feasible at the current
-                        tooling size.
+                        The usage of type_commit says commit items let
+                        the history be "read, linked and checked like
+                        any other" item
+                        (_data/register/reg_data_item_type.yaml lines
+                        813-816). extract reads only the files of the
+                        tree (src/cc_public/graph/extract.py lines
+                        451-495), and nothing in src reads a commit
+                        item into the graph (grep of src for git log
+                        and the commit type). message.py writes each
+                        item with "edge: []"
+                        (src/cc_public/commit/message.py line 141);
+                        all 33 items on main at 89c74d8 held
+                        "relation: []", as the field was then named;
+                        later commits were not rechecked, since the
+                        snapshot holds no git history. Were commits
+                        read in, only relation_cites and
+                        relation_uses_concept would admit one at its
+                        source, since every other relation constrains
+                        its source to a role that type_commit does not
+                        play (_data/register/reg_relation.yaml;
+                        src/cc_public/check/check.lp lines 1018-1025
+                        and 1065-1075). A tree text naming a commit id
+                        fails dangling_mention (check.lp lines
+                        1618-1624). Will deferred graph history: "We
+                        will probably want graph-changes-over-time
+                        history to build a graph-aware-history-aware
+                        browser, but that's something for later, not
+                        for now" (maintainer's statement
+                        2026-10-14T12:39:46Z); the per-commit check
+                        (7520f91) was built next and graph history
+                        deferred (memory MEMORY.md line 43). Reading
+                        git log into the graph would close the gap
+                        without moving the item. ASSUMPTION: that is
+                        feasible at the current tooling size.
 
 edge:
 

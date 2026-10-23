@@ -11,22 +11,29 @@ protective_mark:
 title:                  Duplicate legacy jobs dropped at once
 brief:                  |
                         Restarting drops at once every job the legacy
-                        tree did twice, and the regrown parts so far
-                        keep one mechanism per job. Pruning would find
-                        and remove each duplicate one by one.
+                        tree did twice. The regrown parts keep one
+                        mechanism for most jobs, though queries now
+                        have five languages over one set of facts.
+                        Pruning would find and remove each duplicate
+                        one by one.
 description:            |
                         The legacy tree had duplicate indexes, edge
                         enumerations, validators, model clients and
                         renderers, and 14 register schemas that are
                         one template (note
                         cc-public-session-context.md lines 57-59). At
-                        HEAD 89c74d8 the type register holds 18
-                        entries and the relation register 13. The
-                        derived relations are defined once in
-                        derive.lp for both SQL and Datalog
-                        (src/cc_public/graph/sql.py lines 18-24). One
-                        printer lays out every file
-                        (src/cc_public/edit/layout.py lines 34-37).
+                        HEAD 89c74d8 the type register held 18 entries
+                        and the relation register 13; at e3a198e5 they
+                        hold 34 and 35. The derived relations are
+                        defined once in derive.lp for every query
+                        language (src/cc_public/graph/sql.py lines
+                        19-25). One printer lays out every file
+                        (src/cc_public/edit/layout.py lines 36-39).
+                        Queries have five languages, sql, logic, jq,
+                        sparql and text, over the one set of facts
+                        (src/cc_public/cli/querying.py lines 132-373);
+                        the maintainer asked for the first two
+                        (2026-10-13T22:46:52Z).
 
 edge:
 

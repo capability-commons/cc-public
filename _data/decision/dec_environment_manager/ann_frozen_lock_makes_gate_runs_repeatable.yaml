@@ -11,24 +11,30 @@ protective_mark:
 title:                  Repeatable gate runs from the lock
 brief:                  |
                         With a committed lock and every hook run
-                        through pixi run --frozen, each commit is
-                        checked by the same exact tool versions.
+                        through pixi run --locked, each commit is
+                        checked by the same exact tool versions, and a
+                        manifest changed without a new lock is
+                        refused.
 description:            |
                         pixi.lock lists exact builds, for example
                         python-3.15.0-h6e52b48_101_cp315 and
-                        clingo-5.8.2-py315h62b6238_1 (lines 15 and
-                        40). The lock was committed in e232fb3. All
-                        five hooks exec "pixi run --frozen ..."
-                        (.githooks/commit-msg 29, pre-commit 28,
-                        pre-merge-commit 32, pre-push 33,
-                        prepare-commit-msg 31). One limit: --frozen
-                        does not stop when pyproject.toml has changed
-                        without a new lock, so the gate then runs on
-                        the old environment without saying so;
-                        --locked would refuse
+                        clingo-5.8.2-py315h62b6238_1 (lines 45 and
+                        16). The lock was committed in e232fb3. All
+                        five hooks exec "pixi run --locked ..."
+                        (.githooks/commit-msg 29, pre-commit 30,
+                        pre-merge-commit 34, pre-push 33,
+                        prepare-commit-msg 34). --locked refuses to
+                        run when pyproject.toml has changed without a
+                        new lock, where --frozen ran the old
+                        environment without saying so
                         (https://pixi.prefix.dev/latest/reference/cli/pixi/run/).
-                        ASSUMPTION: nothing else compares manifest and
-                        lock; none was found.
+                        The gate counts pyproject.toml and pixi.lock
+                        as code, so a commit that changes either runs
+                        the tests (src/cc_public/gate/gate.py line
+                        99). Outside the lock remain git, taken from
+                        the PATH (gate.py line 182), and the Chromium
+                        that pixi run browsers downloads for the
+                        browser tests (pyproject.toml line 79).
 
 edge:
 

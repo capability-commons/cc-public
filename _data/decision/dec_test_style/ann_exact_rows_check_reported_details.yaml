@@ -22,17 +22,21 @@ description:            |
                         2026-10-15T10:59:29Z). Each check reports rows
                         of named columns read from the decl comments
                         of the rules (src/cc_public/check/check.py
-                        lines 110-121; check.lp, e.g. lines 164-167
-                        misplaced_document and 229-234
-                        dangling_reference). Fault tests compare rows
-                        in full, with line and expected place
-                        (test_check.py lines 373, 433-434, 440-441,
-                        479, 622-623). The three tests that index one
-                        key still compare that key's rows in full
-                        (line 283). edit.py compares failures before
-                        and after an edit by every column but the line
-                        (src/cc_public/edit/edit.py lines 895-910), so
-                        the other columns decide which failures an
+                        lines 299-335; check.lp, e.g. line 576
+                        misplaced_document and line 953
+                        dangling_reference). Most fault tests compare
+                        rows in full, with file, line and expected
+                        place
+                        (src/cc_public/check/_test/test_check.py, e.g.
+                        lines 615-623, 1093). Of the 41 tests that
+                        read one check only, 18 still compare its rows
+                        in full (e.g. lines 445-449); 23 compare some
+                        columns or ask only whether a row is there
+                        (e.g. lines 435-442, 547-551). edit.py
+                        compares failures before and after an edit by
+                        every column but the line
+                        (src/cc_public/edit/edit.py lines 1243-1262),
+                        so the other columns decide which failures an
                         edit is said to add. The cost of pinned lines
                         and wording is argued in
                         ann_exact_tests_break_on_new_checks and

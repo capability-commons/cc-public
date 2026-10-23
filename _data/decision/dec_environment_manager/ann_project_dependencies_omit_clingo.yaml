@@ -8,30 +8,27 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Rule engine missing from the package metadata
+title:                  jq missing from the package metadata
 brief:                  |
-                        clingo is declared only in the pixi table, not
-                        in the project dependencies, so any install
-                        other than pixi gives a cctool whose check
-                        command fails on import.
+                        clingo is now in the project dependencies, but
+                        jq is declared only in the pixi table, so any
+                        install other than pixi gives a cctool whose
+                        query jq fails.
 description:            |
-                        [project].dependencies lists click, jsonschema
-                        and ruamel.yaml only (pyproject.toml lines
-                        39-41); clingo is under
-                        [tool.pixi.dependencies] (line 58). logic.py
-                        imports clingo at module level (line 55).
-                        Measured by the advocate on 2026-10-15 at
-                        89c74d8: after uv pip install -e on Python
-                        3.12.3, importing cc_public.check.check fails
-                        with "ModuleNotFoundError: No module named
-                        'clingo'"; with clingo added by hand, cctool
-                        check reports 0 failures. clingo 5.8.2 is on
-                        PyPI (https://pypi.org/pypi/clingo/json, read
-                        2026-10-15), so it could be listed there; a
-                        one-line fix. This challenges how the choice
-                        was applied, not pixi itself. ASSUMPTION:
-                        whether an install outside pixi is an intended
-                        use; no source says.
+                        [project].dependencies lists click, clingo,
+                        htpy, jsonschema, pyoxigraph, referencing and
+                        ruamel.yaml (pyproject.toml lines 42-48); jq
+                        is only under [tool.pixi.dependencies] (line
+                        67), as a conda package (pixi.lock line 22).
+                        cctool query jq runs the jq program as a
+                        subprocess and, where there is none, stops
+                        with "There is no jq program to run. Run pixi
+                        install" (src/cc_public/graph/jq.py lines
+                        84-91). This challenges how the choice was
+                        applied, not pixi itself. ASSUMPTION: an
+                        install outside pixi is an intended use, as
+                        ann_clingo_in_project_dependencies_is_fixed
+                        reports of commit 24e6ca9.
 
 edge:
 

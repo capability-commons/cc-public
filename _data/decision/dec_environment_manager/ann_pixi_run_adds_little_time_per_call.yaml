@@ -10,21 +10,26 @@ protective_mark:
 
 title:                  Small run-time cost of the pixi wrapper
 brief:                  |
-                        Running each hook and task through pixi run
-                        --frozen adds about 50 ms to a bare call and
-                        0.2 s to 0.4 s to cctool check, below one
-                        percent of a gated commit.
+                        Running hooks and tasks through pixi run
+                        --frozen added about 50 ms to a bare call and
+                        0.2 s to 0.4 s to cctool check when measured,
+                        below one percent of a gated commit. The hooks
+                        now use --locked, which was not measured.
 description:            |
                         Measured by the advocate on 2026-10-15 with
                         pixi 0.82.0 on a scratch clone at 89c74d8:
                         pixi run --frozen true took 0.041 s to 0.061
                         s; cctool check took 2.88 s direct and 3.09 s
-                        to 3.26 s through pixi. The gate takes about
-                        75 s per commit (memory/MEMORY.md lines 39 and
-                        54). ASSUMPTION: the cost is fixed per call,
-                        so it shrinks in relative terms as the graph
-                        grows; the larger gap on cctool check was not
-                        explained.
+                        to 3.26 s through pixi. The gate then took
+                        about 75 s to 90 s per commit
+                        (memory/MEMORY.md lines 39 and 54). The hooks
+                        now run pixi run --locked
+                        (.githooks/pre-commit line 30), which also
+                        compares the lock with the manifest; that cost
+                        was not measured. ASSUMPTION: the cost is
+                        fixed per call, so it shrinks in relative
+                        terms as the graph grows; the larger gap on
+                        cctool check was not explained.
 
 edge:
 

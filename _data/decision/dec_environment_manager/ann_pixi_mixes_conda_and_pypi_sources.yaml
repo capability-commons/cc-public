@@ -14,16 +14,21 @@ brief:                  |
                         PyPI packages, declared in two tables, so
                         where a dependency comes from has two answers.
 description:            |
-                        pyproject.toml line 51 sets conda-forge and
-                        lines 57-61 list python, clingo, pytest and
-                        ruff; lines 39-41 list click, jsonschema and
-                        ruamel.yaml, resolved as PyPI wheels
-                        (pixi.lock lines 48-55). At 2132eaf pyyaml
-                        came from conda-forge and the PyPI list was
-                        empty; it filled in 6c8d3d5, fcb71b0 and
-                        d1c4400 with no recorded reason for taking
-                        them from PyPI. A modest point: both tables
-                        sit in one file and one lock.
+                        pyproject.toml line 58 sets conda-forge and
+                        lines 65-71 list clingo, jq, python, pytest,
+                        pytest-xdist and ruff; lines 42-48 list click,
+                        clingo, htpy, jsonschema, pyoxigraph,
+                        referencing and ruamel.yaml, and line 63 adds
+                        playwright, resolved as PyPI wheels (pixi.lock
+                        lines 53-65). clingo is in both tables with
+                        different lower bounds, and the default
+                        environment takes it from conda-forge
+                        (pixi.lock line 16). At 2132eaf pyyaml came
+                        from conda-forge and the PyPI list was empty;
+                        it filled in 6c8d3d5, fcb71b0 and d1c4400 with
+                        no recorded reason for taking them from PyPI.
+                        A modest point: both tables sit in one file
+                        and one lock.
 
 edge:
 

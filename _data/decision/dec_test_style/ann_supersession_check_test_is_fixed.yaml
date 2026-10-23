@@ -11,18 +11,22 @@ protective_mark:
 title:                  Fault test for the newest check now present
 brief:                  |
                         Commit 2b74bfe "Add a test of
-                        supersession_across_issues" plants the fault
-                        of that check and expects it reported. At
-                        360ec14 every shown check has a firing test,
-                        though nothing in the suite yet requires one.
+                        supersession_across_issues" planted the fault
+                        of that check and expected it reported. The
+                        check is now supersession_across_types and is
+                        still tested, but one other shown check,
+                        word_to_replace, has no firing test, and
+                        nothing in the suite requires one.
 description:            |
-                        test_a_ruling_that_supersedes_one_of_another_issue_is_reported
+                        test_an_option_that_supersedes_a_ruling_is_reported
                         (src/cc_public/check/_test/test_check.py lines
-                        374-380 at 360ec14).
+                        428-432) expects one supersession_across_types
+                        row. word_to_replace (check.lp lines
+                        1630-1661) is named in no test file under src.
                         test_every_check_names_its_columns still
-                        checks only that each shown relation is
-                        declared (lines 686-690), so the second half
-                        of the point holds.
+                        checks only that each shown check is declared
+                        (lines 1068-1074), so the second half of the
+                        point holds.
 
 edge:
 

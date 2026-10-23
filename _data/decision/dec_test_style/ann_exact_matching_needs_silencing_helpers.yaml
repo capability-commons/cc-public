@@ -11,21 +11,27 @@ protective_mark:
 title:                  Helpers that keep unrelated checks quiet
 brief:                  |
                         Because a test fails on any unexpected
-                        failure, the tests need helpers that silence
-                        unrelated checks. Silencing is a second job
-                        beside detecting.
+                        failure, the tests need helpers and carve-outs
+                        that silence unrelated checks. Silencing is a
+                        second job beside detecting.
 description:            |
                         _check removes unformatted_file failures
-                        before every comparison (test_check.py lines
-                        201-211). _fields writes every field the
+                        before every comparison
+                        (src/cc_public/check/_test/test_check.py lines
+                        222-232). _fields writes every field the
                         schema accepts so schema_violation stays
-                        silent (lines 143-159). _decision also writes
-                        a test decision and places the option in its
-                        folder so option_count and misplaced_document
-                        stay silent (lines 128-140). ASSUMPTION: each
-                        new check that fires on these items needs a
-                        builder change or another carve-out. Today the
-                        carve-out list has one entry.
+                        silent (lines 164-180). _option also writes a
+                        test decision about a test component and
+                        places the option in its folder so
+                        option_count and misplaced_document stay
+                        silent (lines 149-161). Five tests drop more
+                        by hand: unformatted_file,
+                        end_outside_release, unreadable_file, and the
+                        advice unmapped_concept and unrecorded_genus
+                        (lines 316, 386-389, 639, 694, 1424).
+                        ASSUMPTION: each new check that fires on these
+                        items needs a builder change or another
+                        carve-out.
 
 edge:
 

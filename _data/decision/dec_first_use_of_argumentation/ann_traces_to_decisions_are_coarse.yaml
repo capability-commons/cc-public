@@ -11,22 +11,33 @@ protective_mark:
 title:                  Coarse, prose traces from elements to decisions
 brief:                  |
                         Decisions were recorded before the relations
-                        that tie elements to them. Only one item
-                        carries a relation_realizes edge, and a change
-                        names its ruling only in prose.
+                        that tie elements to them. At first only one
+                        item carried a relation_realizes edge; there
+                        are now eleven, but a change still names its
+                        ruling only in prose.
 description:            |
-                        Only src/cc_public/__init__.py line 24 holds
-                        relation_realizes (grep of src at 89c74d8).
-                        relation_realizes cannot be held by schemas or
-                        registers (reg_relation.yaml lines 343-347).
-                        6230e98 names ruling_cross_item_checks_engine
-                        in its brief and has "relation: []". No
-                        relation runs from a commit or element to the
-                        decision it carries out (reg_relation.yaml).
-                        Building those relations is itself tooling
-                        work the recorded decisions show is needed, so
-                        this does not favor opt_keep_building_tooling
-                        as such.
+                        At 89c74d8 only src/cc_public/__init__.py line
+                        24 held relation_realizes (grep of src). On
+                        the snapshot of 2026-10-23 there are eleven
+                        edges: that one, seven in
+                        src/cc_public/check/check.py (lines 37, 120,
+                        154, 200, 239, 320, 360) and three in
+                        _data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                        (lines 61, 76, 94). Schemas and registers
+                        still cannot hold it: its source must play
+                        rol_implementation (reg_relation.yaml lines
+                        394-397; reg_relation_constraint.yaml lines
+                        233-250), which only source-file and dataflow
+                        node types do (reg_data_item_type.yaml lines
+                        648-1646). 6230e98 names the ruling it carries
+                        out in its brief and has an empty relation
+                        list. No relation runs from a commit to a
+                        ruling, and an element reaches a decision only
+                        through the component it realizes
+                        (reg_relation.yaml). Building those relations
+                        is itself tooling work the recorded decisions
+                        show is needed, so this does not favor
+                        opt_keep_building_tooling as such.
 
 edge:
 

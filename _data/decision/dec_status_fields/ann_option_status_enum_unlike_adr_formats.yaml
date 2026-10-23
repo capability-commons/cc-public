@@ -17,16 +17,21 @@ brief:                  |
 description:            |
                         Before 44034ef the enum held three values, and
                         the schema note said there was no superseded
-                        status because relation_supersedes records
-                        replacement (git show 44034ef, diff of
-                        _data/schema/sch_option.yaml). Nygard's format
-                        and MADR both have deprecated and superseded
-                        values:
+                        status because an edge records replacement
+                        (git show
+                        44034ef^:_data/schema/sch_decision.yaml lines
+                        35-40, 64-70; options were then named
+                        decisions). Nygard's format and MADR both have
+                        deprecated and superseded values:
                         https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
-                        and https://adr.github.io/madr/ . A search of
-                        the tree at 89c74d8 for "adr", "madr" and
-                        "export" finds no tooling that exchanges
-                        options with another system.
+                        and https://adr.github.io/madr/ . cctool
+                        export okf and cctool export obsidian now
+                        write every item, options among them, for
+                        other tools (src/cc_public/export/okf.py,
+                        obsidian.py), but neither writes whether an
+                        option stands, and grep -i madr over src finds
+                        nothing, so no tooling exchanges options with
+                        an ADR tool.
 
 edge:
 

@@ -11,24 +11,28 @@ protective_mark:
 title:                  Check of record on one machine only
 brief:                  |
                         The legacy tree ran its gate in CI. The
-                        regrown tree has its check of record only in a
-                        local pre-push hook, with nothing pushed and
-                        no CI yet, so a fault in one machine's setup
-                        has no second check behind it.
+                        regrown tree is pushed to its remote but still
+                        has no CI, so its check of record is a local
+                        pre-push hook, and a fault in one machine's
+                        setup has no second check behind it.
 description:            |
                         Legacy CI: gate.yml and CodeQL (note
                         cc-folder-survey.md line 29).
-                        .githooks/pre-push lines 19-28: "the check of
-                        record until CI runs it too". A remote exists
-                        but nothing is pushed (memory/MEMORY.md line
-                        7; enforcement-approach.md line 10). Local
+                        .githooks/pre-push lines 26-28: "this is the
+                        check of record until CI runs it too". The
+                        tree holds no CI workflow (no .github folder
+                        at e3a198e5). dev and the tags of the earlier
+                        history were pushed to the remote on
+                        2026-10-21 (memory/MEMORY.md line 43). Local
                         hooks can be skipped (enforcement-approach.md
                         line 11). The young checker read a missing
                         output file as no failures (memory/MEMORY.md
-                        line 53). Temporary: adding CI removes most of
-                        it. The legacy gate was not fault-free either
-                        (note cc-public-session-context.md lines 63,
-                        68).
+                        line 54). The gate of a push uses no store of
+                        verdicts, so it finds every verdict afresh
+                        (src/cc_public/gate/gate.py lines 28-32).
+                        Temporary: adding CI removes most of it. The
+                        legacy gate was not fault-free either (note
+                        cc-public-session-context.md lines 63, 68).
 
 edge:
 

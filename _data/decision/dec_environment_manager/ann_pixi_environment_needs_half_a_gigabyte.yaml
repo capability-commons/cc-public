@@ -10,18 +10,26 @@ protective_mark:
 
 title:                  Half a gigabyte per machine
 brief:                  |
-                        The locked environment takes about 267 MB in
-                        the clone plus about 278 MB of package cache,
-                        a fixed storage cost per machine that tools on
-                        the PATH would mostly avoid.
+                        When measured on 2026-10-15 the locked
+                        environment took about 267 MB in the clone
+                        plus about 278 MB of package cache, a fixed
+                        storage cost per machine that tools on the
+                        PATH would mostly avoid. It has grown since,
+                        with three more environments and Chromium.
 description:            |
                         Measured by the advocate on 2026-10-15: pixi
                         install --frozen took 6.3 s; .pixi was 267 MB
-                        and the rattler cache 278 MB. pixi.lock is 861
-                        lines, 34 KB. ASSUMPTION: with tools on the
-                        PATH a machine reuses a system Python and
-                        installed tools. A weak point: the cost does
-                        not grow with the graph.
+                        and the rattler cache 278 MB; pixi.lock was
+                        861 lines, 34 KB. At e3a198e5 pixi.lock is
+                        2767 lines, 143 KB, with a default environment
+                        and three more for Python 3.12, 3.13 and 3.14
+                        (pyproject.toml lines 98-101), which pixi run
+                        slow installs; pixi run browsers also
+                        downloads Chromium (line 79). Not measured
+                        again. ASSUMPTION: with tools on the PATH a
+                        machine reuses a system Python and installed
+                        tools. A weak point: the cost does not grow
+                        with the graph.
 
 edge:
 

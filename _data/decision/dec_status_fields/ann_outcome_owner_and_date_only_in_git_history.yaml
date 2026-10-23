@@ -8,25 +8,34 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Maker and date of a ruling only in git history
+title:                  Maker and date of a ruling only in prose and git history
 brief:                  |
-                        Who made a ruling, and when, comes only from
-                        the commit that adds it. Files exchanged
-                        without their history lose it, and the squash
-                        of 2026-10-14 shows that the history itself
-                        can be rewritten.
+                        Who made a ruling, and when, is stated only in
+                        the prose of its brief, by a convention that
+                        no field or check holds, and in the commits
+                        that add and change it. A partner tool cannot
+                        read them as data, and the history has been
+                        squashed twice.
 description:            |
-                        _data/schema/sch_ruling.yaml lines 33-36.
-                        memory/lifecycle-and-status.md ("How to
-                        apply") says the outcome item supplies who
-                        ruled and when, which the schema note
-                        contradicts. The history was squashed on
-                        2026-10-14, and 44034ef and 0d2e23a survive
-                        only under the tag pre_squash_20261014. The
-                        removed status enums held no author or time
-                        either. ASSUMPTION: a partner who receives the
-                        data files without the repository history
-                        cannot recover who made a ruling, or when.
+                        _data/schema/sch_ruling.yaml lines 32-35 say
+                        who made a ruling, and when, is recorded by
+                        the commits, not by a field, and
+                        ruling_author_and_time_of_items keeps author
+                        and time out of every item. Yet all 85 rulings
+                        state the maker in their brief, 84 as "Ruled
+                        by William Payne" and one as "William Payne
+                        decides ... Ruled by him", and every one gives
+                        a date (python over
+                        _data/decision/*/ruling_*.yaml). No check
+                        reads that text (grep -i "ruled by" over src
+                        finds nothing). The history was squashed on
+                        2026-10-14 and again on 2026-10-20; dev keeps
+                        only the tag of the second squash (notes of
+                        the review of 2026-10-22). The removed status
+                        enums held no author or time either.
+                        ASSUMPTION: a partner who receives the data
+                        files without the repository history can read
+                        who ruled and when only as prose.
 
 edge:
 

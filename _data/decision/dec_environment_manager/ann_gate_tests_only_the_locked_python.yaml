@@ -11,24 +11,29 @@ protective_mark:
 title:                  Gate checks on one Python only
 brief:                  |
                         The project claims Python 3.12 and later, but
-                        the locked environment, and so the gate, runs
-                        only Python 3.15. Nothing checks the lowest
-                        version the project claims.
+                        the default environment, and so the gate, runs
+                        only Python 3.15. The lower versions are
+                        tested only by pixi run slow, which is run on
+                        its own and not at each commit.
 description:            |
-                        pyproject.toml line 38 sets requires-python
-                        ">= 3.12" and line 59 python ">=3.12";
-                        pixi.lock holds python 3.15.0 only (lines 40
-                        and 80). The pre-commit hook runs the gate in
-                        the pixi environment (.githooks/pre-commit
-                        line 28). ruff targets py312 (pyproject.toml
-                        line 90), which catches some newer syntax but
-                        tests no library behavior (ASSUMPTION). A weak
-                        point today: measured by the advocate on
-                        2026-10-15 on Python 3.12.3 at 89c74d8, all
-                        326 tests pass and cctool check reports 0
-                        failures. Tools on the PATH would test on
-                        whatever Python each machine has, which is no
-                        better as a guarantee.
+                        pyproject.toml line 41 sets requires-python
+                        ">= 3.12" and line 68 python ">=3.12"; the
+                        default environment in pixi.lock holds python
+                        3.15.0 only (lines 45, 96 and 147). The
+                        pre-commit hook runs the gate in the default
+                        environment (.githooks/pre-commit line 30).
+                        The task slow runs the tests in environments
+                        for Python 3.12, 3.13 and 3.14 (pyproject.toml
+                        lines 81-101), but the comment above it says
+                        it is too slow for the gate. ruff targets
+                        py312 (pyproject.toml line 129), which catches
+                        some newer syntax but tests no library
+                        behavior (ASSUMPTION). A weak point: measured
+                        by the advocate on 2026-10-15 on Python 3.12.3
+                        at 89c74d8, all 326 tests pass and cctool
+                        check reports 0 failures. Tools on the PATH
+                        would test on whatever Python each machine
+                        has, which is no better as a guarantee.
 
 edge:
 

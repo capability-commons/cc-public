@@ -10,19 +10,21 @@ protective_mark:
 
 title:                  Layout pass limited to changed files
 brief:                  |
-                        About half of the check time is a layout pass
-                        over every file of both trees, which serves
-                        only the Reformat rule. Laying out only the
-                        files git names as changed gives the same
-                        answer seven to ten times faster, so that part
-                        of the cost is in the implementation, not the
-                        option.
+                        At 89c74d8 about half of the check time was a
+                        layout pass over every file of both trees,
+                        which serves only the Reformat rule. Laying
+                        out only the files git names as changed gave
+                        the same answer seven to ten times faster, so
+                        that part of the cost was in the
+                        implementation, not the option. Since 5acf7c2
+                        the check lays out only the files whose bytes
+                        differ.
 description:            |
                         content_change is used by one rule,
                         reformat_changes_content
-                        (src/cc_public/commit/change.lp lines 216-221;
+                        (src/cc_public/commit/change.lp lines 396-400;
                         set in src/cc_public/commit/change.py line
-                        123). Measured by the performance efficiency
+                        139). Measured by the performance efficiency
                         advocate, 2026-10-15, at 89c74d8, single runs:
                         extracting the graph of HEAD 0.17 s; layout
                         pass over two copies of HEAD 3.35 s; for HEAD
@@ -40,7 +42,10 @@ description:            |
                         rest (two archives, message validation, two
                         extracts, one clingo solve) took 2.1 to 5.1 s
                         per commit. That remainder is a fixed cost per
-                        commit that free text does not pay.
+                        commit that free text does not pay. 5acf7c2
+                        then made the check compare bytes first and
+                        lay out only the files that differ (change.py
+                        lines 145-161).
 
 edge:
 

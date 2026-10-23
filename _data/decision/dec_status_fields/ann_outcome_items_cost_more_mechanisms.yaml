@@ -11,24 +11,36 @@ protective_mark:
 title:                  Outcome items costing more mechanisms than a field
 brief:                  |
                         Recording outcomes as items of their own added
-                        a type, a schema, two relations, a widened
-                        relation_supersedes and several check rules,
-                        where an enum on sch_option was one field and
-                        one definition.
+                        a type, a schema, two relations and several
+                        check rules, and the review pages derive
+                        standing again, where an enum on the option
+                        schema was one field and one definition.
 description:            |
                         Bears on the second clause of the chosen
                         option, "record outcomes as items of their
                         own". Before 44034ef: one status property and
-                        a three-value enum in sch_option. Commit
-                        7db4229 adds type_ruling, relation_upholds and
-                        relation_rejects and a check; sch_ruling.yaml
-                        is a separate schema; check.lp lines 133-155,
-                        318-413 and 439-453 hold the rules that
-                        involve rulings; 89c74d8 widens
-                        relation_supersedes to two types. The extra
-                        mechanisms buy attribution and settling
-                        several alternatives at once, which an enum
-                        lacks.
+                        a three-value enum in the option schema, then
+                        a file named after decisions (git show
+                        44034ef^:_data/schema/sch_decision.yaml lines
+                        49-70). Commit 7db4229 adds the ruling type,
+                        relation_upholds, relation_rejects and a
+                        check; sch_ruling.yaml is a separate schema.
+                        The rules that involve rulings are now settles
+                        and decision_of (src/cc_public/graph/derive.lp
+                        lines 115-145); no_option_in_ruling,
+                        decisions_mixed_in_ruling,
+                        upholds_and_rejects, competing_rulings and
+                        unargued_driver (src/cc_public/check/check.lp
+                        lines 1185, 1221, 1296, 1467, 1536); and
+                        open_decision (src/cc_public/check/friction.lp
+                        lines 141-149). 89c74d8 widened
+                        relation_supersedes to rulings; that was
+                        undone when a change of ruling became an edit
+                        in place. The review pages derive standing in
+                        Python too (src/cc_public/web/argument.py
+                        lines 337-342). The extra mechanisms buy
+                        attribution and settling several alternatives
+                        at once, which an enum lacks.
 
 edge:
 

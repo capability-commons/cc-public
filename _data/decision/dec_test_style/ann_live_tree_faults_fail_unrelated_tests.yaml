@@ -11,28 +11,33 @@ protective_mark:
 title:                  Live repository copy under every check test
 brief:                  |
                         Each check test runs over a copy of the
-                        working repository and expects exactly the
-                        failures of its one fault. A fault in
-                        unrelated data therefore fails nearly every
-                        test at once.
+                        working repository, less all but two
+                        decisions, and expects exactly the failures of
+                        its one fault. A fault in the registers,
+                        schemas or kept source therefore fails nearly
+                        every test at once.
 description:            |
                         The tree fixture copies DIR_REPO, the
                         repository the tests run from (the working
-                        tree with uncommitted edits under pixi run
-                        test, the gate's copy of the staged content
-                        under the gate), less version control and
-                        caches (src/cc_public/conftest.py lines 34-56;
-                        commit fd6323a message). 56 of the 59 checker
-                        tests take it. _guid_of reads guids from the
-                        copied tree at test time. The prefix test
+                        tree under pixi run test, the gate's copy of
+                        the staged content under the gate), less
+                        version control, caches, all but two folders
+                        of _data/decision and the source nothing in
+                        the copy names (src/cc_public/conftest.py
+                        lines 43-70, 178-197). 141 of the 149 tests in
+                        src/cc_public/check/_test/test_check.py take
+                        it. _guid_of reads guids from the copied tree
+                        at test time (lines 80-96). The prefix test
                         broke when options were added to the data,
                         with no change to the prefix check (586a0e5).
                         The effect is noise during work: the check
                         stage of the gate, run beside the tests, also
-                        reports such a fault (gate.py line 64) and the
-                        direct test at test_check.py lines 227-228
-                        names it. A small fixed fixture tree would
-                        remove it under either option.
+                        reports such a fault
+                        (src/cc_public/gate/gate.py line 87); the
+                        direct test at test_check.py lines 248-250 is
+                        marked slow and left out of the gate. A commit
+                        that stages only data runs no tests (gate.py
+                        lines 94-99).
 
 edge:
 
