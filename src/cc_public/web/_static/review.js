@@ -1,22 +1,47 @@
-// Small conveniences on top of pages that work without script.
+// ---
 //
-// A link that pins an option or a lit chain changes only the fragment
-// of the address, so the page keeps its place instead of jumping to the
-// pinned element. A click off the decision matrix while an option is
-// shown points the address at a fragment no element has, which hides the
-// option; folding or opening a diagram does not, nor does a click in a
-// form opened over the page. Without script the
-// page jumps, and an option stays shown until another is chosen.
+// id_self:                file_review_js
+// guid_self:              file_763c55e42b8542b29b91347720188b1a
+// copyright:              Copyright 2026 William Payne
+// license:                Apache-2.0
 //
-// A click on an annotation in the graph also chooses its entry in the
-// argument under the decision matrix: the entry and those around it
-// open, and braces mark it, without moving the page. Any other pin or
-// unpin lets it go.
+// protective_mark:
 //
-// Each diagram stays open or closed as it was last left, on every
-// page, so moving from decision to decision keeps the same view. The page
-// remembers this in the browser; without script, or where the browser
-// keeps nothing, each diagram opens as the page sets it.
+//   - id_mark:            mark_public
+//     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+//
+// title:                  Review page script
+// brief:                  |
+//                         Small conveniences on top of review pages that
+//                         work without script.
+// description:            |
+//                         A link that pins an option or a lit chain
+//                         changes only the fragment of the address, so
+//                         the page keeps its place instead of jumping to
+//                         the pinned element. A click off the decision
+//                         matrix while an option is shown points the
+//                         address at a fragment no element has, which
+//                         hides the option; folding or opening a diagram
+//                         does not, nor does a click in a form opened
+//                         over the page. Without script the page jumps,
+//                         and an option stays shown until another is
+//                         chosen.
+//
+//                         A click on an annotation in the graph also
+//                         chooses its entry in the argument under the
+//                         decision matrix: the entry and those around it
+//                         open, and braces mark it, without moving the
+//                         page. Any other pin or unpin lets it go.
+//
+//                         Each diagram stays open or closed as it was
+//                         last left, on every page, so moving from
+//                         decision to decision keeps the same view. The
+//                         page remembers this in the browser; without
+//                         script, or where the browser keeps nothing,
+//                         each diagram opens as the page sets it.
+// edge:                   []
+//
+// ...
 
 var KEY_DIAGRAM = 'cc-review-diagram-';
 
