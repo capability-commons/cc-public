@@ -694,7 +694,7 @@ def test_a_constraint_that_excludes_a_role_passes_only_types_without_it(tree):
     failures.pop('end_outside_release')
     assert list(failures) == ['constraint_violation']
     assert {row[0] for row in failures['constraint_violation']} == {
-        'rqt_edit_refuses_new_failure', 'rqt_format_keeps_formatted_file', 'rqt_rename_keeps_guid'}
+        path.stem for path in (tree / '_data' / 'requirement').glob('rqt_*.yaml')}
     assert {row[3:] for row in failures['constraint_violation']} == {
         ('source', 'relcon_is_requirement')}
 
