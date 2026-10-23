@@ -11,47 +11,48 @@ protective_mark:
 title:                  Refill of line breaks that carry meaning
 brief:                  |
                         The printer refills every literal block, not
-                        only what an edit writes. A list or other
-                        line-by-line text written flush in a block is
-                        joined into one run of words, and the check
+                        only what an edit writes. Line-by-line text
+                        written flush in a block, other than a list,
+                        is joined into one run of words, and the check
                         then demands that result.
 description:            |
-                        _body joins each run of lines at the block's
-                        own indentation and refills it with
-                        textwrap.wrap; only blank lines and lines
-                        indented further are kept
-                        (src/cc_public/edit/layout.py lines 550-586).
+                        _body joins each run of flush lines in a block
+                        scalar and fills it. Blank lines, lines
+                        indented further and, since a5dea6e, lines
+                        that open with a list marker are kept apart
+                        (src/cc_public/edit/layout.py lines 721-757).
                         Every LiteralScalarString goes to _body,
-                        whatever its key (layout.py lines 469-478);
-                        literal keys include follows and breaks, 13
-                        each, besides the prose fields (advocate grep,
-                        2026-10-15). The note field says formatted
+                        whatever its key (layout.py lines 604-612);
+                        literal keys include follows and breaks, 17
+                        each, besides the prose fields (grep,
+                        2026-10-22). The note field says formatted
                         prose differs only in where its lines break
-                        (layout.py lines 38-42). Advocate run at
-                        89c74d8, 2026-10-15: a description of
-                        "Steps:", "- first do this", "- then do that",
-                        flush at column 25, came out as one line
-                        "Steps: - first do this - then do that ..."; a
-                        further-indented block was kept. The commit
-                        message writer uses the same format
-                        (src/cc_public/commit/message.py lines
-                        130-131): "Changes:\n- one\n- two" came out as
-                        "Changes: - one - two". cctool check reports
+                        (layout.py lines 40-45). At 89c74d8 a flush
+                        list was joined into one line, in a
+                        description and in a commit body (advocate
+                        run, 2026-10-15). Review run, 2026-10-22: a
+                        flush list, and a commit body of "Changes:",
+                        "- one", "- two", are kept, but two flush
+                        lines of an address after the list, "12 Main
+                        Street" and "Springfield", are joined onto its
+                        last item. The commit message writer uses the
+                        same printer (src/cc_public/commit/message.py
+                        lines 130-131). cctool check reports
                         unformatted_file for any file the printer
-                        would change (check.py lines 66-78). The
+                        would change (check.py lines 164-167). The
                         fragment writer also joined each paragraph it
                         wrote (c4a8721:src/cc_public/edit/layout.py
                         lines 124-142), but only the text of the edit,
-                        and had no check over hand-written files. No
-                        literal block in the repository holds a flush
-                        list today, so the fault is latent. The only
-                        refill test uses a two-line sentence
-                        (src/cc_public/edit/_test/test_edit.py lines
-                        479-491). ASSUMPTION: authors will want lists
-                        in a description or commit body. A fix in the
-                        printer (keep lines that begin with a list
-                        mark) is cheap, so the point argues for a fix
-                        more than for the fragment writer. Also bears
+                        and had no check over hand-written files. 111
+                        files under _data now hold a flush list in
+                        prose, which the fix keeps. Refill tests:
+                        src/cc_public/edit/_test/test_edit.py lines
+                        831-843 and 887-901. ASSUMPTION: authors will
+                        want other line-by-line text, such as an
+                        address, in a description or commit body.
+                        Indenting such lines further keeps them, so
+                        the point argues for a documented rule more
+                        than for the fragment writer. Also bears
                         weakly on opt_new_blank_line_rule, which keeps
                         the same printer.
 

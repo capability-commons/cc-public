@@ -17,16 +17,19 @@ brief:                  |
 description:            |
                         Tree check and commit check run through
                         cc_public.graph.logic.run
-                        (src/cc_public/check/check.py lines 96-99;
+                        (src/cc_public/check/check.py lines 277-283;
                         src/cc_public/commit/change.py line 86). The
                         engine is clingo
                         (ruling_cross_item_checks_engine.yaml lines
-                        12-17). The SQL path has its own module of 94
+                        13-17). The SQL path has its own module of 108
                         lines, command, error handling and tests
                         (src/cc_public/graph/sql.py;
-                        src/cc_public/cli/querying.py lines 107-137).
+                        src/cc_public/cli/querying.py lines 131-165).
                         Weakened by: the SQL layer is small and adds
-                        no package. Holds at any graph size.
+                        no package, and it now also holds the FTS5
+                        prose table that text search uses (sql.py
+                        lines 44-48; text.py lines 365 and 396). Holds
+                        at any graph size.
 
 edge:
 

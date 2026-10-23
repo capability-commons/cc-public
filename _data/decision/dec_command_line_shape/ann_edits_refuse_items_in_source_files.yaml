@@ -17,15 +17,18 @@ brief:                  |
                         route.
 description:            |
                         remove and rename refuse items with prefix
-                        pym, pyp, lpf or file and say to "move or
-                        remove the file by hand"
-                        (src/cc_public/edit/edit.py lines 105,
-                        774-786). rename: "Text outside documents,
-                        such as code, is not changed", and files that
-                        still name the old id are listed on stderr
-                        (src/cc_public/cli/editing.py lines 285-308).
+                        pym, pyp, pycls, pyf, lpf, lpp, file or shell
+                        and say to "move or remove the file by hand"
+                        (src/cc_public/edit/edit.py lines 112, 857,
+                        899, 1063-1074). rename changes the id in YAML
+                        documents, in the strings of the logic
+                        programs and in the file name; "Other text
+                        outside YAML documents, such as python code,
+                        is not changed", and files that still name the
+                        old id are listed on stderr
+                        (src/cc_public/cli/editing.py lines 301-325).
                         A hand edit is checked only when cctool check
-                        runs, as in the gate (gate.py line 64). The
+                        runs, as in the gate (gate.py line 87). The
                         rejected alternative had no edit commands, so
                         this does not favor it. A gap in the functions
                         built, closed by a move command, not by

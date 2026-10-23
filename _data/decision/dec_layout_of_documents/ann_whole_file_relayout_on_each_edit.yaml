@@ -16,13 +16,19 @@ brief:                  |
                         checks an edit already runs.
 description:            |
                         b544e09 commit message; _Item.replace and
-                        _format in src/cc_public/edit/edit.py. Laying
-                        out the largest register file takes about 79
-                        ms (advocate measurement, 2026-10-15). apply
-                        runs check_documents twice per edit (edit.py
-                        lines 866-878), and that grows with the whole
-                        tree, so relayout stays a small share. Weak
-                        support.
+                        _format in src/cc_public/edit/edit.py (lines
+                        1632-1642, 1466-1476). Laying out
+                        reg_data_item_type.yaml took about 79 ms at
+                        89c74d8 (advocate measurement, 2026-10-15). It
+                        now holds 1706 lines and takes about 0.20 s,
+                        and the largest file, reg_concept.yaml at 2677
+                        lines, about 0.28 s (review measurement,
+                        2026-10-22). apply runs check_documents twice
+                        per edit, three times when a file is moved to
+                        its folder (edit.py lines 1172-1176). A first
+                        call takes about 15 s on the tree and grows
+                        with the whole tree, so relayout stays a small
+                        share. Weak support.
 
 edge:
 

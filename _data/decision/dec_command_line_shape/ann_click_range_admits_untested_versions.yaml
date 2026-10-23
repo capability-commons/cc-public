@@ -8,24 +8,27 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Click range wider than the tests allow
+title:                  Click range wider than the tests run
 brief:                  |
-                        The package admits click from 8.1, but the
-                        tests read stderr apart from stdout, which
-                        click does only from 8.2.0. Only the lock file
-                        keeps the tests working.
+                        The package admits click from 8.2, the first
+                        release whose CliRunner keeps stderr apart as
+                        the tests need. Every locked environment pins
+                        8.5.0, so 8.2 to 8.4 are admitted but never
+                        tested.
 description:            |
-                        pyproject.toml declares click>=8.1,<9. Tests
-                        build CliRunner() with no arguments and assert
-                        on result.stderr (src/cc_public/cli/_test/
-                        test_editing.py lines 43, 84, 91;
-                        test_querying.py lines 46, 55). In click 8.1.8
-                        CliRunner mixes stderr by default and
-                        Result.stderr raises ValueError (click 8.1.8
-                        src/click/testing.py lines 147-150, 184).
-                        Click 8.2.0 keeps the streams apart
-                        (CHANGES.md). pixi.lock pins 8.5.0. The fix is
-                        to raise the lower bound.
+                        pyproject.toml line 42 declares click>=8.2,<9.
+                        Tests build CliRunner() with no arguments and
+                        assert on result.stderr
+                        (src/cc_public/cli/_test/test_editing.py lines
+                        43, 84, 92). In click 8.1.8 CliRunner mixes
+                        stderr by default and Result.stderr raises
+                        ValueError (click 8.1.8 src/click/testing.py
+                        lines 147-150, 184); click 8.2.0 keeps the
+                        streams apart (CHANGES.md). Every environment
+                        in pixi.lock pins the click 8.5.0 wheel, so no
+                        test runs on 8.2, 8.3 or 8.4. Testing the
+                        lower bound, or raising it to the locked
+                        version, would close this.
 
 edge:
 
