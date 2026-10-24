@@ -31,10 +31,27 @@ choice; do not call everything a tension.
 | opportunity for improvement | fix it if small and in scope, else propose it |
 | lesson learned | an annotation about what it concerns; perhaps a design rule or a change to how we work |
 
+## Before a scheduled review
+
+- Read the previous report, and the newest `notes-for-*.md` in the
+  reviews folder if there is one. The notes carry lessons and focus
+  points from the maintainer, and take precedence over this skill
+  where they are more specific.
+- In a cloud container there is no pixi. Install with `pip install -e .`
+  (again after each checkout, since the package changes) and run
+  each command as in `PYTHONPATH=src python3 -m cctool.cli.command check`.
+  The commit hooks call pixi to run the gate and cctool, so put a
+  stand-in script named pixi on PATH that drops its own options and
+  runs the same command through python. Set `core.hooksPath` to
+  `.githooks` and commit as the maintainer.
+- Start `cctool history check RANGE` in the background first: it
+  takes several seconds a commit.
+
 ## The daily review (shallow)
 
 1. Read the commits since the last daily review: `git log` and
-   `cctool impact REV` for each.
+   `cctool impact REV` for each. The previous report names its range;
+   start after its last commit.
 2. Run `cctool check` and read the advice as well as the failures.
 3. Run `cctool friction` and compare its counts with the last report.
    It lists terms that two concepts share, rules that need
@@ -55,7 +72,20 @@ choice; do not call everything a tension.
    so that what an argument argued no longer holds, add an annotation
    that challenges it rather than rewording it. Report how many
    arguments were checked and how many fixed.
-6. Write the report (below). Keep it short.
+6. Check each ruling recorded in the range against the maintainer's
+   words: it quotes them with a timestamp, and claims no more than they
+   said. Note any ruling corrected after it was recorded.
+7. Use the instruments: `cctool timing --runs 20` for the gate (its
+   log is per git directory, so say where it was read), and
+   `cctool release check` against the newest release item if there is
+   one. Report any check, command or interface control document added
+   in the range, and whether it passes.
+8. List the work waiting to land: each git bundle in the shared notes
+   folder whose head is not on `dev` (`git bundle list-heads`, then
+   `git merge-base --is-ancestor`), and how far behind `dev` it is. A
+   finished branch left unlanded drifts.
+9. Write the report (below). State its range and the counts it
+   compares at the top. Keep it short.
 
 ## The weekly review (in depth)
 
