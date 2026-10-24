@@ -36,7 +36,7 @@ import cctool.release.record
 
 # -----------------------------------------------------------------------------
 def test_the_version_module_and_the_newest_release_disagree(tree):
-    _release(tree, '0.1.0')
+    _release(tree, '0.2.0')
     _release(tree, '0.10.0')
     (tree / cctool.release.record.PATH_MODULE).write_text("VERSION = '0.9.0'\n")
     map_document = cctool.edit.edit.Tree(tree).map_document

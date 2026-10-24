@@ -42,6 +42,11 @@ import cctool.release.record
 import cctool.release.release
 
 
+# The folder of release items, which a copy is made without, so that it
+# is as the repository was before its first release.
+#
+DIR_RELEASE = '_data/release'
+
 # A lock of one platform, as pixi writes it: the project needs click,
 # which needs colorama only on Windows, and clingo, which a conda
 # package provides and which needs python. pytest is there only to
@@ -145,12 +150,14 @@ def test_a_tree_without_a_lock_has_no_dependencies_to_record():
 def repo(tree, monkeypatch):
     """
     Return the root of a copy of the repository with a version module,
-    committed on main under a message that conforms.
+    and with no release item, as before its first release, committed on
+    main under a message that conforms.
 
     """
 
     for key in [key for key in os.environ if key.startswith('GIT_')]:
         monkeypatch.delenv(key)
+    shutil.rmtree(tree / DIR_RELEASE)
     _module(tree)
     _git(tree, 'init', '--quiet', '--initial-branch', 'main')
     _commit(tree, cctool.commit.message.compose('Add the first version of cc-public',
