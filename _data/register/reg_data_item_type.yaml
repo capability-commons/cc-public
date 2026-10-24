@@ -1745,3 +1745,44 @@ entries:
         guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_regentry_team_member
         guid_target:    sch_590b60b3bda142879056ec0192bf7499
+
+  # ---------------------------------------------------------------------------
+  # type_release -- Release type
+  #
+  type_release:
+    id_self:            type_release
+    guid_self:          type_fc4e89ff3d3e42baa81f29f5bbc067e9
+    title:              Release type
+    brief:              |
+                        Type of release data items.
+    description:        |
+                        Each release data item records one release of
+                        the tree: its version, why it was made, and
+                        the dependencies the release gate tested.
+    usage:              |
+                        Release data items let a partner that
+                        installed a release read what it records with
+                        the tools it already has, and let the release
+                        tag be checked against the version module.
+    note:               |
+                        Release data items travel on their own, one
+                        per file, in _data/release/. The id is the
+                        version with each dot written as an
+                        underscore. cctool release prepare writes one,
+                        and the tag of the release names the commit
+                        that adds it.
+
+                        The shape of release data items is defined by
+                        the sch_release schema.
+    prefix:             release
+    regex_id:           ^release_[0-9]+_[0-9]+_[0-9]+$
+    id_concept:         concept_release
+    guid_concept:       concept_a471f9716b3c49778a797fd66921b517
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_release
+        guid_target:    sch_e2528cbf61a7479f9b4e8aae14b8d030

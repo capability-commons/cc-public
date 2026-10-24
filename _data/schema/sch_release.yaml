@@ -1,0 +1,84 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_release.yaml
+id_self:                sch_release
+guid_self:              sch_e2528cbf61a7479f9b4e8aae14b8d030
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release schema
+brief:                  |
+                        The shape of a release item, which records one
+                        release of the tree.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_edge. A release requires a brief,
+                        which says why the release is made, its
+                        version, and the dependencies the release gate
+                        tested.
+
+                        version is the SemVer 2.0.0 version of the
+                        release, without pre-release or build labels.
+                        dependency lists each package of the runtime
+                        lock, as pixi.lock names it for each platform:
+                        its name, version and sha256 hash.
+usage:                  |
+                        Named by type_release as the schema of every
+                        item in _data/release/.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - brief
+      - version
+      - dependency
+
+    properties:
+
+      version:
+        type:           string
+        pattern:        ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
+
+      dependency:
+        type:           array
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - platform
+            - name
+            - version
+            - sha256
+
+          properties:
+
+            platform:
+              type:     string
+              minLength:  1
+
+            name:
+              type:     string
+              minLength:  1
+
+            version:
+              type:     string
+              minLength:  1
+
+            sha256:
+              type:     string
+              pattern:  ^[0-9a-f]{64}$
+
+unevaluatedProperties:  false
+edge:                   []
