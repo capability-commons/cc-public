@@ -1,0 +1,66 @@
+id_self:                ann_release_gate_tests_two_release_forms
+guid_self:              ann_fde9517325234759ae6ad97482053243
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release gate that tests two kinds of release
+brief:                  |
+                        The split option has the release gate test
+                        both the lock and a fresh resolve of the
+                        ranges, so its gate is the longest of the
+                        three, while the owner wants quick fix
+                        releases. The cost is bounded if the fresh
+                        resolve only warns, as the option words it,
+                        and runs off the blocking path.
+description:            |
+                        Sources:
+                        - In the split option "the lock must pass, and
+                          a fresh resolve of the ranges warns"
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml, brief).
+                        - The ruled release gate already includes a
+                          fresh install resolving the declared ranges,
+                          tentatively, and is to be timed at the first release
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml, brief).
+                        - The full gate already costs many times the
+                          78 s commit gate
+                          (_data/decision/dec_release_gate/ann_full_gate_lengthens_time_to_a_fix.yaml, brief).
+                        - "we will need to be able to respond quickly
+                          to things" (owner's statement,
+                          2026-10-22T16:31).
+                        - Assumption: a warning stage can run after
+                          the tag without delaying a patch. Strength:
+                          weak; the gate runs once per release however
+                          many peers there are, and the warning can be
+                          taken off the critical path.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

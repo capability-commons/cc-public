@@ -1,0 +1,102 @@
+id_self:                ann_dependency_fix_taken_without_a_new_release
+guid_self:              ann_042a792ec42b439fa13e3bd5a8efd35c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dependency fix taken without a new release
+brief:                  |
+                        When a dependency turns out faulty or
+                        vulnerable and a fix is published inside its
+                        range, a peer that resolves ranges can take
+                        it, or exclude the bad version, at once and
+                        with no work in cc-public. A peer that
+                        installs the release's exact environment as it
+                        is must wait for the owner to relock, run the
+                        full release gate and release, so the time to
+                        recover rests on one maintainer; in the split
+                        option this holds for the tool part.
+description:            |
+                        Sources:
+                        - cc-public declares its seven runtime
+                          dependencies as bounded ranges, such as
+                          jsonschema>=4.23,<5
+                          (pyproject.toml lines 43-49); under SemVer a patch release of a version 1.0.0 or later holds only
+                          backward-compatible fixes, so such a range admits it (https://semver.org/, item 6). Three of the
+                          ranges, for pyoxigraph, referencing and ruamel.yaml, cover versions below 1.0.0, where SemVer
+                          makes no such promise (https://semver.org/, item 4).
+                        - Under the end-users option a peer installs
+                          the shipped environment "as it is"
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_are_end_users.yaml, brief).
+                        - William Payne decides each release for now,
+                          and point and patch releases may be
+                          automated later
+                          (owner's statement, 2026-10-22T16:33, _sources/context.md line 24;
+                          _data/decision/dec_who_may_release/ruling_maintainer_decides_each_release.yaml).
+                        - Any edit to pyproject.toml makes pixi.lock
+                          stale, and the atlas VM has no network, so
+                          only the
+                          owner can relock (context note, _sources/context.md line 30).
+                        - The full release gate costs many times the
+                          78 s commit gate, and that time sits between
+                          a fix
+                          and its release (_data/decision/dec_release_gate/ann_full_gate_lengthens_time_to_a_fix.yaml).
+                        - The owner wants to "respond to reported
+                          problems quickly and largely automatically"
+                          (owner's
+                          statement, 2026-10-22T16:33).
+                        - The security concern measures time to remedy
+                          a reported vulnerability
+                          (_data/register/reg_concern.yaml, security entry).
+                        - Assumption: some dependency fixes ship as
+                          patch releases inside today's ranges.
+                        - Assumption: a peer installing from a lock
+                          can still override one pin locally, at the
+                          cost of
+                          running an untested set; this narrows the gap.
+                        Strength: strong for security and
+                        maintainability, moderate for reliability; it
+                        grows with ten times the peers, since every
+                        relock then serves all of them through one
+                        person.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

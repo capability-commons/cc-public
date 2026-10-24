@@ -1,0 +1,89 @@
+id_self:                ann_tested_environment_holds_development_tools
+guid_self:              ann_97d9e475fcc149c0a51120c597807bf3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Development tools inside the tested environment
+brief:                  |
+                        The environment the gate tests today holds the
+                        test runner, the linter, the browser driver
+                        and a newer Python beside the runtime
+                        libraries. Shipping "the exact environment it
+                        was tested in" would put about eight times as
+                        many packages as cctool names as runtime
+                        dependencies inside every peer, some of them
+                        needed only for development, and inside the
+                        product for what the peer builds in, unless a
+                        runtime-only environment is locked and tested.
+description:            |
+                        Sources:
+                        - The default linux-64 environment in
+                          pixi.lock holds 54 packages from conda-forge
+                          and PyPI plus
+                          cc-public itself (pixi.lock lines 12-66), among them pytest (line 43), ruff (line 47), python
+                          3.15.0 (line 45), and playwright with greenlet and pyee (lines 55-60).
+                        - The package declares seven runtime
+                          dependencies (pyproject.toml lines 43-49);
+                          pytest,
+                          pytest-xdist, ruff, jq and playwright are declared only for the pixi workspace (pyproject.toml
+                          lines 68-78), and the browser tests also fetch a Chromium outside the lock (pyproject.toml lines
+                          28-31 and 86).
+                        - The slow run tests Python 3.12, 3.13 and
+                          3.14 in environments of their own
+                          (pyproject.toml lines
+                          92-108).
+                        - The engine will be built into cc-patrol's
+                          product on hosts such as a Jetson Orin Nano
+                          (_sources/cc-patrol-notes/plan.md lines 88-92 and 128-131).
+                        - Dependency risk counts direct and indirect
+                          dependencies
+                          (_data/register/reg_concern.yaml lines
+                          702-704); the security concern asks what an attacker can reach.
+                        - Assumption: a runtime-only pixi environment
+                          could be locked beside the development one,
+                          which
+                          would remove most of the excess under either option that ships a lock; the split option then
+                          holds up on this point.
+                        - Assumption: a peer with security
+                          requirements vets each third-party package
+                          it takes in. Strength: moderate, and
+                          unchanged by the number of peers: the excess
+                          is fixed once by locking a runtime
+                          environment.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

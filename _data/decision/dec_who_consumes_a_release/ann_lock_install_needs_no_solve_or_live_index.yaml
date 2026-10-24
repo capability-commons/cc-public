@@ -1,0 +1,75 @@
+id_self:                ann_lock_install_needs_no_solve_or_live_index
+guid_self:              ann_6cef8f6661d6478ca3927f6afcf64f87
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Install from a lock without a solve or a live index
+brief:                  |
+                        Installing from a published lock with hashes
+                        needs no dependency solve and can be served
+                        from a local cache or mirror, so it is fast
+                        and works on hosts without network. A fresh
+                        resolve of ranges needs live package indexes
+                        and a solve on every install.
+description:            |
+                        Sources:
+                        - pixi install --frozen of the locked
+                          environment took 6.3 s when measured on
+                          2026-10-15
+                          (_data/decision/dec_environment_manager/ann_pixi_environment_needs_half_a_gigabyte.yaml,
+                          description).
+                        - The environment resolves from
+                          conda.anaconda.org/conda-forge and
+                          pypi.org/simple (pixi.lock
+                          lines 4-7), and a fresh install cannot pass while either is unreachable
+                          (_data/decision/dec_release_gate/ann_fresh_install_needs_live_package_indexes.yaml, brief).
+                        - The atlas VM has no network (context note,
+                          _sources/context.md line 30), and cc-patrol
+                          is local
+                          to atlas only (_sources/cc-patrol-notes/plan.md line 109).
+                        - A lock lets the file to install be
+                          "determined in an offline fashion for
+                          reproducibility"
+                          (https://packaging.python.org/specifications/pylock-toml/).
+                        - "performance DOES still matter a lot, as we
+                          will need to be able to respond quickly to
+                          things"
+                          (owner's statement, 2026-10-22T16:31).
+                        - Assumption: a solve of a few dozen packages
+                          takes seconds to minutes; not measured.
+                          Strength: moderate; the saving is per
+                          install and per host, so it grows linearly
+                          with peers, but each install is short either
+                          way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

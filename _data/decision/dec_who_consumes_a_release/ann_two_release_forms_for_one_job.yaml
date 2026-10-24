@@ -1,0 +1,80 @@
+id_self:                ann_two_release_forms_for_one_job
+guid_self:              ann_5aa07d0d724f43b982477e609301be0e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two release forms for one job
+brief:                  |
+                        The split option publishes each release in two
+                        forms, a lock for what a peer runs and ranges
+                        for what it imports, and gates both, so
+                        dependency selection is done by two
+                        mechanisms, and since cctool, the generator
+                        and the engine ship in one package, each part
+                        must also be classed as tool or library. It
+                        follows the owner's own application and
+                        library distinction, and pixi already holds
+                        several environments in one manifest, so the
+                        added cost is the published lock and the
+                        classification, not a new tool.
+description:            |
+                        Sources:
+                        - The split option installs what a peer runs
+                          from a published lock and what it imports
+                          from
+                          declared ranges, and gates both
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml, brief).
+                        - The engine and its generator ship in the
+                          same package that peers install, with the
+                          tooling
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief).
+                        - The owner frames the question as application
+                          against library (owner's statement,
+                          2026-10-24T12:00Z).
+                        - pixi already defines more than one
+                          environment in this manifest (pyproject.toml
+                          lines 96-108).
+                        - Simplicity counts jobs done by more than one
+                          mechanism (_data/register/reg_concern.yaml
+                          lines
+                          488-490).
+                        - Assumption: a peer may both run and import
+                          the same part, likely the generator, which
+                          then sits
+                          on both sides.
+                        Strength: moderate; at ten times the peers the
+                        two forms stay two, but the class of each part
+                        must hold for every peer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

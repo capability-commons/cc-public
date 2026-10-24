@@ -1,0 +1,81 @@
+id_self:                ann_fault_report_traced_to_the_release_lock
+guid_self:              ann_66c5b527ef084d769f726c8dc9ec61c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fault reports traced to the release's own lock
+brief:                  |
+                        With a lock published per release, a peer's
+                        version names the exact set of packages it
+                        ran, by hash, so a reported fault can be
+                        traced and reproduced from the release record.
+                        With a peer's own resolve the release record
+                        cannot say what the peer ran, and each report
+                        must carry the peer's own lock before analysis
+                        can start.
+description:            |
+                        Sources:
+                        - pixi.lock pins every package by version and
+                          hash, with exact builds
+                          (_data/decision/dec_environment_manager/ruling_environment_manager.yaml, brief;
+                          _data/decision/dec_environment_manager/ann_frozen_lock_makes_gate_runs_repeatable.yaml).
+                        - A pinned release names the peer's baseline
+                          (_data/decision/dec_how_peers_get_cc_public/ann_pinned_release_names_peer_baseline.yaml, brief),
+                          and the release verdict should trace to exactly what was released
+                          (_data/decision/dec_release_gate/ann_uncached_verdicts_belong_to_the_tagged_tree.yaml, brief).
+                        - Under the developers option the peer
+                          "resolves its own environment" from the
+                          ranges
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_are_developers.yaml, brief), which the
+                          commit gate never runs against
+                          (_data/decision/dec_release_gate/ann_fresh_install_tests_the_published_ranges.yaml, brief).
+                        - "I'd like to be able to respond to reported
+                          problems quickly and largely automatically"
+                          (owner's
+                          statement, 2026-10-22T16:33, _sources/context.md line 24).
+                        - Assumption: an automatic response needs to
+                          reproduce the reporter's environment, which
+                          a
+                          published lock names and a peer's own resolve does not, unless the peer reports its lock.
+                        Strength: strong, and stronger with ten times
+                        the peers: one lock per release traces every
+                        peer that took it, while ten peers resolving
+                        on their own give ten untested sets to
+                        collect.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

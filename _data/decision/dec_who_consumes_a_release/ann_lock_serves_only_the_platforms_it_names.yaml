@@ -1,0 +1,76 @@
+id_self:                ann_lock_serves_only_the_platforms_it_names
+guid_self:              ann_2cd7239f043344d7bd290c126010b24f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Platforms a published lock can serve
+brief:                  |
+                        An exact environment installs only on the
+                        platforms it was locked for, which today are
+                        linux-64 and two macOS targets, not the Arm
+                        Linux of the Jetson Orin Nano that cc-patrol
+                        targets, nor Windows. Ranges resolve on any
+                        platform where the dependencies are built, and
+                        the split option confines the lock to what a
+                        peer runs on its development host.
+description:            |
+                        Sources:
+                        - The pixi workspace is locked for osx-arm64,
+                          osx-64 and linux-64 only (pyproject.toml
+                          line 66);
+                          pixi.lock has no linux-aarch64 entry (grep of pixi.lock, 0 matches).
+                        - Only Linux and macOS on Apple silicon are
+                          supported for development, and Windows is
+                          not
+                          (README.md lines 47-52).
+                        - cc-patrol targets a Lenovo Legion laptop and
+                          a Jetson Orin Nano
+                          (_sources/cc-patrol-notes/plan.md lines 128-131); the Orin Nano has an Arm Cortex-A78AE CPU
+                          (https://en.wikipedia.org/wiki/Nvidia_Jetson).
+                        - pixi-pack archives unpack only on the
+                          platform they were made for
+                          (https://pixi.prefix.dev/dev/deployment/pixi_pack/).
+                        - Assumption: cctool and its hooks run on a
+                          peer's development host, while the engine
+                          runs on the
+                          target, so under the split option only the engine must reach the Orin.
+                        - Assumption: the OS of the customer's Legion
+                          laptop is not recorded; if it is Windows, no
+                          lock or
+                          tool path covers it today.
+                        Strength: strong; the count of platforms grows
+                        with peers, and under the end-users option
+                        each new platform is added to every release's
+                        lock and gate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
