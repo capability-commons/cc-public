@@ -49,6 +49,7 @@ import cctool.check.schema
 import cctool.edit.layout
 import cctool.graph.logic
 import cctool.graph.extract
+import cctool.release.record
 
 
 RULES             = pathlib.Path(__file__).with_name('check.lp')
@@ -66,6 +67,12 @@ NAME_SCHEMA       = 'schema_violation'
 #
 NAME_LAYOUT       = 'unformatted_file'
 
+# And one more: the version module holds the version of the newest
+# release item, since the release step writes both. This reads a file
+# beside the documents, so it too is checked over the files of a tree.
+#
+NAME_VERSION      = 'version_disagreement'
+
 # The wording of the two checks that are not logic program rules. The checks of
 # check.lp are worded there, in the item before each declaration.
 #
@@ -74,6 +81,10 @@ WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
                             'an edit that adds a failure, so it shows whether a value fits.'}
 WORDING_LAYOUT    = {'did': '{file} is not laid out as cctool format lays it out.',
                      'fix': 'Run cctool format.'}
+WORDING_VERSION   = {'did': '{id}, the newest release item, records the version {version}, '
+                            'and the version module holds {module}.',
+                     'fix': 'Let cctool release prepare write the version module and the '
+                            'release item together. Do not edit the version by hand.'}
 
 Failures          = dict[str, list[tuple[str, ...]]]
 
@@ -165,6 +176,10 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
 
     if list_row:
         failures[NAME_LAYOUT] = list_row
+
+    list_row = cctool.release.record.disagreements(root, map_document)
+    if list_row:
+        failures[NAME_VERSION] = list_row
 
     return (failures, advice)
 
@@ -330,8 +345,9 @@ def columns() -> dict[str, tuple[str, ...]]:
                   for (name, tuple_column)
                   in cctool.graph.logic.declared(text).items()}
 
-    map_column[NAME_SCHEMA] = cctool.check.schema.COLUMNS
-    map_column[NAME_LAYOUT] = cctool.edit.layout.COLUMNS
+    map_column[NAME_SCHEMA]  = cctool.check.schema.COLUMNS
+    map_column[NAME_LAYOUT]  = cctool.edit.layout.COLUMNS
+    map_column[NAME_VERSION] = cctool.release.record.COLUMNS
     return map_column
 
 
@@ -368,6 +384,7 @@ def wording() -> dict[str, dict[str, str]]:
     text        = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
     map_wording = cctool.graph.logic.worded(text)
 
-    map_wording[NAME_SCHEMA] = WORDING_SCHEMA
-    map_wording[NAME_LAYOUT] = WORDING_LAYOUT
+    map_wording[NAME_SCHEMA]  = WORDING_SCHEMA
+    map_wording[NAME_LAYOUT]  = WORDING_LAYOUT
+    map_wording[NAME_VERSION] = WORDING_VERSION
     return map_wording
