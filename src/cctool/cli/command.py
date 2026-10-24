@@ -36,6 +36,7 @@ import cctool.cli.gating
 import cctool.cli.group
 import cctool.cli.messaging
 import cctool.cli.querying
+import cctool.cli.releasing
 import cctool.cli.serving
 
 

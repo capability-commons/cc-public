@@ -119,6 +119,8 @@ would send; a pushed tag names history already made, and is passed over.
                                             check commits already made
     cctool history check --pre-push REMOTE  check what a push would send
     cctool impact [REV] [--staged]          what a commit touches, and what is near
+    cctool release prepare --brief TEXT     write the release item and the version
+    cctool release check TAG [REV]          check a commit before it is tagged
     cctool format [--check]                 lay out every YAML document
     cctool query sql|logic [QUERY]          query the predicates of the graph
     cctool query sparql [QUERY]             query the graph as RDF triples
