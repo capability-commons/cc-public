@@ -1,0 +1,85 @@
+id_self:                ann_only_a_pyproject_edit_makes_the_lock_stale
+guid_self:              ann_87b05a064d3745d297c694a667821b85
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lock made stale by a pyproject edit and not by a dynamic version
+brief:                  |
+                        With the pixi the project uses, any edit to
+                        pyproject.toml, even its description, makes
+                        the lock stale, so a version written there
+                        needs a relock at each release. A version that
+                        is dynamic, from the tag or from a version
+                        file, left the lock fresh across later commits
+                        and a new tag, and the built package took the
+                        new version.
+description:            |
+                        Sources: a test in the review of 2026-10-24 on
+                        scratch clones of dev at dd17313b, with pixi
+                        0.66.0, the version in the owner's environment
+                        (.pixi/envs/default/conda-meta/pixi on the
+                        owner's machine). A version edit from 0.1.0 to
+                        0.2.0 in pyproject.toml, and separately a
+                        description edit, each made pixi install
+                        --locked refuse with "lock-file not up-to-date
+                        with the workspace". With hatch-vcs (version
+                        dynamic, read from the tag) relocked once,
+                        pixi install --locked passed after one more
+                        commit, after a new tag v0.2.0, and in a fresh
+                        clone, and a wheel built one commit after
+                        v0.2.0 was version 0.2.1.dev1 with the commit
+                        hash. With hatchling's own path source reading
+                        a version file, relocked once, an edit of that
+                        file from 0.1.0 to 0.2.0 left pixi install
+                        --locked passing and the wheel was version
+                        0.2.0. The lock records the local package at
+                        version 0.1.0 (pixi.lock lines 722-725), and
+                        every hook runs pixi with --locked
+                        (.githooks/pre-commit line 30;
+                        .githooks/pre-push line 33). Limits: the
+                        editable install in a pixi environment kept
+                        the version it was built with until
+                        reinstalled, so only a built package shows the
+                        exact version; pixi 0.83.0, which offers lock
+                        format 7, refused neither edit, so an upgrade
+                        of pixi would remove the relock cost of the
+                        pyproject option. Strength: strong; it is
+                        measured on the owner's pixi, and the relock
+                        cost repeats at every release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_in_a_version_file
+    guid_target:        opt_8ecddf55150b43cc87cc5116ec4d4bbd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_in_pyproject
+    guid_target:        opt_27a3b53a8c8f40aea67a32d53a10bc1f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

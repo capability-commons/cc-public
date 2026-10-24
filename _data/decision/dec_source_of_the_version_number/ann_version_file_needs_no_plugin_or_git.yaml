@@ -1,0 +1,81 @@
+id_self:                ann_version_file_needs_no_plugin_or_git
+guid_self:              ann_6e167e574cc54ff6bae1d4c539045391
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Version file read without a plugin or git metadata
+brief:                  |
+                        A version file is read by hatchling itself, so
+                        it adds no build plugin, and a build from an
+                        archive with no git metadata still finds its
+                        version. Like a version in pyproject.toml, it
+                        sits in the tree where an item can hold it and
+                        a check can hold the release tag equal to it,
+                        which a version read from the tag cannot
+                        offer.
+description:            |
+                        Sources: hatchling's built-in version source
+                        "regex" reads the version from a file named by
+                        path (https://hatch.pypa.io/latest/version/,
+                        "Configuration"), and it built version 0.2.0
+                        from an edited file with no plugin in the
+                        review of 2026-10-24. The tag option needs
+                        hatch-vcs, which requires setuptools-scm 8.2.0
+                        or later
+                        (_data/decision/dec_source_of_the_version_number/ann_tag_version_adds_a_build_plugin.yaml,
+                        description), and fails where no git metadata
+                        is found unless a fallback is set
+                        (ann_tag_version_fails_without_git_metadata.yaml
+                        in the same folder). A version in the tree is
+                        seen by the graph
+                        (ann_version_in_tree_is_seen_by_the_graph.yaml
+                        in the same folder). The package build has
+                        only the hatchling backend today
+                        (pyproject.toml lines 53-55). Assumption: the
+                        file is a Python module under src/cctool, so
+                        it needs a module docstring item like every
+                        other module, or a file outside src with a
+                        pattern set for it. Limit: the version is then
+                        held twice, in the file and in the release
+                        tag, so a check must hold the two equal; the
+                        tag option holds it once. Strength: moderate;
+                        the plugin and the git metadata cost stay the
+                        same at any scale, and the second copy is
+                        checked at one point.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_source_of_the_version_number
+    guid_target:        dec_1bc2bf4b63be42a7a36b947be90765a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_version_in_a_version_file
+    guid_target:        opt_8ecddf55150b43cc87cc5116ec4d4bbd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_version_from_tag
+    guid_target:        opt_1936d347bd8447d5bb1d375033f45fb4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
