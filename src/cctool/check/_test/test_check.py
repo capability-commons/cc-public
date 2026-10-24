@@ -792,7 +792,7 @@ def _interface(root, id_function, surface = None, stated = None, returns = None)
         function['returns'] = {'type': {'spelling': returns}, 'brief': 'What it found.'}
     document = _fields(root, 'icd_x')
     document.update({'version_interface': '1.0',
-                     'exposure':          'internal',
+                     'support':           'unsupported',
                      'surface':           surface or {'python': {'native': {
                                                 'language': 'python',
                                                 'function': {'run': function}}}}})
@@ -837,9 +837,9 @@ def test_a_surface_of_two_forms_is_reported(tree):
         ('icd_x', 'sch_interface_control_document', location, 'surface/python')}
 
 
-def test_an_interface_control_document_that_does_not_say_its_exposure_is_reported(tree):
+def test_an_interface_control_document_that_does_not_say_whether_it_is_supported_is_reported(tree):
     location = _interface(tree, 'icm_x.run')
-    _replace(tree, location, 'exposure: internal\n', '')
+    _replace(tree, location, 'support: unsupported\n', '')
     failures = _check(tree)
     assert list(failures) == ['schema_violation']
     assert {row[:3] for row in failures['schema_violation']} == {
@@ -1252,7 +1252,7 @@ def _step(root, id_icd = 'icd_x', map_extra = None):
                                           for (name, spec) in map_port.items()})
     document = _fields(root, id_icd)
     document.update({'version_interface': '1.0',
-                     'exposure':          'internal',
+                     'support':           'unsupported',
                      'surface':           {'step': {'dataflow_step': step}}})
     return _item_document(root, '_data/interface_control_document/{id}.yaml'.format(id = id_icd),
                           document)

@@ -20,10 +20,10 @@ description:            |
                         come from sch_standalone. The edges come from
                         sch_trait_edge. Beyond them, an interface
                         control document carries the version of its
-                        interface, whether the interface is offered to
-                        peers, the declarations its surfaces share,
-                        and one or more surfaces, each filed under a
-                        short local key.
+                        interface, whether the interface is supported,
+                        the declarations its surfaces share, and one
+                        or more surfaces, each filed under a short
+                        local key.
 
                         A surface holds exactly one of three forms. A
                         native surface presents the interface as an
@@ -79,7 +79,7 @@ allOf:
 
     required:
       - version_interface
-      - exposure
+      - support
       - surface
 
     properties:
@@ -91,21 +91,20 @@ allOf:
                         The version of the interface this document
                         states.
 
-      exposure:
+      support:
         type:           string
 
         enum:
-          - peer
-          - internal
+          - supported
+          - unsupported
 
         description:    |
-                        Whether the interface is offered to peers. A
-                        peer interface is public: every surface and
-                        member of it is judged under SemVer, whatever
-                        its form. An internal one is private, and may
-                        change in any release. This is not the
-                        protective mark, which says who may read the
-                        document.
+                        Whether the interface is a
+                        [[supported interface]]. Every surface and
+                        member of one that is supported is held to
+                        SemVer, whatever its form. An unsupported one
+                        may be used, but a change to it is never a
+                        breaking change.
 
       declaration:
         type:           object
@@ -937,4 +936,9 @@ $defs:
                         One part of how the interface behaves, in
                         prose.
 
-edge:                   []
+edge:
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_supported_interface
+    guid_target:        concept_5c9167a8fcd84cd9b68f0fab2bb8cedf

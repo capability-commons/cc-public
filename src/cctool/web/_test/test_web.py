@@ -863,7 +863,7 @@ description:            |
                         it finds, and every minute the step closes a
                         file of them for the logger to collect.
 version_interface:      '0.1'
-exposure:               internal
+support:                unsupported
 
 declaration:
 
