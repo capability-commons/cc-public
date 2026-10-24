@@ -31,7 +31,9 @@
 #                         run slow run them. The environment tool holds
 #                         what cctool needs to run and nothing used only
 #                         to develop it, so its part of pixi.lock is the
-#                         lock a release publishes for the tool.
+#                         lock a release publishes for the tool. The
+#                         wheel holds the package and, under
+#                         cctool/_data, the data items of the tree.
 # edge:                   []
 #
 # ...
@@ -70,15 +72,27 @@ path                    = "src/cctool/version.py"
 
 [tool.hatch.build.targets.wheel]
 packages                = ["src/cctool"]
+exclude                 = ["src/cctool/**/_test", "src/cctool/conftest.py"]
+
+# The wheel carries the data items of the tree, under cctool/_data, so
+# that a release of the tool also carries the graph it was released
+# with. This is provisional: if the graph comes to be served, such as
+# by an API, it may stay out of the wheel. No code reads it from the
+# installed package; cctool reads the tree under --root.
+#
+[tool.hatch.build.targets.wheel.force-include]
+"_data"                 = "cctool/_data"
 
 [tool.pixi.workspace]
 channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "osx-64", "linux-64"]
 
-# What only development needs: the test runner, the linter and the
-# browser driver. The environment tool leaves these out.
+# What only development needs: the test runner, the linter, the
+# browser driver, and the build backend that the wheel tests call. The
+# environment tool leaves these out.
 #
 [tool.pixi.pypi-dependencies]
+hatchling               = ">=1.32,<2"
 playwright              = ">=1.48,<2"
 
 [tool.pixi.dependencies]
