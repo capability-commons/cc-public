@@ -1,0 +1,79 @@
+id_self:                ann_consumed_findings_echo_consumed_content
+guid_self:              ann_252809a2eb4a4dcd8571bf12106de6ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Findings on consumed items echoed into the peer's output
+brief:                  |
+                        Under every option the peer reads the same
+                        consumed files, so none changes what personal
+                        data is held or who may read it. The options
+                        differ only in what the peer's check prints:
+                        findings name the item and say what is wrong
+                        with it, so the two options that compute
+                        findings over consumed items repeat details of
+                        those items in the peer's output and logs,
+                        while the option that runs no rule over them
+                        does not. Every segment a peer consumes today
+                        is public, so the difference costs nothing
+                        yet; it matters only once a segment holding
+                        personal data is consumed.
+description:            |
+                        Sources:
+                        - cctool prints each failure as its file and
+                          line, the name of the check, and the did
+                          sentence (AGENTS.md lines 165-168).
+                        - A did sentence names the item and what is
+                          wrong with it, for example "{id} breaks
+                          {schema} at {path}: {message}"
+                          (src/cctool/check/check.py line 79).
+                        - Some segments may hold personal data under
+                          the GDPR, and federation must let a segment
+                          meet such requirements
+                          (_data/logical_component/lco_federation.yaml,
+                          description).
+                        - Personal data lives only in private
+                          repositories (owner's statement,
+                          2026-10-22).
+                        - cc-public, the only segment a peer consumes
+                          today, is public
+                          (_data/logical_component/lco_federation.yaml,
+                          protective_mark). Drafted by Claude to give
+                          the privacy driver a voice; the privacy
+                          advocate judged that every option reads the
+                          same files. Strength: weak; it holds at any
+                          size, but only for a consumed segment that
+                          holds personal data, and a notice could
+                          print ids alone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_any_finding
+    guid_target:        opt_ea62f34dfc6a40f38e4ff90bb28b7efa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
