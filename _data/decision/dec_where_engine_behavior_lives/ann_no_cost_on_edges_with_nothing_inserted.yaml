@@ -1,0 +1,70 @@
+id_self:                ann_no_cost_on_edges_with_nothing_inserted
+guid_self:              ann_634afa8e8a694156b476318f6628c618
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No cost on edges with nothing inserted
+brief:                  |
+                        Under a transform, an edge that is not
+                        recorded or logged has nothing on it, and in a
+                        static build an inserted node is one more
+                        direct call that the optimizer can inline. A
+                        service that configuration switches on for any
+                        node or edge needs a test at every step in
+                        every build, unless the switch is fixed at
+                        build time, and then it does what a transform
+                        does.
+description:            |
+                        Sources:
+                        - The services are switched on "for any node
+                          or edge" by configuration.
+                          (_data/decision/dec_where_engine_behavior_lives/opt_engine_provides_common_services.yaml
+                          lines 12-16)
+                        - The frozen schedule is a straight-line list
+                          of direct calls, and with LTO "small
+                          components inline into the schedule".
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 35-40, 54-57)
+                        - Within one process an edge is the upstream
+                          output buffer itself, "so an edge costs
+                          nothing".
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 41-42)
+                        - ASSUMPTION: a per-edge test costs
+                          nanoseconds, against a 33 ms step at 30 Hz.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          181-182) Strength: weak. The cost grows
+                          linearly with edges but stays small against
+                          the step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

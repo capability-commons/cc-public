@@ -1,0 +1,70 @@
+id_self:                ann_declared_policy_matches_dds_quality_of_service
+guid_self:              ann_711e0dffde3f4849bb0a0fb36fb39da7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared policy that a DDS gateway can set and match
+brief:                  |
+                        In DDS and ROS 2, delivery is stated per
+                        endpoint as quality of service, such as keep
+                        last with a depth, and endpoints match only if
+                        their settings are compatible. A policy
+                        declared on the edge, whether lowered or
+                        honored by the engine, gives a gateway to a
+                        DDS partner a stated policy to set and match,
+                        where leaving the edge as it is gives nothing
+                        to match against.
+description:            |
+                        Sources:
+                        - Keep last: "only store up to N samples,
+                          configurable via the queue depth option".
+                          "Publications and Subscriptions will only
+                          match if the QoS settings are compatible."
+                          (https://design.ros2.org/articles/qos)
+                        - The earlier note recommends naming the
+                          policies after ROS 2 and DDS terms.
+                          (/mnt/project-files/notes/engine-shape-2026-10-24/dec_edge_policy.md
+                          line 39)
+                        - The option to wait leaves the edge with only
+                          its ends and direction.
+                          (_data/decision/dec_edge_policy/opt_edge_policy_later.yaml
+                          lines 12-17;
+                          _data/schema/sch_dataflow_graph.yaml lines
+                          173-203)
+                        - This overlaps the recorded argument that
+                          named policies cover the known graphs, which
+                          cites the same standards for coverage, not
+                          matching. Strength: moderate. It grows with
+                          the number of DDS-facing boundaries.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

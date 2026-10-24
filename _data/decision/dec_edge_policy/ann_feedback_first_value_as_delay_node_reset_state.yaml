@@ -1,0 +1,61 @@
+id_self:                ann_feedback_first_value_as_delay_node_reset_state
+guid_self:              ann_bb20d3a720b545a3ab9d98c69039a567
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First value of a feedback edge as a delay node's reset state
+brief:                  |
+                        The drafts have the framework prime feedback
+                        buffers on reset. If the first value is
+                        lowered to a delay node it becomes that node's
+                        reset state, stated in the graph and covered
+                        by the node's tests, where under an
+                        engine-honored policy the engine keeps the
+                        priming; the new option says a feedback edge
+                        states its first value but not whether that
+                        value is lowered too.
+description:            |
+                        Sources:
+                        - Cross-process and feedback edges point at a
+                          buffer the framework fills "and primes on
+                          reset".
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 41-44)
+                        - "a feedback edge states its first value".
+                          (_data/decision/dec_edge_policy/opt_edge_policy_declared_and_lowered_to_nodes.yaml
+                          lines 18-19)
+                        - The only dataflow graph in cc-public has one
+                          feedback edge.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 125-137, as cited in
+                          _data/decision/dec_edge_policy/ann_first_value_of_feedback_edge_unstated.yaml)
+                          Strength: moderate. Only one recorded graph
+                          has a feedback edge today; it holds only if
+                          the option says the first value is lowered.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

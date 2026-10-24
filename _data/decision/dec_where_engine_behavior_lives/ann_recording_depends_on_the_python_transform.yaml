@@ -1,0 +1,92 @@
+id_self:                ann_recording_depends_on_the_python_transform
+guid_self:              ann_500ea744184c4584b2d7a694b6b86710
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording that depends on the transform in the Python tooling
+brief:                  |
+                        Under either minimal option, nothing the
+                        engine runs records, buffers or applies a
+                        delivery policy unless the transform in cctool
+                        has first been applied, on a development
+                        platform. So the useful behavior of a graph
+                        depends on cctool and its dependencies, and
+                        recording in a fielded system is turned on by
+                        a change set or a rebuild, where a service
+                        needs only a switch and no tool on the target.
+description:            |
+                        Sources:
+                        - The transforms option puts the nodes into
+                          "the resolved graph" by a model transform.
+                          (_data/decision/dec_where_engine_behavior_lives/opt_minimal_engine_with_transforms.yaml
+                          lines 12-21)
+                        - cctool already resolves variants, and "the
+                          C++ engine loads only resolved
+                          configurations".
+                          (_sources/cc-patrol-notes/variants.md lines
+                          92-95)
+                        - cctool runs its checks with clingo, a
+                          declared dependency.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_rules_kept_in_one_copy.yaml
+                          lines 31-34)
+                        - The tooling stays in Python on Linux and
+                          macOS development platforms. (as cited in
+                          _data/decision/dec_change_set_at_a_step/ann_change_set_made_where_cctool_is_absent.yaml
+                          lines 27-31)
+                        - The static build carries dynamic machinery
+                          only on request, and the ruling names
+                          recording nodes as a reason to ask.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 22-25)
+                        - In the frozen schedule each node is guarded
+                          by an enable flag, "the one thing that can
+                          change at runtime".
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 39-40) So the transform can insert
+                          recorders disabled and leave them to that
+                          flag, at the cost of a node per recorded
+                          point in every build.
+                        - ASSUMPTION: the transform lives in cctool or
+                          in the generator, both in Python. Strength:
+                          weak now, moderate later. cctool is the
+                          owner's own code with development-side
+                          dependencies, and variants already depend on
+                          it the same way; the field cost grows with
+                          the number of fielded units, not with nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

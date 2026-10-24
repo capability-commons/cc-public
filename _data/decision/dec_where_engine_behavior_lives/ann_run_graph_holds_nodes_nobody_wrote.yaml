@@ -1,0 +1,68 @@
+id_self:                ann_run_graph_holds_nodes_nobody_wrote
+guid_self:              ann_4a4d7d15117a41febebe8fd775f27bb8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Nodes in the running graph that nobody wrote
+brief:                  |
+                        Under either minimal option, the graph the
+                        engine runs holds nodes that no author wrote,
+                        so a maintainer debugging a run has more to
+                        learn, and a failure must be reported against
+                        the authored edge and the transform that
+                        placed the node, not against a node found in
+                        no file. Nothing that does this is built yet.
+description:            |
+                        Sources:
+                        - The transforms option puts nodes into the
+                          resolved graph by a model transform.
+                          (_data/decision/dec_where_engine_behavior_lives/opt_minimal_engine_with_transforms.yaml
+                          lines 12-21)
+                        - The variants draft has the checks run on
+                          every resolved variant, with each failure
+                          naming the variant and the operation that
+                          brought in the fault.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - Transformations are not built yet.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          173-176)
+                        - The maintainability measure counts the parts
+                          that a representative change touches.
+                          (_data/register/reg_concern.yaml lines
+                          398-400) Strength: moderate, growing with
+                          scale, since the placed nodes grow with the
+                          edges that need them. Failures that name the
+                          transform would answer it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

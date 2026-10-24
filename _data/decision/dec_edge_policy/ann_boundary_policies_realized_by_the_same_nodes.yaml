@@ -1,0 +1,74 @@
+id_self:                ann_boundary_policies_realized_by_the_same_nodes
+guid_self:              ann_f34556e2805444c1898e89774573d40d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Product boundaries realized by the same nodes as policies
+brief:                  |
+                        In the Patrol drafts a policy at a boundary
+                        with another product is realized by an adapter
+                        at that boundary, such as a GStreamer appsink
+                        with the policy's buffering, and pub-sub is
+                        reached only through gateway nodes. Lowering
+                        makes every policy a node, so a policy at a
+                        GStreamer, RTP or DDS boundary and the adapter
+                        that realizes it are the same kind of thing;
+                        with the engine honoring policies between its
+                        own nodes, one policy name has two
+                        realizations.
+description:            |
+                        Sources:
+                        - The draft table: GStreamer to engine is
+                          realized by "appsink with the policy's
+                          buffering"; engine to engine by "the
+                          engine's own slot or queue, or its
+                          cross-host transport"; a GStreamer fan-out
+                          has "a tee and queue inserted".
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 45-51)
+                        - Only gateway nodes cross to pub-sub.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 184-188, 226-227)
+                        - Simulink, when set to handle rate
+                          transitions automatically, "inserts hidden
+                          Rate Transition blocks in the block
+                          diagram".
+                          (https://www.mathworks.com/help/simulink/ug/handle-rate-transitions.html)
+                        - The compatibility question: "What must a
+                          partner adopt in order to do either?"
+                          (_data/register/reg_concern.yaml lines
+                          303-307)
+                        - Limit: line 51 of the Patrol README expects
+                          the engine to realize engine-to-engine
+                          policies; lowering changes that to an
+                          adapter node, and the authored graph is
+                          unchanged. Strength: moderate. It grows with
+                          the number of boundary edges and outside
+                          products, not with internal nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

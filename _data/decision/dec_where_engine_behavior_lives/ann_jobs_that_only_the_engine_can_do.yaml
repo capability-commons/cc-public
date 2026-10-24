@@ -1,0 +1,132 @@
+id_self:                ann_jobs_that_only_the_engine_can_do
+guid_self:              ann_20e4b2c5ef294eb6a4072c43111b873c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Jobs that no node in the graph can do
+brief:                  |
+                        Some jobs cannot be done by a node in the
+                        graph: delivering actor messages that arrive
+                        between steps, applying a change set at a step
+                        and recording who sent it, catching what a
+                        node throws and acting on its step signal, and
+                        the jobs the drafts already give the
+                        framework, such as priming feedback buffers
+                        and resetting nodes on a rewire. The option of
+                        model transforms says the engine does nothing
+                        a node could do and gives these jobs no stated
+                        place, so it holds only if read as allowing
+                        exceptions; the option of recorded exceptions
+                        gives each one a decision a maintainer can
+                        find.
+description:            |
+                        Sources:
+                        - The transforms option: "The engine moves one
+                          token along each edge at each step and runs
+                          the nodes, and does nothing that a node
+                          could do instead."
+                          (_data/decision/dec_where_engine_behavior_lives/opt_minimal_engine_with_transforms.yaml
+                          lines 13-15)
+                        - The first engine supports Kahn process
+                          networks and actors together.
+                          (_data/decision/dec_first_semantics/ruling_first_semantics.yaml
+                          lines 12-15)
+                        - The nodes and edges of the dynamic subgraph
+                          may change at the start of a step.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 15-17)
+                        - Two of the three options for running actors
+                          run them on the engine's threads, between
+                          steps or on a pool, and the third gives each
+                          actor a thread of its own.
+                          (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml,
+                          opt_actors_on_a_shared_thread_pool.yaml and
+                          opt_actors_on_their_own_threads.yaml,
+                          briefs)
+                        - The exceptions option gives as its example
+                          "gathering the messages an actor sends
+                          between two steps into the token a step
+                          reads".
+                          (_data/decision/dec_where_engine_behavior_lives/opt_minimal_engine_with_recorded_exceptions.yaml
+                          lines 15-18)
+                        - The framework's wrapper catches anything a
+                          node throws and maps it to an exit signal,
+                          and the generated step returns as soon as a
+                          node returns a signal other than continue.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 95-96;
+                          _sources/axair-orchestrator/docs/execution_levels.md
+                          lines 46-50)
+                        - In ARINC 653, error handling is one of the
+                          service categories of the platform's
+                          interface to applications, and a partition
+                          may create an error handler process, of the
+                          highest priority, to handle its exceptions.
+                          (https://en.wikipedia.org/wiki/ARINC_653)
+                        - A log of live changes should hold the
+                          identity of the authenticated sender.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ann_replay_log_of_live_changes_as_audit_trail.yaml,
+                          brief)
+                        - The framework fills feedback buffers and
+                          primes them on reset.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 41-44)
+                        - A rewire is a pointer swap plus a reset of
+                          the affected nodes, done between steps.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 70-72)
+                        - Edges that a placement makes cross processes
+                          or hosts "are bound to a transport by the
+                          engine".
+                          (_sources/cc-patrol-notes/variants.md
+                          line 66)
+                        - ASSUMPTION: a node removed by a change set
+                          cannot record its own removal, and no draft
+                          has a deadline or watchdog for a node that
+                          hangs, which would need a timer outside the
+                          node. Strength: strong. The number of these
+                          jobs is set by the semantics the engine
+                          supports, not by the number of nodes or
+                          graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

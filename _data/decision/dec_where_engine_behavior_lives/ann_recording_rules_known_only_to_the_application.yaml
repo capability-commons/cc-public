@@ -1,0 +1,84 @@
+id_self:                ann_recording_rules_known_only_to_the_application
+guid_self:              ann_a0fab3f7babc4da39498804e56db91a3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording rules that only the application knows
+brief:                  |
+                        What a recorder may lose, and how it recovers,
+                        depends on what it records, as the Patrol
+                        recorder's keyframe rule shows. A recorder
+                        node can carry such a rule, and the ruling on
+                        the first engine already speaks of adding data
+                        recording nodes; a built-in recording service
+                        would be a second way to record that does not
+                        know these rules.
+description:            |
+                        Sources:
+                        - A build with no dynamic nodes leaves out the
+                          dynamic machinery "unless its user asks for
+                          it, for example to add logging, data
+                          recording or telemetry nodes later".
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 22-25)
+                        - The Patrol base graph draft has a recorder
+                          node bound to the recorder interface.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 251-261)
+                        - The recorder interface states: "Bounded;
+                          units it cannot keep are counted, and
+                          recording recovers at the next keyframe."
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_recorder.yaml
+                          lines 108-110)
+                        - "The function in question can completely and
+                          correctly be implemented only with the
+                          knowledge and help of the application."
+                          Low-level mechanisms for such functions "are
+                          justified only as performance enhancements".
+                          (Saltzer, Reed, Clark 1984,
+                          https://www.cs.princeton.edu/courses/archive/fall15/cos518/papers/endtoend.pdf)
+                        - The services option provides recording "as
+                          built-in services that configuration
+                          switches on for any node or edge".
+                          (_data/decision/dec_where_engine_behavior_lives/opt_engine_provides_common_services.yaml
+                          lines 12-16)
+                        - ASSUMPTION: the ruling's wording is an
+                          example and was not meant to settle this
+                          decision. Strength: moderate. Each new data
+                          type with its own loss rule is one more
+                          thing a generic service does not know, so it
+                          holds at ten times the nodes and graphs; it
+                          is not strong because the ruling's words are
+                          only an example.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

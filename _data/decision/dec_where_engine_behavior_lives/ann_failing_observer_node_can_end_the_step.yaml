@@ -1,0 +1,63 @@
+id_self:                ann_failing_observer_node_can_end_the_step
+guid_self:              ann_b79f877cc24e41b9a79da132c003da52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An inserted observer node that can end the step
+brief:                  |
+                        In the drafted schedule, a node that returns
+                        any signal other than continue ends the step
+                        for the nodes after it, so a recording node
+                        that fails could stop functional nodes.
+                        Something must state that an observer's
+                        failure does not end the step, a small engine
+                        behavior or a rule on where the transform
+                        places the node; the option of recorded
+                        exceptions can record it, and the option of
+                        model transforms as worded gives it no place.
+description:            |
+                        Sources:
+                        - The generated process step returns as soon
+                          as one node returns a signal other than
+                          continue.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 46-50)
+                        - The framework's wrapper catches anything a
+                          node throws and maps it to an exit signal.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 95-96)
+                        - The Patrol recorder is designed to count
+                          what it cannot keep, not to fail.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_recorder.yaml
+                          lines 108-110)
+                        - A built-in service would need the same rule.
+                          Strength: moderate. More observers mean more
+                          chances for it to happen, but one stated
+                          rule covers all of them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

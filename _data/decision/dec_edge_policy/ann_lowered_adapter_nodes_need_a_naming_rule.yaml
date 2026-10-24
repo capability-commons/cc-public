@@ -1,0 +1,93 @@
+id_self:                ann_lowered_adapter_nodes_need_a_naming_rule
+guid_self:              ann_5b5f422212474beca29c1d1e77d5ad15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Naming rule for adapter nodes that lowering adds
+brief:                  |
+                        A lowered adapter exists only because an edge
+                        declared a policy, and it appears only in the
+                        resolved graph, which is derived and never
+                        stored, so unless its id or a recorded link
+                        names the edge and the policy it is an element
+                        with no traced reason, and any outside reader
+                        of the resolved graph, such as a viewer, must
+                        recognize it. The option does not yet say how
+                        lowered nodes are named; a fixed rule deriving
+                        the id from the edge and marking the node as
+                        generated would answer both, and would then
+                        let each lowered node trace both ways as an
+                        item, where policy code in the engine traces
+                        only through engine source.
+description:            |
+                        Sources:
+                        - A dataflow node id is the id of its graph
+                          with the node prefix, then the node's key.
+                          (_data/register/reg_data_item_type.yaml
+                          lines 1370-1382)
+                        - A node that a variant adds takes its id from
+                          the variant's name.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          79-82) No rule names a node that a transform
+                          adds. (search of _data and _sources; none
+                          found)
+                        - The resolved graph is derived when needed,
+                          never stored.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          36-37)
+                        - Each step of the Patrol work "ends with
+                          detector_dump parity".
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 173-176) ASSUMPTION: a parity check
+                          that compares a run node by node would meet
+                          the lowered nodes.
+                        - Prior art: ATL and QVT create trace links
+                          automatically during a transformation,
+                          recording which target elements came from
+                          which source elements.
+                          (https://arxiv.org/pdf/2305.06764, section
+                          2.3.6 and Table 1)
+                        - Traceability's measure is elements with no
+                          traced reason, by count; the compatibility
+                          question asks "Can a partner read and use
+                          what the design produces?"
+                          (_data/register/reg_concern.yaml lines
+                          574-576 and line 304)
+                        - The named option inserts no nodes, so the
+                          gap does not arise there. Strength: strong
+                          for traceability and weak to moderate for
+                          compatibility. The lowered nodes grow with
+                          the edges that declare policies, and one
+                          naming rule fixes all of them at once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

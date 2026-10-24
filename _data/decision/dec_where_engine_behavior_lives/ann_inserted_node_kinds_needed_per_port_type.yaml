@@ -1,0 +1,90 @@
+id_self:                ann_inserted_node_kinds_needed_per_port_type
+guid_self:              ann_fa35c7d637654e21b9befc8c8d6eb0fe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Inserted node kinds needed for each port type
+brief:                  |
+                        A recorder or buffer that a transform puts on
+                        an edge needs ports that accept that edge's
+                        type, and port types are checked against data
+                        dictionary entries with no type parameters. So
+                        the generator writes one node kind, or one
+                        dictionary entry, for each recorded or
+                        buffered type, where an engine service can
+                        handle any edge by the size in its type table.
+description:            |
+                        Sources:
+                        - Port types name entries of data
+                          dictionaries, and edges are checked against
+                          those entries.
+                          (_data/decision/dec_port_types/ruling_port_types_from_data_dictionaries.yaml
+                          lines 12-19)
+                        - Every dataflow node needs a brief and an
+                          edge that realizes the interface control
+                          document whose step surface it presents.
+                          (_data/schema/sch_dataflow_node.yaml lines
+                          18-24, 38-40)
+                        - A search of the interface control document
+                          schema for "generic" or "template" finds
+                          nothing. ASSUMPTION: without type
+                          parameters, each such node kind needs one
+                          interface, or one dictionary entry, for each
+                          port type it serves.
+                        - Everything that crosses an edge is plain,
+                          fixed-size data; a type id is a hash of the
+                          canonical type description, and each
+                          component's type table lists a type id and
+                          size for every slot.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 84-86, 98-103)
+                        - The dynamic host allocates buffers from the
+                          size in each component's type table.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 63-68)
+                        - ASSUMPTION: the generator can write a
+                          recorder for a type from its dictionary
+                          entry, as it writes the type's C++ struct
+                          (same file, lines 95-96). If it can, this
+                          becomes a cost of generation, not a gap in
+                          function. Strength: moderate. The count is
+                          bounded by the number of types, not nodes,
+                          and it falls away if the data dictionary
+                          gains type parameters.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,77 @@
+id_self:                ann_one_form_of_saved_state_with_buffering_in_nodes
+guid_self:              ann_d1743b8b62ab4efb81df2987391b0427
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One form of saved state when buffering is done by nodes
+brief:                  |
+                        If buffering, folds and delays are done by
+                        inserted nodes, what they hold is node state,
+                        so one save and restore path covers restart
+                        after a crash, moving a node and swapping a
+                        version. If the engine does the buffering, it
+                        holds a second kind of state that every one of
+                        those paths must also save, restore and
+                        upgrade.
+description:            |
+                        Sources:
+                        - "state is everything that persists between
+                          steps, so the framework can snapshot or zero
+                          it for re-simulation."
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 47-48)
+                        - The first engine has "one form of node
+                          state".
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 17-19)
+                        - If node state blocks live in memory-mapped
+                          files, a crashed process can be restarted
+                          from its last committed step.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 149-151)
+                        - The swap option upgrades "the node's state
+                          by the dictionary's mapping".
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml,
+                          brief)
+                        - The services option puts buffering in the
+                          engine.
+                          (_data/decision/dec_where_engine_behavior_lives/opt_engine_provides_common_services.yaml
+                          lines 12-16)
+                        - ASSUMPTION: buffers the engine holds outside
+                          node state are not covered by the node state
+                          mechanism unless designed into it
+                          separately. Strength: strong. The state that
+                          would sit outside node state grows with
+                          every buffered edge.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

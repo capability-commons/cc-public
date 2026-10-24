@@ -1,0 +1,65 @@
+id_self:                ann_declared_policy_and_hand_placed_adapter_alike
+guid_self:              ann_afbf992713614c6b8509684ebf767536
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared policy and hand-placed adapter that say the same
+brief:                  |
+                        Lowering adds a transform, and it gives
+                        authors two ways to get, for example, a
+                        latest-value adapter: declare the policy on
+                        the edge, or place the same node by hand.
+                        Leaving the edge as it is keeps one way; a
+                        check that refuses hand-placed adapters of the
+                        lowered kinds, or treats the two as one, would
+                        close the gap.
+description:            |
+                        Sources:
+                        - A converting node already does what a named
+                          adapter on an edge would do, so an edge
+                          field for it gives two ways to say it.
+                          (_data/decision/dec_edge_policy/ann_adapters_and_delays_already_expressible.yaml,
+                          brief)
+                        - Variant resolution is planned as a transform
+                          in cctool, and the engine never sees
+                          variants.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          36-37, 92-95) ASSUMPTION: lowering would be
+                          one more step of that resolution, not a
+                          second pipeline; if it is a separate pass,
+                          the mechanism count rises by one.
+                        - Transformations are not built yet.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          173-176)
+                        - "Add a type, relation, field or command only
+                          when a real instance needs it." (AGENTS.md
+                          lines 236-238) Strength: moderate. The
+                          two-ways risk grows with the edges unless a
+                          check closes it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

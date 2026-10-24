@@ -1,0 +1,70 @@
+id_self:                ann_exception_test_leaves_out_measured_cost
+guid_self:              ann_a38afe9b6beb48fcb91ca8a0658b0f2c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An exception test that leaves out measured cost
+brief:                  |
+                        The option of recorded exceptions admits a
+                        behavior to the engine only when no inserted
+                        node can do it, so a behavior a node can do,
+                        but too slowly, has no recorded way in, and
+                        under the option of model transforms none at
+                        all. The end-to-end argument allows a
+                        lower-level version of a function as a
+                        performance enhancement, and the owner wants
+                        builds and test runs timed and says
+                        performance matters a lot.
+description:            |
+                        Sources:
+                        - The exceptions option's test: "only when a
+                          recorded decision shows that no inserted
+                          node can do it".
+                          (_data/decision/dec_where_engine_behavior_lives/opt_minimal_engine_with_recorded_exceptions.yaml
+                          lines 12-18)
+                        - "Sometimes an incomplete version of the
+                          function provided by the communication
+                          system may be useful as a performance
+                          enhancement." (Saltzer, Reed, Clark 1984,
+                          https://web.mit.edu/saltzer/www/publications/endtoend/endtoend.txt)
+                        - Performance "DOES still matter a lot, as we
+                          will need to be able to respond quickly to
+                          things". (owner's statement,
+                          2026-10-22T16:31)
+                        - "Every build and test-run should be timed
+                          and the timings recorded for later
+                          analysis."
+                          (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml
+                          lines 22-25)
+                        - The principle is "a principle, not an
+                          absolute". (owner's statement,
+                          2026-10-24T22:46Z) Strength: moderate. It
+                          does not depend on node count; it grows with
+                          input rates.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

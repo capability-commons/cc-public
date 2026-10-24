@@ -1,0 +1,81 @@
+id_self:                ann_recording_writes_inside_the_recorded_step
+guid_self:              ann_72500aa361d746f08d49fed7105d9ede
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording writes inside the step of the unit recorded
+brief:                  |
+                        An inserted recording node runs in the fixed
+                        schedule of its execution unit, and the
+                        drafted node contract, under which a node
+                        holds no globals and allocates nothing, gives
+                        it no stated way to own a writer thread, so
+                        its storage writes lengthen the step and its
+                        tail latency, or the node needs an execution
+                        unit of its own and a copy across units. An
+                        engine service can keep a writer thread with a
+                        double buffer off the step path, as rosbag2
+                        does.
+description:            |
+                        Sources:
+                        - An execution unit runs its nodes in a fixed
+                          order on one thread of control.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml,
+                          brief)
+                        - "the component holds no globals and
+                          allocates nothing", and nothing is allocated
+                          on the heap while stepping.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 23-24, 145-151)
+                        - rosbag2 "is divided into two major layers
+                          internally via a double-buffered cache
+                          mechanism", and "the number of data copies
+                          drastically impacts the CPU load and final
+                          recording performance".
+                          (https://www.apex.ai/post/improvements-in-data-recording-path)
+                        - The Orin configuration holds a 720p 30 Hz
+                          stream. (_sources/cc-patrol-notes/plan.md
+                          lines 181-182)
+                        - ASSUMPTION: a node may not start a thread of
+                          its own, which the contract does not say
+                          outright; and a storage write can block for
+                          longer than one step on eMMC or NVMe under
+                          load.
+                        - Answer: let a node own a thread, or have the
+                          transform place each recorder in an
+                          execution unit of its own; either needs a
+                          stated rule. Strength: moderate. It grows
+                          with the volume recorded per step, not with
+                          the number of nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

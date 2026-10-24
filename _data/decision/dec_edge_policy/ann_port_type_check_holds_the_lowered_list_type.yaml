@@ -1,0 +1,83 @@
+id_self:                ann_port_type_check_holds_the_lowered_list_type
+guid_self:              ann_0c90324ef0d747978c65098c9e995909
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Port type check that holds the type a policy delivers
+brief:                  |
+                        Every value in order up to a capacity hands
+                        the target a list where the source sent one
+                        value, so the target port's type must match
+                        the policy. Under lowering the adapter's
+                        interface states that list type and the port
+                        type check that already runs on the resolved
+                        graph holds it; under a policy the engine
+                        honors, a new rule must relate each policy to
+                        the types at both ends.
+description:            |
+                        Sources:
+                        - Stableflow decoupled the step rate from the
+                          message rate with list messages at the
+                          application level. (the decision's
+                          description, drafted from the owner's
+                          statement of 2026-10-24T22:43Z,
+                          _data/decision/dec_where_engine_behavior_lives/dec_where_engine_behavior_lives.yaml
+                          lines 31-33)
+                        - The engine draft's list type has its
+                          capacity in the type.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          line 82;
+                          _sources/axair-orchestrator/docs/execution_levels.md
+                          line 91)
+                        - A dataflow edge states no data type of its
+                          own; the ports at its ends do, and the
+                          checker holds them to each other.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          50-52)
+                        - In the draft, all eleven dataflow checks run
+                          unchanged on each resolved variant.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - Simplicity counts jobs that more than one
+                          mechanism does.
+                          (_data/register/reg_concern.yaml lines
+                          488-490)
+                        - ASSUMPTION: the lowering transform runs
+                          before the checks, as variant resolution
+                          does in the draft. Strength: moderate. It
+                          holds at any scale, but rests on the
+                          transform existing, and the list type still
+                          needs a dictionary entry for each element
+                          type unless type parameters are added.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,75 @@
+id_self:                ann_lowering_leaves_one_crossing_rule_in_the_engine
+guid_self:              ann_874f87ad18b84f63aa5274a2a920e843
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One crossing rule still left to the engine under lowering
+brief:                  |
+                        The new option says the engine knows only
+                        edges of one token per step, but an edge from
+                        an actor carries messages, so the adapter
+                        there takes a varying number of messages
+                        between steps, delivered by the engine or read
+                        from a queue outside the graph as a gateway
+                        does. Lowering removes every crossing rule but
+                        that one, and some of Patrol's policy names
+                        are transports, such as RTP or a GStreamer
+                        link, carried out outside the engine, which
+                        the option does not say how to lower; so as
+                        worded the option claims more than it
+                        delivers.
+description:            |
+                        Sources:
+                        - "so the engine knows only edges of one token
+                          per step".
+                          (_data/decision/dec_edge_policy/opt_edge_policy_declared_and_lowered_to_nodes.yaml
+                          lines 22-24)
+                        - The first engine has Kahn networks and
+                          actors together.
+                          (_data/decision/dec_first_semantics/ruling_first_semantics.yaml
+                          lines 12-15)
+                        - In the crossing option, messages that arrive
+                          between steps become a token at the start of
+                          a step.
+                          (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                          lines 11-18)
+                        - An inbound gateway's step "turns
+                          asynchronous traffic into Kahn tokens".
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 185-186)
+                        - Patrol's policies include a GStreamer link
+                          and RTP, which GStreamer carries out.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 45-51) Strength: strong as a
+                          correction of wording, at any scale. It is
+                          met if the option says the engine keeps one
+                          primitive crossing, a latched slot or a
+                          mailbox, and that transport policies are
+                          carried out at the boundary.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

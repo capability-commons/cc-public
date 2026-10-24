@@ -1,0 +1,79 @@
+id_self:                ann_ordered_delivery_as_a_bounded_list_node
+guid_self:              ann_4717527564a64136b24279ec0f84a87e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ordered delivery as a bounded list from a node
+brief:                  |
+                        Under lowering, every value in order up to a
+                        stated capacity becomes a node that outputs
+                        one bounded list per step, and nothing arrived
+                        becomes an empty token by the existing
+                        convention, both forms already in the drafts
+                        and the form Stableflow used. What the
+                        declared policy means is then carried out by a
+                        node that checks, tests and a simulated link
+                        model can all see, while leaving the edge as
+                        it is gives nothing to generate such a node
+                        from.
+description:            |
+                        Sources:
+                        - Stableflow messages were mostly lists, which
+                          decoupled step rate from message rate at the
+                          application level. (the decision's
+                          description, drafted from the owner's
+                          statement of 2026-10-24T22:43Z,
+                          _data/decision/dec_where_engine_behavior_lives/dec_where_engine_behavior_lives.yaml
+                          lines 31-33)
+                        - A bounded sequence holds a count and a fixed
+                          array; every sequence has a fixed capacity,
+                          and nothing is allocated on the heap while
+                          stepping.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 82, 145-151)
+                        - Every packet has an enable flag, cleared at
+                          the start of a step and set when the packet
+                          carries data. (same file, lines 14-15)
+                        - An inbound gateway latches what arrived
+                          since the last step; if nothing arrived its
+                          output is not enabled, and in simulation it
+                          is replaced by a link model.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 190-193)
+                        - The new option turns each declared policy
+                          into an adapter node before the engine sees
+                          the graph.
+                          (_data/decision/dec_edge_policy/opt_edge_policy_declared_and_lowered_to_nodes.yaml
+                          lines 21-24)
+                        - In the model the declaration is the same as
+                          in the named option, so on this point the
+                          two are even. Strength: strong. Each policy
+                          is one adapter kind, however many edges use
+                          it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

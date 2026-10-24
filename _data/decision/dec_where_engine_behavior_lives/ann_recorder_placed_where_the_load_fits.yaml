@@ -1,0 +1,65 @@
+id_self:                ann_recorder_placed_where_the_load_fits
+guid_self:              ann_fd7195bb45d84983b1310350501662f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorder placed where the load can be carried
+brief:                  |
+                        A recorder that is a node can be placed like
+                        any node, beside its source to avoid a copy,
+                        or in another execution unit or on another
+                        host when the source unit is full. An engine
+                        service runs wherever the recorded unit runs;
+                        ROS 2 went the node way, first with the
+                        recorder as its own process and now also as a
+                        composable node in the producer's process.
+description:            |
+                        Sources:
+                        - The configuration places each node in an
+                          execution unit and each unit on a host.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml,
+                          brief)
+                        - rosbag2 can be run as an executable from a
+                          launch script.
+                          (https://github.com/ros2/rosbag2/blob/master/README.md)
+                          "A composable recorder node is now part of
+                          the standard rosbag2 framework."
+                          (https://github.com/berndpfrommer/rosbag2_composable_recorder)
+                        - The flexibility question: "Can it be scaled
+                          up or down as the load changes?"
+                          (_data/register/reg_concern.yaml line 352)
+                          Strength: moderate. It strengthens with ten
+                          times the nodes, since more units compete
+                          for the same storage.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_engine_behavior_lives
+    guid_target:        dec_942bbb664c4a42baad4201cb862ea9df
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_transforms
+    guid_target:        opt_8f19c2acfdb24d9a868b6fda9fced242
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_minimal_engine_with_recorded_exceptions
+    guid_target:        opt_56ce7d749f0b4735922f7cb3035e8739
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_provides_common_services
+    guid_target:        opt_e85e36eaa11e4202b546e7adbf19ad85
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
