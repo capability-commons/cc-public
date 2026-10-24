@@ -111,6 +111,8 @@ YAML_LOCK         = ruamel.yaml.YAML(typ = 'safe')
 DIR_RELEASE       = '_data/release'
 KEY_DEPENDENCY    = 'dependency'
 TUPLE_KEY_PACKAGE = ('platform', 'name', 'version', 'sha256')
+KEY_RENAME        = 'rename'
+TUPLE_KEY_RENAME  = ('old', 'new', 'guid')
 
 
 # -----------------------------------------------------------------------------
@@ -140,12 +142,16 @@ def last_tag(root: pathlib.Path, rev: str) -> str | None:
 
 
 # -----------------------------------------------------------------------------
-def touched(root: pathlib.Path, base: str, rev: str) -> list[tuple[str, ...]]:
+def touched(root: pathlib.Path,
+            base: str,
+            rev:  str) -> tuple[list[tuple[str, ...]], list[dict[str, str]]]:
     """
     Return each item that the commits from base to rev add, remove,
     rename or change, as impact finds them between the two trees: its
     id, its delta, the id it was if renamed, and its file and line. An
-    item added and removed again between them is not touched.
+    item added and removed again between them is not touched. Return
+    too the rename map: the old id, new id and guid of each item
+    renamed, ordered by old id.
 
     """
 
@@ -156,7 +162,17 @@ def touched(root: pathlib.Path, base: str, rev: str) -> list[tuple[str, ...]]:
         dir_after.mkdir()
         cctool.gate.gate.copy_commit(root, base, dir_before)
         cctool.gate.gate.copy_commit(root, rev, dir_after)
-        return cctool.commit.impact.impact_trees(dir_before, dir_after)['touched']
+        list_touched = cctool.commit.impact.impact_trees(dir_before, dir_after)['touched']
+        list_renamed = [row for row in list_touched if row[1] == DELTA_RENAMED]
+        map_guid     = {}
+        if list_renamed:
+            facts    = cctool.graph.extract.extract(dir_after)
+            map_guid = {row[0]: row[1] for row in facts['item']}
+
+    list_rename = [dict(zip(TUPLE_KEY_RENAME, (row[2], row[0], map_guid[row[0]]), strict = True))
+                   for row in sorted(list_renamed, key = lambda row: row[2])]
+
+    return (list_touched, list_rename)
 
 
 # -----------------------------------------------------------------------------
@@ -280,6 +296,7 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
     text_module  = path_module.read_text(encoding = 'utf-8')
     base         = last_tag(root, 'HEAD')
     list_touched = []
+    list_rename  = []
     list_item    = []
     name_level   = None
     list_reason  = []
@@ -290,11 +307,11 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
         if _git(root, 'rev-parse', base + '^{commit}') == _git(root, 'rev-parse', 'HEAD'):
             raise ErrorRelease('HEAD is the release {tag}, so there is nothing to '
                                'release.'.format(tag = base))
-        list_touched              = touched(root, base, 'HEAD')
-        list_item                 = commit_items(root, base, 'HEAD')
-        (name_level, list_reason) = level(list_touched)
-        before                    = base.removeprefix(PREFIX_TAG)
-        version                   = bumped(before, name_level)
+        (list_touched, list_rename) = touched(root, base, 'HEAD')
+        list_item                   = commit_items(root, base, 'HEAD')
+        (name_level, list_reason)   = level(list_touched)
+        before                      = base.removeprefix(PREFIX_TAG)
+        version                     = bumped(before, name_level)
 
     if version is None or cctool.release.record.numbers(version) is None:
         raise ErrorRelease('The version module holds {version}, which is not a release '
@@ -304,14 +321,15 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
     path_lock  = root / PATH_LOCK
     text_lock  = path_lock.read_text(encoding = 'utf-8') if path_lock.is_file() else ''
     tree       = cctool.edit.edit.Tree(root)
+    list_field = [('title',        'Release {v}'.format(v = version)),
+                  ('brief',        brief),
+                  ('version',      version),
+                  (KEY_DEPENDENCY, dependencies(text_lock))]
 
-    tree.update(cctool.edit.edit.new(tree,
-                                     id_release,
-                                     [('title',        'Release {v}'.format(v = version)),
-                                      ('brief',        brief),
-                                      ('version',      version),
-                                      (KEY_DEPENDENCY, dependencies(text_lock))],
-                                     []))
+    if list_rename:
+        list_field.append((KEY_RENAME, list_rename))
+
+    tree.update(cctool.edit.edit.new(tree, id_release, list_field, []))
     tree.update({str(cctool.release.record.PATH_MODULE):
                  cctool.release.record.REGEX_VERSION.sub(
                      lambda match: match.group(1) + version + match.group(3), text_module)})
@@ -331,7 +349,7 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
             'level':   name_level,
             'reason':  list_reason,
             'commit':  mentioned_by(list_item),
-            'renamed': [(row[2], row[0]) for row in list_touched if row[1] == DELTA_RENAMED],
+            'renamed': [(rename['old'], rename['new']) for rename in list_rename],
             'removed': [row[0] for row in list_touched if row[1] == DELTA_REMOVED],
             'notes':   [(short, title) for (short, title, _) in list_item],
             'written': sorted(tree.edit)}
@@ -343,7 +361,8 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
     Return a sentence for each reason the commit rev of the repository
     at root may not be tagged tag: it must add exactly one release item,
     whose version is that of the tag and of the version module, and
-    which records the dependencies of the runtime lock at rev.
+    which records the dependencies of the runtime lock at rev and the
+    renames since the last release tag before rev.
 
     """
 
@@ -387,6 +406,16 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
                           'the release gate on that lock, remove the release item, and run '
                           'cctool release prepare again.'.format(
                               file = file, lock = PATH_LOCK, short = short))
+
+    base          = last_tag(root, rev + '^') if cctool.commit.change.is_commit(
+                                                    root, rev + '^') else None
+    list_expected = [] if base is None else touched(root, base, rev)[1]
+    list_recorded = [{str(key): str(value) for (key, value) in rename.items()}
+                     for rename in item.get(KEY_RENAME) or []]
+    if list_recorded != list_expected:
+        list_found.append('{file} does not record the renames since {base}. Remove the release '
+                          'item, and run cctool release prepare again.'.format(
+                              file = file, base = base))
 
     return list_found
 

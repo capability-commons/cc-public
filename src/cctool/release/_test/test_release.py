@@ -191,6 +191,34 @@ def test_a_rename_of_a_public_item_bumps_the_minor_part_before_one(repo):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.prepush
+def test_the_release_item_records_the_renames_and_the_check_holds_it_to_them(repo):
+    _git(repo, 'tag', 'v0.1.0')
+    tree = cctool.edit.edit.Tree(repo)
+    guid = tree.guid('concern_simplicity')
+    tree.update(cctool.edit.edit.rename(tree, 'concern_simplicity', 'concern_plainness'))
+    assert cctool.edit.edit.apply(tree) == {}
+    _commit(repo, cctool.commit.message.compose('Rename concern_simplicity to concern_plainness',
+                                                'A plainer name.'))
+    cctool.release.release.prepare(repo, 'A plainer name for a concern.')
+    path = repo / '_data/release/release_0_2_0.yaml'
+    item = cctool.edit.edit.Tree(repo).map_document['_data/release/release_0_2_0.yaml'][0]
+    assert [dict(rename) for rename in item['rename']] == [
+        {'old': 'concern_simplicity', 'new': 'concern_plainness', 'guid': guid}]
+    _commit(repo, cctool.commit.message.compose('Add release_0_2_0', 'A plainer name.'))
+    assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == []
+    path.write_text(path.read_text().replace('new:                concern_plainness',
+                                             'new:                concern_plain'))
+    _commit(repo, cctool.commit.message.compose('Change release_0_2_0 so that it is wrong',
+                                                'A wrong rename.'))
+    _git(repo, 'reset', '--quiet', '--soft', 'HEAD~2')
+    _commit(repo, cctool.commit.message.compose('Add release_0_2_0', 'A wrong rename.'))
+    assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == [
+        '_data/release/release_0_2_0.yaml does not record the renames since v0.1.0. Remove the '
+        'release item, and run cctool release prepare again.']
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.prepush
 def test_a_commit_that_adds_no_release_item_may_not_be_tagged(repo):
     result = click.testing.CliRunner().invoke(cctool.cli.command.main,
                                               ['release', 'check', 'v0.1.0', '--root', str(repo)])

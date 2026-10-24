@@ -27,6 +27,14 @@ description:            |
                         dependency lists each package of the runtime
                         lock, as pixi.lock names it for each platform:
                         its name, version and sha256 hash.
+
+                        rename lists each item that the release gives
+                        a new id since the release before it: its old
+                        id, its new id and its guid, so that a partner
+                        can rewrite what names the item, as the ruling
+                        on how peers absorb renames has it. These
+                        fields record what was so at the release, so
+                        they are not read as references or mentions.
 usage:                  |
                         Named by type_release as the schema of every
                         item in _data/release/.
@@ -79,6 +87,32 @@ allOf:
             sha256:
               type:     string
               pattern:  ^[0-9a-f]{64}$
+
+      rename:
+        type:           array
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - old
+            - new
+            - guid
+
+          properties:
+
+            old:
+              type:     string
+              pattern:  ^[a-z][a-z0-9_.]*$
+
+            new:
+              type:     string
+              pattern:  ^[a-z][a-z0-9_.]*$
+
+            guid:
+              type:     string
+              pattern:  ^[a-z]+_[0-9a-f]{32}$
 
 unevaluatedProperties:  false
 edge:                   []

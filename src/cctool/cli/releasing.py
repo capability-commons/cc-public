@@ -85,7 +85,9 @@ def prepare(brief: str, root: pathlib.Path) -> None:
     a register or a register entry, such as a type or a relation. With
     no release tag, the release is the first, at the version the module
     holds. The release item records the runtime packages of pixi.lock.
-    The renames, the removals and the commits since the tag are printed.
+    It records too the old id, new id and guid of each item renamed
+    since the tag. The renames, the removals and the commits since the
+    tag are printed.
     Nothing is committed or tagged: commit what is written, run the
     release gate, then cctool release check, and tag the commit if the
     release is to be made. The exit status is 2 when nothing can be
@@ -172,7 +174,8 @@ def check(tag: str, rev: str, root: pathlib.Path) -> None:
 
     REV must add exactly one release item, whose version is that of
     TAG and of the version module, and which records the runtime
-    packages of pixi.lock at REV. REV is HEAD if left out. Nothing is
+    packages of pixi.lock at REV and the renames since the last release
+    tag before REV. REV is HEAD if left out. Nothing is
     tagged. The exit status is 1 when REV may not be tagged TAG, and 2
     when it cannot be checked.
 

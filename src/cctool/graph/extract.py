@@ -95,10 +95,13 @@ KEY_SPELLING      = 'spelling'
 # Fields whose text names no item: identity, aliases, which name what
 # no longer exists, patterns, and what code spells a name, a type, a
 # default or a value as. A field named id_<field> or guid_<field> is a
-# reference, and is read as one.
+# reference, and is read as one. The old id, new id and guid of a
+# rename that a release records say what was so at the release, not
+# what is now, so they are not read as references or mentions either.
 #
 SET_KEY_UNNAMED   = {'id_self', 'guid_self', 'alias', 'prefix', 'regex_id', 'pattern',
-                     '$id', '$schema', '$ref', 'name', 'spelling', 'default', 'value'}
+                     '$id', '$schema', '$ref', 'name', 'spelling', 'default', 'value',
+                     'old', 'new', 'guid'}
 
 # A word shaped like an id, not part of a path or of a longer word. A
 # file name is read as the id it is named for, and a word that a * ends
