@@ -1,0 +1,176 @@
+"""
+---
+
+id_self:                pym_cctool.commit._test.test_message
+guid_self:              pym_d3cb204963404131a47f49653dbb3dfe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit message tests
+brief:                  |
+                        Tests of composing and checking commit
+                        messages.
+description:            |
+                        Each test composes or edits a message and
+                        checks it against sch_commit as the repository
+                        holds it.
+edge:                   []
+
+...
+"""
+
+
+import datetime
+
+import click.testing
+import pytest
+
+import cctool.cli.command
+import cctool.commit.message
+
+from cctool.conftest import DIR_REPO
+
+
+pytestmark = pytest.mark.prepush
+
+
+NOW   = datetime.datetime(2026, 10, 14, 11, 20, 48, tzinfo = datetime.UTC)
+BRIEF = 'Each commit message holds a commit item.'
+
+# The guid of the maintainer's entry in reg_team_member.
+#
+GUID_MAINTAINER = 'member_f17345eec9064b44bacc60ddff63a697'
+
+
+# -----------------------------------------------------------------------------
+def _message(title = 'Add the commit-msg hook', **kwargs):
+    """
+    Return a composed message with title.
+
+    """
+
+    return cctool.commit.message.compose(title, BRIEF, now = NOW, **kwargs)
+
+
+def _found(text):
+    """
+    Return the ways text fails, as the repository holds sch_commit.
+
+    """
+
+    return cctool.commit.message.violations(DIR_REPO, text)
+
+
+def test_a_composed_message_passes_and_its_id_sorts_by_time():
+    text = _message()
+    assert _found(text) == []
+    (subject, item) = cctool.commit.message.parse(text)
+    assert subject == 'Add the commit-msg hook'
+    assert item['id_self'].startswith('cmt_20261014112048_')
+    assert item['guid_self'][4:10] == item['id_self'][-6:]
+
+
+@pytest.mark.parametrize('title', [
+    'Add the commit type type_commit',
+    'Remove status from registers',
+    'Reformat every document',
+    'Rename type_datalog_module to type_datalog_source_file',
+    'Move the checker to cctool.check',
+    'Split relation_is_specified_by_schema into two relations',
+    'Fold testability into maintainability',
+    'Merge branch commit-items into main',
+    "Merge remote-tracking branch 'origin/main' into main",
+    "Merge tag 'v1' into main",
+    'Revert "Add the commit type type_commit"',
+    'Revert "Revert "Add the commit type type_commit""',
+    'Reapply "Add the commit type type_commit"',
+    'Change cctool batch so that a field keeps its YAML value',
+    'Fix the checker so that a malformed subschema is reported',
+    'Lock jsonschema at 4.26.0',
+])
+def test_a_title_from_a_template_passes(title):
+    assert _found(_message(title)) == []
+
+
+@pytest.mark.parametrize('title', [
+    'Commit type',
+    'Added the commit type',
+    'Add the commit type.',
+    'Rename the commit type',
+    'Change the checker',
+    'add the commit type',
+    'Merge testability into maintainability',
+    "Merge branch 'commit-items'",
+    'Revert the commit type',
+    'Revert "Add the commit type type_commit',
+])
+def test_a_title_from_no_template_is_reported(title):
+    assert _found(_message(title)) == [
+        'The title is not built from a template in sch_commit: ' + title]
+
+
+def test_a_title_that_is_too_long_is_the_only_failure_reported():
+    title = 'Fix the gate so that ' + 'a' * 80
+    [found] = _found(_message(title))
+    assert found.startswith('title: ') and found.endswith('is too long')
+
+
+def test_a_subject_line_that_is_not_the_title_is_reported():
+    text = _message().replace('Add the commit-msg hook\n', 'Add a hook\n', 1)
+    assert _found(text) == ['The subject line is not the title of the commit item.']
+
+
+def test_an_id_that_does_not_end_with_the_guid_is_reported():
+    text = _message()
+    (_, item) = cctool.commit.message.parse(text)
+    text = text.replace(item['id_self'], item['id_self'][:-6] + 'ffffff')
+    assert _found(text) == ['The id does not end with the first 6 hex digits of the guid.']
+
+
+def test_a_verdict_field_is_reported():
+    text = _message().replace('edge:', 'status:                 clean\nedge:')
+    assert _found(text) == [
+        "item: Unevaluated properties are not allowed ('status' was unexpected)"]
+
+
+def test_a_contributor_trailer_that_names_a_team_member_passes():
+    text = _message() + '\nContributor: {guid}\n'.format(guid = GUID_MAINTAINER)
+    assert cctool.commit.message.contributors(text) == [GUID_MAINTAINER]
+    assert _found(text) == []
+
+
+def test_a_contributor_trailer_that_names_no_team_member_is_reported():
+    guid = 'member_' + '0' * 32
+    assert _found(_message() + '\nContributor: {guid}\n'.format(guid = guid)) == [
+        'The Contributor trailer names {guid}, which reg_team_member does not '
+        'hold.'.format(guid = guid)]
+
+
+def test_a_contributor_line_inside_the_item_is_not_a_trailer():
+    text = _message(description = 'Contributor: someone')
+    assert cctool.commit.message.contributors(text) == []
+    assert _found(text) == []
+
+
+def test_lines_that_git_treats_as_comments_are_left_out():
+    assert _found(_message() + '# Please enter the commit message.\n') == []
+
+
+def test_a_message_without_an_item_is_reported():
+    assert _found('Add the commit-msg hook\n\nSome prose.\n') == [
+        'A commit message is a subject line, a blank line, and then the commit item, '
+        'opened by ---.']
+
+
+def test_check_exits_with_1_and_says_why():
+    result = click.testing.CliRunner().invoke(
+                    cctool.cli.command.main,
+                    ['message', 'check', '-', '--root', str(DIR_REPO)],
+                    input = 'Commit-msg hook\n')
+    assert result.exit_code == 1
+    assert result.stderr.startswith('A commit message is a subject line')
