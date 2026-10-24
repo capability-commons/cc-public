@@ -1491,11 +1491,11 @@ competing_rulings(Decision, Ruling, Other) :-
 % title:                  Unargued driver
 % brief:                  |
 %                         A ruling upholds an option only once every
-%                         concern that drives the subject of its
-%                         decision has been argued, for it or for an
-%                         alternative to it. It may reject an option at
-%                         any time, since a rejection commits the
-%                         subject to nothing.
+%                         concern that drives its decision, or the
+%                         subject of its decision, has been argued, for
+%                         it or for an alternative to it. It may reject
+%                         an option at any time, since a rejection
+%                         commits the subject to nothing.
 % did:                    |
 %                         {ruling} upholds {option}, and no annotation
 %                         argues {concern}, a driver, for it or an
@@ -1518,8 +1518,7 @@ unargued_driver(Ruling, Option, Concern) :-
     has_type(Ruling, "type_ruling"),
     primary_edge(Ruling, "relation_upholds", Option),
     primary_edge(Option, "relation_is_option_for", Decision),
-    primary_edge(Decision, "relation_is_about", Subject),
-    primary_edge(Subject, "relation_is_driven_by", Concern),
+    driver(Decision, Concern),
     not argued(Option, Concern).
 
 

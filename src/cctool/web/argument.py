@@ -322,7 +322,8 @@ class Graph:
                                   for id_item in self.sources(id_relation, id_option)})
         list_driver        = sorted({id_concern
                                      for subject in self._items(item.targets(RELATION_IS_ABOUT))
-                                     for id_concern in subject.targets(RELATION_IS_DRIVEN_BY)})
+                                     for id_concern in subject.targets(RELATION_IS_DRIVEN_BY)}
+                                    | set(item.targets(RELATION_IS_DRIVEN_BY)))
         set_spoken         = {id_concern
                               for annotation in list_annotation
                               for id_concern in annotation.targets(RELATION_SPEAKS_FOR_CONCERN)}
