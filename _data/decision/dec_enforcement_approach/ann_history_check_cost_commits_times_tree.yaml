@@ -17,23 +17,23 @@ brief:                  |
                         size, so a push of many fine commits on a
                         large graph will be slow.
 description:            |
-                        src/cc_public/commit/history.py lines 116-123
+                        src/cctool/commit/history.py lines 116-123
                         copy the commit and its parent; each copy is a
                         git archive of the whole commit unpacked with
-                        tarfile (src/cc_public/gate/gate.py lines
+                        tarfile (src/cctool/gate/gate.py lines
                         266-283). change.py lines 78-88 and 121-141
                         extract the facts of both trees and run clingo
                         once. extract.read caches parsed YAML
                         documents by path and digest within one run,
                         and empties the cache when it holds 4096
-                        (src/cc_public/graph/extract.py lines 155-174
-                        and 756-800), so a file that several commits
-                        share is parsed once while the graph stays
-                        under that size; the copies, the file
-                        comparison and the clingo run are not cached.
-                        Measured 2026-10-15 at 89c74d8 on trees of 84
-                        to 129 files, 4-CPU container: about 3 to 5 s
-                        per commit. Measured 2026-10-23 in a scratch
+                        (src/cctool/graph/extract.py lines 155-174 and
+                        756-800), so a file that several commits share
+                        is parsed once while the graph stays under
+                        that size; the copies, the file comparison and
+                        the clingo run are not cached. Measured
+                        2026-10-15 at 89c74d8 on trees of 84 to 129
+                        files, 4-CPU container: about 3 to 5 s per
+                        commit. Measured 2026-10-23 in a scratch
                         repository made from the snapshot, 2273 files,
                         4-CPU container under load: 21 to 35 s for the
                         first commit of a run, then 9 to 10 s for each
@@ -43,14 +43,13 @@ description:            |
                         (MEMORY.md, "Commit titles") and plans much
                         larger graphs (MEMORY.md, "Checker direction",
                         2026-10-13). With no range the check covers
-                        the whole history
-                        (src/cc_public/cli/auditing.py lines 80-81 and
-                        95). ASSUMPTION: time per commit grows about
-                        linearly with tree size. It argues for an
-                        incremental check, which finishes the chosen
-                        approach rather than favoring an alternative.
-                        CI moves the wait off the person but not the
-                        processor time.
+                        the whole history (src/cctool/cli/auditing.py
+                        lines 80-81 and 95). ASSUMPTION: time per
+                        commit grows about linearly with tree size. It
+                        argues for an incremental check, which
+                        finishes the chosen approach rather than
+                        favoring an alternative. CI moves the wait off
+                        the person but not the processor time.
 
 edge:
 

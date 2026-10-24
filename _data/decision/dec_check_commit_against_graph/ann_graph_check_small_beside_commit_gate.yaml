@@ -22,20 +22,19 @@ description:            |
                         container at 89c74d8: message check end to end
                         6.7 s, its syntax part 0.75 s. The syntax part
                         also reads every YAML document in the tree to
-                        find sch_commit
-                        (src/cc_public/commit/message.py lines
-                        274-278). The pre-commit gate runs on each
-                        ordinary commit (.githooks/pre-commit line
-                        30). On Will's 2-CPU VM it takes about 78 s
-                        for a commit of code and about 10 s with a
+                        find sch_commit (src/cctool/commit/message.py
+                        lines 274-278). The pre-commit gate runs on
+                        each ordinary commit (.githooks/pre-commit
+                        line 30). On Will's 2-CPU VM it takes about 78
+                        s for a commit of code and about 10 s with a
                         warm store for a commit of data alone, which
                         skips the tests (notes of 2026-10-22 on gate
-                        speed; src/cc_public/gate/gate.py lines
-                        157-169). f33413ad cut the history check from
-                        about 52 s to about 5 s a commit, and the
-                        commit-msg check the same way (same notes).
-                        Tried 2026-10-23 on copies of the snapshot
-                        (2244 files), 4-CPU container under load:
+                        speed; src/cctool/gate/gate.py lines 157-169).
+                        f33413ad cut the history check from about 52 s
+                        to about 5 s a commit, and the commit-msg
+                        check the same way (same notes). Tried
+                        2026-10-23 on copies of the snapshot (2244
+                        files), 4-CPU container under load:
                         check_trees took 25 to 41 s in a fresh
                         process, as each hook run is. A device tool
                         call dies at 180 s (memory/MEMORY.md line 45).

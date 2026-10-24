@@ -25,17 +25,16 @@ description:            |
                         (.githooks/prepare-commit-msg line 31). For a
                         merge or revert the draft extracts facts from
                         HEAD and the staged tree
-                        (src/cc_public/commit/change.py lines 66-74,
+                        (src/cctool/commit/change.py lines 66-74,
                         115-116). The command catches only ErrorGate
-                        and ErrorDatalog
-                        (src/cc_public/cli/messaging.py lines
-                        129-133), though its stated intent is to
+                        and ErrorDatalog (src/cctool/cli/messaging.py
+                        lines 129-133), though its stated intent is to
                         report and leave the message (lines 122-124).
                         Extraction calls YAML.load and ast.parse with
-                        no handler (src/cc_public/graph/extract.py
-                        lines 305, 322, 334, 388), and the branch
-                        lookup runs git rev-parse with check=True
-                        (message.py lines 192-196). Bypass by git -c
+                        no handler (src/cctool/graph/extract.py lines
+                        305, 322, 334, 388), and the branch lookup
+                        runs git rev-parse with check=True (message.py
+                        lines 192-196). Bypass by git -c
                         core.hooksPath=/dev/null commit is not in
                         README.md or AGENTS.md. Under hand writing,
                         --no-verify skips commit-msg (README.md line

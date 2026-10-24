@@ -25,16 +25,16 @@ description:            |
                         per commit (memory/MEMORY.md line 42). For
                         each commit, history.check copies the commit's
                         tree and its parent's with git archive
-                        (src/cc_public/commit/history.py lines
-                        106-134; src/cc_public/gate/gate.py lines
-                        266-283). The change check extracts the facts
-                        of both whole trees and evaluates the rules
-                        over them (src/cc_public/commit/change.py
-                        lines 78-90, 121-141). It now lays out only
-                        the files whose bytes differ (change.py lines
-                        145-161), and parsed documents and their facts
-                        are reused by path and content digest
-                        (src/cc_public/graph/extract.py lines 155-174,
+                        (src/cctool/commit/history.py lines 106-134;
+                        src/cctool/gate/gate.py lines 266-283). The
+                        change check extracts the facts of both whole
+                        trees and evaluates the rules over them
+                        (src/cctool/commit/change.py lines 78-90,
+                        121-141). It now lays out only the files whose
+                        bytes differ (change.py lines 145-161), and
+                        parsed documents and their facts are reused by
+                        path and content digest
+                        (src/cctool/graph/extract.py lines 155-174,
                         523-557, 756-800). Measured 2026-10-15 at
                         89c74d8: cctool history check over 33 commits
                         took 133 s, about 4 s a commit (a verifier

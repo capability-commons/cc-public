@@ -18,17 +18,17 @@ brief:                  |
                         so logic programs only would not remove
                         SQLite.
 description:            |
-                        src/cc_public/graph/text.py imports sqlite3
-                        (line 44). search, behind cctool query text,
-                        opens its database with
-                        cc_public.graph.sql.connect (line 365). hits
-                        opens an in-memory SQLite database with an
-                        FTS5 table (lines 380-405), and cctool query
-                        logic adds its rows as text_hit facts when
-                        --text is given (src/cc_public/cli/querying.py
-                        lines 213-218). A plain logic query with no
-                        --text still runs without SQLite. Found in the
-                        review of 2026-10-22.
+                        src/cctool/graph/text.py imports sqlite3 (line
+                        44). search, behind cctool query text, opens
+                        its database with cctool.graph.sql.connect
+                        (line 365). hits opens an in-memory SQLite
+                        database with an FTS5 table (lines 380-405),
+                        and cctool query logic adds its rows as
+                        text_hit facts when --text is given
+                        (src/cctool/cli/querying.py lines 213-218). A
+                        plain logic query with no --text still runs
+                        without SQLite. Found in the review of
+                        2026-10-22.
 
 edge:
 

@@ -20,12 +20,12 @@ description:            |
                         parent's tree with git archive, checks the
                         message, and returns at once if the message
                         fails, before check_trees runs
-                        (src/cc_public/commit/history.py lines 97-118;
-                        src/cc_public/gate/gate.py lines 186-203).
-                        Timing of history.check on every commit of a
-                        clone, 2026-10-15, 4 cores, python3 -I: main,
-                        33 commits, 140.88 s total, median 4.152 s,
-                        all passing; pre_squash_20261014, 45 commits,
+                        (src/cctool/commit/history.py lines 97-118;
+                        src/cctool/gate/gate.py lines 186-203). Timing
+                        of history.check on every commit of a clone,
+                        2026-10-15, 4 cores, python3 -I: main, 33
+                        commits, 140.88 s total, median 4.152 s, all
+                        passing; pre_squash_20261014, 45 commits,
                         11.47 s total, median 0.131 s, 43 failing.
                         CAVEAT: another timing run shared the machine,
                         so absolute times are high and noisy; only the
@@ -41,7 +41,7 @@ description:            |
                         at the first push that sends them (again on
                         each retry if that push fails); only cctool
                         history check with no range walks all history
-                        (src/cc_public/cli/auditing.py line 92).
+                        (src/cctool/cli/auditing.py line 92).
                         ASSUMPTION: git archive time grows roughly
                         with tree size, so the cost grows with the
                         tree but stays well below one passing check

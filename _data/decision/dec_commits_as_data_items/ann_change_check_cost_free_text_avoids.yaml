@@ -21,15 +21,15 @@ description:            |
                         The commit-msg hook runs cctool message check
                         (.githooks/commit-msg line 29), which checks
                         the staged tree against HEAD
-                        (src/cc_public/commit/change.py lines 59-74);
-                        the pre-push hook runs cctool history check on
+                        (src/cctool/commit/change.py lines 59-74); the
+                        pre-push hook runs cctool history check on
                         each commit the remote lacks
                         (.githooks/pre-push line 33); with no range
                         the history check covers the whole history
-                        (src/cc_public/cli/auditing.py lines 80-81 and
+                        (src/cctool/cli/auditing.py lines 80-81 and
                         95). Each check copies both trees and extracts
-                        both graphs (src/cc_public/commit/history.py
-                        lines 116-133; src/cc_public/commit/change.py
+                        both graphs (src/cctool/commit/history.py
+                        lines 116-133; src/cctool/commit/change.py
                         lines 131-132), and since 5acf7c2 it lays out
                         only the files whose bytes differ (change.py
                         lines 145-161). Measured by the performance

@@ -17,20 +17,19 @@ brief:                  |
                         write is too late.
 description:            |
                         Schema validation is one part of the checks
-                        (src/cc_public/check/schema.py, module
-                        header). The logic program has 71 #show
-                        directives for checks beyond JSON Schema, such
-                        as dangling_reference and unlinked_term
-                        (src/cc_public/check/check.lp lines 961 and
-                        1941; grep count 2026-10-23 at e1a6b2b4). A
-                        refused edit writes nothing and reports the
-                        failures (src/cc_public/cli/editing.py lines
-                        503-513). --dry-run prints the edit without
-                        writing it (src/cc_public/cli/editing.py lines
-                        477-501). Holds at ten times the size: yes,
-                        because graph checks such as dangling
-                        references only grow in reach as the graph
-                        grows.
+                        (src/cctool/check/schema.py, module header).
+                        The logic program has 71 #show directives for
+                        checks beyond JSON Schema, such as
+                        dangling_reference and unlinked_term
+                        (src/cctool/check/check.lp lines 961 and 1941;
+                        grep count 2026-10-23 at e1a6b2b4). A refused
+                        edit writes nothing and reports the failures
+                        (src/cctool/cli/editing.py lines 503-513).
+                        --dry-run prints the edit without writing it
+                        (src/cctool/cli/editing.py lines 477-501).
+                        Holds at ten times the size: yes, because
+                        graph checks such as dangling references only
+                        grow in reach as the graph grows.
 
 edge:
 

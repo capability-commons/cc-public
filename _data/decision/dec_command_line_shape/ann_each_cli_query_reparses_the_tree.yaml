@@ -16,7 +16,7 @@ brief:                  |
                         agent conventions invite many small queries,
                         and the shape offers no reuse between calls.
 description:            |
-                        src/cc_public/cli/querying.py lines 153, 210,
+                        src/cctool/cli/querying.py lines 153, 210,
                         268, 311 and 401 read every document under the
                         root before each query. Measured 2026-10-15: a
                         one-row SQL query took 926, 980 and 912 ms.
@@ -25,8 +25,8 @@ description:            |
                         13.2 and 13.0 s over 2302 documents; under
                         cProfile about four fifths of it is
                         ruamel.yaml load. The store that cctool check
-                        may use (src/cc_public/check/store.py line 51)
-                        is not used by queries. ASSUMPTION: agents run
+                        may use (src/cctool/check/store.py line 51) is
+                        not used by queries. ASSUMPTION: agents run
                         several queries on an unchanged tree, and
                         parse time grows about linearly with the
                         graph. Scripts run directly share the same

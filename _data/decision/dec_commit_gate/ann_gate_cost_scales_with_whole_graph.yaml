@@ -19,25 +19,25 @@ description:            |
                         The gate copies the whole staged index and
                         runs check over all of it, ruff over all of
                         src and pytest over every test_*.py file
-                        (src/cc_public/gate/gate.py lines 64-66,
-                        133-134, 174). No stage is chosen by what the
-                        commit changes (gate.py lines 103-111). The
-                        tree fixture copies the whole repository for
-                        each test that uses it
-                        (src/cc_public/conftest.py lines 44-56); 113
-                        of the 161 test functions in src take it (grep
-                        of def test_ at 89c74d8). Measured 2026-10-15
-                        in the cloud container (4 processors, clone at
-                        89c74d8): cctool check 6.2s, the full test
-                        suite in one process 361s, the slowest tests 3
-                        to 8s each. These runs were made under heavy
-                        container load from parallel runs, so the
-                        times are high and rough. ASSUMPTION: check
-                        time and the time of each tree test grow at
-                        least linearly with the number of items. The
-                        point bears on the working tree gate just as
-                        much; only CI moves the cost off the commit
-                        path, and only once a remote exists.
+                        (src/cctool/gate/gate.py lines 64-66, 133-134,
+                        174). No stage is chosen by what the commit
+                        changes (gate.py lines 103-111). The tree
+                        fixture copies the whole repository for each
+                        test that uses it (src/cctool/conftest.py
+                        lines 44-56); 113 of the 161 test functions in
+                        src take it (grep of def test_ at 89c74d8).
+                        Measured 2026-10-15 in the cloud container (4
+                        processors, clone at 89c74d8): cctool check
+                        6.2s, the full test suite in one process 361s,
+                        the slowest tests 3 to 8s each. These runs
+                        were made under heavy container load from
+                        parallel runs, so the times are high and
+                        rough. ASSUMPTION: check time and the time of
+                        each tree test grow at least linearly with the
+                        number of items. The point bears on the
+                        working tree gate just as much; only CI moves
+                        the cost off the commit path, and only once a
+                        remote exists.
 
 edge:
 

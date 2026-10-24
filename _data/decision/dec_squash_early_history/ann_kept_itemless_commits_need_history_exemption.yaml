@@ -16,21 +16,21 @@ brief:                  |
                         need an exemption or a boundary marker.
 description:            |
                         A message without a commit item fails at parse
-                        (src/cc_public/commit/message.py lines
-                        227-241, 255-258); history.check returns the
-                        failure for each commit
-                        (src/cc_public/commit/history.py lines 97-118)
-                        and has no exempt list or cutoff. The pre-push
-                        hook checks every commit the remote lacks
-                        (.githooks/pre-push line 33), and nothing had
-                        been pushed to main (memory/MEMORY.md lines 7,
-                        42). memory/enforcement-approach.md line 12
-                        says a rule that needs exceptions is fixed in
-                        the rule. The history check came after the
-                        squash (18d6181), so this is a consequence,
-                        not part of the maintainer's reason.
-                        ASSUMPTION: the boundary would take some named
-                        form, such as a tag or a configured commit.
+                        (src/cctool/commit/message.py lines 227-241,
+                        255-258); history.check returns the failure
+                        for each commit (src/cctool/commit/history.py
+                        lines 97-118) and has no exempt list or
+                        cutoff. The pre-push hook checks every commit
+                        the remote lacks (.githooks/pre-push line 33),
+                        and nothing had been pushed to main
+                        (memory/MEMORY.md lines 7, 42).
+                        memory/enforcement-approach.md line 12 says a
+                        rule that needs exceptions is fixed in the
+                        rule. The history check came after the squash
+                        (18d6181), so this is a consequence, not part
+                        of the maintainer's reason. ASSUMPTION: the
+                        boundary would take some named form, such as a
+                        tag or a configured commit.
 
 edge:
 

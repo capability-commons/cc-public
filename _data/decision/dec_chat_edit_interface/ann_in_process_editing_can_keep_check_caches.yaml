@@ -20,21 +20,20 @@ description:            |
                         checks in one process, and the review before
                         an edit is found in CACHE_REVIEW when the tree
                         is as it was last checked
-                        (src/cc_public/check/check.py lines 80-95).
+                        (src/cctool/check/check.py lines 80-95).
                         CACHE_REVIEW is keyed by the identity of the
-                        document objects (src/cc_public/check/check.py
+                        document objects (src/cctool/check/check.py
                         lines 247-262), and a new Tree re-reads every
-                        file into new objects
-                        (src/cc_public/edit/edit.py lines 169-180;
-                        src/cc_public/graph/extract.py lines 426-446).
-                        Schema verdicts survive across processes only
-                        when the environment variable CC_PUBLIC_STORE
-                        names a store, which the commit gate sets
-                        (src/cc_public/check/store.py, module
-                        docstring). The web server already writes
-                        through the editing module in its own process
-                        and warms the check once at start
-                        (src/cc_public/web/server.py lines 170-172 and
+                        file into new objects (src/cctool/edit/edit.py
+                        lines 169-180; src/cctool/graph/extract.py
+                        lines 426-446). Schema verdicts survive across
+                        processes only when the environment variable
+                        CC_PUBLIC_STORE names a store, which the
+                        commit gate sets (src/cctool/check/store.py,
+                        module docstring). The web server already
+                        writes through the editing module in its own
+                        process and warms the check once at start
+                        (src/cctool/web/server.py lines 170-172 and
                         356-369). Process start-up was about 0.19 s of
                         a 2.25 s dry-run edit on 2026-10-15
                         (_data/decision/dec_editing_by_construction/ann_each_edit_checks_the_whole_tree.yaml).

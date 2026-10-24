@@ -23,24 +23,24 @@ description:            |
                         (for example _data/schema/sch_register.yaml
                         line 1); validation uses
                         jsonschema.Draft202012Validator
-                        (src/cc_public/check/schema.py lines 56-57,
-                        107). Schemas, data items and module
-                        docstrings are read with one YAML(typ='rt')
-                        loader (src/cc_public/graph/extract.py lines
-                        47, 305, 334). PyPI descriptions, fetched
-                        2026-10-15: PyYAML has "a complete YAML 1.1
-                        parser"; ruamel.yaml "is a YAML 1.2
-                        loader/dumper package". YAML 1.2.2 spec,
-                        section 1.2: YAML 1.2 aimed to be "a strict
-                        superset of JSON". Local test, 2026-10-15,
-                        ruamel.yaml 0.19.1 and PyYAML 6.0.1: "1e3"
-                        gives 1000.0 under rt and the string '1e3'
-                        under safe_load; "0777" gives 777 and 511;
-                        "1:20" gives '1:20' and 80; "yes" and "on"
-                        give strings and True. With jsonschema 4.26.0
-                        and type number, the rt value passes and the
-                        safe_load value fails. These inputs are valid,
-                        unlike the faulty input of
+                        (src/cctool/check/schema.py lines 56-57, 107).
+                        Schemas, data items and module docstrings are
+                        read with one YAML(typ='rt') loader
+                        (src/cctool/graph/extract.py lines 47, 305,
+                        334). PyPI descriptions, fetched 2026-10-15:
+                        PyYAML has "a complete YAML 1.1 parser";
+                        ruamel.yaml "is a YAML 1.2 loader/dumper
+                        package". YAML 1.2.2 spec, section 1.2: YAML
+                        1.2 aimed to be "a strict superset of JSON".
+                        Local test, 2026-10-15, ruamel.yaml 0.19.1 and
+                        PyYAML 6.0.1: "1e3" gives 1000.0 under rt and
+                        the string '1e3' under safe_load; "0777" gives
+                        777 and 511; "1:20" gives '1:20' and 80; "yes"
+                        and "on" give strings and True. With
+                        jsonschema 4.26.0 and type number, the rt
+                        value passes and the safe_load value fails.
+                        These inputs are valid, unlike the faulty
+                        input of
                         ann_round_trip_refuses_duplicate_keys. Raised
                         by the functional suitability advocate.
 

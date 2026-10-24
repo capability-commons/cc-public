@@ -23,23 +23,23 @@ description:            |
                         any other" item
                         (_data/register/reg_data_item_type.yaml lines
                         813-816). extract reads only the files of the
-                        tree (src/cc_public/graph/extract.py lines
+                        tree (src/cctool/graph/extract.py lines
                         451-495), and nothing in src reads a commit
                         item into the graph (grep of src for git log
                         and the commit type). message.py writes each
                         item with "edge: []"
-                        (src/cc_public/commit/message.py line 141);
-                        all 33 items on main at 89c74d8 held
-                        "relation: []", as the field was then named;
-                        later commits were not rechecked, since the
-                        snapshot holds no git history. Were commits
-                        read in, only relation_cites and
-                        relation_uses_concept would admit one at its
-                        source, since every other relation constrains
-                        its source to a role that type_commit does not
-                        play (_data/register/reg_relation.yaml;
-                        src/cc_public/check/check.lp lines 1018-1025
-                        and 1065-1075). A tree text naming a commit id
+                        (src/cctool/commit/message.py line 141); all
+                        33 items on main at 89c74d8 held "relation:
+                        []", as the field was then named; later
+                        commits were not rechecked, since the snapshot
+                        holds no git history. Were commits read in,
+                        only relation_cites and relation_uses_concept
+                        would admit one at its source, since every
+                        other relation constrains its source to a role
+                        that type_commit does not play
+                        (_data/register/reg_relation.yaml;
+                        src/cctool/check/check.lp lines 1018-1025 and
+                        1065-1075). A tree text naming a commit id
                         fails dangling_mention (check.lp lines
                         1618-1624). Will deferred graph history: "We
                         will probably want graph-changes-over-time

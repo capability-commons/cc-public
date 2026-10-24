@@ -18,18 +18,18 @@ brief:                  |
 description:            |
                         The command line reads a fresh Tree for each
                         edit and reports the result as exit status 0,
-                        1 or 2 (src/cc_public/cli/editing.py, function
+                        1 or 2 (src/cctool/cli/editing.py, function
                         _run, lines 474-515). A Tree reads every
                         document of the tree when it is made
-                        (src/cc_public/edit/edit.py, line 176). The
+                        (src/cctool/edit/edit.py, line 176). The
                         checker keeps module-level caches across
                         checks in one process
-                        (src/cc_public/check/check.py, CACHE_SCHEMA at
+                        (src/cctool/check/check.py, CACHE_SCHEMA at
                         line 84 and CACHE_REVIEW at line 93). The
                         write replaces staged files one by one with
                         os.replace, so a process killed between two
                         replaces leaves some files new and some old
-                        (src/cc_public/edit/edit.py, function _write,
+                        (src/cctool/edit/edit.py, function _write,
                         lines 1123-1154). Holds at ten times the size:
                         yes, because more conversations in one bot
                         raise the cost of a fault that ends the bot,

@@ -21,23 +21,22 @@ description:            |
                         1), and JSON Schema says pattern uses ECMA-262
                         syntax. The validator extends
                         Draft202012Validator with a pattern keyword of
-                        its own (src/cc_public/check/schema.py lines
+                        its own (src/cctool/check/schema.py lines
                         141-162). That keyword rewrites each $ outside
                         a character class to end of text and then
                         compiles the pattern with Python re (lines
                         97-137), so a title that ends in a newline is
-                        reported
-                        (src/cc_public/check/_test/test_check.py line
-                        295). The rest of the dialect is still that of
-                        Python re: for example \d and \w match any
-                        Unicode digit or letter in Python re but only
-                        ASCII ones in ECMA-262 without the u flag, and
-                        Python re refuses a lookbehind of variable
-                        length. No pattern in _data/schema uses \d, \w
-                        or a lookbehind today, so no present item is
-                        known to be judged wrongly. ASSUMPTION: the
-                        Rust jsonschema crate is not shown to follow
-                        ECMA-262 exactly either.
+                        reported (src/cctool/check/_test/test_check.py
+                        line 295). The rest of the dialect is still
+                        that of Python re: for example \d and \w match
+                        any Unicode digit or letter in Python re but
+                        only ASCII ones in ECMA-262 without the u
+                        flag, and Python re refuses a lookbehind of
+                        variable length. No pattern in _data/schema
+                        uses \d, \w or a lookbehind today, so no
+                        present item is known to be judged wrongly.
+                        ASSUMPTION: the Rust jsonschema crate is not
+                        shown to follow ECMA-262 exactly either.
 
 edge:
 

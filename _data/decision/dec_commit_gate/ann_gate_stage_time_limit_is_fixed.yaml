@@ -17,16 +17,14 @@ brief:                  |
                         though the limit is above the 180 s at which a
                         remote device call dies.
 description:            |
-                        SECONDS_STAGE = 600
-                        (src/cc_public/gate/gate.py lines 72-76 at
-                        360ec14); _run passes it to subprocess.run as
-                        timeout and reports "Stopped after" on
-                        TimeoutExpired (lines 158-181);
+                        SECONDS_STAGE = 600 (src/cctool/gate/gate.py
+                        lines 72-76 at 360ec14); _run passes it to
+                        subprocess.run as timeout and reports "Stopped
+                        after" on TimeoutExpired (lines 158-181);
                         test_a_stage_that_runs_too_long_is_stopped_and_fails
-                        covers it
-                        (src/cc_public/gate/_test/test_gate.py line
-                        108). So the remote-session half of the point
-                        still holds.
+                        covers it (src/cctool/gate/_test/test_gate.py
+                        line 108). So the remote-session half of the
+                        point still holds.
 
 edge:
 

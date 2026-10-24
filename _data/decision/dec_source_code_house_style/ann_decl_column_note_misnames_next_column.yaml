@@ -19,29 +19,28 @@ brief:                  |
                         error. The one-line form cannot carry such a
                         note inside the brackets.
 description:            |
-                        Sources: src/cc_public/graph/logic.py lines
-                        79-80 (REGEX_DECL continues over any line that
+                        Sources: src/cctool/graph/logic.py lines 79-80
+                        (REGEX_DECL continues over any line that
                         begins with "%") and line 198 (every "%"
                         stripped, then split on ","); lines 371-377
                         (the arity check counts columns only). Column
                         names fill the did sentence of a check
-                        (logic.py line 248;
-                        src/cc_public/check/check.py lines 328-331),
-                        and test_check.py line 1090 fails a did that
-                        names a column the declaration lacks. cctool
-                        query logic heads its output with the declared
-                        names (src/cc_public/cli/querying.py lines
-                        226-228), with no such test. Rerun on the
-                        snapshot of 2026-10-23: "% decl a(id: symbol,
-                        % the id" followed by "% line: number)" gives
-                        a second column named "the id" plus "line". A
-                        blank line inside a declaration drops it. None
-                        of the 171 declarations in the six logic
-                        program files carries such a note, and
-                        AGENTS.md line 215 speaks of "a `% decl`
-                        line". Latent; fixed by stripping notes before
-                        the split or by refusing them, without giving
-                        up the style.
+                        (logic.py line 248; src/cctool/check/check.py
+                        lines 328-331), and test_check.py line 1090
+                        fails a did that names a column the
+                        declaration lacks. cctool query logic heads
+                        its output with the declared names
+                        (src/cctool/cli/querying.py lines 226-228),
+                        with no such test. Rerun on the snapshot of
+                        2026-10-23: "% decl a(id: symbol, % the id"
+                        followed by "% line: number)" gives a second
+                        column named "the id" plus "line". A blank
+                        line inside a declaration drops it. None of
+                        the 171 declarations in the six logic program
+                        files carries such a note, and AGENTS.md line
+                        215 speaks of "a `% decl` line". Latent; fixed
+                        by stripping notes before the split or by
+                        refusing them, without giving up the style.
 
 edge:
 

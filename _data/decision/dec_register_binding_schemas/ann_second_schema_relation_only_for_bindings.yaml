@@ -22,21 +22,21 @@ description:            |
                         86-89), which only type_register satisfies
                         (_data/register/reg_data_item_type.yaml lines
                         199-201). Every type names exactly one schema
-                        for its items (src/cc_public/check/check.lp
-                        lines 2624-2628). One derive rule per
-                        mechanism (src/cc_public/graph/derive.lp lines
-                        98-106); unused_schema names both
-                        (src/cc_public/check/check.lp lines
-                        2661-2665). The relation dates from the
-                        placeholder commit bb8c338, where types also
-                        used it; f587284 (pre-squash) moved types to
+                        for its items (src/cctool/check/check.lp lines
+                        2624-2628). One derive rule per mechanism
+                        (src/cctool/graph/derive.lp lines 98-106);
+                        unused_schema names both
+                        (src/cctool/check/check.lp lines 2661-2665).
+                        The relation dates from the placeholder commit
+                        bb8c338, where types also used it; f587284
+                        (pre-squash) moved types to
                         relation_has_items_specified_by_schema and
                         narrowed the relation to type_register.
                         Dropping the bindings would need the checker
                         to apply an entry schema per table entry and
                         close each entry, which sch_reg_* does today.
                         ASSUMPTION: that is one rule in check.lp and a
-                        small change to src/cc_public/check/schema.py;
+                        small change to src/cctool/check/schema.py;
                         not sized. From the simplicity advocate.
 
 edge:
