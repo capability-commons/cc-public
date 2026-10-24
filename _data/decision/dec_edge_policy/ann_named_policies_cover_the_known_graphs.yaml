@@ -1,0 +1,73 @@
+id_self:                ann_named_policies_cover_the_known_graphs
+guid_self:              ann_1d609f3a289e48e1b1ae461026d417b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named policies cover the known graphs with one field
+brief:                  |
+                        The Patrol draft names a policy on each edge
+                        and states no capacity, initial token or
+                        adapter, and DDS and ROS 2 likewise name
+                        delivery by quality of service policies such
+                        as history depth and reliability. A converting
+                        node already adapts one port to another. So
+                        one field naming a policy from a fixed list,
+                        each policy carrying the capacity it needs,
+                        covers the known graphs, where three free
+                        fields and a second way to adapt give the
+                        checks and a reader more to hold.
+description:            |
+                        Sources: the Patrol draft sets a named policy
+                        on its edges and states no capacity or initial
+                        token
+                        (_data/decision/dec_edge_policy/ann_patrol_drafts_use_named_policy_only.yaml,
+                        description). The port type mismatch check's
+                        fix is a node that converts the value
+                        (src/cctool/check/check.lp lines 3213-3216).
+                        ROS 2 states delivery as quality of service
+                        policies, among them history (keep last with a
+                        depth, or keep all) and reliability
+                        (https://docs.ros.org/en/rolling/Concepts/Intermediate/About-Quality-of-Service-Settings.html);
+                        the DDS specification defines the HISTORY and
+                        RELIABILITY policies that ROS 2 maps them onto
+                        (https://www.omg.org/spec/DDS/1.4). Simplicity
+                        counts jobs done by more than one mechanism
+                        (_data/register/reg_concern.yaml lines
+                        488-490). Limit: a policy that keeps every
+                        value in order still needs a number, its
+                        depth, so the fixed list must allow one.
+                        Strength: moderate; the gap between the two
+                        options grows with every adapter written as an
+                        edge field instead of a node.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
