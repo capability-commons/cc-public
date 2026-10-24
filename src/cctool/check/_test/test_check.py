@@ -470,20 +470,33 @@ def _driven_options(tree, list_edge = ()):
     _option(tree, 'opt_y')
 
 
-def test_a_ruling_with_a_driver_unargued_is_reported(tree):
+def _unargued_drivers(tree):
+    """
+    Return the advice ruling_with_unargued_driver gives on tree, once
+    tree is known to have no failures.
+
+    """
+
+    (failures, advice) = cctool.check.check.review(tree)
+    failures.pop(cctool.check.check.NAME_LAYOUT, None)
+    assert failures == {}
+    return advice.get('ruling_with_unargued_driver', [])
+
+
+def test_a_ruling_with_a_driver_unargued_is_advised(tree):
     _driven_options(tree)
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
-    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_cost')]}
+    assert _unargued_drivers(tree) == [('ruling_x', 'opt_x', 'concern_cost')]
 
 
-def test_a_driver_the_decision_names_itself_is_reported_while_unargued(tree):
+def test_a_driver_the_decision_names_itself_is_advised_while_unargued(tree):
     _driven_options(tree, [_edge(tree, 'relation_is_driven_by', 'concern_schedule')])
     _item(tree, DIR_DECISION + 'ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', 'dec_x'),
                                                     _edge(tree, 'relation_challenges', 'opt_y'),
                                                     _edge(tree, 'relation_speaks_for_concern',
                                                           'concern_cost')])
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
-    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_schedule')]}
+    assert _unargued_drivers(tree) == [('ruling_x', 'opt_x', 'concern_schedule')]
 
 
 def test_a_rejection_with_a_driver_unargued_passes(tree):
@@ -492,7 +505,7 @@ def test_a_rejection_with_a_driver_unargued_passes(tree):
     assert _check(tree) == {}
 
 
-def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
+def test_a_driver_argued_only_in_another_decision_is_advised(tree):
     _driven_options(tree)
     _item(tree, '_data/decision/dec_y/dec_y.yaml', 'dec_y', [_edge(tree, 'relation_is_about', 'lco_x')])
     _item(tree, '_data/decision/dec_y/opt_z.yaml', 'opt_z', [_edge(tree, 'relation_is_option_for', 'dec_y')])
@@ -501,7 +514,7 @@ def test_a_driver_argued_only_in_another_decision_is_unargued(tree):
                                                           _edge(tree, 'relation_speaks_for_concern',
                                                                 'concern_cost')])
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
-    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_cost')]}
+    assert _unargued_drivers(tree) == [('ruling_x', 'opt_x', 'concern_cost')]
 
 
 def test_a_driver_argued_for_an_alternative_passes(tree):

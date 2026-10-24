@@ -18,12 +18,14 @@
 %                         The base predicates hold the graph after the
 %                         commit: the staged content. before_item holds
 %                         the items of the graph before it: the content
-%                         of HEAD. commit_verb, commit_mention and
-%                         content_change describe the commit itself.
+%                         of HEAD, and before_edge its edges.
+%                         commit_verb, commit_mention and content_change
+%                         describe the commit itself.
 %
 %                         Each shown predicate is one check, and each
 %                         row of it is one failure. The checks come in
-%                         order: identity, then the verb of the title.
+%                         order: identity, then the verb of the title,
+%                         then the rulings the commit makes.
 % usage:                  |
 %                         Evaluated by pym_cctool.commit.change. The
 %                         facts of the base predicates and the rules of
@@ -38,6 +40,14 @@
 %
 % decl before_item(id:   symbol,
 %                  guid: symbol)
+
+
+% -----------------------------------------------------------------------------
+% Each edge of the graph before the commit, as written.
+%
+% decl before_edge(source:   symbol,
+%                  relation: symbol,
+%                  target:   symbol)
 
 
 % -----------------------------------------------------------------------------
@@ -398,3 +408,77 @@ verb_contradicted(Verb, Kind, Id) :-
 reformat_changes_content(File) :-
     commit_verb("Reformat"),
     content_change(File).
+
+
+% -----------------------------------------------------------------------------
+% A ruling the commit makes uphold an option: the ruling did not
+% uphold the option before the commit, by their guids, so that a
+% rename makes no new upholding. Editing a ruling to uphold another
+% option makes one, so a ruling revisited is judged again.
+%
+% decl before_upholding(ruling: symbol,
+%                       option: symbol)
+
+before_upholding(Ruling, Option) :-
+    before_edge(IdRuling, "relation_upholds", IdOption),
+    before_item(IdRuling, Ruling),
+    before_item(IdOption, Option).
+
+% decl new_upholding(ruling: symbol,
+%                    option: symbol)
+
+new_upholding(Ruling, Option) :-
+    has_type(Ruling, "type_ruling"),
+    primary_edge(Ruling, "relation_upholds", Option),
+    item(Ruling, GuidRuling, _, _, _),
+    item(Option, GuidOption, _, _, _),
+    not before_upholding(GuidRuling, GuidOption).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.commit.change.unargued_driver
+% guid_self:              lpp_565254a521974792b7a0495cdcc9752a
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unargued driver
+% brief:                  |
+%                         A commit makes a ruling uphold an option only
+%                         once every concern that drives its decision,
+%                         or the subject of its decision, has been
+%                         argued, for it or for an alternative to it. A
+%                         ruling is judged by the drivers in force when
+%                         it is made, so a driver added later does not
+%                         undo it. It may reject an option at any time,
+%                         since a rejection commits the subject to
+%                         nothing.
+% did:                    |
+%                         {ruling} upholds {option}, and no annotation
+%                         argues {concern}, a driver, for it or an
+%                         alternative to it.
+% fix:                    |
+%                         Add an annotation for that concern to the
+%                         option or an alternative, or leave the option
+%                         open. Do not uphold an option while a driver
+%                         of its decision is unargued.
+% edge:                   []
+%
+% ...
+%
+% decl unargued_driver(ruling:  symbol,
+%                      option:  symbol,
+%                      concern: symbol)
+#show unargued_driver/3.
+
+unargued_driver(Ruling, Option, Concern) :-
+    new_upholding(Ruling, Option),
+    primary_edge(Option, "relation_is_option_for", Decision),
+    driver(Decision, Concern),
+    not argued(Option, Concern).
