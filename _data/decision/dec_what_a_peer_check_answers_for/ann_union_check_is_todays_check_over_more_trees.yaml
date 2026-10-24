@@ -1,0 +1,63 @@
+id_self:                ann_union_check_is_todays_check_over_more_trees
+guid_self:              ann_e228786c0fdf4ae7b0658e8eaf94826e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The union check as today's check over more trees
+brief:                  |
+                        Failing on any finding is the check that runs
+                        today, over more documents, and adds no rule
+                        about where an item sits. A consumed release
+                        has already passed cctool check on the _data
+                        it ships, with the same tool, so a failure
+                        about a consumed item in the union comes from
+                        the peer's content or from a switched local
+                        checkout. Nothing has to sort findings by
+                        segment to keep the signal.
+description:            |
+                        Sources:
+                        - The check reads the documents of a tree and
+                          evaluates the rules over them, with no
+                          notion of where an item sits
+                          (src/cctool/check/check.py lines 162-169).
+                        - The release gate checks that the built
+                          package holds _data and that cctool check
+                          passes on the _data it ships
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          lines 24-27).
+                        - The previous iteration found that a
+                          consumer's gate reported the core's findings
+                          beside its own, and called that noise
+                          (legacy ddr_one_name_for_a_tree.yaml lines
+                          157-165).
+                        - too_many_unheld_rules counts every unheld
+                          design rule in what is read, against a cap
+                          of 3 (src/cctool/check/check.lp lines 3392
+                          and 3426-3429). Strength: strong while
+                          consumed releases pass their own gate; the
+                          limits are advice about consumed items still
+                          printed in the peer, and union-wide counts
+                          such as the unheld rule cap, which count
+                          cc-public's items too.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_check_fails_on_any_finding
+    guid_target:        opt_ea62f34dfc6a40f38e4ff90bb28b7efa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,85 @@
+id_self:                ann_prefixes_of_sibling_peers_can_collide
+guid_self:              ann_10a2d8002b3641ab8d1c623d2d26df03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prefixes of sibling peers that may collide
+brief:                  |
+                        If each peer may add its own types, two peers
+                        that do not consume each other can choose the
+                        same prefix, and nothing checks that until a
+                        third segment or a partner reads both
+                        together. Their items then cannot be combined
+                        without a rename. Allocating every prefix in
+                        cc-public removes this for types, though not
+                        for the ids of other register entries a peer
+                        adds.
+description:            |
+                        Sources:
+                        - The own-registers option requires each
+                          prefix and id to be unique across the peer
+                          and every segment it consumes, not across
+                          segments beside it
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_holds_registers_of_its_own.yaml
+                          lines 13-20).
+                        - The extension-file option lets a peer add
+                          entries to the registers of a consumed
+                          segment, and does not restrict which
+                          registers
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_extends_core_registers.yaml
+                          lines 12-19).
+                        - A reference may run within a segment or into
+                          one it consumes, never upward or sideways
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          lines 13-16).
+                        - The duplicate prefix finding is computed
+                          only over the types in the union the check
+                          reads (src/cctool/check/check.lp lines
+                          179-182).
+                        - Every id of a type starts with its prefix
+                          and an underscore
+                          (src/cctool/graph/prefix.py lines 71-78).
+                        - ASSUMPTION: two segments that do not consume
+                          each other may later be consumed together by
+                          a third, or read together by a partner.
+                          Strength: weak with one peer; strong at ten
+                          times the peers, since the pairs that can
+                          collide grow with the square of their
+                          number.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

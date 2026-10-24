@@ -1,0 +1,77 @@
+id_self:                ann_union_gate_fails_on_other_tool_releases
+guid_self:              ann_cc544c7c0fbd48b7addd733b7ec34d7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failures from content gated by another tool release
+brief:                  |
+                        Before 1.0, checks are added and tightened
+                        freely, so content gated by one release of the
+                        tool can fail under a later one. If the peer
+                        fails on any finding in the union, it fails on
+                        content of a consumed segment that was gated
+                        by another release or by other tooling, and
+                        that it cannot change. Every segment it
+                        consumes would then have to move to the same
+                        tool release as the peer.
+description:            |
+                        Sources:
+                        - Before 1.0, checks are added and tightened
+                          freely
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          lines 39-42).
+                        - cc-patrol moves long before 1.0, following
+                          frequent minor and point release tags, and
+                          1.0 is likely 6 months or more away (owner's
+                          statement, 2026-10-24).
+                        - cc-public's _data ships in the wheel with
+                          the tool (owner's statement, 2026-10-24), so
+                          cc-public's own content arrives with the
+                          checks that gated it.
+                        - In the previous iteration, a consuming
+                          segment may use the tool, extend it or
+                          replace it (legacy ddr_tooling_travels.yaml
+                          lines 47-51).
+                        - The any-finding option fails on any failure,
+                          wherever the item it is about sits
+                          (_data/decision/dec_what_a_peer_check_answers_for/opt_peer_check_fails_on_any_finding.yaml
+                          lines 12-16).
+                        - ASSUMPTION: a peer may later consume a
+                          segment other than cc-public, gated with
+                          another release of cctool or with other
+                          tooling. Strength: weak while cc-patrol
+                          consumes only cc-public, whose data and
+                          checks travel together; strong at ten times
+                          the segments, when consumed releases differ.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_any_finding
+    guid_target:        opt_ea62f34dfc6a40f38e4ff90bb28b7efa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

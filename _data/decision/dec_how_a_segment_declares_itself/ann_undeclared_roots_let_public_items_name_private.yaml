@@ -1,0 +1,76 @@
+id_self:                ann_undeclared_roots_let_public_items_name_private
+guid_self:              ann_eed41b50770845ee894cfc98b067e2d4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No direction to keep private ids out of cc-public
+brief:                  |
+                        With roots named on the command line, a
+                        reference may run into any tree named, so when
+                        a cc-public checkout and a private peer are
+                        named together nothing refuses a cc-public
+                        item that names a peer item. That reference
+                        writes the private id and guid into cc-public.
+                        A declared consumption gives the check a
+                        direction to refuse it at once, as the ruled
+                        downward consumption needs. Each declaring
+                        option gives that direction, so the choice
+                        among them is not a security one.
+description:            |
+                        Sources:
+                        - The September iteration refused, as
+                          critical, a reference into a
+                          segment that consumes the holder's own, which kept the core free
+                          of its consumers (legacy ddr_segment.yaml lines 47-53 and 82-86).
+                        - A reference records the id and guid of what
+                          it names in the
+                          holder's file (src/cctool/graph/extract.py lines 206-209).
+                        - cc-patrol is private (owner's statement,
+                          2026-10-21).
+                        - The release gate runs cctool check on the
+                          _data the package ships
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines
+                          24-27), where a reference to a peer item would not resolve and
+                          fail as dangling (src/cctool/check/check.lp lines 963-968).
+                        Strength: moderate; the release gate still
+                        catches such a reference late, so the gain is
+                        refusing it where it is written, and at ten
+                        times the peers the number of trees named
+                        together grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_declared_in_project_file
+    guid_target:        opt_fa2b0a88b41b47699ba12afd13e3cccd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_with_consumes_edges
+    guid_target:        opt_0438550193224ea197a45c0ad3e8580b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_records_the_release
+    guid_target:        opt_30dbeb885ae640eeaa7405376bcb833d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_roots_named_on_the_command_line
+    guid_target:        opt_199d8c87d60e48fdb3df1eb5cc78fe31
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

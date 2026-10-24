@@ -1,0 +1,75 @@
+id_self:                ann_notice_assumes_a_gate_a_checkout_skipped
+guid_self:              ann_0987e03b71cc4b8b88053df7bceb6f48
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Consumed content outside a gated release
+brief:                  |
+                        Failure only on the peer's own items shows a
+                        failure in consumed content as a notice,
+                        because the consumed release passed its own
+                        gate. That holds for a release pinned by hash
+                        in the lock, but not while the peer is
+                        switched to a local checkout, whose content no
+                        release gate has passed. Reading consumed
+                        items only to resolve references never
+                        computes such failures at all. Failure on any
+                        finding keeps the gate a check of everything
+                        the peer's results rest on, in either state.
+description:            |
+                        Sources:
+                        - The ruled command group switches a peer
+                          between a release and a
+                          local checkout
+                          (_data/decision/dec_commands_for_peers/ruling_peer_command_group.yaml,
+                          brief).
+                        - While switched to a local checkout a peer
+                          runs whatever that
+                          checkout holds rather than a pinned release
+                          (_data/decision/dec_commands_for_peers/ann_local_checkout_switch_bypasses_pin.yaml,
+                          brief).
+                        - pixi.lock records a sha256 hash for each
+                          package it locks
+                          (_data/decision/dec_how_peers_get_cc_public/ann_package_hash_lets_peer_verify_release.yaml,
+                          description).
+                        - "All peers are my own, so this is acceptable
+                          for now." (owner's
+                          statement, 2026-10-22, quoted in
+                          _data/decision/dec_commands_for_peers/ann_local_checkout_switch_bypasses_pin.yaml).
+                        Strength: weak to moderate; the peers are all
+                        the owner's own today, and a notice limited to
+                        hash-verified releases would answer it as
+                        well; at ten times the peers, with partners'
+                        segments, it grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_check_fails_on_any_finding
+    guid_target:        opt_ea62f34dfc6a40f38e4ff90bb28b7efa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

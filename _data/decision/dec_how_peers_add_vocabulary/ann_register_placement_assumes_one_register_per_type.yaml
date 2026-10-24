@@ -1,0 +1,79 @@
+id_self:                ann_register_placement_assumes_one_register_per_type
+guid_self:              ann_a1b6a7a1cf084e5dbcd5cc0b6721b94a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register placement tied to one register per type
+brief:                  |
+                        The check and the new command both assume that
+                        the items of a type sit in the one register
+                        that the type names. A peer register that
+                        holds concepts, concerns or other entries of a
+                        cc-public type fails the placement check, and
+                        cctool new would try to write the entry into
+                        cc-public's register. Both options that let a
+                        peer hold such entries must first change that
+                        rule, the edit code and the relation behind
+                        them, so the change does not stay in the peer.
+description:            |
+                        Sources:
+                        - The check misplaced_register_entry fails a
+                          register entry whose type does not name that
+                          register by
+                          relation_has_items_held_in_register
+                          (src/cctool/check/check.lp lines 628-633).
+                        - The type_concept entry names reg_concept by
+                          that relation, on the type entry itself, in
+                          cc-public
+                          (_data/register/reg_data_item_type.yaml
+                          lines 318 and 356).
+                        - The register entry of
+                          relation_has_items_held_in_register embeds
+                          no inverse, so only the type entry can state
+                          the edge (_data/register/reg_relation.yaml
+                          lines 134-166; src/cctool/graph/derive.lp
+                          lines 62-68).
+                        - When it makes a new entry, cctool finds the
+                          register from that same edge and takes the
+                          first one it finds (src/cctool/edit/edit.py
+                          lines 1629-1645).
+                        - Under the ruled direction, a reference runs
+                          only into a segment consumed, never upward
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          lines 12-18), so cc-public's type entry
+                          cannot name a peer's register.
+                        - Extension files keep each entry inside the
+                          register its type names, as read
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_extends_core_registers.yaml,
+                          brief). Strength: strong for entries of
+                          cc-public types and the same at ten times
+                          the size; it does not touch a peer type
+                          whose entries sit in a register the peer
+                          type itself names.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

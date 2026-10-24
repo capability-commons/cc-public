@@ -1,0 +1,86 @@
+id_self:                ann_protected_marks_need_a_register_in_the_peer
+guid_self:              ann_e5b5670e21544da8a4cede9d98d07241
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Protected marks in a register of the peer
+brief:                  |
+                        The protective mark register holds a mark
+                        whose existence is itself protected in a
+                        register for its authority, and expects a
+                        partner's marks to resolve only in the
+                        partner's register. All vocabulary upstream
+                        would publish every such mark in cc-public.
+                        Extension files give a peer no register of its
+                        own, so a protected mark could only extend the
+                        public register. A peer that holds registers
+                        of its own, or entries of its own in such a
+                        register, keeps those marks private.
+description:            |
+                        Sources:
+                        - A mark is held in an authority specific
+                          register only where the
+                          existence of the mark is itself protected
+                          (_data/register/reg_protective_mark.yaml lines 35-41).
+                        - A mark from a federated partner may name an
+                          entry held in that
+                          partner's register and not in this one, and an unresolvable mark
+                          is treated as more restrictive than any resolvable one
+                          (_data/register/reg_protective_mark.yaml lines 43-53).
+                        - The check reports a mark that no register
+                          holds as advisory, and
+                          a reference in the mark field is never a dangling reference
+                          (src/cctool/check/advise.lp lines 75-79;
+                          src/cctool/check/check.lp lines 963-968).
+                        - The extension option has a peer add entries
+                          to the registers of a
+                          consumed segment and hold no registers of its own
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_extends_core_registers.yaml,
+                          brief).
+                        - The register in the snapshot holds only the
+                          public mark
+                          (_data/register/reg_protective_mark.yaml lines 62-94).
+                        - cc-patrol is private and local to atlas,
+                          with no remote (owner's
+                          statement, 2026-10-21).
+                        Strength: moderate; no protected mark exists
+                        yet, but the register's own rule expects them,
+                        and at ten times the size, with partner
+                        authorities, it matters more.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

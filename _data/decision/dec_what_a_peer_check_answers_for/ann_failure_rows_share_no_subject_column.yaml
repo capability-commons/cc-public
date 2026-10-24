@@ -1,0 +1,64 @@
+id_self:                ann_failure_rows_share_no_subject_column
+guid_self:              ann_238c59ea1bc54383ba515f1c0e43419b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No common subject column across failure rows
+brief:                  |
+                        The 70 checks give their rows in 23 different
+                        leading columns. Some rows name two items that
+                        can sit in different segments, and one names
+                        no item at all. Sorting failures by segment,
+                        or running rules over the peer's items only,
+                        needs a per-check statement of which column is
+                        the subject, kept in step with every check
+                        added or changed.
+description:            |
+                        Sources:
+                        - check.lp shows 70 checks, whose first
+                          columns take 23 different names, among them
+                          id, holder, node, concept, type and register
+                          (src/cctool/check/check.lp, the #show and
+                          decl lines).
+                        - duplicate_id names one id held by two guids,
+                          which may sit in two trees
+                          (src/cctool/check/check.lp lines 420-428).
+                        - duplicate_prefix names a prefix and two
+                          types (src/cctool/check/check.lp lines
+                          174-182).
+                        - too_many_unheld_rules names a count and a
+                          cap, and no item (src/cctool/check/check.lp
+                          lines 3422-3429).
+                        - Each shown predicate already carries did and
+                          fix fields, and a test fails one that lacks
+                          either (AGENTS.md lines 155-161). Strength:
+                          moderate to strong; it grows with each check
+                          added, though the did and fix pattern shows
+                          a way to declare a subject per check.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

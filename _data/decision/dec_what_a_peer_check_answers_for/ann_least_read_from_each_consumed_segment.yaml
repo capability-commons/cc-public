@@ -1,0 +1,78 @@
+id_self:                ann_least_read_from_each_consumed_segment
+guid_self:              ann_fc7fcef08da04ee19fc8bb9a77c8a1d6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Least read from each consumed segment
+brief:                  |
+                        Reading consumed items only to resolve
+                        references asks the least of a consumed
+                        segment and of the machine that runs the
+                        check. The peer's check then grows with the
+                        peer, not with all it consumes. It also needs
+                        only what resolves an id, which a segment
+                        served from a database or an MCP server could
+                        supply without handing over its whole tree.
+description:            |
+                        Sources:
+                        - The only-own option reads consumed items
+                          only to resolve the peer's references and
+                          register entries
+                          (_data/decision/dec_what_a_peer_check_answers_for/opt_peer_checks_only_its_own_items.yaml
+                          lines 12-17).
+                        - The other two options run the check over the
+                          peer and every segment it consumes
+                          (_data/decision/dec_what_a_peer_check_answers_for/opt_peer_check_fails_on_any_finding.yaml
+                          lines 12-16;
+                          _data/decision/dec_what_a_peer_check_answers_for/opt_peer_check_fails_on_its_own_items.yaml
+                          lines 12-19).
+                        - cctool check over the snapshot takes about
+                          30 s in the cloud container (measured
+                          2026-10-24 at commit c2c55fdd, context
+                          file).
+                        - Partner segments are likely to use a graph
+                          database or similar as their backing
+                          (owner's statement, 2026-10-22).
+                        - An MCP server or API serving reads may sit
+                          beside the files (owner's statement,
+                          2026-10-24).
+                        - ASSUMPTION: the time of a check over the
+                          union grows with the number of items in it.
+                        - ASSUMPTION: resolving a reference needs only
+                          the ids, guids, types and register entries
+                          of a consumed segment. Strength: moderate
+                          today, when the only consumed segment is
+                          cc-public; strong at ten times the consumed
+                          content.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_any_finding
+    guid_target:        opt_ea62f34dfc6a40f38e4ff90bb28b7efa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

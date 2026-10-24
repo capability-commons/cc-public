@@ -1,0 +1,79 @@
+id_self:                ann_each_segment_fact_recorded_once
+guid_self:              ann_fdb50276324d414eb5df1003eb995a6b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each fact of a segment recorded once
+brief:                  |
+                        A segment item with consumes edges puts what a
+                        segment consumes in the graph, where the rules
+                        already read edges, and leaves which release
+                        is taken to the pixi manifest and lock.
+                        Recording the release on the item too states
+                        one fact twice and adds a check to keep the
+                        two in step. The project file moves
+                        consumption out of the graph into TOML, which
+                        cctool does not read today, beside the
+                        dependency entry that already names the
+                        package.
+description:            |
+                        Sources:
+                        - The rules read relations as edges, either
+                          way round (src/cctool/graph/derive.lp lines
+                          62-68).
+                        - The ruled peer command group already reports
+                          which release a peer pins
+                          (_data/decision/dec_commands_for_peers/ruling_peer_command_group.yaml
+                          lines 12-16).
+                        - No module of the tool imports tomllib or
+                          reads pyproject.toml as TOML; only a test
+                          does (grep over src/cctool;
+                          src/cctool/cli/_test/test_guidance.py lines
+                          35 and 176).
+                        - cc-public's pyproject.toml names its
+                          packages for pixi in a tool.pixi table
+                          (pyproject.toml lines 68-70,
+                          tool.pixi.pypi-dependencies).
+                        - ASSUMPTION: a peer such as cc-patrol keeps
+                          its pixi manifest in pyproject.toml, as
+                          cc-public does.
+                        - In the previous iteration a segment item
+                          cost a type, a schema, a relation and a
+                          check (legacy ddr_segment.yaml lines
+                          104-106). Strength: strong for the
+                          release-recording option, whose extra check
+                          exists only to hold the duplicate; moderate
+                          against the project file, which saves the
+                          type and schema but adds a reader.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_with_consumes_edges
+    guid_target:        opt_0438550193224ea197a45c0ad3e8580b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segment_item_records_the_release
+    guid_target:        opt_30dbeb885ae640eeaa7405376bcb833d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segment_declared_in_project_file
+    guid_target:        opt_fa2b0a88b41b47699ba12afd13e3cccd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

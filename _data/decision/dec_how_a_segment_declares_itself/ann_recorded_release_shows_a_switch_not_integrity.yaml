@@ -1,0 +1,53 @@
+id_self:                ann_recorded_release_shows_a_switch_not_integrity
+guid_self:              ann_b8bfc0ddce684490a174273b2a348a37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorded release as visibility, not integrity
+brief:                  |
+                        A segment item that records the release
+                        consumed, compared with the installed package,
+                        makes a peer that runs on another release or
+                        on a local checkout show it in its own check.
+                        The pixi lock already holds a hash for each
+                        locked package, which is the stronger
+                        integrity control, and the ruled command group
+                        already reports the pin. So the recorded
+                        release adds visibility of a switch, and
+                        nothing that verifies what was installed.
+description:            |
+                        Sources:
+                        - A command that switches to a local checkout
+                          must make that state
+                          visible, or it becomes a quiet way around the pin
+                          (_data/decision/dec_commands_for_peers/ann_local_checkout_switch_bypasses_pin.yaml,
+                          brief).
+                        - pixi.lock records a sha256 hash for each
+                          package it locks
+                          (_data/decision/dec_how_peers_get_cc_public/ann_package_hash_lets_peer_verify_release.yaml,
+                          description).
+                        Strength: weak; the gain is a second, checked
+                        place where a switch shows, and it holds
+                        unchanged at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_records_the_release
+    guid_target:        opt_30dbeb885ae640eeaa7405376bcb833d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,66 @@
+id_self:                ann_extension_files_presume_a_file_tree
+guid_self:              ann_472b341113a746acb25232994834509a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extension files that presume a file tree
+brief:                  |
+                        Extension files are named for the register
+                        they extend, so the mechanism is a convention
+                        about files. A segment backed by a graph
+                        database holds items, not file names, and
+                        would need a second way to say which register
+                        an entry extends. Registers of a peer's own
+                        are ordinary items, and can be held wherever
+                        items are held.
+description:            |
+                        Sources:
+                        - Under the extension-file option, each
+                          extension file sits in the peer's tree and
+                          is named for the register it extends
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_extends_core_registers.yaml
+                          lines 12-19).
+                        - A register entry is recorded against the id
+                          of the register item that holds it
+                          (src/cctool/graph/extract.py lines
+                          1291-1299).
+                        - Partner segments are likely to use a graph
+                          database or similar as their backing
+                          (owner's statement, 2026-10-22).
+                        - For today's purposes what crosses is files,
+                          with an MCP server soon and a graph-database
+                          backend eventually (owner's statement,
+                          2026-10-24).
+                        - ASSUMPTION: a segment held in a graph
+                          database stores items and their fields, and
+                          keeps no file names. Strength: weak today,
+                          since every segment is files; it rises when
+                          the first segment not held as files is
+                          planned, and holds at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

@@ -1,0 +1,80 @@
+id_self:                ann_segment_item_is_in_the_public_data_format
+guid_self:              ann_44f4e7fd13764c4d88bc31bdcc74909f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A declaration in the public data format
+brief:                  |
+                        A segment item is written in the data format,
+                        which is the part of cc-public that is public.
+                        A partner with its own tooling reads which
+                        segments a segment consumes the same way it
+                        reads any other item. A table for cctool in
+                        pyproject.toml is tool configuration outside
+                        that format, and roots named on the command
+                        line leave no record a partner can read at
+                        all.
+description:            |
+                        Sources:
+                        - The data format is public, and names YAML
+                          1.2 and JSON Schema 2020-12
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          lines 13 and 37-38).
+                        - The project-file option declares a segment
+                          in a table for cctool in pyproject.toml, and
+                          no data item declares it
+                          (_data/decision/dec_how_a_segment_declares_itself/opt_segment_declared_in_project_file.yaml
+                          lines 12-16).
+                        - The command-line option declares nothing,
+                          and each command takes its trees as repeated
+                          root options
+                          (_data/decision/dec_how_a_segment_declares_itself/opt_roots_named_on_the_command_line.yaml
+                          lines 12-16).
+                        - In cc-public's pyproject.toml, the tables
+                          hold project, build, pixi, test and lint
+                          settings, and only the comment header is an
+                          item (pyproject.toml lines 1-34 and 36-163).
+                        - In the previous iteration, a consuming
+                          segment may replace the tool, and what no
+                          segment can do without is the data (legacy
+                          ddr_tooling_travels.yaml lines 47-60).
+                          Strength: moderate; it holds at ten times
+                          the partners, and grows as more of them
+                          bring their own tooling.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_with_consumes_edges
+    guid_target:        opt_0438550193224ea197a45c0ad3e8580b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_records_the_release
+    guid_target:        opt_30dbeb885ae640eeaa7405376bcb833d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segment_declared_in_project_file
+    guid_target:        opt_fa2b0a88b41b47699ba12afd13e3cccd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_roots_named_on_the_command_line
+    guid_target:        opt_199d8c87d60e48fdb3df1eb5cc78fe31
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

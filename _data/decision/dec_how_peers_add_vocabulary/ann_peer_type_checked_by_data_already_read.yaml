@@ -1,0 +1,78 @@
+id_self:                ann_peer_type_checked_by_data_already_read
+guid_self:              ann_230861a9d29747dfb67fe7f02baa9c57
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer types checked by the data already read
+brief:                  |
+                        The checks of a type are driven by its
+                        register entry: the schema it names, the roles
+                        it plays and its prefix. A type held in the
+                        peer is validated with no change to cctool,
+                        and the prefix checks already run across every
+                        type read. Keeping every type upstream turns
+                        each new peer type, such as the drafted
+                        variant type, into a change in two
+                        repositories and a release before the peer can
+                        use it.
+description:            |
+                        Sources:
+                        - Each YAML document is validated against the
+                          schema its type names by
+                          relation_has_items_specified_by_schema
+                          (src/cctool/graph/derive.lp lines 99-102;
+                          _data/register/reg_data_item_type.yaml lines
+                          968-971 for type_decision).
+                        - The checks duplicate_prefix and
+                          unknown_prefix run over every type and item
+                          read, with no list of types in code
+                          (src/cctool/check/check.lp lines 62-64 and
+                          179-182).
+                        - cc-patrol follows frequent minor and point
+                          release tags, and 1.0 is likely 6 months or
+                          more away (owner's statement, 2026-10-24).
+                        - Moving an entry to another register keeps
+                          its id and guid, which are what an edge
+                          names (any edge in _data, for example
+                          _data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml
+                          lines 19-24).
+                        - ASSUMPTION: a peer type needs no
+                          type-specific rule in check.lp or derive.lp;
+                          a type that does, as type_dataflow_node does
+                          in derive.lp, still needs a change in
+                          cc-public. Strength: moderate to strong; it
+                          grows with the number of peers and peer
+                          types, since each upstream round trip is
+                          paid per type per release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,57 @@
+id_self:                ann_notice_repeats_the_job_of_advice
+guid_self:              ann_d13487e416a84bfaa5e97c095b0e7add
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A notice that repeats the job of advice
+brief:                  |
+                        The check already has a channel for findings
+                        that are shown but do not fail: advice. A
+                        notice for consumed items is either that same
+                        channel under another name, or a third
+                        severity beside failure and advice. Reading
+                        consumed items only to resolve references
+                        splits every rule into the parts that may and
+                        may not see them.
+description:            |
+                        Sources:
+                        - advise.lp is evaluated with check.lp, and
+                          cctool check reports advice without failing
+                          on it (src/cctool/check/check.py lines
+                          27-31; src/cctool/cli/checking.py lines
+                          57-60).
+                        - dangling_reference and duplicate_id need the
+                          consumed items in the rule body to answer
+                          for the peer's own items
+                          (src/cctool/check/check.lp lines 420-428 and
+                          956-968). Strength: moderate; if the notice
+                          is ruled to be advice, the duplication goes,
+                          and what remains is the attribution cost
+                          another annotation weighs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

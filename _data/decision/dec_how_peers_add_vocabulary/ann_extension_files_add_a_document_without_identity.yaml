@@ -1,0 +1,66 @@
+id_self:                ann_extension_files_add_a_document_without_identity
+guid_self:              ann_4b695d265e0f4076b1942fcdb62888b6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extension files as a second kind of register file
+brief:                  |
+                        Keeping all vocabulary upstream adds no
+                        mechanism: the union is read as one tree and
+                        every existing check applies. Extension files
+                        add a file that continues another item rather
+                        than being one, so the reader needs a merge
+                        step, the identity checks need an exception,
+                        and file names gain a meaning they do not have
+                        today. Registers of the peer's own reuse the
+                        existing register form.
+description:            |
+                        Sources:
+                        - Documents are read per file and keyed by the
+                          file's path relative to the root
+                          (src/cctool/graph/extract.py lines 466-470).
+                        - Every item has one id and one guid, and
+                          duplicate_id fails two items with one id
+                          (src/cctool/check/check.lp lines 425-428).
+                        - Each register today is one item in one file,
+                          such as reg_concept (_data/register/, ten
+                          files for ten registers).
+                        - The extension option reads each register as
+                          the consumed entries followed by the peer's
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_extends_core_registers.yaml,
+                          brief).
+                        - The previous iteration grew faster than it
+                          could be reviewed, so a type, relation,
+                          field or command is added only when a real
+                          instance needs it (AGENTS.md lines 236-238).
+                          Strength: strong as a count of mechanisms,
+                          and it holds at ten times the size; it says
+                          nothing of the cost of the upstream round
+                          trip, which another annotation weighs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

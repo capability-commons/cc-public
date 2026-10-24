@@ -1,0 +1,97 @@
+id_self:                ann_consumed_release_recorded_beyond_pixi
+guid_self:              ann_fdb105d954e9492283a09719ccbd00aa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A consumed release recorded beyond the pixi files
+brief:                  |
+                        Ids change between releases and each release
+                        ships its renames, so a reader must know which
+                        release a segment's references were written
+                        against. When only the pixi manifest and lock
+                        record the release, a partner must read pixi's
+                        files to learn it, and a pin there assumes
+                        pixi installs the tool. The maintainer wants a
+                        route that installs cctool system-wide, and
+                        under it nothing in the peer says which
+                        release it expects. A release recorded on the
+                        segment item is read from the data, travels
+                        with the peer under any route, and the check
+                        reports when the installed tool differs from
+                        it.
+description:            |
+                        Sources:
+                        - The consumes-edges option records which
+                          release is consumed only in the peer's pixi
+                          manifest and lock
+                          (_data/decision/dec_how_a_segment_declares_itself/opt_segment_item_with_consumes_edges.yaml
+                          lines 12-19).
+                        - The records-release option records the
+                          release on each consumes edge, and a check
+                          compares it with the installed package
+                          (_data/decision/dec_how_a_segment_declares_itself/opt_segment_item_records_the_release.yaml
+                          lines 12-17).
+                        - Each release ships the renames it makes, and
+                          a command in the peer rewrites each
+                          reference to the id its guid names in the
+                          release it takes
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-17).
+                        - cc-public's environment is managed by pixi
+                          (pyproject.toml lines 19-27 and 64-66).
+                        - The maintainer wants a route that installs
+                          cctool system-wide so that people can create
+                          peer repositories easily, which needs
+                          decisions of its own (owner's statement,
+                          2026-10-24;
+                          _data/decision/dec_commands_for_peers/ruling_peer_command_group.yaml
+                          lines 17-22).
+                        - The peer command group switches a peer
+                          between a release and a local checkout
+                          (_data/decision/dec_commands_for_peers/ruling_peer_command_group.yaml
+                          lines 12-16).
+                        - ASSUMPTION: a partner that reads a segment
+                          with its own tooling does not use pixi.
+                        - ASSUMPTION: a system-wide install may serve
+                          several peers that pin different releases.
+                        - ASSUMPTION: while a peer is switched to a
+                          local checkout, the comparison needs a rule
+                          of its own, since the installed code is then
+                          not a release. Strength: moderate; the
+                          install route it rests on is not yet
+                          decided, and it holds at ten times the
+                          segments and peers, when readers must map
+                          ids across many releases and installs on one
+                          machine are shared.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_records_the_release
+    guid_target:        opt_30dbeb885ae640eeaa7405376bcb833d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segment_item_with_consumes_edges
+    guid_target:        opt_0438550193224ea197a45c0ad3e8580b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

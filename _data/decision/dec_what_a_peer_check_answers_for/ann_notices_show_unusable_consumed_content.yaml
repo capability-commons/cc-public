@@ -1,0 +1,67 @@
+id_self:                ann_notices_show_unusable_consumed_content
+guid_self:              ann_876c018ba6f44bc2afe89c719a391e84
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Notices that show where consumed content does not read
+brief:                  |
+                        Showing a failure about a consumed item as a
+                        notice tells the peer where what it received
+                        does not read correctly with its own tool,
+                        without blocking it. If the rules never run
+                        over consumed items, a consumed item that
+                        fails a schema or names nothing goes unseen in
+                        the peer. The peer then learns of the gap only
+                        when one of its own items trips over it.
+description:            |
+                        Sources:
+                        - The own-items option shows a failure about
+                          an item of a consumed segment as a notice,
+                          because the consumed release passed its own
+                          gate
+                          (_data/decision/dec_what_a_peer_check_answers_for/opt_peer_check_fails_on_its_own_items.yaml
+                          lines 12-19).
+                        - The only-own option runs no rule over
+                          consumed items, so their failures are never
+                          computed in the peer
+                          (_data/decision/dec_what_a_peer_check_answers_for/opt_peer_checks_only_its_own_items.yaml
+                          lines 12-17).
+                        - The check validates each YAML document
+                          against the schemas it must conform to
+                          (src/cctool/check/schema.py lines 16-17).
+                        - The check reports a reference that names no
+                          item (src/cctool/check/check.lp lines
+                          963-968).
+                        - ASSUMPTION: at many consumed segments,
+                          notices may need grouping by segment to stay
+                          readable. Strength: moderate; it holds at
+                          ten times the size, since more consumed
+                          content means more places where it may not
+                          read.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_peer_check_answers_for
+    guid_target:        dec_96c2b85d6f5048dc9e96f8cefe15af05
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_check_fails_on_its_own_items
+    guid_target:        opt_384391f1a4f240a8955ff33883a8d1cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_checks_only_its_own_items
+    guid_target:        opt_94b726256e6844e7affca8ddcd4a0004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

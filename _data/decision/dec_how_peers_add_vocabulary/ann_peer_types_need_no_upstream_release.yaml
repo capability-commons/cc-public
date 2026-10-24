@@ -1,0 +1,110 @@
+id_self:                ann_peer_types_need_no_upstream_release
+guid_self:              ann_b4711a9d5e2d480ca8e2b888b5876663
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No upstream release needed for a partner's own types
+brief:                  |
+                        When a peer holds its types and relations as
+                        data in its own tree, a partner can define and
+                        use the vocabulary it needs without getting it
+                        accepted into cc-public and taking up a new
+                        release first. Under the two upstream options,
+                        a partner must adopt cc-public's release
+                        cycle, and the maintainer's acceptance, before
+                        it can write a single item of a new type. The
+                        registers stay the shared agreement either
+                        way, because they are data that any tool can
+                        read.
+description:            |
+                        Sources:
+                        - Under the all-upstream option, a peer that
+                          needs a new entry proposes it upstream and
+                          takes it up with the release that carries it
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml
+                          lines 12-17).
+                        - Under the entries-but-not-types option,
+                          every type, relation, role and relation
+                          constraint lives in cc-public, and a new one
+                          is proposed upstream
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_adds_entries_but_not_types.yaml
+                          lines 12-20).
+                        - The first peer, cc-patrol, needs a dataflow
+                          variant item type with prefix dfv that
+                          cc-public does not hold yet (owner's
+                          statement, 2026-10-21).
+                        - In the previous iteration, a partner who
+                          writes its own checks is held by the same
+                          registers, because the registers are where
+                          the agreement about what a relation means
+                          lives (legacy ddr_tooling_travels.yaml lines
+                          53-60).
+                        - The code holds the prefix of each of
+                          cc-public's 34 types in MAP_PREFIX, and
+                          takes from it the prefixes it must know
+                          before it reads a tree, such as that of the
+                          python module; a test requires the map to
+                          equal the register's prefixes
+                          (src/cctool/graph/prefix.py lines 20-27 and
+                          34-67; src/cctool/graph/extract.py lines
+                          338-364;
+                          src/cctool/graph/_test/test_graph.py lines
+                          255-258).
+                        - A type a peer holds only as YAML data needs
+                          no entry in MAP_PREFIX: outside the tests,
+                          code reads the map only by naming a
+                          cc-public type (MAP_PREFIX and prefix.stem
+                          over src/cctool, for example
+                          src/cctool/edit/edit.py lines 116-124), and
+                          the test that compares the map with the
+                          register runs over a copy of cc-public's own
+                          tree (src/cctool/conftest.py lines 188-207).
+                        - ASSUMPTION: a partner other than the
+                          maintainer cannot count on cc-public
+                          accepting a type it proposes.
+                        - Every peer is the maintainer's own today
+                          ("All peers are my own, so this is
+                          acceptable for now.", owner's statement,
+                          2026-10-22, quoted in
+                          _data/decision/dec_what_crosses_between_segments/ann_no_stated_form_for_a_database_segment.yaml
+                          lines 40-42). Strength: weak while every
+                          peer is the maintainer's own; it holds and
+                          grows at ten times the partners, since each
+                          one otherwise waits on cc-public.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

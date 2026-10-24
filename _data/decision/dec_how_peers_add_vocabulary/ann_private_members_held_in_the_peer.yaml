@@ -1,0 +1,88 @@
+id_self:                ann_private_members_held_in_the_peer
+guid_self:              ann_966c918735f94ea5b43cf9c954e95a25
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Private team members held in the peer
+brief:                  |
+                        All vocabulary upstream puts every team member
+                        a peer needs into cc-public, whose team member
+                        register is public and ships in the wheel. A
+                        member who should not be named in public then
+                        has no home, and a commit trailer in the peer
+                        can name only members that cc-public holds.
+                        The options that let a peer hold entries of
+                        its own keep such members, and their names, in
+                        the private tree.
+description:            |
+                        Sources:
+                        - The team member register says every entry in
+                          it is public, and
+                          that a member who should not be named in public is held in the
+                          team member register of a private repository instead
+                          (_data/register/reg_team_member.yaml lines 26-30).
+                        - cctool message check reads the team member
+                          register of the tree
+                          it checks, so a Contributor trailer resolves only where its member
+                          is held (_data/register/reg_team_member.yaml lines 22-25).
+                        - A team member entry has an id and a title
+                          formed from the
+                          person's name, for example member_william_payne
+                          (_data/register/reg_team_member.yaml lines 37-40).
+                        - The upstream option has every register entry
+                          live in cc-public
+                          and a peer hold only instances
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml,
+                          brief).
+                        - cc-public's _data ships in the wheel
+                          (owner's statement,
+                          2026-10-24).
+                        - Once a package is published, every peer and
+                          the package host keep
+                          a copy that the maintainer cannot withdraw
+                          (_data/decision/dec_how_peers_get_cc_public/ann_published_package_cannot_be_recalled.yaml,
+                          brief).
+                        - Personal data lives only in private
+                          repositories, and some
+                          segments may hold personal data under the GDPR (owner's statement,
+                          2026-10-22).
+                        Strength: strong; the register already states
+                        the rule, and at ten times the size every new
+                        peer with people of its own meets it again.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_add_vocabulary
+    guid_target:        dec_cd0978cacb694e059d4cdd32606fa412
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_adds_entries_but_not_types
+    guid_target:        opt_4dded21ddacc44f4b4b0b5b3a0448475
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_extends_core_registers
+    guid_target:        opt_166677d24a184ef3a01d002f2a691a9c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_holds_registers_of_its_own
+    guid_target:        opt_99b1d12b811747dc80f503c118159b25
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_vocabulary_upstream
+    guid_target:        opt_b16ba3717d854069889731f74798e273
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

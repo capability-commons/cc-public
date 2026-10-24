@@ -1,0 +1,67 @@
+id_self:                ann_roots_on_the_command_line_spread_to_each_task
+guid_self:              ann_391800ffa3bc414fa2638ba651086eca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Consumed trees restated in every invocation
+brief:                  |
+                        With roots on the command line, what a peer
+                        consumes is restated in every task, hook and
+                        script that runs a command. A change to what
+                        is consumed, or where it is read from, touches
+                        each of them. The previous iteration found
+                        this pattern fragile when first used from a
+                        consumer.
+description:            |
+                        Sources:
+                        - cc-public runs its commands through pixi
+                          tasks and git hooks (pyproject.toml header,
+                          lines 18-28).
+                        - In the previous iteration, three of the six
+                          faults found when the tool was first tried
+                          from a consumer segment were about how
+                          commands named their trees (legacy
+                          ddr_one_name_for_a_tree.yaml lines 26-44).
+                        - Its fix meant every task list naming the
+                          commands had to change with them (legacy
+                          ddr_one_name_for_a_tree.yaml lines 145-148).
+                        - The consumes-edges option reads consumed
+                          content from the installed package, or from
+                          a local checkout while the peer is switched
+                          to one
+                          (_data/decision/dec_how_a_segment_declares_itself/opt_segment_item_with_consumes_edges.yaml,
+                          brief).
+                        - ASSUMPTION: the path to an installed
+                          package's _data differs by environment and
+                          host, so a root naming it would differ on
+                          atlas and in the cloud container. Strength:
+                          moderate today with one peer and few tasks;
+                          it grows with each peer, task and consumed
+                          segment.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_segment_declares_itself
+    guid_target:        dec_02b02dd77f354fc8a5e9fcee1506184e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_item_with_consumes_edges
+    guid_target:        opt_0438550193224ea197a45c0ad3e8580b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_roots_named_on_the_command_line
+    guid_target:        opt_199d8c87d60e48fdb3df1eb5cc78fe31
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
