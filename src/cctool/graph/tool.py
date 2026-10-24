@@ -15,18 +15,23 @@ title:                  Facts of the tool
 brief:                  |
                         Give the facts of cctool itself that no
                         document of a tree holds: its command line, as
-                        click describes it.
+                        click describes it, and the severity of each
+                        of its checks.
 description:            |
                         A command line surface states the commands of
-                        a program, and these facts are what the
-                        program does as it runs, so that a check can
-                        hold the one to the other. They are read from
-                        click's own description of each command,
+                        a program, and icd_cctool_check the severity
+                        of each check. These facts are what the tool
+                        does as it runs, so that a check can hold the
+                        one to the other. The command line is read
+                        from click's own description of each command,
                         Command.to_info_dict, and not by parsing the
-                        source. The command module is imported when
-                        the facts are first asked for, since it
-                        imports this module in turn, and the facts are
-                        kept for the life of the OS process.
+                        source, and the severities from
+                        cctool.check.check. Each module is imported
+                        when the facts are first asked for, since each
+                        imports this module in turn. The facts of the
+                        command line are kept for the life of the OS
+                        process, and the severities are read each
+                        time.
 edge:                   []
 
 ...
@@ -39,12 +44,13 @@ import importlib
 import click
 
 
-# The program, and the module whose main is its click group. The module
-# is imported when the facts are first asked for, and not before, since
-# it imports the module that asks.
+# The program, the module whose main is its click group, and the module
+# that runs its checks. Each module is imported when the facts are first
+# asked for, and not before, since each imports the module that asks.
 #
 NAME_PROGRAM      = 'cctool'
 NAME_COMMAND      = 'cctool.cli.command'
+NAME_CHECK        = 'cctool.check.check'
 
 # What joins the names of a command and of the groups it is under, and
 # the kind of a parameter given by its place.
@@ -54,12 +60,27 @@ KIND_ARGUMENT     = 'argument'
 
 
 # -----------------------------------------------------------------------------
-@functools.cache
 def facts() -> dict[str, frozenset[tuple[str, ...]]]:
     """
     Return the facts of cctool itself, keyed by predicate: the commands
     and parameters of its command line, read from click's own
-    description of them.
+    description of them, and the severity of each of its checks. The
+    severities are read afresh each time, since the logic programs
+    that set them are files that may change while the OS process runs.
+
+    """
+
+    return {**_command_line(),
+            'check_severity': frozenset(importlib.import_module(NAME_CHECK)
+                                                  .severities().items())}
+
+
+# -----------------------------------------------------------------------------
+@functools.cache
+def _command_line() -> dict[str, frozenset[tuple[str, ...]]]:
+    """
+    Return the facts of the command line of cctool, keyed by predicate,
+    read once in each OS process.
 
     """
 

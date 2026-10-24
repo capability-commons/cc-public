@@ -86,6 +86,11 @@ WORDING_VERSION   = {'did': '{id}, the newest release item, records the version 
                      'fix': 'Let cctool release prepare write the version module and the '
                             'release item together. Do not edit the version by hand.'}
 
+# The severity of a check: a row of it is a failure, or advice.
+#
+SEVERITY_FAILURE  = 'failure'
+SEVERITY_ADVICE   = 'advice'
+
 Failures          = dict[str, list[tuple[str, ...]]]
 
 # What validation against the schemas has found, kept between checks in
@@ -349,6 +354,25 @@ def columns() -> dict[str, tuple[str, ...]]:
     map_column[NAME_LAYOUT]  = cctool.edit.layout.COLUMNS
     map_column[NAME_VERSION] = cctool.release.record.COLUMNS
     return map_column
+
+
+# -----------------------------------------------------------------------------
+def severities() -> dict[str, str]:
+    """
+    Return the severity of each check, failure or advice, keyed by
+    check: advice for each shown predicate of advise.lp, and failure for
+    every other check.
+
+    """
+
+    map_severity = {name: SEVERITY_FAILURE for name in
+                    cctool.graph.logic.output(RULES.read_text(encoding = 'utf-8'))}
+
+    map_severity.update({name: SEVERITY_ADVICE for name in
+                         cctool.graph.logic.output(ADVICE.read_text(encoding = 'utf-8'))})
+    map_severity[NAME_SCHEMA] = SEVERITY_FAILURE
+    map_severity[NAME_LAYOUT] = SEVERITY_FAILURE
+    return map_severity
 
 
 # -----------------------------------------------------------------------------

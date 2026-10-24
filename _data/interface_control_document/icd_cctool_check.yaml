@@ -20,6 +20,13 @@ description:            |
                         interface. An edit checks its YAML documents
                         before it writes them, and the gate checks a
                         copy of what is staged.
+
+                        Each check the interface reports is a member,
+                        with its severity: whether its rows are
+                        failures or advice. A check that moves from
+                        advice to failure is thus a change to a
+                        member, which severity_mismatch holds to the
+                        code.
 version_interface:      '1.0'
 support:                unsupported
 
@@ -38,6 +45,798 @@ declaration:
                         declares, in the order columns gives. A check
                         that finds nothing is left out, so an empty
                         mapping is a tree that passes.
+
+check:
+
+  unknown_prefix:
+    id_self:            icm_cctool_check.unknown_prefix
+    guid_self:          icm_bf0d4fb14aa24a4f83c981d4b1a0d9a4
+    name:               unknown_prefix
+    brief:              |
+                        Every id begins with the prefix of a known
+                        type.
+    severity:           failure
+
+  bad_id:
+    id_self:            icm_cctool_check.bad_id
+    guid_self:          icm_0fc37fe5f9f44c38b404a53585dea498
+    name:               bad_id
+    brief:              |
+                        Every id matches the regex_id of its type.
+    severity:           failure
+
+  bad_guid:
+    id_self:            icm_cctool_check.bad_guid
+    guid_self:          icm_fa1436d316874d289da4bf28b10c02cf
+    name:               bad_guid
+    brief:              |
+                        Every guid is the prefix of its id and 32 hex
+                        digits.
+    severity:           failure
+
+  duplicate_prefix:
+    id_self:            icm_cctool_check.duplicate_prefix
+    guid_self:          icm_16c72524aff64983ac1dcb0a582d061e
+    name:               duplicate_prefix
+    brief:              |
+                        No two types share a prefix.
+    severity:           failure
+
+  regex_without_prefix:
+    id_self:            icm_cctool_check.regex_without_prefix
+    guid_self:          icm_d545b86d95774251841447b4438c88a1
+    name:               regex_without_prefix
+    brief:              |
+                        The regex_id of a type opens with its prefix,
+                        so that every id the regex admits has the
+                        prefix of its type.
+    severity:           failure
+
+  misnamed_schema:
+    id_self:            icm_cctool_check.misnamed_schema
+    guid_self:          icm_6e1cb8c857f0459da4bc50a2cdf3a466
+    name:               misnamed_schema
+    brief:              |
+                        The $id of a schema ends with its id_self and
+                        .yaml, which is also the name of its file.
+    severity:           failure
+
+  prefix_form:
+    id_self:            icm_cctool_check.prefix_form
+    guid_self:          icm_5bad47b5dedc4124bfd8b0c00636af8a
+    name:               prefix_form
+    brief:              |
+                        A prefix is three lower-case letters, one
+                        whole word of the preferred term of the
+                        concept its type represents, or the first
+                        three letters of each of two or three words of
+                        that term in a row, as relcon for relation
+                        constraint.
+    severity:           failure
+
+  prefix_near:
+    id_self:            icm_cctool_check.prefix_near
+    guid_self:          icm_21dbd44645954879a4d854f0ba5da731
+    name:               prefix_near
+    brief:              |
+                        Two prefixes of the same length differ in more
+                        than one letter, unless their types declare
+                        one prefix family, as a container and its
+                        members do.
+    severity:           failure
+
+  duplicate_id:
+    id_self:            icm_cctool_check.duplicate_id
+    guid_self:          icm_822b8b6e73a849aa8546cd9aa5cd05c4
+    name:               duplicate_id
+    brief:              |
+                        No id names two items.
+    severity:           failure
+
+  duplicate_guid:
+    id_self:            icm_cctool_check.duplicate_guid
+    guid_self:          icm_048b8ccaf4604da4b196f08db8f96df7
+    name:               duplicate_guid
+    brief:              |
+                        No guid identifies two items.
+    severity:           failure
+
+  repeated_item:
+    id_self:            icm_cctool_check.repeated_item
+    guid_self:          icm_baa2f2b2bd854953a7e685efc169439f
+    name:               repeated_item
+    brief:              |
+                        No item is written twice.
+    severity:           failure
+
+  misplaced_module:
+    id_self:            icm_cctool_check.misplaced_module
+    guid_self:          icm_cfba6901704e4b05900da0de21555f0b
+    name:               misplaced_module
+    brief:              |
+                        A python module, python package or logic
+                        program file item is named for the module,
+                        package or file that holds it.
+    severity:           failure
+
+  misplaced_document:
+    id_self:            icm_cctool_check.misplaced_document
+    guid_self:          icm_4d9ec88ecf4849dfa7e3ae849ae43e83
+    name:               misplaced_document
+    brief:              |
+                        A YAML document under a _data directory is in
+                        the folder named for its type, less the type_,
+                        in a file named for its id.
+    severity:           failure
+
+  misplaced_register_entry:
+    id_self:            icm_cctool_check.misplaced_register_entry
+    guid_self:          icm_cf992ffa3e8d4b4ab30160ea27bc738a
+    name:               misplaced_register_entry
+    brief:              |
+                        A register holds only register entries of a
+                        type whose items it holds.
+    severity:           failure
+
+  unrecorded_module:
+    id_self:            icm_cctool_check.unrecorded_module
+    guid_self:          icm_0884369bfbcc4dce881be6480b07a5d8
+    name:               unrecorded_module
+    brief:              |
+                        Every python module and logic program file
+                        under src holds an item.
+    severity:           failure
+
+  misnamed_member:
+    id_self:            icm_cctool_check.misnamed_member
+    guid_self:          icm_232639a4b7cf42ba9937a294ba96641c
+    name:               misnamed_member
+    brief:              |
+                        The id of an interface member is the stem of
+                        what it sits in, a full stop and a name of its
+                        own.
+    severity:           failure
+
+  parameter_mismatch:
+    id_self:            icm_cctool_check.parameter_mismatch
+    guid_self:          icm_eebe5de2477546bdbb84d1fb4f5927f2
+    name:               parameter_mismatch
+    brief:              |
+                        A python function that realizes an interface
+                        member takes the parameters the member states,
+                        by name and in order.
+    severity:           failure
+
+  signature_mismatch:
+    id_self:            icm_cctool_check.signature_mismatch
+    guid_self:          icm_b5128a3549fa495f85b4ef08cd31378d
+    name:               signature_mismatch
+    brief:              |
+                        What a member states of the signature it
+                        restates is what the python function that
+                        realizes it says: the type and default of each
+                        parameter as the code writes them, whether it
+                        is optional or variadic, and the type the
+                        function returns.
+    severity:           failure
+
+  command_mismatch:
+    id_self:            icm_cctool_check.command_mismatch
+    guid_self:          icm_b694b92466514079a1efe8f6b3e2d79d
+    name:               command_mismatch
+    brief:              |
+                        What a command line surface states of a
+                        program is what click describes of it: each
+                        command, each parameter of each command, and
+                        the kind, type, default and position of each
+                        parameter, and whether it is optional,
+                        variadic or a flag.
+    severity:           failure
+
+  key_mismatch:
+    id_self:            icm_cctool_check.key_mismatch
+    guid_self:          icm_12f889869e1948cc94816b64f7edf330
+    name:               key_mismatch
+    brief:              |
+                        The key of a register entry is its id.
+    severity:           failure
+
+  dangling_reference:
+    id_self:            icm_cctool_check.dangling_reference
+    guid_self:          icm_3942450842f845dda0d2dd5fb55b31c9
+    name:               dangling_reference
+    brief:              |
+                        Every reference names an item that exists, by
+                        its id or, where the id names nothing, by its
+                        guid.
+    severity:           failure
+
+  guid_mismatch:
+    id_self:            icm_cctool_check.guid_mismatch
+    guid_self:          icm_0a2eb90410af4a978f799b5301cccd97
+    name:               guid_mismatch
+    brief:              |
+                        Every reference carries the guid of the item
+                        it names.
+    severity:           failure
+
+  constraint_violation:
+    id_self:            icm_cctool_check.constraint_violation
+    guid_self:          icm_3ac36112a86b4ed0a5e54aa63e2bc7a5
+    name:               constraint_violation
+    brief:              |
+                        Each end of an edge satisfies every constraint
+                        its relation names for that end.
+    severity:           failure
+
+  missing_about:
+    id_self:            icm_cctool_check.missing_about
+    guid_self:          icm_8b44c4b2f4b14bbd82e5239c8e92f09a
+    name:               missing_about
+    brief:              |
+                        Every annotation and every decision is about
+                        something.
+    severity:           failure
+
+  option_count:
+    id_self:            icm_cctool_check.option_count
+    guid_self:          icm_022693fe658b402fb56a4eb47a7ae78e
+    name:               option_count
+    brief:              |
+                        Every option is an option for exactly one
+                        decision.
+    severity:           failure
+
+  no_option_in_ruling:
+    id_self:            icm_cctool_check.no_option_in_ruling
+    guid_self:          icm_0d067e73348a458c8234958fb54a97c1
+    name:               no_option_in_ruling
+    brief:              |
+                        Every ruling upholds or rejects at least one
+                        option.
+    severity:           failure
+
+  decisions_mixed_in_ruling:
+    id_self:            icm_cctool_check.decisions_mixed_in_ruling
+    guid_self:          icm_19af40c179124acbaca0717d96026e19
+    name:               decisions_mixed_in_ruling
+    brief:              |
+                        A ruling settles the options of one decision.
+    severity:           failure
+
+  supports_and_challenges:
+    id_self:            icm_cctool_check.supports_and_challenges
+    guid_self:          icm_f7556dec8a71439ba5dc1beb6c174615
+    name:               supports_and_challenges
+    brief:              |
+                        An annotation either supports or challenges a
+                        target, never both.
+    severity:           failure
+
+  upholds_and_rejects:
+    id_self:            icm_cctool_check.upholds_and_rejects
+    guid_self:          icm_238aa74d2c934f14bc8130a0aa50f2a0
+    name:               upholds_and_rejects
+    brief:              |
+                        A ruling either upholds or rejects an option,
+                        never both.
+    severity:           failure
+
+  decision_about_non_component:
+    id_self:            icm_cctool_check.decision_about_non_component
+    guid_self:          icm_4012536ce1974515934c67826a60bd13
+    name:               decision_about_non_component
+    brief:              |
+                        A decision is about logical components, since
+                        their drivers say which concerns must be
+                        argued before an option of the decision is
+                        settled.
+    severity:           failure
+
+  argument_across_decisions:
+    id_self:            icm_cctool_check.argument_across_decisions
+    guid_self:          icm_a938f1fc84e64e178156785b94780e52
+    name:               argument_across_decisions
+    brief:              |
+                        An annotation argues within its decision: what
+                        it supports or challenges belongs to the same
+                        decision as it does.
+    severity:           failure
+
+  supersession_across_types:
+    id_self:            icm_cctool_check.supersession_across_types
+    guid_self:          icm_72cea6df7ddd4bb887e1b9fc93c7f322
+    name:               supersession_across_types
+    brief:              |
+                        An item supersedes only an item of its own
+                        type: an option another option, and an
+                        interface control document another.
+    severity:           failure
+
+  competing_rulings:
+    id_self:            icm_cctool_check.competing_rulings
+    guid_self:          icm_ecb4d30410eb47dd8f15bb5e7e10a6f1
+    name:               competing_rulings
+    brief:              |
+                        A decision has at most one ruling.
+    severity:           failure
+
+  unreadable_file:
+    id_self:            icm_cctool_check.unreadable_file
+    guid_self:          icm_30322f9b9d734e6a972550b747df9fdc
+    name:               unreadable_file
+    brief:              |
+                        Every file that ought to hold a YAML document
+                        can be read: a YAML file under _data, the
+                        module docstring of a python module, or a
+                        comment header.
+    severity:           failure
+
+  dangling_mention:
+    id_self:            icm_cctool_check.dangling_mention
+    guid_self:          icm_d5065696316a4d3789be9c8e05f7a480
+    name:               dangling_mention
+    brief:              |
+                        Every id that a text mentions, if it has the
+                        prefix of a known type, names an item, or an
+                        old id of one.
+    severity:           failure
+
+  word_to_replace:
+    id_self:            icm_cctool_check.word_to_replace
+    guid_self:          icm_e810950440fb4efabd4c9aa7a43f3314
+    name:               word_to_replace
+    brief:              |
+                        A text uses none of the words that a writing
+                        style rule asks to replace, outside double
+                        quotes and the breaks example of a rule.
+    severity:           failure
+
+  unresolved_term:
+    id_self:            icm_cctool_check.unresolved_term
+    guid_self:          icm_2ae0fcc8b67d4ab5966954da2b90952f
+    name:               unresolved_term
+    brief:              |
+                        A wiki link "[[term]]" finds its concept among
+                        the concepts that the item holding it uses, or
+                        that an item holding that item uses: the one
+                        with a preferred or admitted term of the same
+                        form.
+    severity:           failure
+
+  ambiguous_term:
+    id_self:            icm_cctool_check.ambiguous_term
+    guid_self:          icm_b48d565c062d41b8bae18f7d2ac158d1
+    name:               ambiguous_term
+    brief:              |
+                        A wiki link "[[term]]" finds one concept.
+    severity:           failure
+
+  unused_linked_concept:
+    id_self:            icm_cctool_check.unused_linked_concept
+    guid_self:          icm_5ae5df5a4ffa42908988f8fd46f0c246
+    name:               unused_linked_concept
+    brief:              |
+                        A wiki link "[[concept|term]]" names a concept
+                        that the item uses.
+    severity:           failure
+
+  term_rated_twice:
+    id_self:            icm_cctool_check.term_rated_twice
+    guid_self:          icm_b232291b7f4c4cb7bdba10dc4fa71ad5
+    name:               term_rated_twice
+    brief:              |
+                        A concept rates each of its terms once: a term
+                        is preferred, admitted or deprecated, never
+                        two of these, as ISO 1087 rates a designation.
+    severity:           failure
+
+  unlinked_term:
+    id_self:            icm_cctool_check.unlinked_term
+    guid_self:          icm_3ee2adc3104e4d7aa9054dbe58a1675e
+    name:               unlinked_term
+    brief:              |
+                        A strict field links every term it uses.
+    severity:           failure
+
+  alias_in_use:
+    id_self:            icm_cctool_check.alias_in_use
+    guid_self:          icm_0d4b8202529646299670a7be29d6ba04
+    name:               alias_in_use
+    brief:              |
+                        An alias is an old id, so no item has it.
+    severity:           failure
+
+  outdated_reference:
+    id_self:            icm_cctool_check.outdated_reference
+    guid_self:          icm_0bfd639a89ac41e6bc98374e4a63a4f4
+    name:               outdated_reference
+    brief:              |
+                        A reference names an item by its current id,
+                        not an old one.
+    severity:           failure
+
+  outdated_mention:
+    id_self:            icm_cctool_check.outdated_mention
+    guid_self:          icm_fa699246b46c49edbd1d3b9b5a56cf8a
+    name:               outdated_mention
+    brief:              |
+                        A text names an item by its current id, except
+                        in the item itself, where it may record what
+                        the item was once called.
+    severity:           failure
+
+  cycle:
+    id_self:            icm_cctool_check.cycle
+    guid_self:          icm_db81ceada2244ca7a2b91ed03627311f
+    name:               cycle
+    brief:              |
+                        No chain of edges of an acyclic relation leads
+                        from an item back to itself.
+    severity:           failure
+
+  unconstrained_proxy_end:
+    id_self:            icm_cctool_check.unconstrained_proxy_end
+    guid_self:          icm_eb6b84d5004a44a58532c0104eac1477
+    name:               unconstrained_proxy_end
+    brief:              |
+                        A relation that reads through the proxy at an
+                        end constrains that end to proxies.
+    severity:           failure
+
+  shared_exact_match:
+    id_self:            icm_cctool_check.shared_exact_match
+    guid_self:          icm_db229f8205ed4515812830c0b65de432
+    name:               shared_exact_match
+    brief:              |
+                        No two concepts have an exact match in the
+                        same external class, since an exact match is
+                        transitive and would make them one concept.
+    severity:           failure
+
+  conflicting_match:
+    id_self:            icm_cctool_check.conflicting_match
+    guid_self:          icm_8cb45aef29c443b0806b2a75a25f6490
+    name:               conflicting_match
+    brief:              |
+                        A concept has no two grades of match in one
+                        external class that contradict each other.
+    severity:           failure
+
+  mapping_against_hierarchy:
+    id_self:            icm_cctool_check.mapping_against_hierarchy
+    guid_self:          icm_8ec52daf53a3472abc7df8554f6643c5
+    name:               mapping_against_hierarchy
+    brief:              |
+                        A concept narrower than another does not match
+                        a class that the release places above the
+                        class the broader concept matches.
+    severity:           failure
+
+  missing_narrower:
+    id_self:            icm_cctool_check.missing_narrower
+    guid_self:          icm_52fb5bf33b3646dcbddf7e71a1a72d15
+    name:               missing_narrower
+    brief:              |
+                        A concept that the release implies is narrower
+                        than another is narrower than it here too, so
+                        that the concept register keeps the hierarchy
+                        that the mappings claim.
+    severity:           failure
+
+  false_friend:
+    id_self:            icm_cctool_check.false_friend
+    guid_self:          icm_23ccc3f256d443feb2da3e20d4cc3467
+    name:               false_friend
+    brief:              |
+                        A concept whose term is the label of an
+                        external class either matches that class
+                        exactly or closely, or has an annotation about
+                        both that says why not.
+    severity:           failure
+
+  end_outside_release:
+    id_self:            icm_cctool_check.end_outside_release
+    guid_self:          icm_a1830977b9944fe2a99e4bd3c618b18e
+    name:               end_outside_release
+    brief:              |
+                        A relation entry that matches an external
+                        relation admits at each of its ends only types
+                        whose items the release lets that relation
+                        relate there.
+    severity:           failure
+
+  argument_without_concern:
+    id_self:            icm_cctool_check.argument_without_concern
+    guid_self:          icm_e2a7512477ea47ba87cef19e91e8cea0
+    name:               argument_without_concern
+    brief:              |
+                        An annotation that supports or challenges an
+                        option speaks for at least one concern.
+    severity:           failure
+
+  concern_without_option:
+    id_self:            icm_cctool_check.concern_without_option
+    guid_self:          icm_ef9bf70fbcd24b44af9b5cdca9aeef41
+    name:               concern_without_option
+    brief:              |
+                        An annotation that bears on no option speaks
+                        for no concern, since it is answered with
+                        evidence and not outweighed.
+    severity:           failure
+
+  schema_count:
+    id_self:            icm_cctool_check.schema_count
+    guid_self:          icm_0a6701ce99e64bcdb8d1de39faa0d993
+    name:               schema_count
+    brief:              |
+                        Every type names exactly one schema for its
+                        items.
+    severity:           failure
+
+  unused_schema:
+    id_self:            icm_cctool_check.unused_schema
+    guid_self:          icm_b0557807510e4baf81e1cbdf2b8ea1bd
+    name:               unused_schema
+    brief:              |
+                        Every schema is used: named for the items of a
+                        type, named by a register for itself, or
+                        referred to by another schema.
+    severity:           failure
+
+  unused_concept:
+    id_self:            icm_cctool_check.unused_concept
+    guid_self:          icm_d2e7e770c1f34717b4dac2f3406c9cf9
+    name:               unused_concept
+    brief:              |
+                        Every concept is named by some item other than
+                        itself.
+    severity:           failure
+
+  misnamed_node:
+    id_self:            icm_cctool_check.misnamed_node
+    guid_self:          icm_6e981a92c93b4a9d946c8817763eeca8
+    name:               misnamed_node
+    brief:              |
+                        A node is named for the dataflow graph that
+                        holds it and the key it is filed under: the
+                        stem of the dataflow graph, with dfn in place
+                        of dfg, a full stop and the key.
+    severity:           failure
+
+  interface_count:
+    id_self:            icm_cctool_check.interface_count
+    guid_self:          icm_d334bf27609649aa91e57ba6bb3d3e67
+    name:               interface_count
+    brief:              |
+                        Every node presents exactly one interface: it
+                        realizes one interface control document, whose
+                        dataflow step surface it presents.
+    severity:           failure
+
+  foreign_node:
+    id_self:            icm_cctool_check.foreign_node
+    guid_self:          icm_afaef6e5af3041efb1493851bc3f827a
+    name:               foreign_node
+    brief:              |
+                        Each end of an edge names a node of the
+                        dataflow graph that holds the edge.
+    severity:           failure
+
+  unknown_port:
+    id_self:            icm_cctool_check.unknown_port
+    guid_self:          icm_1b3538d5264142e7b54d477bbcfa2267
+    name:               unknown_port
+    brief:              |
+                        Each end of an edge names a port of the
+                        interface its node presents, of the kind the
+                        end needs: an output at the source and an
+                        input at the target.
+    severity:           failure
+
+  input_fed_twice:
+    id_self:            icm_cctool_check.input_fed_twice
+    guid_self:          icm_6b02a7421d854e5bb4d66d8c3d2f1767
+    name:               input_fed_twice
+    brief:              |
+                        An input takes its value from at most one
+                        edge.
+    severity:           failure
+
+  unfed_input:
+    id_self:            icm_cctool_check.unfed_input
+    guid_self:          icm_0ddfefce9a524513bab81b27913bafc4
+    name:               unfed_input
+    brief:              |
+                        Every input that the interface of a node does
+                        not state to be optional takes its value from
+                        an edge.
+    severity:           failure
+
+  port_type_mismatch:
+    id_self:            icm_cctool_check.port_type_mismatch
+    guid_self:          icm_e82bf508a91249cf8c0bd165565a37a0
+    name:               port_type_mismatch
+    brief:              |
+                        The ports at the two ends of an edge state the
+                        same type, where both state one.
+    severity:           failure
+
+  feedforward_loop:
+    id_self:            icm_cctool_check.feedforward_loop
+    guid_self:          icm_b44c6c9a920c4d488185cc542793772b
+    name:               feedforward_loop
+    brief:              |
+                        Every loop of data flow is closed by a
+                        feedback edge, whose value comes from the
+                        invocation before.
+    severity:           failure
+
+  unknown_setting:
+    id_self:            icm_cctool_check.unknown_setting
+    guid_self:          icm_bdb763bfa0554c51bb9ce64d37050a37
+    name:               unknown_setting
+    brief:              |
+                        A node is configured only with settings its
+                        interface declares.
+    severity:           failure
+
+  missing_setting:
+    id_self:            icm_cctool_check.missing_setting
+    guid_self:          icm_b37ec7a9d9684cdcaefe1b22e600505f
+    name:               missing_setting
+    brief:              |
+                        A node gives a value for each setting that its
+                        interface neither states to be optional nor
+                        gives a default.
+    severity:           failure
+
+  unplaced:
+    id_self:            icm_cctool_check.unplaced
+    guid_self:          icm_a02c8e9a516f43129216b209444b4617
+    name:               unplaced
+    brief:              |
+                        A node runs on an OS process of its dataflow
+                        graph, and an OS process on a host of it.
+    severity:           failure
+
+  unheld_design_rule:
+    id_self:            icm_cctool_check.unheld_design_rule
+    guid_self:          icm_913f2645afa64aca8c2ed91a8986f523
+    name:               unheld_design_rule
+    brief:              |
+                        A design rule names an implementation that
+                        holds it, in whole or in part, with an edge of
+                        relation_is_held_by.
+    severity:           failure
+
+  too_many_unheld_rules:
+    id_self:            icm_cctool_check.too_many_unheld_rules
+    guid_self:          icm_be279ee1200a4215803a11636e475949
+    name:               too_many_unheld_rules
+    brief:              |
+                        No more design rules are held by the scheduled
+                        reviews alone than the cap, however each was
+                        accepted, so that accepting one stays rare.
+    severity:           failure
+
+  unheld_claim:
+    id_self:            icm_cctool_check.unheld_claim
+    guid_self:          icm_5c8aaf290c904dd9bd41c4b5ecf4641f
+    name:               unheld_claim
+    brief:              |
+                        A writing style rule that says a check or the
+                        formatter holds it names what holds it, with
+                        an edge of relation_is_held_by.
+    severity:           failure
+
+  unresolved_mark:
+    id_self:            icm_cctool_check.unresolved_mark
+    guid_self:          icm_80d338a7568b477aaafc10d1c357a261
+    name:               unresolved_mark
+    brief:              |
+                        A protective mark names an entry that is held
+                        nowhere here.
+    severity:           advice
+
+  decision_without_options:
+    id_self:            icm_cctool_check.decision_without_options
+    guid_self:          icm_77e466580fe447be9f6e6e1570d466e2
+    name:               decision_without_options
+    brief:              |
+                        A decision without options is open, which is
+                        normal while it is argued.
+    severity:           advice
+
+  concept_used_without_link:
+    id_self:            icm_cctool_check.concept_used_without_link
+    guid_self:          icm_c3652df3292940ad9ec082ccd5304ddd
+    name:               concept_used_without_link
+    brief:              |
+                        An item that uses a concept links one of its
+                        terms somewhere in its text, or the edge says
+                        nothing a reader can see.
+    severity:           advice
+
+  term_to_link:
+    id_self:            icm_cctool_check.term_to_link
+    guid_self:          icm_859a389f5fab424889a5381fbca22bd2
+    name:               term_to_link
+    brief:              |
+                        An item that declares it uses a concept, and
+                        writes a term of the concept without a wiki
+                        link, may mean the concept there.
+    severity:           advice
+
+  unmapped_concept:
+    id_self:            icm_cctool_check.unmapped_concept
+    guid_self:          icm_88ebe401350a44e0923bc3adac9cf827
+    name:               unmapped_concept
+    brief:              |
+                        The concept of a type of data item has a match
+                        in an external class, so that a reader who
+                        knows the release can place the type.
+    severity:           advice
+
+  redundant_hierarchy_edge:
+    id_self:            icm_cctool_check.redundant_hierarchy_edge
+    guid_self:          icm_1ec9b3855bc14bb9af95513506bfebe6
+    name:               redundant_hierarchy_edge
+    brief:              |
+                        A narrower-than or subclass-of edge that a
+                        chain of edges of the same relation already
+                        implies.
+    severity:           advice
+
+  unrecorded_genus:
+    id_self:            icm_cctool_check.unrecorded_genus
+    guid_self:          icm_7012b5a156eb4f978ee28e84ad9ce819
+    name:               unrecorded_genus
+    brief:              |
+                        A concept whose definition opens with its
+                        genus is narrower than that genus in the
+                        concept register, so that the register keeps
+                        the hierarchy that the definitions state.
+    severity:           advice
+
+  ruling_with_unargued_driver:
+    id_self:            icm_cctool_check.ruling_with_unargued_driver
+    guid_self:          icm_246aea6ed99e41fcb400cc7bf3902ec0
+    name:               ruling_with_unargued_driver
+    brief:              |
+                        A ruling upholds an option although a concern
+                        that drives its decision is not argued, most
+                        likely a driver added after the ruling was
+                        made.
+    severity:           advice
+
+  schema_violation:
+    id_self:            icm_cctool_check.schema_violation
+    guid_self:          icm_727fb122a517482bb4efaf3c993a048e
+    name:               schema_violation
+    brief:              |
+                        Each YAML document conforms to the schemas its
+                        type names for it.
+    severity:           failure
+
+  unformatted_file:
+    id_self:            icm_cctool_check.unformatted_file
+    guid_self:          icm_91a5893ecea54a7499cd48816ecc28e5
+    name:               unformatted_file
+    brief:              |
+                        Each YAML document of a tree is laid out as
+                        cctool format lays it out.
+    severity:           failure
+
+  severity_mismatch:
+    id_self:            icm_cctool_check.severity_mismatch
+    guid_self:          icm_6d803114a1d44efc8edcc5859734fe5c
+    name:               severity_mismatch
+    brief:              |
+                        Each check that cctool runs is stated in the
+                        interface control document that declares its
+                        checks, with the severity its rows have.
+    severity:           failure
 
 surface:
 

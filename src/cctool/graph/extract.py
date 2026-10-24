@@ -355,6 +355,14 @@ PREDICATE         = {
                            'as true or false; and, for an argument, its position among '
                            'the arguments, counted from 0. The option for help is '
                            'click\'s own, and is left out.'),
+    'check_member':       (('member', 'interface', 'check', 'severity'),
+                           'The interface control document interface states the member '
+                           'as its check named check, whose rows are severity: failure '
+                           'or advice.'),
+    'check_severity':     (('check', 'severity'),
+                           'The running cctool reports the rows of check as severity, '
+                           'failure or advice. It is a fact of the tool, and not of any '
+                           'document.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -419,6 +427,12 @@ KEY_COMMAND       = 'command'
 KEY_PARAMETER     = 'parameter'
 KEY_KIND          = 'kind'
 KEY_FLAG          = 'flag'
+
+# Where an interface control document lists the checks it reports, and
+# the severity of each.
+#
+KEY_CHECK         = 'check'
+KEY_SEVERITY      = 'severity'
 
 # What the code says of each class or function that holds a YAML document,
 # keyed by the id of the document, with a weak reference to it: the id its place
@@ -632,6 +646,7 @@ def _facts_of_document(file:             str,
     if isinstance(document, dict):
         _ports(document, facts)
         _commands(document, facts)
+        _checks(document, facts)
         _dataflow_graph(document, (file, base), facts)
         (held, definition) = MAP_DEFINITION.get(id(document), (None, None))
         if held is not None and held() is document:
@@ -1640,6 +1655,27 @@ def _command_members(node:       dict[str, typing.Any],
         facts['command_member'].add((each[KEY_ID_SELF], program,
                                      cctool.graph.tool.DELIM_COMMAND.join(tuple_each), ''))
         _command_members(each, program, tuple_each, facts)
+
+
+# -----------------------------------------------------------------------------
+def _checks(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for each check that document, if it is an interface
+    control document, states.
+
+    """
+
+    if not isinstance(document.get(KEY_SURFACE), dict):
+        return
+
+    interface = str(document.get(KEY_ID_SELF))
+
+    for (key, member) in _map(document.get(KEY_CHECK)).items():
+        if isinstance(member, dict) and isinstance(member.get(KEY_ID_SELF), str):
+            facts['check_member'].add((member[KEY_ID_SELF],
+                                       interface,
+                                       str(member.get(KEY_NAME, key)),
+                                       str(member.get(KEY_SEVERITY, ''))))
 
 
 # -----------------------------------------------------------------------------

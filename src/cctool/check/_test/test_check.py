@@ -1003,6 +1003,32 @@ def test_click_describes_each_parameter_of_a_command():
         ('--json',    'variadic', 'false'), ('--json',   'flag', 'true')}
 
 
+FILE_CHECK = '_data/interface_control_document/icd_cctool_check.yaml'
+
+
+def test_each_check_has_one_severity():
+    map_severity = cctool.check.check.severities()
+    assert set(map_severity) == set(cctool.check.check.wording())
+    assert map_severity['schema_violation'] == 'failure'
+    assert map_severity['term_to_link'] == 'advice'
+
+
+def test_a_check_stated_with_another_severity_is_reported(tree):
+    _replace(tree, FILE_CHECK, 'concept there.\n    severity:           advice',
+                               'concept there.\n    severity:           failure')
+    assert _check(tree) == {'severity_mismatch': [
+        ('icm_cctool_check.term_to_link', 'icd_cctool_check', 'term_to_link', 'failure', 'advice')]}
+
+
+def test_a_check_that_no_member_states_is_reported(tree):
+    path = tree / FILE_CHECK
+    text = path.read_text()
+    path.write_text(text[:text.index('  term_to_link:\n')]
+                    + text[text.index('\n\n', text.index('  term_to_link:\n')) + 2:])
+    assert _check(tree) == {'severity_mismatch': [
+        ('icd_cctool_check', 'icd_cctool_check', 'term_to_link', '', 'advice')]}
+
+
 def test_a_class_and_a_method_named_for_their_place_pass(tree):
     _definitions(tree, 'src/x/y.py', 'pycls_x.y.thing', 'pyf_x.y.thing.run')
     assert _check(tree) == {}

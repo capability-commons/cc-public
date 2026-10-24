@@ -372,7 +372,7 @@ def test_rename_of_an_interface_member_keeps_its_guid_and_adds_no_alias(tree):
     assert ('    id_self:            icm_cctool_check.failure_map\n'
             '    guid_self:          ' + GUID_MEMBER + '\n') in text
     assert 'icm_cctool_check.failures' not in text
-    assert 'alias' not in text
+    assert 'alias:' not in text
 
 
 def test_rename_of_an_interface_member_renames_the_members_it_holds(tree):

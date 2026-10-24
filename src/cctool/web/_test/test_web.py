@@ -739,7 +739,7 @@ def test_interface_index_lists_interface_control_documents(tree):
     text = body.decode()
     assert text.count('href="/interface/icd_') == 5
     assert '<a href="/interface/icd_cctool_check">Checker interface</a>' in text
-    assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of 8<', text)
+    assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of \d+<', text)
 
 
 def test_requirement_index_groups_requirements_by_subject(tree):

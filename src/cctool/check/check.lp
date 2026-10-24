@@ -985,6 +985,76 @@ command_mismatch(Member, Program, Command, Part, Stated, Actual) :-
 
 
 % -----------------------------------------------------------------------------
+% An interface control document that states any check declares the
+% checks of cctool, and is held to all of them.
+%
+% decl check_interface(interface: symbol)
+
+check_interface(Interface) :-
+    check_member(_, Interface, _, _).
+
+% ---
+%
+% id_self:                lpp_cctool.check.check.severity_mismatch
+% guid_self:              lpp_fd3185c58deb4ff6a50f0a92ea4185c0
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Severity mismatch
+% brief:                  |
+%                         Each check that cctool runs is stated in each
+%                         interface control document that states any
+%                         check, with the severity its rows have:
+%                         failure for a check of check.lp, schema
+%                         validation and layout, and advice for a check
+%                         of advise.lp. member is the member that states
+%                         the check, or the document where no member
+%                         does.
+% did:                    |
+%                         {member} states {stated} as the severity of
+%                         {check} in {interface}, and cctool reports
+%                         {actual}.
+% fix:                    |
+%                         Make the member and the code agree: if the
+%                         check has moved between check.lp and
+%                         advise.lp, change the severity of its member,
+%                         since a move from advice to failure is a
+%                         change to the interface. An empty value means
+%                         that side does not say, so a new check needs a
+%                         member, and the member of a check that is gone
+%                         goes with it.
+% edge:                   []
+%
+% ...
+%
+% decl severity_mismatch(member:    symbol,
+%                        interface: symbol,
+%                        check:     symbol,
+%                        stated:    symbol,
+%                        actual:    symbol)
+#show severity_mismatch/5.
+
+severity_mismatch(Member, Interface, Check, Stated, Actual) :-
+    check_member(Member, Interface, Check, Stated),
+    check_severity(Check, Actual),
+    Stated != Actual.
+
+severity_mismatch(Member, Interface, Check, Stated, "") :-
+    check_member(Member, Interface, Check, Stated),
+    not check_severity(Check, _).
+
+severity_mismatch(Interface, Interface, Check, "", Actual) :-
+    check_severity(Check, Actual),
+    check_interface(Interface),
+    not check_member(_, Interface, Check, _).
+
+
+% -----------------------------------------------------------------------------
 % ---
 %
 % id_self:                lpp_cctool.check.check.key_mismatch

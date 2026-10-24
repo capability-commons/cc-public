@@ -121,6 +121,17 @@ allOf:
                         across its surfaces, keyed by a short local
                         name.
 
+      check:
+        type:           object
+
+        additionalProperties:
+          $ref:         '#/$defs/check'
+
+        description:    |
+                        Optional. The checks whose rows the interface
+                        reports, keyed by the name of each, with the
+                        severity of each.
+
       surface:
         type:           object
         minProperties:  1
@@ -182,6 +193,35 @@ $defs:
             description:  |
                         Optional. What this type is, in enough detail
                         for a caller to use it.
+
+    unevaluatedProperties:  false
+
+  check:
+    description:        |
+                        A check whose rows the interface reports. Its
+                        name is the name its rows are keyed by.
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - severity
+
+        properties:
+
+          severity:
+            type:       string
+
+            enum:
+              - failure
+              - advice
+
+            description:  |
+                        Whether a row of the check is a failure, which
+                        fails a check of the tree and refuses an edit,
+                        or advice, which does neither.
 
     unevaluatedProperties:  false
 
