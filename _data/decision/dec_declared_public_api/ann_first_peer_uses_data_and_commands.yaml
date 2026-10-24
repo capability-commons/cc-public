@@ -1,0 +1,100 @@
+id_self:                ann_first_peer_uses_data_and_commands
+guid_self:              ann_b6842a26e6784cf084a7a927d810d508
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data and commands as the first peer's stated needs
+brief:                  |
+                        The first peer validates its documents against
+                        cc-public's schemas with its own script, never
+                        importing cctool, had its drafts go stale when
+                        relation ids and field names changed, and asks
+                        next for cctool commands. The
+                        data-and-commands option names these kinds of
+                        parts, so each kind of public element traces
+                        to a stated need; interface control documents
+                        today declare none of them, since no document
+                        declares a schema and the document schema has
+                        no form for a command line.
+description:            |
+                        Sources:
+                        - cc-patrol's validator reads cc-public's
+                          schema files, registers each by its $id with
+                          referencing, and validates with jsonschema Draft 2020-12 and PyYAML; it imports nothing from
+                          cctool (_sources/cc-patrol-notes/draft/tools/validate.py lines 1-9;
+                          _sources/cc-patrol-notes/decomposition-readiness.md lines 204-206).
+                        - The peer's drafts went stale when "relation
+                          became edge, relation ids r_* became
+                          relation_*,
+                          and a node's config became settings" on dev
+                          (_sources/cc-patrol-notes/decomposition-readiness.md lines 235-238).
+                        - "cc-patrol needs cctool and the schemas",
+                          including cctool check over two roots and
+                          registers
+                          per segment (_sources/cc-patrol-notes/plan.md lines 65-76); cctool runs in a peer's commit
+                          hooks (_data/decision/dec_who_consumes_a_release/ann_peer_runs_the_set_the_release_gate_tested.yaml,
+                          brief).
+                        - The plan names no import of a cctool Python
+                          module by cc-patrol (plan.md lines 60-76).
+                        - cctool query and cctool impact print JSON on
+                          request (src/cctool/cli/querying.py lines
+                          121-123; src/cctool/cli/auditing.py lines 176-178).
+                        - The document surface forms are native,
+                          dataflow step and artifact
+                          (_data/schema/sch_interface_control_document.yaml lines 564-575); none is a command line. The
+                          artifact form can carry a payload schema and its version (lines 484-531). The forms are closed
+                          and extended by a deliberate schema change
+                          (_data/decision/dec_interface_surface_scope/ann_a_new_form_is_a_deliberate_change.yaml, brief).
+                        - Today the only document covering cctool is
+                          the check interface, a Python surface
+                          (_data/interface_control_document/icd_cctool_check.yaml lines 11-16 and 43-47).
+                        - Prior art: Kubernetes covers command-line
+                          elements in its deprecation policy, Rule 5a
+                          (https://unofficial-kubernetes.readthedocs.io/en/latest/home/deprecation-policy/, an unofficial
+                          copy; the official page could not be read in full).
+                        - The everything-shipped option covers these
+                          parts too; its breadth is argued in other
+                          annotations, so this one does not bear on it.
+                        Depends on: who consumes a release and
+                        commands for peers. Strength: strong for
+                        compatibility at ten times the peers, since
+                        each peer that reads the data with its own
+                        tools adds to what the data format must keep;
+                        moderate for traceability, since the needs
+                        come from one peer and ten peers may add
+                        Python imports, the generator and the engine.
+                        The challenge to interface documents is a cost
+                        of time and two schema-level steps, not a flaw
+                        in principle.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

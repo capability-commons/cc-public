@@ -1,0 +1,90 @@
+id_self:                ann_engine_interface_outside_data_and_commands
+guid_self:              ann_1e0965d846ec424abe10d9f81907799d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine interface outside the data and commands
+brief:                  |
+                        The C++ engine and its generator ship in the
+                        package peers install, and the first peer's
+                        plan has its nodes built against the engine's
+                        C-linkage interface, so that interface is
+                        planned to be something a partner uses
+                        directly. The data-and-commands option names
+                        only the data format and the command line,
+                        which leaves the engine interface free to
+                        change in a minor release; interface control
+                        documents cover it through native c and cpp
+                        surfaces, and the everything-shipped option
+                        covers it with all else.
+description:            |
+                        Sources:
+                        - The engine, with its generator, ships in the
+                          same package that peers install
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief).
+                        - Patrol's nodes are native C++ step functions
+                          called by the engine; the plan recommends
+                          the
+                          engine and node ABI stay C++17 with C linkage, with Patrol nodes C++20 behind that ABI
+                          (_sources/cc-patrol-notes/plan.md lines 88-98).
+                        - The data-and-commands option names schemas,
+                          registers, ids of types and relations, and
+                          the
+                          cctool command line as public, and Python modules as internal; it says nothing of C or C++
+                          (_data/decision/dec_declared_public_api/opt_public_api_is_data_and_commands.yaml lines 12-16).
+                        - The interface control document schema has
+                          native surfaces in python, c and cpp
+                          (_data/schema/sch_interface_control_document.yaml lines 591-612), and the C++ signature check
+                          is ruled no later than the first document with a native cpp surface, covering native c too
+                          (_data/decision/dec_check_of_cpp_interfaces/ruling_cpp_interfaces_checked_from_the_first.yaml,
+                          brief).
+                        - The engine is not built yet; src holds only
+                          the cctool package (listing of src).
+                        - Assumption: the C++ the generator writes
+                          from a dataflow graph is compiled into a
+                          peer's
+                          product, so its form is part of what a peer builds against (plan.md lines 103-105).
+                        Depends on: who consumes a release (whether
+                        what a peer builds in is a library with
+                        declared ranges),
+                        _data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml.
+                        Strength: strong, and stronger with ten times
+                        the peers, since each further peer compiles
+                        against the same interface and the
+                        data-and-commands option gives none of them a
+                        signal when it breaks. It would weaken only if
+                        that option were amended to name the engine
+                        interface.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

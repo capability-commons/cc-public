@@ -1,0 +1,131 @@
+id_self:                ann_python_surface_without_items_needs_a_detector
+guid_self:              ann_3d006aa166004940bb6af6fa1744c29f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second detector for a code surface without items
+brief:                  |
+                        The history check sees only renames and
+                        removals of items, and a function or class
+                        gets an item only when something points at it,
+                        so under everything-shipped most of the public
+                        Python surface is invisible to it and a
+                        removal reaches range-pinned peers in a minor
+                        release. Closing that gap needs an item on
+                        every definition, against a ruling, or a
+                        third-party API-diff tool beside the history
+                        check, which is a second mechanism, a new
+                        dependency and a cost that grows with the
+                        code; declared document members are items
+                        already held to the code, and the
+                        data-and-commands option has no Python surface
+                        to watch.
+description:            |
+                        Sources:
+                        - The commit checks derive added, removed and
+                          renamed items by guid, including embedded
+                          items
+                          such as interface members (src/cctool/commit/change.lp lines 92-114 and 195-214).
+                        - A class or function has an item only when
+                          something must point at it
+                          (_data/decision/dec_python_definition_items/ruling_python_definition_items.yaml, brief;
+                          AGENTS.md lines 110-113).
+                        - src holds 225 top-level functions without a
+                          leading underscore and 37 classes outside
+                          tests;
+                          the graph holds 6 python function items, all in src/cctool/check/check.py, and 29 interface
+                          member items (advocates' counts of this snapshot). No module sets an export list.
+                        - parameter_mismatch and signature_mismatch
+                          fail a commit whose realizing function
+                          differs from
+                          its member in names, order, types, defaults or return type (src/cctool/check/check.lp lines
+                          744-886; _data/decision/dec_interface_signature_restated/ruling_interface_signature_restated.yaml);
+                          the C++ check is ruled from the first native document, and its libclang dependency is already
+                          argued (_data/decision/dec_check_of_cpp_interfaces/ann_libclang_dependency_size_and_packaging.yaml).
+                        - After 1.0, a push that moves the release
+                          line over a breaking commit fails the
+                          history check
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml).
+                        - griffe can diff a Python package's API
+                          between versions and reports removed
+                          modules, classes
+                          and functions, but lists changed parameter types as not yet done
+                          (https://pypi.org/project/griffe/0.46.0/); cargo-semver-checks says it does not yet catch type
+                          changes of a function parameter (https://github.com/obi1kenobi/cargo-semver-checks). Neither is
+                          in the environment (pyproject.toml lines 43-78).
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism
+                          (_data/register/reg_concern.yaml lines 488-490).
+                        - The commit check that finds renames and
+                          removals is already paid for
+                          (_data/decision/dec_breaking_work_after_version_one/ann_breaking_commit_detection_is_already_paid_for.yaml).
+                        - Assumption: the owner would want undeclared
+                          definitions checked mechanically, as he
+                          required
+                          of restated signatures; if he accepts them unchecked, the dependency cost goes and the cost
+                          moves to the accuracy of the computed bump.
+                        - Assumption: an API diff over 57 modules
+                          takes seconds; not measured. Strength:
+                          strong for reliability, traceability and
+                          simplicity, growing with the number of
+                          functions; moderate for dependency risk;
+                          weak for performance efficiency, where the
+                          difference is seconds per push. The
+                          interface-documents option holds only once
+                          the commands and data get documents, as
+                          argued in the annotation on commands without
+                          an item. This is a different point from
+                          behavior changes that touch no id, recorded
+                          under the version scheme.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

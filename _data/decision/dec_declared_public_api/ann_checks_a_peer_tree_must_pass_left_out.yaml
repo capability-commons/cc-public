@@ -1,0 +1,99 @@
+id_self:                ann_checks_a_peer_tree_must_pass_left_out
+guid_self:              ann_29596a3b0c3549abb1c229d3f30c70e8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rules a peer's tree must pass, left out of every option
+brief:                  |
+                        A peer's gate runs cc-public's checks over the
+                        peer's own tree, so a minor release that adds
+                        a check or tightens a schema can fail a peer
+                        tree that passed before and stop its commits,
+                        though nothing was renamed or removed. None of
+                        the three options counts that as breaking, and
+                        the bump cannot trace the peer's new failure
+                        to any declared element.
+description:            |
+                        Sources:
+                        - cc-patrol's gate checks the union of both
+                          roots and needs cctool check over two roots
+                          (_sources/cc-patrol-notes/plan.md lines 18-21 and 65-68).
+                        - check.lp shows 71 checks, where each row is
+                          one failure, and advise.lp 7 kinds of advice
+                          (src/cctool/check/check.lp lines 16-19; grep of show statements). Advice is reported but neither
+                          fails the check nor refuses an edit, and a check is either a failure or advice, never both
+                          (src/cctool/check/check.py lines 27-31; _data/interface_control_document/icd_cctool_check.yaml
+                          lines 99-103).
+                        - cctool runs in a peer's commit hooks, which
+                          fail closed
+                          (_data/decision/dec_who_consumes_a_release/ann_peer_runs_the_set_the_release_gate_tested.yaml).
+                        - From 1.0, peers can accept every release
+                          below the next major
+                          (_data/decision/dec_version_scheme/ann_semver_lets_peers_pin_a_safe_range.yaml).
+                        - A new check or a tightened schema adds or
+                          changes items and renames or removes none
+                          (src/cctool/commit/change.lp lines 93-114), so a bump computed from them would read it as
+                          minor; no bump computation exists yet.
+                        - The check interface declares the check
+                          functions and the shape of their failures,
+                          but not
+                          which checks exist (icd_cctool_check.yaml lines 25-39 and 58-90).
+                        - The data-and-commands option says the
+                          commands are public but not whether a
+                          passing check is
+                          part of what a command promises (opt_public_api_is_data_and_commands.yaml, brief).
+                        - Related: behavior changes that touch no id
+                          are already recorded under the version
+                          scheme
+                          (_data/decision/dec_version_scheme/ann_commit_verbs_do_not_say_what_breaks.yaml).
+                        Depends on: who consumes a release; under the
+                        end-user option a peer still takes the new
+                        checks with each release it installs, though
+                        it chooses when. Strength: strong; with ten
+                        times the peers, one tightened rule stops ten
+                        gates at once. A condition that would answer
+                        it under any option: a new or tightened check
+                        arrives as advice in a minor release and
+                        becomes a failure only in a major one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
