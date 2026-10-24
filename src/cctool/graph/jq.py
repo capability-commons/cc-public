@@ -25,7 +25,11 @@ description:            |
                         documents, a jq filter sees the documents
                         themselves, nested as they are written. The jq
                         program is run as a subprocess, and changes
-                        nothing.
+                        nothing. It is a dependency of the tool that
+                        pixi installs; the project dependencies cannot
+                        name a program, so an install with pip alone
+                        learns that it needs jq from the error raised
+                        here.
 edge:                   []
 
 ...
@@ -88,7 +92,8 @@ def query(map_document: cctool.graph.extract.Documents, text: str) -> list:
                                  check          = False)
     except FileNotFoundError as error:
         raise ErrorJq('There is no jq program to run. Run pixi install, '
-                      'which installs it into the environment.') from error
+                      'which installs it into the environment, or, for an '
+                      'install without pixi, put jq on the PATH.') from error
 
     if process.returncode != 0:
         raise ErrorJq(process.stderr.strip())

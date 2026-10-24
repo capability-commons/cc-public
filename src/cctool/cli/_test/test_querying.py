@@ -34,6 +34,7 @@ import pytest
 
 import cctool.cli.command
 import cctool.conftest
+import cctool.graph.jq
 
 
 SQL_CONCERN      = "SELECT id FROM has_type WHERE type = 'type_concern' ORDER BY id"
@@ -132,6 +133,14 @@ def test_jq_error_is_refused_with_an_example(tree):
     assert result.stderr.startswith('jq: error')
     assert 'For example: cctool query jq' in result.stderr
     assert 'cctool query jq --help' in result.stderr
+
+
+def test_jq_without_a_jq_program_says_how_to_get_one(tree, monkeypatch):
+    monkeypatch.setattr(cctool.graph.jq, 'PROGRAM', 'cctool-no-such-jq')
+    result = _run(tree, 'jq', '.[]')
+    assert result.exit_code == 2
+    assert result.stderr.startswith('There is no jq program to run.')
+    assert 'put jq on the PATH' in result.stderr
 
 
 def test_a_missing_query_is_refused_with_an_example(tree):
