@@ -123,8 +123,8 @@ def facts_of(dir_before: pathlib.Path,
              item:       dict) -> cctool.graph.extract.Facts:
     """
     Return the facts that change.lp is evaluated over: those of the
-    tree in dir_after, the items of the tree in dir_before, and the
-    facts of the commit item.
+    tree in dir_after, the items and edges of the tree in dir_before,
+    and the facts of the commit item.
 
     """
 
@@ -133,6 +133,7 @@ def facts_of(dir_before: pathlib.Path,
     text   = ' '.join(str(item.get(key, '')) for key in TUPLE_KEY_TEXT)
 
     facts['before_item']    = {(row[0], row[1]) for row in before['item']}
+    facts['before_edge']    = before['edge']
     facts['commit_verb']    = {(str(item.get(KEY_TITLE, '')).partition(' ')[0],)}
     facts['commit_mention'] = {(id_item,) for id_item
                                in cctool.graph.extract.REGEX_MENTION.findall(text)}

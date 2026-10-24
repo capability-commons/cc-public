@@ -391,3 +391,50 @@ unrecorded_genus(Concept, Genus) :-
     genus(Concept, Genus),
     Genus != Concept,
     not reaches("relation_is_narrower_than", Concept, Genus).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.advise.ruling_with_unargued_driver
+% guid_self:              lpp_adf3da981a7742a789e8acb6317a9e02
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Ruling with unargued driver
+% brief:                  |
+%                         A ruling upholds an option although a concern
+%                         that drives its decision is not argued, most
+%                         likely a driver added after the ruling was
+%                         made. The ruling stands, since it is judged by
+%                         the drivers in force when it was made, but it
+%                         is worth a look when the decision is next
+%                         reviewed.
+% did:                    |
+%                         {ruling} upholds {option}, and no annotation
+%                         argues {concern}, a driver of its decision,
+%                         for it or an alternative to it.
+% fix:                    |
+%                         Argue the concern on the option or an
+%                         alternative, and revisit the ruling if the
+%                         argument goes against it.
+% edge:                   []
+%
+% ...
+%
+% decl ruling_with_unargued_driver(ruling:  symbol,
+%                                  option:  symbol,
+%                                  concern: symbol)
+#show ruling_with_unargued_driver/3.
+
+ruling_with_unargued_driver(Ruling, Option, Concern) :-
+    has_type(Ruling, "type_ruling"),
+    primary_edge(Ruling, "relation_upholds", Option),
+    primary_edge(Option, "relation_is_option_for", Decision),
+    driver(Decision, Concern),
+    not argued(Option, Concern).

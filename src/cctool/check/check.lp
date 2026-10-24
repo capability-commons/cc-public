@@ -1478,53 +1478,6 @@ competing_rulings(Decision, Ruling, Other) :-
 % -----------------------------------------------------------------------------
 % ---
 %
-% id_self:                lpp_cctool.check.check.unargued_driver
-% guid_self:              lpp_565254a521974792b7a0495cdcc9752a
-% copyright:              Copyright 2026 William Payne
-% license:                Apache-2.0
-%
-% protective_mark:
-%
-%   - id_mark:            mark_public
-%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
-%
-% title:                  Unargued driver
-% brief:                  |
-%                         A ruling upholds an option only once every
-%                         concern that drives its decision, or the
-%                         subject of its decision, has been argued, for
-%                         it or for an alternative to it. It may reject
-%                         an option at any time, since a rejection
-%                         commits the subject to nothing.
-% did:                    |
-%                         {ruling} upholds {option}, and no annotation
-%                         argues {concern}, a driver, for it or an
-%                         alternative to it.
-% fix:                    |
-%                         Add an annotation for that concern to the
-%                         option or an alternative, or leave the option
-%                         open. Do not uphold an option while a driver
-%                         of its decision is unargued.
-% edge:                   []
-%
-% ...
-%
-% decl unargued_driver(ruling:  symbol,
-%                      option:  symbol,
-%                      concern: symbol)
-#show unargued_driver/3.
-
-unargued_driver(Ruling, Option, Concern) :-
-    has_type(Ruling, "type_ruling"),
-    primary_edge(Ruling, "relation_upholds", Option),
-    primary_edge(Option, "relation_is_option_for", Decision),
-    driver(Decision, Concern),
-    not argued(Option, Concern).
-
-
-% -----------------------------------------------------------------------------
-% ---
-%
 % id_self:                lpp_cctool.check.check.unreadable_file
 % guid_self:              lpp_4ea0e7c691ca44c2aa6835f18e809982
 % copyright:              Copyright 2026 William Payne

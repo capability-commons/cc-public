@@ -213,3 +213,49 @@ def test_the_first_commit_adds_everything(tree, monkeypatch):
         monkeypatch.delenv(key)
     _git(tree, 'init', '--quiet')
     assert _check(tree, 'Add the first version of cc-public') == {}
+
+
+def _edit(root, *list_operation):
+    """
+    Make the operations over root as one edit, which must add no
+    failures.
+
+    """
+
+    tree = cctool.edit.edit.Tree(root)
+    cctool.edit.edit.batch(tree, list(list_operation))
+    assert cctool.edit.edit.apply(tree) == {}
+
+
+def test_a_ruling_made_while_a_driver_is_unargued_is_reported(repo):
+    _edit(repo,
+          {'link': ['dec_tooling_language', 'relation_is_driven_by', 'concern_privacy']},
+          {'new':   'ruling_tooling_language',
+           'field': {'title': 'Tooling in Python', 'brief': 'Write the tooling in Python.'},
+           'link':  [['relation_upholds', 'opt_tooling_in_python']]})
+    assert _check(repo, 'Add a ruling on the tooling language') == {'unargued_driver': [
+        ('ruling_tooling_language', 'opt_tooling_in_python', 'concern_privacy')]}
+
+
+def test_a_driver_added_after_a_ruling_leaves_it_standing(repo):
+    _edit(repo, {'link': ['dec_cross_item_checks_engine', 'relation_is_driven_by',
+                          'concern_privacy']})
+    assert _check(repo, 'Change dec_cross_item_checks_engine so that privacy drives it') == {}
+
+
+def test_a_ruling_revisited_to_uphold_another_option_is_judged_again(repo):
+    _edit(repo, {'link': ['dec_cross_item_checks_engine', 'relation_is_driven_by',
+                          'concern_privacy']})
+    _commit(repo)
+    _edit(repo,
+          {'unlink': ['ruling_cross_item_checks_engine', 'relation_upholds',
+                      'opt_cross_item_checks_in_clingo']},
+          {'unlink': ['ruling_cross_item_checks_engine', 'relation_rejects',
+                      'opt_cross_item_checks_in_python']},
+          {'link':   ['ruling_cross_item_checks_engine', 'relation_upholds',
+                      'opt_cross_item_checks_in_python']},
+          {'link':   ['ruling_cross_item_checks_engine', 'relation_rejects',
+                      'opt_cross_item_checks_in_clingo']})
+    assert _check(repo, 'Change ruling_cross_item_checks_engine so that Python is upheld') == {
+        'unargued_driver': [('ruling_cross_item_checks_engine', 'opt_cross_item_checks_in_python',
+                             'concern_privacy')]}
