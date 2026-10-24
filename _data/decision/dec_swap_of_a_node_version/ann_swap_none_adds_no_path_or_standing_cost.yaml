@@ -1,0 +1,67 @@
+id_self:                ann_swap_none_adds_no_path_or_standing_cost
+guid_self:              ann_e45b9fe4fc564c6e81c7d8af790971bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No new path and no standing cost without a live swap
+brief:                  |
+                        No live swap adds no mechanism: it uses only
+                        the process restart, which must exist and work
+                        anyway for crash recovery, so it adds no new
+                        path to fail. No node needs a repointable slot
+                        or reserved room for a second state, so the
+                        stepping path keeps its generated form in
+                        full.
+description:            |
+                        Sources: the option makes a new version take
+                        effect only on a restart of its OS process
+                        with a new configuration
+                        (_data/decision/dec_swap_of_a_node_version/opt_no_live_swap.yaml
+                        lines 12-15). A frozen schedule uses link-time
+                        constant slot addresses
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 38). A crashed process can resume from
+                        its last committed step if state lives in
+                        mapped files (execution_levels.md lines
+                        149-151). Simplicity, a non-driver here,
+                        counts distinct mechanisms
+                        (_data/register/reg_concern.yaml lines
+                        488-490). The owner names the swap of a node
+                        at version n for n+1 as a use case to support
+                        (owner's statement, 2026-10-24 12:33Z), which
+                        outweighs this; and only dynamic nodes would
+                        carry the standing cost. Strength: weak; it
+                        counts mechanisms and cost for the first
+                        version only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_live_swap
+    guid_target:        opt_be2339eb63b448ba8ca14c908c3ab9af
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

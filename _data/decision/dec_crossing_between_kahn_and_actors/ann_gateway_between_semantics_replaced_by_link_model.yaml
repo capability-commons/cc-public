@@ -1,0 +1,67 @@
+id_self:                ann_gateway_between_semantics_replaced_by_link_model
+guid_self:              ann_f89d96c001704dce829381741e721ae2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gateway as the place to inject and contain crossing faults
+brief:                  |
+                        A gateway is a node of its own at each
+                        crossing, so in simulation it can be replaced
+                        by a link model that drops or delays messages,
+                        and it can be reset without touching either
+                        side; a composite's director plays the same
+                        role for a whole composite. A policy on an
+                        edge has no node to substitute unless the
+                        engine can put a link model on an edge.
+description:            |
+                        Sources: in Stableflow's drafts an inbound
+                        gateway turns loss and delay into explicit
+                        empty tokens, and in simulation the gateway is
+                        replaced by a link model that drops, delays or
+                        replays tokens, so a segment can be tested by
+                        fault injection for any pattern of arrival and
+                        loss
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-197). The owner asked whether
+                        gateway nodes are needed between the Kahn and
+                        actor subgraphs (owner's statement, 2026-10-24
+                        12:33Z). In Ptolemy II an opaque composite
+                        actor has a local director, and the model of
+                        computation inside may differ from the one
+                        outside
+                        (https://ptolemy.berkeley.edu/ptolemyII/ptII11.0/ptII/doc/codeDoc/ptolemy/actor/CompositeActor.html).
+                        A rewire resets only the affected nodes
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). ASSUMPTION: a gateway, being a
+                        node, can be reset alone in the same way.
+                        ASSUMPTION: a crossing policy stated on an
+                        edge has no node of its own to reset or
+                        replace. Strength: moderate; it holds at any
+                        size but costs a node per crossing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_semantics_per_composite
+    guid_target:        opt_c418a5fb80c147a2b5542f26c122e1b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

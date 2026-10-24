@@ -1,0 +1,93 @@
+id_self:                ann_replay_engine_log_needs_no_platform_recorder
+guid_self:              ann_5927c672ecae4a47877273daba407f16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine log that replays on any platform without a process recorder
+brief:                  |
+                        Record-and-replay tools such as rr replay a
+                        whole process, but only on Linux, on certain
+                        CPUs, with hardware performance counters. A
+                        log the engine writes is plain data, so it
+                        replays on any target the engine runs on, and
+                        a run recorded on a board can be replayed on a
+                        desktop. Without engine replay, debugging a
+                        run with live changes would fall back on such
+                        a tool.
+description:            |
+                        Sources: rr runs on Linux 4.7 or later, on
+                        Intel Nehalem or later, some AMD Zen and some
+                        AArch64 cores, and in a VM only with
+                        virtualized performance counters
+                        (https://github.com/rr-debugger/rr); its
+                        authors reported in 2017 that a port to ARM
+                        failed
+                        (https://ar5iv.labs.arxiv.org/html/1705.05937;
+                        later releases may differ). Edge values are
+                        fixed-size plain data
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 84-86), so they can be logged byte for
+                        byte with no serialization library. The log
+                        option records change-set steps, actor
+                        messages and outside values
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the static-part option replays
+                        the static subgraph from the values that
+                        entered it
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16), which the engine also logs. Patrol
+                        already has a variant that runs analysis on
+                        recorded clips as a parity check
+                        (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                        lines 12-17). The owner wants the engine on
+                        embedded targets with no OS (owner's
+                        statement, 2026-10-24 13:06Z) and his instinct
+                        is that runs with live changes stay replayable
+                        (13:08Z). Assumption: without engine replay,
+                        debugging a run with live changes would fall
+                        back on an outside tool. Cross-platform replay
+                        gives the same tokens only for bit-exact nodes
+                        (see the annotation on node determinism). This
+                        rests on how actors are run: replay in the
+                        same order is easiest when actors run between
+                        steps. Strength: moderate to strong; it holds
+                        at any scale, and the log grows with outside
+                        values and actor messages, not with node
+                        count.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

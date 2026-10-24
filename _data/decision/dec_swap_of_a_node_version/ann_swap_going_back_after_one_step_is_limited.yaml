@@ -1,0 +1,66 @@
+id_self:                ann_swap_going_back_after_one_step_is_limited
+guid_self:              ann_d8bfee133f454887934a54cbe1091c82
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Limits of going back after one step
+brief:                  |
+                        The way back of the swap at a step has two
+                        limits the option should state. One step is a
+                        short trial, so faults that show after tens or
+                        thousands of steps find the old state gone;
+                        and by the time version n+1 has completed a
+                        step its outputs have gone downstream, so
+                        going back restores the node but not what its
+                        neighbors did with those outputs. The option
+                        should name the rollback window as a number of
+                        steps or a time, and say that going back is a
+                        new change, not an undo.
+description:            |
+                        Sources: the option keeps the old state only
+                        until the new version completes a step, so it
+                        can go back
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19). A step's outputs are written
+                        into buffers that downstream inputs point at
+                        directly within a process
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-46). Assumptions: many faults in a
+                        new version show only under inputs or states a
+                        single step does not reach; keeping version
+                        n's state current over several steps would
+                        need version n run in shadow or its inputs
+                        replayed, so a longer window is not free;
+                        going back is meant to happen after version
+                        n+1's outputs were read, since the option
+                        allows it after the step completes. Strength:
+                        moderate; it applies to every rollback, and it
+                        is a fix to the option's wording rather than a
+                        case against it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,110 @@
+id_self:                ann_static_subgraph_keeps_frozen_speed_and_assurance
+guid_self:              ann_51512eaffd634bb0852646c5ddb9ef72
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Frozen-schedule speed and assurance kept for the static subgraph
+brief:                  |
+                        Under one engine the static subgraph is still
+                        generated as plain C++17 calls and fixed at
+                        build time, so its nodes keep the
+                        whole-program optimization and the build-time
+                        checking of a frozen schedule, and a system
+                        can put its hot path and the nodes its safety
+                        case or its protection rests on there while
+                        other nodes change. A runtime that loads the
+                        whole graph gives these properties to no node,
+                        except to frozen islands loaded as single
+                        nodes, which the drafts already allow. Against
+                        the frozen option the new one is not stronger:
+                        it matches it only for the nodes placed
+                        static, and only if the decisions on crossing
+                        and on change sets keep the static subgraph
+                        out of reach of a change.
+description:            |
+                        Sources:
+                        - The static subgraph's schedule is generated
+                          as plain C++17 calls fixed at build time,
+                          and only the dynamic subgraph changes at the
+                          start of a step.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 12-21)
+                        - With LTO or a unity build the optimizer sees
+                          every call and slot address as a constant,
+                          and small components inline.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 54-57)
+                        - The dynamic host loads libraries named in
+                          configuration and steps nodes through
+                          function pointers.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 65-68) A frozen subgraph can be
+                          exported as one composite component and
+                          loaded as one node of a dynamic graph,
+                          decided 2026-10-16. (same file, lines 74-80)
+                        - In a frozen schedule type checking happens
+                          in the generator before anything compiles,
+                          and only a per-node enable flag changes at
+                          run time.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 39-40 and 59)
+                        - Within a segment, topologies are known and
+                          validated "so a safety case applies to the
+                          same configuration that is deployed in
+                          service".
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 169-171)
+                        - The engine should enable the systems it
+                          supports to meet safety and security
+                          requirements to a reasonable degree.
+                          (owner's statement, 2026-10-22T20:19;
+                          _data/logical_component/lco_dataflow_engine.yaml
+                          lines 16-22)
+                        - ASSUMPTION: the nodes that carry most
+                          per-step work, and the functions a safety
+                          case or a security case covers, can be
+                          placed among the static nodes; the engine
+                          cannot force a system to place them so.
+                          Strength: strong for performance efficiency
+                          and security, since the property is per
+                          node; it holds at scale while the static
+                          part carries the hot path. Holds for safety
+                          as far as each system places its safety
+                          functions static.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

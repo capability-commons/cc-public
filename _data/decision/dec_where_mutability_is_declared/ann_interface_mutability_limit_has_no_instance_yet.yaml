@@ -1,0 +1,78 @@
+id_self:                ann_interface_mutability_limit_has_no_instance_yet
+guid_self:              ann_f7a5cc2cc5df450a8d231e18d8b34a8c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface limit for a case not yet met
+brief:                  |
+                        Letting an interface require static nodes adds
+                        a second place that states mutability and a
+                        check that holds the two together, for a case
+                        the owner expects to be rare and that no
+                        interface or graph in the tree has yet.
+                        Per-node declaration alone covers every case
+                        the tree holds, and the limit can be added
+                        when a first such node arrives without
+                        changing the per-node field.
+description:            |
+                        Sources:
+                        - The option has each configured node say
+                          static or dynamic, lets an interface require
+                          static, and fails a dynamic node of such an
+                          interface.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_node_with_interface_limit.yaml
+                          lines 11-18)
+                        - The owner expects nodes that must be static
+                          to be rare. (owner's statement, 2026-10-24
+                          12:49Z, answer 1)
+                        - "Add a type, relation, field or command only
+                          when a real instance needs it."
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml;
+                          AGENTS.md lines 236-238)
+                        - The only recorded dataflow graph is the
+                          Stableflow smoke test, and nothing in it is
+                          declared static or dynamic.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml)
+                          The dataflow step surface has no field that
+                          states a limit on lifetime or mutability.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 689-815)
+                        - ASSUMPTION: the case may arrive with
+                          Patrol's GPU or camera nodes, which would
+                          give the limit a real instance. Strength:
+                          moderate for simplicity, as the extra field
+                          and rule are fixed in count; weak for
+                          traceability, since it challenges the timing
+                          of the limit, not its form.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

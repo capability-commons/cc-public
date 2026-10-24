@@ -1,0 +1,84 @@
+id_self:                ann_process_mutability_splits_mixed_runtime_process
+guid_self:              ann_dfd4bdca505f41dbbe79a32411202cd2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One OS process shared by three runtimes
+brief:                  |
+                        In the Patrol draft, GStreamer, engine and
+                        Python nodes all run in one OS process, joined
+                        in-process by appsink and appsrc adapters. If
+                        mutability is declared on the OS process, the
+                        GStreamer and Python nodes take a mode the
+                        engine does not control for them, and making
+                        only the engine nodes dynamic means splitting
+                        the process, which breaks the in-process links
+                        to GStreamer.
+description:            |
+                        Sources:
+                        - The Patrol base graph has one OS process,
+                          main, and all 22 of its nodes name it: 12
+                          GStreamer, 9 engine, 1 Python.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 23-31, 41-42, 213-214, 338-339;
+                          _sources/cc-patrol-notes/draft/README.md
+                          lines 22-23)
+                        - Data goes from GStreamer to the engine
+                          through an appsink adapter, and back through
+                          appsrc or element properties.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 49-50) A gst_link edge is allowed only
+                          between GStreamer nodes in one OS process.
+                          (same file, lines 59-60)
+                        - Only the dynamic subgraph allows nodes and
+                          edges to change, at the start of a step.
+                          (owner's statement, 2026-10-24 12:33Z)
+                        - ASSUMPTION: appsink and appsrc hand buffers
+                          over within one process, so an adapter edge
+                          cannot cross a process boundary without
+                          another transport; a GStreamer pipeline is
+                          changed by GStreamer's own mechanisms, so
+                          engine mutability means nothing for a
+                          GStreamer node. Not checked against the
+                          GStreamer documentation.
+                        - The per-node options would then need a rule
+                          for nodes the engine does not run, if the
+                          schema adds a runtime per node as the Patrol
+                          draft does.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          line 3) Strength: holds at ten times the
+                          nodes, since each process then holds more
+                          nodes and is more likely to mix runtimes;
+                          weaker for a graph of engine nodes alone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_os_process
+    guid_target:        opt_9274c44ab9a841d8bdd97238b1f7aaff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

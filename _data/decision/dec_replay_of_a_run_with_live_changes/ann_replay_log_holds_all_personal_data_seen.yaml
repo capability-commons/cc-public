@@ -1,0 +1,73 @@
+id_self:                ann_replay_log_holds_all_personal_data_seen
+guid_self:              ann_912c187332924251ae3b0d63c9848163
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Log of every input as a store of everything the system saw
+brief:                  |
+                        A log of every value entering the graph and
+                        every actor message holds all the data the
+                        system took in, including personal or secret
+                        data. The engine should let a system protect
+                        the log, by encryption, restricted reading or
+                        leaving marked fields out, and keep the record
+                        of changes separable from the record of
+                        inputs, so a system can keep the audit trail
+                        without keeping the data. The other options
+                        record less.
+description:            |
+                        Sources: the log option records every value
+                        that entered the graph from outside
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the static-part option records
+                        fewer values for replay
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16), and no replay records none for it
+                        (opt_no_replay_with_live_changes.yaml lines
+                        12-14). rr captures all inputs to the recorded
+                        processes from the kernel to make replay exact
+                        (https://rr-project.org/). Some segments may
+                        hold personal data on DTU members under the
+                        GDPR (owner's statement, 2026-10-22T20:19,
+                        _sources/context.md line 25). Patrol's Orin
+                        configuration takes a 720p 30 Hz camera stream
+                        (_sources/cc-patrol-notes/plan.md lines
+                        181-182). It is a condition on the log option,
+                        met by a field marking in the data dictionary
+                        (see the annotation on secrets carried where
+                        the engine copies state) and a separable
+                        change record. Strength: strong; the log's
+                        size and sensitivity grow with input rate and
+                        the number of systems run.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

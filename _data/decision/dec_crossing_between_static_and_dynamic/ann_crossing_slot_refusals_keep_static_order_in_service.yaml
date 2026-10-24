@@ -1,0 +1,59 @@
+id_self:                ann_crossing_slot_refusals_keep_static_order_in_service
+guid_self:              ann_f58d007f09f74e7bbc6b1de7c89f5d9a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static order guarded by the slot refusals
+brief:                  |
+                        The fixed-slot option refuses a change set
+                        that would move a region in the static order
+                        or close a loop through the static subgraph
+                        within a step, so the static order never
+                        changes in service and a bad change leaves the
+                        previous graph running. The loop refusal loses
+                        no valid graph, since the checker already
+                        fails a loop of feedforward edges.
+description:            |
+                        Sources: The option refuses a change set that
+                        "would need a region to run at another point
+                        in the static order, or would close a loop
+                        through the static subgraph within a step"
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml,
+                        brief). Every loop of data flow must be closed
+                        by a feedback edge, and cctool fails a loop of
+                        feedforward edges (src/cctool/check/check.lp
+                        lines 3254-3286). The drafted dynamic host
+                        refuses a mismatched wiring and rewires only
+                        between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 67 and 70-72). Strength: moderate; it
+                        guards change, not faults while running, and
+                        the other two options also leave the static
+                        order unchanged.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

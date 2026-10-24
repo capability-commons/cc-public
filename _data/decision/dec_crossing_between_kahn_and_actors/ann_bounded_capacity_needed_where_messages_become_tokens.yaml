@@ -1,0 +1,97 @@
+id_self:                ann_bounded_capacity_needed_where_messages_become_tokens
+guid_self:              ann_bd57d32da0f04c78b95ee26d2a42a371
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed capacity and a loss rule where messages become tokens
+brief:                  |
+                        Actors can send any number of messages between
+                        two steps, in a burst or, from outside, on
+                        purpose. A crossing that keeps all of them in
+                        order, a gateway's buffer and a director's
+                        port buffer each need a fixed capacity and a
+                        stated rule for when it is full, or a burst
+                        exhausts memory, stalls the step, or makes a
+                        step's work grow with what an attacker sends.
+                        None of the three options states one yet; any
+                        of them can.
+description:            |
+                        Sources: the edge option offers the latest
+                        value, all messages in order, or a fold
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 11-18); a gateway node buffers messages
+                        (opt_gateway_nodes_between_semantics.yaml in
+                        the same folder, lines 11-15); in the
+                        composite option a director at each port turns
+                        messages into tokens
+                        (opt_one_semantics_per_composite.yaml in the
+                        same folder, lines 11-17). Every sequence has
+                        a fixed capacity and nothing is allocated on
+                        the heap while stepping
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 145-151; bounded sequences as BoundedSeq
+                        at line 82 of the same file). "A real
+                        application can not have unbounded FIFOs", and
+                        blocking writes to full ones may cause an
+                        artificial deadlock
+                        (https://en.wikipedia.org/wiki/Kahn_process_networks;
+                        also the annotation on artificial deadlock in
+                        bounded Kahn buffers under the decision on
+                        first semantics). Patrol's draft has
+                        bounded_counted_loss, a bounded crossing that
+                        counts what it drops
+                        (_sources/cc-patrol-notes/draft/README.md line
+                        49), and its recorder counts units it cannot
+                        keep
+                        (_sources/cc-patrol-notes/draft/icd/icd_patrol_recorder.yaml
+                        lines 108-110). Deliberately caused failures
+                        belong to security
+                        (_data/register/reg_concern.yaml line 130).
+                        Latest-value and fold policies are bounded by
+                        their form. Strength: strong; the exposure
+                        grows with message rate and with the number of
+                        actors feeding one Kahn edge, not with graph
+                        size, and bites hardest where actors face the
+                        outside world.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_semantics_per_composite
+    guid_target:        opt_c418a5fb80c147a2b5542f26c122e1b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,93 @@
+id_self:                ann_node_state_patrol_holds_gpu_and_shared_state
+guid_self:              ann_b752340a7f6c47b8af3f2e356a56312d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Patrol state that is not plain data
+brief:                  |
+                        Two of Patrol's drafted node states are
+                        spelled opaque, the analysis node's including
+                        detector history on the GPU, and another holds
+                        shared immutable frames. Typed data the engine
+                        copies, or a value on a feedback edge, does
+                        not yet say how such state is held, so the
+                        first user's main node falls outside them
+                        unless nodes are restructured or an escape
+                        hatch is added, which is a second mechanism to
+                        maintain. Opaque state with hooks covers it
+                        and costs nothing extra while stepping.
+description:            |
+                        Sources: Patrol's analysis state is
+                        "Registration, detector history on the GPU,
+                        chains, marks, target and box tracking", typed
+                        opaque
+                        (_sources/cc-patrol-notes/draft/icd/icd_patrol_analysis.yaml
+                        lines 129-140); the layout node's state is
+                        typed opaque (draft/icd/icd_patrol_layout.yaml
+                        lines 69-80); the frame history node's state
+                        is the last frames, each immutable and shared,
+                        typed as an array of eight frame steps
+                        (draft/icd/icd_patrol_frame_history.yaml lines
+                        79-90). Patrol's detector holds GPU state
+                        that, when dropped, makes the next frame
+                        allocate again
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 100-106). Everything that crosses an
+                        edge in the Stableflow drafts is plain,
+                        trivially copyable, fixed-size data
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 84-86). The form of state is hard to
+                        change once the engine is in use (owner's
+                        statement, 2026-10-24 12:33Z). Assumption:
+                        memory on a GPU cannot be held as a host-side
+                        value the engine copies and hands to the node
+                        each step without a copy between devices.
+                        Strength: moderate. It rests on one system's
+                        drafts, and the opaque spellings may be
+                        placeholders; but that system is the first
+                        user. A typed form with a declared opaque part
+                        for device resources, such as a handle plus
+                        host-side data, would answer it; no option
+                        states that yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_opaque_with_hooks
+    guid_target:        opt_5b9ea0eb14084527ad3a2fae46485523
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

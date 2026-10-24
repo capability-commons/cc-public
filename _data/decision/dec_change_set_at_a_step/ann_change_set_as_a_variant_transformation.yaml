@@ -1,0 +1,60 @@
+id_self:                ann_change_set_as_a_variant_transformation
+guid_self:              ann_193a87aeaedd4c07813805b4bac428f6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run-time change set as a variant transformation
+brief:                  |
+                        A change set checked by cctool first is the
+                        same kind of thing as a variant
+                        transformation, which the Patrol plan already
+                        holds as data items with add, remove, join and
+                        place operations checked against the graph, so
+                        the runtime needs only a digest comparison.
+                        This rests on how variants are held, which is
+                        not yet ruled, adopting transformation items.
+description:            |
+                        Sources: Variants are a base plus
+                        transformation items, derived, not stored
+                        (_sources/cc-patrol-notes/plan.md lines
+                        173-175). The planned operations are filter,
+                        add, join, write, host, process, place and
+                        remove, with joins checked because ports are
+                        interface members
+                        (_sources/cc-patrol-notes/variants.md lines
+                        57-67). The cctool-first option sends a change
+                        set as a checked data item and the runtime
+                        checks only the digest
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                        lines 11-18); the runtime option checks in C++
+                        (opt_change_set_checked_by_the_runtime.yaml,
+                        lines 11-19). Strength: strong for the count
+                        of mechanisms; it says nothing on targets
+                        without cctool at hand.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,63 @@
+id_self:                ann_spread_dependency_order_keeps_kahn_tokens
+guid_self:              ann_ffe8f7e5f2b14df28b50d0530f47b122
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same tokens under any spread that keeps step dependencies
+brief:                  |
+                        Kahn semantics give the same tokens whatever
+                        the timing, so any spread that keeps each
+                        step's dependencies, whether per-core
+                        schedules made at build time or ready nodes
+                        run on a pool, gives the same results as one
+                        core would.
+description:            |
+                        Sources: "Processes of a KPN are deterministic
+                        ... timing of the processes does not affect
+                        outputs of the system"
+                        (https://en.wikipedia.org/wiki/Kahn_process_networks,
+                        cited in
+                        _data/decision/dec_first_semantics/ann_kahn_determinism_makes_runs_repeatable.yaml).
+                        Synchronous dataflow schedules, including
+                        schedules onto several processors, can be made
+                        at compile time (Lee and Messerschmitt 1987,
+                        https://ptolemy.berkeley.edu/publications/papers/87/staticscheduling).
+                        Taskflow's executor "schedules dependent tasks
+                        across worker threads"
+                        (https://arxiv.org/pdf/2004.10908, section
+                        4.1). The generator option writes one schedule
+                        per core with the waits between them
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml,
+                        brief). Patrol already runs appearance beside
+                        the detector in one step, with a deterministic
+                        join
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 138-142). Strength: strong; it holds at
+                        any number of nodes and cores.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

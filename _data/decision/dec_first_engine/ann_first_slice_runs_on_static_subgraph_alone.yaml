@@ -1,0 +1,68 @@
+id_self:                ann_first_slice_runs_on_static_subgraph_alone
+guid_self:              ann_0141a3e1ac7e4083b82a330d2062a9d1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First slice run on the static subgraph alone
+brief:                  |
+                        Patrol's first slice and its detector_dump
+                        parity runs need only a generated schedule,
+                        which the new option holds as its static
+                        subgraph, so the new option can meet the first
+                        acceptance check before the dynamic machinery
+                        is finished. The caveat is that the dynamic
+                        part's acceptance checks cannot be written
+                        until the several open decisions it depends on
+                        are ruled.
+description:            |
+                        Sources:
+                        - "Generating plain C++ calls from a validated
+                          dataflow graph is the smallest working
+                          engine, and fits the first slice (retiming)
+                          and analysis parity runs against
+                          detector_dump".
+                          (_sources/cc-patrol-notes/plan.md lines
+                          103-105 and 206-207)
+                        - Each Patrol decomposition step ends with
+                          detector_dump parity.
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 173-177)
+                        - The new option's static schedule is
+                          generated as plain C++17 calls.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml,
+                          brief)
+                        - What the dynamic part must do is open in at
+                          least six decisions: crossing between static
+                          and dynamic, change sets, form of node
+                          state, swap of a node version, crossing
+                          between Kahn and actors, and replay with
+                          live changes. (_data/decision/, no ruling
+                          files in those folders)
+                        - ASSUMPTION: a graph whose dynamic subgraph
+                          is empty is a valid configuration under the
+                          new option. Strength: moderate; it answers
+                          the smallest-engine argument for the frozen
+                          option, but rests on an assumption the
+                          option does not state.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

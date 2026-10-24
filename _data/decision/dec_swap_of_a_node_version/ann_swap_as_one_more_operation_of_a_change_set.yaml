@@ -1,0 +1,66 @@
+id_self:                ann_swap_as_one_more_operation_of_a_change_set
+guid_self:              ann_ab2d76dfb285410da65124323d1bc3db
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Swap as one more operation of a change set
+brief:                  |
+                        Swapping at a step makes the swap one more
+                        operation of the change set, applied at the
+                        step boundary already used for rewires, with
+                        the state upgrade one use of the dictionary's
+                        mapping. Restarting from saved state adds a
+                        save, stop, start and load sequence and a mode
+                        with empty outputs beside it. This holds if
+                        state is typed data and the dictionary carries
+                        mappings.
+description:            |
+                        Sources: the swap at a step is part of a
+                        change set, upgrades state by the dictionary's
+                        mapping at the start of a step and is refused
+                        by a check when the state cannot be upgraded
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); start, stop, restart and rewire
+                        happen only between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72); the restart option saves state,
+                        stops the node, starts n+1 and loads the
+                        upgraded state, holding outputs empty
+                        meanwhile
+                        (opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16). Simplicity, a non-driver here,
+                        counts distinct mechanisms
+                        (_data/register/reg_concern.yaml lines
+                        488-490). This rests on the form of node state
+                        choosing typed data and the form of the data
+                        dictionary choosing mapped upgrades; with
+                        opaque state, both swap options rest on
+                        per-node hooks. Strength: strong under those
+                        outcomes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,128 @@
+id_self:                ann_dictionary_types_and_upgrades_as_checked_items
+guid_self:              ann_3c22c8cec1474937bcfbcefcf4ff6c3e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Types and their upgrades as checked items in the graph
+brief:                  |
+                        Dictionary items with upgrades state the
+                        owner's rules field by field, kept, renamed,
+                        converted or new with a default, as data the
+                        existing checker can hold, and version a type
+                        the way interfaces already are, so each field
+                        of a new version can be traced to its source
+                        in the last. They also close the gap where a
+                        shared payload is declared in one interface
+                        and spelled alike in the rest. The costs are a
+                        new item type, schema, generator and rules
+                        built in-house, and a "converted" mapping that
+                        still needs code; the argument rests on the
+                        open decision on port types choosing
+                        dictionary types.
+description:            |
+                        Sources:
+                        - The data dictionary "needs to support
+                          mappings for automatic data upgrades (where
+                          possible - obviously if there are new fields
+                          without defaults, then that runtime upgrade
+                          is not achievable, and should be blocked
+                          before it's attempted)". (owner's statement,
+                          2026-10-24 12:33Z)
+                        - Each type is a data item with a version; a
+                          new version names the version it upgrades
+                          and a mapping per field, and a check fails a
+                          new field with no default.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_items_with_upgrades.yaml
+                          lines 11-18)
+                        - A new version of an interface is a new item
+                          that supersedes the last, which keeps its
+                          content on record.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 58-60;
+                          _data/register/reg_relation.yaml lines
+                          280-294)
+                        - "The analysis result is used by seven ICDs
+                          but can be declared only inside one; the
+                          others spell AnalysisResult and rely on
+                          equal spelling. This is the data-dictionary
+                          gap".
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 220-224)
+                        - A port type today is a spelling or the key
+                          of a declaration in the same document, and
+                          the mismatch rule compares stated values.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 119-145; src/cctool/check/check.lp
+                          lines 3229-3233) Interface declarations
+                          overlap a dictionary.
+                          (_data/decision/dec_port_types/ann_dictionaries_overlap_icd_shared_declarations.yaml)
+                        - The commit check already detects renames and
+                          removals, of items in a commit rather than
+                          of fields in a type. (context note,
+                          2026-10-22, _sources/context.md line 34)
+                        - Under the other two options the link from
+                          one version to the next is not an item: a
+                          layout hash leaves no edge, and an external
+                          schema is named only by version.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 98-99;
+                          _data/decision/dec_form_of_the_data_dictionary/opt_dictionary_in_an_external_schema_language.yaml
+                          lines 13-16)
+                        - ASSUMPTION: a "converted" mapping carries
+                          code or an expression whose correctness the
+                          item does not prove. Strength: strong for
+                          functional suitability and traceability,
+                          since types and versions grow with the graph
+                          and each upgrade checked as data saves one
+                          checked by hand; strong for simplicity on
+                          reusing item, version and check; moderate
+                          for maintainability overall, as the in-house
+                          parts must exist before the first upgrade
+                          runs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_of_array_descriptors
+    guid_target:        opt_1c83a4e30daf4f9eaaf552430b07212b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

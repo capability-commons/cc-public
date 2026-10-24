@@ -1,0 +1,82 @@
+id_self:                ann_actors_between_steps_need_no_os_threads
+guid_self:              ann_7fb89abb418e40e09352b13ca3f58a15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actors run without OS threads on a bare target
+brief:                  |
+                        Running actors in the gaps between steps needs
+                        only the engine's own thread of control, so a
+                        mix of Kahn nodes and actors works on a single
+                        core with no OS as well as on a multi-core
+                        board. A pool or a thread per actor needs
+                        threads, which a C++17 freestanding
+                        implementation need not provide, so on such a
+                        target they rest on an RTOS or a threading
+                        library.
+description:            |
+                        Sources: C++17 freestanding headers include
+                        atomic but not thread or mutex, and whether a
+                        freestanding program can have more than one
+                        thread is implementation-defined
+                        (https://en.cppreference.com/w/cpp/freestanding).
+                        The owner wants the engine to apply to
+                        embedded systems where there may be no OS at
+                        all (owner's statement, 2026-10-24 13:06Z);
+                        the engine is planned as C++17
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 153-158; context note, owner's statement
+                        2026-10-21 in _sources/context.md). Between
+                        steps, actors drain their mailboxes on the
+                        engine's own threads
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 11-16). The placement option for Kahn
+                        steps has an execution unit run its nodes in
+                        order on one thread of control, which may be a
+                        core with no OS
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                        lines 11-24). Each actor on its own thread
+                        blocks on its mailbox
+                        (_data/decision/dec_how_actors_are_run/opt_actors_on_their_own_threads.yaml
+                        lines 11-14). ASSUMPTION: the engine's own
+                        threads can be one thread on a single-threaded
+                        target. Strength: strong against a thread per
+                        actor, whose thread count grows with the
+                        actors; moderate against the pool.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_between_steps
+    guid_target:        opt_f9fff2269eac4407bd252098ac39e77a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

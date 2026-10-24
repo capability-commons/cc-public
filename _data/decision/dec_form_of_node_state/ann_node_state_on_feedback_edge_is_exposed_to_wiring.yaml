@@ -1,0 +1,86 @@
+id_self:                ann_node_state_on_feedback_edge_is_exposed_to_wiring
+guid_self:              ann_2b2bfbf3e2b642edb0327c5af19e815e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node state exposed to every graph that wires the node
+brief:                  |
+                        When state is an output fed back on an edge,
+                        it becomes part of each graph that uses the
+                        node. A second edge could carry it to another
+                        node, which would then depend on the first
+                        node's internals; a change set that moves or
+                        removes the edge moves or drops the state; and
+                        adding a state field edits the node's
+                        interface and every graph and variant that
+                        configures it. Typed state held by the engine
+                        stays with the node and in its interface's
+                        state section.
+description:            |
+                        Sources: under this option a node holds no
+                        state; what it carries forward is an output
+                        fed back on a feedback edge
+                        (_data/decision/dec_form_of_node_state/opt_state_on_a_feedback_edge.yaml
+                        lines 12-16). The interface schema's dataflow
+                        step surface keeps a separate state group,
+                        "What the step reads and writes between
+                        invocations"
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 724-733). Feedback edges point at a
+                        buffer the framework fills and primes on reset
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 42-44), and a rewire is a pointer swap
+                        plus a reset of the affected nodes
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). Patrol's drafts hold one base
+                        graph and six variants
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 22-34). Assumptions: nothing in the
+                        current model stops a second edge from leaving
+                        the same output port; a reset or reprimed
+                        feedback buffer loses the value the node
+                        carried. Strength: strong for the spread of a
+                        state change, which grows with the number of
+                        graphs that configure the node (variants that
+                        inherit edges from a base reduce but do not
+                        remove it); moderate for the other two, which
+                        a check tying a state output to its own input,
+                        and one that a change set keeps every
+                        state-carrying feedback edge, would answer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

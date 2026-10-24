@@ -1,0 +1,50 @@
+id_self:                ann_crossing_delay_reuses_the_feedback_edge_rule
+guid_self:              ann_985772508e8f42c0b9d4b61dfa2de3f0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Delay into static nodes as the feedback edge rule reused
+brief:                  |
+                        The one-step delay adds no rule the model
+                        lacks: an edge from a dynamic node into a
+                        static one behaves as a feedback edge does,
+                        taking the value of the step before, and the
+                        empty token it falls back on is the existing
+                        enable flag of a packet.
+description:            |
+                        Sources: A feedback edge's value comes from
+                        the invocation before
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        33-35 and 193-203). Every loop must be closed
+                        by a feedback edge, and a check holds this
+                        (src/cctool/check/check.lp lines 3254-3286).
+                        Every packet carries an enable flag, cleared
+                        at the start of a step and set when it carries
+                        data
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 14-15). The owner doubts the delay is
+                        needed (owner's statement, 2026-10-24 12:49Z,
+                        answer 2). Strength: strong on the count of
+                        mechanisms; it says nothing on latency.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

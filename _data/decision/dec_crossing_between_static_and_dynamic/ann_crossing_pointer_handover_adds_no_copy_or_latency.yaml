@@ -1,0 +1,61 @@
+id_self:                ann_crossing_pointer_handover_adds_no_copy_or_latency
+guid_self:              ann_8b3551cd9d554b5eb20a01e6bafc8289
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No copy and no step of latency at a pointer handover
+brief:                  |
+                        Handing over buffer pointers in the same step
+                        adds no copy and no step of latency, and the
+                        static schedule pays one call per dynamic
+                        region, not per edge. A one-step delay adds
+                        about 33 ms at Patrol's 30 Hz each time a path
+                        crosses into the static part.
+description:            |
+                        Sources: The fixed-slot option crosses values
+                        in the same step by handing over buffer
+                        pointers, with one fixed call slot per dynamic
+                        region in the static schedule
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml
+                        lines 12-21). Within one process an edge is
+                        the upstream node's output buffer itself
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44). The owner: "Surely we're just
+                        swapping out pointers to buffers?" (owner's
+                        statement, 2026-10-24 12:49Z, answer 2). A
+                        one-step delay gives a static input the value
+                        of the step before
+                        (opt_one_step_delay_into_static.yaml in the
+                        same folder, lines 13-19). At Patrol's 30 Hz
+                        rate one step is about 33 ms
+                        (_sources/cc-patrol-notes/plan.md lines
+                        180-182). Strength: strong; the cost per
+                        crossing is constant, so it holds at ten times
+                        the nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

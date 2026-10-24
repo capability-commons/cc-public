@@ -1,0 +1,74 @@
+id_self:                ann_replay_log_of_live_changes_as_audit_trail
+guid_self:              ann_52f53226f0104346a8322d8f6710698e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Log of live changes as an audit trail
+brief:                  |
+                        Recording the step at which each change set
+                        and swap took effect gives a system a record
+                        of what was changed and when, so an unexpected
+                        change can be found and its effect replayed.
+                        To answer who made it, the record should also
+                        hold the identity of the sender that the
+                        change set is authenticated against. With no
+                        replay after a live change, or with only the
+                        static part replayable, an attack carried out
+                        through the dynamic subgraph cannot be
+                        reproduced.
+description:            |
+                        Sources: the log option records the step of
+                        each change set and swap, each actor's
+                        messages in order and every outside value
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); without replay, a run stops
+                        being replayable after a change
+                        (opt_no_replay_with_live_changes.yaml lines
+                        12-14); the static-only option records the
+                        dynamic part for inspection but does not
+                        replay it
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16), so the record of changes remains but
+                        their effect cannot be reproduced. The
+                        security concern asks whether every action can
+                        be traced to whoever took it
+                        (_data/register/reg_concern.yaml lines
+                        163-166). The owner's instinct is that such
+                        runs stay replayable (owner's statement,
+                        2026-10-24 13:08Z). This rests on the change
+                        set at a step, which would authenticate the
+                        sender. Strength: strong for the record of
+                        changes, which is small and does not grow with
+                        graph size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

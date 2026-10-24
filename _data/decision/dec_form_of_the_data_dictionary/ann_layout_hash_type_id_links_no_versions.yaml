@@ -1,0 +1,104 @@
+id_self:                ann_layout_hash_type_id_links_no_versions
+guid_self:              ann_52239c9e86ed496d9ae028f3b080e9ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout-hash type identity that links no versions
+brief:                  |
+                        An array descriptor's type id is a hash of its
+                        whole layout, so any change, even a rename a
+                        reader could absorb, makes a different type
+                        that a wiring check refuses, and the hash of
+                        version n+1 says nothing of version n. There
+                        is nothing for an automatic upgrade to follow,
+                        so each edit needs an upgrade written by hand,
+                        and a partner checking headers must reproduce
+                        the canonical NumPy description exactly. The
+                        hash stays useful as an identity check derived
+                        from a dictionary item under the other
+                        options.
+description:            |
+                        Sources:
+                        - "Type id = hash of the canonical dtype
+                          description (field names, types, shapes,
+                          offsets), not just a name, so a reordered or
+                          resized struct is a different type."
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 98-99) Tentatively decided 2026-10-16,
+                          may be revisited. (same file, lines 224-225)
+                        - The dynamic host checks every edge at wiring
+                          time and refuses a mismatch.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 67) A packet may start with a header
+                          holding the type id. (same file, lines
+                          105-112)
+                        - The generator can emit both the C++ struct
+                          and its dtype string from one spec, and the
+                          dtype string comes from the dictionary's
+                          mapping to NumPy.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 95-96)
+                        - The option has upgrades written by hand.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_of_array_descriptors.yaml
+                          lines 11-16)
+                        - The owner asked for mappings for automatic
+                          upgrades. (owner's statement, 2026-10-24
+                          12:33Z)
+                        - Prior art: ROS 2 identifies interface types
+                          by a SHA-256 hash of a type description.
+                          (https://index.ros.org/p/rosidl_generator_type_description)
+                        - ASSUMPTION: the canonical form of the
+                          description is not defined apart from NumPy,
+                          so a partner without Python would
+                          reimplement it. The NumPy dependency itself
+                          is argued already on the first engine
+                          decision and is not repeated. Strength:
+                          strong for functional suitability on the
+                          upgrade function and for simplicity, as
+                          hand-written upgrades grow with the number
+                          of changes; moderate and growing with scale
+                          for maintainability; strong for
+                          compatibility, since every type change
+                          breaks every partner at once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_of_array_descriptors
+    guid_target:        opt_1c83a4e30daf4f9eaaf552430b07212b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

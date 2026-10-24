@@ -1,0 +1,94 @@
+id_self:                ann_swap_output_gap_by_option
+guid_self:              ann_b5e366d97a3f45b493d489f9cf3e9101
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Output gap left by each way of swapping
+brief:                  |
+                        A swap at a step loses no step: version n+1
+                        runs in the step at which its state is
+                        upgraded, and the node's outputs continue. A
+                        restart from saved state leaves the node's
+                        outputs empty for as many steps as the restart
+                        takes, a gap every downstream node sees. No
+                        live swap restarts the whole OS process, so
+                        every node in it, static nodes included, loses
+                        its run, not only the node being upgraded.
+description:            |
+                        Sources: the swap at a step upgrades the state
+                        at the start of a step and runs version n+1 in
+                        its place
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); the restart option holds the
+                        node's outputs empty while it restarts
+                        (opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16); no live swap takes effect only
+                        when the OS process restarts with a new
+                        configuration (opt_no_live_swap.yaml lines
+                        12-15). The smoketest graph has one host
+                        running one OS process that holds all its
+                        nodes
+                        (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                        line 17), and a frozen island always runs
+                        within one OS process
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 76-80). Only the dynamic subgraph is to
+                        change while running (owner's statement,
+                        2026-10-24 12:33Z, line 18). Patrol's
+                        appearance and segmentation engines load
+                        models on first use inside a frame
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 100-103). Assumption: a restart that
+                        loads a library and allocates buffers takes
+                        longer than one 33 ms step at Patrol's 30 Hz
+                        camera rate (_sources/cc-patrol-notes/plan.md
+                        lines 180-182). This rests on the form of node
+                        state: the in-place upgrade needs typed state,
+                        and under opaque state the restart is the swap
+                        the hooks support. Strength: moderate to
+                        strong; per swap, so independent of node
+                        count, stronger for nodes with costly
+                        start-up, and growing against no live swap as
+                        more nodes share a process.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_live_swap
+    guid_target:        opt_be2339eb63b448ba8ca14c908c3ab9af
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

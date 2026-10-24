@@ -1,0 +1,52 @@
+id_self:                ann_swap_in_place_doubles_state_memory_for_a_step
+guid_self:              ann_062762f7eef14394b2f685b5c3d71d1f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Memory and step time of an upgrade in place
+brief:                  |
+                        Keeping the old state until the new version
+                        completes a step doubles the swapped node's
+                        state memory for a step, and the field mapping
+                        runs inside the step, lengthening it once.
+                        Both are bounded when state is fixed-size
+                        typed data, but room for the second copy must
+                        be reserved ahead of time to keep stepping
+                        free of allocation.
+description:            |
+                        Sources: the option keeps the old state until
+                        the new version completes a step
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); buffer sizes are known before
+                        the system starts and nothing is allocated on
+                        the heap while stepping
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 148-151). Assumption: the engine must
+                        reserve room for the second copy for every
+                        node that may be swapped, so peak memory
+                        includes it. This rests on the form of node
+                        state being fixed-size typed data. Strength:
+                        weak per swap; it grows with the number of
+                        swappable nodes if room is reserved for each.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

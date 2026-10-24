@@ -1,0 +1,47 @@
+id_self:                ann_change_set_repeated_checks_touch_only_the_change
+guid_self:              ann_4d195a61ae6c42f5a7f138d3a3655c27
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Repeated runtime checks sized to the change
+brief:                  |
+                        The checks the both option repeats in the
+                        runtime, port types and unfed inputs, need
+                        only the changed nodes and their neighbors, so
+                        their cost follows the size of the change, not
+                        the graph.
+description:            |
+                        Sources: The runtime repeats checks such as
+                        port types and unfed inputs
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_both.yaml
+                        lines 13-17). The earlier dynamic host already
+                        checked every edge when it wired it
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 67). ASSUMPTION: a port type check
+                        compares two type ids per edge, and an unfed
+                        input check looks at the edges into one node.
+                        Strength: moderate to strong; it holds at ten
+                        times the nodes as long as the repeated set
+                        leaves out whole-graph checks such as loops.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

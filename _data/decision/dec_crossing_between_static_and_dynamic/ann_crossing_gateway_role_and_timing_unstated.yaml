@@ -1,0 +1,67 @@
+id_self:                ann_crossing_gateway_role_and_timing_unstated
+guid_self:              ann_0c6bfcf6e1d64985811bc96cb5d488bf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gateway with unstated timing and a second job
+brief:                  |
+                        The gateway option does not say whether a
+                        value crosses in the same step or the next, so
+                        the tokens it gives are not yet defined, and
+                        once stated it reduces to one of the other two
+                        options with an extra node. It also gives a
+                        node a new role, static itself with fixed
+                        edges on one side and changing edges on the
+                        other, while the drafted gateway does a
+                        different job, turning asynchronous outside
+                        traffic into tokens, so one name would cover
+                        two jobs.
+description:            |
+                        Sources: A gateway node "gives the static
+                        edges a stable anchor and accepts dynamic
+                        edges on its other side"; it states no timing
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_gateway_nodes_at_the_boundary.yaml,
+                        brief). The drafted gateway node is the
+                        boundary between a segment and the outside
+                        world and "turns asynchronous traffic into
+                        Kahn tokens, and back", and an inbound gateway
+                        marks its output empty when nothing arrived
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 182-191). The owner asked whether all
+                        static nodes could cope with dynamic edges "so
+                        this becomes moot" (owner's statement,
+                        2026-10-24 12:33Z). ASSUMPTION: a gateway on a
+                        crossing edge adds a node, and so a call,
+                        between the two ends of that edge. Strength:
+                        moderate; the timing gap closes once the
+                        option states its timing, and the naming point
+                        weakens if the crossing between Kahn and actor
+                        parts also chooses gateways and the two jobs
+                        are made one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

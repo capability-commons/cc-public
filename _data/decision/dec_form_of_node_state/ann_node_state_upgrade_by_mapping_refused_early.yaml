@@ -1,0 +1,87 @@
+id_self:                ann_node_state_upgrade_by_mapping_refused_early
+guid_self:              ann_01475d124fe5408f842daf9047adfe03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State upgrade by the dictionary's mapping, refused before it is tried
+brief:                  |
+                        State as typed data lets the engine apply the
+                        data dictionary's field mappings itself, so a
+                        new node version needs only a mapping, and an
+                        upgrade with a new field that has no default
+                        can be refused by a check before it is
+                        attempted, as the owner asks. With opaque
+                        state, each node version carries hand-written
+                        upgrade code inside its hooks, with its own
+                        tests, and no check can see whether it is
+                        right. This rests on the data dictionary
+                        carrying mappings.
+description:            |
+                        Sources: the owner assumes that node state's
+                        type is given by a data dictionary item, says
+                        the dictionary "needs to support mappings for
+                        automatic data upgrades (where possible ...)",
+                        and an upgrade with new fields without
+                        defaults "should be blocked before it's
+                        attempted" (owner's statement, 2026-10-24
+                        12:33Z,
+                        /home/claude/work/advocates/engine2/owner-2026-10-24.md
+                        line 24). Typed state is held by the engine
+                        and handed to the node at each step, so the
+                        engine can copy, inspect and upgrade it
+                        (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                        lines 12-16). Opaque state is saved to bytes
+                        by the node's own hooks
+                        (opt_state_opaque_with_hooks.yaml lines
+                        12-16). Patrol's algorithm layer already holds
+                        explicit state structs such as SmallState,
+                        RegistrationState and ChainState
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 128-130). Erlang/OTP's hot upgrade has
+                        each process transform its state in a
+                        code_change callback written per module
+                        (https://www.erlang.org/doc/system/appup_cookbook.html),
+                        which shows the opaque form works at the cost
+                        of code per module. Automatic mappings exist
+                        only if the data dictionary carries upgrades,
+                        fully under dictionary items with upgrades and
+                        in part under an external schema language;
+                        this argument rests on that decision and on
+                        the swap decision, which is the main user of
+                        the upgrade. Strength: strong, and stronger
+                        with scale: upgrade code under the opaque form
+                        grows with nodes times versions, under the
+                        typed form it is fixed engine code plus one
+                        mapping per version.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_opaque_with_hooks
+    guid_target:        opt_5b9ea0eb14084527ad3a2fae46485523
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

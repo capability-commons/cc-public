@@ -1,0 +1,60 @@
+id_self:                ann_node_state_typed_block_passed_by_pointer
+guid_self:              ann_f7de16f0c3a9431bb7231b7540967e75
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine-held state passed by pointer each step
+brief:                  |
+                        Typed state the engine holds is one fixed-size
+                        block handed to the node by pointer each step,
+                        with no copy in the steady state, and a
+                        snapshot or upgrade is a bounded copy of known
+                        size. State on a feedback edge needs either a
+                        copy of the whole state each step or two
+                        buffers swapped each step, which doubles the
+                        memory for state.
+description:            |
+                        Sources: typed state is held by the engine and
+                        handed to the node at each step
+                        (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                        lines 12-16); in the earlier design state is
+                        one block the framework allocates
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 47-48), every buffer has a size known
+                        before the system starts (same file, lines
+                        148-151), and feedback edges point at a buffer
+                        the framework fills and primes on reset (lines
+                        42-44). Assumption: state on a feedback edge
+                        needs a copy or a double buffer per step,
+                        since the value read must be the one written
+                        in the step before. Strength: strong; the
+                        per-step cost is constant per node under typed
+                        state, while the feedback-edge cost grows with
+                        total state size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

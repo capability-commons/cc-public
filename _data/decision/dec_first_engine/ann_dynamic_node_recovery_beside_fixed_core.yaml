@@ -1,0 +1,61 @@
+id_self:                ann_dynamic_node_recovery_beside_fixed_core
+guid_self:              ann_749d68ba5a644023a03b42d141da0f95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node-level recovery beside a fixed core
+brief:                  |
+                        One engine with both subgraphs lets a faulty
+                        dynamic node be stopped, reset and rewired
+                        between steps while the static subgraph keeps
+                        its fixed, build-checked schedule. Neither
+                        older option alone gives both per-node
+                        recovery where the graph changes and no
+                        in-service wiring faults where it does not.
+                        The benefit is lost if the decision on
+                        crossing lets a dynamic fault stall the static
+                        schedule.
+description:            |
+                        Sources:
+                        - In a frozen schedule a node can only be
+                          switched off by its enable flag.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 35-40)
+                        - The dynamic host starts, stops, restarts and
+                          rewires only between steps, and refuses a
+                          mismatched wiring.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 67 and 70-72)
+                        - In the frozen case type checking happens in
+                          the generator before anything is compiled.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 59)
+                        - The owner wants one engine with a build-time
+                          immutable schedule and a run-time mutable
+                          schedule at once. (owner's statement,
+                          2026-10-24 12:33Z) Strength: holds at ten
+                          times the nodes; the more nodes, the more it
+                          matters that one can be recovered without
+                          restarting the rest.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

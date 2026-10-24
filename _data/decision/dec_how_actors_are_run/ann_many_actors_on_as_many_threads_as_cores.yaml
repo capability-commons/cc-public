@@ -1,0 +1,72 @@
+id_self:                ann_many_actors_on_as_many_threads_as_cores
+guid_self:              ann_dcee9470bafa4113876eda6873f1c63b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Many actors on as many threads as cores
+brief:                  |
+                        A shared pool runs many actors on as many
+                        threads as the board has cores, takes more
+                        actors without more threads, and uses cores
+                        the Kahn steps leave idle, without a
+                        configuration change. A thread per actor grows
+                        the thread count, with its stacks and context
+                        switches, with the number of actors rather
+                        than the cores.
+description:            |
+                        Sources: CAF, "Assigning a dedicated thread to
+                        each actor would not scale well"; CAF maps N
+                        actors onto M worker threads, a
+                        pre-dimensioned set, with work stealing by
+                        default
+                        (https://actor-framework.readthedocs.io/en/latest/core/Scheduler.html).
+                        The pool option runs actors alongside the
+                        threads that run Kahn steps
+                        (_data/decision/dec_how_actors_are_run/opt_actors_on_a_shared_thread_pool.yaml
+                        lines 11-15); the own-thread option blocks
+                        each actor on its mailbox
+                        (opt_actors_on_their_own_threads.yaml in the
+                        same folder, lines 11-14). The Orin Nano has
+                        six A78 cores, and the load beside the
+                        detector there is unmeasured
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 71-74). ASSUMPTION: each OS thread
+                        reserves its own stack. ASSUMPTION: pool
+                        threads can take cores the Kahn threads leave
+                        idle; the pool option says only that they run
+                        alongside them. Strength: strong at ten times
+                        the actors; with a handful of actors own
+                        threads cost little. The pool still needs OS
+                        threads, which is argued separately.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

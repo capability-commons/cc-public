@@ -1,0 +1,92 @@
+id_self:                ann_replay_log_holds_only_what_the_graph_leaves_open
+guid_self:              ann_58e661e5f45844e499fe23fd8f37b98f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Log of only what the graph and its nodes do not determine
+brief:                  |
+                        A run can be replayed if everything not fixed
+                        by the graph and its nodes is recorded: when
+                        each change set and swap took effect, each
+                        actor's message order, and every value from
+                        outside, the principle on which rr replays
+                        whole programs. If change sets are data items
+                        and actors run between steps, the first two
+                        are already recorded or fixed by the engine,
+                        so the log adds little beyond the outside
+                        inputs. The static-part option keeps two
+                        regimes, replayed and only inspected.
+description:            |
+                        Sources: the log option records the step of
+                        each change set and swap, each actor's
+                        messages in order and every outside value
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the static-part option records
+                        the dynamic part and actors for inspection
+                        without replay
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16). rr records and replays system call
+                        results and signals and runs one thread at a
+                        time
+                        (https://ar5iv.labs.arxiv.org/html/1705.05937).
+                        Kahn determinism, with the run id and
+                        configuration digest, lets anyone re-run a
+                        cited scenario and get the same tokens on
+                        every edge (_sources/mapping.md lines 19-20);
+                        Patrol checks each decomposition step by
+                        parity of dumps
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 172-177). Running actors between steps
+                        is chosen so a run can be replayed in the same
+                        order
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 12-16). Simplicity, a non-driver here,
+                        counts distinct mechanisms
+                        (_data/register/reg_concern.yaml lines
+                        488-490). This rests on how actors are run
+                        (between steps, the actor order is fixed by
+                        the engine and need not be logged) and on the
+                        change set at a step (each change set must
+                        take effect at one defined step, and be a data
+                        item to count as already recorded); otherwise
+                        the message-order log is a new mechanism.
+                        Strength: strong under those outcomes; the log
+                        grows with outside inputs, not with graph
+                        size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,67 @@
+id_self:                ann_latest_value_crossing_fits_one_slot
+guid_self:              ann_84cd61ac3f674b63b583cffdc22e47ae
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed memory and no extra call for latest-value crossings
+brief:                  |
+                        A latest-value or fold crossing on the edge
+                        keeps a fixed amount whatever arrives, by
+                        overwriting one slot in place at the step
+                        boundary, with no extra node to call. A
+                        gateway node at each crossing adds its own
+                        buffer and a call each step.
+description:            |
+                        Sources: the edge option turns messages into a
+                        token at the start of a step by latest value,
+                        all in order or a fold
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 11-18); the gateway option passes every
+                        crossing through a gateway node that buffers
+                        messages
+                        (opt_gateway_nodes_between_semantics.yaml in
+                        the same folder, lines 11-15). Every buffer
+                        has a size known before the system starts
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 145-151). Within one process an edge is
+                        the upstream node's output buffer itself, so
+                        an edge costs nothing (same file, lines
+                        41-44). ASSUMPTION: a latest-value policy
+                        needs one slot per edge, and a gateway needs
+                        its own buffer and a call per step. Only "all
+                        of them in order" needs a bounded queue.
+                        Strength: moderate; the saving is per crossing
+                        edge and small per step, and holds at ten
+                        times the nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

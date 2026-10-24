@@ -1,0 +1,62 @@
+id_self:                ann_replay_none_is_the_least_code_to_keep_in_step
+guid_self:              ann_73a5846d0a7f439285547be4045ad164
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No replay as the least code to keep in step
+brief:                  |
+                        No replay with live changes adds nothing to
+                        maintain: no log format, no recording in the
+                        change-set and swap paths, no replay tool to
+                        keep in step with the engine and the data
+                        dictionary's versions. If live changes are
+                        rare in practice, the code saved may outweigh
+                        the faults it would help find.
+description:            |
+                        Sources: a run is replayable only while no
+                        change set or swap is applied
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_no_replay_with_live_changes.yaml
+                        lines 12-14); the log option records
+                        change-set steps, actor messages and outside
+                        values (opt_replay_from_a_recorded_log.yaml
+                        lines 12-19). Patrol's first users choose
+                        variants by configuration with no automatic
+                        switching for now
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 86-87). Assumptions: a replay tool and
+                        log reader must change whenever the change-set
+                        format, the swap protocol or the data
+                        dictionary changes; logged values are typed by
+                        the data dictionary, so a log written under
+                        one type version must be read under it or
+                        upgraded by the same mappings as state.
+                        Strength: weak; it holds while live changes
+                        are rare and weakens with each system that
+                        relies on them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

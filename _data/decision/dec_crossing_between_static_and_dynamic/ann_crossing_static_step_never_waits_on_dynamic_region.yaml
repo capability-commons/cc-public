@@ -1,0 +1,100 @@
+id_self:                ann_crossing_static_step_never_waits_on_dynamic_region
+guid_self:              ann_d8fb954979954a8f980e7407b5dc1ef8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static step kept apart from dynamic work and faults
+brief:                  |
+                        With a one-step delay the static schedule
+                        never waits on the dynamic subgraph, so a
+                        dynamic region that runs long, hangs, faults
+                        or is being changed cannot stretch or end the
+                        static step, the static part's time to a safe
+                        state does not depend on it, and the two parts
+                        can run on different cores or even different
+                        kinds of platform. A fixed call slot runs the
+                        dynamic region inline in the static order, so
+                        the static step inherits its worst case and
+                        its faults; a pointer handover removes the
+                        copy but not this wait.
+description:            |
+                        Sources: In the delay option "the static
+                        schedule never waits on the dynamic subgraph",
+                        and a static input takes the value of the step
+                        before or an explicit empty token
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml
+                        lines 11-19). In the fixed-slot option the
+                        static schedule holds a call slot for each
+                        dynamic region and values cross in the same
+                        step (opt_same_step_through_fixed_slots.yaml
+                        in the same folder, lines 11-21). The
+                        generated process step returns as soon as one
+                        node returns a signal other than continue, so
+                        the nodes after it do not run in that step
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 46-50). An inbound gateway turns loss
+                        and delay into explicit empty tokens (same
+                        file, lines 190-191). A frozen schedule is a
+                        straight-line list of direct calls (same file,
+                        lines 35-40), while the dynamic host relies on
+                        dlopen (same file, line 65). The register
+                        measures time to reach a safe state after a
+                        failure (_data/register/reg_concern.yaml line
+                        442). The owner wants placement to reach
+                        systems with no OS (owner's statement,
+                        2026-10-24 13:06Z) and doubts the delay is
+                        needed (12:49Z, answer 2). ASSUMPTION: handing
+                        over pointers removes the copy but not the
+                        wait for the dynamic node to finish writing
+                        within the step. ASSUMPTION: a value of the
+                        step before must stay readable while the new
+                        one is written, so each such edge holds two
+                        buffers, which with a step of latency is the
+                        price. Strength: strong for fault isolation
+                        and hard-timed systems, and stronger as the
+                        dynamic subgraph grows; weak for performance
+                        where dynamic work is light. It does not
+                        answer the latency point, which weighs the
+                        other way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

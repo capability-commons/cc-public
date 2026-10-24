@@ -1,0 +1,84 @@
+id_self:                ann_swap_live_needs_a_code_loader_on_target
+guid_self:              ann_6c612cfc97cf4e9fa3dc27454bac3dc4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Code loader a live swap needs where it runs
+brief:                  |
+                        Both live swaps need version n+1's code in the
+                        running process: on Linux that is dlopen, and
+                        on a target with no OS or no loader it means
+                        linking every version ahead of time. No live
+                        swap needs neither, so it is the floor every
+                        platform shares, and the live options must
+                        fall back to it where no loader exists.
+description:            |
+                        Sources: the Stableflow dynamic host dlopens
+                        component libraries named in configuration
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 65); dlopen is a POSIX interface
+                        (https://pubs.opengroup.org/onlinepubs/9699919799/functions/dlopen.html).
+                        A macro gives each component's functions
+                        unique names, so many components can link into
+                        one binary (execution_levels.md lines 16-17).
+                        The owner wants the engine to reach embedded
+                        systems with no OS (owner's statement,
+                        2026-10-24 13:06Z) and to support the swap of
+                        version n for n+1 (12:33Z). The swap at a step
+                        keeps the old state until the new version
+                        completes a step, so both versions are present
+                        at once
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); Erlang likewise keeps current
+                        and old code of a module, both valid at once
+                        (https://erlang.org/doc/system/code_loading).
+                        Without a live swap, a new version takes
+                        effect when its OS process restarts
+                        (opt_no_live_swap.yaml lines 12-15).
+                        Assumptions: a target with no OS has no
+                        dynamic loader; unique names per version would
+                        let n and n+1 link together, so such a target
+                        could swap only to versions it was built with.
+                        This rests on where mutability is declared: a
+                        node that must be static never swaps live.
+                        Strength: moderate; the loader is one platform
+                        dependency, not one per node, and it bounds
+                        where the live options apply rather than
+                        ruling them out.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_live_swap
+    guid_target:        opt_be2339eb63b448ba8ca14c908c3ab9af
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

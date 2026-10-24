@@ -1,0 +1,46 @@
+id_self:                ann_crossing_gateway_adds_a_call_per_boundary_edge
+guid_self:              ann_f99c2734dac94d45843341b870cb5b61
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extra node call and copy at each gateway
+brief:                  |
+                        A gateway node on every boundary edge adds a
+                        node call per edge per step and, if it latches
+                        its input into its own output as the earlier
+                        gateway did, a copy of the value.
+description:            |
+                        Sources: Every edge between the subgraphs
+                        passes through a static gateway node
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_gateway_nodes_at_the_boundary.yaml
+                        lines 12-16). The earlier gateway latches what
+                        arrived into an edict output
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-191). ASSUMPTION: a gateway between
+                        two in-process subgraphs could forward a
+                        pointer rather than copy, which would reduce
+                        the cost to one call. Strength: weak; the cost
+                        is per boundary edge and small against a 33 ms
+                        step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

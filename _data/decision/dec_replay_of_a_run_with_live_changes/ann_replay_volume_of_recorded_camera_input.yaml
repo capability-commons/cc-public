@@ -1,0 +1,99 @@
+id_self:                ann_replay_volume_of_recorded_camera_input
+guid_self:              ann_f341fb59d2e946efa8f2cfef6dbf3247
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Volume of recorded outside input on a target with fixed storage
+brief:                  |
+                        Replay needs every value that entered the
+                        graph from outside to be recorded; for a
+                        camera system that is the video, which costs
+                        storage bandwidth and space for the whole run
+                        and wears flash, while change sets and step
+                        numbers cost little. On a target with fixed
+                        storage, a full log must either stop and lose
+                        replay or stall the system, so the option
+                        should state that logging never holds up a
+                        step, what it drops first, and that it can be
+                        bounded or switched off per target. Replay of
+                        the static part still records the inputs
+                        entering the static part, so it saves little.
+description:            |
+                        Sources: the log option records every value
+                        that entered the graph from outside, the
+                        messages each actor received and the step of
+                        each change set and swap
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the static-part option replays
+                        the static subgraph from the values that
+                        entered it and records the dynamic part for
+                        inspection
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16); no replay needs no log
+                        (opt_no_replay_with_live_changes.yaml lines
+                        12-14). Patrol's Orin configuration takes a
+                        720p 30 Hz stream
+                        (_sources/cc-patrol-notes/plan.md lines
+                        181-182), received as RTP video
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 94-96). High-rate writes would wear the
+                        Orin's eMMC or NVMe, and tmpfs does not
+                        survive a reboot
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 145-148). Every buffer has a fixed
+                        capacity
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 145-151). Assumptions: the log is about
+                        the size of the outside inputs over the run;
+                        recording the encoded RTP stream before decode
+                        would cut the volume by a large factor, if the
+                        decoder counts as deterministic. Answers: a
+                        bounded ring buffer that keeps the last N
+                        steps meets most of it. The cost is the same
+                        whether or not live changes happen, so it
+                        bears on replay in general more than on live
+                        changes. Strength: moderate; it grows with
+                        input rate and run length, not with node
+                        count.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

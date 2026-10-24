@@ -1,0 +1,74 @@
+id_self:                ann_crossing_same_step_keeps_results_of_a_moved_node
+guid_self:              ann_47a9264fcb4e45358e8eab94fc74fb35
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same results when a node moves between subgraphs
+brief:                  |
+                        With a one-step delay into static nodes,
+                        moving an upstream node from static to dynamic
+                        changes the tokens on every edge downstream of
+                        it, so parity results and test expectations
+                        change with a configuration choice. Crossing
+                        in the same step through fixed slots keeps the
+                        tokens an all-static schedule would give, so
+                        the move stays a change of placement alone.
+description:            |
+                        Sources: Under the delay option a static input
+                        fed from a dynamic node takes the value of the
+                        step before
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml
+                        lines 13-18). Under the fixed-slot option
+                        values cross in the same step by handing over
+                        buffer pointers
+                        (opt_same_step_through_fixed_slots.yaml in the
+                        same folder, lines 13-14). The owner wants the
+                        same node code to run statically or
+                        dynamically, and asked "Is a one step delay
+                        *really* necessary? ... Surely we're just
+                        swapping out pointers to buffers?" (owner's
+                        statement, 2026-10-24 12:49Z, answers 1 and
+                        2). Within a process an input slot points at
+                        the upstream output buffer itself
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44). Each Patrol decomposition step
+                        ends with detector dump parity
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 175-176). Strength: strong, and stronger
+                        with scale, since every node moved across the
+                        boundary shifts the timing of everything
+                        downstream of it. A gateway that passes values
+                        within the step would share this benefit, but
+                        the gateway option does not state its timing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,90 @@
+id_self:                ann_spread_execution_unit_as_containment_boundary
+guid_self:              ann_cb0508f8a64340e0b4a2d4a8edabc3ff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Execution unit as a boundary that contains and isolates
+brief:                  |
+                        Placement on hosts and execution units gives
+                        every node a stated unit that can be watched,
+                        restarted and, where it is an OS process or a
+                        partition, used to contain a crash or keep
+                        nodes of different trust apart; with state in
+                        mapped files a crashed unit can resume from
+                        its last committed step. A worker pool chooses
+                        placement at run time, so it states no such
+                        unit. The benefit holds only where a system
+                        chooses processes or partitions, not threads
+                        or bare cores.
+description:            |
+                        Sources: An execution unit may be an OS
+                        process, a thread or a core with no OS, each
+                        on a host, and values cross between units at
+                        step boundaries
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                        lines 11-24). The worker-pool option chooses
+                        placement at run time
+                        (opt_ready_nodes_on_a_worker_pool.yaml in the
+                        same folder, lines 11-17). A process
+                        controller reports the load and exceptions of
+                        its process
+                        (_data/interface_control_document/icd_process_controller.yaml
+                        lines 65-70), and the system controller halts
+                        the system on such an exception
+                        (_data/interface_control_document/icd_system_controller.yaml
+                        lines 21-24). With MAP_SHARED a dead process's
+                        dirty pages stay in the page cache and a
+                        crashed process can resume from its last
+                        committed step; that option is not the default
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 130-151). ARINC 653 partitions keep
+                        faults from propagating, and fault handling
+                        tied to its health monitoring can restart them
+                        (https://ptolemy.berkeley.edu/projects/chess/hcssas/papers/GoldbergPositionPaper.pdf);
+                        partitioning enforces fault containment
+                        (https://arxiv.org/pdf/1508.07066, section
+                        2.2). The owner wants the placement terms to
+                        cover threads and systems with no OS (owner's
+                        statement, 2026-10-24 13:06Z). ASSUMPTION:
+                        threads in one process share an address space,
+                        so a thread or bare-core unit does not contain
+                        a memory fault. Strength: strong for
+                        OS-process units, at ten times the nodes as
+                        well; weak for thread or bare-core units.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placement_on_hosts_and_execution_units
+    guid_target:        opt_bab4855931d44ea68de31f0b2bb09056
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

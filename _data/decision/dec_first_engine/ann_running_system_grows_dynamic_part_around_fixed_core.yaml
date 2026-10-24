@@ -1,0 +1,68 @@
+id_self:                ann_running_system_grows_dynamic_part_around_fixed_core
+guid_self:              ann_383bfba2c2e54709a8a433283d9e0437
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Running system that grows or shrinks its dynamic part
+brief:                  |
+                        The new option lets one deployed build keep a
+                        fixed, generated core and add or remove nodes
+                        as the load on it changes, without rebuilding
+                        the core. A frozen-only engine needs a rebuild
+                        for every such change, and a loading runtime
+                        keeps a generated core only as frozen islands
+                        loaded as nodes.
+description:            |
+                        Sources:
+                        - The flexibility concern asks whether the
+                          system can be scaled up or down as the load
+                          changes. (_data/register/reg_concern.yaml
+                          lines 349-352)
+                        - Only the dynamic subgraph supports nodes and
+                          edges added, moved or removed at the start
+                          of a step. (owner's statement, 2026-10-24
+                          12:33Z)
+                        - In a frozen schedule only a per-node enable
+                          flag changes at run time.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 39-40)
+                        - Loosely coupled systems have variable
+                          numbers of platforms, so a fixed topology
+                          cannot be assumed.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 174-176) A frozen subgraph can be
+                          loaded as one node of a dynamic graph. (same
+                          file, lines 74-80) Strength: moderate; it
+                          holds at ten times the systems, but the
+                          first Patrol variants are chosen by
+                          configuration with no automatic switching
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 86-87), so the need is later, not
+                          first.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

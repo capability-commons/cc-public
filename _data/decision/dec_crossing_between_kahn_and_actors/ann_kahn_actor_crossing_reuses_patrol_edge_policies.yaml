@@ -1,0 +1,91 @@
+id_self:                ann_kahn_actor_crossing_reuses_patrol_edge_policies
+guid_self:              ann_7799b2d5b33b4250a40824340104b93a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Crossing rule as the edge policy Patrol already names
+brief:                  |
+                        A crossing policy on the edge states exactly
+                        which token a Kahn step sees from the messages
+                        that arrived, using delivery policies the
+                        Patrol draft graph already puts on its edges,
+                        so changing it is one field. A gateway node
+                        per crossing does the same job a second way,
+                        with one node and one edge more per crossing.
+                        This rests on the decision on edge policy
+                        putting policy on the edge; if that is
+                        deferred, this option brings it forward.
+description:            |
+                        Sources: the edge option "declares how
+                        messages that arrive between steps become a
+                        token at the start of a step, such as the
+                        latest value, all of them in order, or a fold,
+                        with an explicit empty token when none
+                        arrived"
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 11-18). The Patrol draft allows named
+                        policies by edge kind, among them
+                        latest_value, newest_frame,
+                        bounded_counted_loss, ordered and
+                        ordered_acknowledged
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 45-51); of the 41 edges of the Patrol
+                        base draft, 11 state latest_value and 8 state
+                        ordered
+                        (_sources/cc-patrol-notes/draft/dfg_patrol.yaml,
+                        count of policy lines). Patrol's graph needs
+                        capacity, initial tokens and named boundary
+                        adapters on edges
+                        (_sources/cc-patrol-notes/plan.md lines
+                        81-84), and cross-host edges need a declared
+                        delivery policy (same file, lines 168-171).
+                        The gateway option routes every crossing
+                        through a gateway node that buffers messages
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_gateway_nodes_between_semantics.yaml
+                        lines 11-15). Whether edges state a policy is
+                        open in the decision on edge policy, which has
+                        no ruling (_data/decision/dec_edge_policy/).
+                        Strength: strong for functional suitability
+                        and maintainability, and it grows with scale,
+                        since each crossing adds one field under the
+                        edge option and one node and one edge under
+                        the gateway option. For simplicity, a
+                        non-driver here, strong if policy goes on the
+                        edge and moderate otherwise.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

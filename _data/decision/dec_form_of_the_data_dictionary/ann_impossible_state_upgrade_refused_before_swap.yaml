@@ -1,0 +1,109 @@
+id_self:                ann_impossible_state_upgrade_refused_before_swap
+guid_self:              ann_3d7ac4a190134747aa1acf0c207b82a5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Impossible state upgrade refused before the swap
+brief:                  |
+                        The owner asked that an upgrade that cannot be
+                        done be blocked before it is attempted. A
+                        mapping per field, checked before a swap is
+                        sent and applied by one engine routine,
+                        refuses such an upgrade before anything
+                        changes and runs no upgrade code supplied with
+                        the new version. Hand-written upgrades between
+                        hashed descriptors are code that no check
+                        named by that option looks at before it runs,
+                        and an external schema language reports a
+                        missing default when it resolves a writer's
+                        schema against a reader's for reading, unless
+                        its compatibility rules are also run ahead.
+                        Its weight rests on the decisions on swapping
+                        a node version and on the form of node state.
+description:            |
+                        Sources:
+                        - An upgrade with new fields without defaults
+                          "should be blocked before it's attempted".
+                          (owner's statement, 2026-10-24 12:33Z)
+                        - The items option fails an upgrade with a new
+                          field that has no default.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_items_with_upgrades.yaml
+                          lines 17-18)
+                        - The array descriptor option has upgrades
+                          written by hand and names no check.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_of_array_descriptors.yaml
+                          lines 11-16)
+                        - In Avro, if the reader's record has a field
+                          with no default that the writer lacks, Avro
+                          reports an error when it resolves data being
+                          read.
+                          (https://avro.apache.org/docs/1.11.1/specification/;
+                          https://java-browser.yawk.at/org.apache.avro/avro/1.9.1/org/apache/avro/Resolver.java)
+                          flatc --conform checks a schema's evolution
+                          against a base schema.
+                          (https://flatbuffers.dev/evolution/)
+                        - ASSUMPTION: cctool could run Avro's or
+                          FlatBuffers' compatibility rules ahead of
+                          time, which would close most of the gap for
+                          the external option. A "converted" field is
+                          an exception to "no upgrade code" unless
+                          conversions come from a fixed set.
+                        - If live swap is ruled out, or state is
+                          opaque with hooks, upgrades move out of the
+                          dictionary and this need with them.
+                          (_data/decision/dec_swap_of_a_node_version/;
+                          _data/decision/dec_form_of_node_state/)
+                          Strength: holds at ten times the systems for
+                          traceability; grows with the number of types
+                          for reliability; moderate for safety and
+                          security. Reliability, safety and security
+                          do not drive the dataflow model; their
+                          points are kept because they concur on the
+                          same premise.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_of_array_descriptors
+    guid_target:        opt_1c83a4e30daf4f9eaaf552430b07212b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

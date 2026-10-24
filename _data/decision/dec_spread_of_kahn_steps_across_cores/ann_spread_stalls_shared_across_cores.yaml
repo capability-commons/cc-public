@@ -1,0 +1,67 @@
+id_self:                ann_spread_stalls_shared_across_cores
+guid_self:              ann_819de6166ecd4f1e988e94d4e3fe3326
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stalls and faults shared across cores
+brief:                  |
+                        Generated per-core schedules wait on each
+                        other within a step, so a core that stalls
+                        stalls the others at the next wait; a worker
+                        pool shows an overrun on different nodes in
+                        different runs; pipelined steps keep several
+                        steps in flight, so after a fault later stages
+                        must flush or finish steps that rest on bad
+                        data. Each has known fixes, such as timeouts
+                        and a flush on fault.
+description:            |
+                        Sources: The generator option writes one
+                        schedule per core with the waits between them;
+                        the worker-pool option chooses placement at
+                        run time; the pipelined option overlaps
+                        successive steps across stages
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml,
+                        opt_ready_nodes_on_a_worker_pool.yaml and
+                        opt_steps_pipelined_across_cores.yaml,
+                        briefs). Under the placement option values
+                        cross between units at the boundaries of a
+                        step
+                        (opt_placement_on_hosts_and_execution_units.yaml,
+                        brief). ASSUMPTION: a wait between cores has
+                        no timeout unless the engine adds one.
+                        Strength: moderate; these are design problems,
+                        not reasons to reject an option, and the
+                        generator's fixed schedules make a stall
+                        reproducible.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_steps_pipelined_across_cores
+    guid_target:        opt_86fd3ca3ec4a40bdb1c0a5d55489b898
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

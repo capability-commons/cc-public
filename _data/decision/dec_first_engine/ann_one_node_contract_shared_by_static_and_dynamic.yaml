@@ -1,0 +1,97 @@
+id_self:                ann_one_node_contract_shared_by_static_and_dynamic
+guid_self:              ann_b2c763a9c5384252b72ea3508793ec37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One node contract shared by both subgraphs
+brief:                  |
+                        The shared node interface, edge buffer, state
+                        form and step protocol of the new option are
+                        the contract the Stableflow drafts already use
+                        for frozen and dynamic components, kept as one
+                        rather than added. A node can therefore give
+                        the same outputs in either subgraph, so a test
+                        in one is evidence for the other, and its code
+                        depends on one C-linkage header whichever way
+                        it is configured. Whole-graph results stay the
+                        same when a node moves only if the decision on
+                        how values cross from the dynamic to the
+                        static subgraph adds no delay.
+description:            |
+                        Sources:
+                        - Static or dynamic is "a property of how it's
+                          configured. In general, the same code should
+                          be able to be run statically or
+                          dynamically". (owner's statement, 2026-10-24
+                          12:49Z, answer 1)
+                        - Frozen and dynamic subgraphs "have to work
+                          from the same component source"; a component
+                          is written once and built either as a static
+                          library called by generated code or as a
+                          shared library looked up by the loader.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 5-31)
+                        - Every component exports the same C-linkage
+                          reset, step and finalize functions in one
+                          header, and the framework owns all memory.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 21-39)
+                        - The engine and node ABI are recommended to
+                          stay C++17 with C linkage, with nodes free
+                          to use C++20 inside.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          95-98)
+                        - The new option shares one node interface,
+                          one form of edge buffer, one form of node
+                          state and one step protocol from the first
+                          version.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 12-21)
+                        - Patrol's drafted analysis interface promises
+                          the same results, bit for bit, for a given
+                          sequence of frame steps and commands.
+                          (_sources/cc-patrol-notes/draft/tools/icd_table.py
+                          line 110)
+                        - One option of the crossing decision delays a
+                          value from dynamic into static by one step.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml)
+                          Strength: strong for simplicity, since the
+                          count of contracts stays at one at any
+                          scale; moderate to strong for functional
+                          suitability, falling to moderate if the
+                          crossing adds a delay; moderate for
+                          dependency risk, since the drafted levels
+                          already share the contract, so the gain over
+                          the older options is small.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

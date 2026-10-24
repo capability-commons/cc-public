@@ -1,0 +1,90 @@
+id_self:                ann_change_set_checked_as_an_item_before_sending
+guid_self:              ann_e48cd46874cf40a49a474fef019765c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change set checked and kept as an item before it is sent
+brief:                  |
+                        When cctool checks a change set in full before
+                        it is sent, a change that would leave an input
+                        unfed, join mismatched ports or close a loop
+                        without a feedback edge is found on the desk
+                        rather than refused in service, and the change
+                        set is an item that can be reviewed, tested
+                        and given reasons in the graph. A runtime-only
+                        check finds the same fault only once the
+                        change reaches the running system, and leaves
+                        no item for a reason to attach to.
+description:            |
+                        Sources: cctool already checks unfed inputs,
+                        port type mismatches and feedforward loops
+                        (src/cctool/check/check.lp lines 3184-3189,
+                        3229-3233 and 3285-3286). In the cctool-first
+                        option a change set is a data item checked
+                        against the graph before it is sent, and in
+                        the both option cctool checks it in full
+                        before it is sent
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                        and opt_change_set_checked_by_both.yaml,
+                        briefs); the runtime option checks in C++ and
+                        does not say the change set is an item
+                        (opt_change_set_checked_by_the_runtime.yaml,
+                        brief). Reconfiguration within a segment
+                        "should select from a finite set of
+                        pre-validated topologies (modes)" so a safety
+                        case covers the deployed configuration
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 212-215). An earlier argument holds that
+                        a runtime refusal keeps a defined fallback but
+                        gives up build-time assurance
+                        (_data/decision/dec_first_engine/ann_runtime_refuses_a_mismatched_wiring.yaml,
+                        brief). An annotation or decision may be about
+                        any item (_data/register/reg_relation.yaml
+                        lines 167-186). ASSUMPTION: under the both
+                        option the change set is held as an item,
+                        since cctool checks items. Strength: strong;
+                        at ten times the nodes a hand review becomes
+                        impractical, and at ten times the systems only
+                        items can be followed back.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

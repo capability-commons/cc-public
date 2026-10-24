@@ -1,0 +1,95 @@
+id_self:                ann_two_way_reading_for_partners_at_other_versions
+guid_self:              ann_5a9cdf01831d47a7bf88e3338be0b295
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two-way reading for partners at other versions
+brief:                  |
+                        The owner's upgrade mapping turns old data
+                        into new, in place, in one direction. A
+                        partner that exchanges data with a system
+                        often runs another version and needs older
+                        readers to read newer data as well as the
+                        reverse; external schema languages have tested
+                        rules for both and partners' own tools use
+                        them. Dictionary items match this only if
+                        every mapping can also be read backward or
+                        each outward-facing type is also emitted in
+                        such a language. This rests on the open
+                        decisions on port types, on the form of node
+                        state and on swapping a node version.
+description:            |
+                        Sources:
+                        - Node state from the last step at version n
+                          is upgraded in place to the state for
+                          version n+1. (owner's statement, 2026-10-24
+                          12:33Z)
+                        - Under the items option a new version names
+                          the version it upgrades and a mapping per
+                          field.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_items_with_upgrades.yaml
+                          lines 11-18)
+                        - In Avro resolution a field the reader lacks
+                          is ignored, a field the writer lacks takes
+                          the reader's default or signals an error,
+                          and aliases let a renamed field be read.
+                          (https://avro.apache.org/docs/1.7.6/spec)
+                        - In FlatBuffers, new fields go at the end,
+                          fields are deprecated rather than removed,
+                          and renames are safe because names are not
+                          stored. (https://flatbuffers.dev/evolution/)
+                        - The track stream is read by the console like
+                          any outside system, and its protocol is
+                          still open.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 82-85;
+                          _sources/cc-patrol-notes/draft/icd-list.md
+                          line 36)
+                        - Where a recognized standard covers the
+                          ground, its structure is the starting
+                          position.
+                          (_data/decision/dec_follow_standards_by_default/ruling_follow_standards_by_default.yaml
+                          lines 11-17; that ruling is about
+                          cc-public's vocabulary, so this is an
+                          extension)
+                        - ASSUMPTION: a "converted" field has no
+                          defined reverse. ASSUMPTION: many likely
+                          partners already describe payloads in
+                          Protocol Buffers, Avro, FlatBuffers or ROS
+                          messages. Strength: strong at ten times the
+                          systems, as more partners mean more version
+                          skew; it does not bear on state inside one
+                          engine, where the one-way upgrade is all
+                          that is needed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_of_array_descriptors
+    guid_target:        opt_1c83a4e30daf4f9eaaf552430b07212b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
