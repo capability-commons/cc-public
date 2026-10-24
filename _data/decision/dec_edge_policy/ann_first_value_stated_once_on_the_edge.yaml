@@ -1,0 +1,79 @@
+id_self:                ann_first_value_stated_once_on_the_edge
+guid_self:              ann_f0913276e5ff4e65a697fd48a2e17cfd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First values stated once on the edge
+brief:                  |
+                        The engine options now open need a stated
+                        value where none has yet been written: at the
+                        first invocation of a feedback edge, and as
+                        the explicit empty token when no message
+                        arrived at a crossing. An optional input says
+                        only that a value may be absent, not what it
+                        is. A first value on the edge states it in the
+                        graph, where the checks and a reader see it,
+                        instead of in the engine.
+description:            |
+                        Sources: a feedback edge's value comes from
+                        the invocation before
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        200-203), and nothing states the first one
+                        (_data/decision/dec_edge_policy/ann_first_value_of_feedback_edge_unstated.yaml,
+                        description). An input can be stated optional,
+                        so that "an invocation may run with no value
+                        here"
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 447-451). The crossing policy option
+                        gives "an explicit empty token when none
+                        arrived"
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 16-17). The engine draft has the
+                        framework prime feedback buffers on reset
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44), so the value lives in engine
+                        code. Assumption: a static region that reads
+                        from a dynamic one in the same step also needs
+                        a stated value for a step where the dynamic
+                        writer is absent; the decision on the crossing
+                        between static and dynamic nodes does not yet
+                        say. Strength: moderate; one recorded graph
+                        has a feedback edge today, and the need grows
+                        with each feedback edge and crossing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
