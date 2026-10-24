@@ -20,9 +20,10 @@ description:            |
                         come from sch_standalone. The edges come from
                         sch_trait_edge. Beyond them, an interface
                         control document carries the version of its
-                        interface, the declarations its surfaces
-                        share, and one or more surfaces, each filed
-                        under a short local key.
+                        interface, whether the interface is offered to
+                        peers, the declarations its surfaces share,
+                        and one or more surfaces, each filed under a
+                        short local key.
 
                         A surface holds exactly one of three forms. A
                         native surface presents the interface as an
@@ -78,6 +79,7 @@ allOf:
 
     required:
       - version_interface
+      - exposure
       - surface
 
     properties:
@@ -88,6 +90,22 @@ allOf:
         description:    |
                         The version of the interface this document
                         states.
+
+      exposure:
+        type:           string
+
+        enum:
+          - peer
+          - internal
+
+        description:    |
+                        Whether the interface is offered to peers. A
+                        peer interface is public: every surface and
+                        member of it is judged under SemVer, whatever
+                        its form. An internal one is private, and may
+                        change in any release. This is not the
+                        protective mark, which says who may read the
+                        document.
 
       declaration:
         type:           object
