@@ -1,0 +1,2306 @@
+id_self:                icd_cctool_command_line
+guid_self:              icd_56b1de24ac56416ab76f3ee826f4de2f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Command line interface
+brief:                  |
+                        The commands of cctool, the parameters each
+                        takes, the statuses it exits with, and the
+                        JSON a script may read.
+description:            |
+                        A peer runs these commands in its own hooks
+                        and scripts. What is promised is the commands,
+                        their parameters, the exit statuses and the
+                        named JSON outputs. What a command prints for
+                        a person to read, such as its help, its
+                        messages, its tables and the wording of a
+                        failure, is not promised. Every command also
+                        takes --help, which is click's own.
+version_interface:      '0.1'
+support:                supported
+
+surface:
+
+  cli:
+
+    command_line:
+      program:          cctool
+
+      parameter:
+
+        - id_self:      icm_cctool_command_line.version
+          guid_self:    icm_23ce57054a7246c290709810bfcb18d1
+          name:         --version
+          brief:        |
+                        Show the version and exit.
+          kind:         option
+
+          type:
+            spelling:   boolean
+
+          default:      'false'
+          optional:     true
+          variadic:     false
+          flag:         true
+
+      command:
+
+        batch:
+          id_self:      icm_cctool_command_line.batch
+          guid_self:    icm_d6c7db0442c846cba40a57a3b60fec7b
+          name:         batch
+          brief:        |
+                        Make the operations listed in the YAML file
+                        path_file as one edit.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.batch.path_file
+              guid_self:  icm_8afba0cdfc27490691a533d5a18e17f2
+              name:     path_file
+              brief:    |
+                        The YAML file that lists the operations, or -
+                        for stdin.
+              kind:     argument
+
+              type:
+                spelling:  filename
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.batch.root
+              guid_self:  icm_a99f0c291e004e179c0022a922e9b851
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.batch.dry_run
+              guid_self:  icm_2a267b4137ae460e9b85136a971ff468
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        check:
+          id_self:      icm_cctool_command_line.check
+          guid_self:    icm_6ce2b200d9db48b999b3d7b21c306b8c
+          name:         check
+          brief:        |
+                        Check the tree under --root.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.check.root
+              guid_self:  icm_d3d9e079c48f46278ca50c0818315118
+              name:     --root
+              brief:    |
+                        The tree to check. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+        export:
+          id_self:      icm_cctool_command_line.export
+          guid_self:    icm_44689e17e0324a4b9a60d82a812c60eb
+          name:         export
+          brief:        |
+                        Export the graph of data items as pages of
+                        markdown, for other tools to read.
+
+          command:
+
+            obsidian:
+              id_self:  icm_cctool_command_line.export.obsidian
+              guid_self:  icm_f2639c71ae784db6bc124b1c35edbaea
+              name:     obsidian
+              brief:    |
+                        Write the graph as an Obsidian vault in the
+                        folder dir_out.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.export.obsidian.dir_out
+                  guid_self:  icm_0f89c53e70e144328108ef8eb8f4d8cd
+                  name:  dir_out
+                  brief:  |
+                        The folder to write the pages to.
+                  kind:  argument
+
+                  type:
+                    spelling:  path
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.export.obsidian.root
+                  guid_self:  icm_4e0c2db318664ebba64b4f40266dd362
+                  name:  --root
+                  brief:  |
+                        The tree to export. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.export.obsidian.replace
+                  guid_self:  icm_efa82c7000df4ace8b4f094364f87bb3
+                  name:  --replace
+                  brief:  |
+                        Remove the pages already in dir_out first, and
+                        keep its other files, such as the settings of
+                        a viewer.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+            okf:
+              id_self:  icm_cctool_command_line.export.okf
+              guid_self:  icm_4664ad43d57e4b8f895d23cb87e9707e
+              name:     okf
+              brief:    |
+                        Write the graph as an Open Knowledge Format
+                        bundle in the folder dir_out.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.export.okf.dir_out
+                  guid_self:  icm_f20ae3f8fc6f48d58fb8bebf0e96bce1
+                  name:  dir_out
+                  brief:  |
+                        The folder to write the pages to.
+                  kind:  argument
+
+                  type:
+                    spelling:  path
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.export.okf.root
+                  guid_self:  icm_5478d685202249eaa0ba28a3e98d4da0
+                  name:  --root
+                  brief:  |
+                        The tree to export. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.export.okf.replace
+                  guid_self:  icm_163434d1be3a4735871cac944ed1071f
+                  name:  --replace
+                  brief:  |
+                        Remove the pages already in dir_out first, and
+                        keep its other files, such as the settings of
+                        a viewer.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+        format:
+          id_self:      icm_cctool_command_line.format
+          guid_self:    icm_999e1e2ae8074dce9f0f0521f10f09aa
+          name:         format
+          brief:        |
+                        Lay out every YAML document in the tree under
+                        --root: the YAML files under _data, the module
+                        docstrings of python modules, and the comment
+                        headers of other files.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.format.root
+              guid_self:  icm_292b1e390acf422e834c07f0628b5165
+              name:     --root
+              brief:    |
+                        The tree to lay out. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.format.check
+              guid_self:  icm_efbc109293254269bb38519b13f3919b
+              name:     --check
+              brief:    |
+                        Name the files that would change, and write
+                        nothing. The exit status is 1 when any would.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        friction:
+          id_self:      icm_cctool_command_line.friction
+          guid_self:    icm_03443e834c73473ebaa12613fbfa3345
+          name:         friction
+          brief:        |
+                        Report the signals of friction in the tree
+                        under --root.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.friction.root
+              guid_self:  icm_a86cd8bdbb0b4b72be5f92d3c5da815f
+              name:     --root
+              brief:    |
+                        The tree to read. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+        gate:
+          id_self:      icm_cctool_command_line.gate
+          guid_self:    icm_1d21317884694a048fea7b4fa7b12b26
+          name:         gate
+          brief:        |
+                        Check, lint and test what a commit of the
+                        repository would record.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.gate.root
+              guid_self:  icm_e40f8ad39d094677b4c73e7beb0e9626
+              name:     --root
+              brief:    |
+                        The repository whose staged content is gated.
+                        Defaults to the working directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+        header:
+          id_self:      icm_cctool_command_line.header
+          guid_self:    icm_459625ac7c01428ab98655ebd0979da1
+          name:         header
+          brief:        |
+                        Give the file at path a new item, made as new
+                        makes one, and write it at the head of the
+                        file.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.header.path
+              guid_self:  icm_5401fcef12ff4364920ea5849699e6b5
+              name:     path
+              brief:    |
+                        The file to give the item.
+              kind:     argument
+
+              type:
+                spelling:  file
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.header.id_self
+              guid_self:  icm_2f16e9f33cd34bb193de37c99f164d75
+              name:     id_self
+              brief:    |
+                        The id of the new item. If left out, it
+                        follows from the place of the file.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.header.field
+              guid_self:  icm_978bf715c7734139b0c21d892f6127f7
+              name:     --field
+              brief:    |
+                        A field of the new item, given as two values,
+                        NAME and VALUE. Repeat it for each field. A
+                        NAME given more than once makes a list.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.header.link
+              guid_self:  icm_eff8e1edc19549ccb1a572e1186941d0
+              name:     --link
+              brief:    |
+                        An edge from the new item, given as two
+                        values, RELATION and TARGET. Repeat it for
+                        each edge.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.header.root
+              guid_self:  icm_12c0e35608a347b08bbdbe080dd2e1d1
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.header.dry_run
+              guid_self:  icm_8c330ebe283f4b8493671deabcb59f6d
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        history:
+          id_self:      icm_cctool_command_line.history
+          guid_self:    icm_a70a87dd15f34d15acdb0c89d9380109
+          name:         history
+          brief:        |
+                        Check commits already made.
+
+          command:
+
+            check:
+              id_self:  icm_cctool_command_line.history.check
+              guid_self:  icm_4c96864db2194fd28bf1b4f8012a26f6
+              name:     check
+              brief:    |
+                        Check each commit in the range list_arg,
+                        oldest first, however it was made.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.history.check.list_arg
+                  guid_self:  icm_25a6b5c657254d3eb5991a70d0a1a247
+                  name:  list_arg
+                  brief:  |
+                        The range of commits to check, as git names
+                        one.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  true
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.history.check.pre_push
+                  guid_self:  icm_9edad83b238a41abbd16b21c78058cdc
+                  name:  --pre-push
+                  brief:  |
+                        Check what a push to the remote it names would
+                        send, from the lines git gives a pre-push hook
+                        on stdin, in place of list_arg.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.history.check.gate
+                  guid_self:  icm_0ea46724cb9b4642bb5b2149655b52fd
+                  name:  --gate
+                  brief:  |
+                        Also check, lint and test the content of the
+                        newest commit, or of each ref a push updates.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.history.check.root
+                  guid_self:  icm_e4260f03d1974fb989474647c245613f
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+        impact:
+          id_self:      icm_cctool_command_line.impact
+          guid_self:    icm_f5f210ccc2a84001bf9d2f93c38e6a93
+          name:         impact
+          brief:        |
+                        Show what the commit rev touches, and the
+                        untouched items around it.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.impact.rev
+              guid_self:  icm_44b11789fc6a4e7a9bebd8e8934a8fd4
+              name:     rev
+              brief:    |
+                        The commit to show. HEAD if left out.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              default:  HEAD
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.impact.staged
+              guid_self:  icm_0e14a240a1ae485286b33b30faa50694
+              name:     --staged
+              brief:    |
+                        Show what the staged content would touch as
+                        the next commit, in place of rev.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+            - id_self:  icm_cctool_command_line.impact.depth
+              guid_self:  icm_6a1a0f56fe0d4635b485835123fee09d
+              name:     --depth
+              brief:    |
+                        How many links from a touched item to look.
+              kind:     option
+
+              type:
+                spelling:  integer range
+
+              default:  '1'
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.impact.direction
+              guid_self:  icm_45c105e13ab646bdaf02a857ba81541c
+              name:     --direction
+              brief:    |
+                        in: the items that link to a touched one. out:
+                        those it links to. both: either.
+              kind:     option
+
+              type:
+                spelling:  choice
+
+              default:  both
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.impact.json
+              guid_self:  icm_7683acb191104536a788271ac49a89bd
+              name:     --json
+              brief:    |
+                        Print the JSON output in place of the list.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+            - id_self:  icm_cctool_command_line.impact.root
+              guid_self:  icm_8a0b4796c664496db522fbfe46852b36
+              name:     --root
+              brief:    |
+                        The repository. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+          output:
+
+            json:
+              id_self:  icm_cctool_command_line.impact.output_json
+              guid_self:  icm_4fe4d045dff44402bfc5716234d5df47
+              name:     --json
+              brief:    |
+                        The JSON form of what the command prints.
+              content:  |
+                        The items the commit touches and the untouched
+                        items around them, written to standard output
+                        in place of the list when --json is given.
+              encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+              convention:  |
+                        touched lists an object for each touched item,
+                        with the keys id, delta, was, file and line.
+                        neighbor lists an object for each untouched
+                        item reached, with the keys id, depth, via,
+                        relation, direction, file and line. Each id is
+                        the id of an item in the data format.
+
+        import:
+          id_self:      icm_cctool_command_line.import
+          guid_self:    icm_e1fabd699e19458f920f308fcc20730c
+          name:         import
+          brief:        |
+                        Make an external class for each class IRI, and
+                        an external relation for each relation IRI, of
+                        the ontology release in the Turtle file
+                        path_ttl, or bring those made before up to
+                        date with it.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.import.path_ttl
+              guid_self:  icm_8ede50cade6a40ceb611f74453f656b7
+              name:     path_ttl
+              brief:    |
+                        The Turtle file of the ontology release.
+              kind:     argument
+
+              type:
+                spelling:  file
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.import.list_iri
+              guid_self:  icm_27be04859efc4ac282f56288cdff1ac7
+              name:     list_iri
+              brief:    |
+                        The IRIs of the classes and relations to bring
+                        in. Every one the namespaces cover if left
+                        out.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.import.namespace
+              guid_self:  icm_61425f69371a495a8d0265df9312d586
+              name:     --namespace
+              brief:    |
+                        A namespace, as IRI SHORT RELEASE: the classes
+                        and relations whose IRI begins with IRI get
+                        ids extcla_SHORT_LABEL and extrel_SHORT_LABEL,
+                        and cite the external document RELEASE. Give
+                        one for each namespace.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.import.check
+              guid_self:  icm_f3ce0003b4d34ea4a464754a7605474e
+              name:     --check
+              brief:    |
+                        Name each way the external classes and
+                        relations differ from the release, and write
+                        nothing. Without list_iri, every one the
+                        namespaces cover is compared. The exit status
+                        is 1 when any differs.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+            - id_self:  icm_cctool_command_line.import.root
+              guid_self:  icm_6735cc31ceb44e3e9a951e95a8132624
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.import.dry_run
+              guid_self:  icm_0c845ff76d624e21a4bde971fb192809
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        link:
+          id_self:      icm_cctool_command_line.link
+          guid_self:    icm_5d85639f190543a4b87a87133e7a7662
+          name:         link
+          brief:        |
+                        Add an edge of id_relation from id_source to
+                        id_target.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.link.id_source
+              guid_self:  icm_4d7286ff81174715a5946357cf29b66f
+              name:     id_source
+              brief:    |
+                        The id of the item the edge is from.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.link.id_relation
+              guid_self:  icm_8180172466c24e85b8c488abcab7aea5
+              name:     id_relation
+              brief:    |
+                        The id of the relation of the edge.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.link.id_target
+              guid_self:  icm_faf4f210e3d946b1a438b6c835d0caeb
+              name:     id_target
+              brief:    |
+                        The id of the item the edge is to.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.link.root
+              guid_self:  icm_30365ac5bd0d4d1882d9d25a3e7e068f
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.link.dry_run
+              guid_self:  icm_4ae45ad49b1d45d3a850fbfd06959849
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        message:
+          id_self:      icm_cctool_command_line.message
+          guid_self:    icm_332b709a2f6141d8a740393e76f8ce91
+          name:         message
+          brief:        |
+                        Write and check commit messages.
+
+          command:
+
+            check:
+              id_self:  icm_cctool_command_line.message.check
+              guid_self:  icm_e5e7596d7f7541ecb8e439e35fdf4bc8
+              name:     check
+              brief:    |
+                        Check the commit message in file, and the
+                        commit of the staged content that it records.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.message.check.file
+                  guid_self:  icm_a3324778142e450baea18cf2409c215f
+                  name:  file
+                  brief:  |
+                        The file that holds the commit message, or -
+                        for stdin.
+                  kind:  argument
+
+                  type:
+                    spelling:  filename
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.check.root
+                  guid_self:  icm_60fd88cbd6eb48bdbdef00db0719cb36
+                  name:  --root
+                  brief:  |
+                        The tree whose sch_commit is used. Defaults to
+                        the working directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            draft:
+              id_self:  icm_cctool_command_line.message.draft
+              guid_self:  icm_968b162307e7409cbe0fedd51f215644
+              name:     draft
+              brief:    |
+                        Make the message that git drafted in path for
+                        a merge or a revert into one that conforms, in
+                        place.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.message.draft.path
+                  guid_self:  icm_0bd47cd350c249f69a0e74d63b1b5cc9
+                  name:  path
+                  brief:  |
+                        The file that holds the message git drafted.
+                  kind:  argument
+
+                  type:
+                    spelling:  file
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.draft.root
+                  guid_self:  icm_bd8a8e27a47a40768677947aee83ccac
+                  name:  --root
+                  brief:  |
+                        The tree whose sch_commit is used. Defaults to
+                        the working directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            new:
+              id_self:  icm_cctool_command_line.message.new
+              guid_self:  icm_765a5c33418d4ad3bcd8654d7c2a30e7
+              name:     new
+              brief:    |
+                        Print a commit message for title, with a new
+                        id and guid.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.message.new.title
+                  guid_self:  icm_4e2e6a0a62794faebadbde61ed3432ce
+                  name:  title
+                  brief:  |
+                        The title of the commit.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.new.brief
+                  guid_self:  icm_f1f71b369e934e429a693474909ad2fc
+                  name:  --brief
+                  brief:  |
+                        What changes, and why.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.new.description
+                  guid_self:  icm_d286e7a25f984549aabd243e550c4054
+                  name:  --description
+                  brief:  |
+                        More, where the brief is not enough.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.new.root
+                  guid_self:  icm_27bffac179824d65a49c29b94f08de0b
+                  name:  --root
+                  brief:  |
+                        The tree whose sch_commit is used. Defaults to
+                        the working directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+        move:
+          id_self:      icm_cctool_command_line.move
+          guid_self:    icm_6485c97b710d47a689841c7931aca498
+          name:         move
+          brief:        |
+                        Move the file or folder path_old to path_new,
+                        and give each item named for its place the id
+                        of the new place.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.move.path_old
+              guid_self:  icm_2168695da8ae4c0b99d553d6fa0c0d03
+              name:     path_old
+              brief:    |
+                        The path of the file or folder to move.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.move.path_new
+              guid_self:  icm_dcef495ed1754362a0e7c5681f4ed530
+              name:     path_new
+              brief:    |
+                        The path to move it to.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.move.root
+              guid_self:  icm_5f0ac36e548b459996ba6e796ee5fac4
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.move.dry_run
+              guid_self:  icm_a8b384d9ff4e4359b1f551e36ef77bd6
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        new:
+          id_self:      icm_cctool_command_line.new
+          guid_self:    icm_5a6061d2b2224de488eed478e18e99f9
+          name:         new
+          brief:        |
+                        Make a new item with the id id_self.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.new.id_self
+              guid_self:  icm_43bec0cf39764748b395807e0b3fc7bc
+              name:     id_self
+              brief:    |
+                        The id of the new item.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.new.field
+              guid_self:  icm_90e3098f8eed43639b4caef21898d662
+              name:     --field
+              brief:    |
+                        A field of the new item, given as two values,
+                        NAME and VALUE. Repeat it for each field. A
+                        NAME given more than once makes a list.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.new.link
+              guid_self:  icm_370c06d5165e4622bfcdd6e101820806
+              name:     --link
+              brief:    |
+                        An edge from the new item, given as two
+                        values, RELATION and TARGET. Repeat it for
+                        each edge.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              optional:  true
+              variadic:  true
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.new.root
+              guid_self:  icm_d676277b5d524223a59cd66538e88e13
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.new.dry_run
+              guid_self:  icm_0f936b87112f43b4bbcc5cee5c617bd3
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        query:
+          id_self:      icm_cctool_command_line.query
+          guid_self:    icm_e047e14c734d423aa9b4b62279e04c86
+          name:         query
+          brief:        |
+                        Query the graph of data items, in SQL, in a
+                        logic program, in SPARQL or in jq, or find
+                        items by the words of their prose.
+          description:  |
+                        The predicates, tables and columns that a
+                        query sees, and that query predicates lists,
+                        are the query and fact vocabulary, which is
+                        not supported: a change to it is not a change
+                        to this interface.
+
+          command:
+
+            jq:
+              id_self:  icm_cctool_command_line.query.jq
+              guid_self:  icm_3a67b985529e4c84afffd8934be50329
+              name:     jq
+              brief:    |
+                        Evaluate one jq filter over the YAML documents
+                        of the tree.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.query.jq.text
+                  guid_self:  icm_6b8e12293ebf44109eefcedf2baceae9
+                  name:  text
+                  brief:  |
+                        The query, unless --file gives it.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.jq.file
+                  guid_self:  icm_98fd154cae1747e8afc0f55e8b2f8496
+                  name:  --file
+                  brief:  |
+                        Read the query from this file in place of
+                        text.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.jq.root
+                  guid_self:  icm_e71b2e98ce1d4b34af967a948c5a843a
+                  name:  --root
+                  brief:  |
+                        The tree to query. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.jq.limit
+                  guid_self:  icm_58fde0a42308495ba2d67b241162f5eb
+                  name:  --limit
+                  brief:  |
+                        The most rows to print for each result. 0
+                        prints all.
+                  kind:  option
+
+                  type:
+                    spelling:  integer range
+
+                  default:  '100'
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.jq.json
+                  guid_self:  icm_3a69f999be3f40de84c941e9853bc08a
+                  name:  --json
+                  brief:  |
+                        Print the JSON output in place of the table.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+              output:
+
+                json:
+                  id_self:  icm_cctool_command_line.query.jq.output_json
+                  guid_self:  icm_3df360cea8c1425ea36b90d26ba00811
+                  name:  --json
+                  brief:  |
+                        The JSON form of what the command prints.
+                  content:  |
+                        The result of the query, written to standard
+                        output in place of the table when --json is
+                        given.
+                  encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+                  convention:  |
+                        results lists at most --limit of the values
+                        the filter gives, and count is the number of
+                        values before the limit. The documents a
+                        filter sees are those of the data format.
+
+            logic:
+              id_self:  icm_cctool_command_line.query.logic
+              guid_self:  icm_157782a2060248b7823436fb9da90f0a
+              name:     logic
+              brief:    |
+                        Evaluate logic program rules over the graph,
+                        with clingo.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.query.logic.text
+                  guid_self:  icm_9277babb84c54eeebd2d93df3c519b11
+                  name:  text
+                  brief:  |
+                        The query, unless --file gives it.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.logic.file
+                  guid_self:  icm_a10c62d12f0a403a9e1c68f5a2d448cc
+                  name:  --file
+                  brief:  |
+                        Read the query from this file in place of
+                        text.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.logic.root
+                  guid_self:  icm_10e994d5dbca45688839d2113b383bfe
+                  name:  --root
+                  brief:  |
+                        The tree to query. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.logic.limit
+                  guid_self:  icm_4f2cb66038084ccd9c090ebd2e311737
+                  name:  --limit
+                  brief:  |
+                        The most rows to print for each result. 0
+                        prints all.
+                  kind:  option
+
+                  type:
+                    spelling:  integer range
+
+                  default:  '100'
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.logic.json
+                  guid_self:  icm_53ccd1e25c89403ca5ecaee9116d380f
+                  name:  --json
+                  brief:  |
+                        Print the JSON output in place of the table.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.query.logic.text_search
+                  guid_self:  icm_f1d7409ee6f347f884044a2c7e8d590a
+                  name:  --text
+                  brief:  |
+                        Add text_hit(id, field, rank) for each item
+                        whose prose matches these words.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.logic.exact
+                  guid_self:  icm_ac36fe057c8d4b01bfbd7ae14da6f0ed
+                  name:  --exact
+                  brief:  |
+                        Match --text on its own words, not the terms
+                        of the concepts it names.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+              output:
+
+                json:
+                  id_self:  icm_cctool_command_line.query.logic.output_json
+                  guid_self:  icm_cc3d779aecde4f09ae41dbee208f4cdb
+                  name:  --json
+                  brief:  |
+                        The JSON form of what the command prints.
+                  content:  |
+                        The result of the query, written to standard
+                        output in place of the table when --json is
+                        given.
+                  encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+                  convention:  |
+                        One key for each predicate the program shows,
+                        whose value is an object as for query sql:
+                        columns, rows and count. The predicates,
+                        tables and columns a query names are those the
+                        query and fact vocabulary gives, which is not
+                        supported, so a change to them is not a change
+                        to this output.
+
+            predicates:
+              id_self:  icm_cctool_command_line.query.predicates
+              guid_self:  icm_819bb6b5f76a44ec97c235c85c301ae9
+              name:     predicates
+              brief:    |
+                        List the predicates that an SQL or logic
+                        program query may use, with their columns.
+
+            sparql:
+              id_self:  icm_cctool_command_line.query.sparql
+              guid_self:  icm_d4708f8dbd9a41189a0f8356347d8852
+              name:     sparql
+              brief:    |
+                        Evaluate one SPARQL query over the graph, with
+                        Oxigraph.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.query.sparql.text
+                  guid_self:  icm_cb130b86c2824d71a1fda0b5dee74f72
+                  name:  text
+                  brief:  |
+                        The query, unless --file gives it.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sparql.file
+                  guid_self:  icm_eb0eb14300fd455ea2915e7903612936
+                  name:  --file
+                  brief:  |
+                        Read the query from this file in place of
+                        text.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sparql.root
+                  guid_self:  icm_81dce4d440284d3098d77d0f1bb1d9c5
+                  name:  --root
+                  brief:  |
+                        The tree to query. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sparql.limit
+                  guid_self:  icm_147ecbc6910245ceb3b7a6d760b5eb79
+                  name:  --limit
+                  brief:  |
+                        The most rows to print for each result. 0
+                        prints all.
+                  kind:  option
+
+                  type:
+                    spelling:  integer range
+
+                  default:  '100'
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sparql.json
+                  guid_self:  icm_a5baa62b82024be380d2e009115d4e77
+                  name:  --json
+                  brief:  |
+                        Print the JSON output in place of the table.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+              output:
+
+                json:
+                  id_self:  icm_cctool_command_line.query.sparql.output_json
+                  guid_self:  icm_90e830f03607454181bedf81b96691ec
+                  name:  --json
+                  brief:  |
+                        The JSON form of what the command prints.
+                  content:  |
+                        The result of the query, written to standard
+                        output in place of the table when --json is
+                        given.
+                  encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+                  convention:  |
+                        columns lists the names of the columns, rows
+                        lists at most --limit rows, each a list of
+                        values in the order of columns, and count is
+                        the number of rows before the limit. The
+                        predicates, tables and columns a query names
+                        are those the query and fact vocabulary gives,
+                        which is not supported, so a change to them is
+                        not a change to this output. An ASK query
+                        gives instead an object whose one key,
+                        boolean, is true or false.
+
+            sql:
+              id_self:  icm_cctool_command_line.query.sql
+              guid_self:  icm_f0adb8b8759e4d119207464816bc3af3
+              name:     sql
+              brief:    |
+                        Evaluate one SQL query over the graph.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.query.sql.text
+                  guid_self:  icm_2c153d0392134ecab12c02ad4f7e28ce
+                  name:  text
+                  brief:  |
+                        The query, unless --file gives it.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sql.file
+                  guid_self:  icm_c48ff4ab0fa8419aa9919de0fccd2f23
+                  name:  --file
+                  brief:  |
+                        Read the query from this file in place of
+                        text.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sql.root
+                  guid_self:  icm_cc291ad84bca4af69db56947a9dcbc41
+                  name:  --root
+                  brief:  |
+                        The tree to query. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sql.limit
+                  guid_self:  icm_70e8b6387cd144169ce99f6574c93ef4
+                  name:  --limit
+                  brief:  |
+                        The most rows to print for each result. 0
+                        prints all.
+                  kind:  option
+
+                  type:
+                    spelling:  integer range
+
+                  default:  '100'
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.sql.json
+                  guid_self:  icm_8ab3f8bc73084fb499906169b2e6b73b
+                  name:  --json
+                  brief:  |
+                        Print the JSON output in place of the table.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+              output:
+
+                json:
+                  id_self:  icm_cctool_command_line.query.sql.output_json
+                  guid_self:  icm_0b5dd565b61a47409a266a7804107e21
+                  name:  --json
+                  brief:  |
+                        The JSON form of what the command prints.
+                  content:  |
+                        The result of the query, written to standard
+                        output in place of the table when --json is
+                        given.
+                  encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+                  convention:  |
+                        columns lists the names of the columns, rows
+                        lists at most --limit rows, each a list of
+                        values in the order of columns, and count is
+                        the number of rows before the limit. The
+                        predicates, tables and columns a query names
+                        are those the query and fact vocabulary gives,
+                        which is not supported, so a change to them is
+                        not a change to this output.
+
+            text:
+              id_self:  icm_cctool_command_line.query.text
+              guid_self:  icm_1d6a5e3bca7540c798f4ff4dedd2873f
+              name:     text
+              brief:    |
+                        Find the items whose prose matches the words
+                        of text, best first.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.query.text.text
+                  guid_self:  icm_4707d7f3818746e982457435ba395e1b
+                  name:  text
+                  brief:  |
+                        The query, unless --file gives it.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.text.file
+                  guid_self:  icm_45ac74b71fac43dd9e7c1896cafab49c
+                  name:  --file
+                  brief:  |
+                        Read the query from this file in place of
+                        text.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.text.root
+                  guid_self:  icm_5875a795c6d84744b590f7a36cca8c70
+                  name:  --root
+                  brief:  |
+                        The tree to query. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.text.limit
+                  guid_self:  icm_f180a284cbe4447886eb2f30f754a57b
+                  name:  --limit
+                  brief:  |
+                        The most rows to print for each result. 0
+                        prints all.
+                  kind:  option
+
+                  type:
+                    spelling:  integer range
+
+                  default:  '100'
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.query.text.json
+                  guid_self:  icm_d027803348a24250a272522ae8d58846
+                  name:  --json
+                  brief:  |
+                        Print the JSON output in place of the table.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.query.text.match
+                  guid_self:  icm_812c8a6aa4e842dbba9d452e76413a66
+                  name:  --match
+                  brief:  |
+                        Read text as an FTS5 match expression.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.query.text.decision
+                  guid_self:  icm_e0aa2bffbf4348d2b20398c74358d27c
+                  name:  --decision
+                  brief:  |
+                        Print one row for each decision, ranked by its
+                        best match.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.query.text.exact
+                  guid_self:  icm_822aa877a874466cbe2ba6464b4836f8
+                  name:  --exact
+                  brief:  |
+                        Match the words of text, not the terms of the
+                        concepts it names.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+              output:
+
+                json:
+                  id_self:  icm_cctool_command_line.query.text.output_json
+                  guid_self:  icm_831083face2d48eca7432ba8cf921e3f
+                  name:  --json
+                  brief:  |
+                        The JSON form of what the command prints.
+                  content:  |
+                        The result of the query, written to standard
+                        output in place of the table when --json is
+                        given.
+                  encoding:  |
+                        One JSON object on one line, in UTF-8, on
+                        standard output.
+                  convention:  |
+                        columns lists the names of the columns, rows
+                        lists at most --limit rows, each a list of
+                        values in the order of columns, and count is
+                        the number of rows before the limit. The
+                        predicates, tables and columns a query names
+                        are those the query and fact vocabulary gives,
+                        which is not supported, so a change to them is
+                        not a change to this output.
+
+        remove:
+          id_self:      icm_cctool_command_line.remove
+          guid_self:    icm_ead8a95ace8f41bcb952c4362a4dd2de
+          name:         remove
+          brief:        |
+                        Remove the item id_self: the file of a
+                        standalone item, or the entry of an item held
+                        in a register.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.remove.id_self
+              guid_self:  icm_e2ab4d67a91e481cb9fd9cf07b58588b
+              name:     id_self
+              brief:    |
+                        The id of the item to remove.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.remove.root
+              guid_self:  icm_b9e4eacfcf7547fc8d7cfcf06221ae40
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.remove.dry_run
+              guid_self:  icm_77cbfd3546c74b1ab7173c9b5fb70174
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        rename:
+          id_self:      icm_cctool_command_line.rename
+          guid_self:    icm_c0387b8f9b944e529ee9a1a790d0e24a
+          name:         rename
+          brief:        |
+                        Give the item id_old the id id_new, in every
+                        YAML document that names it, in the strings of
+                        the logic programs, and in the name of its
+                        file.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.rename.id_old
+              guid_self:  icm_135e7af35c484373ade16c6544b3f4da
+              name:     id_old
+              brief:    |
+                        The id the item has now.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.rename.id_new
+              guid_self:  icm_504ba19663dc41e39fd8b35280687997
+              name:     id_new
+              brief:    |
+                        The id to give it.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.rename.root
+              guid_self:  icm_af6b50fac1ff4b8f82d37c2e77ea9571
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.rename.dry_run
+              guid_self:  icm_22c56240c341401c8e7cd46ce14ab9c8
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        serve:
+          id_self:      icm_cctool_command_line.serve
+          guid_self:    icm_ab429f74c44a4059a1e866d97d9de5a3
+          name:         serve
+          brief:        |
+                        Serve pages to review the decisions of the
+                        tree under --root, and the deliberation of
+                        each, until interrupted.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.serve.root
+              guid_self:  icm_e75494ee3c4e430a92f6cb84f63967d8
+              name:     --root
+              brief:    |
+                        The tree to show. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.serve.host
+              guid_self:  icm_19ba4cb55df24f3d8d48049c34eed5c9
+              name:     --host
+              brief:    |
+                        The address to listen on. Defaults to this
+                        computer only.
+              kind:     option
+
+              type:
+                spelling:  text
+
+              default:  127.0.0.1
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.serve.port
+              guid_self:  icm_734e69273fda4417acbe5e2267003d20
+              name:     --port
+              brief:    |
+                        The port to listen on.
+              kind:     option
+
+              type:
+                spelling:  integer range
+
+              default:  '8100'
+              optional:  true
+              variadic:  false
+              flag:     false
+
+        set:
+          id_self:      icm_cctool_command_line.set
+          guid_self:    icm_18cb9a1d847144fda967da6e03ab05a4
+          name:         set
+          brief:        |
+                        Set the field at path in the item id_self to
+                        value.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.set.id_self
+              guid_self:  icm_bd5ca77293e64e4c9dd2aed48ddcbd5e
+              name:     id_self
+              brief:    |
+                        The id of the item to change.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.set.path
+              guid_self:  icm_abd80c5d2d85499e9d0544f21dd4e81a
+              name:     path
+              brief:    |
+                        The field to set, as a field name or a dotted
+                        path into its value.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.set.value
+              guid_self:  icm_1a89aabbf65c4515a0a93dc9bfee23fd
+              name:     value
+              brief:    |
+                        The value to set.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.set.yaml
+              guid_self:  icm_1e033ae24d8c49f39d8fffaa0a2fae15
+              name:     --yaml
+              brief:    |
+                        Read value as YAML, for a number, a list or a
+                        mapping.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+            - id_self:  icm_cctool_command_line.set.root
+              guid_self:  icm_a420bc3495304beba4227c16f8ed4b32
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.set.dry_run
+              guid_self:  icm_5553ecc5be4a4aff950e9ab21ed547ad
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        unlink:
+          id_self:      icm_cctool_command_line.unlink
+          guid_self:    icm_21b2cfc91135453eae8aa14d66489089
+          name:         unlink
+          brief:        |
+                        Take the edge of id_relation from id_source to
+                        id_target away.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.unlink.id_source
+              guid_self:  icm_f27223366826423ba6a3a08d24a554b5
+              name:     id_source
+              brief:    |
+                        The id of the item the edge is from.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unlink.id_relation
+              guid_self:  icm_32395874f4f04a2685bc626c8373d12f
+              name:     id_relation
+              brief:    |
+                        The id of the relation of the edge.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unlink.id_target
+              guid_self:  icm_9885ceb71c714d2985e55412ea98e955
+              name:     id_target
+              brief:    |
+                        The id of the item the edge is to.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unlink.root
+              guid_self:  icm_a022a48da060459cb8d6453d85a1acf9
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unlink.dry_run
+              guid_self:  icm_2f8e4c04f2d44e15888b10b7589d0b5d
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+        unset:
+          id_self:      icm_cctool_command_line.unset
+          guid_self:    icm_2e37b7fcb88646e8adcad8b3d4cc48e4
+          name:         unset
+          brief:        |
+                        Take the field at path out of the item
+                        id_self.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.unset.id_self
+              guid_self:  icm_cc870dc9a9a84b69a6172f9e73147975
+              name:     id_self
+              brief:    |
+                        The id of the item to change.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unset.path
+              guid_self:  icm_a88cb41a1e264aef83aa4a969d738505
+              name:     path
+              brief:    |
+                        The field to take out, as for set.
+              kind:     argument
+
+              type:
+                spelling:  text
+
+              optional:  false
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unset.root
+              guid_self:  icm_bc30c4df46394b168aa784af7c45c701
+              name:     --root
+              brief:    |
+                        The tree to edit. Defaults to the working
+                        directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.unset.dry_run
+              guid_self:  icm_7e61f2a8599f4b3aa7d5d81d98fd8704
+              name:     --dry-run
+              brief:    |
+                        Print the edit as a diff, and write nothing.
+              kind:     option
+
+              type:
+                spelling:  boolean
+
+              default:  'false'
+              optional:  true
+              variadic:  false
+              flag:     true
+
+      exit_status:
+
+        ok:
+          id_self:      icm_cctool_command_line.ok
+          guid_self:    icm_6afb43665f5f4005ba5d45e2168ef344
+          name:         '0'
+          brief:        |
+                        The command did what was asked.
+          value:        0
+          condition:    |
+                        The command ran, and found nothing wrong where
+                        it checks.
+
+        nonconformity:
+          id_self:      icm_cctool_command_line.nonconformity
+          guid_self:    icm_c5cee6fae5ac41878976d6113072557c
+          name:         '1'
+          brief:        |
+                        The command ran and found a nonconformity.
+          value:        1
+          condition:    |
+                        The command ran to the end, and what it checks
+                        does not conform: a check found a failure, a
+                        gate step failed, an edit was refused because
+                        it would add a failure, or a file would change
+                        under --check.
+
+        error:
+          id_self:      icm_cctool_command_line.error
+          guid_self:    icm_b548d2385f9b4a62a587d93acbe7478f
+          name:         '2'
+          brief:        |
+                        The command could not do what was asked.
+          value:        2
+          condition:    |
+                        What was given was wrong, or the command could
+                        not run: a bad parameter, an item or file that
+                        is not there, or checks that could not be run.
+                        click exits with it too, for a usage error.
+
+edge:                   []

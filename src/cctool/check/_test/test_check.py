@@ -940,6 +940,34 @@ def test_a_part_the_member_does_not_state_is_not_compared(tree):
     assert _check(tree) == {}
 
 
+FILE_COMMAND = '_data/interface_control_document/icd_cctool_command_line.yaml'
+
+
+def test_a_command_that_no_member_states_is_reported(tree):
+    path = tree / FILE_COMMAND
+    text = path.read_text()
+    path.write_text(text[:text.index('        friction:\n')] + text[text.index('        gate:\n'):])
+    assert _check(tree) == {'command_mismatch': [
+        ('', 'cctool', 'friction', 'command', '', 'friction')]}
+
+
+def test_a_command_that_click_does_not_describe_is_reported(tree):
+    _replace(tree, FILE_COMMAND, 'name:         friction', 'name:         frictions')
+    assert _check(tree) == {'command_mismatch': [
+        ('',                                'cctool', 'friction',  'command', '',          'friction'),
+        ('icm_cctool_command_line.friction', 'cctool', 'frictions', 'command', 'frictions', '')]}
+
+
+def test_a_parameter_that_differs_from_click_is_reported(tree):
+    _replace(tree, FILE_COMMAND, 'name:     --dry-run', 'name:     --dry')
+    _replace(tree, FILE_COMMAND, "default:  .\n              optional:  true", "default:  x\n              optional:  false")
+    assert _check(tree) == {'command_mismatch': [
+        ('icm_cctool_command_line.batch',         'cctool', 'batch', 'parameter', '',      '--dry-run'),
+        ('icm_cctool_command_line.batch.dry_run', 'cctool', 'batch', 'parameter', '--dry', ''),
+        ('icm_cctool_command_line.batch.root',    'cctool', 'batch', 'default',   'x',     '.'),
+        ('icm_cctool_command_line.batch.root',    'cctool', 'batch', 'optional',  'false', 'true')]}
+
+
 def test_click_describes_each_parameter_of_a_command():
     @click.group()
     def group():
