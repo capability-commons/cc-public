@@ -20,12 +20,11 @@ description:            |
                         run() asks clingo for two models and raises
                         ErrorDatalog when it finds none ("The rules
                         have no answer set") or a second ("more than
-                        one answer set")
-                        (src/cc_public/graph/datalog.py lines 316-337
-                        at 360ec14). cctool check turns that error,
-                        now ErrorLogic, into exit status 2
-                        (src/cc_public/cli/checking.py lines 57-61).
-                        The point now bears on clingo only as it was
+                        one answer set") (src/cctool/graph/datalog.py
+                        lines 316-337 at 360ec14). cctool check turns
+                        that error, now ErrorLogic, into exit status 2
+                        (src/cctool/cli/checking.py lines 57-61). The
+                        point now bears on clingo only as it was
                         configured before the fix; Souffle still
                         forbids the program shapes by construction
                         rather than at run time.

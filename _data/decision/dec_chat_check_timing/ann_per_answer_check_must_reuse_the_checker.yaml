@@ -14,24 +14,24 @@ brief:                  |
                         second validation path that must agree with
                         cctool. It stays cheap to maintain only if it
                         calls the existing validator in
-                        cc_public.check.schema rather than a validator
-                        of its own.
+                        cctool.check.schema rather than a validator of
+                        its own.
 description:            |
                         The option checks each answer against the JSON
                         Schema inside the bot, through
-                        cc_public.check.schema, and dry runs the whole
+                        cctool.check.schema, and dry runs the whole
                         draft once, at the readback, through the
                         editing module in its own process
                         (opt_schema_per_answer_dry_run_at_readback.yaml,
-                        brief). cc_public.check.schema defines its own
+                        brief). cctool.check.schema defines its own
                         Validator, which reads pattern as ECMA 262
                         reads it rather than as python's re does
-                        (src/cc_public/check/schema.py, lines 97-163).
+                        (src/cctool/check/schema.py, lines 97-163).
                         The same module builds the registry that
                         resolves $ref between schemas
-                        (src/cc_public/check/schema.py, registry_of,
-                        line 443). A schema requires fields and
-                        forbids unevaluated properties
+                        (src/cctool/check/schema.py, registry_of, line
+                        443). A schema requires fields and forbids
+                        unevaluated properties
                         (_data/schema/sch_option.yaml, lines 47-56),
                         so a partial draft fails the whole schema
                         until it is complete. ASSUMPTION: checking one

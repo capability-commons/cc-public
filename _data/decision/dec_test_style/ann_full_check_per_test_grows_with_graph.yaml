@@ -20,11 +20,10 @@ description:            |
                         version control and caches, keeps only two
                         folders of _data/decision and only the source
                         the rest of the copy names
-                        (src/cc_public/conftest.py lines 45-70,
-                        178-197); registers and schemas are copied
-                        whole. Every check test runs the full checker
-                        over its copy
-                        (src/cc_public/check/_test/test_check.py lines
+                        (src/cctool/conftest.py lines 45-70, 178-197);
+                        registers and schemas are copied whole. Every
+                        check test runs the full checker over its copy
+                        (src/cctool/check/_test/test_check.py lines
                         222-232). Measured by the performance advocate
                         on 2026-10-15, before the slice, in a copy of
                         89c74d8: a full check() took about 1.2 s warm,
@@ -32,7 +31,7 @@ description:            |
                         spent 71.9 s in call. The checker test file
                         now holds 149 tests. The gate runs the tests
                         on one worker for each processor with
-                        pytest-xdist (src/cc_public/gate/gate.py lines
+                        pytest-xdist (src/cctool/gate/gate.py lines
                         87-90) and leaves out those marked slow, which
                         grow with the data (lines 78-85). ASSUMPTION:
                         check() time grows at least linearly with

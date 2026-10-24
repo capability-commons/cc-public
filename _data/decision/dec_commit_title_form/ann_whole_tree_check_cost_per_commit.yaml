@@ -17,40 +17,40 @@ brief:                  |
                         commits finer, the total time the hooks spend
                         grows with the number of commits.
 description:            |
-                        src/cc_public/commit/change.py lines 131-132
+                        src/cctool/commit/change.py lines 131-132
                         extract both whole graphs. Since 5acf7c2 only
                         files whose bytes differ are laid out
                         (change.py lines 156-161;
                         ann_whole_tree_layout_per_commit_is_fixed).
-                        src/cc_public/commit/history.py lines 121-123
+                        src/cctool/commit/history.py lines 121-123
                         copy both trees and line 133 checks the change
                         once per commit. The commit-msg hook runs
                         cctool message check, which runs the change
-                        check (src/cc_public/cli/messaging.py line
-                        150); the pre-push hook runs cctool history
-                        check on each new commit. Timings by the
-                        performance efficiency advocate, 2026-10-15:
-                        586a0e5 (1 file, 2 lines replaced, 88-file
-                        tree) 2.94 s and 3.89 s; 1ba2895 (48 files,
-                        129-file tree) 4.21 s; 89c74d8 (5 files,
-                        129-file tree) 3.92 s. The verifier
-                        re-measured in a scratch clone, two runs each:
-                        2.61 and 3.63 s, 4.70 and 3.74 s, 3.77 and
-                        3.69 s. Under cProfile most time is YAML
-                        parsing (verifier: ruamel load 12.0 s of 20.9
-                        s). Measured again on 2026-10-23 on a tree of
-                        about 2270 files: 21 to 35 s for the first
-                        commit of a run and 9 to 10 s for each further
-                        one, the parse cache holding within one run
-                        (src/cc_public/graph/extract.py lines
-                        157-161), so check time grows with the tree.
-                        The commit-msg hook checks the staged tree
-                        against HEAD (change.py lines 66-74), not each
-                        commit of history, but does the same
-                        whole-tree work. Bears on the chosen option
-                        only through the finer commits the maintainer
-                        hoped for (W 2026-10-14T11:18:34Z), which have
-                        not yet come (see
+                        check (src/cctool/cli/messaging.py line 150);
+                        the pre-push hook runs cctool history check on
+                        each new commit. Timings by the performance
+                        efficiency advocate, 2026-10-15: 586a0e5 (1
+                        file, 2 lines replaced, 88-file tree) 2.94 s
+                        and 3.89 s; 1ba2895 (48 files, 129-file tree)
+                        4.21 s; 89c74d8 (5 files, 129-file tree) 3.92
+                        s. The verifier re-measured in a scratch
+                        clone, two runs each: 2.61 and 3.63 s, 4.70
+                        and 3.74 s, 3.77 and 3.69 s. Under cProfile
+                        most time is YAML parsing (verifier: ruamel
+                        load 12.0 s of 20.9 s). Measured again on
+                        2026-10-23 on a tree of about 2270 files: 21
+                        to 35 s for the first commit of a run and 9 to
+                        10 s for each further one, the parse cache
+                        holding within one run
+                        (src/cctool/graph/extract.py lines 157-161),
+                        so check time grows with the tree. The
+                        commit-msg hook checks the staged tree against
+                        HEAD (change.py lines 66-74), not each commit
+                        of history, but does the same whole-tree work.
+                        Bears on the chosen option only through the
+                        finer commits the maintainer hoped for (W
+                        2026-10-14T11:18:34Z), which have not yet come
+                        (see
                         ann_change_template_took_a_48_file_commit).
                         Falls if the check reads only changed files, a
                         change to change.py, not to the title form.

@@ -18,20 +18,20 @@ brief:                  |
 description:            |
                         The edit commands share one _option helper
                         with --root and --dry-run
-                        (src/cc_public/cli/editing.py lines 69-89).
-                        Each single edit and batch pass to the same
-                        _run (lines 120-295, 339), which with
-                        --dry-run prints difflib.unified_diff of each
-                        file (lines 390-414). Every edit is laid out
-                        by format_file, the same printer as cctool
-                        format (edit/layout.py lines 35-37;
-                        edit/edit.py line 1059). A batch file is
-                        itself readable before it is applied. Before
-                        6c8d3d5 data was edited by hand with no
-                        preview. ASSUMPTION: scripts run directly
-                        could offer a dry-run too; the gain is one
-                        option and one code path for every edit, and
-                        nothing makes new edit commands use _run.
+                        (src/cctool/cli/editing.py lines 69-89). Each
+                        single edit and batch pass to the same _run
+                        (lines 120-295, 339), which with --dry-run
+                        prints difflib.unified_diff of each file
+                        (lines 390-414). Every edit is laid out by
+                        format_file, the same printer as cctool format
+                        (edit/layout.py lines 35-37; edit/edit.py line
+                        1059). A batch file is itself readable before
+                        it is applied. Before 6c8d3d5 data was edited
+                        by hand with no preview. ASSUMPTION: scripts
+                        run directly could offer a dry-run too; the
+                        gain is one option and one code path for every
+                        edit, and nothing makes new edit commands use
+                        _run.
 
 edge:
 

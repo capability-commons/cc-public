@@ -20,7 +20,7 @@ description:            |
                         scalar and fills it. Blank lines, lines
                         indented further and, since a5dea6e, lines
                         that open with a list marker are kept apart
-                        (src/cc_public/edit/layout.py lines 721-757).
+                        (src/cctool/edit/layout.py lines 721-757).
                         Every LiteralScalarString goes to _body,
                         whatever its key (layout.py lines 604-612);
                         literal keys include follows and breaks, 17
@@ -36,17 +36,17 @@ description:            |
                         lines of an address after the list, "12 Main
                         Street" and "Springfield", are joined onto its
                         last item. The commit message writer uses the
-                        same printer (src/cc_public/commit/message.py
+                        same printer (src/cctool/commit/message.py
                         lines 130-131). cctool check reports
                         unformatted_file for any file the printer
                         would change (check.py lines 164-167). The
                         fragment writer also joined each paragraph it
-                        wrote (c4a8721:src/cc_public/edit/layout.py
-                        lines 124-142), but only the text of the edit,
-                        and had no check over hand-written files. 111
+                        wrote (c4a8721:src/cctool/edit/layout.py lines
+                        124-142), but only the text of the edit, and
+                        had no check over hand-written files. 111
                         files under _data now hold a flush list in
                         prose, which the fix keeps. Refill tests:
-                        src/cc_public/edit/_test/test_edit.py lines
+                        src/cctool/edit/_test/test_edit.py lines
                         831-843 and 887-901. ASSUMPTION: authors will
                         want other line-by-line text, such as an
                         address, in a description or commit body.

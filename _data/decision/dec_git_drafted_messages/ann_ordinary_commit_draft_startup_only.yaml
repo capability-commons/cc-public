@@ -21,18 +21,18 @@ description:            |
                         line 31). draft returns the text unchanged
                         when the message already holds an item or the
                         subject is neither a merge nor a revert
-                        (src/cc_public/commit/message.py lines
-                        155-164). Measured 2026-10-15 in the cloud
-                        container, no pixi, three runs: draft on an
-                        ordinary message 0.46 to 0.53 s, 35 MB peak;
-                        import of cc_public.cli.command alone 0.23 to
-                        0.52 s. Re-measured by the verifier in a
-                        scratch clone at 89c74d8: draft 0.45 to 0.46
-                        s, import 0.46 to 0.56 s. Beside it, message
-                        check takes 8.6 to 10.0 s and the gate about
-                        75 s (memory/MEMORY.md line 54). ASSUMPTION:
-                        pixi start-up, not measured, adds a similar
-                        fixed cost.
+                        (src/cctool/commit/message.py lines 155-164).
+                        Measured 2026-10-15 in the cloud container, no
+                        pixi, three runs: draft on an ordinary message
+                        0.46 to 0.53 s, 35 MB peak; import of
+                        cctool.cli.command alone 0.23 to 0.52 s.
+                        Re-measured by the verifier in a scratch clone
+                        at 89c74d8: draft 0.45 to 0.46 s, import 0.46
+                        to 0.56 s. Beside it, message check takes 8.6
+                        to 10.0 s and the gate about 75 s
+                        (memory/MEMORY.md line 54). ASSUMPTION: pixi
+                        start-up, not measured, adds a similar fixed
+                        cost.
 
 edge:
 

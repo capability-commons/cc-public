@@ -19,16 +19,16 @@ description:            |
                         Advocate's runs, 2026-10-15, on 89c74d8
                         (scratchpad advperf63_t.py, pd/time_hist.py).
                         copy_commit writes a commit's tree with git
-                        archive (src/cc_public/gate/gate.py lines
+                        archive (src/cctool/gate/gate.py lines
                         186-203) in 0.03 s to 0.06 s. Extracting one
                         tree from cold took 0.4 s to 0.6 s at 139 to
                         203 items, and 0.02 s to 0.06 s when read
                         again in the same process, because extract.py
                         keeps parsed YAML documents keyed by path and
                         content digest, up to 4096 entries
-                        (src/cc_public/graph/extract.py lines 104-108
-                        and 280-285; commit 93a1428). Peak memory for
-                        two trees was 34 MB. The whole repository, 33
+                        (src/cctool/graph/extract.py lines 104-108 and
+                        280-285; commit 93a1428). Peak memory for two
+                        trees was 34 MB. The whole repository, 33
                         commits, is a 3.1 MiB pack (git count-objects
                         -vH); HEAD's facts serialize to about 150 KB
                         of JSON. ASSUMPTION: one snapshot per commit
@@ -38,19 +38,19 @@ description:            |
                         commit (verifier's re-run in a scratch clone:
                         77.8 s, median 2.3 s, all passing), extracting
                         each inner tree twice
-                        (src/cc_public/commit/history.py lines
-                        107-121). For 1.44 times the items, evaluation
-                        of change.lp grew about 2.5 to 3.8 times,
-                        faster than the graph. Extraction of two trees
-                        grew 2.4 times in the advocate's runs but
-                        about 1.3 to 1.5 times in the verifier's
-                        re-runs, and cold extraction of one tree took
-                        about 0.6 s at both 139 and 203 items in the
-                        verifier's re-run. ASSUMPTION: at ten times
-                        the items a cold rebuild takes several seconds
-                        per past state; untested. A cache then fits
-                        the accepted basis "Leave loading history
-                        until a query needs it" (assistant's reply
+                        (src/cctool/commit/history.py lines 107-121).
+                        For 1.44 times the items, evaluation of
+                        change.lp grew about 2.5 to 3.8 times, faster
+                        than the graph. Extraction of two trees grew
+                        2.4 times in the advocate's runs but about 1.3
+                        to 1.5 times in the verifier's re-runs, and
+                        cold extraction of one tree took about 0.6 s
+                        at both 139 and 203 items in the verifier's
+                        re-run. ASSUMPTION: at ten times the items a
+                        cold rebuild takes several seconds per past
+                        state; untested. A cache then fits the
+                        accepted basis "Leave loading history until a
+                        query needs it" (assistant's reply
                         2026-10-14T12:35:57Z, accepted by Will at
                         12:39:46Z). This measures the untested
                         assumption in

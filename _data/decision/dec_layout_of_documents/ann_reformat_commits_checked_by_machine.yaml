@@ -19,22 +19,22 @@ description:            |
                         The commit check reports
                         reformat_changes_content for any file a
                         Reformat commit changes beyond layout
-                        (src/cc_public/commit/change.lp lines
-                        213-221). A file counts as changed only if it
-                        differs once both sides are laid out by the
-                        printer (src/cc_public/commit/change.py lines
-                        123, 129-161, format_file at line 159). Tests
-                        show a layout-only reformat passes and one
-                        with a content change is reported
-                        (src/cc_public/commit/_test/test_change.py
-                        lines 147-159). The check runs from cctool
-                        message check and the commit-msg hook
+                        (src/cctool/commit/change.lp lines 213-221). A
+                        file counts as changed only if it differs once
+                        both sides are laid out by the printer
+                        (src/cctool/commit/change.py lines 123,
+                        129-161, format_file at line 159). Tests show
+                        a layout-only reformat passes and one with a
+                        content change is reported
+                        (src/cctool/commit/_test/test_change.py lines
+                        147-159). The check runs from cctool message
+                        check and the commit-msg hook
                         (memory/MEMORY.md line 43). It came after the
                         decision, in 7520f91 (after the squash), and
                         needs one canonical layout to compare against.
                         The fragment writer had no whole-file layout
                         and no format command
-                        (c4a8721:src/cc_public/edit/layout.py lines
+                        (c4a8721:src/cctool/edit/layout.py lines
                         21-24, 39, 124-136; b544e09 commit message).
                         opt_new_blank_line_rule keeps one printer, so
                         the same check would serve it. The one

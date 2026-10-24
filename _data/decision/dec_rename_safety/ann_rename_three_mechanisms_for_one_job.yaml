@@ -20,18 +20,18 @@ description:            |
                         readable id (_data/schema/sch_trait_edge.yaml
                         lines 17-31). cctool rename rewrites every
                         reference and mention in every YAML document
-                        (src/cc_public/edit/edit.py lines 951-1034).
-                        The checker reports any later use of an old
-                        id. A reference is outdated, found through an
-                        alias or its guid, and a mention is outdated
-                        where it is an alias and dangling otherwise
-                        (src/cc_public/check/check.lp lines 960-965,
+                        (src/cctool/edit/edit.py lines 951-1034). The
+                        checker reports any later use of an old id. A
+                        reference is outdated, found through an alias
+                        or its guid, and a mention is outdated where
+                        it is an alias and dangling otherwise
+                        (src/cctool/check/check.lp lines 960-965,
                         1618-1624 and 2026-2076). Alias adds its own
                         rules: the exemption in dangling_reference and
                         dangling_mention, alias_in_use,
                         outdated_reference, outdated_mention and
                         rename_without_alias (check.lp lines 964, 1624
-                        and 1985-2076; src/cc_public/commit/change.lp
+                        and 1985-2076; src/cctool/commit/change.lp
                         lines 291-296). rename_without_alias already
                         needed an exception for Revert and Reapply
                         (change.lp lines 295-296). What alias still
@@ -39,7 +39,7 @@ description:            |
                         as foreign repositories and imported data.
                         cctool import now brings in outside classes,
                         but keeps their keys in an identifier field
-                        and not in alias (src/cc_public/cli/editing.py
+                        and not in alias (src/cctool/cli/editing.py
                         lines 360-377;
                         _data/schema/sch_external_class.yaml lines
                         47-69). Weakens once a federation exists, or
