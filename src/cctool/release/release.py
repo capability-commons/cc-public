@@ -80,12 +80,13 @@ LEVEL_MINOR       = 'minor'
 LEVEL_MAJOR       = 'major'
 TUPLE_LEVEL       = (LEVEL_PATCH, LEVEL_MINOR, LEVEL_MAJOR)
 
-# The public API as ruled in ruling_public_api_split_by_kind: the data
-# format, its schemas and registers, with the types and relations they
-# hold. Code is public only where an interface control document says
-# so, which the graph cannot yet tell, so it is judged private here.
+# What is supported, as ruled in ruling_public_api_split_by_kind: the
+# data format, its schemas and registers, with the types and relations
+# they hold. Code is supported only where an interface control document
+# says so, which the graph cannot yet tell, so it is judged unsupported
+# here.
 #
-TUPLE_DIR_PUBLIC  = ('_data/schema/', '_data/register/')
+TUPLE_DIR_SUPPORT = ('_data/schema/', '_data/register/')
 DELTA_ADDED       = 'added'
 DELTA_REMOVED     = 'removed'
 DELTA_RENAMED     = 'renamed'
@@ -179,14 +180,14 @@ def touched(root: pathlib.Path,
 def level(list_touched: list[tuple[str, ...]]) -> tuple[str, list[tuple[str, ...]]]:
     """
     Return the level of the bump that list_touched calls for, and the
-    rows that call for it: major if a public item is removed or
+    rows that call for it: major if a supported item is removed or
     renamed, minor if one is added, and patch otherwise.
 
     """
 
-    list_public = [row for row in list_touched if row[3].startswith(TUPLE_DIR_PUBLIC)]
-    list_break  = [row for row in list_public if row[1] in SET_DELTA_BREAKS]
-    list_add    = [row for row in list_public if row[1] == DELTA_ADDED]
+    list_support = [row for row in list_touched if row[3].startswith(TUPLE_DIR_SUPPORT)]
+    list_break   = [row for row in list_support if row[1] in SET_DELTA_BREAKS]
+    list_add     = [row for row in list_support if row[1] == DELTA_ADDED]
 
     if list_break:
         return (LEVEL_MAJOR, list_break)

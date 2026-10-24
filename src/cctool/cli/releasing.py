@@ -42,9 +42,9 @@ import cctool.release.release
 
 # What each level of bump says of the change since the last release.
 #
-MAP_LEVEL_TEXT  = {cctool.release.release.LEVEL_MAJOR: 'a public item is removed or renamed',
-                   cctool.release.release.LEVEL_MINOR: 'a public item is added',
-                   cctool.release.release.LEVEL_PATCH: 'no public item is added, removed or '
+MAP_LEVEL_TEXT  = {cctool.release.release.LEVEL_MAJOR: 'a supported item is removed or renamed',
+                   cctool.release.release.LEVEL_MINOR: 'a supported item is added',
+                   cctool.release.release.LEVEL_PATCH: 'no supported item is added, removed or '
                                                        'renamed'}
 TUPLE_ERROR     = (cctool.release.release.ErrorRelease,
                    cctool.edit.edit.ErrorEdit,
@@ -80,8 +80,8 @@ def prepare(brief: str, root: pathlib.Path) -> None:
 
     The version is that of the last release tag, vX.Y.Z, bumped by
     what the commits since it change: major if one removes or renames a
-    public item, minor if one adds one, and patch otherwise. Before
-    1.0.0 each level bumps the part below it. A public item is a schema,
+    supported item, minor if one adds one, and patch otherwise. Before
+    1.0.0 each level bumps the part below it. A supported item is a schema,
     a register or a register entry, such as a type or a relation. With
     no release tag, the release is the first, at the version the module
     holds. The release item records the runtime packages of pixi.lock.
