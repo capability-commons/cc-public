@@ -361,17 +361,15 @@ def severities() -> dict[str, str]:
     """
     Return the severity of each check, failure or advice, keyed by
     check: advice for each shown predicate of advise.lp, and failure for
-    every other check.
+    every other check that wording words, so that a check written in
+    python has its severity as soon as it has its wording.
 
     """
 
-    map_severity = {name: SEVERITY_FAILURE for name in
-                    cctool.graph.logic.output(RULES.read_text(encoding = 'utf-8'))}
+    map_severity = {name: SEVERITY_FAILURE for name in wording()}
 
     map_severity.update({name: SEVERITY_ADVICE for name in
                          cctool.graph.logic.output(ADVICE.read_text(encoding = 'utf-8'))})
-    map_severity[NAME_SCHEMA] = SEVERITY_FAILURE
-    map_severity[NAME_LAYOUT] = SEVERITY_FAILURE
     return map_severity
 
 

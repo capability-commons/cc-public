@@ -1826,6 +1826,113 @@ surface:
                         which is not supported, so a change to them is
                         not a change to this output.
 
+        release:
+          id_self:      icm_cctool_command_line.release
+          guid_self:    icm_be1e1cf609904a109ae32a6effcb90f3
+          name:         release
+          brief:        |
+                        Propose a release, and check a commit before
+                        it is tagged.
+
+          command:
+
+            check:
+              id_self:  icm_cctool_command_line.release.check
+              guid_self:  icm_d5184176ebf247fc9f33df0a38a36ada
+              name:     check
+              brief:    |
+                        Check that the commit rev may be tagged tag,
+                        and tag nothing.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.release.check.tag
+                  guid_self:  icm_67935deece9249f8b5058e188ce48d2d
+                  name:  tag
+                  brief:  |
+                        The tag the commit would be given, such as
+                        v1.2.3.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.release.check.rev
+                  guid_self:  icm_d8bcecca997d4da190d708b10eda21a3
+                  name:  rev
+                  brief:  |
+                        The commit to check. HEAD if left out.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  default:  HEAD
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.release.check.root
+                  guid_self:  icm_b6baba3815d54a2d94ff9c02a0d5291a
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            prepare:
+              id_self:  icm_cctool_command_line.release.prepare
+              guid_self:  icm_1444f09df4c64214a5914687474c7365
+              name:     prepare
+              brief:    |
+                        Write the release item and the version module
+                        for a release of HEAD.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.release.prepare.brief
+                  guid_self:  icm_7f39d6d2971f4d059ac8e21793c4d718
+                  name:  --brief
+                  brief:  |
+                        Why the release is made, as the brief of the
+                        release item.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.release.prepare.root
+                  guid_self:  icm_8f1600b721b347c3a752a2511d23b6e9
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
         remove:
           id_self:      icm_cctool_command_line.remove
           guid_self:    icm_ead8a95ace8f41bcb952c4362a4dd2de
@@ -2111,6 +2218,63 @@ surface:
               variadic:  false
               flag:     true
 
+        timing:
+          id_self:      icm_cctool_command_line.timing
+          guid_self:    icm_3042abd8995f4e0c8a4b2561a7d0a263
+          name:         timing
+          brief:        |
+                        Sum up the timings of the newest runs of the
+                        gate.
+
+          parameter:
+
+            - id_self:  icm_cctool_command_line.timing.runs
+              guid_self:  icm_0b562919201d4c04b73875d7fe698d19
+              name:     --runs
+              brief:    |
+                        How many of the newest runs of the gate to sum
+                        up.
+              kind:     option
+
+              type:
+                spelling:  integer range
+
+              default:  '10'
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.timing.tests
+              guid_self:  icm_ba18a27e1a31444d882886a057e0171c
+              name:     --tests
+              brief:    |
+                        How many of the slowest tests to name.
+              kind:     option
+
+              type:
+                spelling:  integer range
+
+              default:  '10'
+              optional:  true
+              variadic:  false
+              flag:     false
+
+            - id_self:  icm_cctool_command_line.timing.root
+              guid_self:  icm_00ea47b7be3c4d9a8e5b39aa1cbc0371
+              name:     --root
+              brief:    |
+                        The repository whose gate was timed. Defaults
+                        to the working directory.
+              kind:     option
+
+              type:
+                spelling:  directory
+
+              default:  .
+              optional:  true
+              variadic:  false
+              flag:     false
+
         unlink:
           id_self:      icm_cctool_command_line.unlink
           guid_self:    icm_21b2cfc91135453eae8aa14d66489089
@@ -2287,8 +2451,9 @@ surface:
                         The command ran to the end, and what it checks
                         does not conform: a check found a failure, a
                         gate step failed, an edit was refused because
-                        it would add a failure, or a file would change
-                        under --check.
+                        it would add a failure, a file would change
+                        under --check, or release check found that the
+                        commit may not be tagged.
 
         error:
           id_self:      icm_cctool_command_line.error
