@@ -1,0 +1,39 @@
+id_self:                ruling_cpp_built_when_staged
+guid_self:              ruling_2a0b48be1bed405088f4559f460a1acf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  C++ built when C++ is staged
+brief:                  |
+                        The gate builds and tests the C++ only when a
+                        commit stages the engine's C++, the generator
+                        that writes it, pyproject.toml or pixi.lock,
+                        and the gate of a push always builds it. Ruled
+                        by William Payne on 2026-10-24, as
+                        recommended: Python and data commits keep
+                        today's gate times, while a generator change
+                        or a relock still gets a build next to its
+                        cause, and a build at push alone would leave
+                        every commit unbuilt.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_build_cpp_when_staged
+    guid_target:        opt_1c2a66a2cb7c4721bc839dd5b8312231
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_build_cpp_every_code_commit
+    guid_target:        opt_af1f3802836d418795b072f88061aa84
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_build_cpp_at_pre_push
+    guid_target:        opt_cf0dfccddfdb410080280e047809c088
