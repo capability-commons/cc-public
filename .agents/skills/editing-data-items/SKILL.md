@@ -90,7 +90,10 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   is unargued** (`unargued_driver`). Every concern that the logical
   component the decision is about `relation_is_driven_by` needs an annotation
   for it that supports or challenges the option or another option for
-  the same decision. Rejecting an option needs no such annotation.
+  the same decision. So does every concern the decision names itself
+  with `relation_is_driven_by`: the component's drivers are the least a
+  decision is argued for, and a decision may add one that bears on it
+  more than on the rest of the component. Rejecting an option needs no such annotation.
   Argue it; do not drop the driver to pass.
 - **A second ruling of a decision is refused**
   (`competing_rulings`). A decision has at most one. When the

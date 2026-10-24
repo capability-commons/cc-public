@@ -275,3 +275,20 @@ argued(Option, Concern) :-
     practical(Id),
     primary_edge(Id, "relation_challenges", Other),
     primary_edge(Id, "relation_speaks_for_concern", Concern).
+
+
+% -----------------------------------------------------------------------------
+% The concern drives the decision: it drives what the decision is
+% about, or the decision names it as a driver of its own.
+%
+% decl driver(decision: symbol,
+%             concern:  symbol)
+
+driver(Decision, Concern) :-
+    has_type(Decision, "type_decision"),
+    primary_edge(Decision, "relation_is_about", Subject),
+    primary_edge(Subject, "relation_is_driven_by", Concern).
+
+driver(Decision, Concern) :-
+    has_type(Decision, "type_decision"),
+    primary_edge(Decision, "relation_is_driven_by", Concern).

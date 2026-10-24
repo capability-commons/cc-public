@@ -476,33 +476,39 @@ entries:
                         SOURCE is driven by TARGET
     description:        |
                         The concern identified by TARGET is one of the
-                        few that the logical component identified by
-                        SOURCE should favor, so that every decision
-                        about the logical component is argued for it.
+                        few that the design entity or decision
+                        identified by SOURCE should favor, so that the
+                        decision, or every decision about the design
+                        entity, is argued for it.
 
-                        Concerns that drive no logical component are
-                        not expected to speak on decisions about it,
-                        so that a decision is not weighed against
-                        every concern there is.
+                        A decision is driven by the drivers of what it
+                        is about, and by any it names itself. The
+                        drivers of what it is about are the least it
+                        is argued for. A decision names one of its own
+                        when the concern bears on it more than on the
+                        rest of its subject.
+
+                        Concerns that drive neither are not expected
+                        to speak on the decision, so that a decision
+                        is not weighed against every concern there is.
 
                         A concern named this way is a driver concern
-                        (concept_driver_concern) of the logical
-                        component.
+                        (concept_driver_concern) of the source.
     note:               |
                         The relation follows the architecture drivers
                         of Arcadia, Thales, Arcadia user guide:
                         principles and contents overview, 2023, clause
                         4.3.1, which are the stakes and properties an
                         architecture should favor, and against which
-                        each design decision is checked.
+                        each design decision is checked. A decision
+                        that names drivers of its own follows the
+                        decision drivers of MADR, the Markdown
+                        Architectural Decision Records template, which
+                        lists the forces that bear on each decision
+                        with the decision.
     alias:              []
 
     edge:
-
-      - id_relation:    relation_constrains_source
-        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
-        id_target:      relcon_is_design_entity
-        guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
 
       - id_relation:    relation_constrains_target
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
@@ -513,6 +519,16 @@ entries:
         guid_relation:  relation_51554b1012884a358e38a299ba3632e0
         id_target:      extdoc_arcadia_user_guide_2023
         guid_target:    extdoc_8b0aec88870a47d19c4c16231a8e8fe4
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_can_be_driven
+        guid_target:    relcon_6034bd8cf2e14dd9b12c56ed52d13765
+
+      - id_relation:    relation_cites
+        guid_relation:  relation_51554b1012884a358e38a299ba3632e0
+        id_target:      extdoc_madr
+        guid_target:    extdoc_e87a355657a140afa03c62f0b3fb2fc8
 
   # ---------------------------------------------------------------------------
   # relation_is_option_for -- Is option for relation

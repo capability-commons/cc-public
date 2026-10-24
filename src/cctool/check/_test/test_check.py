@@ -455,16 +455,17 @@ def test_a_ruling_of_nothing_is_reported(tree):
     assert _check(tree) == {'no_option_in_ruling': [('ruling_x',)]}
 
 
-def _driven_options(tree):
+def _driven_options(tree, list_edge = ()):
     """
-    Write lco_x, driven by concern_cost, a decision about it, and two
-    options for the decision.
+    Write lco_x, driven by concern_cost, a decision about it with the
+    edges of list_edge too, and two options for the decision.
 
     """
 
     _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x',
           [_edge(tree, 'relation_is_driven_by', 'concern_cost')])
-    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_edge(tree, 'relation_is_about', 'lco_x')])
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x',
+          [_edge(tree, 'relation_is_about', 'lco_x'), *list_edge])
     _option(tree, 'opt_x')
     _option(tree, 'opt_y')
 
@@ -473,6 +474,16 @@ def test_a_ruling_with_a_driver_unargued_is_reported(tree):
     _driven_options(tree)
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
     assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_cost')]}
+
+
+def test_a_driver_the_decision_names_itself_is_reported_while_unargued(tree):
+    _driven_options(tree, [_edge(tree, 'relation_is_driven_by', 'concern_schedule')])
+    _item(tree, DIR_DECISION + 'ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', 'dec_x'),
+                                                    _edge(tree, 'relation_challenges', 'opt_y'),
+                                                    _edge(tree, 'relation_speaks_for_concern',
+                                                          'concern_cost')])
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
+    assert _check(tree) == {'unargued_driver': [('ruling_x', 'opt_x', 'concern_schedule')]}
 
 
 def test_a_rejection_with_a_driver_unargued_passes(tree):
