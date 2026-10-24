@@ -13,12 +13,15 @@ protective_mark:
 
 title:                  Gating commands
 brief:                  |
-                        The command that gates a commit.
+                        The commands that gate a commit and sum up the
+                        times of the gate.
 description:            |
                         This module holds the gate command, which runs
                         the gate over the staged content of a
                         repository and prints the verdict of each
-                        stage, and the output of each that fails.
+                        stage, and the output of each that fails, and
+                        the timing command, which sums up the log of
+                        timings that each run of the gate appends to.
 edge:                   []
 
 ...
@@ -32,6 +35,7 @@ import click
 
 import cctool.cli.group
 import cctool.gate.gate
+import cctool.gate.timing
 
 
 # -----------------------------------------------------------------------------
@@ -81,3 +85,48 @@ def gate(root: pathlib.Path) -> None:
 
     sys.exit(cctool.cli.group.EXIT_OK if all(row[1] for row in list_result)
              else cctool.cli.group.EXIT_NONCONFORMITY)
+
+
+# -----------------------------------------------------------------------------
+@cctool.cli.group.main.command()
+@click.option('--runs', 'count_run',
+              default      = cctool.gate.timing.COUNT_RUN,
+              show_default = True,
+              type         = click.IntRange(min = 1),
+              help         = 'How many of the newest runs of the gate to sum up.')
+@click.option('--tests', 'count_test',
+              default      = cctool.gate.timing.COUNT_TEST,
+              show_default = True,
+              type         = click.IntRange(min = 0),
+              help         = 'How many of the slowest tests to name.')
+@click.option('--root',
+              metavar = 'DIRPATH',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The repository whose gate was timed. Defaults to the working '
+                        'directory.')
+def timing(count_run: int, count_test: int, root: pathlib.Path) -> None:
+    """
+    Sum up the timings of the newest runs of the gate.
+
+    Each run of the gate, of a commit or of a push, appends a line for
+    each stage to a log in the git directory, which every worktree
+    shares and no commit records: when it started, its wall seconds,
+    its outcome, the tree it gated, the host and the python, and for
+    the tests the seconds of each test. This prints, as tab-separated
+    columns, the mean and the most wall seconds of each stage over the
+    newest runs, and the slowest tests among them.
+
+    """
+
+    try:
+        path_log = cctool.gate.gate.timing_log(root.resolve())
+    except cctool.gate.gate.ErrorGate as error:
+        click.echo(str(error), err = True)
+        sys.exit(cctool.cli.group.EXIT_ERROR)
+
+    for text in cctool.gate.timing.summary(cctool.gate.timing.read(path_log),
+                                           count_run, count_test):
+        click.echo(text)

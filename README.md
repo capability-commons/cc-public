@@ -105,6 +105,7 @@ appends a line for it to a log, `.git/cctool_timing.jsonl`, which
 every worktree shares and no commit records. A line holds when the
 stage started, its wall seconds, its outcome, the tree it gated, the
 host and the python, and for the tests the seconds of each test.
+`cctool timing` sums up the newest runs.
 
 The commit hooks give early feedback, and git skips them for a rebase
 or a cherry-pick, as does anyone with `--no-verify` or a clone without
@@ -118,6 +119,7 @@ would send; a pushed tag names history already made, and is passed over.
     cctool check                            check the tree
     cctool friction                         report signals of friction
     cctool gate                             check, lint and test what is staged
+    cctool timing [--runs N]                sum up the times of the gate
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILEPATH           check a commit message
     cctool message draft FILEPATH           give a merge or revert message its item

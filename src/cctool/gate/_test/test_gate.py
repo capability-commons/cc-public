@@ -266,3 +266,11 @@ def test_the_tests_log_the_seconds_of_each_test(repo):
 def test_the_real_tests_report_the_seconds_of_each_test():
     assert '--junitxml={report}' in dict(cctool.gate.gate.TUPLE_STAGE)['test']
 
+
+def test_the_timing_command_sums_up_the_log(repo):
+    cctool.gate.gate.gate(repo, (_stage('pass', 'pass'),))
+    result = click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                              ['timing', '--root', str(repo)])
+    assert result.exit_code == 0
+    assert result.stdout.startswith('1 run, started from ')
+    assert '\nstage\truns\tmean_s\tmax_s\npass\t1\t' in result.stdout
