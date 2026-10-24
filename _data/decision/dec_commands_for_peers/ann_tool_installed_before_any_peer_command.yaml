@@ -1,0 +1,73 @@
+id_self:                ann_tool_installed_before_any_peer_command
+guid_self:              ann_2d0c52d5aa1f40f79470a7707810c0b0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First install of the tool before any peer command
+brief:                  |
+                        Under the consumers ruling, cctool reaches a
+                        peer as an application installed in an
+                        environment of its own from the lock its
+                        release publishes, so no cctool command exists
+                        on a host until that install is done. A setup
+                        command in cctool cannot make its own first
+                        install, so that step is documented, or done
+                        by a separate installer, under either option,
+                        and the group's setup command covers only what
+                        follows it.
+description:            |
+                        Sources:
+                        - What a peer runs, such as cctool and its
+                          hooks, is an application installed from the
+                          tested lock each release publishes
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml,
+                          brief), in an environment of its own
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml,
+                          brief).
+                        - No standard installer reads a lock from a
+                          dependency, so the split option adds a
+                          published environment file and a way to
+                          install it for its tool part
+                          (_data/decision/dec_who_consumes_a_release/ann_shipped_environment_needs_a_lock_installer.yaml,
+                          brief).
+                        - The command group "sets up a peer"
+                          (_data/decision/dec_commands_for_peers/opt_peer_command_group.yaml,
+                          brief).
+                        - Assumption: no installer outside cctool is
+                          planned; a separate one would be a further
+                          tool for a partner to install. Strength:
+                          moderate for the setup part; it leaves the
+                          case for later commands, such as an upgrade
+                          that applies rename maps, untouched.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_manual_steps
+    guid_target:        opt_7b0a69fc0da047aa92ec2550fe5dba1d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

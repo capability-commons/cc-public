@@ -1,0 +1,83 @@
+id_self:                ann_consumed_content_held_locally_for_the_gate
+guid_self:              ann_56f09119546842caaea53410a40a402a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Consumed content held locally for the consumer's gate
+brief:                  |
+                        A consumer's gate checks the union of its own
+                        content and what it consumes, over a copy of
+                        the staged content, on hosts such as atlas
+                        that have no network, and the ruled release
+                        gate checks that the built package holds _data
+                        and that cctool check passes on it. So
+                        cc-public's _data has to reach a peer as a
+                        copy in the package, whatever else serves the
+                        graph. An MCP service or API for reading the
+                        graph can be added beside the shipped files
+                        for people and agents, and changes nothing
+                        that crosses, but it cannot stand in for them
+                        in a gate without a live service at every
+                        check.
+description:            |
+                        Sources:
+                        - A consumer's gate checks the union of its
+                          own roots and what it consumes
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          lines 12-18).
+                        - The gate copies the staged content and runs
+                          the check, the lint and the tests over the
+                          copy (README.md lines 71-74;
+                          src/cctool/gate/gate.py lines 120-153).
+                        - The atlas VM has no network (context note,
+                          _sources/context.md line 30).
+                        - The release gate checks that the built
+                          package holds _data and that cctool check
+                          passes on the _data it ships
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          lines 24-27).
+                        - "if we end up with some sort of MCP service
+                          or API for the graph, then it's not clear if
+                          we SHOULD put _data in the wheel" (owner's
+                          statement, quoted in
+                          _data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml
+                          lines 22-26).
+                        - The queries option has each segment answer
+                          queries through a service
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
+                          brief). Strength: moderate; a service for
+                          reads is still worth having, and the
+                          argument is only that it sits beside the
+                          copy, not in place of it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_files_until_needed
+    guid_target:        opt_31770468b0014b1886e1dd0275c51c81
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_answer_queries
+    guid_target:        opt_5ece0891c1904abf873550f2b8a4b00c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

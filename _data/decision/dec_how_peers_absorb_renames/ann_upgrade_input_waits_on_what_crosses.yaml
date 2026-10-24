@@ -1,0 +1,72 @@
+id_self:                ann_upgrade_input_waits_on_what_crosses
+guid_self:              ann_9e408d6345854ddc87a2de769f49668c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upgrade input tied to the open choice of what crosses
+brief:                  |
+                        The option reads the current id of each edge's
+                        guid from the release a peer takes, and the
+                        renames from that release's records, both of
+                        which reach a peer today only because _data
+                        ships in the package. That is provisional
+                        until it is decided what crosses between
+                        segments; if cc-public's graph is served
+                        through an API, the command would ask the
+                        service for the current id of a guid and for
+                        the renames instead. This changes where the
+                        command reads, not whether the option works,
+                        but the command cannot be finished before that
+                        decision.
+description:            |
+                        Sources:
+                        - The wheel carries _data provisionally: "if
+                          we end up with some sort of MCP service or
+                          API for the graph, then it's not clear if we
+                          SHOULD put _data in the wheel", which waits
+                          on the decision on what crosses between
+                          segments
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml
+                          lines 22-26).
+                        - One option of that decision has each segment
+                          answer queries from the others through a
+                          service
+                          (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml
+                          lines 13-14), and the owner asked to "decide
+                          what crosses between segments first of all"
+                          before ruling on the query vocabulary
+                          (owner's statement, 2026-10-24).
+                        - The release item is a file under _data
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-14); the ruling does not say
+                          whether the derived renames are written into
+                          it.
+                        - The option resolves each reference from its
+                          guid in the release the peer takes
+                          (_data/decision/dec_how_peers_absorb_renames/opt_upgrade_by_rename_maps.yaml,
+                          brief). Strength: weak; under every answer a
+                          peer reaches cc-public's items somehow, and
+                          the hand option needs its notes to reach the
+                          peer in the same way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

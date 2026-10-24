@@ -1,0 +1,66 @@
+id_self:                ann_rename_maps_ruled_into_release_record
+guid_self:              ann_1ca3970356d14429b492e1ab776a6cfd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rename maps already in the ruled release record
+brief:                  |
+                        The release record ruled on 2026-10-24 derives
+                        the rename maps of each release from the
+                        commit items since the last, and the release
+                        component lists them, so this option adds no
+                        record of its own. What it adds is a command
+                        that applies them, where the hand option
+                        leaves the same derived renames for a person
+                        to read and apply.
+description:            |
+                        Sources:
+                        - The release notes and rename maps are
+                          derived from the commit items since the last
+                          release
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-17).
+                        - The release component holds "the notes and
+                          rename maps derived for each release"
+                          (_data/logical_component/lco_release.yaml
+                          lines 13-16).
+                        - The bump of each release is computed from
+                          the same graph
+                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml,
+                          brief), a commit item names every id its
+                          commit renames (AGENTS.md lines 98-100), and
+                          the commit check finds renamed items by guid
+                          (src/cctool/commit/change.lp lines 119-122).
+                        - The option ships the renames each release
+                          makes
+                          (_data/decision/dec_how_peers_absorb_renames/opt_upgrade_by_rename_maps.yaml,
+                          brief). Strength: strong for the record,
+                          which is ruled; it says nothing of the cost
+                          of the command.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

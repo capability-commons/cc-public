@@ -1,0 +1,72 @@
+id_self:                ann_upgrades_drop_old_ids_from_peers
+guid_self:              ann_1da7d970a14c423eba261ea1f31e21ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Old ids dropped from each peer that upgrades
+brief:                  |
+                        Under rename maps and under a hand upgrade
+                        alike, a peer that takes a release stops
+                        naming an old id, since its check fails until
+                        it does, and the old id stays only in the
+                        records of the release that made the rename.
+                        So where a segment whose ids describe people
+                        renames an id to correct it, the correction
+                        reaches each peer that upgrades, which old ids
+                        kept for ever would prevent. Neither option
+                        removes the old id from the history and
+                        release records that already hold it, so this
+                        point does not choose between them.
+description:            |
+                        Sources:
+                        - A reference by an old id fails as outdated
+                          (src/cctool/check/check.lp lines 1966-1975),
+                          and a mention of an id that names no item
+                          and no alias fails as dangling (check.lp
+                          lines 1551-1557).
+                        - A commit item names every id its commit
+                          renames (AGENTS.md lines 98-100), and the
+                          release notes and rename maps are derived
+                          from the commit items
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-17).
+                        - Federation must let a segment meet security
+                          and privacy requirements, such as those on
+                          personal data of members under the GDPR
+                          (_data/logical_component/lco_federation.yaml
+                          lines 18-24; owner's statement,
+                          2026-10-22T20:19).
+                        - The GDPR gives a data subject rights to
+                          rectification and erasure (GDPR Articles 16
+                          and 17, https://gdpr-info.eu/art-16-gdpr/
+                          and https://gdpr-info.eu/art-17-gdpr/).
+                          Strength: weak; cc-public's own ids are
+                          impersonal, and the point bears on segments
+                          that copy the scheme.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_peers_absorb_renames
+    guid_target:        dec_6a6a3a882440491592828e2f3793216d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_rename_maps
+    guid_target:        opt_f890333a072c4d868d4b056b16422083
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_by_hand
+    guid_target:        opt_31a51dc6f9ac4b03a326b6b1a4f03c5e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

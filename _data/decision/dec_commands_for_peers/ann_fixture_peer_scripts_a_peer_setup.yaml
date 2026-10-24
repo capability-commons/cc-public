@@ -1,0 +1,64 @@
+id_self:                ann_fixture_peer_scripts_a_peer_setup
+guid_self:              ann_61a8a00092e448c785a2a7d33c9bff3c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixture peer that scripts a peer's setup
+brief:                  |
+                        Once a peer can consume cc-public, the ruled
+                        release gate installs the built package fresh
+                        and runs a fixture peer against it, so code
+                        that sets up a peer from a release will exist
+                        and be tested at each release whichever option
+                        is ruled. A setup command could share that
+                        code and its tests, which lowers the cost of
+                        the command group. The fixture is set up where
+                        the gate chooses, so it tests less than a real
+                        peer's setup on other hosts and networks.
+description:            |
+                        Sources:
+                        - Before a release is tagged, the package is
+                          built from the tagged tree and installed in
+                          a fresh environment, and, once a peer can
+                          consume cc-public, a fixture peer checks
+                          against it
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml,
+                          brief).
+                        - The release gate tests both the lock and a
+                          fresh resolve of the ranges
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml,
+                          brief).
+                        - The fixture peer should run the declared
+                          commands
+                          (_data/decision/dec_declared_public_api/ann_command_behavior_set_by_click.yaml,
+                          brief).
+                        - The case against the group counts it as new
+                          code to read, test and port
+                          (_data/decision/dec_commands_for_peers/ann_peer_command_group_ahead_of_need.yaml,
+                          brief).
+                        - Assumption: the fixture's setup is written
+                          in Python in cctool's gate code. Strength:
+                          weak; no fixture exists yet, and none can
+                          until a peer can consume cc-public.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

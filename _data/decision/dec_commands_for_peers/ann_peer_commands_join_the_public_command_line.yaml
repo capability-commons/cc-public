@@ -1,0 +1,76 @@
+id_self:                ann_peer_commands_join_the_public_command_line
+guid_self:              ann_7313e3941caa4d46b5e0ce97917edd48
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer commands as promises of the command line
+brief:                  |
+                        Under the ruled split of the public API, the
+                        command line has an interface control document
+                        of its own that promises commands, flags, exit
+                        statuses and named JSON outputs. Every command
+                        of a peer group becomes a member that peers
+                        rely on, so after 1.0 a change to it is
+                        breaking and waits for a major release. Steps
+                        that pixi carries out add no member. Before
+                        1.0, which is six months or more away, members
+                        change freely, so the cost starts later.
+description:            |
+                        Sources:
+                        - The command line has an interface control
+                          document of its own, which promises
+                          commands, flags, exit statuses and named
+                          JSON outputs, not human-readable text, and
+                          is checked against click's own description
+                          of each command before 1.0; each document
+                          has one required exposure field, peer or
+                          internal
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml,
+                          brief).
+                        - After 1.0, breaking work collects on next
+                          until a major release, and 1.0 is "likely to
+                          be 6 months or more away"
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml,
+                          brief).
+                        - A command line document makes each command
+                          and its parameters a member that the history
+                          check can see renamed or removed
+                          (_data/decision/dec_declared_public_api/ann_command_members_held_to_click_registrations.yaml,
+                          brief).
+                        - The group sets up a peer, reports its pinned
+                          release and what an upgrade would touch,
+                          switches it, and upgrades it
+                          (_data/decision/dec_commands_for_peers/opt_peer_command_group.yaml,
+                          brief).
+                        - Assumption: the group's commands would be
+                          declared with exposure peer, since peers run
+                          them. Strength: weak before 1.0, moderate
+                          after it, growing with each command and flag
+                          the group adds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_commands_for_peers
+    guid_target:        dec_108a3b7f7da24263aa41f2a85f128da3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_command_group
+    guid_target:        opt_d6ce4567481149019b78d018aaf19940
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,73 @@
+id_self:                ann_schema_validation_reads_the_documents
+guid_self:              ann_34daa2371ab449b3ae6c2a2de359ff04
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema validation that reads documents, not facts
+brief:                  |
+                        cctool check runs its logic rules over the
+                        extracted facts, but it validates each YAML
+                        document against its schemas over the document
+                        itself. A consumer given only facts cannot
+                        validate what it consumes and must trust the
+                        producer's own gate for it, so a stale or
+                        crafted shipment could carry items that break
+                        the public data format unseen. A consumer that
+                        reads the files runs every check over the
+                        union.
+description:            |
+                        Sources:
+                        - cctool check evaluates the logic rules over
+                          the facts extracted from the documents, then
+                          validates the documents themselves against
+                          their schemas with JSON Schema
+                          (src/cctool/check/check.py lines 277-288;
+                          src/cctool/check/schema.py, brief).
+                        - A consumer's gate checks the union of its
+                          own roots and what it consumes
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          lines 12-18).
+                        - The data format, with its schemas, is public
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          lines 13 and 37-38). Strength: moderate; a
+                          producer that gates its own content catches
+                          the same faults, and the checks of
+                          references across segments still run over
+                          facts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_crosses_between_segments
+    guid_target:        dec_64db8a6fec9e488ca4e13d06251ec804
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_files_until_needed
+    guid_target:        opt_31770468b0014b1886e1dd0275c51c81
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segments_exchange_files
+    guid_target:        opt_0cb976f756af487c8e4d03352fc3928b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segments_exchange_facts
+    guid_target:        opt_5130656df1b44f32b709969c557fe29b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
