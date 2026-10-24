@@ -44,6 +44,7 @@ import cctool.cli.command
 import cctool.commit.change
 import cctool.graph.logic
 import cctool.graph.extract
+import cctool.graph.tool
 from cctool.conftest import DIR_REPO
 
 
@@ -937,6 +938,41 @@ def test_a_part_the_member_does_not_state_is_not_compared(tree):
     _interface(tree, 'icm_x.run')
     _realizing(tree, ['root: int = 1'], returns = 'int')
     assert _check(tree) == {}
+
+
+def test_click_describes_each_parameter_of_a_command():
+    @click.group()
+    def group():
+        pass
+
+    @group.command()
+    @click.argument('path')
+    @click.argument('list_rest', nargs = -1)
+    @click.option('--depth', '-d', default = 3, type = click.IntRange(0))
+    @click.option('--json', 'is_json', is_flag = True)
+    def run(path, list_rest, depth, is_json):
+        pass
+
+    context = click.Context(group, info_name = 'x')
+    found   = {'click_command': set(), 'click_parameter': set()}
+    cctool.graph.tool._command(group.to_info_dict(context), (),
+                               set(context.help_option_names), found)
+    assert found['click_command'] == {('cctool', ''), ('cctool', 'run')}
+    assert {row[2:] for row in found['click_parameter']} == {
+        ('path',      'kind', 'argument'), ('path',      'type', 'text'),
+        ('path',      'default', ''),      ('path',      'optional', 'false'),
+        ('path',      'variadic', 'false'), ('path',     'flag', 'false'),
+        ('path',      'position', '0'),
+        ('list_rest', 'kind', 'argument'), ('list_rest', 'type', 'text'),
+        ('list_rest', 'default', ''),      ('list_rest', 'optional', 'true'),
+        ('list_rest', 'variadic', 'true'), ('list_rest', 'flag', 'false'),
+        ('list_rest', 'position', '1'),
+        ('--depth',   'kind', 'option'),   ('--depth',   'type', 'integer range'),
+        ('--depth',   'default', '3'),     ('--depth',   'optional', 'true'),
+        ('--depth',   'variadic', 'false'), ('--depth',  'flag', 'false'),
+        ('--json',    'kind', 'option'),   ('--json',    'type', 'boolean'),
+        ('--json',    'default', 'false'), ('--json',    'optional', 'true'),
+        ('--json',    'variadic', 'false'), ('--json',   'flag', 'true')}
 
 
 def test_a_class_and_a_method_named_for_their_place_pass(tree):

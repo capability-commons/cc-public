@@ -48,6 +48,7 @@ import ruamel.yaml
 import ruamel.yaml.scalarstring
 
 import cctool.graph.prefix
+import cctool.graph.tool
 
 
 # Round trip loading keeps the line and column of every key and value,
@@ -280,7 +281,9 @@ PREDICATE         = {
                            'The item id states value for part of a signature: the '
                            'spelling of its type, its default, whether it is optional '
                            'or variadic, as true or false, or the spelling of the type '
-                           'it returns.'),
+                           'it returns. A parameter of a command also states its kind, '
+                           'whether it is a flag, and, for an argument, its position '
+                           'among the arguments, counted from 0.'),
     'position':           (('id', 'position:number'),
                            'The item id is written as the element at position, counted '
                            'from 0, of a list.'),
@@ -331,6 +334,27 @@ PREDICATE         = {
                            'host is empty.'),
     'host':               (('graph', 'key'),
                            'The dataflow graph graph has a host under key.'),
+    'command_member':     (('member', 'program', 'command', 'name'),
+                           'A command line surface of program states the member as '
+                           'command, its words after the program name joined by '
+                           'spaces, if name is empty, or else as the parameter name '
+                           'of command: the first spelling of an option, or the name '
+                           'of an argument. The parameters of the program itself '
+                           'have an empty command.'),
+    'click_command':      (('program', 'command'),
+                           'click describes command, its words after the program name '
+                           'joined by spaces, or empty for the program itself, as a '
+                           'command of program, the running cctool. It is a fact of the '
+                           'tool, and not of any document.'),
+    'click_parameter':    (('program', 'command', 'name', 'part', 'value'),
+                           'click describes the parameter name of command of program, '
+                           'the first spelling of an option or the name of an '
+                           'argument, as having value for part: its kind, argument or '
+                           'option; its type, as click names it; its default, or empty '
+                           'if it has none; whether it is optional, variadic or a flag, '
+                           'as true or false; and, for an argument, its position among '
+                           'the arguments, counted from 0. The option for help is '
+                           'click\'s own, and is left out.'),
 }
 
 # Python modules are imported with src as the root of the path. The
@@ -385,6 +409,16 @@ KEY_DIRECTION     = 'direction'
 KEY_ID_NODE       = 'id_dataflow_node'
 KEY_ID_PORT       = 'id_port'
 FEEDFORWARD       = 'feedforward'
+
+# Where a command line surface names its program and lists its
+# commands, and the fields that only a parameter of a command states.
+#
+KEY_COMMAND_LINE  = 'command_line'
+KEY_PROGRAM       = 'program'
+KEY_COMMAND       = 'command'
+KEY_PARAMETER     = 'parameter'
+KEY_KIND          = 'kind'
+KEY_FLAG          = 'flag'
 
 # What the code says of each class or function that holds a YAML document,
 # keyed by the id of the document, with a weak reference to it: the id its place
@@ -571,6 +605,9 @@ def facts_of(map_document: Documents) -> Facts:
 
     facts['term_form'] = _forms(facts)
 
+    for (name, set_row) in cctool.graph.tool.facts().items():
+        facts[name].update(set_row)
+
     return facts
 
 
@@ -594,6 +631,7 @@ def _facts_of_document(file:             str,
     _walk(document, '', (file, base), facts, terms)
     if isinstance(document, dict):
         _ports(document, facts)
+        _commands(document, facts)
         _dataflow_graph(document, (file, base), facts)
         (held, definition) = MAP_DEFINITION.get(id(document), (None, None))
         if held is not None and held() is document:
@@ -1541,6 +1579,67 @@ def _ports(document: dict[str, typing.Any], facts: Facts) -> None:
                                                  kind,
                                                  str(member.get(KEY_NAME, key)),
                                                  member[KEY_ID_SELF]))
+
+
+# -----------------------------------------------------------------------------
+def _commands(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for each command and each parameter that a command line
+    surface of document states.
+
+    """
+
+    surface = document.get(KEY_SURFACE)
+
+    if not isinstance(surface, dict):
+        return
+
+    for form in surface.values():
+        line = form.get(KEY_COMMAND_LINE) if isinstance(form, dict) else None
+        if isinstance(line, dict):
+            _command_members(line, str(line.get(KEY_PROGRAM)), (), facts)
+
+
+# -----------------------------------------------------------------------------
+def _command_members(node:       dict[str, typing.Any],
+                     program:    str,
+                     tuple_name: tuple[str, ...],
+                     facts:      Facts) -> None:
+    """
+    Add the facts of the parameters of node, a command line surface of
+    program or a command whose words after the program name are
+    tuple_name, and of each command it holds. A parameter of a command
+    also states its kind, whether it is a flag, and, for an argument,
+    its position among the arguments.
+
+    """
+
+    command        = cctool.graph.tool.DELIM_COMMAND.join(tuple_name)
+    list_parameter = node.get(KEY_PARAMETER)
+    position       = 0
+
+    for parameter in list_parameter if isinstance(list_parameter, list) else []:
+        if not isinstance(parameter, dict) or not isinstance(parameter.get(KEY_ID_SELF), str):
+            continue
+        id_self = parameter[KEY_ID_SELF]
+        kind    = parameter.get(KEY_KIND)
+        facts['command_member'].add((id_self, program, command,
+                                     str(parameter.get(KEY_NAME, ''))))
+        if isinstance(kind, str):
+            facts['stated'].add((id_self, 'kind', kind))
+        if isinstance(parameter.get(KEY_FLAG), bool):
+            facts['stated'].add((id_self, 'flag', _truth(parameter[KEY_FLAG])))
+        if kind == cctool.graph.tool.KIND_ARGUMENT:
+            facts['stated'].add((id_self, 'position', str(position)))
+            position += 1
+
+    for (key, each) in _map(node.get(KEY_COMMAND)).items():
+        if not isinstance(each, dict) or not isinstance(each.get(KEY_ID_SELF), str):
+            continue
+        tuple_each = (*tuple_name, str(each.get(KEY_NAME, key)))
+        facts['command_member'].add((each[KEY_ID_SELF], program,
+                                     cctool.graph.tool.DELIM_COMMAND.join(tuple_each), ''))
+        _command_members(each, program, tuple_each, facts)
 
 
 # -----------------------------------------------------------------------------

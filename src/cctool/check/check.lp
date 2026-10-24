@@ -887,6 +887,104 @@ signature_mismatch(Member, Function, "returns", Stated, Actual) :-
 
 
 % -----------------------------------------------------------------------------
+% A command line surface states the commands of a program and their
+% parameters, and click describes the commands and parameters of cctool
+% as it runs. A program is held to click wherever a surface states it.
+% The program itself is stated by its surface, so its own parameters
+% sit under the empty command.
+%
+% decl command_line_program(program: symbol)
+
+command_line_program(Program) :-
+    command_member(_, Program, _, _).
+
+% decl command_holder(member:  symbol,
+%                     program: symbol,
+%                     command: symbol)
+
+command_holder(Member, Program, Command) :-
+    command_member(Member, Program, Command, "").
+
+command_holder("", Program, "") :-
+    command_line_program(Program).
+
+% ---
+%
+% id_self:                lpp_cctool.check.check.command_mismatch
+% guid_self:              lpp_0ffa1dc6656541d89fe03a913717f3f0
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Command mismatch
+% brief:                  |
+%                         What a command line surface states of a
+%                         program is what click describes of it: each
+%                         command, each parameter of each command, and
+%                         the kind, type, default and position of each
+%                         parameter, and whether it is optional,
+%                         variadic or a flag. member is the member that
+%                         states the part, or the command that holds a
+%                         parameter no member states, and is empty for a
+%                         command no member states. A part the member
+%                         does not state is not compared.
+% did:                    |
+%                         {member} states {stated} for the {part} of
+%                         {command} of {program}, and click describes
+%                         {actual}.
+% fix:                    |
+%                         Make the member and the code agree: change the
+%                         member if the command line has changed, or the
+%                         code if it has drifted. An empty value means
+%                         that side does not say, so a command or a
+%                         parameter that no member states needs one, in
+%                         a command line surface of the program.
+% edge:                   []
+%
+% ...
+%
+% decl command_mismatch(member:  symbol,
+%                       program: symbol,
+%                       command: symbol,
+%                       part:    symbol,
+%                       stated:  symbol,
+%                       actual:  symbol)
+#show command_mismatch/6.
+
+command_mismatch(Member, Program, Command, "command", Command, "") :-
+    command_member(Member, Program, Command, ""),
+    not click_command(Program, Command).
+
+command_mismatch("", Program, Command, "command", "", Command) :-
+    click_command(Program, Command),
+    Command != "",
+    command_line_program(Program),
+    not command_member(_, Program, Command, "").
+
+command_mismatch(Member, Program, Command, "parameter", Name, "") :-
+    command_member(Member, Program, Command, Name),
+    Name != "",
+    click_command(Program, Command),
+    not click_parameter(Program, Command, Name, "kind", _).
+
+command_mismatch(Member, Program, Command, "parameter", "", Name) :-
+    click_parameter(Program, Command, Name, "kind", _),
+    command_holder(Member, Program, Command),
+    not command_member(_, Program, Command, Name).
+
+command_mismatch(Member, Program, Command, Part, Stated, Actual) :-
+    command_member(Member, Program, Command, Name),
+    Name != "",
+    stated(Member, Part, Stated),
+    click_parameter(Program, Command, Name, Part, Actual),
+    Stated != Actual.
+
+
+% -----------------------------------------------------------------------------
 % ---
 %
 % id_self:                lpp_cctool.check.check.key_mismatch

@@ -25,7 +25,7 @@ description:            |
                         or more surfaces, each filed under a short
                         local key.
 
-                        A surface holds exactly one of three forms. A
+                        A surface holds exactly one of four forms. A
                         native surface presents the interface as an
                         API in one implementation language. A dataflow
                         step surface presents it as a dataflow step
@@ -34,7 +34,11 @@ description:            |
                         compatibility depends on. An artifact surface
                         presents it as files, messages or records
                         handed from a producer to a reader, with what
-                        a reader needs to interpret one.
+                        a reader needs to interpret one. A command
+                        line surface presents it as a program run from
+                        a command line, with its commands, their
+                        parameters, its exit statuses and the outputs
+                        a script may read.
 
                         Every declaration a surface holds is an
                         interface member, shaped by
@@ -589,6 +593,7 @@ $defs:
         - native
         - dataflow_step
         - artifact
+        - command_line
 
     properties:
 
@@ -600,6 +605,9 @@ $defs:
 
       artifact:
         $ref:           '#/$defs/surface_artifact'
+
+      command_line:
+        $ref:           '#/$defs/surface_command_line'
 
     description:        |
                         Exactly one form of presentation of the
@@ -928,6 +936,194 @@ $defs:
                         conventions a reader must tolerate, and what
                         makes a new version of the interface rather
                         than a change within this one.
+
+  command_parameter:
+    description:        |
+                        An argument or an option of a command. Its
+                        name is the first spelling of an option, such
+                        as --root, or the name of an argument.
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - kind
+
+        properties:
+
+          kind:
+            type:       string
+
+            enum:
+              - argument
+              - option
+
+            description:  |
+                        Whether it is given by its place, as an
+                        argument, or by its name, as an option.
+
+          type:
+            $ref:       '#/$defs/type_reference'
+
+          default:
+            type:       string
+            minLength:  1
+            pattern:    ^[^\n]+$
+            description:  |
+                        Optional. What it is when a caller leaves it
+                        out, as the command line writes it.
+
+          optional:
+            type:       boolean
+            description:  |
+                        Optional. Whether a caller may leave it out.
+
+          variadic:
+            type:       boolean
+            description:  |
+                        Optional. Whether it takes any number of
+                        values, or may be given more than once.
+
+          flag:
+            type:       boolean
+            description:  |
+                        Optional. Whether it is an option that takes
+                        no value, and is true where it is given.
+
+    unevaluatedProperties:  false
+
+  command:
+    description:        |
+                        A command, named by the word a caller types
+                        for it. A command that holds other commands is
+                        a group.
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        properties:
+
+          parameter:
+            type:       array
+
+            items:
+              $ref:     '#/$defs/command_parameter'
+
+            description:  |
+                        Optional. The parameters, with the arguments
+                        in the order a caller gives them.
+
+          command:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/command'
+
+            description:  |
+                        Optional. The commands this group holds, keyed
+                        by a short local name.
+
+          output:
+            type:       object
+
+            additionalProperties:
+              $ref:     '#/$defs/artifact'
+
+            description:  |
+                        Optional. The named outputs that a script may
+                        read, keyed by a short local name.
+
+    unevaluatedProperties:  false
+
+  exit_status:
+
+    allOf:
+      - $ref:           https://capability-commons.org/schema/sch_interface_member.yaml
+
+      - type:           object
+
+        required:
+          - value
+          - condition
+
+        properties:
+
+          value:
+            type:       integer
+            minimum:    0
+            maximum:    255
+            description:  |
+                        The status the program exits with.
+
+          condition:
+            type:       string
+            minLength:  1
+            description:  |
+                        When it exits with this status.
+
+    unevaluatedProperties:  false
+
+  surface_command_line:
+    type:               object
+    additionalProperties:  false
+
+    required:
+      - program
+      - command
+      - exit_status
+
+    description:        |
+                        The interface as a program run from a command
+                        line. What it promises is the commands, the
+                        parameters of each, the exit statuses, and the
+                        named outputs a script may read. What a
+                        command writes for a person to read, such as
+                        its help, its messages and its tables, is not
+                        promised, and may change in any release.
+
+    properties:
+
+      program:
+        type:           string
+        minLength:      1
+        pattern:        ^[^\s]+$
+        description:    |
+                        The name the program is run by.
+
+      parameter:
+        type:           array
+
+        items:
+          $ref:         '#/$defs/command_parameter'
+
+        description:    |
+                        Optional. The parameters the program takes
+                        before any command.
+
+      command:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         '#/$defs/command'
+
+        description:    |
+                        The commands, keyed by a short local name.
+
+      exit_status:
+        type:           object
+        minProperties:  1
+
+        additionalProperties:
+          $ref:         '#/$defs/exit_status'
+
+        description:    |
+                        The statuses the program exits with, keyed by
+                        a short local name.
 
   semantics:
     type:               string
