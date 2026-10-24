@@ -1,0 +1,80 @@
+id_self:                ann_published_lock_names_an_access_controlled_host
+guid_self:              ann_b1ff78b3a7784fb2b1ffe4f2f1c1126b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Published lock that names an access-controlled host
+brief:                  |
+                        Peers install cctool from the lock each
+                        release publishes, and a lock names each
+                        package by the URL of its host. If the later
+                        channel is an access-controlled route, the
+                        published lock is installable only by a peer
+                        with access to that host, and the credentials
+                        must live wherever the lock is resolved, which
+                        for the first peer is off its own host. The
+                        new option names a proprietary route as the
+                        likely case, and whether that route needs
+                        credentials is not known, so the form of the
+                        published lock waits on the channel's access
+                        rules.
+description:            |
+                        Sources:
+                        - "What a peer runs, such as cctool and its
+                          hooks, is an application installed from the
+                          tested lock each release publishes" (_data/decision/dec_who_consumes_a_release/
+                          ruling_consumers_by_what_they_consume.yaml lines 13-16).
+                        - pixi.lock records each channel and index by
+                          URL and each package by its full URL
+                          (pixi.lock lines 4-7 and line 12).
+                        - The new option names "possibly a proprietary
+                          route" (_data/decision/dec_publishing_route/
+                          opt_publish_tags_now_channel_to_be_decided.yaml lines 16-17).
+                        - prefix.dev's post on its channels, which may
+                          be private or public, has users install
+                          their packages with the API key authentication it provides
+                          (https://prefix.dev/blog/introducing_channels, 2023-05-23). This is one example of an
+                          access-controlled host, not a claim about Axair Systems' route.
+                        - cc-patrol is "local to atlas only" with "No
+                          remote yet"
+                          (_sources/cc-patrol-notes/plan.md
+                          lines 109 and 112), and the atlas VM has no network, so only the owner can relock
+                          (context note, _sources/context.md line 30).
+                        - Assumption: "possibly proprietary" includes
+                          a host that requires credentials. Not known.
+                          Strength: moderate. With ten times the
+                          peers, each needs access arranged. The tag
+                          route, which the option keeps since a
+                          channel is "added", leaves a way in for
+                          peers without access, at the cost of source
+                          builds. Answered if any channel the option
+                          admits can be read without credentials, or
+                          if the release also publishes a lock that
+                          resolves from public hosts only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

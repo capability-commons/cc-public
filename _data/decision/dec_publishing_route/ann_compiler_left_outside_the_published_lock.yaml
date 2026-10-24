@@ -1,0 +1,69 @@
+id_self:                ann_compiler_left_outside_the_published_lock
+guid_self:              ann_4cc9491de415432b85e70d74a567b5f1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine build needing a compiler the published lock leaves out
+brief:                  |
+                        Under tags a peer builds cc-public from
+                        source, and once the C++ engine is in the
+                        package that build needs a C++ compiler. The
+                        ruled tool lock holds runtime dependencies
+                        only and the compiler sits in cc-public's
+                        default development environment only, so a
+                        peer would need a second, unrecorded way to
+                        get a compiler. The new option has no trigger
+                        that ends this state; the staged option adds
+                        prebuilt packages when the engine lands, which
+                        ends it for peers that take them.
+description:            |
+                        Sources:
+                        - "The published lock for the tool part holds
+                          runtime dependencies only"
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml
+                          lines 19-21).
+                        - The compiler goes in the default pixi
+                          environment only, "until such time as we
+                          need
+                          otherwise" (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml
+                          lines 27-30).
+                        - Under tags a peer builds cc-public from
+                          source
+                          (_data/decision/dec_publishing_route/opt_publish_tags_now_channel_to_be_decided.yaml
+                          lines 13-14).
+                        - The engine ships in the package peers
+                          install
+                          (_data/decision/dec_source_layout_for_two_languages/
+                          ruling_source_layout_for_two_languages.yaml lines 13-17). Today the package is built by
+                          hatchling (pyproject.toml lines 54-56).
+                        - Assumption: the build tooling a peer uses
+                          would not supply a C++ compiler on its own
+                          through isolated build requirements. Not checked for pixi.
+                        Strength: strong once the engine ships, and it
+                        scales with peers, since each one sets up a
+                        compiler. Moot before the engine lands.
+                        Answered by publishing a build lock, which is
+                        one more published artifact, or by a channel
+                        that carries prebuilt packages.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

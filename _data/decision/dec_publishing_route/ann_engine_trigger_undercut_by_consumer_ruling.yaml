@@ -1,0 +1,81 @@
+id_self:                ann_engine_trigger_undercut_by_consumer_ruling
+guid_self:              ann_0a8cd530bca84548baddcbec2e1ad19a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine trigger narrowed by the consumer ruling
+brief:                  |
+                        The staged option makes the engine's C++ in
+                        the package a trigger for a channel built once
+                        per platform. The consumer ruling has since
+                        made the engine a library that a peer builds
+                        into its own product, which a recorded
+                        annotation reads as a build in the peer's
+                        toolchain for its own target host, so a
+                        channel of prebuilt engines might trade that
+                        tuned build for a generic one. The new
+                        option's open trigger and kind avoid
+                        committing to that trade.
+description:            |
+                        Sources:
+                        - The staged option builds from source "until
+                          the engine's C++ is in the package or an
+                          outside partner arrives. Then each release is also built once per platform"
+                          (_data/decision/dec_publishing_route/opt_publish_tags_then_channel.yaml lines 13-17).
+                        - The engine ships in the same package peers
+                          install
+                          (_data/decision/dec_source_layout_for_two_languages/
+                          ruling_source_layout_for_two_languages.yaml lines 13-17).
+                        - Ruled on 2026-10-24: "what a peer imports or
+                          builds into its own product is a library
+                          with declared ranges" (_data/decision/dec_who_consumes_a_release/
+                          ruling_consumers_by_what_they_consume.yaml lines 15-17); the option ruled names the C++
+                          engine as such a library (opt_consumers_by_what_they_consume.yaml lines 17-19, same
+                          folder).
+                        - "Treated as a library, its sources build in
+                          the peer's toolchain for that target;
+                          shipped
+                          inside one exact application environment, it is built once for a generic platform"
+                          (_data/decision/dec_who_consumes_a_release/ann_engine_built_for_its_target_host.yaml,
+                          brief).
+                        - Patrol's nodes are native C++ steps called
+                          by the engine, "with no Python on the hot
+                          path" (_sources/cc-patrol-notes/plan.md lines 88-92); targets include a Lenovo Legion
+                          laptop and a Jetson Orin Nano (same file, lines 128-131).
+                        - "performance DOES still matter a lot"
+                          (owner's statement, 2026-10-22T16:31).
+                        - Assumption: a build tuned for a target CPU
+                          or GPU runs measurably faster than a generic
+                          one. Not measured.
+                        - Assumption: a channel could still carry
+                          engine sources as well as prebuilt engines;
+                          the
+                          staged option's wording does not rule this out.
+                        Strength: moderate. It rests on an unmeasured
+                        speed gain, but grows with the number of
+                        distinct targets, which grows with peers. It
+                        bears on the engine only; for the tool part,
+                        source builds on peers still separate the
+                        routes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,69 @@
+id_self:                ann_apache_license_permits_any_route
+guid_self:              ann_5b79780e82be49afabd0677753419885
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Redistribution through any route permitted by the license
+brief:                  |
+                        Apache-2.0 lets anyone distribute the work in
+                        any medium on the conditions of its section 4,
+                        chiefly that recipients get the license and
+                        that derivative works keep the NOTICE
+                        attributions, so a proprietary route raises no
+                        license barrier to carrying cc-public. The
+                        duty the route adds is to carry LICENSE and
+                        NOTICE in each package, which the release
+                        gate's check of the built package could cover.
+description:            |
+                        Sources:
+                        - cc-public is under Apache-2.0 with the
+                          legacy NOTICE (_data/decision/dec_license/
+                          ruling_license.yaml lines 11-21; pyproject.toml line 41; LICENSE and NOTICE at the
+                          repository root).
+                        - Section 4 of Apache-2.0: "You may reproduce
+                          and distribute copies of the Work or
+                          Derivative Works thereof in any medium", on conditions including giving recipients a copy
+                          of the license and, for derivative works, keeping the attribution notices of the NOTICE
+                          file
+                          (https://www.apache.org/licenses/LICENSE-2.0).
+                        - The release gate checks what the built
+                          package holds
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 24-27).
+                        - pixi.lock records a license for each conda
+                          package and none for PyPI entries
+                          (_data/decision/dec_environment_manager/ann_pixi_lock_records_hashes_and_licenses.yaml,
+                          brief and description).
+                        - Assumption: hatchling copies NOTICE into the
+                          wheel by default. Not checked.
+                        - Assumption: a route that bundles
+                          dependencies with cc-public redistributes
+                          their licenses
+                          too, which the lock records for conda entries only.
+                        Strength: strong for cc-public's own license
+                        at any number of peers; weak for bundled
+                        dependencies, whose PyPI licenses are
+                        unrecorded. Hosting cost is unknown for every
+                        channel ("Hosting can be arranged", owner's
+                        statement, 2026-10-22T16:29).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

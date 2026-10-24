@@ -1,0 +1,90 @@
+id_self:                ann_proprietary_route_install_path_unknown
+guid_self:              ann_2566f2029065492a8940a77f41978701
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Install client and path of an unknown channel kind
+brief:                  |
+                        The new option admits a later channel whose
+                        kind is open, possibly a proprietary route, so
+                        neither the client an outside partner must
+                        install nor the install path the release gate
+                        would have to exercise is known. A release
+                        could then pass the gate and still fail to
+                        install for peers on that channel, and the
+                        number of tools a partner needs is not known
+                        until the kind is decided. The staged option's
+                        two named kinds, a conda channel or a Python
+                        package index, are ones cc-public's own
+                        tooling already installs from.
+description:            |
+                        Sources:
+                        - The new option leaves the channel's kind and
+                          trigger to be decided, "possibly a
+                          proprietary route such as Axair Systems' own" (_data/decision/dec_publishing_route/
+                          opt_publish_tags_now_channel_to_be_decided.yaml lines 13-18). Axair Systems "has it's own
+                          publishing route, which we will likely want to take advantage of" (owner's statement,
+                          2026-10-24T18:09Z, quoted in the same file, lines 20-26).
+                        - The staged option names the later kinds as
+                          "conda channel or Python package index"
+                          (_data/decision/dec_publishing_route/opt_publish_tags_then_channel.yaml lines 17-19).
+                        - Nothing in the repository describes Axair
+                          Systems' publishing route. The Axair
+                          mentions
+                          are about copyright, branding, hosts and the engine (for example
+                          _sources/cc-patrol-notes/plan.md lines 109 and 112-120); the only use of "publishes" in
+                          the engine drafts is an outbound gateway inside the engine
+                          (_sources/axair-orchestrator/docs/execution_levels.md line 192).
+                        - Before a release is tagged, "the package is
+                          built from the tagged tree and installed in
+                          a
+                          fresh environment" (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 13-19).
+                        - pixi, cc-public's environment manager,
+                          already resolves from a conda channel and a
+                          PyPI-style index together (pyproject.toml lines 64-69; pixi.lock lines 4-7). The first
+                          peer's plan recommends a pixi git dependency pinned to a tag
+                          (_sources/cc-patrol-notes/plan.md lines 69-72).
+                        - Assumption: a proprietary route may need its
+                          own client, plugin, credentials or upload
+                          step that a conda or PyPI client does not provide. Not known either way; nothing is known
+                          about the route's form.
+                        Condition that would answer it: a channel is
+                        admitted only once the release gate installs
+                        the release from that channel, or installs the
+                        very file that goes to the channel, identified
+                        by its hash, with a client peers already use.
+                        Strength: moderate to strong. The cost of an
+                        untested install path and of an added client
+                        falls on every peer using the channel, so it
+                        grows with peers. It vanishes if the route
+                        proves to be conda- or PyPI-compatible, which
+                        is not known, and the condition is one
+                        sentence plus one install step in a gate that
+                        already does a fresh install.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

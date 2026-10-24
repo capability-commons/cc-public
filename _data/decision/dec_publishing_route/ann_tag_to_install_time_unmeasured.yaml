@@ -1,0 +1,73 @@
+id_self:                ann_tag_to_install_time_unmeasured
+guid_self:              ann_b00cd100365f49cd905e44c480def14e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Time from tag to installable release left unmeasured
+brief:                  |
+                        Under tags a release can be installed once the
+                        tag is pushed, while any channel adds build
+                        and upload time before peers can take a fix. A
+                        route of unknown kind has no known publish
+                        time, so the delay a channel adds to the
+                        owner's quick responses cannot be weighed
+                        until it is measured. This holds for the
+                        staged option's channel phase too.
+description:            |
+                        Sources:
+                        - Under the git tags option a peer depends on
+                          a release tag and builds it from source
+                          (_data/decision/dec_publishing_route/opt_publish_git_tags_only.yaml lines 12-14).
+                        - The staged option builds each release "once
+                          per platform" and publishes it to a channel
+                          (opt_publish_tags_then_channel.yaml lines 16-18, same folder); the new option's channel
+                          kind is not known (opt_publish_tags_now_channel_to_be_decided.yaml lines 14-17).
+                        - "I'd like to be able to respond to reported
+                          problems quickly and largely automatically"
+                          (owner's statement, 2026-10-22T16:33).
+                        - "Every build and test-run should be timed
+                          and the timings recorded for later analysis"
+                          (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml lines
+                          22-24); the full gate is timed at the first release
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 22-24).
+                        - Automation of minor and patch releases may
+                          come later, with telemetry
+                          (_data/decision/dec_who_may_release/ruling_maintainer_decides_each_release.yaml, brief).
+                        - Assumption: a channel's build and upload
+                          take minutes per platform. Not measured.
+                          Condition that would answer it: time the
+                          publish step, from tag to installable, with
+                          the same timing records the ruled builds
+                          keep, and weigh any channel against the tag
+                          route's time before admitting it. Strength:
+                          weak to moderate. The delay is per release
+                          and per platform, not per peer, so ten times
+                          the peers do not raise it; more target
+                          platforms do.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

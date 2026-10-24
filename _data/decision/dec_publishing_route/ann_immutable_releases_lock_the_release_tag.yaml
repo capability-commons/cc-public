@@ -1,0 +1,96 @@
+id_self:                ann_immutable_releases_lock_the_release_tag
+guid_self:              ann_301ea59160204153939fc60e939aaba9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release tags locked by the current host
+brief:                  |
+                        The new option keeps tags as the route until
+                        an unnamed later point and as the fallback
+                        once a channel is added, so the movable-tag
+                        risk lasts as long as the tag period does.
+                        GitHub's immutable releases, once turned on,
+                        lock a release's tag to its commit and its
+                        attached files against change or deletion,
+                        which closes most of that risk on the host
+                        already in use: the tag can be deleted only
+                        after its release is, and its name cannot be
+                        reused. The cost is relying on one feature of
+                        one host.
+description:            |
+                        Sources:
+                        - The new option has peers depend on release
+                          tags "for now", and "A channel is added
+                          later", its trigger to be decided; the route "is going to be something that evolves over
+                          time" (_data/decision/dec_publishing_route/opt_publish_tags_now_channel_to_be_decided.yaml
+                          lines 13-18 and 20-26).
+                        - git tag -d deletes a tag and git tag -f
+                          replaces one
+                          (https://git-scm.com/docs/git-tag).
+                        - For an immutable release on GitHub, its
+                          associated tag is locked to a specific
+                          commit and
+                          cannot be changed or deleted while the release exists, and its name cannot be reused even
+                          after the release is deleted, and files attached to the release
+                          are protected from modification or deletion; each immutable release gets an attestation
+                          naming the tag, commit and assets
+                          (https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases).
+                        - Immutable releases became generally
+                          available on 2025-10-28, are turned on per
+                          repository
+                          or organization, and existing releases remain mutable unless republished
+                          (https://github.blog/changelog/2025-10-28-immutable-releases-are-now-generally-available/).
+                        - origin is
+                          github.com/capability-commons/cc-public
+                          (context note, _sources/context.md line
+                          32).
+                        - The release line may be squashed one day
+                          (_data/decision/dec_branch_lines/
+                          ruling_branch_lines.yaml lines 22-29); a tag keeps its commit reachable after the branch
+                          is rewritten, so a peer pinned to a tag survives a squash.
+                        - The ruled release step makes a tag, and no
+                          ruling mentions a GitHub release
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml lines
+                          13-15 and 20-22).
+                        - Assumption: plain tags without a GitHub
+                          release are not protected, so each release
+                          tag
+                          would need a GitHub release. The documentation describes protection only for tags of
+                          immutable releases and says nothing of plain tags.
+                        Condition: turn on immutable releases before
+                        the first release, publish a GitHub release
+                        for each tag, and keep the tag route working
+                        after any channel is added. Strength: moderate
+                        to strong. The protection is per release and
+                        costs nothing more as peers grow. It ties the
+                        tag route's integrity to GitHub, which parts
+                        of cc-public going private or rebranded could
+                        change (_sources/cc-patrol-notes/plan.md lines
+                        112-115).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

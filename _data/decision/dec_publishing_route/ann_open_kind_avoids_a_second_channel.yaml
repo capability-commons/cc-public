@@ -1,0 +1,71 @@
+id_self:                ann_open_kind_avoids_a_second_channel
+guid_self:              ann_d9966a24bf214e4daa05e33de541d2de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One channel, not two, when another route arrives
+brief:                  |
+                        The owner expects to take advantage of Axair
+                        Systems' own route, while the staged option's
+                        engine trigger is close to certain to fire,
+                        since the engine is ruled into the package. If
+                        it fires first, it builds a conda channel or
+                        an index, and if Axair Systems' route is
+                        neither of those kinds, which is an
+                        assumption, a later move to it would leave two
+                        routes for one job or one route abandoned.
+                        Leaving the kind open until the route is known
+                        avoids building a channel that may be
+                        replaced, and no release or upload code exists
+                        yet to be sunk.
+description:            |
+                        Sources:
+                        - Axair Systems "has it's own publishing
+                          route, which we will likely want to take
+                          advantage
+                          of ... so this is going to be something that evolves over time" (owner's statement,
+                          2026-10-24T18:09Z, quoted in _data/decision/dec_publishing_route/
+                          opt_publish_tags_now_channel_to_be_decided.yaml lines 20-26).
+                        - The staged option adds a channel when the
+                          engine's C++ is in the package or an outside
+                          partner arrives, of kind conda channel or Python package index
+                          (opt_publish_tags_then_channel.yaml lines 13-19, same folder).
+                        - The engine and its generator ship in the
+                          same package that peers install
+                          (_data/decision/dec_source_layout_for_two_languages/
+                          ruling_source_layout_for_two_languages.yaml lines 13-17).
+                        - No command in src/cctool/cli makes a
+                          release, tag or upload; a search for
+                          "release" finds
+                          only the ontology-release option (src/cctool/cli/editing.py, scout's search), so every
+                          route's build-and-upload step is new code.
+                        - Assumption: Axair Systems' route is neither
+                          a conda channel nor a Python package index.
+                          Nothing in the repository says what form it takes; if it is one of those two kinds, the
+                          staged option's "decided then" could choose it and the double route does not arise.
+                        Strength: moderate, and conditional on the
+                        assumption. With ten times the peers a second
+                        route costs more to run and to migrate away
+                        from, so the point grows stronger.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

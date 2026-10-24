@@ -1,0 +1,80 @@
+id_self:                ann_release_item_travels_inside_the_package
+guid_self:              ann_ee61ddbdaeb34a57a9fcfe1b8685a02e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release item carried inside what any channel ships
+brief:                  |
+                        The ruled release item sits under _data, and
+                        the wheel is ruled to carry _data, so a built
+                        package names its own release and the
+                        dependencies its gate tested, whatever route
+                        delivers it. The trace from a peer back to its
+                        release then does not depend on the route,
+                        which is what lets the new option leave the
+                        route open, provided the channel ships the
+                        gate's own build unchanged and its hash is
+                        recorded outside the file.
+description:            |
+                        Sources:
+                        - "A release item is committed as a file under
+                          _data, and the release tag names the commit
+                          that adds it", and it "records the exact set of dependencies the release gate tested"
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml lines
+                          13-15 and 18-20).
+                        - "The wheel carries _data, provisionally",
+                          waiting on the decision on what crosses
+                          between
+                          segments, which is open (_data/decision/dec_who_consumes_a_release/
+                          ruling_consumers_by_what_they_consume.yaml lines 22-26).
+                        - The release gate checks that the built
+                          package holds _data
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 24-26). Today the wheel
+                          selects only src/cctool (pyproject.toml lines 61-62).
+                        - A built package traces back to its source
+                          "only through what its build records"
+                          (_data/decision/dec_publishing_route/ann_tag_dependency_names_the_exact_source.yaml,
+                          brief).
+                        - Whether Axair Systems' route records a
+                          source commit is not known; nothing in the
+                          repository describes the route.
+                        - Assumption: a file cannot record its own
+                          hash, so the hash of a built package must be
+                          recorded outside it, such as in the peer's lock or the release's assets.
+                        Condition that would answer it: any channel
+                        ships the file the release gate built and
+                        installed, unchanged, and that file's hash is
+                        recorded where peers and the release can both
+                        find it. Strength: strong while _data ships in
+                        the wheel; it holds at ten times the peers and
+                        items, since each release carries one item. If
+                        _data leaves the wheel, the built package no
+                        longer carries its release item and the
+                        argument fails.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_publishing_route
+    guid_target:        dec_f05b8498f6424eddb2de7cf8248b180a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_publish_tags_now_channel_to_be_decided
+    guid_target:        opt_de836b05294c4e038462b6f1601d77f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
