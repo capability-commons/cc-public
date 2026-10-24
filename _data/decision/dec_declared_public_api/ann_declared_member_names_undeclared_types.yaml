@@ -1,0 +1,88 @@
+id_self:                ann_declared_member_names_undeclared_types
+guid_self:              ann_ea1650f8373944de90b1a5878ed354f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Types a declared member names but no document declares
+brief:                  |
+                        The one Python interface control document
+                        already types a parameter as a type from a
+                        module no document declares, and the values of
+                        that type are ruamel.yaml round-trip objects.
+                        Under the interface-documents option as
+                        worded, anything no document declares may
+                        change in a minor release, so a minor release
+                        could change what a declared function takes;
+                        that option needs a rule that whatever a
+                        declared member names is declared too.
+description:            |
+                        Sources:
+                        - The check interface declares check_documents
+                          and review_documents with a parameter whose
+                          type
+                          is spelled cctool.graph.extract.Documents
+                          (_data/interface_control_document/icd_cctool_check.yaml lines 141-153 and 195-207).
+                        - cctool.graph.extract defines Documents as
+                          dict of str to a tuple of typing.Any and int
+                          (src/cctool/graph/extract.py line 395), and reads documents with the ruamel.yaml round-trip
+                          loader (src/cctool/graph/extract.py line 55).
+                        - No interface control document declares
+                          cctool.graph.extract; the four documents are
+                          the check
+                          interface (module cctool.check.check) and three dataflow step documents (listing of
+                          _data/interface_control_document).
+                        - The interface-documents option: "anything no
+                          such document declares may change in a minor
+                          release" (_data/decision/dec_declared_public_api/opt_public_api_in_interface_documents.yaml
+                          lines 17-20).
+                        - Prior art: Rust treats a dependency whose
+                          types appear in a crate's public API as part
+                          of that
+                          API, so "a semver incompatible upgrade of these dependencies is a breaking change for this
+                          package" (https://rust-lang.github.io/rfcs/3516-public-private-dependencies.html). PEP 8 treats
+                          imported names as implementation details unless documented
+                          (https://peps.python.org/pep-0008/, Public and Internal Interfaces).
+                        - Under the data-and-commands option no Python
+                          member is public, so the question does not
+                          arise
+                          there; it does not bear on that option. Everything-shipped avoids the gap only by making every
+                          module public, ruamel.yaml types included, whose costs are argued in other annotations, so this
+                          annotation does not bear on it either.
+                        - Assumption: a caller can pass plain dicts in
+                          place of round-trip objects; not checked,
+                          and if
+                          false, ruamel.yaml is in the declared surface today.
+                        Strength: moderate, growing with the number of
+                        declared Python members and the types they
+                        name. It is a gap in the wording, closed by
+                        one rule a check could enforce: each type
+                        spelling in a declared member resolves to a
+                        declared declaration or to the standard
+                        library.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

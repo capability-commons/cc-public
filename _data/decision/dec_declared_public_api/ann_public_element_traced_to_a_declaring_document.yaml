@@ -1,0 +1,81 @@
+id_self:                ann_public_element_traced_to_a_declaring_document
+guid_self:              ann_8ef7795a8e794bafbdd167f1464bfdc6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Public elements traced to a declaring document
+brief:                  |
+                        Under interface documents, each public element
+                        is a member that the realizing code points at,
+                        so the reason for its public status is in the
+                        graph. Under everything-shipped an element is
+                        public because the wheel packs it, which adds
+                        public elements no need calls for, and under
+                        data-and-commands an element is public because
+                        a sentence names its kind, so no edge records
+                        why it is public. Commands are not items under
+                        any option, so interface documents share that
+                        gap for the command line until a command
+                        surface exists.
+description:            |
+                        Sources:
+                        - Code names the member it realizes with the
+                          realizes relation
+                          (_data/schema/sch_interface_control_document.yaml lines 60-64), as check.py does for the module
+                          member of the check interface (src/cctool/check/check.py lines 35-40).
+                        - The wheel packs src/cctool whole
+                          (pyproject.toml lines 61-62).
+                        - No cctool command is an item (advocate's
+                          extract of this snapshot), so no edge can
+                          say why a
+                          command exists or which peer relies on it.
+                        - The check interface names no reason of its
+                          own: its edge list is empty
+                          (_data/interface_control_document/icd_cctool_check.yaml line 266).
+                        - The first peer's plan asks for commands,
+                          schemas and ids, not for most of what ships
+                          (_sources/cc-patrol-notes/plan.md lines 60-76).
+                        - PEP 8: "Documented interfaces are considered
+                          public ... All undocumented interfaces
+                          should be
+                          assumed to be internal" (https://peps.python.org/pep-0008/, Public and Internal Interfaces).
+                        Strength: strong, with a condition. With ten
+                        times the code, everything-shipped adds public
+                        elements with no traced reason, and
+                        data-and-commands leaves the command surface
+                        untraceable. Interface documents meet the
+                        measure only if each document then gains an
+                        edge to the need or decision behind it; today
+                        none has one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

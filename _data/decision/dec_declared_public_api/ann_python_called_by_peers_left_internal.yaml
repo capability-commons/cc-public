@@ -1,0 +1,76 @@
+id_self:                ann_python_called_by_peers_left_internal
+guid_self:              ann_69bdc85cb25440b0af0a2648050e7bb2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Python a peer calls, left internal
+brief:                  |
+                        A peer that calls cc-public's Python takes
+                        cc-public as a dependency of its own product.
+                        Under the data-and-commands option every
+                        Python module may change in any release, so a
+                        peer that imports one can be broken by a patch
+                        release and must pin exactly or vendor the
+                        code; the other two options give that call a
+                        SemVer promise. Whether any peer imports
+                        Python is still open.
+description:            |
+                        Sources:
+                        - The data-and-commands option: "the Python
+                          modules are internal and may change in any
+                          release"
+                          (_data/decision/dec_declared_public_api/opt_public_api_is_data_and_commands.yaml lines 15-16).
+                        - The variants proposal ports the fluent API
+                          into cc-public as a Python interpreter that
+                          "stays
+                          usable directly from tests" (_sources/cc-patrol-notes/variants.md lines 36-40).
+                        - The split option for who consumes a release
+                          names a Python interface among what a peer
+                          imports or builds in, as a library with declared ranges
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml, brief).
+                        - A peer pinning a SemVer range takes every
+                          minor and patch release
+                          (_data/decision/dec_who_may_release/ann_person_between_a_change_and_ranged_peers.yaml, brief).
+                        - Assumption: some peer will import cctool
+                          Python; today the first peer's scripts
+                          import none of
+                          it (_sources/cc-patrol-notes/draft/tools/validate.py line 1 and the other scripts there).
+                        Depends on: who consumes a release, which is
+                        open, and commands for peers, if a peer
+                        command group is how peers would otherwise
+                        reach the same behavior. Strength: moderate
+                        today, since no peer imports cctool yet;
+                        strong at ten times the peers if any of them
+                        builds on a Python interface.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

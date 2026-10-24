@@ -1,0 +1,90 @@
+id_self:                ann_third_party_types_in_the_public_surface
+guid_self:              ann_a5ec7477458c4530b99875d10d6d0f43
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Third-party types in the public surface
+brief:                  |
+                        Several public-looking cctool functions take
+                        or return types of cctool's own dependencies,
+                        three of which are below 1.0. Under
+                        everything-shipped all of them are public, so
+                        a semver-incompatible upgrade of pyoxigraph,
+                        referencing, htpy or ruamel.yaml becomes a
+                        breaking change of cc-public; the
+                        data-and-commands option keeps every
+                        dependency behind the boundary, and interface
+                        documents expose only what declared members
+                        name.
+description:            |
+                        Sources:
+                        - cctool.graph.sparql.store returns a
+                          pyoxigraph Store (src/cctool/graph/sparql.py
+                          line 80),
+                          cctool.graph.sparql.value takes pyoxigraph terms (line 161), cctool.check.schema.registry_of
+                          returns a referencing Registry (src/cctool/check/schema.py line 443), and cctool.web.step.figure
+                          returns an htpy Element (src/cctool/web/step.py line 59). Documents carries ruamel.yaml
+                          round-trip objects (src/cctool/graph/extract.py lines 55 and 395). These are found by type
+                          annotations alone, so they are a lower bound.
+                        - The runtime ranges are click below 9, clingo
+                          below 6, htpy below 27, jsonschema below 5,
+                          pyoxigraph below 0.6, referencing below 1 and ruamel.yaml below 0.20 (pyproject.toml lines
+                          43-49).
+                        - SemVer: under major version zero "Anything
+                          MAY change at any time"
+                          (https://semver.org/, item
+                          4); updating one's own dependencies without changing the public API "would be considered
+                          compatible since it does not affect the public API" (https://semver.org/, FAQ).
+                        - Rust: when a dependency's types are exposed
+                          in a crate's API, "a semver incompatible
+                          upgrade of
+                          these dependencies is a breaking change for this package"
+                          (https://rust-lang.github.io/rfcs/3516-public-private-dependencies.html).
+                        - Only the owner can relock, and a
+                          pyproject.toml edit makes the lock stale
+                          (context note).
+                        - A Lock commit that pulls in a breaking
+                          upstream release can be counted as minor or
+                          patch is
+                          already recorded (_data/decision/dec_version_scheme/ann_commit_verbs_do_not_say_what_breaks.yaml);
+                          this annotation is about which upgrades are breaking at all.
+                        - The support for interface documents holds
+                          subject to the closure rule argued in the
+                          annotation
+                          on types a declared member names.
+                        Strength: strong; with ten times the modules,
+                        everything-shipped ties cc-public's major
+                        releases to the release cadence of every
+                        dependency whose types any module shows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

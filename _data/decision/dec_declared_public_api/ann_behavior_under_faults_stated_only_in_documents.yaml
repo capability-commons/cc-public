@@ -1,0 +1,84 @@
+id_self:                ann_behavior_under_faults_stated_only_in_documents
+guid_self:              ann_79dc7656ffe04a6e9db34e48666e95d4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Behavior under faults and load, stated only in documents
+brief:                  |
+                        Dataflow step and artifact surfaces state how
+                        an interface behaves on failure, under back
+                        pressure, under concurrency and across
+                        restarts. Under the interface-documents option
+                        those statements are part of the public API,
+                        so a change to them is judged against it; the
+                        data-and-commands option does not cover the
+                        engine at all, and everything-shipped judges
+                        only removals and renames.
+description:            |
+                        Sources:
+                        - A dataflow step surface may state
+                          persistence, failure, back pressure and
+                          concurrency
+                          (_data/schema/sch_interface_control_document.yaml lines 761-813), and an artifact surface may
+                          state failure, availability and retention (lines 816-913); each is prose (lines 915-920).
+                        - Three of the four documents use the dataflow
+                          step form
+                          (_data/interface_control_document/icd_printer.yaml line 33,
+                          _data/interface_control_document/icd_process_controller.yaml line 38,
+                          _data/interface_control_document/icd_system_controller.yaml line 70).
+                        - The engine and its generator ship in the
+                          package peers install
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml).
+                        - The data-and-commands option says nothing
+                          about the C++ engine or the generator
+                          (_data/decision/dec_declared_public_api/opt_public_api_is_data_and_commands.yaml lines 12-16).
+                        - The engine is on the hot path of a peer's
+                          product, on hosts from a laptop to a Jetson
+                          (_data/decision/dec_who_consumes_a_release/ann_engine_built_for_its_target_host.yaml).
+                        Depends on: who consumes a release; it matters
+                        only if peers build the engine into their
+                        products. Strength: moderate. The statements
+                        are prose and nothing checks them against the
+                        code, so a behavior change that leaves the
+                        document unedited goes unseen under every
+                        option; under interface documents the
+                        statement at least exists to be judged
+                        against. It grows with the number of peer step
+                        implementations.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

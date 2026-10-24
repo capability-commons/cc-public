@@ -1,0 +1,80 @@
+id_self:                ann_breaks_traced_to_an_interface_version
+guid_self:              ann_923e3a44c4ce4b5dbe372be4164f6a6d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Breaks traced to a member and an interface version
+brief:                  |
+                        Each interface control document carries its
+                        own version, and a new version supersedes the
+                        old one by an edge, so a major bump of the
+                        package can name the members and interface
+                        versions that called for it. Neither
+                        everything-shipped nor data-and-commands
+                        records a version beneath the package.
+description:            |
+                        Sources:
+                        - Every interface control document requires an
+                          interface version
+                          (_data/schema/sch_interface_control_document.yaml lines 79-90), and all four are at 1.0
+                          (icd_cctool_check.yaml line 23, icd_printer.yaml line 27, icd_process_controller.yaml line 32,
+                          icd_system_controller.yaml line 31, under _data/interface_control_document).
+                        - A new version of an interface is a new
+                          document that names the one it replaces with
+                          the
+                          supersedes relation (sch_interface_control_document.yaml lines 58-60), and a check limits
+                          supersession to items of the same type (src/cctool/check/check.lp lines 1414-1431).
+                        - The impact rules report each item a commit
+                          changes, by digest, embedded members
+                          included
+                          (src/cctool/commit/impact.lp lines 100-123).
+                        - The owner wants the notes generated
+                          mechanically from the graph (owner's
+                          statement,
+                          2026-10-22T16:28).
+                        - Kubernetes ties removal to a version of the
+                          part removed: "API elements may only be
+                          removed by
+                          incrementing the version of the API group" (Rule 1,
+                          https://unofficial-kubernetes.readthedocs.io/en/latest/home/deprecation-policy/).
+                        Strength: moderate, growing with the number of
+                        interfaces, since a single package number says
+                        less as the package grows. Under
+                        everything-shipped, renames and removals of
+                        items still trace to their commits
+                        (_data/decision/dec_version_scheme/ann_bump_follows_from_checked_commit_items.yaml).
+                        No check yet holds a change to a member to a
+                        new interface version, so that trace is only
+                        as good as the person editing it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

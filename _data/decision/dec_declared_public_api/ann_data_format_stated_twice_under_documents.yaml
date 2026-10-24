@@ -1,0 +1,66 @@
+id_self:                ann_data_format_stated_twice_under_documents
+guid_self:              ann_2c3dfa7b0217480e8dc9015ff8eda6c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data format stated twice under interface documents
+brief:                  |
+                        The schemas and registers are already items
+                        that state the data format, and the
+                        data-and-commands option names them directly
+                        as public. The interface-documents option, as
+                        worded, has documents declare the schemas,
+                        registers and ids of the data, so a document
+                        that restates them does one job twice; an
+                        artifact surface that names a schema and its
+                        version by reference would keep it to one
+                        statement.
+description:            |
+                        Sources:
+                        - _data/schema holds the JSON Schema of every
+                          type of item, and _data/register the
+                          registers of
+                          concepts, concerns, types and relations (README.md lines 14-15); every item has an id and a
+                          guid (README.md lines 34-35).
+                        - An artifact member's payload names the
+                          schema it conforms to, with that schema's
+                          version
+                          (_data/schema/sch_interface_control_document.yaml lines 505-531).
+                        - The interface-documents option: documents
+                          declare "the schemas, registers and ids of
+                          the data"
+                          (_data/decision/dec_declared_public_api/opt_public_api_in_interface_documents.yaml, brief).
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism
+                          (_data/register/reg_concern.yaml lines 488-490).
+                        Strength: moderate; it holds at any scale but
+                        is removed by a wording choice in the
+                        interface-documents option, pointing at the
+                        schemas rather than restating them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

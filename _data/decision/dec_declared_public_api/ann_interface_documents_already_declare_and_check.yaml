@@ -1,0 +1,84 @@
+id_self:                ann_interface_documents_already_declare_and_check
+guid_self:              ann_177d8f13b40049b58635ae41229a46ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface documents as the declaration already in place
+brief:                  |
+                        The repository already has a mechanism that
+                        states a boundary member by member and holds
+                        it to the code: the interface control
+                        document, linked from code by the realizes
+                        relation and checked for names, order and
+                        types. Declaring the public API as what those
+                        documents state adds a rule but no new record
+                        for the Python, C and C++ surfaces.
+                        Everything-shipped needs a second way to find
+                        changes across a code boundary that has no
+                        items, and data-and-commands, which needs no
+                        code boundary today, would need a second way
+                        to state one as soon as it covers the engine.
+description:            |
+                        Sources:
+                        - An interface control document is "a
+                          versioned contract for one interface, made
+                          of surfaces
+                          whose members can each be pointed at" (_data/schema/sch_interface_control_document.yaml lines
+                          14-17), and carries an interface version (lines 85-90).
+                        - Code names the member it implements with the
+                          realizes relation, so the document names no
+                          implementation (same file, lines 60-64); the graph follows that edge to derive the code that
+                          bears on a dataflow node realizing the interface (src/cctool/graph/derive.lp lines 221-224).
+                        - A function member restates its signature,
+                          and two checks hold it to the code
+                          (_data/decision/dec_interface_signature_restated/ruling_interface_signature_restated.yaml,
+                          brief); C++ and C native surfaces get the same check no later than their first document
+                          (_data/decision/dec_check_of_cpp_interfaces/ruling_cpp_interfaces_checked_from_the_first.yaml,
+                          brief).
+                        - The impact rules already list each item a
+                          commit adds, removes, renames or changes
+                          (src/cctool/commit/impact.lp lines 95-123); no bump computation exists yet in src/cctool (grep).
+                        - The engine ships in the same package as the
+                          tooling, and its node ABI is planned with C
+                          linkage
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief; _sources/cc-patrol-notes/plan.md lines 90-96); the data-and-commands option names no
+                          rule for the engine's surface.
+                        Strength: holds at ten times the items, since
+                        the declaration grows with the boundary, not
+                        with the code behind it; weaker for the
+                        command line and the data, where the
+                        annotations on commands without an item and on
+                        the data format stated twice apply.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
