@@ -36,7 +36,7 @@
 [project]
 authors                 = [{name = "William Payne", email = "wtpayne@gmail.com"}]
 name                    = "cc-public"
-version                 = "0.1.0"
+dynamic                 = ["version"]
 description             = "Capability Commons: an engineering system built on one graph of data items, checked before each commit."
 license                 = "Apache-2.0"
 requires-python         = ">= 3.12"
@@ -58,6 +58,13 @@ requires                = ["hatchling"]
 # The package that the wheel holds. Its name differs from that of the
 # project, so hatchling cannot find it by itself.
 #
+# The version is read from the version module, which the release step
+# writes, so that a release edits no line of this file and needs no
+# relock.
+#
+[tool.hatch.version]
+path                    = "src/cctool/version.py"
+
 [tool.hatch.build.targets.wheel]
 packages                = ["src/cctool"]
 

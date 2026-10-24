@@ -27,6 +27,8 @@ edge:                   []
 
 import click
 
+import cctool.version
+
 
 EXIT_OK            = 0
 EXIT_NONCONFORMITY = 1
@@ -35,6 +37,8 @@ EXIT_ERROR         = 2
 
 # -----------------------------------------------------------------------------
 @click.group()
+@click.version_option(version   = cctool.version.VERSION,
+                      prog_name = 'cctool')
 def main():
     """
     Capability Commons tooling.
