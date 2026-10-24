@@ -1476,28 +1476,6 @@ competing_rulings(Decision, Ruling, Other) :-
 
 
 % -----------------------------------------------------------------------------
-% The option, or an alternative to it for the same decision,
-% has an annotation that supports or challenges it for the concern.
-%
-% decl argued(option:  symbol,
-%             concern: symbol)
-
-argued(Option, Concern) :-
-    primary_edge(Option, "relation_is_option_for", Decision),
-    primary_edge(Other, "relation_is_option_for", Decision),
-    practical(Id),
-    primary_edge(Id, "relation_supports", Other),
-    primary_edge(Id, "relation_speaks_for_concern", Concern).
-
-argued(Option, Concern) :-
-    primary_edge(Option, "relation_is_option_for", Decision),
-    primary_edge(Other, "relation_is_option_for", Decision),
-    practical(Id),
-    primary_edge(Id, "relation_challenges", Other),
-    primary_edge(Id, "relation_speaks_for_concern", Concern).
-
-
-% -----------------------------------------------------------------------------
 % ---
 %
 % id_self:                lpp_cctool.check.check.unargued_driver
@@ -2692,22 +2670,6 @@ end_outside_release(Relation, End, Type, Class, External) :-
     admitted_at_end(Relation, End, Type),
     type_within(Type, Class),
     not fits_end(External, End, Class).
-
-
-% -----------------------------------------------------------------------------
-% The annotation supports or challenges an option.
-%
-% decl practical(id: symbol)
-
-practical(Id) :-
-    has_type(Id, "type_annotation"),
-    primary_edge(Id, "relation_supports", Target),
-    has_type(Target, "type_option").
-
-practical(Id) :-
-    has_type(Id, "type_annotation"),
-    primary_edge(Id, "relation_challenges", Target),
-    has_type(Target, "type_option").
 
 
 % -----------------------------------------------------------------------------
