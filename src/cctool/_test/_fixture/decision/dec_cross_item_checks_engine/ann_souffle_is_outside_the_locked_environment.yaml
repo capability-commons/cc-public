@@ -1,0 +1,60 @@
+id_self:                ann_souffle_is_outside_the_locked_environment
+guid_self:              ann_38444fa3f6bd45208a9fe538f9947ecc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Souffle outside the locked environment
+brief:                  |
+                        pixi cannot install Souffle, yet while it was
+                        the engine, checking, editing, querying, the
+                        commit check and the gate all needed it, so a
+                        lost or broken binary stopped all work until
+                        it was copied back by hand.
+description:            |
+                        Souffle is not on conda-forge, and the PyPI
+                        name souffle belongs to an unrelated package.
+                        Until commit 6230e98, the binary, version 2.4,
+                        was kept in a gitignored _tools folder with a
+                        libffi copied from Ubuntu 20.04, whose
+                        standard support ended in May 2025. The gate
+                        refused to run without it, the tests that
+                        needed it were skipped, and the SOUFFLE
+                        variable was read in three places. Souffle 2.5
+                        is in Homebrew.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_cross_item_checks_engine
+    guid_target:        dec_7167fc2bed6c477fbfe3f1fcf0a249fa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cross_item_checks_in_souffle
+    guid_target:        opt_459f7c693fe44666b7dd13280d424b57
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -171,9 +171,9 @@ LINE_BLOCK_OPEN   = '/*'
 LINE_BLOCK_CLOSE  = ' */'
 
 # Directories that hold no items: version control, environments,
-# caches and local tools.
+# caches, local tools and the frozen fixture that tests copy in.
 #
-SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools'}
+SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools', '_fixture'}
 
 # The YAML documents read so far, keyed by the path and the digest of
 # the file that holds each. It is emptied when it holds this many.

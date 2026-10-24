@@ -1,0 +1,42 @@
+id_self:                ann_clingo_no_model_error_is_fixed
+guid_self:              ann_d8059683a0034ebbba98143baca4c3ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No-model result now an error
+brief:                  |
+                        Commit 627e2b5 "Fix datalog.run so that clingo
+                        warnings and no answer set are errors" makes
+                        run() raise when the rules have no answer set
+                        or more than one. At 360ec14 an empty or
+                        arbitrary model is no longer read as no
+                        failures.
+description:            |
+                        run() asks clingo for two models and raises
+                        ErrorDatalog when it finds none ("The rules
+                        have no answer set") or a second ("more than
+                        one answer set") (src/cctool/graph/datalog.py
+                        lines 316-337 at 360ec14). cctool check turns
+                        that error, now ErrorLogic, into exit status 2
+                        (src/cctool/cli/checking.py lines 57-61). The
+                        point now bears on clingo only as it was
+                        configured before the fix; Souffle still
+                        forbids the program shapes by construction
+                        rather than at run time.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_cross_item_checks_engine
+    guid_target:        dec_7167fc2bed6c477fbfe3f1fcf0a249fa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_clingo_reads_no_model_as_no_failures
+    guid_target:        ann_765e4b720ebc42cd823b9250674fa06b

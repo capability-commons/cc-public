@@ -1,0 +1,45 @@
+id_self:                ann_clingo_misspelled_relation_error_is_fixed
+guid_self:              ann_e8ffd3e04a994d93abb9758ddcf65419
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Misspelled-relation warning now an error
+brief:                  |
+                        Commit 627e2b5 "Fix datalog.run so that clingo
+                        warnings and no answer set are errors" drops
+                        --warn=none and treats every clingo message as
+                        an error, and 2b74bfe "Add a test of
+                        supersession_across_issues" gives that check a
+                        test. At 360ec14 a misspelled relation stops
+                        the run instead of passing.
+description:            |
+                        run() collects every message clingo logs and
+                        raises ErrorDatalog if there is any, so "atom
+                        does not occur in any rule head" now stops the
+                        check; each input relation is declared defined
+                        so that an empty one gives no message
+                        (src/cctool/graph/datalog.py lines 296-314 at
+                        360ec14). The test of that check, now named
+                        supersession_across_types, is
+                        src/cctool/check/_test/test_check.py lines
+                        374-380. A relation still needs no declaration
+                        in the clingo path, so the difference from
+                        Souffle is now when the misspelling is found,
+                        not whether.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_cross_item_checks_engine
+    guid_target:        dec_7167fc2bed6c477fbfe3f1fcf0a249fa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_clingo_accepts_misspelled_relations_silently
+    guid_target:        ann_1e7e6d6a70a9407cb0ee1f5d40ecf440

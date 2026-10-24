@@ -19,10 +19,13 @@ description:            |
                         This module holds the fixtures. Every test
                         runs wherever the environment is installed,
                         since clingo is part of it. A copy keeps only
-                        a fixed slice of the deliberations, the
-                        decisions the tests name, so the tests neither
-                        slow down nor change meaning as the
-                        deliberations in the repository grow.
+                        a fixed slice of the deliberations: frozen
+                        copies of the decisions the tests name, held
+                        in _test/_fixture, in place of every decision
+                        of the repository. So the tests neither slow
+                        down nor change meaning as the deliberations
+                        in the repository grow, are ruled on or are
+                        corrected.
 edge:                   []
 
 ...
@@ -42,25 +45,21 @@ import cctool.graph.extract
 
 DIR_REPO  = pathlib.Path(__file__).resolve().parents[2]
 
-# What a copy leaves out: version control, environments, caches and
-# local tools.
+# What a copy leaves out: version control, environments, caches, local
+# tools and the fixture, which goes in its own place.
 #
 TUPLE_SKIP = ('.git', '.pixi', '.venv', '_tools', '__pycache__', '.ruff_cache',
-              '.pytest_cache', '*.egg-info')
+              '.pytest_cache', '*.egg-info', '_fixture')
 
 
-# The decisions a copy keeps: those the tests name. Every other folder of
-# _data/decision is left out.
+# The decisions of a copy are those of the fixture, frozen copies of the
+# decisions the tests name, not those of the repository. The fixture
+# leaves out the ruling of dec_tooling_language, so that the tests have
+# an open decision to work on. Change the fixture only for a test, and
+# never because the repository has changed.
 #
-DIR_DECISION        = DIR_REPO / '_data' / 'decision'
-TUPLE_DECISION_KEPT = ('dec_cross_item_checks_engine', 'dec_tooling_language')
-
-
-# The decisions a copy keeps open: their rulings are left out, so that
-# the tests have an open decision to work on whatever is ruled in the
-# repository.
-#
-TUPLE_DECISION_OPEN = ('dec_tooling_language',)
+DIR_DECISION         = DIR_REPO / '_data' / 'decision'
+DIR_FIXTURE_DECISION = pathlib.Path(__file__).resolve().parent / '_test' / '_fixture' / 'decision'
 
 
 # The source a copy keeps: only the modules and logic programs that the
@@ -81,18 +80,15 @@ TUPLE_SOURCE_KEPT   = ('src/cctool/cli/__init__.py',
 def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
     """
     Return the names in dir_from that a copy leaves out: those that
-    match TUPLE_SKIP; in _data/decision, the decisions the tests do not
-    name, and the rulings of those kept open; and in src, what
-    _source_kept does not keep.
+    match TUPLE_SKIP; in _data/decision, every decision; and in src,
+    what _source_kept does not keep.
 
     """
 
     set_skip = shutil.ignore_patterns(*TUPLE_SKIP)(dir_from, list_name)
     dir_here = pathlib.Path(dir_from)
     if dir_here == DIR_DECISION:
-        set_skip |= {name for name in list_name if name not in TUPLE_DECISION_KEPT}
-    if dir_here.parent == DIR_DECISION and dir_here.name in TUPLE_DECISION_OPEN:
-        set_skip |= {name for name in list_name if name.startswith('ruling_')}
+        set_skip |= set(list_name)
     if dir_here == DIR_SOURCE or DIR_SOURCE in dir_here.parents:
         set_kept  = _source_kept()
         set_skip |= {name for name in list_name if dir_here / name not in set_kept}
@@ -142,8 +138,9 @@ def _outside_source() -> list[pathlib.Path]:
         dir_here = pathlib.Path(name)
         list_dir[:] = [each for each in list_dir
                        if not _is_skipped(dir_here / each) and dir_here / each != DIR_SOURCE
-                       and (dir_here != DIR_DECISION or each in TUPLE_DECISION_KEPT)]
+                       and dir_here != DIR_DECISION]
         list_path.extend(dir_here / each for each in list_file if not _is_skipped(dir_here / each))
+    list_path.extend(sorted(DIR_FIXTURE_DECISION.rglob('*')))
     return list_path
 
 
@@ -190,8 +187,8 @@ def tree(tmp_path):
     """
     Yield the root of a copy of the repository: its data items, its
     source and the files at its root, without version control,
-    environments or caches, and with only the decisions in
-    TUPLE_DECISION_KEPT.
+    environments or caches, and with the decisions of the fixture in
+    place of those of the repository.
 
     The copy is removed when the test ends. A run makes one for each of
     some hundreds of tests, and pytest keeps the temporary folders of
@@ -202,6 +199,9 @@ def tree(tmp_path):
 
     shutil.copytree(DIR_REPO, tmp_path,
                     ignore        = _ignore,
+                    dirs_exist_ok = True)
+    shutil.copytree(DIR_FIXTURE_DECISION, tmp_path / DIR_DECISION.relative_to(DIR_REPO),
+                    ignore        = shutil.ignore_patterns(*TUPLE_SKIP),
                     dirs_exist_ok = True)
     yield tmp_path
     shutil.rmtree(tmp_path, ignore_errors = True)
