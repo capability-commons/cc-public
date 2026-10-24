@@ -1,0 +1,77 @@
+id_self:                ann_fault_fixing_checks_held_as_advice
+guid_self:              ann_558415bb07be4c36b2324de36f41a00d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checks that fix a reported fault, held as advice for a major cycle
+brief:                  |
+                        After 1.0, a check written as the fix for a
+                        reported fault, such as one that stops data
+                        the engine or the generator would mishandle,
+                        cannot refuse that data in any peer tree until
+                        the next major release. That stretches
+                        recovery from a fault class to the length of a
+                        major cycle, against the owner's aim of
+                        responding to reported problems quickly.
+description:            |
+                        Sources:
+                        - After 1.0 a new or tightened check is advice
+                          in a minor release and a failure only in a
+                          major
+                          one (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 33-37;
+                          owner's statement, 2026-10-24T18:09Z). Before 1.0 such a check can fail at once.
+                        - Advice neither fails the check nor refuses
+                          an edit (src/cctool/check/check.py lines
+                          27-31).
+                        - After 1.0 breaking work waits on next until
+                          a major release
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml,
+                          brief), and the owner expects to bundle breaking changes into one major release (owner's
+                          statement, 2026-10-22T16:23).
+                        - "Major releases require coordination and
+                          will likely always require human
+                          involvement", and
+                          "I'd like to be able to respond to reported problems quickly and largely automatically"
+                          (owner's statement, 2026-10-22T16:33). "Performance DOES still matter a lot, as we will need
+                          to be able to respond quickly to things" (owner's statement, 2026-10-22T16:31).
+                        - Prior art: ESLint's versioning policy lets
+                          "A bug fix in a rule that results in ESLint
+                          reporting more errors" ship in a minor release, while an update of its recommended set is
+                          major (https://github.com/eslint/eslint/commit/9c87709; the current text may differ).
+                        - Assumption: some fixes for reported problems
+                          will need a new or tightened check to stop
+                          the
+                          faulty data from coming back. Not yet observed, since nothing has been released.
+                        Strength: moderate after 1.0, growing with the
+                        time between majors and the number of peers
+                        whose trees hold the bad data; none before
+                        1.0. It trades against the recorded challenge
+                        on rules a peer's tree must pass, so the owner
+                        chooses between two failure modes rather than
+                        removing one. Answered by an exception,
+                        decided by the maintainer and recorded on the
+                        release item, that lets a check fixing a
+                        reported fault become a failure in a minor
+                        release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,76 @@
+id_self:                ann_no_dependency_type_public_by_default
+guid_self:              ann_36f6a5337eea44949404df3b489921f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dependency types kept out of the public API unless a document opts in
+brief:                  |
+                        Under the option, Python is public only where
+                        a document declares it public, so the check
+                        interface, which names a cctool type holding
+                        ruamel.yaml round-trip objects, can stay
+                        internal, and no type of pyoxigraph,
+                        referencing, htpy or ruamel.yaml, all below
+                        1.0, is public by default. The
+                        interface-documents option makes that
+                        interface public on the day of the ruling, and
+                        the everything-shipped option makes every such
+                        type public.
+description:            |
+                        Sources:
+                        - The option: code is "public only where an
+                          interface control document declares it
+                          public, and
+                          private otherwise"
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 15-17).
+                        - Interface documents: "A change to anything
+                          an interface control document declares is
+                          judged
+                          against it"
+                          (_data/decision/dec_declared_public_api/opt_public_api_in_interface_documents.yaml lines
+                          16-18).
+                        - The check interface is the seam through
+                          which cctool's own command line, commit gate
+                          and
+                          editing commands check, and its functions take a parameter typed as cctool's Documents type
+                          (_data/interface_control_document/icd_cctool_check.yaml lines 17-22, 141-153 and 195-207),
+                          whose values are documents read with ruamel.yaml's round-trip loader (src/cctool/graph/extract.py lines 56 and 399).
+                        - The runtime ranges are pyoxigraph below 0.6,
+                          referencing below 1, htpy below 27 and
+                          ruamel.yaml below 0.20 (pyproject.toml lines 43-49); under major version zero "Anything MAY
+                          change at any time" (https://semver.org/, item 4).
+                        - When a dependency's types are exposed in a
+                          crate's API, "a semver incompatible upgrade
+                          of these
+                          dependencies is a breaking change for this package"
+                          (https://rust-lang.github.io/rfcs/3516-public-private-dependencies.html).
+                        Strength: strong, and stronger with ten times
+                        the modules and documents, since the exposed
+                        dependency types grow only with the documents
+                        someone chooses to mark public. It holds only
+                        if the check interface is marked internal and
+                        the closure rule already recorded for declared
+                        members is adopted for each document marked
+                        public.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

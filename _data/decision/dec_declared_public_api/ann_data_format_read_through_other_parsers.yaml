@@ -1,0 +1,96 @@
+id_self:                ann_data_format_read_through_other_parsers
+guid_self:              ann_048bf84b95b848a18926d2728e8a6aac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data format whose meaning depends on the parser and validator
+brief:                  |
+                        The option makes the schemas public, but a
+                        schema means what a validator makes of it and
+                        a document what a YAML parser makes of it, and
+                        cctool and the first peer already use
+                        different ones: cctool reads a pattern's
+                        dollar sign as ECMA-262 does where the peer's
+                        stock validator admits a value ending in a
+                        newline, and cctool reads YAML 1.2 where the
+                        peer reads YAML 1.1. The declared data format
+                        should name its YAML version and its reading
+                        of JSON Schema.
+description:            |
+                        Sources:
+                        - Every schema names the JSON Schema 2020-12
+                          dialect (for example
+                          _data/schema/sch_annotation.yaml
+                          line 1); no schema, README.md or AGENTS.md names a YAML version (advocate's grep).
+                        - JSON Schema 2020-12: a pattern "SHOULD be a
+                          valid regular expression, according to the
+                          ECMA-262
+                          regular expression dialect" (section 6.3.3), and format assertion "MUST be disabled by
+                          default" (section 7.2.1)
+                          (https://datatracker.ietf.org/doc/html/draft-bhutton-json-schema-validation).
+                        - cctool rewrites each dollar sign outside a
+                          character class to the end-of-text anchor,
+                          since in
+                          Python it also matches before a final newline, and registers that validator for 2020-12; it
+                          passes no format checker (src/cctool/check/schema.py lines 89-90, 97-126 and 159-162;
+                          advocate's grep of src/cctool).
+                        - The first peer validates with stock
+                          jsonschema and reads YAML with PyYAML's safe
+                          loader
+                          (_sources/cc-patrol-notes/draft/tools/validate.py lines 1, 5, 9 and 12). With jsonschema
+                          4.26.0 the stock validator accepts a value ending in a newline against a pattern that forbids
+                          newlines, and accepts "not a uri" against format uri (advocate's test). That pattern appears 18
+                          times in _data/schema (advocate's grep).
+                        - cctool reads every document with
+                          ruamel.yaml's round-trip loader
+                          (src/cctool/graph/extract.py line 56). "PyYAML supports the YAML 1.1 standard", while
+                          ruamel.yaml reads YAML 1.2 unless told otherwise, which drops unquoted Yes, No, On and Off as
+                          booleans, octal without the 0o prefix, and sexagesimal numbers
+                          (https://dokk.org/documentation/ruamel.yaml/0.17.40/pyyaml, a copy of the ruamel.yaml
+                          documentation).
+                        - Today all 2,440 YAML files under _data load
+                          to the same values with PyYAML 6.0.3 and
+                          ruamel.yaml 0.19.1 (advocate's comparison); the divergence is latent.
+                        - The runtime ranges are jsonschema below 5,
+                          referencing below 1 and ruamel.yaml below
+                          0.20
+                          (pyproject.toml lines 43-49).
+                        Strength: weak today in effect, strong at ten
+                        times the peers, since each peer that reads
+                        the data with its own tools adds a parser and
+                        validator whose reading the promise silently
+                        depends on. It does not separate the options;
+                        it is a condition on whichever makes the data
+                        public. Answered by a few sentences in the
+                        declaration naming the YAML version, the
+                        dialect, ECMA-262 patterns and format as
+                        annotation only, and, if wanted, a check that
+                        rejects YAML values the two versions read
+                        differently.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

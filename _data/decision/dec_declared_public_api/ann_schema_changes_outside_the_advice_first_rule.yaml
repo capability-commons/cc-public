@@ -1,0 +1,128 @@
+id_self:                ann_schema_changes_outside_the_advice_first_rule
+guid_self:              ann_447411b79e094c94af799347748620e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema changes outside the advice-first rule
+brief:                  |
+                        After 1.0 the split-by-kind option has a new
+                        or tightened check land as advice in a minor
+                        release and fail only in a major one, but
+                        schema validation has no advice form and the
+                        first peer validates against the schemas with
+                        its own script, so a schema tightened in a
+                        minor release still fails a peer's documents
+                        at once. A loosened schema, such as a new
+                        surface form or enum value under a closed
+                        object, breaks readers instead, and the option
+                        states no rule for that direction at all.
+                        Checks are thus held by two mechanisms, logic
+                        rules and schemas, and only the first has the
+                        advice form the rule relies on. Before 1.0
+                        none of this matters, since checks are added
+                        and tightened freely by the owner's choice.
+description:            |
+                        Sources:
+                        - The option makes the data format public, its
+                          schemas, registers and the ids of its types
+                          and
+                          relations, and after 1.0 a new or tightened check lands as advice in a minor release and
+                          becomes a failure only in a major one; before 1.0 checks are added and tightened freely
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 13-14 and
+                          33-37; owner's statement, 2026-10-24T18:09Z).
+                        - A check's rows are advice only when
+                          advise.lp declares that check. Schema
+                          validation is one
+                          more check that is not a logic program rule, added after the logic program runs, so its rows
+                          are always failures (src/cctool/check/check.py lines 20-31, 56-61 and 285-294). JSON Schema
+                          validation itself has no warning level.
+                        - cctool set refuses an edit that adds a
+                          failure (src/cctool/check/check.py lines
+                          27-31 and
+                          72-74).
+                        - The first peer loads every cc-public schema
+                          file and validates with stock jsonschema,
+                          not
+                          through cctool, and its gate checks the union of both roots
+                          (_sources/cc-patrol-notes/draft/tools/validate.py lines 1-9; _sources/cc-patrol-notes/plan.md
+                          lines 18-21 and 65-68).
+                        - The interface control document schema holds
+                          the surface as exactly one of three named
+                          forms,
+                          and the schemas close 59 objects with additionalProperties or unevaluatedProperties false
+                          across 35 of the 51 files (_data/schema/sch_interface_control_document.yaml lines 564-589; advocate's
+                          grep of _data/schema). A form or property added to a closed object is rejected by any
+                          validator holding the older schema, and the command line form the option itself may need is
+                          such an addition (option lines 17-21;
+                          _data/decision/dec_interface_surface_scope/ann_a_new_form_is_a_deliberate_change.yaml, brief).
+                        - A changed constraint inside a schema file
+                          renames and removes no item: the commit
+                          rules find
+                          an item added, removed or renamed by its guid (src/cctool/commit/change.lp lines 100-124),
+                          and report any other change to an item only by its digest (src/cctool/commit/impact.lp lines
+                          118-123). No
+                          schema under _data/schema carries a version of its own (grep of the 51 files).
+                        - Prior art: schema registries name the
+                          direction of compatibility, BACKWARD meaning
+                          "consumers
+                          using the new schema can read data produced with the last schema" and FORWARD meaning "data
+                          produced with a new schema can be read by consumers using the last schema"
+                          (https://docs.confluent.io/platform/8.3/schema-registry/fundamentals/schema-evolution.html).
+                          SchemaVer counts as its highest part "a breaking schema change which will prevent interaction
+                          with any historical data"
+                          (https://docs.snowplow.io/docs/api-reference/iglu/common-architecture/schemaver).
+                        - Assumption: after 1.0 some peer reads
+                          cc-public documents with a release older
+                          than the one
+                          that wrote them, for example a partner segment pinned to an earlier minor. Not shown by the
+                          first peer's notes.
+                        Strength: zero before 1.0, which is six months
+                        or more away (owner's statement,
+                        2026-10-24T18:09Z). After 1.0, strong for
+                        tightening, since with ten times the peers one
+                        tightened schema in a minor release fails ten
+                        trees at once and each peer's own validator
+                        bypasses any advice channel cctool adds;
+                        moderate for loosening, growing with each peer
+                        whose tools read the data. Answered by a
+                        sentence in the option stating the direction
+                        each kind of schema change is judged in: a
+                        change that can reject a document the previous
+                        release accepted is breaking, or ships first
+                        as an advice rule with the schema itself
+                        changed only in a major; a change that adds to
+                        a closed object or enum is breaking for
+                        readers; and the bump computation classifies
+                        schema diffs accordingly.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
