@@ -1,0 +1,75 @@
+id_self:                icd_data_format
+guid_self:              icd_e1d37858aba54063ba81990c880a5331
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data format
+brief:                  |
+                        The YAML documents of a tree, read as YAML 1.2
+                        and validated against the schemas of their
+                        types as JSON Schema 2020-12.
+description:            |
+                        The data format is supported: the documents,
+                        the schemas under _data/schema, the registers,
+                        and the ids of the types and relations.
+                        Anything that no interface control document
+                        says is supported is unsupported. That
+                        includes the python, C and C++ code that no
+                        document declares, the logic programs, and the
+                        predicates and facts that queries and checks
+                        see.
+version_interface:      '0.1'
+support:                supported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        document:
+          id_self:      icm_data_format.document
+          guid_self:    icm_d1901b95f4b24a96967f032dc088e909
+          name:         YAML document
+          brief:        |
+                        One item, or a register of items, in a file of
+                        a tree.
+          content:      |
+                        The fields of an item, or of a register and
+                        its entries, as its schema gives them.
+
+          payload:
+            spelling:   The schema that the type of the item names, under _data/schema.
+
+          encoding:     |
+                        YAML 1.2, in UTF-8, one document to a file
+                        under _data, or in the docstring or comment
+                        header of another file. A reader of YAML 1.1
+                        may read some values otherwise, such as
+                        unquoted yes, no, on and off, or a number with
+                        a leading zero.
+          convention:   |
+                        Each document conforms to the schemas its type
+                        names, read as JSON Schema 2020-12. A pattern
+                        is a regular expression of ECMA-262, so a
+                        dollar sign outside a class matches only at
+                        the end of the text. format is an annotation,
+                        and is not asserted.
+
+      production:       |
+                        A person, or an editing command of cctool,
+                        writes a document into a tree.
+
+edge:
+
+  - id_relation:        relation_cites
+    guid_relation:      relation_51554b1012884a358e38a299ba3632e0
+    id_target:          extdoc_json_schema_2020_12
+    guid_target:        extdoc_c9fccd94b7e9497c9f32ad4d19cbb5b7
