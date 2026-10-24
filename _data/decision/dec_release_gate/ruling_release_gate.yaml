@@ -1,0 +1,39 @@
+id_self:                ruling_release_gate
+guid_self:              ruling_1e641d5f557748c98e325f04339d2b62
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full gate and smoke test
+brief:                  |
+                        Before a release is tagged, every check and
+                        test runs with no cached verdicts on each
+                        Python that requires-python admits, the
+                        package is built from the tagged tree and
+                        installed in a fresh environment, and, once a
+                        peer can consume cc-public, a fixture peer
+                        checks against it. Ruled by William Payne on
+                        2026-10-24, as recommended. The fresh install
+                        resolves the declared ranges rather than the
+                        lock, tentatively. The full gate is timed at
+                        the first release before any shorter path for
+                        patches is added. The gate also checks that
+                        the built package holds _data and that cctool
+                        check passes on the _data it ships, with
+                        "Strong agreement" from William Payne.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_full_gate_and_smoke_test
+    guid_target:        opt_f87f6f2e28ee45b0b8dfb6bba52971c3
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_normal_gate_for_release
+    guid_target:        opt_f70397f5624447e48e291747391761ae
