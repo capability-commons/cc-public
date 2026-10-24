@@ -1,0 +1,47 @@
+id_self:                ann_test_decisions_are_frozen_copies
+guid_self:              ann_2abc54ff7c5f47068792fde441c775e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Decisions of the test copies now frozen
+brief:                  |
+                        The annotation says a fault in what a copy
+                        keeps fails nearly every check test. The
+                        decisions a copy keeps are now frozen copies
+                        in a fixture, so a ruling on, correction of or
+                        fault in a decision of the repository no
+                        longer reaches the tests. A fault in the
+                        registers, schemas or kept source still does.
+description:            |
+                        src/cctool/conftest.py lines 55-62 put the
+                        decisions held in
+                        src/cctool/_test/_fixture/decision
+                        (dec_cross_item_checks_engine, and
+                        dec_tooling_language without its ruling) in
+                        place of every folder of _data/decision, and
+                        lines 203-205 copy them in. The extractor
+                        leaves any folder named _fixture out of the
+                        graph (src/cctool/graph/extract.py line 164),
+                        so the frozen copies are not items of the
+                        repository. The change followed two breakages
+                        on 2026-10-23: 9f9d7b98, when
+                        dec_tooling_language was ruled on and three
+                        tests failed at push, and c618661f. Found in
+                        the daily review of 2026-10-24.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_test_style
+    guid_target:        dec_de032611a9f540f9a0192c400ebc4400
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_live_tree_faults_fail_unrelated_tests
+    guid_target:        ann_9aa1879f83bc4342ba5792635a9ec97d
