@@ -1,0 +1,266 @@
+id_self:                icd_cctool_check
+guid_self:              icd_b9e6100d913d4bc3a49fbfd936b1cf8d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Checker interface
+brief:                  |
+                        The python surface by which a tree, or a set
+                        of YAML documents read from one, is checked:
+                        the failures and advice each check finds, and
+                        the columns each check reports.
+description:            |
+                        The command line, the commit gate and the
+                        editing commands all check through this
+                        interface. An edit checks its YAML documents
+                        before it writes them, and the gate checks a
+                        copy of what is staged.
+version_interface:      '1.0'
+
+declaration:
+
+  failures:
+    id_self:            icm_cctool_check.failures
+    guid_self:          icm_e34e682f8f4343da97c01c1b04594c92
+    name:               Failures
+    brief:              |
+                        What a check of a tree found.
+    shape:              |
+                        A mapping from the name of each check that
+                        found something to its rows. A row is a tuple
+                        of strings, one for each column the check
+                        declares, in the order columns gives. A check
+                        that finds nothing is left out, so an empty
+                        mapping is a tree that passes.
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_cctool_check.module
+          guid_self:    icm_22b81d93a0e54bc5aff823ef45a696fa
+          name:         cctool.check.check
+          brief:        |
+                        The module that presents this surface.
+
+      function:
+
+        check:
+          id_self:      icm_cctool_check.check
+          guid_self:    icm_987ceb8fcb464178a5206e8cfddf4ad2
+          name:         check
+          brief:        |
+                        Return the failures of the tree under root.
+          guarantee:    |
+                        The tree is read and nothing in it is written.
+                        Advice is not a failure, so it is left out.
+
+          parameter:
+
+            - id_self:  icm_cctool_check.check.root
+              guid_self:  icm_e58153d9700745929efb45b4d8873fe4
+              name:     root
+              brief:    |
+                        The root of the tree to check.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+          returns:
+
+            type:
+              declaration:  failures
+              spelling:  Failures
+
+            brief:      |
+                        The failures, keyed by check.
+
+        review:
+          id_self:      icm_cctool_check.review
+          guid_self:    icm_c89919b74bcc45469035be90dc9682ec
+          name:         review
+          brief:        |
+                        Return the failures and the advice of the tree
+                        under root.
+          guarantee:    |
+                        The tree is read and nothing in it is written.
+                        A check is either a failure or advice, never
+                        both, so a caller may fail on the first and
+                        only report the second.
+
+          parameter:
+
+            - id_self:  icm_cctool_check.review.root
+              guid_self:  icm_5c02ec26f30b4ed3bd991662a3fa558d
+              name:     root
+              brief:    |
+                        The root of the tree to check.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  tuple[Failures, Failures]
+
+            brief:      |
+                        The failures, then the advice, each keyed by
+                        check.
+
+        check_documents:
+          id_self:      icm_cctool_check.check_documents
+          guid_self:    icm_9774a75d938f498eb8cb82fb00b00039
+          name:         check_documents
+          brief:        |
+                        Return the failures of YAML documents that
+                        need not be written yet.
+          guarantee:    |
+                        Only the YAML documents given are checked, so
+                        an edit can be checked before it is written.
+                        Layout is not checked, since it is a property
+                        of the text of a file and not of its
+                        documents.
+
+          parameter:
+
+            - id_self:  icm_cctool_check.check_documents.map_document
+              guid_self:  icm_7334b28543244039a4386a53aeccb9d8
+              name:     map_document
+              brief:    |
+                        The YAML documents of a tree, by the path of
+                        the file that holds each.
+
+              type:
+                spelling:  cctool.graph.extract.Documents
+
+              mode:     input
+
+            - id_self:  icm_cctool_check.check_documents.cache
+              guid_self:  icm_db3862f6b7a042fa9dac7e92493ba121
+              name:     cache
+              brief:    |
+                        What schema validation found, kept between
+                        calls.
+
+              type:
+                spelling:  dict | None
+
+              mode:     input_output
+              optional:  true
+              default:  None
+              guarantee:  |
+                        A YAML document that is the same object as at
+                        the last call, with the same schemas, is not
+                        validated again. A caller that changes a
+                        document in place must not pass the same
+                        cache.
+
+          returns:
+
+            type:
+              declaration:  failures
+              spelling:  Failures
+
+            brief:      |
+                        The failures, keyed by check.
+
+        review_documents:
+          id_self:      icm_cctool_check.review_documents
+          guid_self:    icm_b2c517792fd94ff598ebf76c7079f81c
+          name:         review_documents
+          brief:        |
+                        Return the failures and the advice of YAML
+                        documents that need not be written yet.
+          guarantee:    |
+                        As for check_documents, and the advice is kept
+                        apart from the failures.
+
+          parameter:
+
+            - id_self:  icm_cctool_check.review_documents.map_document
+              guid_self:  icm_c647af8aaa524f33b382b0c9daa5e224
+              name:     map_document
+              brief:    |
+                        The YAML documents of a tree, by the path of
+                        the file that holds each.
+
+              type:
+                spelling:  cctool.graph.extract.Documents
+
+              mode:     input
+
+            - id_self:  icm_cctool_check.review_documents.cache
+              guid_self:  icm_5cb514ec03ad4beda3a0d12095715a3e
+              name:     cache
+              brief:    |
+                        What schema validation found, kept between
+                        calls.
+
+              type:
+                spelling:  dict | None
+
+              mode:     input_output
+              optional:  true
+              default:  None
+
+          returns:
+
+            type:
+              spelling:  tuple[Failures, Failures]
+
+            brief:      |
+                        The failures, then the advice, each keyed by
+                        check.
+
+        columns:
+          id_self:      icm_cctool_check.columns
+          guid_self:    icm_29a8333e7f0847f5a04103b33d61dac2
+          name:         columns
+          brief:        |
+                        Return the names of the columns of each check,
+                        keyed by check.
+
+          returns:
+
+            type:
+              spelling:  dict[str, tuple[str, ...]]
+
+            brief:      |
+                        The columns of each check, in the order its
+                        rows give them.
+
+        wording:
+          id_self:      icm_cctool_check.wording
+          guid_self:    icm_6a67c1a8b79d4e739b9662e75b4bd3aa
+          name:         wording
+          brief:        |
+                        Return what a row of each check records, and
+                        what to do about it, keyed by check.
+
+          returns:
+
+            type:
+              spelling:  dict[str, dict[str, str]]
+
+            brief:      |
+                        The did and the fix of each check. A did is a
+                        sentence with each column named in braces.
+
+edge:                   []

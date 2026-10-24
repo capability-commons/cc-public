@@ -36,7 +36,7 @@ unfinished edits of another.
 - Work, check and commit in your worktree. The first `pixi run` there
   installs its environment. Where pixi cannot run, use the environment
   of the main checkout with `src` first on the path:
-  `PYTHONPATH=src ../cc-public/.pixi/envs/default/bin/python -B -m cc_public.cli.command check`.
+  `PYTHONPATH=src ../cc-public/.pixi/envs/default/bin/python -B -m cctool.cli.command check`.
 - Land the branch only when its work is agreed. In the worktree, run
   `git rebase dev`, then `cctool history check dev..TOPIC --gate`. It
   checks each rebased commit, and checks, lints and tests the content
@@ -161,7 +161,7 @@ agent can act on it without reading the rule behind it.
   predicate that lacks either. `cctool header PATH::NAME` makes the
   item from the comment above the declaration; give `did` and `fix`
   as fields. A check written in python gives the same two in
-  `cc_public.check.check`.
+  `cctool.check.check`.
 - cctool prints each failure as its file and line, where it has them,
   the name of the check, and the did sentence, then the fix once for
   each check. The name of the check is the stable code that tests and

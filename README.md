@@ -19,15 +19,15 @@ before it is committed.
 | `_data/external_document/`           | the standards and other documents that items cite |
 | `_data/interface_control_document/`  | interface control documents                    |
 | `_data/dataflow_graph/`              | dataflow graphs                                |
-| `src/cc_public/graph`                | fact extraction, logic programs, and the SQL, SPARQL, jq and text queries over the graph |
-| `src/cc_public/check`                | the checks, as logic program rules, and schema validation |
-| `src/cc_public/edit`                 | edits that refuse to add a failure, and the layout printer |
-| `src/cc_public/commit`               | the commit item of each commit message, and the checks of a commit and of history |
-| `src/cc_public/gate`                 | the gate: check, lint and test what a commit records |
-| `src/cc_public/export`               | the graph as pages of markdown, for Obsidian and OKF |
-| `src/cc_public/requirement`          | the statement of a requirement, composed from its slots |
-| `src/cc_public/web`                  | the review pages that `cctool serve` serves    |
-| `src/cc_public/cli`                  | `cctool`, the command line                     |
+| `src/cctool/graph`                   | fact extraction, logic programs, and the SQL, SPARQL, jq and text queries over the graph |
+| `src/cctool/check`                   | the checks, as logic program rules, and schema validation |
+| `src/cctool/edit`                    | edits that refuse to add a failure, and the layout printer |
+| `src/cctool/commit`                  | the commit item of each commit message, and the checks of a commit and of history |
+| `src/cctool/gate`                    | the gate: check, lint and test what a commit records |
+| `src/cctool/export`                  | the graph as pages of markdown, for Obsidian and OKF |
+| `src/cctool/requirement`             | the statement of a requirement, composed from its slots |
+| `src/cctool/web`                     | the review pages that `cctool serve` serves    |
+| `src/cctool/cli`                     | `cctool`, the command line                     |
 | `.githooks/`                         | the git hooks that `pixi run hooks` turns on   |
 | `.agents/skills/`                    | procedures for coding agents; `AGENTS.md` is their guide |
 
@@ -92,10 +92,10 @@ no commit-msg hook for a revert either, so the message of a revert is
 first checked by the pre-push hook.
 
 The check in the gate of a commit keeps two kinds of verdict in a
-store, `.git/cc_public_store`, which every worktree of the clone
+store, `.git/cctool_store`, which every worktree of the clone
 shares: whether each file is laid out as `cctool format` writes it,
 and whether each document conforms to its schema. A verdict is reused
-for the same text checked by the same code of cc_public. The checks of
+for the same text checked by the same code of cctool. The checks of
 the logic programs are run afresh each time. The gate of a push uses
 no store. Set `CC_PUBLIC_STORE` to a directory to have `cctool check`
 use a store too.
