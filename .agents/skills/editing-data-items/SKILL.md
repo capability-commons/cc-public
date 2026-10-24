@@ -112,6 +112,13 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   option needs none (`concern_without_option`). A premise several
   concerns rest on is one annotation linked to each concern, not one
   annotation per concern.
+- **Check the facts of an argument before you write it.** An
+  annotation drafted elsewhere, by an advocate or from notes, states
+  facts about the tree as it was: lines, counts, commits, quotes, what
+  a file holds. Check each against the tree as it is now, and correct
+  or drop the claim that no longer holds, before it goes in. The
+  verifier of a run of advocates is not enough on its own: the tree
+  moves between the draft and the write.
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.

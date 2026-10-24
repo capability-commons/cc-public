@@ -44,7 +44,18 @@ choice; do not call everything a tension.
    reworded to get past a check, words put in double quotes to dodge
    a check, links written only to settle which concept is meant,
    large renames.
-5. Write the report (below). Keep it short.
+5. Fact-check the arguments that the day's work may have made stale.
+   Facts shift as the tree changes, so this runs every day, not only
+   when an argument is drafted. For each file the commits changed,
+   find the annotations that cite it (`cctool query text`, or a grep
+   of `_data/decision` for its path), and check each line, count,
+   commit and quote they give against the tree. Fix what no longer
+   holds in a commit titled `Fix the arguments on TOPIC so that their
+   facts hold`, on the branch of the review. Where the design changed,
+   so that what an argument argued no longer holds, add an annotation
+   that challenges it rather than rewording it. Report how many
+   arguments were checked and how many fixed.
+6. Write the report (below). Keep it short.
 
 ## The weekly review (in depth)
 
@@ -57,9 +68,13 @@ choice; do not call everything a tension.
    and, for each, report where the repository breaks the parts of it
    that no check holds. Do the same for the writing style rules in
    `reg_writing_style_rule.yaml`.
-4. Count what trends: advice by kind, exception entries, and the time
-   the gate takes.
-5. Write the report (below).
+4. Fact-check a wider slice of the arguments than the daily review
+   reaches, such as those of the decisions still open, and of one
+   area in turn, so that every argument is checked again from time
+   to time.
+5. Count what trends: advice by kind, exception entries, the time the
+   gate takes, and the arguments fixed by fact-checks.
+6. Write the report (below).
 
 ## A retrospective
 
