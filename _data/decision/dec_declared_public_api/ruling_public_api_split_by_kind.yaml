@@ -1,0 +1,67 @@
+id_self:                ruling_public_api_split_by_kind
+guid_self:              ruling_5abc6048be974c6d9dbcd6a89a59adcd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Public API split by kind
+brief:                  |
+                        The data format is public. Python, C and C++
+                        code is public only where an interface control
+                        document declares it public, and private
+                        otherwise; the command line has an interface
+                        control document of its own and is treated the
+                        same way. Ruled by William Payne on
+                        2026-10-24, with the conditions recommended.
+                        After 1.0, a schema change that can reject a
+                        document the previous release accepted, or
+                        that adds to a closed object or enum, is
+                        breaking. Each check declares its severity in
+                        the check interface document, so that a move
+                        from advice to failure is a change the
+                        computed bump sees. The maintainer may let a
+                        check that fixes a reported fault fail in a
+                        minor release, recorded on the release item.
+                        The command line document is recorded and
+                        checked against click's own description of
+                        each command before 1.0, and promises
+                        commands, flags, exit statuses and named JSON
+                        outputs, not human-readable text. Each
+                        interface control document has one required
+                        exposure field, peer or internal, and a public
+                        member names only public declarations or the
+                        standard library. The data format names YAML
+                        1.2 and JSON Schema 2020-12. Anything not
+                        declared public is private. After 1.0, a new
+                        or tightened check lands as advice in a minor
+                        release and fails only in a major one; before
+                        1.0, checks are added and tightened freely.
+                        Whether the query and fact vocabulary is
+                        public waits on the decision on what crosses
+                        between segments.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_public_api_in_interface_documents
+    guid_target:        opt_4cd9926622364cd9832ba6ba9b295dda
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_public_api_is_data_and_commands
+    guid_target:        opt_2b4f9d5c22ba4eae92b602b0a2a9abef
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_public_api_is_everything_shipped
+    guid_target:        opt_8d995a0d1a51463296b534606d9840de
