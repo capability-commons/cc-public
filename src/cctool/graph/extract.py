@@ -42,6 +42,7 @@ import os
 import pathlib
 import re
 import typing
+import weakref
 
 import ruamel.yaml
 import ruamel.yaml.scalarstring
@@ -383,10 +384,13 @@ KEY_ID_PORT       = 'id_port'
 FEEDFORWARD       = 'feedforward'
 
 # What the code says of each class or function that holds a YAML document,
-# by its key: the id its place calls for, the parameters of a function,
-# each as its name and a mapping of the parts of python_signature, and the
-# type it returns. None of it is in the document, so it is noted when the
-# file is read. The receiver of a method is not a parameter.
+# keyed by the id of the document, with a weak reference to it: the id its place
+# calls for, the parameters of a function, each as its name and a mapping
+# of the parts of python_signature, and the type it returns. None of it is
+# in the document, so it is noted when the file is read. It is keyed by
+# the document and not by the file, since another copy of a file may say
+# other things with the same key. An entry goes when its document does.
+# The receiver of a method is not a parameter.
 #
 MAP_DEFINITION    = {}
 SET_RECEIVER      = {'self', 'cls'}
@@ -588,9 +592,10 @@ def _facts_of_document(file:             str,
     if isinstance(document, dict):
         _ports(document, facts)
         _dataflow_graph(document, (file, base), facts)
-        if file in MAP_DEFINITION:
+        (held, definition) = MAP_DEFINITION.get(id(document), (None, None))
+        if held is not None and held() is document:
             id_self                              = str(document.get(KEY_ID_SELF))
-            (expected, tuple_parameter, returns) = MAP_DEFINITION[file]
+            (expected, tuple_parameter, returns) = definition
             facts['module_name'].add((id_self, expected))
             for (position, (name, map_part)) in enumerate(tuple_parameter):
                 facts['python_parameter'].add((id_self, str(position), name))
@@ -838,15 +843,30 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
     if relative.suffix == SUFFIX_PYTHON:
         for (key, expected, tuple_parameter, returns, document) in definitions(text,
                                                                                 relative):
-            MAP_DEFINITION[key] = (expected, tuple_parameter, returns)
+            _define(document[0], (expected, tuple_parameter, returns))
             map_document[key]   = document
 
     if relative.suffix == SUFFIX_PROGRAM:
         for (key, expected, document) in predicates(text, relative):
-            MAP_DEFINITION[key] = (expected, (), None)
+            _define(document[0], (expected, (), None))
             map_document[key]   = document
 
     return map_document
+
+
+# -----------------------------------------------------------------------------
+def _define(document: typing.Any, definition: tuple) -> None:
+    """
+    Note in MAP_DEFINITION what the code says of the class, function or
+    predicate that holds document, until document is gone. Only a
+    mapping has facts of its own, so nothing is noted for any other.
+
+    """
+
+    if not isinstance(document, dict):
+        return
+    MAP_DEFINITION[id(document)] = (weakref.ref(document), definition)
+    weakref.finalize(document, MAP_DEFINITION.pop, id(document), None)
 
 
 # -----------------------------------------------------------------------------

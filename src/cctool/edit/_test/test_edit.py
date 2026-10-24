@@ -507,6 +507,15 @@ def test_move_of_a_module_changes_the_spelling_of_the_types_it_holds(tree):
     assert 'spelling:  cctool.graph.reading.Documents\n' in text
 
 
+def test_another_copy_of_a_module_does_not_change_what_an_edit_finds(tree, tmp_path_factory):
+    cctool.check.check.check(tree)
+    path = tmp_path_factory.mktemp('other') / 'check.py'
+    path.write_text((tree / 'src/cctool/check/check.py').read_text().replace(
+        'cctool.graph.extract.Documents', 'cctool.graph.reading.Documents'))
+    cctool.graph.extract.read(path, pathlib.Path('src/cctool/check/check.py'))
+    assert _edit(tree, {'set': ['concept_concept', 'term_admitted', ['idea']]}) == {}
+
+
 def test_a_moved_name_keeps_the_lines_aligned_inside_its_brackets():
     text  = ('x = stableflo.a.f(alpha,\n'
              '                  beta(stableflo.b.g(1,\n'
