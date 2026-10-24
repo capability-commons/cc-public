@@ -32,6 +32,7 @@ edge:                   []
 
 
 import os
+import platform
 import subprocess
 
 import click.testing
@@ -39,6 +40,7 @@ import pytest
 
 import cctool.cli.command
 import cctool.gate.gate
+import cctool.gate.timing
 
 
 pytestmark = pytest.mark.prepush
@@ -198,3 +200,69 @@ def test_the_gate_of_a_commit_already_made_uses_no_store(repo, monkeypatch):
     stage = _stage('store', 'import os; print(os.environ.get("CC_PUBLIC_STORE"))')
     [(_, _, output)] = cctool.gate.gate.gate(repo, (stage,), rev = 'HEAD')
     assert output.startswith('None\n')
+
+
+def _logged(root):
+    """
+    Return the lines of the log of timings of root.
+
+    """
+
+    return cctool.gate.timing.read(cctool.gate.gate.timing_log(root))
+
+
+def test_each_run_of_the_gate_logs_each_stage_in_the_git_directory(repo):
+    tuple_stage = (_stage('pass', 'pass'),
+                   _stage('fail', 'import sys; sys.exit(1)'))
+    cctool.gate.gate.gate(repo, tuple_stage)
+    [first, second] = _logged(repo)
+    assert cctool.gate.gate.timing_log(repo) == (repo / '.git').resolve() / 'cctool_timing.jsonl'
+    assert (first['stage'], first['outcome'], second['stage'], second['outcome']) == (
+            'pass', 'passed', 'fail', 'failed')
+    assert first['run'] == second['run']
+    assert first['seconds'] >= 0
+    assert first['seconds_cpu_run'] >= 0
+    assert first['tree'] == subprocess.run(['git', 'write-tree'], cwd = repo, check = True,
+                                           capture_output = True, text = True).stdout.strip()
+    assert first['commit'] is None
+    assert first['python'] == platform.python_version()
+    assert 'tests' not in first
+
+
+def test_a_later_run_appends_to_the_log(repo):
+    cctool.gate.gate.gate(repo, (_stage('pass', 'pass'),))
+    cctool.gate.gate.gate(repo, (_stage('pass', 'pass'),))
+    [first, second] = _logged(repo)
+    assert first['run'] != second['run']
+
+
+def test_a_stage_stopped_for_its_time_is_logged_as_stopped(repo):
+    cctool.gate.gate.gate(repo, (_stage('slow', 'import time; time.sleep(30)'),), seconds = 1)
+    [line] = _logged(repo)
+    assert line['outcome'] == 'stopped'
+    assert line['seconds'] >= 1
+
+
+def test_the_gate_of_a_commit_already_made_logs_the_commit(repo):
+    _commit(repo)
+    cctool.gate.gate.gate(repo, (_stage('pass', 'pass'),), rev = 'HEAD')
+    [line] = _logged(repo)
+    head = subprocess.run(['git', 'rev-parse', 'HEAD', 'HEAD^{tree}'], cwd = repo, check = True,
+                          capture_output = True, text = True).stdout.split()
+    assert [line['commit'], line['tree']] == head
+
+
+def test_the_tests_log_the_seconds_of_each_test(repo):
+    (repo / 'src/test_marker.py').write_text('def test_one():\n    pass\n')
+    _git(repo, 'add', 'src/test_marker.py')
+    stage = ('test', ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider', 'src',
+                      '--junitxml={report}'))
+    [(_, is_passed, _)] = cctool.gate.gate.gate(repo, (stage,))
+    assert is_passed
+    [line] = _logged(repo)
+    assert list(line['tests']) == ['src.test_marker::test_one']
+
+
+def test_the_real_tests_report_the_seconds_of_each_test():
+    assert '--junitxml={report}' in dict(cctool.gate.gate.TUPLE_STAGE)['test']
+

@@ -100,6 +100,12 @@ the logic programs are run afresh each time. The gate of a push uses
 no store. Set `CC_PUBLIC_STORE` to a directory to have `cctool check`
 use a store too.
 
+Each run of the gate, of a commit or of a push, times each stage and
+appends a line for it to a log, `.git/cctool_timing.jsonl`, which
+every worktree shares and no commit records. A line holds when the
+stage started, its wall seconds, its outcome, the tree it gated, the
+host and the python, and for the tests the seconds of each test.
+
 The commit hooks give early feedback, and git skips them for a rebase
 or a cherry-pick, as does anyone with `--no-verify` or a clone without
 `pixi run hooks`. The check of record is `cctool history check`: it

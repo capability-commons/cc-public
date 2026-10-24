@@ -48,6 +48,12 @@ description:            |
                         processor, so that the gate takes about as
                         long as its tests take divided among the
                         processors.
+
+                        Each run times its stages and appends a line
+                        for each to a log of timings in the git
+                        directory, as ruling_cpp_built_when_staged
+                        asks, so that what a change costs the gate can
+                        be seen later.
 usage:                  |
                         cctool gate [--root DIRPATH]
 
@@ -60,15 +66,21 @@ edge:                   []
 
 
 import concurrent.futures
+import datetime
 import io
 import os
 import pathlib
+import platform
+import resource
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
+import uuid
 
 import cctool.check.store
+import cctool.gate.timing
 
 
 # The tests that the gate of a push runs, and those that the gate of a
@@ -82,12 +94,14 @@ MARK_COMMIT   = 'not slow and not prepush'
 # copy. {python} is the interpreter that runs the gate. The tests run on
 # one worker for each processor, each worker taking the next test when
 # it is free, and the tests marked slow are left out: they grow with the
-# data, or repeat the check stage.
+# data, or repeat the check stage. pytest reports the seconds of each
+# test to {report}, a file outside the copy, in JUnit XML.
 #
 TUPLE_STAGE   = (('check', ('{python}', '-m', 'cctool.cli.command', 'check')),
                  ('lint',  ('ruff', 'check', '--no-cache', 'src')),
                  ('test',  ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider',
-                            '-n', 'auto', '--dist', 'worksteal', '-m', MARK_PUSH)))
+                            '-n', 'auto', '--dist', 'worksteal', '-m', MARK_PUSH,
+                            '--junitxml={report}')))
 DIR_SOURCE    = 'src'
 NAME_TEST     = 'test'
 
@@ -99,7 +113,15 @@ NAME_TEST     = 'test'
 TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/')
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
+PREFIX_REPORT = 'cc_gate_report_'
+FILE_REPORT   = 'junit.xml'
 DIR_STORE     = 'cctool_store'
+
+# What a stage came to, as the log of timings records it.
+#
+OUTCOME_OK    = 'passed'
+OUTCOME_FAIL  = 'failed'
+OUTCOME_STOP  = 'stopped'
 
 # A stage that runs longer than this, in seconds, is stopped and fails,
 # so that a stage that hangs cannot hold a commit for ever. The whole
@@ -126,31 +148,123 @@ def gate(root:        pathlib.Path,
     what it printed, run over the staged content of the repository at
     root, or over the content of the commit rev if it is given. The
     stages are TUPLE_STAGE unless tuple_stage names others. A stage
-    that runs for longer than seconds is stopped, and fails.
+    that runs for longer than seconds is stopped, and fails. The time
+    of each stage is appended to the log of timings.
 
     """
 
     tuple_stage = tuple_stage or TUPLE_STAGE
+    start       = datetime.datetime.now(datetime.UTC).isoformat(timespec = 'seconds')
+    usage       = resource.getrusage(resource.RUSAGE_CHILDREN)
 
-    with tempfile.TemporaryDirectory(prefix = PREFIX_COPY) as name:
-        dir_copy = pathlib.Path(name)
+    with (tempfile.TemporaryDirectory(prefix = PREFIX_COPY) as name,
+          tempfile.TemporaryDirectory(prefix = PREFIX_REPORT) as name_report):
+        dir_copy    = pathlib.Path(name)
+        path_report = pathlib.Path(name_report) / FILE_REPORT
         if rev is None:
             copy_staged(root, dir_copy)
         else:
             copy_commit(root, rev, dir_copy)
-        env      = _environment(dir_copy)
+        env         = _environment(dir_copy)
         env.pop(cctool.check.store.ENV_STORE, None)
         if rev is None:
             env[cctool.check.store.ENV_STORE] = str(store(root))
-        list_job = [[arg.format(python = sys.executable) for arg in tuple_arg]
-                    for (_, tuple_arg) in tuple_stage]
+        list_job    = [[arg.format(python = sys.executable, report = path_report)
+                        for arg in tuple_arg]
+                       for (_, tuple_arg) in tuple_stage]
 
         with concurrent.futures.ThreadPoolExecutor(max_workers = len(list_job)) as executor:
             list_done = list(executor.map(lambda list_arg: _run(list_arg, dir_copy, env, seconds),
                                           list_job))
 
-    return [(name_stage, *done)
-            for ((name_stage, _), done) in zip(tuple_stage, list_done, strict = True)]
+        map_test    = cctool.gate.timing.durations(path_report)
+
+    cctool.gate.timing.append(timing_log(root),
+                              _timings(root, rev, tuple_stage, list_done, start, usage, map_test))
+
+    return [(name_stage, outcome == OUTCOME_OK, printed)
+            for ((name_stage, _), (outcome, printed, _)) in zip(tuple_stage, list_done,
+                                                                 strict = True)]
+
+
+# -----------------------------------------------------------------------------
+def _timings(root:        pathlib.Path,
+             rev:         str | None,
+             tuple_stage: tuple,
+             list_done:   list[tuple[str, str, float]],
+             start:       str,
+             usage:       resource.struct_rusage,
+             map_test:    dict[str, float]) -> list[dict]:
+    """
+    Return a line of the log of timings for each stage of a run of the
+    gate that started at start, when the children of this process had
+    used usage: its name, outcome and wall seconds, and what the run
+    gated and where. The stages run side by side, so the processor
+    seconds are those of the whole run, on each line. The line of the
+    stage named NAME_TEST holds the seconds of each test in map_test.
+
+    """
+
+    after    = resource.getrusage(resource.RUSAGE_CHILDREN)
+    run      = uuid.uuid4().hex
+    map_base = {'run':             run,
+                'start':           start,
+                'seconds_cpu_run': round(after.ru_utime + after.ru_stime
+                                         - usage.ru_utime - usage.ru_stime, 3),
+                'tree':            _digest(root, rev),
+                'commit':          None if rev is None else _git(root, rev + '^{commit}'),
+                'host':            platform.node(),
+                'python':          platform.python_version()}
+
+    list_line = []
+    for ((name_stage, _), (outcome, _, seconds)) in zip(tuple_stage, list_done, strict = True):
+        line = {'stage': name_stage, **map_base, 'seconds': round(seconds, 3),
+                'outcome': outcome}
+        if name_stage == NAME_TEST:
+            line['tests'] = map_test
+        list_line.append(line)
+
+    return list_line
+
+
+# -----------------------------------------------------------------------------
+def _digest(root: pathlib.Path, rev: str | None) -> str | None:
+    """
+    Return the digest of the tree that the gate of root runs over: that
+    of the commit rev, or of the staged content if rev is None. It is
+    None if git cannot give it, as when the index holds a conflict.
+
+    """
+
+    if rev is not None:
+        return _git(root, rev + '^{tree}')
+
+    try:
+        return subprocess.run(['git', 'write-tree'],
+                              cwd            = root,
+                              capture_output = True,
+                              text           = True,
+                              check          = True).stdout.strip()
+    except subprocess.CalledProcessError:
+        return None
+
+
+# -----------------------------------------------------------------------------
+def _git(root: pathlib.Path, rev: str) -> str | None:
+    """
+    Return the object name that rev names in the repository at root, or
+    None if it names none.
+
+    """
+
+    try:
+        return subprocess.run(['git', 'rev-parse', '--verify', '--quiet', rev],
+                              cwd            = root,
+                              capture_output = True,
+                              text           = True,
+                              check          = True).stdout.strip()
+    except subprocess.CalledProcessError:
+        return None
 
 
 # -----------------------------------------------------------------------------
@@ -200,6 +314,28 @@ def store(root: pathlib.Path) -> pathlib.Path:
 
     """
 
+    return git_dir(root) / DIR_STORE
+
+
+# -----------------------------------------------------------------------------
+def timing_log(root: pathlib.Path) -> pathlib.Path:
+    """
+    Return the log of timings of the gate of the repository at root: a
+    file in its git directory, which each of its worktrees shares.
+
+    """
+
+    return git_dir(root) / cctool.gate.timing.FILE_LOG
+
+
+# -----------------------------------------------------------------------------
+def git_dir(root: pathlib.Path) -> pathlib.Path:
+    """
+    Return the git directory of the repository at root that each of its
+    worktrees shares.
+
+    """
+
     try:
         name = subprocess.run(['git', 'rev-parse', '--git-common-dir'],
                               cwd            = root,
@@ -210,20 +346,21 @@ def store(root: pathlib.Path) -> pathlib.Path:
         raise ErrorGate('The git directory cannot be found: {text}'.format(
                                                 text = error.stderr.strip())) from error
 
-    return (root / name).resolve() / DIR_STORE
+    return (root / name).resolve()
 
 
 # -----------------------------------------------------------------------------
 def _run(list_arg: list[str],
          dir_copy: pathlib.Path,
          env:      dict[str, str],
-         seconds:  float) -> tuple[bool, str]:
+         seconds:  float) -> tuple[str, str, float]:
     """
-    Return whether the command list_arg passed in dir_copy within
-    seconds, and what it printed.
+    Return the outcome of the command list_arg in dir_copy, stopped
+    after seconds, what it printed, and the wall seconds it took.
 
     """
 
+    clock = time.perf_counter()
     try:
         done = subprocess.run(list_arg,
                               cwd            = dir_copy,
@@ -237,10 +374,14 @@ def _run(list_arg: list[str],
     except subprocess.TimeoutExpired as error:
         printed = ''.join(each.decode(errors = 'replace') if isinstance(each, bytes) else each
                           for each in (error.stdout, error.stderr) if each)
-        return (False, printed + 'Stopped after {seconds:g} s, the time limit of a '
-                                 'stage.\n'.format(seconds = seconds))
+        return (OUTCOME_STOP,
+                printed + 'Stopped after {seconds:g} s, the time limit of a '
+                          'stage.\n'.format(seconds = seconds),
+                time.perf_counter() - clock)
 
-    return (done.returncode == 0, done.stdout + done.stderr)
+    return (OUTCOME_OK if done.returncode == 0 else OUTCOME_FAIL,
+            done.stdout + done.stderr,
+            time.perf_counter() - clock)
 
 
 # -----------------------------------------------------------------------------
