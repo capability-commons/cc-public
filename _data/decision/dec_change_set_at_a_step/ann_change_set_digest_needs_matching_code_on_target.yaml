@@ -1,0 +1,63 @@
+id_self:                ann_change_set_digest_needs_matching_code_on_target
+guid_self:              ann_de9fbab4d4fd4a6e90613e9947402878
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph digest computed alike in Python and C++
+brief:                  |
+                        The cctool-first option moves the shared
+                        contract from the rules to the graph's digest:
+                        Python and C++ must reduce the running graph
+                        to the same canonical form, every field added
+                        to the model must be added to both, and the
+                        target needs a hash function, written in house
+                        or taken from a library. The code is small and
+                        fixed, so the cost is modest.
+description:            |
+                        Sources: The runtime applies only a change set
+                        carrying the digest of the graph it was
+                        checked against
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                        lines 12-18). Graph items are YAML read with
+                        ruamel.yaml in Python
+                        (_data/decision/dec_first_engine/ann_graph_loading_runtime_needs_a_parser.yaml,
+                        which cites pyproject.toml line 48;
+                        ruamel.yaml is now at line 49). ASSUMPTION:
+                        the runtime holds the graph in its own C++
+                        form, so the digest must come from a canonical
+                        serialization both sides define. ASSUMPTION: a
+                        digest such as SHA-256 is short to implement
+                        and public-domain implementations exist.
+                        Strength: weak to moderate; one parity test
+                        over sample graphs can hold the two reductions
+                        together, and the point weakens if the
+                        generator emits the digest with the graph and
+                        the runtime only carries it forward per
+                        applied change set.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

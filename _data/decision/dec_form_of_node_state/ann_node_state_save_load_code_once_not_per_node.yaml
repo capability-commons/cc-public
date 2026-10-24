@@ -1,0 +1,150 @@
+id_self:                ann_node_state_save_load_code_once_not_per_node
+guid_self:              ann_190af73942214fee9089b92f15fb2ba6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Save and load code written once by the engine, not once per node
+brief:                  |
+                        When state is typed data or a value on a
+                        feedback edge, the engine knows its layout, so
+                        one engine routine copies, saves, restores and
+                        resets the state of every node. With opaque
+                        state, each stateful node type carries its own
+                        save and load hooks, so the count of byte
+                        formats, deserializers, serialization
+                        libraries and recovery paths grows with the
+                        number of node types, and the engine can check
+                        none of them.
+description:            |
+                        Sources: typed state is held by the engine,
+                        which can copy, inspect and upgrade it
+                        (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                        lines 12-16); feedback-edge state is an output
+                        typed like any other port
+                        (opt_state_on_a_feedback_edge.yaml lines
+                        12-16); opaque state lives in the node's C++
+                        object with hooks to save it to bytes and load
+                        it (opt_state_opaque_with_hooks.yaml lines
+                        12-16). In the Stableflow drafts state is one
+                        block the framework allocates so it can
+                        snapshot or zero it
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 47-48), coroutines were rejected because
+                        they hide their frame so state could not be
+                        inspected, snapshotted or reset
+                        deterministically (same file, lines 92-94),
+                        state stays explicit, fixed size and
+                        snapshottable (lines 159-160), and everything
+                        on an edge is standard-layout, trivially
+                        copyable and fixed size
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 84-86). Feedback buffers are static
+                        storage in the frozen schedule
+                        (execution_levels.md line 37). State blocks in
+                        mapped files would let a crashed process
+                        resume and serve as a post-mortem record of
+                        what each node held (execution_levels.md lines
+                        149-151). Consequences per concern.
+                        Reliability: recovery needs a whole copy taken
+                        at a step boundary, which the engine can
+                        double-buffer and restore the same way for
+                        every node, while hooks run at the moment the
+                        node may be faulty and an object may hold heap
+                        pointers that do not survive a restart.
+                        Safety: reset to a known value, a copy to go
+                        back after a failed change, and a record of
+                        what each node held after a fault all rest on
+                        hooks the engine cannot check under the opaque
+                        form. Security: a saved or upgraded state is
+                        read back by one engine routine instead of one
+                        loader per node, each a deserializer a
+                        tampered state file can attack (CWE-502,
+                        https://cwe.mitre.org/data/definitions/502.html).
+                        Dependency risk: the engine's copy code needs
+                        no serialization library, while each node
+                        author may bring one, and the concern counts
+                        direct and indirect dependencies
+                        (_data/register/reg_concern.yaml lines
+                        702-704), each needing a license check
+                        (_data/decision/dec_license/ann_permissive_dependencies_fit_any_license.yaml,
+                        description). Flexibility: whether a node's
+                        bytes survive a change of compiler,
+                        architecture or host is settled node by node,
+                        so a new platform means checking every node's
+                        hooks, and the concern measures the effort to
+                        install on a new platform (reg_concern.yaml
+                        lines 354-356). Simplicity, a non-driver here:
+                        the count of upgrade mechanisms is one instead
+                        of one per stateful node type
+                        (reg_concern.yaml lines 488-490). Assumptions:
+                        node authors would reach for libraries such as
+                        Boost.Serialization or cereal rather than
+                        write bytes by hand; a C++ object may hold
+                        pointers or padding whose bytes differ between
+                        builds. This rests in part on the form of the
+                        data dictionary: under an external schema
+                        language, upgrading typed state is that
+                        library's code. Erlang/OTP shows the opaque
+                        form works in practice, with a code_change
+                        callback written per module
+                        (https://www.erlang.org/doc/system/appup_cookbook.html).
+                        Strength: strong, and stronger at ten times
+                        the nodes, since the per-node code multiplies
+                        while the engine's routine stays one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_opaque_with_hooks
+    guid_target:        opt_5b9ea0eb14084527ad3a2fae46485523
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

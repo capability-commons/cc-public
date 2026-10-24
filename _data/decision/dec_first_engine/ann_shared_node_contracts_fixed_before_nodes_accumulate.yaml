@@ -1,0 +1,84 @@
+id_self:                ann_shared_node_contracts_fixed_before_nodes_accumulate
+guid_self:              ann_3b584954765f492d9ac4a921677210ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared contracts fixed before node code accumulates
+brief:                  |
+                        The new option fixes one node interface, one
+                        edge buffer, one state form and one step
+                        protocol from the first version. A change to
+                        any of these after nodes exist touches every
+                        node, and the frozen option as recorded does
+                        not commit to the state form and step protocol
+                        that swap, upgrade and rewire need, so they
+                        could be found wanting after nodes are
+                        written, although the drafts already sketch a
+                        shared state block.
+description:            |
+                        Sources:
+                        - The option shares one node interface, one
+                          form of edge buffer, one form of node state
+                          and one step protocol from the first
+                          version.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 13-21)
+                        - "it is VERY hard to change the engine once
+                          it's built and you've started using it - so
+                          it's best to get the shape right early on."
+                          (owner's statement, 2026-10-24 12:33Z)
+                        - Every component exports the same C-linkage
+                          reset, step and finalize functions, and the
+                          framework owns all memory.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 21-39)
+                        - A live swap needs node state the engine can
+                          upgrade in place. (owner's statement,
+                          2026-10-24 12:33Z) The frozen schedule's
+                          state is static storage that only the
+                          generated code addresses.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 35-40) The frozen option fixes a
+                          schedule per OS process and says nothing of
+                          state form or step protocol.
+                          (_data/decision/dec_first_engine/opt_frozen_schedule_generated.yaml
+                          lines 11-15) The drafts already make state a
+                          single block the framework can snapshot or
+                          zero.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 47-48) Strength: strong, and stronger
+                          with scale: at ten times the nodes a late
+                          change to a shared contract costs ten times
+                          more, while fixing it early costs the same.
+                          Distinct from the existing argument that a
+                          frozen island can be loaded later into a
+                          dynamic graph, which is about composing
+                          islands, not about the contracts inside each
+                          node.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

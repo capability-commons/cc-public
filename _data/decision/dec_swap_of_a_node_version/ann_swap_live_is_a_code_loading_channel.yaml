@@ -1,0 +1,86 @@
+id_self:                ann_swap_live_is_a_code_loading_channel
+guid_self:              ann_35c65561385a485c91127307c814dbd5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Live swap as a channel for new code into a running process
+brief:                  |
+                        A live swap brings new code into a running
+                        process. A system with security requirements
+                        must be able to have the engine verify that
+                        code's identity, by a signature or a hash
+                        pinned in the change set, before it is loaded,
+                        and refuse a version older than the one
+                        running, so a swap cannot install malicious
+                        code or roll back to a known flaw. Without a
+                        live swap, new code arrives only by the
+                        platform's normal install and restart, where
+                        those controls already exist.
+description:            |
+                        Sources: the swap is part of a change set and
+                        runs version n+1 in place of n at the start of
+                        a step
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); without a live swap a new
+                        version takes effect only when its OS process
+                        restarts with a new configuration
+                        (opt_no_live_swap.yaml lines 12-15); the
+                        dynamic host loads libraries named in
+                        configuration
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        line 65). Erlang/OTP release handling installs
+                        upgrades through relup and code_change, and
+                        its documentation describes no signing of
+                        release packages
+                        (https://www.erlang.org/doc/system/release_handling).
+                        Android Verified Boot stores a rollback index
+                        in tamper-evident storage and refuses images
+                        with a lower index
+                        (https://android.googlesource.com/platform/external/avb/+/refs/heads/android15-tests-dev/README.md).
+                        The owner wants the swap supported (owner's
+                        statement, 2026-10-24 12:33Z) and the engine
+                        to let the systems it runs meet their security
+                        requirements (2026-10-22T20:19,
+                        _sources/context.md line 25). Assumption: on a
+                        target without a dynamic loader, version n+1
+                        is already linked into the image, which
+                        removes run-time code loading but not the need
+                        to authorize the swap. This rests on the
+                        first-engine decision and on how a change set
+                        is applied at a step, which would carry the
+                        verification. Strength: strong; every
+                        swappable node is a place new code can enter,
+                        so the risk grows with the number of dynamic
+                        nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_live_swap
+    guid_target:        opt_be2339eb63b448ba8ca14c908c3ab9af
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

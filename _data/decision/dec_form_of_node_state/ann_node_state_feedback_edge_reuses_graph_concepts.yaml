@@ -1,0 +1,83 @@
+id_self:                ann_node_state_feedback_edge_reuses_graph_concepts
+guid_self:              ann_f34e68ec8d8740bea6131f83bc285bc2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State carried on an edge the model already has
+brief:                  |
+                        State on a feedback edge needs no new
+                        mechanism: the model already has feedback
+                        edges, the checker already holds the two ends
+                        of an edge to one type, and the tokens are
+                        recorded like any others, which helps a
+                        newcomer. For simplicity, state held as typed
+                        data adds a second way to carry a value to the
+                        next step beside the feedback edge.
+description:            |
+                        Sources: a dataflow edge may be feedback,
+                        whose value comes from the invocation before
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        33-35 and 193-203), and a check requires one
+                        to close every loop (src/cctool/check/check.lp
+                        lines 3285-3286); the port type mismatch check
+                        holds the two ends of every edge to one stated
+                        type (check.lp lines 3229-3233); the framework
+                        fills feedback buffers and primes them on
+                        reset
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44). The typed option has the engine
+                        hold state and hand it to the node at each
+                        step
+                        (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                        lines 12-16). Simplicity, a non-driver here,
+                        counts jobs done by more than one mechanism
+                        (_data/register/reg_concern.yaml lines
+                        488-490). Assumption: tokens on a feedback
+                        edge are recorded like those on any other
+                        edge. Limits: what a feedback edge carries at
+                        its first invocation is not stated in the
+                        graph
+                        (_data/decision/dec_edge_policy/ann_first_value_of_feedback_edge_unstated.yaml);
+                        and under actor semantics there is no step, so
+                        "the invocation before" would have to read as
+                        the message before (assumption). Strength:
+                        moderate. The duplicate job is real at any
+                        scale; the feedback form must still cover
+                        actors.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

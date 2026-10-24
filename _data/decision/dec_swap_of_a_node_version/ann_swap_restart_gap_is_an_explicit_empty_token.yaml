@@ -1,0 +1,53 @@
+id_self:                ann_swap_restart_gap_is_an_explicit_empty_token
+guid_self:              ann_a8cb9de2c7774e638bd02da88ef753ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Explicit empty outputs while a node is replaced
+brief:                  |
+                        Holding a node's outputs empty while it
+                        restarts makes the gap visible to every
+                        downstream node as an explicit empty token,
+                        which each can handle by the availability rule
+                        its interface states. That is a defined,
+                        testable degraded state, provided the rest of
+                        the graph is tested for it.
+description:            |
+                        Sources: the restart option holds the node's
+                        outputs empty while it restarts
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16); an interface can state what its
+                        step does when an input carries no value
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 773-777); loss and delay become explicit
+                        empty tokens at a gateway, and a segment can
+                        be tested for any pattern of arrival and loss
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-197). Strength: weak to moderate; it
+                        holds at scale only if downstream nodes state
+                        their availability rule. It does not bear on
+                        the swap at a step, which has no gap unless it
+                        goes back, nor on no live swap, where the
+                        whole process restarts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

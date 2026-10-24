@@ -1,0 +1,81 @@
+id_self:                ann_spread_worker_pool_needs_threads_and_a_scheduler
+guid_self:              ann_8dc965c154d8412096a4caa80f51a981
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Worker pool that needs OS threads and likely a scheduling library
+brief:                  |
+                        Choosing placement at run time from ready
+                        nodes is what libraries such as oneTBB's flow
+                        graph or Taskflow provide, so the pool is the
+                        option most likely to take one, and it needs
+                        OS threads on every target, which rules out
+                        targets with no OS. Per-core schedules from
+                        the generator, or pipeline stages, need one
+                        thread of control per core and atomics, but no
+                        scheduler.
+description:            |
+                        Sources: The worker-pool option runs every
+                        ready node on a pool of worker threads, with
+                        placement chosen at run time
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_ready_nodes_on_a_worker_pool.yaml
+                        lines 12-17). The generator option writes one
+                        schedule per core with the waits between them
+                        (opt_cores_assigned_by_the_generator.yaml,
+                        lines 12-17). std::atomic is in C++17
+                        freestanding and thread is not
+                        (https://en.cppreference.com/w/cpp/freestanding).
+                        Pinning a thread to a core on Linux uses
+                        pthread_setaffinity_np, a nonportable GNU
+                        extension
+                        (https://man7.org/linux/man-pages/man3/pthread_setaffinity_np.3.html).
+                        Taskflow v4 needs C++20
+                        (https://github.com/taskflow/taskflow); oneTBB
+                        is Apache-2.0
+                        (https://github.com/uxlfoundation/oneTBB). The
+                        owner wants the engine to reach systems with
+                        no OS (owner's statement, 2026-10-24 13:06Z).
+                        ASSUMPTION: waits between per-core schedules
+                        can be built on atomics alone. Strength:
+                        moderate; it does not grow with nodes, but it
+                        decides whether a scheduling library enters
+                        the engine at all. The generator option still
+                        runs its dynamic subgraph on a pool, which
+                        needs threads.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_steps_pipelined_across_cores
+    guid_target:        opt_86fd3ca3ec4a40bdb1c0a5d55489b898
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

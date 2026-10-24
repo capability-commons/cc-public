@@ -1,0 +1,64 @@
+id_self:                ann_replay_needs_old_node_versions_kept_buildable
+guid_self:              ann_d961bd6012d24446968a64c63879ba4b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every node version and its libraries kept buildable for replay
+brief:                  |
+                        A log replays a run only with the same code
+                        that ran: every node version swapped in during
+                        it, and the third-party libraries those
+                        versions linked. Replay of live changes
+                        therefore turns the withdrawal of an old
+                        library or package build into a loss of
+                        replay, for as long as runs must stay
+                        replayable. Replay of the static part needs
+                        only the one static build that ran, so it is
+                        less exposed.
+description:            |
+                        Sources: the log records the step at which
+                        each change set and swap took effect, and
+                        replay gives the same tokens wherever nodes
+                        are deterministic
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); a swap replaces version n with
+                        n+1 in a running system
+                        (_data/decision/dec_swap_of_a_node_version/dec_swap_of_a_node_version.yaml,
+                        brief). Patrol builds against GStreamer and
+                        CUDA on the Orin, and its results hold OpenCV
+                        types (_sources/cc-patrol-notes/plan.md lines
+                        147-149 and 156-157). The environment is
+                        locked in pixi.lock and only the owner can
+                        relock (_sources/context.md line 30).
+                        Assumption: package channels keep old builds
+                        available but give no guarantee that they
+                        will. Strength: strong; the archive to keep
+                        grows with the number of node versions and
+                        runs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

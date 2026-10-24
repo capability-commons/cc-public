@@ -1,0 +1,77 @@
+id_self:                ann_swap_kept_old_state_gives_a_way_back
+guid_self:              ann_6a247bf83efc42c79b1d56acfdfa9ef3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Way back to version n after a failed first step
+brief:                  |
+                        Keeping version n's state until version n+1
+                        completes a step gives a defined fallback: if
+                        the new version fails its first step, the
+                        engine can run version n again on its own
+                        unchanged state. A restart from saved state
+                        states no way back once the old state is
+                        replaced, so a failing n+1 leaves the node out
+                        of service.
+description:            |
+                        Sources: the swap at a step keeps the old
+                        state until the new version completes a step,
+                        so it can go back
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); the restart option saves state,
+                        stops the node, starts n+1 and loads the
+                        upgraded state
+                        (opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16). Erlang/OTP release handling
+                        suspends processes, calls code_change to
+                        convert their state, and if installation fails
+                        reboots the system with the old release
+                        (https://www.erlang.org/doc/system/release_handling.html).
+                        Changes happen only between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). Assumption: completing a step
+                        detects a version that signals failure or
+                        throws
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 95-96), not one that completes with
+                        wrong outputs, so going back covers the first
+                        case only. This rests on the form of node
+                        state (the engine must hold a copy of the
+                        state, which opaque state makes harder) and on
+                        the form of the data dictionary (the mapping
+                        that produces the new state). Strength:
+                        moderate to strong; a per-swap mechanism, so
+                        it holds at ten times the nodes, but it covers
+                        only failures the engine can see.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

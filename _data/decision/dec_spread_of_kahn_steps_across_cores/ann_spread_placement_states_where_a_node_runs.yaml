@@ -1,0 +1,83 @@
+id_self:                ann_spread_placement_states_where_a_node_runs
+guid_self:              ann_8f4698fa81c74480b4ca8b093a3c2864
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Placement the configuration states, where a node must run
+brief:                  |
+                        Some nodes must run where their hardware is,
+                        Patrol runs on two hosts in one configuration,
+                        and in Patrol the engine shares one OS process
+                        and six cores with GStreamer's own threads.
+                        Placement in declared execution units says
+                        where each node runs and how many threads of
+                        control the engine uses, so other products can
+                        be planned around it; a worker pool chooses
+                        placement at run time and leaves both out of
+                        the configuration.
+description:            |
+                        Sources: The headless Patrol configuration
+                        runs on an Orin host and a console host, and
+                        its mixed variant moves nodes to another host
+                        and process (_sources/cc-patrol-notes/plan.md
+                        lines 126-145;
+                        _sources/cc-patrol-notes/variants.md lines
+                        57-67). The graph places nodes on OS processes
+                        and processes on hosts, and the unplaced check
+                        fails a node whose process or host the graph
+                        does not list
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        37-40 and 112-142; src/cctool/check/check.lp
+                        lines 3383-3399). Patrol's GStreamer and
+                        engine nodes share one OS process (the Patrol
+                        draft graph in _sources/cc-patrol-notes/draft,
+                        lines 28-31, 41-42, 213-214), the Orin Nano
+                        has six A78 cores
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 72-73), and some GStreamer elements
+                        start their own streaming threads
+                        (https://gstreamer.freedesktop.org/documentation/application-development/advanced/threads.html).
+                        The worker-pool option has placement "chosen
+                        at run time and not stated in the
+                        configuration"
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_ready_nodes_on_a_worker_pool.yaml,
+                        brief). Some nodes may hold hardware that
+                        cannot be freed (owner's statement, 2026-10-24
+                        12:49Z, answer 1). ASSUMPTION: a worker pool
+                        is by default sized to the hardware threads of
+                        the machine. Strength: strong for functional
+                        suitability, growing with the number of hosts;
+                        moderate for compatibility, weak on a host the
+                        engine has to itself.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placement_on_hosts_and_execution_units
+    guid_target:        opt_bab4855931d44ea68de31f0b2bb09056
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

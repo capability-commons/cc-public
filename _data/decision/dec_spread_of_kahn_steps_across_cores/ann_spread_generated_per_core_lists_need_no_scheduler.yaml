@@ -1,0 +1,51 @@
+id_self:                ann_spread_generated_per_core_lists_need_no_scheduler
+guid_self:              ann_8d91d7d1288a419ab0c5516493fbf25b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-core call lists from the generator with no run-time scheduler
+brief:                  |
+                        Per-core schedules written at build time need
+                        no scheduler while running and keep each
+                        core's list of direct calls open to the
+                        optimizer. The balance is only as good as the
+                        stated costs.
+description:            |
+                        Sources: The generator divides the static
+                        subgraph among cores from the cost stated for
+                        each node and writes one schedule per core
+                        with the waits between them
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml
+                        lines 13-17). Generated straight-line calls
+                        let the optimizer inline small components
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 54-57). ARINC 653 uses "a round-robin,
+                        fixed schedule that repeats a Major Time
+                        Frame"
+                        (https://en.wikipedia.org/wiki/ARINC_653).
+                        ASSUMPTION: Patrol's detector cost varies from
+                        frame to frame, so a fixed split can leave
+                        cores idle. Strength: moderate; it weakens
+                        where node costs vary widely.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

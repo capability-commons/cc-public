@@ -1,0 +1,65 @@
+id_self:                ann_spread_unit_crossing_timing_unstated
+guid_self:              ann_5341d0bb7f1e49acb42f74b67e0b2c1a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unstated timing of a crossing between execution units
+brief:                  |
+                        The placement option says values cross between
+                        execution units "at the boundaries of a step".
+                        If that means a value written in one step is
+                        read in the next, two nodes that run in
+                        parallel within one step today must either
+                        share a unit and run in series or sit in two
+                        units with a step of latency between them, and
+                        placement changes the tokens; the option
+                        should state that a crossing lands in the same
+                        step.
+description:            |
+                        Sources: Each execution unit runs its nodes in
+                        a fixed order on one thread of control; work
+                        runs in parallel between units, and values
+                        cross between them at the boundaries of a step
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                        lines 13-24). Patrol's appearance runs beside
+                        the detector on its own thread, "two nodes
+                        firing in parallel in one step"
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 138-142). Kahn processes give the same
+                        tokens whatever the timing
+                        (https://en.wikipedia.org/wiki/Kahn_process_networks).
+                        ASSUMPTION: "at the boundaries of a step"
+                        means a value written in step k in one unit is
+                        read in step k+1 in another. Strength:
+                        moderate; it holds at ten times the nodes and
+                        falls away if the option is read to allow
+                        same-step crossing with a wait. The option
+                        still needs no scheduler while running and
+                        works without an OS.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_placement_on_hosts_and_execution_units
+    guid_target:        opt_bab4855931d44ea68de31f0b2bb09056
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

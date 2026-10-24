@@ -1,0 +1,53 @@
+id_self:                ann_node_state_opaque_save_cost_inside_swap_step
+guid_self:              ann_29db007c7dce43d49afd9682dd15faba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of a save and load through bytes at a move or upgrade
+brief:                  |
+                        Opaque state is paid for at each move or
+                        upgrade: the node saves its state to bytes and
+                        loads it again, inside the step at which the
+                        change happens, which costs at least a copy
+                        plus encoding. A field mapping over a typed
+                        block of known size is a bounded copy.
+description:            |
+                        Sources: opaque state has hooks to save it to
+                        bytes and load it, called when the engine
+                        moves or upgrades the node
+                        (_data/decision/dec_form_of_node_state/opt_state_opaque_with_hooks.yaml
+                        lines 12-16); typed state lets the engine
+                        upgrade it (opt_state_as_typed_data.yaml lines
+                        12-16); the swap at a step upgrades state at
+                        the start of a step
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19), so the save and load would fall
+                        inside that step. Assumption: a save and load
+                        through bytes costs at least a copy of the
+                        state plus encoding, more than a field mapping
+                        over a typed block. Strength: moderate; it is
+                        paid per swap, not per step, so it does not
+                        grow with node count, but it grows with state
+                        size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_opaque_with_hooks
+    guid_target:        opt_5b9ea0eb14084527ad3a2fae46485523
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

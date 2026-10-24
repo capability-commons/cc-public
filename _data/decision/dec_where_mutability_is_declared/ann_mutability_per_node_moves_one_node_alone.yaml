@@ -1,0 +1,115 @@
+id_self:                ann_mutability_per_node_moves_one_node_alone
+guid_self:              ann_ce26d8a55cc34aa79161b67efa04246f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Moving one node between subgraphs without moving its process
+brief:                  |
+                        When each configured node states static or
+                        dynamic, moving a node between subgraphs is
+                        one field in the configuration, and its code,
+                        its interface and its process placement are
+                        untouched, as the owner asked. When the OS
+                        process sets it, the process gets two jobs,
+                        where nodes run and whether they may change,
+                        so moving one node means moving it to another
+                        process and changing the transport of every
+                        edge that then crosses processes. This rests
+                        in part on the placement decision, which may
+                        replace OS processes with execution units.
+description:            |
+                        Sources:
+                        - Static or dynamic "is a property of how it's
+                          configured", and the same code should run
+                          either way. (owner's statement, 2026-10-24
+                          12:49Z, answer 1)
+                        - The owner wants placement to cover threads,
+                          separate processes and embedded systems with
+                          no OS. (owner's statement, 2026-10-24
+                          13:06Z)
+                        - A dataflow node names its OS process by a
+                          key. (_data/schema/sch_dataflow_node.yaml
+                          lines 56-62) An OS process is where dataflow
+                          nodes run in order.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          37-40, 77-85)
+                        - Under the per-process option, a process is
+                          static or dynamic as a whole and every node
+                          takes that from it.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_os_process.yaml
+                          lines 11-14)
+                        - Within one process an edge is a shared
+                          buffer; between processes its transport is
+                          still open.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 120-128) Moving a node to another
+                          process binds the edges that now cross to a
+                          transport.
+                          (_sources/cc-patrol-notes/variants.md
+                          line 66)
+                        - Precedent for the per-process option: a
+                          frozen island always runs within a single OS
+                          process.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 80) Values cross between execution
+                          units at step boundaries in one placement
+                          option, which the per-process grouping would
+                          reuse.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          lines 21-23)
+                        - Naming note for whichever option wins: the
+                          interface schema already uses "mutability",
+                          with values immutable and mutable, for
+                          whether a callee may change what a parameter
+                          refers to and whether a caller may write an
+                          attribute.
+                          (_data/schema/sch_interface_control_document.yaml
+                          lines 239-248 and 352-360) Strength: strong
+                          for maintainability, since under the
+                          per-process option the edges touched by one
+                          move grow with the node's fan-in and
+                          fan-out; moderate for functional suitability
+                          and simplicity, since the per-process option
+                          has a real precedent.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_os_process
+    guid_target:        opt_9274c44ab9a841d8bdd97238b1f7aaff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

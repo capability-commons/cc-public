@@ -1,0 +1,100 @@
+id_self:                ann_interface_limit_holds_node_that_cannot_free_hardware
+guid_self:              ann_c318e0d208074ed99e642c321cacac76
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static-only limit held on the interface
+brief:                  |
+                        A node that holds hardware it cannot free for
+                        the life of the system must be static, and
+                        that is a fact about its interface. Only the
+                        interface-limit option states it there, where
+                        a requirement can name it and one check covers
+                        every configuration that uses the node; under
+                        the other options a configuration that makes
+                        such a node dynamic is accepted, and a later
+                        change or swap would try to replace a node
+                        whose resources cannot be given back.
+description:            |
+                        Sources:
+                        - "I can imagine some specific circumstances
+                          around allocation of exotic hardware
+                          resources that cannot be freed for the
+                          lifetime of the system where a node might
+                          HAVE to be static - but I expect that to be
+                          rare." (owner's statement, 2026-10-24
+                          12:49Z, answer 1)
+                        - Only the dynamic subgraph supports nodes
+                          being added, moved or removed. (owner's
+                          statement, 2026-10-24 12:33Z)
+                        - The option fails a dynamic node of an
+                          interface that requires static nodes.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_node_with_interface_limit.yaml
+                          lines 11-18)
+                        - The checker already lets an interface
+                          constrain its nodes: an unfed input fails
+                          unless the interface states it optional.
+                          (src/cctool/check/check.lp lines 3184-3189;
+                          _data/schema/sch_interface_control_document.yaml
+                          lines 447-451)
+                        - The subject of a requirement must be a
+                          design entity; interface control documents
+                          and interface members play that role, and a
+                          dataflow node plays the implementation role.
+                          (_data/register/reg_relation.yaml lines
+                          562-567, 576-579;
+                          _data/register/reg_data_item_type.yaml lines
+                          1265-1266, 1288-1291, 1317-1318, 1364,
+                          1403-1404)
+                        - Cross-item checks are logic rules over
+                          extracted facts.
+                          (_data/decision/dec_checker_approach/ruling_checker_approach.yaml)
+                          Strength: moderate; the case is rare by the
+                          owner's words, but one statement on an
+                          interface covers every node that presents it
+                          and costs one rule however large the graph.
+                          The per-node field is the same in both
+                          per-node options, so the limit can be added
+                          later without touching existing graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_os_process
+    guid_target:        opt_9274c44ab9a841d8bdd97238b1f7aaff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

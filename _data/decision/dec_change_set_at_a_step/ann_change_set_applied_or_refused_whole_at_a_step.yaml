@@ -1,0 +1,75 @@
+id_self:                ann_change_set_applied_or_refused_whole_at_a_step
+guid_self:              ann_a2588285425940069aa1567fcb1ea859
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change set applied or refused whole at the start of a step
+brief:                  |
+                        A change set must be applied whole at the
+                        start of a step, and a refused one must leave
+                        the graph exactly as it was, so a step never
+                        sees a part-applied change and the fallback is
+                        the last graph that passed. Only the runtime
+                        option says so; the other two should state it
+                        too.
+description:            |
+                        Sources: The owner: nodes and edges change "at
+                        the start of each dataflow-synchronous 'step'"
+                        (owner's statement, 2026-10-24 12:33Z). In
+                        Patrol, "A change from the panel between those
+                        reads gives one frame two settings"
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 62-66), and the drafted analysis
+                        interface applies commands "before a step,
+                        never during it" (the interface table script
+                        in _sources/cc-patrol-notes/draft/tools, line
+                        111). The runtime option is "applied whole at
+                        the start of a step ... A change set that
+                        fails is refused whole"
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml,
+                        brief); the other two briefs do not state it.
+                        Start, stop, restart and rewire happen only
+                        between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). The register asks what state a
+                        design falls back to when it fails
+                        (_data/register/reg_concern.yaml line 438).
+                        Strength: strong and scale-free, though easy
+                        to add to the other options by wording.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

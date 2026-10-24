@@ -1,0 +1,60 @@
+id_self:                ann_change_set_sender_and_its_record_unstated
+guid_self:              ann_eeee72cbbccd4fb18de4f86f793fef00
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Sender of a change set unstated in every option
+brief:                  |
+                        None of the three options says who may send a
+                        change set. The engine should let a system
+                        require an authenticated sender and record
+                        which sender's change took effect at which
+                        step.
+description:            |
+                        Sources: The three option briefs state how a
+                        change set is checked but not who sends it
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml,
+                        opt_change_set_checked_by_the_runtime.yaml and
+                        opt_change_set_checked_by_both.yaml, briefs).
+                        The drafts leave the configure call open
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 231-232). The security concern asks
+                        whether every action can be traced to whoever
+                        took it (_data/register/reg_concern.yaml lines
+                        163-166). Strength: strong; it does not depend
+                        on scale. Of the three, checking in both
+                        places comes nearest, since it keeps cctool's
+                        full checks before sending and the runtime's
+                        checks at the point of use.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

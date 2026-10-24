@@ -1,0 +1,84 @@
+id_self:                ann_schema_language_libraries_on_every_target
+guid_self:              ann_0711fd86e28e4b0e8b1014ba7c35d001
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema-language libraries and compilers on every target
+brief:                  |
+                        If the generator turns each dictionary type
+                        into a plain C++ struct, a target needs only a
+                        C++17 compiler. An external schema language
+                        brings its compiler into every build and
+                        possibly its library onto the target, Avro's
+                        C++ library needing Boost and fmt, and since
+                        neither Avro nor FlatBuffers has a general
+                        conversion mechanism, the owner's field
+                        conversions would still be our own code on
+                        top.
+description:            |
+                        Sources:
+                        - The generator can emit the C++ struct and
+                          its dtype from one spec.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 95-96) C++17 is supported by every
+                          toolchain likely to be met, including nvcc.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 155-158)
+                        - Avro C++ "requires boost headers, and the
+                          boost regex library"
+                          (https://apache.googlesource.com/avro/+/refs/tags/release-1.10.0/lang/c++/README);
+                          Avro C++ 1.12 builds against several Boost
+                          components and fetches fmt
+                          (https://patchwork.yoctoproject.org/project/oe/patch/20250707225407.1558421-2-alperyasinak1@gmail.com).
+                        - FlatBuffers is Apache-2.0 and generates code
+                          with flatc; its evolution rules describe no
+                          conversion mechanism, only flatc --conform
+                          to check that a schema evolves.
+                          (https://github.com/google/flatbuffers;
+                          https://flatbuffers.dev/evolution/)
+                        - Dictionary items are data items checked by
+                          cctool with its present dependencies.
+                          (pyproject.toml lines 43-49) ASSUMPTION:
+                          cctool would need a Python package for the
+                          chosen schema language to check the named
+                          schemas; FlatBuffers' generated readers need
+                          a small header-only runtime, which ports
+                          more easily than Avro's. Strength: moderate;
+                          the libraries are permissive and maintained,
+                          but the count and the build tool stay with
+                          every target. Dependency risk and
+                          flexibility do not drive the dataflow model;
+                          kept as a non-driver point that no driver
+                          makes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

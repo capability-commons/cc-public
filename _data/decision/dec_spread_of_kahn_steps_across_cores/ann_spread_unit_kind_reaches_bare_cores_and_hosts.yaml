@@ -1,0 +1,68 @@
+id_self:                ann_spread_unit_kind_reaches_bare_cores_and_hosts
+guid_self:              ann_baee9511a6144d14b49110bd7e6f844a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Execution unit that may be a process, a thread or a bare core
+brief:                  |
+                        Because an execution unit may be an OS
+                        process, a thread or a core with no OS, one
+                        graph can be placed on a desktop, a Linux
+                        board or a bare core by editing its placement
+                        only. Values cross only between units at step
+                        boundaries, so a transport such as ZeroMQ or a
+                        shared-memory queue is needed only by units
+                        that cross a process or host, and a bare core
+                        needs neither. The schema today requires a
+                        hostname, so it needs widening.
+description:            |
+                        Sources: An execution unit may be an OS
+                        process, a thread or a core with no OS, and
+                        values cross between units at step boundaries
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                        lines 11-24). Within one process edges are
+                        plain shared buffers; between processes or
+                        hosts the transport is ZeroMQ or a
+                        shared-memory queue, still open
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 120-128). A host requires a hostname and
+                        an OS process requires a host
+                        (_data/schema/sch_dataflow_graph.yaml lines
+                        112-142). The owner asked for the Stableflow
+                        form, widened to threads and to systems with
+                        no OS (owner's statement, 2026-10-24 13:06Z).
+                        Patrol's configurations differ in hosts, OS
+                        processes and the edges that cross hosts
+                        (_sources/cc-patrol-notes/plan.md lines
+                        126-135). libzmq is MPL-2.0 since 4.3.5
+                        (https://newreleases.io/project/github/zeromq/libzmq/release/v4.3.5).
+                        Strength: strong; placement is one entry per
+                        node and unit, and the transport stays at unit
+                        boundaries at ten times the nodes and systems.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placement_on_hosts_and_execution_units
+    guid_target:        opt_bab4855931d44ea68de31f0b2bb09056
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

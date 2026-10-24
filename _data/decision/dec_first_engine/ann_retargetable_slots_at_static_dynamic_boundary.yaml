@@ -1,0 +1,66 @@
+id_self:                ann_retargetable_slots_at_static_dynamic_boundary
+guid_self:              ann_ccafebb7597640d5b499b06639447c2d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Retargetable slots at the static boundary
+brief:                  |
+                        A static input fed by a dynamic node must read
+                        through a slot that a change can repoint, so
+                        it cannot be a link-time constant address, and
+                        the optimizer loses that fold at each boundary
+                        edge. The shared buffer form and step protocol
+                        may also put indirections into the static part
+                        that a frozen-only engine would not have. How
+                        large the cost is rests on the decisions on
+                        crossing between the subgraphs and on the form
+                        of node state.
+description:            |
+                        Sources:
+                        - In a frozen schedule each input slot is a
+                          static const array entry, a link-time
+                          constant address.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 38)
+                        - A dynamic rewire is a pointer swap in a slot
+                          array.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 70-71)
+                        - The option requires one form of edge buffer,
+                          one form of node state and one step protocol
+                          for both parts.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 16-21)
+                        - ASSUMPTION: a slot that may be repointed at
+                          run time is read through a pointer load the
+                          compiler cannot fold away. Strength:
+                          moderate; the cost grows with the number of
+                          boundary edges, not with the number of
+                          static nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

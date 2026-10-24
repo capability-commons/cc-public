@@ -1,0 +1,76 @@
+id_self:                ann_transport_library_kept_inside_gateway_nodes
+guid_self:              ann_e598598d6f3e4838a9851dc8e064206b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport library kept at one seam in gateway nodes
+brief:                  |
+                        Where actors are reached across processes or
+                        hosts, a transport library such as ZeroMQ is
+                        needed. Gateway nodes keep it inside the nodes
+                        at the seam, as the drafts already decided for
+                        pub-sub, so replacing it touches only them; a
+                        crossing policy on the edge puts the crossing,
+                        and any transport behind it, into the engine
+                        core. This matters only if the decisions on
+                        how actors are run and how Kahn steps are
+                        spread across cores let a crossing leave the
+                        process.
+description:            |
+                        Sources: functional components never access
+                        pub-sub directly; only gateway nodes cross the
+                        boundary
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 184-188 and 226-227, decided
+                        2026-10-16). Between machines the transport is
+                        "very likely ZeroMQ", between processes on one
+                        host ZeroMQ or a shared-memory queue (same
+                        file, lines 120-128); Patrol needs cross-host
+                        edges (_sources/cc-patrol-notes/plan.md lines
+                        168-171). libzmq was relicensed from LGPL-3.0+
+                        to MPL-2.0 in 4.3.5
+                        (https://newreleases.io/project/github/zeromq/libzmq/release/v4.3.5),
+                        and MPL-2.0 copyleft applies to files
+                        containing MPL code
+                        (https://www.mozilla.org/en-US/MPL/2.0/FAQ/);
+                        cc-public is Apache-2.0
+                        (_data/decision/dec_license/ruling_license.yaml).
+                        The edge option makes the engine turn messages
+                        into tokens by a declared policy
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 11-18). If actors and Kahn steps always
+                        share a process, no cross-process transport
+                        library is needed at this crossing, though
+                        actors may still need a message queue (the
+                        annotation on in-process Kahn steps needing no
+                        transport, under the decision on first
+                        semantics). Strength: moderate; the seam does
+                        not grow with the nodes, but matters only
+                        where the crossing leaves the process.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

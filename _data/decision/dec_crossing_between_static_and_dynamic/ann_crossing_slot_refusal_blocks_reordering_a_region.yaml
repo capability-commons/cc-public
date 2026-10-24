@@ -1,0 +1,44 @@
+id_self:                ann_crossing_slot_refusal_blocks_reordering_a_region
+guid_self:              ann_4ba0ec9ab177490d95870cfd3ad83bf1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal of a dynamic region at a new point in the static order
+brief:                  |
+                        The fixed-slot option refuses a change set
+                        that would need a dynamic region at another
+                        point in the static order, which is a
+                        reconfiguration a user could want and cannot
+                        have without a rebuild.
+description:            |
+                        Sources: The option refuses a change set that
+                        "would need a region to run at another point
+                        in the static order"
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml,
+                        brief). ASSUMPTION: the slot positions are
+                        fixed when the static schedule is generated,
+                        so a region that needs a new position needs a
+                        new build. Strength: moderate; the limit binds
+                        more often as the static subgraph grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

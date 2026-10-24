@@ -1,0 +1,60 @@
+id_self:                ann_actor_side_moved_by_replacing_gateways
+guid_self:              ann_a85c63be3202410697bad586521957c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actor side moved or retransported by replacing gateways
+brief:                  |
+                        With gateway nodes at the crossing, the actor
+                        side can be moved to another process or host,
+                        or its transport changed, by replacing gateway
+                        nodes only, as Stableflow does at a segment's
+                        edge. A crossing policy on the edge does the
+                        same work inside the engine, per policy. Both
+                        keep functional nodes unaware of placement,
+                        and the edge form adds no node per crossing.
+description:            |
+                        Sources: a gateway node buffers messages and
+                        offers them as tokens at each step
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_gateway_nodes_between_semantics.yaml
+                        lines 11-15); the edge policy declares how
+                        messages become a token
+                        (opt_crossing_policy_on_the_edge.yaml in the
+                        same folder, lines 11-18). Stableflow's
+                        gateway node keeps components topology-blind,
+                        and in simulation is replaced by a link model
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 182-195); the Python Stableflow runtime
+                        used the gateway pattern for ASGI servers
+                        (same file, lines 195-199). Strength: moderate
+                        for gateways, weaker for the edge policy. The
+                        gateway form adds a node per crossing, which
+                        grows with the number of crossings; the edge
+                        policy does not.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

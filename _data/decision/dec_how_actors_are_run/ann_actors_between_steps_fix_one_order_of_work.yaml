@@ -1,0 +1,113 @@
+id_self:                ann_actors_between_steps_fix_one_order_of_work
+guid_self:              ann_8c6fb4ec24ca4f068be304a760b64065
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One order of actor work relative to the steps
+brief:                  |
+                        Running actors between steps, each draining
+                        its waiting messages in the engine's order,
+                        fixes the order in which actors act relative
+                        to the steps, so one set of inputs gives one
+                        result, a fault seen once can be replayed and
+                        found, and a tested run stands as evidence. On
+                        a pool or on threads of their own that order
+                        depends on timing. How much this weighs rests
+                        on the decision on replay of a run with live
+                        changes, where a recorded message order could
+                        restore replay for the other two options at
+                        the cost of a log.
+description:            |
+                        Sources: between steps, actors run "in the
+                        gaps between Kahn steps, each draining the
+                        messages waiting for it, so a run can be
+                        replayed in the same order"
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 11-16); under the pool option actors run
+                        alongside the threads that run Kahn steps
+                        (opt_actors_on_a_shared_thread_pool.yaml in
+                        the same folder, lines 11-15); under the
+                        own-thread option each actor blocks on its
+                        mailbox (opt_actors_on_their_own_threads.yaml,
+                        lines 11-14). In the actor model there is no
+                        requirement that one message arrives before
+                        another
+                        (https://en.wikipedia.org/wiki/Actor_model).
+                        CAF assigns actors dynamically to worker
+                        threads with work stealing
+                        (https://actor-framework.readthedocs.io/en/latest/core/Scheduler.html).
+                        Patrol's analysis interface states bit-for-bit
+                        results for a given sequence of frame steps
+                        and commands
+                        (_sources/cc-patrol-notes/draft/tools/icd_table.py
+                        line 110). Kahn semantics matter most at the
+                        small scale, "where safety cases rest on
+                        simulation"
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 178-180). rr runs only one recorded
+                        thread at a time, since recording racing
+                        shared-memory access seems impractical with
+                        low overhead on stock hardware
+                        (https://ar5iv.labs.arxiv.org/html/1610.02144);
+                        "You record a failure once, then debug the
+                        recording, deterministically"
+                        (https://rr-project.org/). Mean time to
+                        recover is a measure of reliability
+                        (_data/register/reg_concern.yaml lines
+                        123-126). The replay decision has an option
+                        that records the messages each actor received
+                        in order
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 11-19). ASSUMPTION: actors, unlike Kahn
+                        processes, may give different results for
+                        different arrival orders, so thread timing
+                        reaches actor outputs. Strength: strong; the
+                        number of possible interleavings grows with
+                        actors, messages and threads.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_between_steps
+    guid_target:        opt_f9fff2269eac4407bd252098ac39e77a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

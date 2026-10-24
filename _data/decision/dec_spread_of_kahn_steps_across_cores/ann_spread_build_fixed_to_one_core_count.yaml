@@ -1,0 +1,54 @@
+id_self:                ann_spread_build_fixed_to_one_core_count
+guid_self:              ann_e9547da6af134b0c9941706e551ca0ea
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-core schedules and pipeline cuts fixed to a core count
+brief:                  |
+                        Assigning cores in the generator, or cutting
+                        the graph into one stage per core, works with
+                        no OS but fixes the build to one core count,
+                        so a board with another count needs generating
+                        and building again.
+description:            |
+                        Sources: The generator writes one schedule per
+                        core
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml
+                        lines 11-17). The pipelined option cuts the
+                        graph into stages, one per core
+                        (opt_steps_pipelined_across_cores.yaml in the
+                        same folder, lines 11-17). A frozen schedule
+                        is fixed at build time
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 33-40). ASSUMPTION: the generator could
+                        assign cores within each execution unit, so
+                        the option is not exclusive of placement in
+                        execution units. Strength: moderate; the
+                        rebuild cost is per target, not per node.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_steps_pipelined_across_cores
+    guid_target:        opt_86fd3ca3ec4a40bdb1c0a5d55489b898
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

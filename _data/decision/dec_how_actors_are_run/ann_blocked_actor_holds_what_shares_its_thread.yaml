@@ -1,0 +1,98 @@
+id_self:                ann_blocked_actor_holds_what_shares_its_thread
+guid_self:              ann_80036d59880b4233bad329c7118db2a0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Blocked or flooded actor holding up what shares its thread
+brief:                  |
+                        An actor that blocks on outside I/O, runs
+                        long, or is flooded with messages on purpose
+                        holds whatever shares its thread. Between
+                        steps it holds up the next Kahn step, on a
+                        shared pool it holds workers and can starve
+                        other actors, and on its own thread it holds
+                        up only itself. The first two each need a
+                        bound, such as messages or time per actor per
+                        gap, or a share of the pool; a bounded
+                        crossing between Kahn networks and actors, a
+                        matter for that decision, reduces what a flood
+                        can do.
+description:            |
+                        Sources: between steps, actors run on the
+                        engine's threads in the gaps between Kahn
+                        steps, each draining its messages
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 11-16); in the pool, actors run
+                        alongside the threads that run the Kahn steps
+                        (opt_actors_on_a_shared_thread_pool.yaml in
+                        the same folder, lines 11-15); each actor on
+                        its own thread blocks on its mailbox
+                        (opt_actors_on_their_own_threads.yaml, lines
+                        11-14). CAF cannot interrupt running actors;
+                        actors that make blocking calls can cause
+                        imbalance or starvation and "can be explicitly
+                        detached" to a thread of their own
+                        (https://actor-framework.readthedocs.io/en/latest/core/Scheduler.html).
+                        Patrol's commands come from outside systems
+                        through a FastAPI node
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 88-92), though the drafts route outside
+                        traffic through gateway nodes
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 184-188), which would keep blocking out
+                        of functional actors. Temporal partitioning
+                        ensures one component cannot affect others'
+                        use of shared resources, by static
+                        table-driven scheduling
+                        (https://arxiv.org/pdf/1508.07066, sections
+                        2.2 and 3.3.2). Deliberately caused failures
+                        belong to security
+                        (_data/register/reg_concern.yaml line 130).
+                        ASSUMPTION: threads of one process share
+                        memory, so own threads isolate time, not
+                        memory. Strength: moderate; it grows with the
+                        number of actors, since more actors give more
+                        chances that one blocks. The cost of a thread
+                        per actor at scale is argued separately.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_between_steps
+    guid_target:        opt_f9fff2269eac4407bd252098ac39e77a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

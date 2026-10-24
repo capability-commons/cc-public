@@ -1,0 +1,74 @@
+id_self:                ann_crossing_gateway_holds_transport_between_units
+guid_self:              ann_e6bb74cefefa4bdca3d02abfe9b22ac3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gateway node as the place a crossing transport lives
+brief:                  |
+                        A pointer handover is free only within one
+                        address space; an edge whose ends are placed
+                        in different execution units needs a copy
+                        through a transport, and the fixed-slot option
+                        does not say what happens then. A gateway is
+                        an ordinary node that can hold that transport,
+                        so porting to a platform with another
+                        transport, or none, means rewriting gateway
+                        nodes only, at the cost of one gateway per
+                        boundary edge. This rests on how steps are
+                        spread across cores: under a worker pool
+                        within one process the challenge to the fixed
+                        slots falls away.
+description:            |
+                        Sources: Within a process an input points at
+                        the upstream output buffer itself;
+                        cross-process edges point at a buffer the
+                        framework fills
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 41-44). Within one process plain shared
+                        buffers serve; between processes or machines
+                        the transport is ZeroMQ or a shared-memory
+                        queue, still open
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 120-128). Stableflow's gateway node is
+                        an ordinary node, and functional components
+                        never use asynchronous transports directly
+                        (same file, lines 182-193 and 226). A frozen
+                        island always runs within one OS process (same
+                        file, lines 79-80). The gateway option routes
+                        every boundary edge through a static gateway
+                        node
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_gateway_nodes_at_the_boundary.yaml
+                        lines 11-16). The owner raised gateway nodes
+                        as "likely (but not certain)" (owner's
+                        statement, 2026-10-24 12:33Z). Strength:
+                        moderate; it holds at ten times the nodes only
+                        for boundary edges that cross units, and the
+                        gateway count grows with the boundary. Neutral
+                        on the delay option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

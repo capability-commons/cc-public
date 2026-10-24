@@ -1,0 +1,75 @@
+id_self:                ann_replay_static_part_keeps_safety_functions_replayable
+guid_self:              ann_4597c44521884dffb8bc39ec83721269
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static part replayable from the values at its boundary
+brief:                  |
+                        Even if the dynamic part is only recorded, the
+                        static subgraph stays replayable from the
+                        values that entered it, including those that
+                        crossed from the dynamic part, so a system
+                        that keeps its safety functions static keeps
+                        replay for them. This holds only if the
+                        crossing from dynamic into static gives one
+                        defined value per step.
+description:            |
+                        Sources: the static-only option replays the
+                        static subgraph from the values that entered
+                        it
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_of_the_static_part_only.yaml
+                        lines 12-16); the log option records the same
+                        values and more
+                        (opt_replay_from_a_recorded_log.yaml lines
+                        12-19); with no replay, nothing is replayable
+                        after a change
+                        (opt_no_replay_with_live_changes.yaml lines
+                        12-14). The one-step-delay option gives a
+                        static input the value of the step before or
+                        an explicit empty token
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml,
+                        brief), though the owner doubts that a
+                        one-step delay is needed (owner's statement,
+                        2026-10-24 12:49Z, line 31); any crossing that
+                        gives the static part one defined value per
+                        step would do. Patrol's decomposition checks
+                        each step by dumps that must be identical
+                        before and after
+                        (_sources/cc-patrol-notes/decomposition-readiness.md
+                        lines 50-51 and 175-177). This rests on the
+                        decision on the crossing between static and
+                        dynamic, and on where systems put their safety
+                        functions. Strength: moderate; it covers only
+                        what the static subgraph holds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

@@ -1,0 +1,95 @@
+id_self:                ann_plain_fixed_layout_types_read_in_place
+guid_self:              ann_44456f0e77b249a7afcf0a4cee14108f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain fixed-layout types read in place
+brief:                  |
+                        An array descriptor exactly describes plain
+                        fixed-size memory, so the engine and a Python
+                        or C reader on the same host can read values
+                        in place, with no decode on each step and no
+                        serialization library. Avro's binary form must
+                        be decoded with its schema, and FlatBuffers
+                        tables reach fields through offsets, so an
+                        external schema language gives this up unless
+                        the dictionary also generates the plain
+                        layout. Dictionary items keep it if they
+                        generate the same struct and dtype.
+description:            |
+                        Sources:
+                        - Everything that crosses an edge is
+                          standard-layout, trivially copyable and
+                          fixed size, so a NumPy structured dtype
+                          describes its memory exactly.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 84-86)
+                        - A memory-mapped edge lets C++ cast the bytes
+                          and Python wrap them as an ndarray, with no
+                          copy or serialization, recorded as an option
+                          rather than a default.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 130-137)
+                        - The generator can emit both the C++ struct
+                          and its dtype string from one spec.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 95-96)
+                        - "Binary encoded Avro data does not include
+                          type information or field names", so the
+                          reader needs the schema to decode it.
+                          (https://avro.apache.org/docs/1.9.2/spec.html)
+                        - A FlatBuffer is not parsed before it is
+                          accessed, but tables reach fields through a
+                          vtable, and structs, which lack evolution,
+                          are meant for small objects that rarely
+                          change.
+                          (https://fuchsia.googlesource.com/third_party/flatbuffers/+/main/docs/source/WhitePaper.md)
+                        - ASSUMPTION: the dictionary-items option
+                          would generate plain C++ structs, as the
+                          earlier data dictionary drove generated
+                          allocators.
+                          (_sources/axair-orchestrator/docs/component_interface.md
+                          lines 16-19) Strength: moderate for
+                          compatibility; it holds for partners on the
+                          same host, not across a network, where some
+                          encoding is needed anyway. Moderate for
+                          performance efficiency, a non-driver point
+                          kept with it, since decode cost grows with
+                          node count and rate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_of_array_descriptors
+    guid_target:        opt_1c83a4e30daf4f9eaaf552430b07212b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

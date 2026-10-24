@@ -1,0 +1,65 @@
+id_self:                ann_step_boundary_as_the_one_actor_synchronization
+guid_self:              ann_7d35247f144645968676cf2e0443de0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Step boundary as the one point of synchronization
+brief:                  |
+                        Running actors between steps uses the boundary
+                        that rewires and change sets already use, and
+                        gives a replayable order with no record of
+                        thread interleaving. A shared pool or a thread
+                        per actor adds a second scheduler beside the
+                        step.
+description:            |
+                        Sources: actors drain their waiting messages
+                        in the gaps between Kahn steps
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 11-16). Rewires happen only between
+                        steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). A change set applies at the
+                        start of a step for Kahn parts and between
+                        messages for actors
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml
+                        lines 11-15). CAF maps N actors to M threads
+                        by work stealing and offers a detached spawn
+                        option for blocking actors, two mechanisms in
+                        one framework
+                        (https://actor-framework.readthedocs.io/en/latest/core/Scheduler.html).
+                        Strength: strong for the count of mechanisms;
+                        it says nothing on actor latency between
+                        steps. Simplicity is a non-driver of the
+                        engine; kept as a strong point.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_between_steps
+    guid_target:        opt_f9fff2269eac4407bd252098ac39e77a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

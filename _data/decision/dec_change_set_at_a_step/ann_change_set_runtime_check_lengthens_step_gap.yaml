@@ -1,0 +1,65 @@
+id_self:                ann_change_set_runtime_check_lengthens_step_gap
+guid_self:              ann_4f6f68beae29489b9ab2bbffc4411333
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-graph checks inside the gap between steps
+brief:                  |
+                        Whatever the runtime checks when a change set
+                        arrives is done between steps, so it delays
+                        the next step; a check of loops without a
+                        feedback edge walks the graph, so its cost
+                        grows with the graph and can show as a long
+                        step at the 99th percentile. Checking a digest
+                        costs the same for any graph.
+description:            |
+                        Sources: The runtime option checks port types,
+                        unfed inputs, loops without a feedback edge
+                        and the place of each crossing, and applies
+                        the change set whole at the start of a step
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml
+                        lines 13-19). The cctool-first option checks
+                        only the digest
+                        (opt_change_set_checked_by_cctool_first.yaml
+                        in the same folder, lines 13-18). The loop
+                        check in cctool is a closure over the graph
+                        (src/cctool/check/check.lp lines 3243-3248 and
+                        3285-3286). Start, stop, restart and rewire
+                        happen only between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72). ASSUMPTION: the runtime could
+                        check a change set on another thread before
+                        the step boundary and only swap at it; the
+                        option does not say where the check runs.
+                        ASSUMPTION: the runtime keeps the digest of
+                        the graph it runs up to date rather than
+                        recomputing it. Strength: moderate; it
+                        strengthens at ten times the nodes and weakens
+                        if checks move off the step thread.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

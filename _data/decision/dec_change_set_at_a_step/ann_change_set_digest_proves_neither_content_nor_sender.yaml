@@ -1,0 +1,100 @@
+id_self:                ann_change_set_digest_proves_neither_content_nor_sender
+guid_self:              ann_e29f71078c9e4e8e9da70b8fece00801
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Digest match as proof of the graph, not of the change set
+brief:                  |
+                        A digest match shows which graph a change set
+                        was checked against, not that its content is
+                        what was checked, that cctool checked it, or
+                        that an authorized sender sent it; the graph
+                        is public, so anyone who can reach the change
+                        channel can compute the digest. A runtime that
+                        checks port types, unfed inputs and loops
+                        itself still catches a stale, corrupted,
+                        forged or tool-faulted change set, refuses it
+                        whole and keeps the last consistent graph
+                        running.
+description:            |
+                        Sources: In the cctool-first option the
+                        runtime checks only that the change set
+                        carries the digest of the graph it runs
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                        lines 11-18). The runtime option checks in C++
+                        and refuses a failing change set whole
+                        (opt_change_set_checked_by_the_runtime.yaml in
+                        the same folder, lines 11-19); the both option
+                        repeats the checks that keep it safe
+                        (opt_change_set_checked_by_both.yaml, lines
+                        11-17). The drafted dynamic host checks every
+                        edge at wiring time and refuses a mismatch,
+                        and rewires only between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 67 and 70-72). The items of the graph
+                        carry the public protective mark (the option
+                        files in the same folder, line 8), Patrol's
+                        graph is to be public too
+                        (_sources/cc-patrol-notes/plan.md lines
+                        121-122), and the owner ships the whole of
+                        _data (owner's statement, 2026-10-22T16:30).
+                        Patrol's headless configuration puts its user
+                        interface on another machine, with a network
+                        transport very likely ZeroMQ
+                        (_sources/cc-patrol-notes/plan.md lines
+                        128-131; execution_levels.md line 126).
+                        ASSUMPTION: the digest covers the graph, not
+                        the change set's own content; if it covered
+                        both, the transit case would fall away but the
+                        tool-fault case would remain. ASSUMPTION: an
+                        unkeyed digest can be computed by anyone who
+                        holds the input; only a keyed MAC or a
+                        signature from the checker shows who produced
+                        it. ASSUMPTION: cctool does not run on an
+                        embedded target. Strength: strong for security
+                        at any scale; for reliability and safety it
+                        grows with the number of systems and change
+                        sets in the field. The security part falls
+                        away if the digest is replaced by a signature.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

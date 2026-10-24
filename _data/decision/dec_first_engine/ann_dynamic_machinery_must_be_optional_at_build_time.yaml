@@ -1,0 +1,107 @@
+id_self:                ann_dynamic_machinery_must_be_optional_at_build_time
+guid_self:              ann_34c00574fcdf4e8a9c284890204e3db8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dynamic machinery carried by a build that needs none
+brief:                  |
+                        The new option does not say that a system with
+                        no dynamic nodes can build without the dynamic
+                        machinery: the code loader, change-set intake
+                        and checks, run-time allocation and later a
+                        transport. Unless it can, every build carries
+                        those dependencies and platform needs, and an
+                        all-static system keeps a run-time path by
+                        which its graph or code could be changed. The
+                        option should state that an empty dynamic
+                        subgraph builds the same engine as a generated
+                        frozen schedule.
+description:            |
+                        Sources:
+                        - The option says both parts share one
+                          interface and protocol "from the first
+                          version" and is silent on whether the
+                          dynamic part can be left out of a build.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 12-21)
+                        - A frozen process is a generated .cpp of
+                          static storage, constant slot arrays and
+                          direct calls.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 35-40)
+                        - The dynamic host dlopens libraries named in
+                          configuration, allocates buffers from type
+                          tables and checks edges at wiring time.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 63-68) dlopen is specified by POSIX.
+                          (https://pubs.opengroup.org/onlinepubs/9699919799/functions/dlopen.html)
+                        - A runtime that reads a graph is likely to
+                          need a parser library or a hand-written
+                          parser.
+                          (_data/decision/dec_first_engine/ann_graph_loading_runtime_needs_a_parser.yaml)
+                        - Edges between hosts need a transport, "very
+                          likely ZeroMQ".
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 126-128;
+                          _sources/cc-patrol-notes/plan.md lines
+                          168-171)
+                        - The owner wants the engine to reach embedded
+                          systems "where there may not be an OS at
+                          all". (owner's statement, 2026-10-24 13:06Z)
+                        - A frozen island can leave the optional
+                          packet header out, a precedent for dropping
+                          dynamic-only parts.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 118)
+                        - CWE-427, Uncontrolled Search Path Element,
+                          describes a product that searches for
+                          resources in locations unintended actors may
+                          control.
+                          (https://cwe.mitre.org/data/definitions/427.html)
+                        - ASSUMPTION: the dynamic part can be built as
+                          a separate library that the static schedule
+                          does not link; code absent from a build
+                          cannot be reached by an attacker of that
+                          build. Strength: strong for dependency risk,
+                          since more systems will be static-only
+                          embedded builds; moderate for flexibility
+                          and security. A condition the option can
+                          meet cheaply if stated now, not a reason to
+                          reject it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

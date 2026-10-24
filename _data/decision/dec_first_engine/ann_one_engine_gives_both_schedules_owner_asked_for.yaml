@@ -1,0 +1,82 @@
+id_self:                ann_one_engine_gives_both_schedules_owner_asked_for
+guid_self:              ann_afbc1822817e4c69ba6da2af39383557
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Both schedules the owner asked for, in the first version
+brief:                  |
+                        One engine with static and dynamic subgraphs
+                        is the only option whose first version holds
+                        both a schedule fixed at build time for static
+                        nodes and a schedule that can change at run
+                        time for dynamic nodes, which the owner asked
+                        for together. Each older option provides one
+                        of the two and leaves the other to a later
+                        engine, which the owner warns is very hard to
+                        change once in use.
+description:            |
+                        Sources:
+                        - The owner wants "an engine that can support
+                          all of these at once": a build-time
+                          immutable schedule for static nodes and a
+                          run-time mutable schedule for dynamic nodes.
+                          (owner's statement, 2026-10-24 12:33Z)
+                        - "it is VERY hard to change the engine once
+                          it's built and you've started using it - so
+                          it's best to get the shape right early on."
+                          (owner's statement, 2026-10-24 12:33Z;
+                          restated in
+                          _data/decision/dec_first_semantics/ruling_first_semantics.yaml
+                          lines 17-20)
+                        - In a frozen schedule the only thing that can
+                          change at run time is a per-node enable
+                          flag.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 39-40)
+                        - The loading runtime is "A C++ runtime that
+                          loads a resolved dataflow graph and runs
+                          it".
+                          (_data/decision/dec_first_engine/opt_runtime_loads_graph.yaml,
+                          brief) ASSUMPTION: its schedule is built
+                          when the graph is loaded, so it offers no
+                          build-time schedule for static nodes.
+                        - The new option generates the static schedule
+                          as plain C++17 calls fixed at build time and
+                          lets the dynamic subgraph change at the
+                          start of a step.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml,
+                          brief) Strength: strong; it rests on the
+                          owner's stated requirement, not on the size
+                          of any graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

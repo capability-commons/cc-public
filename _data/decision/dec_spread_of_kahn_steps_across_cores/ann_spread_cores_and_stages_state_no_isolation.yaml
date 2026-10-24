@@ -1,0 +1,57 @@
+id_self:                ann_spread_cores_and_stages_state_no_isolation
+guid_self:              ann_18fb22344f324c02ba5fd0e7b24d963a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-core schedules and pipeline stages in one address space
+brief:                  |
+                        Cores assigned by the generator and pipelined
+                        stages share one process, so neither can state
+                        that nodes of different trust, or static and
+                        dynamic nodes, are kept in different address
+                        spaces.
+description:            |
+                        Sources: The generator option writes one
+                        schedule per core and runs the dynamic
+                        subgraph on a worker pool
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml
+                        lines 11-17). The pipelined option cuts the
+                        graph into stages, one per core
+                        (opt_steps_pipelined_across_cores.yaml in the
+                        same folder, lines 11-17). Spatial
+                        partitioning in ARINC 653-style kernels uses
+                        memory fixed after initialization
+                        (https://arxiv.org/pdf/1508.07066, section
+                        2.2). ASSUMPTION: neither option places its
+                        cores or stages in separate processes; their
+                        briefs do not say. Strength: moderate; it
+                        holds at any size, and falls away if either
+                        option is combined with placement in execution
+                        units.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_steps_pipelined_across_cores
+    guid_target:        opt_86fd3ca3ec4a40bdb1c0a5d55489b898
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

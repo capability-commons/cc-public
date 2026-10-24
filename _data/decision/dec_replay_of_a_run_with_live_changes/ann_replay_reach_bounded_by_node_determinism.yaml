@@ -1,0 +1,57 @@
+id_self:                ann_replay_reach_bounded_by_node_determinism
+guid_self:              ann_34b1ae2679ca416f9fa54d75a4b11dff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay only as far as the nodes are deterministic
+brief:                  |
+                        The log option promises the same tokens only
+                        wherever the nodes are deterministic, so a
+                        node that is not, such as one whose result
+                        depends on parallel GPU work, or one whose
+                        floating-point results differ between
+                        architectures, still breaks replay downstream
+                        of it. Interfaces should state determinism so
+                        that the reach of a replay is known.
+description:            |
+                        Sources: the option's own qualifier, "wherever
+                        the nodes are deterministic"
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the dataflow step surface has an
+                        optional determinism field, whether one input
+                        always yields one output
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 803-806); Patrol's analysis interface
+                        states bit-for-bit determinism
+                        (_sources/cc-patrol-notes/draft/tools/icd_table.py
+                        line 110), though its state includes detector
+                        history on the GPU
+                        (draft/icd/icd_patrol_analysis.yaml lines
+                        136-137). Assumption: floating-point results
+                        can differ between x86-64 and ARM64 builds, so
+                        a replay on another platform gives the same
+                        tokens only for nodes written to be bit-exact.
+                        Strength: moderate; it narrows the claim
+                        rather than refuting the option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,53 @@
+id_self:                ann_ready_made_actor_pools_license_and_cpp_level
+guid_self:              ann_834508d91f624cdf8d5d7783317dfec2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  License and language level of ready-made actor pools
+brief:                  |
+                        A shared pool is likely to be taken from a
+                        library. oneTBB (Apache-2.0) and CAF
+                        (BSD-3-Clause) fit the license, while Taskflow
+                        (MIT, header-only) now needs C++20, beyond the
+                        engine's C++17 headers. This is a cost to
+                        count, not a bar.
+description:            |
+                        Sources: oneTBB is Apache-2.0 and governed by
+                        the UXL Foundation
+                        (https://github.com/uxlfoundation/oneTBB). CAF
+                        is BSD-3-Clause, needs CMake, and OpenSSL for
+                        its openssl and net modules
+                        (https://github.com/actor-framework/actor-framework).
+                        Taskflow is MIT and header-only, and v4.0.0
+                        needs a C++20 compiler
+                        (https://github.com/taskflow/taskflow). Only
+                        the engine's headers need to compile as C++17
+                        (_sources/cc-patrol-notes/plan.md lines
+                        95-98). cc-public is Apache-2.0
+                        (_data/decision/dec_license/ruling_license.yaml).
+                        ASSUMPTION: a pool written in house on
+                        std::thread avoids the library but still needs
+                        hosted threads. Strength: weak; permissive
+                        options kept by organizations exist.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

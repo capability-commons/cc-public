@@ -1,0 +1,55 @@
+id_self:                ann_actor_code_plainest_on_a_thread_or_pool
+guid_self:              ann_69693b2981034d5c853c58c760f819d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain actor code on a thread of its own or a pool
+brief:                  |
+                        An actor on its own thread blocking on its
+                        mailbox is the plainest code to read, and a
+                        shared pool is what mature actor frameworks
+                        use by default. Both trade that readability
+                        for timing that tests cannot pin down, which
+                        weighs more as actors grow.
+description:            |
+                        Sources: each actor runs on a thread of its
+                        own and blocks on its mailbox
+                        (_data/decision/dec_how_actors_are_run/opt_actors_on_their_own_threads.yaml
+                        lines 11-14). CAF's default policy is work
+                        stealing over a pre-dimensioned set of worker
+                        threads, and blocking actors can be detached
+                        (https://actor-framework.readthedocs.io/en/latest/core/Scheduler.html).
+                        ASSUMPTION: under the between-steps option the
+                        engine provides the mailbox drain and
+                        ordering, so actor code there is a message
+                        handler and not harder to read than under the
+                        pool. Strength: weak; readability of one actor
+                        does not grow with scale, while the testing
+                        cost does.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

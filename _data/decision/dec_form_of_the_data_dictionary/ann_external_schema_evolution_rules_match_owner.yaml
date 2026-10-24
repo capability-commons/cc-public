@@ -1,0 +1,64 @@
+id_self:                ann_external_schema_evolution_rules_match_owner
+guid_self:              ann_fbb473e4fee94fb1bd7f3bba6866e8e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outside-maintained evolution rules close to the owner's
+brief:                  |
+                        An external schema language brings evolution
+                        rules that others maintain and test, and they
+                        come close to what the owner asked: Avro
+                        refuses a new field with no default, fills a
+                        default where one exists and can follow
+                        renames through aliases, which implementations
+                        may support, and FlatBuffers gives a newer
+                        reader the default for a field older data
+                        lacks.
+description:            |
+                        Sources:
+                        - Avro: if the reader's record has a field
+                          with no default and the writer has no field
+                          of that name, an error is reported; with a
+                          default, the reader uses it; fields match by
+                          name, and an implementation may optionally
+                          use aliases to read a renamed field.
+                          (https://avro.apache.org/docs/1.11.1/specification/,
+                          Schema Resolution and Aliases)
+                        - FlatBuffers: new fields go at the end of a
+                          table, fields are not removed, renaming is
+                          generally fine, and a newer reader gets the
+                          default for a field older data lacks.
+                          (https://flatbuffers.dev/evolution/)
+                        - The owner wants upgrades blocked where new
+                          fields have no default. (owner's statement,
+                          2026-10-24 12:33Z) Strength: moderate; it
+                          rests on published rules, the gain grows
+                          with the number of types, and which language
+                          is chosen changes the details.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,105 @@
+id_self:                ann_replay_runs_after_a_change_most_worth_replaying
+guid_self:              ann_528f4a42237a4a59813cf87253a34782
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runs after a live change as the ones most worth replaying
+brief:                  |
+                        The runs most likely to fail are those just
+                        after a change set or a swap, and the faults
+                        most likely lie in the dynamic subgraph and
+                        the actors, where the change was made. No
+                        replay with live changes gives up exactly
+                        those runs, and replay of the static part only
+                        leaves out exactly that part. A recorded log
+                        lets such a fault be run again on a desk and
+                        its cause found, and a system that grows by
+                        changing keeps replay as it grows.
+description:            |
+                        Sources: the log option records the step at
+                        which each change set and swap took effect,
+                        the messages each actor received in order, and
+                        every value from outside
+                        (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                        lines 12-19); the static-part option records
+                        the dynamic subgraph and actors for inspection
+                        but does not replay them
+                        (opt_replay_of_the_static_part_only.yaml lines
+                        12-16); with no replay, a run stops being
+                        replayable after a change set or swap
+                        (opt_no_replay_with_live_changes.yaml lines
+                        12-14). Only the dynamic subgraph supports
+                        nodes and edges added, moved or removed
+                        (owner's statement, 2026-10-24 12:33Z, line
+                        18). The owner's instinct is that a run with
+                        live changes should stay replayable, depending
+                        on the drawbacks (13:08Z, line 41), and,
+                        speaking of point and patch releases, he wants
+                        to respond to reported problems "quickly and
+                        largely automatically" (2026-10-22T16:33,
+                        _sources/context.md line 24). The existing
+                        system controller is not deterministic, and a
+                        run is reproduced only in the order and
+                        content of its packets
+                        (_data/interface_control_document/icd_system_controller.yaml
+                        lines 171-175). Assumptions: a change to the
+                        running graph is more likely to introduce a
+                        fault than a step of an unchanged graph, and
+                        the fault lies in or near the changed part.
+                        Today's Patrol configurations choose variants
+                        by configuration with no automatic switching
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 86-87), so few runs yet have live
+                        changes. This rests on how actors are run:
+                        actors on free threads make the recorded order
+                        harder to replay. Strength: strong, and
+                        stronger with scale: more systems changing
+                        live means more faults only replay can
+                        reproduce.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_replay_with_live_changes
+    guid_target:        opt_5b4d599983be4fa5bc509e0af2b0d3b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

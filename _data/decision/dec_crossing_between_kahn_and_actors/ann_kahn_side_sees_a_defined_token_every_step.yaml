@@ -1,0 +1,65 @@
+id_self:                ann_kahn_side_sees_a_defined_token_every_step
+guid_self:              ann_7f1437526b3749629de202d3e01f7c24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Defined token at every step, including an empty one
+brief:                  |
+                        The Kahn side must see a defined token at each
+                        step whether or not an actor sent anything, so
+                        that a system's handling of loss can be
+                        tested. The edge-policy option states an
+                        explicit empty token, and the drafted gateway
+                        pattern marks its output empty when nothing
+                        arrived. A composite's director could do the
+                        same, but its option does not say so yet.
+description:            |
+                        Sources: the edge option turns messages into a
+                        token by a stated rule, "with an explicit
+                        empty token when none arrived"
+                        (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                        lines 11-18). An inbound gateway marks its
+                        output not enabled when nothing arrived, so
+                        loss and delay become explicit empty tokens,
+                        and a segment's behavior for any pattern of
+                        arrival and loss can be tested by fault
+                        injection
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-197). In Ptolemy II a director
+                        implements a model of computation and each
+                        level of the hierarchy can have its own
+                        director
+                        (https://ptolemy.berkeley.edu/projects/chess/pubs/655.html).
+                        The Patrol draft names policies on its edges
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 45-51). Strength: strong; at ten times
+                        the crossings a stated rule per edge or per
+                        gateway keeps loss handling testable. Neither
+                        for nor against the composite option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_kahn_and_actors
+    guid_target:        dec_8eb250023e364c83be8fcb23b2956cbb
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_crossing_policy_on_the_edge
+    guid_target:        opt_f57132b989c44322ba1245ffd5bdbbbd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_between_semantics
+    guid_target:        opt_815b4c7d5d6d401eadc451f612c88560
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

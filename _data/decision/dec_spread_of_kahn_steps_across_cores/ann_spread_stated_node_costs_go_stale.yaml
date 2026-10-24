@@ -1,0 +1,48 @@
+id_self:                ann_spread_stated_node_costs_go_stale
+guid_self:              ann_d3e5697e68dd4901a4a669145ec3ca7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stated node costs that go stale with each node change
+brief:                  |
+                        When the generator divides work by a cost
+                        stated for each node, a change to a node's
+                        code may make its cost wrong, so a node change
+                        spreads into its configuration and into the
+                        generated schedules of other nodes on other
+                        cores.
+description:            |
+                        Sources: The generator divides the static
+                        subgraph among cores from the cost stated for
+                        each node and writes one schedule per core
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_cores_assigned_by_the_generator.yaml
+                        lines 13-17). The cost of software encoding
+                        beside the detector on the Orin Nano is
+                        unmeasured and the first thing to measure
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 71-74). ASSUMPTION: node costs are
+                        measured, not derived from code, so they need
+                        remeasuring when code changes. Strength:
+                        strong, and stronger with more nodes per core.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

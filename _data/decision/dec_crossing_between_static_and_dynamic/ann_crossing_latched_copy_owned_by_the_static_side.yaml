@@ -1,0 +1,58 @@
+id_self:                ann_crossing_latched_copy_owned_by_the_static_side
+guid_self:              ann_f92ed8ee7316443ab1f462889d5fcc78
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Latched copy owned by the static side
+brief:                  |
+                        When a static input takes the value of the
+                        step before, that value can be latched into
+                        storage the static side owns, so nothing the
+                        dynamic subgraph does during a step changes
+                        what static nodes read in it. Security needs
+                        only the copy, not the delay, and a gateway
+                        could make the same copy within the step.
+description:            |
+                        Sources: Under the delay option a static input
+                        fed from a dynamic node takes the value of the
+                        step before, or an explicit empty token
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml
+                        lines 11-18). An inbound gateway latches
+                        whatever arrived since the last step into an
+                        output, not enabled when nothing arrived
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-191). The owner doubts the delay is
+                        necessary (owner's statement, 2026-10-24
+                        12:49Z, answer 2). ASSUMPTION: the delay
+                        latches by copy rather than by keeping a
+                        pointer into the dynamic node's buffer; the
+                        option text does not say which. Strength:
+                        weak; a secondary benefit that other options
+                        can also get.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

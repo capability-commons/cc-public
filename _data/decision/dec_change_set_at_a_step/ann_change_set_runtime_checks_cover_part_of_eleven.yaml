@@ -1,0 +1,67 @@
+id_self:                ann_change_set_runtime_checks_cover_part_of_eleven
+guid_self:              ann_9855fb65f304445c95b972f943e6c840
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime checks that cover only part of the dataflow checks
+brief:                  |
+                        A resolved graph must pass cctool's eleven
+                        dataflow checks, and a change set that cctool
+                        checks is held to all of them. The runtime
+                        option lists four checks, three of them among
+                        the eleven, and leaves out the other eight,
+                        such as input fed twice, unknown port, foreign
+                        node, unknown or missing setting and unplaced,
+                        so a runtime-only check can accept a graph
+                        that cctool would refuse.
+description:            |
+                        Sources: The dataflow checks in check.lp are
+                        misnamed node, interface count, foreign node,
+                        unknown port, input fed twice, unfed input,
+                        port type mismatch, feedforward loop, unknown
+                        setting, missing setting and unplaced
+                        (src/cctool/check/check.lp lines 2947-3399,
+                        the show lines). The variants draft runs "all
+                        eleven dataflow checks as they are now" on
+                        every resolved variant
+                        (_sources/cc-patrol-notes/variants.md lines
+                        86-89). The runtime option checks "port types,
+                        unfed inputs, loops without a feedback edge,
+                        and the place of each crossing"
+                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml,
+                        brief). ASSUMPTION: two implementations of one
+                        rule set in different languages drift unless
+                        tests hold them to each other. Strength:
+                        strong; the gap widens as checks are added.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_change_set_at_a_step
+    guid_target:        dec_8cf399127473400aad73294e4d944ed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_cctool_first
+    guid_target:        opt_8f5ea1a4d3f245eb84db5407b2b2dc0f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_change_set_checked_by_both
+    guid_target:        opt_108524076a0747898f6a02241808e936
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_change_set_checked_by_the_runtime
+    guid_target:        opt_9ab8a47a39b94f45a90c5dfb55f93c50
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

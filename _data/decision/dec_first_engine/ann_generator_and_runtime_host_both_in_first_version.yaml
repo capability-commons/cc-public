@@ -1,0 +1,91 @@
+id_self:                ann_generator_and_runtime_host_both_in_first_version
+guid_self:              ann_d9b8f65406e84856a856488ac762c579
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generator and runtime host both in the first version
+brief:                  |
+                        The new option carries both the generator that
+                        writes a fixed call list and the runtime host
+                        that steps nodes through function pointers
+                        from the first version, so one job, ordering
+                        the calls of a step, has two mechanisms, and
+                        each change to a shared contract must be
+                        tested on the generated schedule, on the
+                        runtime and across their crossing. That is
+                        about three paths where a frozen-first engine
+                        has one, by an owner who postponed dynamic
+                        graphs before as too hard for a solo
+                        developer. It argues for building the dynamic
+                        part second within the one-engine shape, and
+                        loading the static subgraph as one frozen
+                        island would keep the two schedulers from
+                        overlapping.
+description:            |
+                        Sources:
+                        - The frozen level is a generated
+                          straight-line list of direct calls; the
+                          dynamic level is a generic host that steps
+                          nodes through function pointers.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 33-40 and 61-68)
+                        - A frozen subgraph can be exported as one
+                          composite component and loaded as one node
+                          of a dynamic graph, decided 2026-10-16.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 74-80)
+                        - The dynamic host's loading, allocation,
+                          wiring checks and stepping are each code to
+                          test.
+                          (_data/decision/dec_first_engine/ann_loading_and_wiring_code_to_test_first.yaml)
+                        - Crossing between the subgraphs is an open
+                          decision with three options.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/)
+                        - Check tests break one thing and expect
+                          exactly the failures of that fault.
+                          (_data/decision/dec_test_style/ruling_test_style.yaml)
+                          ASSUMPTION: the engine's C++ tests follow
+                          the same discipline, so each path needs its
+                          own fault cases.
+                        - The owner postponed dynamic-graph
+                          capabilities because they were "too
+                          difficult for me to implement in the first
+                          iteration as a solo dev". (owner's
+                          statement, 2026-10-20) Strength: moderate
+                          for maintainability; it does not grow with
+                          node count, since the paths are engine code.
+                          Moderate for simplicity; two schedulers at
+                          any scale, overlapping or not as the
+                          crossing decision goes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

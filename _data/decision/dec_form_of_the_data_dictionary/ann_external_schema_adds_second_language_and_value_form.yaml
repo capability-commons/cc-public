@@ -1,0 +1,91 @@
+id_self:                ann_external_schema_adds_second_language_and_value_form
+guid_self:              ann_9a2c7554860141d4aabc61b0e9787f3e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second schema language and second form of each value
+brief:                  |
+                        Under an external schema language each type
+                        lives in two forms, the schema file and the
+                        item that names it, and a reader must know two
+                        description languages whose files the graph's
+                        checks cannot see into without a parser. Those
+                        languages evolve through an encoded form while
+                        the engine's edges carry plain fixed-layout
+                        data, they give no general converted mapping,
+                        and Avro's arrays have no maximum length where
+                        the engine needs a fixed capacity for every
+                        sequence.
+description:            |
+                        Sources:
+                        - The option writes types in Avro or
+                          FlatBuffers, and a data item names each
+                          schema and its version.
+                          (_data/decision/dec_form_of_the_data_dictionary/opt_dictionary_in_an_external_schema_language.yaml
+                          lines 11-16)
+                        - Everything that crosses an edge is plain
+                          data: standard-layout, trivially copyable,
+                          fixed size; every sequence and string has a
+                          fixed capacity, and nothing is allocated on
+                          the heap while stepping.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 84-86;
+                          _sources/axair-orchestrator/docs/component_interface.md
+                          lines 145-151)
+                        - Avro type promotion is limited to widening
+                          numbers and string to and from bytes, and
+                          its array type states no maximum.
+                          (https://avro.apache.org/docs/1.11.1/specification/,
+                          Schema Resolution and Complex Types)
+                        - FlatBuffers tables may gain fields only at
+                          the end, unless every field carries an
+                          explicit id, and must not lose them; its
+                          fixed-layout structs may not have fields
+                          added or deprecated.
+                          (https://flatbuffers.dev/evolution/;
+                          https://chromium.googlesource.com/external/github.com/google/flatbuffers/+/v1.7.1/docs/source/Schemas.md)
+                        - ASSUMPTION: neither Avro's binary encoding
+                          nor FlatBuffers' offset tables is such a
+                          struct, so the engine would still generate
+                          its own structs from the schema. Strength:
+                          strong for simplicity, since two homes per
+                          type and two forms per value grow with the
+                          dictionary; moderate for maintainability and
+                          functional suitability.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_the_data_dictionary
+    guid_target:        dec_c0ce2c6311e844508c848824dd1f178f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_in_an_external_schema_language
+    guid_target:        opt_55ff917a53b841da960f8ad7de4ac623
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_items_with_upgrades
+    guid_target:        opt_192a7f7d5a0f4dc38174315f35eb61dc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,81 @@
+id_self:                ann_swap_restart_shares_crash_and_move_path
+guid_self:              ann_25c43184e4194a1ebc7e2545074e5252
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Restart path shared by a swap, a crash restart and a node move
+brief:                  |
+                        A swap by save, stop, start and load reuses
+                        the restart path and the empty-token
+                        convention that consumers already handle, so
+                        one mechanism serves a crash restart and an
+                        upgrade, and the same steps would also move a
+                        node to another execution unit or host as load
+                        changes. A swap at a step upgrades state in
+                        place, adds a second path with two live
+                        versions and rollback state, and gives no such
+                        move.
+description:            |
+                        Sources: the restart option saves the node's
+                        state, stops it, starts version n+1, loads the
+                        upgraded state and holds outputs empty
+                        meanwhile
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16); the swap at a step upgrades
+                        state where it is and keeps the old state
+                        until the new version completes a step
+                        (opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19). The Stableflow dynamic host
+                        starts, stops, restarts and rewires only
+                        between steps
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-72); every packet carries an enable
+                        flag, cleared at the start of a step and set
+                        when it carries data
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 14-15). Flexibility asks whether the
+                        design scales up or down as load changes
+                        (_data/register/reg_concern.yaml lines
+                        349-352). Assumption: the engine will at some
+                        point move a node between execution units; no
+                        source states this yet. This rests on the form
+                        of node state: with opaque state the save and
+                        load hooks are per node, which reverses the
+                        maintainability gain, and a move is
+                        engine-only only under typed or feedback-edge
+                        state. Strength: moderate for the shared path,
+                        which is engine code and does not grow with
+                        nodes; weak to moderate for the move, which
+                        rests on a need not yet stated.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

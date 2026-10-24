@@ -1,0 +1,77 @@
+id_self:                ann_dynamic_fault_can_reach_static_step
+guid_self:              ann_9dbd42f8001441c3aec04c35fcbbf47e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Seam where a dynamic fault can reach the static schedule
+brief:                  |
+                        Joining both subgraphs in one step protocol,
+                        and possibly one process, lets a dynamic node
+                        that hangs, faults or is refused mid-change,
+                        or a fault in the loading machinery, end the
+                        step for static nodes or write into their
+                        buffers. The static core is only as reliable
+                        and as safe as the rule that keeps dynamic
+                        faults out of it, which rests on the still
+                        open decisions on how values cross between the
+                        subgraphs and where mutability is declared.
+description:            |
+                        Sources:
+                        - The generated proc_step returns as soon as
+                          one node returns a signal other than
+                          continue_ok, so the nodes after it do not
+                          run in that step.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 46-50)
+                        - The system controller halts the whole system
+                          when a process reports an exception.
+                          (_data/interface_control_document/icd_system_controller.yaml
+                          lines 21-24)
+                        - Both parts share one node interface, edge
+                          buffer form, state form and step protocol.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml,
+                          brief)
+                        - Within one process, edges are plain shared
+                          buffers.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 124-125)
+                        - How values cross between the two parts is an
+                          open decision.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/dec_crossing_between_static_and_dynamic.yaml)
+                        - ASSUMPTION: dynamic nodes are more likely to
+                          fault in service, because their wiring is
+                          checked in service; nodes of both subgraphs
+                          may share one address space unless placement
+                          keeps them apart. Strength: moderate; it
+                          grows with the size of the dynamic subgraph
+                          and the number of changes applied, and falls
+                          away where placement puts the two parts in
+                          separate processes. A condition on the
+                          option, not a reason to reject it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

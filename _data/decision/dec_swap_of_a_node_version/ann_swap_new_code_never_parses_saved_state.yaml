@@ -1,0 +1,58 @@
+id_self:                ann_swap_new_code_never_parses_saved_state
+guid_self:              ann_1fd84b05e2134334860d516471fde533
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upgraded state produced by the engine, not parsed by the new code
+brief:                  |
+                        In the swap at a step, the engine upgrades
+                        state by the dictionary's mapping and keeps
+                        the old state, so the new version never parses
+                        saved bytes itself. In a swap by restart from
+                        saved state, the new version loads saved
+                        state, which under opaque state means new code
+                        parsing bytes that may have been tampered with
+                        while the node was stopped.
+description:            |
+                        Sources: the swap at a step upgrades state by
+                        the dictionary's mapping and keeps the old
+                        state until the new version completes a step
+                        (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                        lines 12-19); the restart option saves state,
+                        stops the node, starts n+1 and loads the
+                        upgraded state
+                        (opt_swap_by_restart_from_saved_state.yaml
+                        lines 12-16). CWE-502, Deserialization of
+                        Untrusted Data
+                        (https://cwe.mitre.org/data/definitions/502.html).
+                        This rests on the form of node state (the
+                        challenge holds if it chooses opaque state)
+                        and on the form of the data dictionary.
+                        Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

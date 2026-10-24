@@ -1,0 +1,70 @@
+id_self:                ann_swap_none_keeps_every_version_mix_checked
+guid_self:              ann_80c2c093b5c046f4a40a72707c200115
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every running mix of node versions configured and checked whole
+brief:                  |
+                        With no live swap, a new node version runs
+                        only after its process restarts with a new
+                        configuration, so every mix of node versions
+                        that runs was configured, checked and can be
+                        tested as a whole. With a live swap, the
+                        running mix exists only as the result of a
+                        change set, and is covered only if that change
+                        set was checked and tested.
+description:            |
+                        Sources: the no-live-swap option makes a new
+                        version take effect only when its OS process
+                        restarts with a new configuration
+                        (_data/decision/dec_swap_of_a_node_version/opt_no_live_swap.yaml
+                        lines 12-15); reconfiguration within a segment
+                        should select from a finite set of
+                        pre-validated topologies, so the deployed
+                        configuration is always one a safety case
+                        covers
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 212-215). The owner names the swap of n
+                        for n+1 as a use case and says only dynamic
+                        nodes may change (owner's statement,
+                        2026-10-24 12:33Z). Assumption: the owner's
+                        use case can be met by live swap for dynamic
+                        nodes and no live swap for static nodes, so a
+                        system can keep its safety functions on the
+                        restart path. This rests on how a change set
+                        is checked before it is applied at a step.
+                        Strength: strong for static nodes; weak
+                        against live swap of dynamic nodes, which the
+                        owner has asked for.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_live_swap
+    guid_target:        opt_be2339eb63b448ba8ca14c908c3ab9af
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

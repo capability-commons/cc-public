@@ -1,0 +1,109 @@
+id_self:                ann_every_node_exactly_static_or_dynamic
+guid_self:              ann_febcb8bf346640f4a654885ce510716a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Exactly one of static or dynamic for every node
+brief:                  |
+                        The owner requires every node to be exactly
+                        one of static or dynamic. A required
+                        two-valued field on each configured node gives
+                        that by the schema alone, with no new check
+                        rule. Under the per-process option a node
+                        takes its mode from an OS process, which today
+                        is an optional local key rather than an item
+                        of its own and is absent on a bare core with
+                        no OS, so a node could be neither, and its
+                        mode would carry the reasons for its placement
+                        rather than a reason of its own. The weight on
+                        a bare core rests on the placement decision.
+description:            |
+                        Sources:
+                        - "A node cannot be both, and a node cannot be
+                          neither." (owner's statement, 2026-10-24
+                          12:33Z)
+                        - The os_process field of a dataflow node is
+                          optional, and the graph's os_process section
+                          is optional too.
+                          (_data/schema/sch_dataflow_node.yaml lines
+                          56-62; _data/schema/sch_dataflow_graph.yaml
+                          lines 77-85) The check that a node's OS
+                          process exists fires only when one is named.
+                          (src/cctool/check/check.lp lines 3401-3404)
+                        - OS processes are filed under short local
+                          keys in a dataflow graph, and the data item
+                          type register lists no type for them.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          37-40;
+                          _data/register/reg_data_item_type.yaml)
+                        - Node items are validated against JSON
+                          Schema, where a required property with an
+                          enum of two values admits exactly one.
+                          (_data/schema/sch_dataflow_node.yaml lines
+                          1, 38-42; an existing enum in
+                          _data/schema/sch_dataflow_graph.yaml lines
+                          193-198)
+                        - Today an OS process requires a host, and a
+                          host a hostname.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          112-142) The owner wants placement to apply
+                          to embedded systems "where there may not be
+                          an OS at all". (owner's statement,
+                          2026-10-24 13:06Z)
+                        - One placement option replaces OS processes
+                          with execution units.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml)
+                          Strength: strong for simplicity (one field,
+                          no rule, at any size); holds at scale for
+                          traceability; weak to moderate for
+                          functional suitability, since making
+                          os_process required closes the gap; moderate
+                          for flexibility (non-driver), resting on the
+                          placement decision.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_os_process
+    guid_target:        opt_9274c44ab9a841d8bdd97238b1f7aaff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

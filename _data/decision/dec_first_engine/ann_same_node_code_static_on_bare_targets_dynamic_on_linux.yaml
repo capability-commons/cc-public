@@ -1,0 +1,75 @@
+id_self:                ann_same_node_code_static_on_bare_targets_dynamic_on_linux
+guid_self:              ann_6c84c44481d0441ca69cf465a5cc5560
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node code placed static on a bare target and dynamic on Linux
+brief:                  |
+                        With one node interface for both subgraphs,
+                        the same node code can be placed static on a
+                        target with no loader or no OS and dynamic on
+                        a Linux board, by configuration alone. The
+                        frozen-only option gives the first and not the
+                        second, and the loading runtime gives the
+                        second but needs a loader on every target.
+description:            |
+                        Sources:
+                        - The new option shares one node interface,
+                          edge buffer, node state and step protocol
+                          between both subgraphs.
+                          (_data/decision/dec_first_engine/opt_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          lines 12-21)
+                        - "In general, the same code should be able to
+                          be run statically or dynamically." (owner's
+                          statement, 2026-10-24 12:49Z, answer 1)
+                        - The owner wants placement to apply to
+                          threads and to "embedded systems where there
+                          may not be an OS at all". (owner's
+                          statement, 2026-10-24 13:06Z)
+                        - The Stableflow drafts write a component once
+                          and link it either into a generated schedule
+                          or as a dlopen library.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          lines 14-31)
+                        - The dynamic host loads components with
+                          dlopen.
+                          (_sources/axair-orchestrator/docs/execution_levels.md
+                          line 65) ASSUMPTION: a target with no OS has
+                          no dynamic loader. Strength: strong; the
+                          gain is per node, and each further system or
+                          target picks its own split without new node
+                          code. It holds only if a static-only build
+                          can leave the dynamic machinery out, a
+                          condition argued in its own annotation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_engine
+    guid_target:        dec_c8d4a41f9c754d1ab37479425ff810ec
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_engine_with_static_and_dynamic_subgraphs
+    guid_target:        opt_41f868b390ba42fd847ff8a0d1e11dd4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_frozen_schedule_generated
+    guid_target:        opt_5e6eea5f81ff4c47a19e1cd54d4d4e2d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_loads_graph
+    guid_target:        opt_dc94f3d4db83476eaff7fcf3cf328e4f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

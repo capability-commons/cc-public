@@ -1,0 +1,66 @@
+id_self:                ann_spread_fixed_placement_bounds_step_time
+guid_self:              ann_c049b0b410364fd3950522648a16bfa7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Worst-case step time fixed by placement
+brief:                  |
+                        When placement on cores or execution units is
+                        fixed before the system starts, each runs a
+                        known list of nodes in a known order, so the
+                        worst-case step time of a safety-relevant path
+                        can be analyzed and tested. A worker pool
+                        chooses placement at run time, so step time
+                        varies with load and is harder to bound,
+                        though its values stay the same.
+description:            |
+                        Sources: In the placement option each
+                        execution unit runs its nodes in a fixed order
+                        on one thread of control
+                        (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml,
+                        brief). The generator option writes one
+                        schedule per core at build time
+                        (opt_cores_assigned_by_the_generator.yaml,
+                        brief). The worker-pool option chooses
+                        placement at run time
+                        (opt_ready_nodes_on_a_worker_pool.yaml,
+                        brief). ARINC 653 uses "a round-robin, fixed
+                        schedule that repeats a Major Time Frame"
+                        (https://en.wikipedia.org/wiki/ARINC_653).
+                        ASSUMPTION: Kahn semantics keep a worker
+                        pool's outputs deterministic; the cost is to
+                        timing, not to values. Strength: strong in
+                        hard-timed systems, and stronger at ten times
+                        the nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_spread_of_kahn_steps_across_cores
+    guid_target:        dec_9efdd12215d7454dacbc8b7598655867
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placement_on_hosts_and_execution_units
+    guid_target:        opt_bab4855931d44ea68de31f0b2bb09056
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cores_assigned_by_the_generator
+    guid_target:        opt_f727e5c626604366b143341d1e139bb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ready_nodes_on_a_worker_pool
+    guid_target:        opt_db0bbb3f901f480ebf328beef3815c8a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

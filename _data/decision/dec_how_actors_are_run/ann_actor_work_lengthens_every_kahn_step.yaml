@@ -1,0 +1,78 @@
+id_self:                ann_actor_work_lengthens_every_kahn_step
+guid_self:              ann_d23b8d95a50c4af187ea0d2dc4d0cf2f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actor work added to every Kahn step period
+brief:                  |
+                        Actors that run in the gaps between steps add
+                        their work to every step's period, so one slow
+                        or busy actor delays every Kahn node, a safety
+                        function's included, and a message waits up to
+                        a whole step before it is handled. A pool or
+                        threads of their own leave the Kahn threads
+                        free to start on time, though pool threads can
+                        still contend with them for cores.
+description:            |
+                        Sources: actors run on the engine's threads in
+                        the gaps between Kahn steps
+                        (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                        lines 11-16); the pool option runs actors
+                        alongside the threads that run the Kahn steps
+                        (opt_actors_on_a_shared_thread_pool.yaml in
+                        the same folder, lines 11-15). Patrol's Orin
+                        configuration holds a 30 Hz camera rate
+                        (_sources/cc-patrol-notes/plan.md lines
+                        181-182), so one step is about 33 ms (derived,
+                        not stated there), and Patrol applies commands
+                        at a frame boundary anyway (same file, lines
+                        166-167). The register measures time to reach
+                        a safe state after a failure, in ms
+                        (_data/register/reg_concern.yaml line 442).
+                        ASSUMPTION: Kahn work cannot start the next
+                        step until the gap's actor work ends.
+                        ASSUMPTION: the between-steps option sets no
+                        bound on how many messages an actor drains in
+                        one gap; a bound would cut this cost and keep
+                        the order. Strength: moderate; weak for
+                        Patrol, whose commands wait for a frame
+                        boundary, and stronger with more actors,
+                        higher outside message rates or heavier actor
+                        work.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_actors_are_run
+    guid_target:        dec_d6694da3452c4bebbe5c8eea97ec3993
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_between_steps
+    guid_target:        opt_f9fff2269eac4407bd252098ac39e77a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_a_shared_thread_pool
+    guid_target:        opt_58c1b42ad3874a53a33718da91461608
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_on_their_own_threads
+    guid_target:        opt_f4be8caeeec4485dbe3c70e70ae15f10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

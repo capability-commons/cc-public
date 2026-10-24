@@ -1,0 +1,77 @@
+id_self:                ann_node_state_engine_layout_moves_between_hosts
+guid_self:              ann_5fac43bdb6944ad1b259016db91a5a5d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State moved to another execution unit or host by the engine alone
+brief:                  |
+                        When the engine lays out the state, it can
+                        copy it to another process, a mapped file or
+                        another host, so a node can be moved or
+                        restored elsewhere with no help from the node.
+                        Opaque state moves only through each node's
+                        own hooks. A plain copy between hosts still
+                        needs matching byte order and alignment.
+description:            |
+                        Sources: typed state is held by the engine,
+                        which can copy it
+                        (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                        lines 12-16); feedback-edge state is typed
+                        like any port
+                        (opt_state_on_a_feedback_edge.yaml lines
+                        12-16); opaque state is saved and loaded by
+                        the node's hooks
+                        (opt_state_opaque_with_hooks.yaml lines
+                        12-16). State is one framework-allocated block
+                        (_sources/axair-orchestrator/docs/component_interface.md
+                        lines 47-48), edge data is standard-layout,
+                        trivially copyable and fixed size
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 84-86), and state in mapped files would
+                        let a crashed process resume from its last
+                        committed step (execution_levels.md lines
+                        149-151). Patrol's two named hosts are a
+                        Lenovo Legion gaming laptop and a Jetson Orin
+                        Nano (_sources/cc-patrol-notes/plan.md lines
+                        128-131). Assumptions: the laptop is x86-64
+                        and the Orin is ARM64, and both are
+                        little-endian, so a plain layout copies
+                        between them if alignment rules match; a
+                        big-endian target would need conversion. This
+                        rests on the form of the data dictionary,
+                        which fixes how the layout is described.
+                        Strength: strong; the engine's one copy path
+                        serves every node, so it holds at ten times
+                        the nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_node_state
+    guid_target:        dec_659c6c87720940b2a9ad188a853eb0c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_as_typed_data
+    guid_target:        opt_a4f1751960d549c2bfeb0871155e79b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_on_a_feedback_edge
+    guid_target:        opt_32f42c9d2cbf41618ae530270d6b18e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_opaque_with_hooks
+    guid_target:        opt_5b9ea0eb14084527ad3a2fae46485523
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

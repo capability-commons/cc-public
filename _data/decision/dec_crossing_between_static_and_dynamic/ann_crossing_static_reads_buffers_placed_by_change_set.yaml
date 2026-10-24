@@ -1,0 +1,59 @@
+id_self:                ann_crossing_static_reads_buffers_placed_by_change_set
+guid_self:              ann_4f54230632754b6c8c34c9015e534746
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static nodes reading buffers placed at run time
+brief:                  |
+                        Handing over buffer pointers in the same step
+                        means a static node reads memory whose address
+                        and writer a change set chose, so it is safe
+                        only if the runtime proves at each change that
+                        every pointer names a buffer of the right type
+                        and size, written by a node that has finished.
+                        The fixed slots and the refusal of reordering
+                        keep the order closed, which helps, but the
+                        pointer check is on the change path, not the
+                        build. How large this risk is rests on how
+                        change sets are checked: if the runtime checks
+                        them, it is small.
+description:            |
+                        Sources: Values cross by handing over buffer
+                        pointers, the static schedule holds a fixed
+                        slot for each dynamic region, and a change set
+                        that would move a region or close a loop
+                        through the static subgraph is refused
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml
+                        lines 11-20). The owner asks whether crossing
+                        is "just swapping out pointers to buffers"
+                        (owner's statement, 2026-10-24 12:49Z, answer
+                        2). A rewire in the drafted dynamic host is a
+                        pointer swap in a slot array
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 70-71). The type id carried in a packet
+                        header is a hash of the canonical dtype
+                        description, and the draft does not say it is
+                        keyed (same file, lines 98 and 110). Strength:
+                        moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,85 @@
+id_self:                ann_crossing_defined_value_when_dynamic_side_is_absent
+guid_self:              ann_ad21694635d44f92aa4e92ff2773fd88
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Defined value at a static input whose dynamic source is absent
+brief:                  |
+                        A static node fed from the dynamic subgraph
+                        must see a defined value at every step, an
+                        explicit empty token included, when its
+                        dynamic source is absent, refused, being
+                        swapped or has failed. A gateway node and the
+                        one-step delay both give a stable place to
+                        hold that value, and a gateway lets dynamic
+                        nodes be removed or restarted behind it and be
+                        replaced by a link model for fault injection;
+                        the fixed-slot option does not say what a
+                        static input sees when its region does not
+                        run.
+description:            |
+                        Sources: An inbound gateway latches what
+                        arrived since the last step and, if nothing
+                        arrived, marks its output not enabled, so loss
+                        and delay become explicit empty tokens; in
+                        simulation a gateway is replaced by a link
+                        model that drops, delays or replays tokens
+                        (_sources/axair-orchestrator/docs/execution_levels.md
+                        lines 190-197). The gateway option routes
+                        every boundary edge through a static node that
+                        gives static edges a stable anchor
+                        (_data/decision/dec_crossing_between_static_and_dynamic/opt_gateway_nodes_at_the_boundary.yaml
+                        lines 11-16). The delay option gives the value
+                        of the step before or an explicit empty token
+                        (opt_one_step_delay_into_static.yaml, brief).
+                        The fixed-slot option's brief does not state
+                        what a static input holds when the region is
+                        empty (opt_same_step_through_fixed_slots.yaml,
+                        brief). An interface can state what its step
+                        does when an input carries no value
+                        (_data/schema/sch_interface_control_document.yaml
+                        lines 773-777). The owner expects gateway
+                        nodes may be needed so static edges find a
+                        stable anchor (owner's statement, 2026-10-24
+                        12:33Z). Strength: strong; a rule stated once
+                        at the boundary scales where per-node handling
+                        would not. For reliability it holds only if
+                        the gateway latches the previous value rather
+                        than waiting for its dynamic side.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
