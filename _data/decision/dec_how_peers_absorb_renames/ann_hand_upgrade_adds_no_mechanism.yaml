@@ -11,28 +11,46 @@ protective_mark:
 title:                  Hand upgrade with no new code
 brief:                  |
                         Upgrading by hand from the release notes adds
-                        no command and no map to cc-public, and the
-                        checker already reports a reference whose id
-                        names nothing, so a missed rename is still
-                        found, though only when the peer's check
-                        fails. Its cost grows with the renames between
-                        two releases, so it holds only while peers and
-                        renames are few.
+                        no command to cc-public, and the checker
+                        already reports a reference whose id names
+                        nothing, so a missed rename is still found,
+                        though only when the peer's check fails. The
+                        rename maps are derived for each release
+                        whatever is chosen here, so the saving is the
+                        command alone. Its cost grows with the renames
+                        between two releases, so it holds only while
+                        peers and renames are few.
 description:            |
                         Sources:
                         - A reference to an old id fails the check
                           (_data/decision/dec_rename_safety/ann_rename_old_id_reference_fails_check.yaml).
-                        - The release notes can be generated
-                          mechanically from the graph (owner's
-                          statement, 2026-10-22T16:28).
+                        - The release notes and rename maps are
+                          derived from the commit items since the last
+                          release
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-17), and the owner sees notes
+                          generated mechanically as a validation of
+                          the approach (owner's statement,
+                          2026-10-22T16:28; _sources/context.md line
+                          19).
+                        - A command is added only when a real instance
+                          needs it
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-17), and no peer names a cc-public
+                          item yet, since cc-patrol is an empty folder
+                          (_sources/cc-patrol-notes/plan.md line 3).
                         - The owner tolerates renames and prefix
                           changes before 1.0 (owner's memory note,
-                          2026-10-21; _sources/context.md line 26),
-                          and after 1.0 bundles breaking changes into
-                          one major release (owner's statement,
-                          2026-10-22T16:23). Strength: moderate; it is
-                          the fewest mechanisms, but the cost per
-                          release is not yet measured.
+                          2026-10-21; _sources/context.md line 26).
+                          After 1.0 breaking work waits on next until
+                          a major release
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml
+                          lines 13-17), and the ids of types and
+                          relations are part of the public data format
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml
+                          lines 13-14). Strength: moderate; it is the
+                          fewest mechanisms, but the cost per release
+                          is not yet measured.
 
 edge:
 

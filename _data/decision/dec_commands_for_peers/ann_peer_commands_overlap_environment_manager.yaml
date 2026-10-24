@@ -10,41 +10,66 @@ protective_mark:
 
 title:                  Peer commands tied to the environment manager
 brief:                  |
-                        Setting up, pinning and upgrading a dependency
-                        are jobs the environment manager already does,
-                        and switching a peer between a release and a
-                        local checkout means editing that manager's
-                        manifest. A command group would either do
-                        those jobs twice or know only pixi's manifest,
-                        so a partner would have to adopt pixi to use
-                        it, while documented steps can name the change
-                        for any manager.
+                        Adding a library with declared ranges,
+                        upgrading it and pointing it at a local
+                        checkout are jobs the environment manager
+                        already does in the peer's own environment,
+                        and installing the tool from the pixi lock a
+                        release publishes is likely a pixi job too. A
+                        command group would either do those jobs twice
+                        or wrap pixi. Documented steps can name the
+                        change for another manager only for the parts
+                        a peer builds in, since the published lock
+                        already binds a peer to pixi for the tool.
 description:            |
                         Sources:
+                        - What a peer runs, such as cctool and its
+                          hooks, is installed in an environment of its
+                          own from the tested lock each release
+                          publishes, and what it builds into its
+                          product is a library with declared ranges
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml,
+                          brief;
+                          _data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml,
+                          brief).
+                        - The only tested environment is a pixi lock,
+                          and no standard installer reads a lock from
+                          a dependency, so shipping it binds a peer to
+                          pixi for the tool part
+                          (_data/decision/dec_who_consumes_a_release/ann_shipped_environment_needs_a_lock_installer.yaml,
+                          brief).
                         - cc-public's environment and its tasks are
                           defined in pixi tables of pyproject.toml
-                          (pyproject.toml lines 57-79; README.md lines
-                          54-56).
+                          (pyproject.toml lines 64-108; README.md
+                          lines 54-56).
                         - pixi has commands to add, update and upgrade
                           dependencies
                           (https://pixi.sh/latest/reference/cli/pixi/).
-                        - The plan recommends a pixi git dependency
+                        - The plan recommended a pixi git dependency
                           pinned to a tag, with a path override for
                           local work (_sources/cc-patrol-notes/plan.md
-                          lines 69-72).
+                          lines 69-72); for the tool part the ruling
+                          above replaces the git dependency with the
+                          published lock.
                         - cctool impact already lists the items a
                           commit adds, removes, renames or changes
                           (AGENTS.md lines 201-204).
                         - Every hook runs through pixi, so a host
                           without pixi cannot commit
                           (_data/decision/dec_environment_manager/ann_hooks_and_guidance_bound_to_pixi.yaml).
+                        - Assumption: a published lock, with the
+                          manifest it was made from, installs as it is
+                          with pixi install --frozen in a folder of
+                          its own; this was not tried, and how the
+                          lock names the cctool package waits on the
+                          publishing route.
                         - Assumption: the command group would be
                           written for pixi first, as the only manager
-                          in use. Strength: weak to moderate;
-                          switching to a local checkout and applying
-                          rename maps are not plainly pixi's jobs, and
-                          the commands could support more than one
-                          manager or print the steps.
+                          in use. Strength: weak to moderate; the
+                          compatibility half is weaker than before,
+                          since the tool is bound to pixi under either
+                          option, and applying rename maps is still
+                          not plainly pixi's job.
 
 edge:
 

@@ -14,12 +14,15 @@ brief:                  |
                         a guid never changes, so the new id of a
                         renamed target can be found from the guid in
                         the release a peer moves to, as the outdated
-                        reference check already does. A shipped map
-                        stores what can be derived for edges, and its
-                        apply command would repeat much of cctool
-                        rename. Prose mentions carry ids only, so
-                        their new ids still need the renames of the
-                        releases in between.
+                        reference check already does, and the option
+                        now resolves edges that way. The rename maps
+                        are derived for each release under the ruled
+                        release record whatever is chosen here, so
+                        shipping them costs this option nothing. What
+                        it still adds is a command whose rewrite
+                        repeats much of cctool rename. Prose mentions
+                        carry ids only, so their new ids still need
+                        the renames of the releases in between.
 description:            |
                         Sources:
                         - An edge carries the id and the guid of its
@@ -32,20 +35,26 @@ description:            |
                         - The outdated reference rule finds the
                           current id of a reference whose id names
                           nothing from its guid
-                          (src/cctool/check/check.lp lines
-                          2041-2045). A mention is found outdated only
-                          through an alias (check.lp lines 2082-2086),
-                          and only register entries keep aliases
+                          (src/cctool/check/check.lp lines 1971-1975).
+                          A mention is found outdated only through an
+                          alias (check.lp lines 2012-2016), and only
+                          register entries keep aliases
                           (_data/schema/sch_register_entry.yaml lines
-                          67-80).
+                          67-81).
+                        - The release notes and rename maps are
+                          derived from the commit items since the last
+                          release
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-17).
                         - The commit check finds renamed items by
                           matching guids before and after
-                          (src/cctool/commit/change.lp lines
-                          107-114).
+                          (src/cctool/commit/change.lp lines 119-122).
                         - cctool rename changes every YAML document
-                          that names the id (AGENTS.md lines 123-127;
-                          src/cctool/edit/edit.py lines 960-971 and
-                          1023-1044). Strength: moderate.
+                          that names the id (AGENTS.md lines 124-128;
+                          src/cctool/edit/edit.py lines 1002-1086).
+                          Strength: weak; the option already resolves
+                          edges by guid and the maps are ruled, so
+                          only the cost of the command remains.
 
 edge:
 

@@ -10,27 +10,38 @@ protective_mark:
 
 title:                  Shared data shipped as files in the package
 brief:                  |
-                        cc-public's own content will reach a peer as
+                        cc-public's own content is to reach a peer as
                         the YAML of its _data inside the release
-                        package, and the planned multi-root check
-                        reads a second tree as files, so a segment
-                        held as files can cross as its tree with no
-                        fact format and no exporter. This does not
-                        serve a segment held in a graph database, and
-                        it gives the producer no say over which items
-                        leave, which costs little for cc-public, whose
-                        items are all public.
+                        package, which the ruling on consumers adopts
+                        provisionally until this decision is made, and
+                        the planned multi-root check reads a second
+                        tree as files, so a segment held as files can
+                        cross as its tree with no fact format and no
+                        exporter. This does not serve a segment held
+                        in a graph database, and it gives the producer
+                        no say over which items leave, which costs
+                        little for cc-public, whose items are all
+                        public.
 description:            |
-                        Drafted by Claude on 2026-10-23, in the review
-                        against the tree, from a ruling no annotation
-                        on this decision had used. Sources: peers
-                        bring in cc-public as a versioned package
+                        Sources: peers bring in cc-public as a
+                        versioned package
                         (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml,
                         brief), one package holding the tooling, the
                         shared data and the engine
                         (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml,
-                        brief). The release ships "the whole of _data"
-                        (owner's statement, 2026-10-22T16:30,
+                        brief). The wheel carries _data provisionally,
+                        and whether it should if an MCP service or API
+                        for the graph appears waits on this decision
+                        (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml
+                        lines 22-26). The release gate checks that the
+                        built package holds _data and that cctool
+                        check passes on the _data it ships
+                        (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                        lines 24-27). The wheel target names only
+                        src/cctool today, so a wheel built from the
+                        tree does not yet hold _data (pyproject.toml
+                        lines 61-62). The release ships "the whole of
+                        _data" (owner's statement, 2026-10-22T16:30,
                         _sources/context.md line 22). The plan names
                         cctool check --root A --root B as the
                         multi-root check

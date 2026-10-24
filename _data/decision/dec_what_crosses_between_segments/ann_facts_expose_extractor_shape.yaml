@@ -10,37 +10,60 @@ protective_mark:
 
 title:                  Extractor columns as a published interface
 brief:                  |
-                        Once facts cross segments, a change to a base
-                        predicate's columns is a breaking change for
-                        every consumer, and the file and line columns
-                        of items and references assume file storage
-                        that a graph database segment must imitate. No
-                        format for exchanging the rows exists yet, so
-                        facts need a stated serialization and a rule
-                        for those columns before a partner can produce
-                        them without cctool.
+                        Once facts cross segments, the base predicates
+                        become a supported interface. The ruling on
+                        the public API makes the data format public
+                        and leaves whether the query and fact
+                        vocabulary is public to this decision, so
+                        upholding facts adds the predicate table to
+                        what must stay compatible, and after 1.0 a
+                        change to a predicate's columns would be a
+                        breaking change for every consumer. The file
+                        and line columns of items and references
+                        assume file storage that a graph database
+                        segment must imitate. No format for exchanging
+                        the rows is declared yet, so facts need a
+                        stated serialization and a rule for those
+                        columns before a partner can produce them
+                        without cctool.
 description:            |
                         Sources:
                         - The item predicate's columns are id, guid,
                           holder, file and line, and the reference
                           predicate also has file and line
-                          (src/cctool/graph/extract.py lines
-                          185-192).
+                          (src/cctool/graph/extract.py lines 202-209).
+                        - The data format is public, naming YAML 1.2
+                          and JSON Schema 2020-12; anything not
+                          declared public is private; and whether the
+                          query and fact vocabulary is public waits on
+                          the decision on what crosses between
+                          segments
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          lines 13 and 37-45).
+                        - After 1.0 a breaking change waits for a
+                          major release
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml,
+                          brief), and the graph computes the bump
+                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml,
+                          brief).
                         - Failure reports print each failure with its
                           file and line where they have them
                           (AGENTS.md lines 165-168).
                         - The graph is also exposed as RDF triples
                           under urn:cc: namespaces
-                          (src/cctool/graph/sparql.py lines 18-25
-                          and 38-52).
-                        - Assumption: no command writes the base
-                          predicates to a file for another segment;
-                          the only JSON dump found serves jq queries
-                          (src/cctool/graph/jq.py line 81).
-                          Strength: moderate; the gap is a format to
-                          define and a coupling to manage through the
-                          release's versioning, not a flaw in the
-                          choice.
+                          (src/cctool/graph/sparql.py lines 18-25 and
+                          38-52).
+                        - cctool query sql and cctool query logic
+                          print the rows of any predicate as JSON with
+                          --json, all of them with --limit 0
+                          (src/cctool/cli/querying.py lines 116-123,
+                          162-163 and 232-233), but no command writes
+                          the base predicates as a declared shipment
+                          for another segment. Strength: moderate; the
+                          gap is a format to define and a coupling to
+                          manage through the release's versioning, not
+                          a flaw in the choice, and before 1.0 the
+                          coupling costs little.
 
 edge:
 

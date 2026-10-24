@@ -31,19 +31,29 @@ description:            |
                           (AGENTS.md lines 175-182); the tests check
                           only that the commands, pixi tasks and ids
                           the guides name exist, and nothing runs the
-                          steps
-                          (src/cctool/cli/_test/test_guidance.py
+                          steps (src/cctool/cli/_test/test_guidance.py
                           lines 15-25 and 151-198), while the gate
                           runs the tests under src only when code is
-                          staged (src/cctool/gate/gate.py lines 99
-                          and 173-191).
-                        - Setting up a peer needs at least a
-                          dependency pinned to a release and a path
-                          override for local work
+                          staged (src/cctool/gate/gate.py lines 99 and
+                          165-191).
+                        - Setting up a peer now takes two installs:
+                          the tool in an environment of its own from
+                          the lock a release publishes, and the parts
+                          the peer builds in, with declared ranges, in
+                          its own environment
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml,
+                          brief). Each needs a way to point at a local
+                          checkout for local work
                           (_sources/cc-patrol-notes/plan.md lines
                           69-72).
+                        - Once a peer can consume cc-public, the
+                          release gate runs a fixture peer against the
+                          built package
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml,
+                          brief). That tests a setup the gate scripts,
+                          not the steps the guidance gives.
                         - The workspace locks osx-arm64, osx-64 and
-                          linux-64 (pyproject.toml line 59), and the
+                          linux-64 (pyproject.toml line 66), and the
                           atlas VM has no network (context note,
                           _sources/context.md line 30).
                         - The owner will move to main "before outside

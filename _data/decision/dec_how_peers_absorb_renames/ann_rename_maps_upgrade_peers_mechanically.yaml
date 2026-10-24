@@ -26,45 +26,63 @@ description:            |
                         Sources:
                         - The rename edit rewrites every YAML document
                           of the local tree that names the old id
-                          (src/cctool/edit/edit.py lines
-                          1014-1034).
+                          (src/cctool/edit/edit.py lines 1065-1086).
                         - "Copies held in a partner's repository
                           cannot be refreshed from here."
                           (_data/schema/sch_trait_edge.yaml lines
-                          120-124)
+                          123-124)
                         - A reference whose id names nothing but whose
                           guid resolves is reported as outdated
-                          (src/cctool/check/check.lp lines
-                          2031-2035).
+                          (src/cctool/check/check.lp lines 1971-1975).
                         - A guid is minted once and never changed
-                          (AGENTS.md lines 113-115).
+                          (AGENTS.md lines 114-115).
                         - The commit check already detects renames and
                           removals, and every commit carries a commit
                           item (context note, _sources/context.md line
                           34); the history check compares the graph
                           before and after each commit by guid
-                          (_data/decision/dec_author_and_time_of_items/ann_commit_items_trace_each_item_change.yaml).
+                          (_data/decision/dec_author_and_time_of_items/ann_commit_items_trace_each_item_change.yaml);
+                          the rename maps are derived from the commit
+                          items since the last release
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
+                          lines 13-17).
                         - The owner accepts "lots of churn in this
                           pre-version-1.0 phase", and after 1.0
                           expects to bundle breaking changes such as
                           prefix changes into one major release
                           (owner's statement, 2026-10-22T16:23;
                           owner's memory note, 2026-10-21).
-                        - The option ships a map of renamed ids,
-                          matched by guid, and a command applies the
-                          maps of every release in between
+                        - The option ships the renames of each
+                          release, each with its old id, new id and
+                          guid, and a command rewrites each reference
+                          from its guid and each prose mention from
+                          the renames of every release in between
                           (_data/decision/dec_how_peers_absorb_renames/opt_upgrade_by_rename_maps.yaml,
                           brief); the hand option has the peer's
                           maintainer edit references from the release
                           notes (opt_upgrade_by_hand.yaml in the same
                           folder, brief).
-                        - Assumption: a prefix change renames every
-                          item of a type at once, so one release can
-                          rename hundreds of ids, and a hand edit
-                          across many references is more likely to
-                          miss one than a command. Strength: strong;
-                          churn is stated policy, and a hand upgrade
-                          multiplies it by the number of peers.
+                        - One change can rename every item of a kind:
+                          relation ids changed prefix from r to
+                          relation
+                          (_sources/cc-patrol-notes/decomposition-readiness.md
+                          lines 235-237), and the relation register
+                          now holds 35 entries; the move of the
+                          tooling package to cctool gave a new id to
+                          the items of its modules, packages,
+                          functions and logic programs, 181 of which
+                          have ids that contain cctool in this
+                          snapshot
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml;
+                          count of this snapshot). Those code items
+                          are not promised to a peer
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml
+                          lines 15-17); relation ids are.
+                        - Assumption: a hand edit across many
+                          references is more likely to miss one than a
+                          command. Strength: strong; churn is stated
+                          policy, and a hand upgrade multiplies it by
+                          the number of peers.
 
 edge:
 

@@ -10,28 +10,44 @@ protective_mark:
 
 title:                  Reuse of the one declared predicate interface
 brief:                  |
-                        Every check and query in cc-public already
-                        reads base predicates declared in one place,
-                        so exchanging those rows lets the same checks
-                        run over the union of segments with no second
-                        reader. A query service adds a server and a
-                        protocol beside that one form.
+                        The checks written as logic programs, and the
+                        SQL and logic queries, read base predicates
+                        declared in one place, so exchanging those
+                        rows lets those checks run over the union of
+                        segments with no second reader. Validation
+                        against the schemas, and the jq, SPARQL and
+                        text queries, read the documents or their
+                        fields instead, so they would not run over
+                        facts alone. A query service adds a server and
+                        a protocol beside that one form.
 description:            |
                         Sources:
                         - The predicate table "names each base
                           predicate, its columns and what a row of it
                           means, and is the one place they are
                           declared, for logic programs and for SQL
-                          alike." (src/cctool/graph/extract.py
-                          lines 24-28, table at line 184)
+                          alike." (src/cctool/graph/extract.py lines
+                          25-28, table at line 201)
                         - The SQL, SPARQL, jq and text queries run
                           over the graph, and the checks are logic
-                          program rules (README.md lines 22-23).
+                          program rules and schema validation
+                          (README.md lines 22-23).
+                        - cctool check evaluates the logic rules over
+                          the facts extracted from the documents, then
+                          validates the documents themselves against
+                          their schemas (src/cctool/check/check.py
+                          lines 277-288).
+                        - SPARQL sees each item's fields, such as
+                          f:title, and jq sees the YAML documents as
+                          they are written, not the predicates
+                          (src/cctool/cli/querying.py lines 85-89).
                         - The queries option has each segment answer
                           queries from the others through a service
                           (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
-                          brief). Strength: strong; it adds only a
-                          serialized form of rows that already exist.
+                          brief). Strength: moderate; it adds only a
+                          serialized form of rows that already exist
+                          for the logic checks, but schema validation
+                          of what is consumed is left to the producer.
 
 edge:
 
