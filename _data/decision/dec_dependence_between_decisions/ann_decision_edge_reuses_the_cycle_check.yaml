@@ -1,0 +1,92 @@
+id_self:                ann_decision_edge_reuses_the_cycle_check
+guid_self:              ann_d1065d78decd4c09bb3ff630e95bf499
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Machinery an edge between decisions reuses
+brief:                  |
+                        An edge between decisions adds one relation
+                        and reuses the existing acyclic flag, chain
+                        computation and cycle check, plus one sort
+                        key, about a person day of work. Edges between
+                        options need two relations, a new check across
+                        decisions and a derivation of decision
+                        dependence, about two to three person days and
+                        some four mechanisms. Prose adds no mechanism
+                        and costs nothing to build.
+description:            |
+                        Sources: the simplicity measures are distinct
+                        mechanisms introduced and jobs done by more
+                        than one mechanism
+                        (_data/register/reg_concern.yaml lines
+                        488-490); the cost measure is development
+                        effort in person days (line 616). A relation
+                        is made acyclic by one field, already set on
+                        six relations
+                        (_data/register/reg_relation.yaml lines 225,
+                        295, 840, 958, 1319, 1469), and one generic
+                        rule computes chains and finds cycles in any
+                        acyclic relation (src/cctool/check/check.lp
+                        lines 2096-2137). The constraint that an end
+                        is a decision already exists
+                        (relcon_is_decision,
+                        _data/register/reg_relation_constraint.yaml
+                        line 296). The decisions page has a sort table
+                        to extend (src/cctool/web/page.py lines
+                        203-229). Every existing ruling check works
+                        within one decision (src/cctool/check/check.lp
+                        lines 1188-1191, 1224-1228, 1299-1301,
+                        1470-1475 and 1539-1545), so the option check
+                        is new logic. The option of edges between
+                        options names required and excluded options
+                        and a check that enforces exclusion
+                        (_data/decision/dec_dependence_between_decisions/opt_option_requires_or_excludes_option.yaml
+                        lines 12-18). The prose option adds no new
+                        relation
+                        (_data/decision/dec_dependence_between_decisions/opt_dependence_in_prose.yaml
+                        lines 13-15). A code commit costs about 78 s
+                        of gate time and a data-only commit about 10 s
+                        (context note, _sources/context.md line 31);
+                        every option but prose needs a code change.
+                        Assumption: the person-day figures are
+                        estimates from the size of comparable rules
+                        and page code, not measured. Strength: strong
+                        at any size; mechanism counts and build cost
+                        do not grow with the number of decisions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_decision_constrains_decision
+    guid_target:        opt_d0c17135f8a44254b1bfe2e54282fcee
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dependence_in_prose
+    guid_target:        opt_abc6717329d34771ad53ca8a031fa55f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_option_requires_or_excludes_option
+    guid_target:        opt_fb8bb03d85d74fdea0f1f1f6574c7c42
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

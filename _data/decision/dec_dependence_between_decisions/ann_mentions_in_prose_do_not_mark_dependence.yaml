@@ -1,0 +1,109 @@
+id_self:                ann_mentions_in_prose_do_not_mark_dependence
+guid_self:              ann_504f68d0ea944149b089f1b2654753e6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Untyped mentions in prose
+brief:                  |
+                        The review pages already list which items an
+                        item's prose names and which name it, but a
+                        mention carries no relation, so it cannot tell
+                        a constraint from an example or a cited fact.
+                        Dependence left in prose cannot be traced,
+                        ranked or seen in a diff, and each reader must
+                        rediscover it; any of the three typed edges
+                        says what the link means.
+description:            |
+                        Sources: the tooling extracts every id named
+                        in the title, brief and description of an item
+                        by a regular expression and returns ids only
+                        (src/cctool/web/argument.py lines 211-224 and
+                        282-288), shown as Mentions and Mentioned by
+                        (src/cctool/web/page.py lines 1136-1137). Some
+                        cross-decision mentions are not dependence:
+                        one annotation names the ruling of the growth
+                        policy only as the source of a fact
+                        (_data/decision/dec_branch_lines/ann_legacy_tag_lets_main_take_dev_history.yaml
+                        lines 22-28), and another names the cross-item
+                        checks engine decision only as the item a
+                        trial edge pointed at
+                        (_data/decision/dec_folder_of_an_argument/ann_annotation_on_two_decisions_refused.yaml
+                        lines 30-35). 91 pairs of decisions (94
+                        counting direction) are linked by a decision
+                        id in prose outside edge fields, and 16 of the
+                        1453 annotations in decision folders cite
+                        another decision's ruling file by path
+                        (counted on the snapshot by the advocates),
+                        with nothing marking which are dependence. So
+                        a count of mentions would rank decisions by
+                        how often they are cited, not by what they
+                        constrain (inference). The checks keep prose
+                        ids valid (dangling mention,
+                        src/cctool/check/check.lp line 1621) but not
+                        complete. The prose option adds no new
+                        relation
+                        (_data/decision/dec_dependence_between_decisions/opt_dependence_in_prose.yaml
+                        lines 13-15). Traceability asks for tracing in
+                        both directions
+                        (_data/register/reg_concern.yaml lines
+                        552-572); reviewability asks whether a person
+                        can judge a change in full (line 524); cost
+                        asks how cost grows with use (line 613), and
+                        here the cost of finding dependence is paid by
+                        a reader at each review rather than once by
+                        the author (inference). Strength: holds and
+                        grows; at ten times the decisions mentions
+                        grow with them, and the share that is not
+                        dependence has no reason to fall (assumption).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dependence_in_prose
+    guid_target:        opt_abc6717329d34771ad53ca8a031fa55f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_decision_constrains_decision
+    guid_target:        opt_d0c17135f8a44254b1bfe2e54282fcee
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_option_requires_or_excludes_option
+    guid_target:        opt_fb8bb03d85d74fdea0f1f1f6574c7c42
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ruling_constrains_decision
+    guid_target:        opt_e78932ffb06545e5b0ce9694bf1c8ebd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

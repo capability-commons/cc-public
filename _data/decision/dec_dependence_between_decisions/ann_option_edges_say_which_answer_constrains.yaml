@@ -1,0 +1,92 @@
+id_self:                ann_option_edges_say_which_answer_constrains
+guid_self:              ann_87a7e7707ba04a6f90d970a20d2b1d2e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Which answer of one decision constrains another
+brief:                  |
+                        Arguments today rest on a particular option of
+                        another decision, not on the decision as a
+                        whole. An edge between options says which
+                        answer forces what, so a check can catch two
+                        rulings that cannot both hold and a change of
+                        ruling can be traced to what it disturbs. A
+                        ruling that records what it made follow says
+                        the same in its own words, which traces a
+                        change of ruling but gives a check nothing to
+                        read. An edge between decisions says only that
+                        one bears on the other.
+description:            |
+                        Sources: annotations already cite a single
+                        option of another decision as a premise, for
+                        example the versioned package and the
+                        git-tags-only publishing route
+                        (_data/decision/dec_home_of_the_engine_code/ann_tooling_only_peers_inherit_cpp_build.yaml
+                        lines 24 and 28). A ruling is edited in place,
+                        so the upheld option can change without a new
+                        item
+                        (_data/decision/dec_change_of_a_ruling/ruling_change_of_a_ruling.yaml
+                        lines 11-19). The decision edge records only
+                        that one decision constrains another, whatever
+                        either is ruled
+                        (_data/decision/dec_dependence_between_decisions/opt_decision_constrains_decision.yaml
+                        lines 12-18). Under the option edges, a ruling
+                        that upholds an option leaves the options it
+                        excludes unable to be upheld, which a check
+                        can enforce
+                        (opt_option_requires_or_excludes_option.yaml
+                        lines 15-18, same folder). The ruling option
+                        records what that ruling has made follow
+                        (opt_ruling_constrains_decision.yaml lines
+                        13-16, same folder), and does not say in what
+                        form, so a check on it is not assumed
+                        (inference). No existing check compares
+                        rulings of different decisions
+                        (src/cctool/check/check.lp lines 1188-1191,
+                        1224-1228, 1299-1301, 1470-1475 and
+                        1539-1545). Functional suitability asks
+                        whether the design does anything it should not
+                        (_data/register/reg_concern.yaml line 78), and
+                        two upheld options that exclude each other are
+                        such a result; traceability asks for tracing
+                        in both directions (lines 552-572). Strength:
+                        moderate; the precision is real, but
+                        incomplete option edges weaken it, and for the
+                        ruling option it rests on prose.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_option_requires_or_excludes_option
+    guid_target:        opt_fb8bb03d85d74fdea0f1f1f6574c7c42
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ruling_constrains_decision
+    guid_target:        opt_e78932ffb06545e5b0ce9694bf1c8ebd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_decision_constrains_decision
+    guid_target:        opt_d0c17135f8a44254b1bfe2e54282fcee
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

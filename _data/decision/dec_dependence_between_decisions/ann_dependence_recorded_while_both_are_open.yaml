@@ -1,0 +1,108 @@
+id_self:                ann_dependence_recorded_while_both_are_open
+guid_self:              ann_7e83690ea8a34da99b390e77917418ff
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dependence recorded while both decisions are open
+brief:                  |
+                        The decision exists so that the decisions many
+                        others depend on can be found and ruled first,
+                        which needs the dependence on record while
+                        both decisions are open. An edge between
+                        decisions or between their options can be
+                        written at once; an edge held by a ruling
+                        appears only when the keystone is ruled, after
+                        the decisions it constrains may already have
+                        been settled, argued or reviewed, and the
+                        owner's own example is that case.
+description:            |
+                        Sources: the decision asks how the graph
+                        should record dependence "so that the
+                        decisions many others depend on can be found
+                        and ruled first"
+                        (_data/decision/dec_dependence_between_decisions/dec_dependence_between_decisions.yaml
+                        lines 12-15). Under the ruling option, a
+                        ruling names each open decision whose options
+                        it narrows, and open decisions that depend on
+                        each other are not linked until one is ruled
+                        (_data/decision/dec_dependence_between_decisions/opt_ruling_constrains_decision.yaml
+                        lines 13-18). The owner's example of
+                        2026-10-24: the decision on who consumes a
+                        release bears on the release gate, the
+                        publishing route and the declared public API
+                        (owner's statement, 2026-10-24, background of
+                        the advocate brief). That decision has no
+                        ruling
+                        (_data/decision/dec_who_consumes_a_release/
+                        holds the decision and three options only),
+                        while the release gate was ruled on 2026-10-24
+                        (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                        lines 19-20), so under the ruling option a
+                        constraint on a settled decision is traced
+                        nowhere until the open one is ruled. 18 of 133
+                        decisions are open (133 decision folders, 115
+                        ruling files, counted on the snapshot; one
+                        ruling per decision, src/cctool/check/check.lp
+                        line 1470). The decisions page sorts only by
+                        component, standing, amount of argument and
+                        title (src/cctool/web/page.py lines 203-229),
+                        so nothing ranks open decisions by dependence
+                        today. The reviewability concern measures
+                        changes awaiting review
+                        (_data/register/reg_concern.yaml line 530);
+                        the cost concern asks how cost grows with use
+                        (line 613). Assumption: rework of arguments
+                        and reviews done on a dependent decision
+                        before its keystone is ruled costs more than
+                        writing an edge early. Strength: strong, and
+                        stronger at ten times the decisions, when
+                        about 180 would be open at today's ratio
+                        (assumption) and all dependence among them
+                        stays invisible under the ruling option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_decision_constrains_decision
+    guid_target:        opt_d0c17135f8a44254b1bfe2e54282fcee
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_option_requires_or_excludes_option
+    guid_target:        opt_fb8bb03d85d74fdea0f1f1f6574c7c42
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ruling_constrains_decision
+    guid_target:        opt_e78932ffb06545e5b0ce9694bf1c8ebd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e
