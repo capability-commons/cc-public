@@ -1,0 +1,80 @@
+id_self:                ann_command_line_unpromised_until_its_document
+guid_self:              ann_8de70d5f696142a5b19690f9cff7e333
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Command line without a promise until its document lands
+brief:                  |
+                        Under the split-by-kind option the command
+                        line is public only through an interface
+                        control document of its own, yet no document
+                        form for a command line exists. Until one is
+                        recorded, the commands the first peer's hooks
+                        run carry no SemVer promise, where the
+                        data-and-commands option promises them by
+                        naming their kind. The gap matters only if 1.0
+                        is tagged before the command document lands,
+                        and 1.0 is six months or more away.
+description:            |
+                        Sources:
+                        - The option: code "is public only where an
+                          interface control document declares it
+                          public, and
+                          private otherwise. The command line has an interface control document of its own and is
+                          treated in the same way, which may need the interface control document schema to describe
+                          command line interfaces"
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 15-21).
+                        - The surface forms are native, dataflow_step
+                          and artifact, and a native surface names
+                          python, c
+                          or cpp (_data/schema/sch_interface_control_document.yaml lines 564-575 and 606-612); none is a
+                          command line. No document under _data/interface_control_document covers the command line
+                          (listing: the check interface and three dataflow step documents).
+                        - The data-and-commands option names the
+                          cctool command line public
+                          (_data/decision/dec_declared_public_api/opt_public_api_is_data_and_commands.yaml lines 13-16).
+                        - cc-patrol needs cctool and the schemas, and
+                          cctool check over two roots
+                          (_sources/cc-patrol-notes/plan.md lines 65-69); cctool runs in a peer's commit hooks, which
+                          fail closed
+                          (_data/decision/dec_who_consumes_a_release/ann_peer_runs_the_set_the_release_gate_tested.yaml).
+                        - Under major version zero "Anything MAY
+                          change at any time" (https://semver.org/,
+                          item 4), so
+                          the gap is real only from 1.0.
+                        - 1.0 "is likely to be 6 months or more away"
+                          (owner's statement, 2026-10-24T18:09Z).
+                          Strength: weak if the command form and a
+                          command document are recorded before 1.0,
+                          which the time to 1.0 allows; strong at ten
+                          times the peers if 1.0 comes first, since
+                          every peer's hooks run the same commands.
+                          Answered by a condition on the option: the
+                          command line document is recorded and
+                          checked before the 1.0 tag. Depends on:
+                          commands for peers, which is open
+                          (_data/decision/dec_commands_for_peers),
+                          since a peer command group widens what the
+                          document must declare.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,103 @@
+id_self:                ann_advice_promotion_seen_only_as_a_rename
+guid_self:              ann_ae58a7b41ee64fb1b2ee2537bdb36f72
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Promotion of advice to a failure, with no declared element behind it
+brief:                  |
+                        After 1.0 the option makes moving a check from
+                        advice to failure a major change, but whether
+                        a check is advice depends only on which file
+                        holds it, so a promotion is a move between
+                        files that changes the check's id, and a
+                        tightened rule keeps an old failure form and a
+                        new advice form side by side for a whole major
+                        cycle. A check is none of the option's public
+                        kinds and the check interface does not list
+                        the checks, so the computed bump cannot see a
+                        promotion as breaking or name it in the notes.
+description:            |
+                        Sources:
+                        - After 1.0 a new or tightened check is advice
+                          in a minor release and a failure only in a
+                          major
+                          one (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 33-37;
+                          owner's statement, 2026-10-24T18:09Z). Before 1.0 checks are added and tightened freely, so
+                          none of this applies yet.
+                        - Whether a check's rows are advice or
+                          failures depends only on whether advise.lp
+                          declares it
+                          (src/cctool/check/check.py lines 290-294).
+                        - A check's id is made of the prefix, its file
+                          name and the predicate name
+                          (_data/register/reg_data_item_type.yaml lines 1601-1628; src/cctool/check/advise.lp line 39;
+                          src/cctool/check/check.lp line 779). A move from advise.lp to check.lp therefore changes the
+                          id, which the commit rules see as a rename by guid; a tightened rule changes only content,
+                          reported by digest (src/cctool/commit/change.lp lines 100-124; src/cctool/commit/impact.lp
+                          lines 100-123).
+                        - Under the option, what is public is the data
+                          format, the command line and declared
+                          Python, C
+                          and C++ (option lines 13-21), so a bump computed against that declaration would treat the
+                          moved predicate as a private change. Assumption: no bump computation exists yet to confirm
+                          this.
+                        - The check interface declares the check
+                          functions and the shape of their failures,
+                          not which
+                          checks exist or which are advice (_data/interface_control_document/icd_cctool_check.yaml
+                          lines 25-39 and 58-100). check.lp has 70 show statements and advise.lp 8 (grep of the
+                          snapshot).
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism
+                          (_data/register/reg_concern.yaml lines 488-490).
+                        - The owner wants the bump and the notes
+                          determined mechanically from the graph
+                          (owner's
+                          statements, 2026-10-22T16:24 and 16:28).
+                        Strength: zero before 1.0, which is six months
+                        or more away (owner's statement,
+                        2026-10-24T18:09Z); after 1.0 strong for
+                        traceability, since with ten times the checks
+                        promotions become routine at each major and
+                        each one left out of the computed bump either
+                        stops every peer gate in a minor release or
+                        depends on a person remembering it; moderate
+                        for simplicity. Answered by one severity fact
+                        per check in place of the two-file split,
+                        declared in the check interface document, so a
+                        promotion or tightening is a change to a
+                        public member; or, at least, a rule that a
+                        check's move from advice to failure is
+                        breaking.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

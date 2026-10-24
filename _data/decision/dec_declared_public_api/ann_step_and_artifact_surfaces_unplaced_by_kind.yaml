@@ -1,0 +1,83 @@
+id_self:                ann_step_and_artifact_surfaces_unplaced_by_kind
+guid_self:              ann_0124e8ecdf7549988148c0c7602da7f5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow step and artifact surfaces outside the option's kinds
+brief:                  |
+                        The option names the data format, Python, C
+                        and C++ code declared in a document, and the
+                        command line, but a dataflow step or artifact
+                        surface names no language, so whether the back
+                        pressure, concurrency, persistence and failure
+                        behavior such a surface states is public is
+                        unsaid. Three of cc-public's four documents
+                        and all of the first peer's drafts use the
+                        step form, and on a peer's hosts those
+                        properties decide latency and throughput as
+                        well as fault behavior.
+description:            |
+                        Sources:
+                        - The option: "Python, C and C++ code is
+                          public only where an interface control
+                          document
+                          declares it public" (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml
+                          lines 15-17).
+                        - A surface is exactly one of native,
+                          dataflow_step or artifact
+                          (_data/schema/sch_interface_control_document.yaml lines 564-588), and "A dataflow step surface
+                          names no language"
+                          (_data/decision/dec_check_of_cpp_interfaces/ruling_cpp_interfaces_checked_from_the_first.yaml,
+                          brief). A step surface may state persistence, back pressure, concurrency and failure (same
+                          schema, lines 761-813).
+                        - Three of cc-public's four documents use the
+                          step form
+                          (_data/decision/dec_declared_public_api/ann_behavior_under_faults_stated_only_in_documents.yaml).
+                        - All 18 of cc-patrol's draft documents use
+                          step surfaces and none a native one; six
+                          state back
+                          pressure or persistence, for example "Bounded; units it cannot keep are counted" (grep of
+                          _sources/cc-patrol-notes/draft/icd; the recorder document, lines 108-110). The steps are
+                          written in C++ but presented as dataflow steps.
+                        - The engine ships in the package peers
+                          install
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief), and runs on hosts from a laptop to a Jetson Orin Nano (context note,
+                          _sources/context.md).
+                        Strength: moderate; a wording gap that one
+                        sentence closes, growing with the number of
+                        step documents peers write. Answered by one
+                        sentence in the option: every surface form of
+                        a document marked public is public, so step
+                        and artifact surfaces are judged like native
+                        ones. A document-level status field covers
+                        every form alike. As recorded elsewhere, the
+                        stated behavior is prose that no check holds
+                        to the code under any option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

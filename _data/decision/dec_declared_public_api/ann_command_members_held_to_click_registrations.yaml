@@ -1,0 +1,85 @@
+id_self:                ann_command_members_held_to_click_registrations
+guid_self:              ann_947d8b774a5944519af2115ddd81baaa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Command members held to their click registrations
+brief:                  |
+                        A command line document makes each of cctool's
+                        29 commands and their parameters a member that
+                        a peer need or requirement can point at, and
+                        lets the history check see a command renamed
+                        or removed. That trace holds only if a check
+                        ties each member to the code that realizes it,
+                        and reading cctool's click registrations for
+                        that takes about 0.2 s, small beside the
+                        commit gate.
+description:            |
+                        Sources:
+                        - The option gives the command line an
+                          interface control document of its own
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 17-21).
+                        - The commit rules detect renames and removals
+                          of items by guid, embedded members included
+                          (src/cctool/commit/change.lp lines 106-124; recorded in
+                          _data/decision/dec_declared_public_api/ann_python_surface_without_items_needs_a_detector.yaml).
+                        - Each module under src/cctool/cli carries one
+                          module item and no command function carries
+                          an
+                          item (grep of src/cctool/cli). A function gets an item only when something must point at it
+                          (AGENTS.md lines 110-113), which an edge from a command member would be. The commands are
+                          listed in prose only (README.md lines 112-138).
+                        - A restated signature was accepted only on
+                          condition that it is checked mechanically,
+                          and a
+                          restatement has drifted before
+                          (_data/decision/dec_interface_signature_restated/ruling_interface_signature_restated.yaml,
+                          brief; _data/decision/dec_interface_signature_restated/ann_restated_signature_drifted_before.yaml,
+                          title).
+                        - Importing the cctool command module and
+                          walking its click groups found 29 commands
+                          and 113
+                          parameters; the import took 0.16 to 0.19 s over three runs and the walk under 0.1 ms
+                          (advocate's measurement on Python 3.13 with click 8.5 and 4 CPUs, not the locked environment,
+                          so indicative).
+                        - The commit gate takes about 78 s for a code
+                          commit and about 10 s for a data-only commit
+                          (context note, _sources/context.md). Assumption: the check runs only when code is staged, as
+                          tests already do.
+                        Strength: strong for traceability, conditional
+                        on the check; weak for performance efficiency,
+                        where the point is only that cost gives no
+                        reason against the document, staying under a
+                        second at ten times the commands. With ten
+                        times the commands each remains traceable to a
+                        reason only through its member, and an
+                        unchecked document drifts in proportion to its
+                        size. Depends on: commands for peers, which is
+                        open (_data/decision/dec_commands_for_peers).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

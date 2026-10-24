@@ -1,0 +1,78 @@
+id_self:                ann_command_document_needs_a_new_extractor
+guid_self:              ann_aa6b376a083b42dcac049e3b1459c459
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  New extractor for the command line document
+brief:                  |
+                        A command line document restates what the code
+                        already says, and a restatement is accepted
+                        only if checked mechanically, which the
+                        existing parameter checks cannot do because
+                        they compare Python parameter names, not flag
+                        spellings. The smallest check reads click's
+                        own description of each command, one new
+                        extractor of a new kind, since it imports code
+                        where today's extraction parses source.
+description:            |
+                        Sources:
+                        - A restated signature is accepted on
+                          condition that it is checked mechanically
+                          (_data/decision/dec_interface_signature_restated/ruling_interface_signature_restated.yaml,
+                          brief).
+                        - The parameter and signature checks apply
+                          only to a Python function item that realizes
+                          a
+                          member, and compare Python parameter names and positions (src/cctool/check/check.lp lines
+                          772-775 and 814-886).
+                        - A click option's Python name can differ from
+                          its command line spelling: --json binds
+                          is_json
+                          (src/cctool/cli/querying.py lines 121-123). Spellings, types, defaults and help text are in
+                          the decorators, not the signature (src/cctool/cli/checking.py lines 43-50).
+                        - click's core objects have had a to_info_dict
+                          method since click 8.0.0
+                          (https://click.palletsprojects.com/en/stable/changes/, version 8.0.0);
+                          cctool requires click 8.2 or later (pyproject.toml line 43). With click 8.5.0 it returned
+                          each parameter's name, opts, type, required, default, multiple, is_flag and hidden for a test
+                          command (advocate's run).
+                        - Python facts are extracted today by parsing
+                          source (src/cctool/graph/extract.py line
+                          1134),
+                          not by importing it. Assumption: importing the command module at check time is acceptable;
+                          if not, parsing click decorators from the syntax tree is more code.
+                        - The surface forms are closed and extended by
+                          a deliberate schema change
+                          (_data/decision/dec_interface_surface_scope/ann_a_new_form_is_a_deliberate_change.yaml,
+                          brief).
+                        Strength: strong as a cost, growing with the
+                        number of commands, 29 today plus any peer
+                        group; an unchecked command document would be
+                        a second statement of the command line free to
+                        drift. It sizes the cost as one surface form
+                        and one extractor, no new tool. It bears
+                        equally on the interface-documents option as
+                        worded, which also claims to declare the
+                        commands.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

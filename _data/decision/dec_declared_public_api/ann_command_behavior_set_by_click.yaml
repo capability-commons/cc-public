@@ -1,0 +1,93 @@
+id_self:                ann_command_behavior_set_by_click
+guid_self:              ann_1cca20cb9ba6411083f0bb78554c29e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared command behavior that a click upgrade changes
+brief:                  |
+                        Part of what a command line document would
+                        declare is click's behavior, not cctool's:
+                        click changed the exit status of a command run
+                        with no arguments from 0 to 2 in 8.2.0 and the
+                        handling of flag defaults in 8.3.0, both
+                        inside the range pyproject admits. The
+                        document should declare what cctool itself
+                        sets, such as its three exit statuses that a
+                        peer's fail-closed hooks rely on, and the
+                        release gate's fixture peer should run the
+                        declared commands, so a relock that moves
+                        click is seen as a change to a declared
+                        surface.
+description:            |
+                        Sources:
+                        - The command line has an interface control
+                          document of its own
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 17-21).
+                        - cctool admits click 8.2 up to but not
+                          including 9 (pyproject.toml line 43); 13 of
+                          its options
+                          are click flags (advocate's grep of src/cctool/cli).
+                        - cctool sets exit statuses 0, 1 and 2 itself
+                          (src/cctool/cli/group.py lines 31-33), which
+                          separate a failed check from a check that could not run (src/cctool/cli/checking.py lines
+                          59-60 and 66-68). A peer's commit hooks fail closed
+                          (_data/decision/dec_who_consumes_a_release/ann_peer_runs_the_set_the_release_gate_tested.yaml),
+                          so they rely on that difference.
+                        - Click 8.2.0: with no_args_is_help, "the exit
+                          code is 2 instead of 0"; click 8.3.0: "The
+                          default
+                          parameter value is now preserved as-is" for flag options
+                          (https://click.palletsprojects.com/en/stable/changes/).
+                        - What a peer runs is installed from the
+                          tested lock each release publishes
+                          (_data/decision/dec_who_consumes_a_release/ruling_consumers_by_what_they_consume.yaml, brief),
+                          so click moves for a peer only when cc-public relocks.
+                        - A Lock commit that pulls in a breaking
+                          upstream release can be counted as minor or
+                          patch
+                          (_data/decision/dec_version_scheme/ann_commit_verbs_do_not_say_what_breaks.yaml); this point
+                          is narrower: which of click's behaviors fall inside the declared surface.
+                        - Once a peer can consume cc-public, a fixture
+                          peer checks against the built package at
+                          release
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml, brief).
+                        Strength: moderate; it holds at any scale and
+                        grows with the number of declared commands and
+                        options, but the lock limits the event to a
+                        relock cc-public chooses to make. It bears
+                        equally on the data-and-commands option, which
+                        names the command line public with no account
+                        of click. Depends on: commands for peers
+                        (_data/decision/dec_commands_for_peers).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_declared_public_api
+    guid_target:        dec_fb409686f75f49148835a0b395653376
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_public_api_split_by_kind
+    guid_target:        opt_2a61ed8873e843cbbdd6bf6e9ef9547b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
