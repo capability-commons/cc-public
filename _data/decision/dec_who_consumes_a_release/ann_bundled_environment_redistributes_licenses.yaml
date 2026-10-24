@@ -1,0 +1,82 @@
+id_self:                ann_bundled_environment_redistributes_licenses
+guid_self:              ann_433ea87d41fa4e6983bfdafbcea833bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Licenses of what a release redistributes
+brief:                  |
+                        A library release distributes only cc-public's
+                        own Apache-2.0 code and names its
+                        dependencies, which each peer fetches for
+                        itself. A release that ships its exact
+                        environment as a bundle redistributes every
+                        package in it, including GPL-3.0-only
+                        toolchain parts, and takes on their license
+                        obligations, while the PyPI entries in the
+                        lock record no license at all.
+description:            |
+                        Sources:
+                        - cc-public is licensed Apache-2.0
+                          (pyproject.toml line 41).
+                        - ld_impl_linux-64, in the default
+                          environment, is GPL-3.0-only (pixi.lock
+                          lines 1363 and 1371),
+                          and libgcc, libgomp and libstdcxx are GPL-3.0-only WITH GCC-exception-3.1 (pixi.lock lines
+                          1501-1520 and 1762-1770).
+                        - The conda entries in the lock carry license
+                          fields and the PyPI entries carry none
+                          (_data/decision/dec_environment_manager/ann_pixi_lock_records_hashes_and_licenses.yaml,
+                          description).
+                        - pixi-pack bundles the locked packages into
+                          one archive for another machine
+                          (https://pixi.prefix.dev/dev/deployment/pixi_pack/).
+                        - Dependency risk draws on ISO/IEC 5230:2020,
+                          which covers compliance with the licenses of
+                          open
+                          source dependencies (_data/register/reg_concern.yaml lines 689-695).
+                        - Assumption: publishing a lock that a peer
+                          installs from the original indexes is not
+                          redistribution by cc-public, while publishing a packed archive is; so this bears on the split
+                          option only if its tool part ships as a bundle.
+                        - An earlier annotation assumed these
+                          toolchain parts are not distributed with
+                          cc-public, so its
+                          license is not affected, and says this was not checked against ISO/IEC 5230
+                          (_data/decision/dec_environment_manager/ann_pixi_brings_six_times_the_named_packages.yaml,
+                          description).
+                        Strength: weak while every peer is the owner's
+                        own (owner's statement, 2026-10-22T16:21);
+                        moderate at ten times the peers that include
+                        outside partners.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

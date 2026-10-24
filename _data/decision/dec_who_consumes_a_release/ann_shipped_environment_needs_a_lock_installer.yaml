@@ -1,0 +1,114 @@
+id_self:                ann_shipped_environment_needs_a_lock_installer
+guid_self:              ann_d03bb8e3ad154df48feed29d155801ab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Installer needed to take up a shipped environment
+brief:                  |
+                        The only tested environment is a pixi lock,
+                        and no standard installer reads a lock from a
+                        dependency, so shipping it binds every peer to
+                        pixi and adds a published environment file and
+                        a way to install it; the split option does so
+                        for its tool part. A wheel with declared
+                        ranges installs with pip, uv or pixi and needs
+                        no new release mechanism, but only once every
+                        program cctool runs, such as jq, is declared
+                        in the package metadata.
+description:            |
+                        Sources:
+                        - The tested environment is a pixi lock,
+                          version 6, that mixes conda-forge packages
+                          and PyPI
+                          wheels (pixi.lock lines 1-8 and 12-66).
+                        - Conda packages are installed by
+                          conda-compatible clients
+                          (_data/decision/dec_publishing_route/ann_conda_channel_binds_partners_to_conda_tools.yaml,
+                          brief); pixi-pack archives recreate an environment without conda, but only on the platform they
+                          were made for (https://pixi.prefix.dev/dev/deployment/pixi_pack/).
+                        - pip installs from pylock.toml only from pip
+                          26.1, experimentally
+                          (https://pydevtools.com/handbook/how-to/how-to-install-from-a-pylock-toml-lockfile-with-pip/);
+                          the pixi global documentation of version 0.35.0 lists a lock file only as a possible future
+                          feature (https://pixi.prefix.dev/v0.35.0/features/global_tools).
+                        - pre-commit, a tool that runs in other
+                          repositories' hooks, gives each hook an
+                          environment of its
+                          own, cloned at a rev it assumes is immutable, and its documentation describes no lock file for
+                          those environments (https://pre-commit.com/).
+                        - The declared ranges already exist
+                          (pyproject.toml lines 43-49), the ruled
+                          release gate already
+                          installs the built package fresh and resolves them, tentatively
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 13-22), and a peer brings in
+                          cc-public as one versioned package
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml).
+                        - jq is declared only as a pixi dependency,
+                          not in the package metadata (pyproject.toml
+                          lines 72-74
+                          against lines 43-49), and cctool query jq stops with "There is no jq program to run" where it is
+                          missing (src/cctool/graph/jq.py lines 89-91).
+                        - The wheel selects only src/cctool
+                          (pyproject.toml lines 58-62), so it holds no
+                          _data today; the
+                          check that the built package holds _data, which the ruled gate adds, is needed under every
+                          option and does not separate them (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          lines 24-27).
+                        - The cc-patrol plan recommends a pixi git
+                          dependency on cc-public
+                          (_sources/cc-patrol-notes/plan.md lines 69-72), and all peers are the owner's own for now
+                          (owner's statement, 2026-10-22T16:21, _sources/context.md line 15).
+                        - Compatibility counts tools a partner must
+                          install, and simplicity counts distinct
+                          mechanisms
+                          (_data/register/reg_concern.yaml lines 309-312 and 488-490).
+                        - Assumption: a package's own lock is not read
+                          when it is installed as a dependency by pip
+                          or
+                          pixi; installers read its declared requirements.
+                        Strength: weak today, since the one known peer
+                        uses pixi; strong at ten times the peers, once
+                        outside partners on other managers arrive. The
+                        mechanism count does not grow with peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

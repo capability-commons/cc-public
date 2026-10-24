@@ -1,0 +1,91 @@
+id_self:                ann_product_parts_live_in_the_peer_environment
+guid_self:              ann_d50d06a248b141d3bf0dbea3ec42da98
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Parts a peer builds into its own product
+brief:                  |
+                        What a peer imports or builds into its
+                        product, such as a Python interface, the
+                        generator or the C++ engine, must coexist with
+                        that product's own dependencies and toolchain,
+                        so it cannot arrive as a separate exact
+                        environment. Pinning it exactly forces the
+                        peer's whole product onto cc-public's pins,
+                        where it clashes or fails to install; declared
+                        ranges let the peer's developer find a set
+                        that works.
+description:            |
+                        Sources:
+                        - The engine, with its generator, ships in the
+                          same package that peers install
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief); src holds only the cctool package today, so the engine is not yet built (listing of src).
+                        - Patrol's nodes are native C++ step functions
+                          called by the engine, and Patrol host code
+                          is C++20
+                          and its CUDA C++17, behind a C++17 engine ABI (_sources/cc-patrol-notes/plan.md lines 88-98).
+                        - cc-patrol will consume cc-public's tooling,
+                          data and dataflow engine (owner's statement
+                          file,
+                          /home/claude/work/advocates/consumers/owner-2026-10-24.md line 11).
+                        - A package installed in a partner's
+                          environment brings its bounded dependencies,
+                          which can clash
+                          with the partner's own
+                          (_data/decision/dec_how_peers_get_cc_public/ann_package_shares_partner_environment.yaml, brief).
+                        - The Python packaging guide says declared
+                          dependencies state what a project "minimally
+                          needs to
+                          run correctly", and that pinning them to specific versions is not best practice
+                          (https://packaging.python.org/en/latest/discussions/install-requires-vs-requirements/).
+                        - A library has "a 'sophisticated' developer
+                          as an intermediary" who can find a
+                          compatible set,
+                          though "we shouldn't unreasonably force that work on them if we have the choice" (owner's
+                          statement, 2026-10-24T12:00Z).
+                        - Assumption: a peer's product holds
+                          dependencies of its own that overlap with
+                          what an imported
+                          part of cc-public needs, and an exact pin clashes at least as often as a wider range.
+                        Strength: strong at ten times the peers: each
+                        peer product brings its own stack, and
+                        cc-public cannot ship an exact environment per
+                        peer product.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

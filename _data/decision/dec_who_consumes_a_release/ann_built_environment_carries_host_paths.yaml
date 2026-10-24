@@ -1,0 +1,69 @@
+id_self:                ann_built_environment_carries_host_paths
+guid_self:              ann_c1487b6d9fbc436f9273b3001b32ff9a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Personal data in a shipped environment
+brief:                  |
+                        A published lock adds no personal data, but a
+                        built environment shipped as a prefix could
+                        carry the build host's absolute paths, which
+                        can include a user name. The personal data
+                        already in every release, the author's email
+                        address and the copyright names, is the same
+                        under all three options.
+description:            |
+                        Sources:
+                        - pixi.lock holds package URLs, versions,
+                          hashes and licenses, and names the local
+                          package only as
+                          "./" (pixi.lock lines 722-724); a grep of pixi.lock for home paths and email addresses finds
+                          nothing.
+                        - The built pixi environment holds absolute
+                          paths under /media/wtp, a folder name that
+                          matches the start of the author's email address (pyproject.toml line 37;
+                          _data/decision/dec_environment_manager/ann_hooks_and_guidance_bound_to_pixi.yaml,
+                          description).
+                        - Package metadata names the author with an
+                          email address (pyproject.toml line 37), and
+                          every
+                          item carries a copyright line that names a person (_data/logical_component/lco_federation.yaml
+                          line 3).
+                        - An installer may still install a yanked PyPI
+                          release for anyone who pins its exact
+                          version
+                          (https://peps.python.org/pep-0592/;
+                          _data/decision/dec_how_peers_get_cc_public/ann_published_package_cannot_be_recalled.yaml).
+                        - Assumption: the end-users option might be
+                          built as a packed environment rather than a
+                          lock; its
+                          wording leaves this open. The developers option publishes no environment and is neutral here.
+                        Strength: weak; it touches only how the
+                        environment is shipped.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

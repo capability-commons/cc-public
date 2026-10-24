@@ -1,0 +1,74 @@
+id_self:                ann_each_release_artifact_answers_to_a_consumer
+guid_self:              ann_6ef8b7663f804a78bbf0ee0998e36448
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release artifacts traced to the consumers that need them
+brief:                  |
+                        Every published artifact should answer to a
+                        need. Under the end-users option the declared
+                        ranges and the ruled fresh resolve serve no
+                        consumer that the option names, and under the
+                        developers option a published lock would serve
+                        none. The split option gives each a named
+                        consumer, but only if the graph records which
+                        shipped part is run and which is imported, and
+                        that class is kept as parts are added.
+description:            |
+                        Sources:
+                        - Traceability asks "Does anything exist that
+                          nothing calls for?"
+                          (_data/register/reg_concern.yaml line 572).
+                        - The ruled release gate tests a fresh resolve
+                          of the declared ranges
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml, brief), while the end-users option's
+                          gate tests only the shipped environment
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_are_end_users.yaml, brief).
+                        - The wheel's metadata declares the ranges
+                          whatever the option (pyproject.toml lines
+                          43-49).
+                        - The split option names what is run, cctool
+                          and its hooks, and what is imported or built
+                          in, a
+                          Python interface, the generator and the C++ engine
+                          (_data/decision/dec_who_consumes_a_release/opt_consumers_by_what_they_consume.yaml, brief), and
+                          all of it ships in one package
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml).
+                        - Assumption: no item in the graph today
+                          records, per shipped part, whether peers run
+                          it or import
+                          it; not checked exhaustively.
+                        Strength: moderate; it depends on the number
+                        of shipped parts, not of peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

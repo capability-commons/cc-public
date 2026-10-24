@@ -1,0 +1,70 @@
+id_self:                ann_engine_built_for_its_target_host
+guid_self:              ann_387ffe44f4c04263805b7443bf3d7e12
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine built for its target host
+brief:                  |
+                        The engine is on the hot path of a peer's
+                        product, on hosts as different as a laptop and
+                        a Jetson. Treated as a library, its sources
+                        build in the peer's toolchain for that target;
+                        shipped inside one exact application
+                        environment, it is built once for a generic
+                        platform, or, with today's lock, not at all
+                        for Arm.
+description:            |
+                        Sources:
+                        - Patrol's nodes are native C++ step functions
+                          called by the engine, "with no Python on the
+                          hot
+                          path" (_sources/cc-patrol-notes/plan.md lines 88-92).
+                        - Target hosts include a Lenovo Legion laptop
+                          and a Jetson Orin Nano (plan.md lines
+                          128-131), and
+                          the workspace locks no linux-aarch64 (pyproject.toml line 66).
+                        - The engine ships in the package peers
+                          install
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml,
+                          brief).
+                        - "performance DOES still matter a lot"
+                          (owner's statement, 2026-10-22T16:31).
+                        - Assumption: compiler flags tuned for a
+                          target CPU or GPU give measurably faster
+                          code than a
+                          generic build; not measured.
+                        Strength: moderate today, since the engine is
+                        not built yet; it holds at ten times the peers
+                        and grows with the number of distinct targets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

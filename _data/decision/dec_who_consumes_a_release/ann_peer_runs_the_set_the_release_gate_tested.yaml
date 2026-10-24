@@ -1,0 +1,116 @@
+id_self:                ann_peer_runs_the_set_the_release_gate_tested
+guid_self:              ann_615eeffe7e3d44ccbd374c73e78e6482
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tested set of dependencies that a peer runs
+brief:                  |
+                        cctool runs in a peer's commit hooks, which
+                        fail closed, and one of which writes the draft
+                        commit message. A peer that installs the
+                        release's hash-pinned lock runs exactly the
+                        set the release gate passed, and can check it
+                        by hash; a peer that resolves the declared
+                        ranges gets whatever upstream offers that day,
+                        so a bad or tampered release inside the bounds
+                        reaches it untested and can stop its commits
+                        with no change in cc-public.
+description:            |
+                        Sources:
+                        - Once hooks are on, git runs cctool gate
+                          before each commit and a failure stops the
+                          commit
+                          (README.md lines 71-74); pixi run hooks points git at .githooks (pyproject.toml lines 25-27 and
+                          85), and all five hooks run pixi run --locked
+                          (_data/decision/dec_environment_manager/ann_hooks_and_guidance_bound_to_pixi.yaml, description).
+                        - The prepare-commit-msg hook runs cctool
+                          message draft on the commit message file
+                          (.githooks/prepare-commit-msg, last lines).
+                        - cc-patrol needs cctool and the schemas
+                          (_sources/cc-patrol-notes/plan.md line 69).
+                        - cc-public declares seven runtime
+                          dependencies as bounded ranges, not exact
+                          versions, such as
+                          clingo>=5.8,<6 and ruamel.yaml>=0.19.1,<0.20 (pyproject.toml lines 43-49).
+                        - pixi.lock names every third-party package by
+                          exact URL, version and sha256 hash, 180
+                          hashes in
+                          all (pixi.lock; _data/decision/dec_environment_manager/ann_pixi_lock_records_hashes_and_licenses.yaml).
+                        - A lock file exists "to enable reproducible
+                          installation", and installers check files
+                          against its
+                          hashes (https://packaging.python.org/specifications/pylock-toml/); pip's hash-checking mode
+                          requires every requirement to be pinned, to a URL, a path or with ==, and hashed
+                          (https://pip.pypa.io/en/latest/topics/secure-installs/).
+                        - A peer resolves the declared ranges "against
+                          whatever upstream offers that day"
+                          (_data/decision/dec_release_gate/ann_fresh_install_tests_the_published_ranges.yaml, brief); the
+                          ruled gate's fresh install, which runs only before a release, resolves the ranges, tentatively
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 20-22).
+                        - The security concern asks what an attacker
+                          can reach, and dependency risk counts direct
+                          and
+                          indirect dependencies (_data/register/reg_concern.yaml).
+                        - A fresh install fetches from conda-forge and
+                          PyPI, so it fails while either is
+                          unreachable
+                          (_data/decision/dec_release_gate/ann_fresh_install_needs_live_package_indexes.yaml, brief);
+                          pixi-pack bundles the locked packages into one archive for another machine
+                          (https://pixi.prefix.dev/dev/deployment/pixi_pack/).
+                        - Assumption: cc-patrol turns on the same
+                          hooks as cc-public.
+                        - Assumption: a locked URL can still vanish
+                          from an index, so a lock protects against
+                          change but
+                          not against withdrawal unless its files are kept, as a packed archive keeps them.
+                        - Assumption: a peer that resolves the ranges
+                          can lock and hash its own result, but that
+                          set is one
+                          the peer chose, not the one the release gate tested; this weakens the security point.
+                        Strength: strong, and stronger with ten times
+                        the peers, since each peer resolving on its
+                        own day is one more set the gate never saw,
+                        while a lock gives every peer the one set it
+                        passed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

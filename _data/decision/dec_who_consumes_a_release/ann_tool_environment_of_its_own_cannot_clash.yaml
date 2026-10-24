@@ -1,0 +1,76 @@
+id_self:                ann_tool_environment_of_its_own_cannot_clash
+guid_self:              ann_ea5b8c2986ab4402b06d421450945660
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Separate environment for the tools a peer runs
+brief:                  |
+                        Installed as a library, cctool brings its
+                        seven bounded dependencies into the peer's own
+                        environment, where they can clash with the
+                        peer's products. An application kept in an
+                        environment of its own has nothing to clash
+                        with, which is why command line tools are
+                        commonly installed that way.
+description:            |
+                        Sources:
+                        - cc-public declares seven runtime
+                          dependencies, each with an upper bound
+                          (pyproject.toml lines
+                          43-49), and a package installed into a partner's environment brings them with it
+                          (_data/decision/dec_how_peers_get_cc_public/ann_package_shares_partner_environment.yaml, brief).
+                        - pipx installs end-user applications in
+                          isolated environments so that "their
+                          dependencies never
+                          collide" (https://pipx.pypa.io/stable/); pixi global "isolates each package in its own
+                          environment, exposing only the necessary entry points"
+                          (https://pixi.prefix.dev/v0.54.0/global_tools/introduction/).
+                        - cctool is a command line program with an
+                          entry point (pyproject.toml lines 51-52),
+                          run by hooks
+                          (pyproject.toml lines 25-27, 84 and 85).
+                        - The release gate's fresh resolve is strong
+                          at seeing an upstream change and only
+                          moderate at
+                          seeing a clash with a particular partner's set
+                          (_data/decision/dec_release_gate/ann_fresh_install_tests_the_published_ranges.yaml, description).
+                        - Compatibility counts conflicts with products
+                          in a shared environment
+                          (_data/register/reg_concern.yaml lines 309-312).
+                        Strength: strong, and stronger at ten times
+                        the peers: each peer brings its own products
+                        to clash with, while an isolated tool
+                        environment has none however many peers there
+                        are.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_consumes_a_release
+    guid_target:        dec_c315f843e5c242c1829673a91169f07a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_are_end_users
+    guid_target:        opt_c0e73a762181466f88299377b65a81ae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_consumers_by_what_they_consume
+    guid_target:        opt_6f204dc2337e4110ad085afa265cc64d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumers_are_developers
+    guid_target:        opt_ea1a7bdeea3e4517bdadc47398a6c596
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
