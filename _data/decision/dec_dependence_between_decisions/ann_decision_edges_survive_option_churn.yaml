@@ -1,0 +1,76 @@
+id_self:                ann_decision_edges_survive_option_churn
+guid_self:              ann_a9df86553fc7467b83adfa188008b266
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stability of edges held at the decision level
+brief:                  |
+                        Decisions are stable items, while options are
+                        added, superseded and rejected and rulings are
+                        edited in place. An edge held between
+                        decisions survives that churn; edges between
+                        options must be moved at each supersession,
+                        and edges held by a ruling change whenever the
+                        ruling does, mixing two facts in one file
+                        history.
+description:            |
+                        Sources: an option may be superseded by
+                        another and no longer governs
+                        (_data/register/reg_relation.yaml lines
+                        275-300), so each option edge that named it
+                        must be moved or left pointing at an option
+                        that no longer governs. A change of ruling
+                        edits the ruling in place
+                        (_data/decision/dec_change_of_a_ruling/ruling_change_of_a_ruling.yaml
+                        lines 11-19; competing rulings,
+                        src/cctool/check/check.lp lines 1449-1475).
+                        Options point at the decision, not the
+                        reverse, so a decision does not change when
+                        its options do (inference from the is option
+                        for relation, _data/register/reg_relation.yaml
+                        lines 520-546). Simplicity asks whether the
+                        design follows from decisions already made
+                        (_data/register/reg_concern.yaml line 486);
+                        cost asks how cost grows with use (line 613).
+                        Strength: strong, and stronger at ten times
+                        the decisions, since supersessions and ruling
+                        edits grow with the number of decisions while
+                        a decision-level edge needs no update from
+                        them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_decision_constrains_decision
+    guid_target:        opt_d0c17135f8a44254b1bfe2e54282fcee
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_option_requires_or_excludes_option
+    guid_target:        opt_fb8bb03d85d74fdea0f1f1f6574c7c42
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ruling_constrains_decision
+    guid_target:        opt_e78932ffb06545e5b0ce9694bf1c8ebd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

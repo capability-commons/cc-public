@@ -1,0 +1,58 @@
+id_self:                ann_ruling_edge_is_cheap_to_build
+guid_self:              ann_c16c85c011124e378cd01dcc63616499
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build effort of an edge held by a ruling
+brief:                  |
+                        An edge from a ruling to a decision needs one
+                        register entry, a rule that carries each edge
+                        over to the ruling's own decision so chains
+                        can be followed, a ranking and a sort key,
+                        roughly the person day of an edge between
+                        decisions, and no check across the rulings of
+                        two decisions.
+description:            |
+                        Sources: the cost measure is development
+                        effort in person days
+                        (_data/register/reg_concern.yaml line 616).
+                        The chain computation and cycle check exist
+                        for any relation flagged acyclic
+                        (src/cctool/check/check.lp lines 2096-2137),
+                        and the decisions page has a sort table to
+                        extend (src/cctool/web/page.py lines 203-229).
+                        The ruling option asks only that a ruling name
+                        each open decision it narrows
+                        (_data/decision/dec_dependence_between_decisions/opt_ruling_constrains_decision.yaml
+                        lines 13-16). The chain rule follows edges of
+                        one relation from item to item (check.lp lines
+                        2096-2102), and an edge from a ruling ends at
+                        a decision, not a ruling, so a step from each
+                        ruling to its decision is needed before chains
+                        form (inference). Assumption: the person-day
+                        figure is an estimate, not measured. Strength:
+                        holds at any size, since build cost is
+                        one-off; it says nothing about the cost of
+                        edges that arrive late.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_dependence_between_decisions
+    guid_target:        dec_7262702b29aa4f308ce0ae3f67aff546
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ruling_constrains_decision
+    guid_target:        opt_e78932ffb06545e5b0ce9694bf1c8ebd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e
