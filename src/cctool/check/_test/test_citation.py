@@ -79,6 +79,15 @@ def test_a_citation_by_line_of_a_name_two_files_share_is_reported(tmp_path):
 
 
 # -----------------------------------------------------------------------------
+def test_a_line_later_in_the_clause_of_a_citation_is_reported(tmp_path):
+    _files(tmp_path)
+    text = ('See tool.py within check and lines 3-4, and README.md#tool; line 9 of '
+            'the notes. Then pyproject.toml at project.name, as notes.md line 5 says.')
+    assert _violations(tmp_path, text) == (
+        [('_data/item.yaml', '1', 'item_x', 'tool.py ... lines 3-4')], [])
+
+
+# -----------------------------------------------------------------------------
 def _files(root):
     """
     Write a small tree: a python module, a logic program, a pyproject.toml,

@@ -85,6 +85,13 @@ REGEX_MORE        = re.compile(r'(?:,| +and) +(?:within +|at +)?([\w$][\w$.-]*[\
 REGEX_CODELIKE    = re.compile(r'[_.$A-Z0-9-]')
 REGEX_PROSE       = re.compile(r'^(?:[0-9a-f]{7,40}|HEAD|\d[\w.]*)$')
 
+# A line number later in the clause of a citation, before its end or the
+# next path, cites that file by line too, as in "at allOf and lines 4-6".
+#
+REGEX_LINE_LATER  = re.compile(r'\b[Ll]ines? +\d+(?:-\d+)?\b')
+REGEX_CLAUSE_END  = re.compile(r';|\.(?:\s|$)')
+REGEX_FILE_LIKE   = re.compile(r'/|\.[A-Za-z]\w*$')
+
 # The definitions of a logic program: the head of a rule, a declaration
 # in a comment, and a show statement.
 #
@@ -144,7 +151,10 @@ def citations(text:     str,
     text      = ' '.join(text.split())
     list_cite = []
 
-    for match in REGEX_PATH.finditer(text):
+    list_match = [match for match in REGEX_PATH.finditer(text)
+                  if REGEX_FILE_LIKE.search(match.group(1))]
+
+    for (index, match) in enumerate(list_match):
         cited = map_file.get(match.group(1))
         if cited is None:
             continue
@@ -153,6 +163,10 @@ def citations(text:     str,
         if found:
             list_cite.append(('line', match.group(1) + found.group(0), cited, ''))
             continue
+        later = _line_later(rest, list_match[index + 1].start() - match.end()
+                                  if index + 1 < len(list_match) else len(rest))
+        if later:
+            list_cite.append(('line', match.group(1) + ' ... ' + later, cited, ''))
         if cited == FILE_AMBIGUOUS:
             continue
         found = REGEX_ANCHOR.match(rest)
@@ -171,6 +185,21 @@ def citations(text:     str,
             rest = rest[found.end():]
 
     return list_cite
+
+
+# -----------------------------------------------------------------------------
+def _line_later(rest: str, size: int) -> str:
+    """
+    Return the line number that rest gives later in the clause of a
+    citation, before the end of the clause or size characters, which is
+    where the next path is written, or an empty string if it gives none,
+    as in "at allOf and lines 45-66".
+
+    """
+
+    found = REGEX_CLAUSE_END.search(rest, 0, size)
+    found = REGEX_LINE_LATER.search(rest, 0, found.start() if found else size)
+    return found.group(0) if found else ''
 
 
 # -----------------------------------------------------------------------------
