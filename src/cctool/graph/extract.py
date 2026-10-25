@@ -113,6 +113,15 @@ REGEX_MENTION     = re.compile(r'(?<![A-Za-z0-9_$./-])[a-z]{1,8}_[a-z0-9][a-z0-9
 REGEX_SUFFIX      = re.compile(r'\.(?:yaml|py|lp|toml|json|md)$')
 MARK_GLOB         = '*'
 
+# A citation of a part of a file, such as gate.py within is_code_staged,
+# names the part as the file spells it, not an item, so a word in that
+# place is not a mention. The check of citations checks it against the
+# file instead.
+#
+REGEX_CITED       = re.compile(r'[\w./-]\.(?:py|lp|yaml|yml|toml|json)\s+(?:within|at|just\s+after)'
+                               r'\s+(?:[\w$.-]+(?:,\s+|\s+and\s+))*$')
+SIZE_CITED        = 400
+
 # A word, and a span in double quotes, which quotes another's words as
 # they were written and so is not held to the rules of the text around it.
 #
@@ -1513,7 +1522,8 @@ def _mention(text:      str,
     offset = 1 if isinstance(text, ruamel.yaml.scalarstring.LiteralScalarString) else 0
 
     for match in REGEX_MENTION.finditer(text):
-        if text.startswith(MARK_GLOB, match.end()):
+        if (text.startswith(MARK_GLOB, match.end())
+                or REGEX_CITED.search(text, max(0, match.start() - SIZE_CITED), match.start())):
             continue
         word = REGEX_SUFFIX.sub('', match.group(0))
         facts['mention'].add((holder, word, file,

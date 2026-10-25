@@ -256,3 +256,11 @@ def test_the_prefix_of_each_type_is_the_one_its_register_entry_gives(tree):
     facts = cctool.graph.extract.extract(tree)
     map_register = {row[0]: row[1] for row in facts['type_prefix']}
     assert map_register == cctool.graph.prefix.MAP_PREFIX
+
+
+# -----------------------------------------------------------------------------
+def test_a_cited_part_is_not_read_as_a_mention_of_an_item():
+    document = {'id_self': 'item_x', 'brief': 'See check.lp within member_stem, '
+                                              'and member_gone.'}
+    facts    = cctool.graph.extract.facts_of({'_data/item.yaml': (document, 1)})
+    assert {row[1] for row in facts['mention'] if row[0] == 'item_x'} == {'member_gone'}
