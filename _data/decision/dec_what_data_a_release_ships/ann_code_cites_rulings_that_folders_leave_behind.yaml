@@ -1,0 +1,87 @@
+id_self:                ann_code_cites_rulings_that_folders_leave_behind
+guid_self:              ann_9d9d941317ff43c695039b02f6e7cddf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shipped code cites rulings that folders leave behind
+brief:                  |
+                        The code always ships, and its text names
+                        rulings that live in the decision folders. If
+                        the build leaves those folders behind, the
+                        shipped package fails the ruled release check
+                        on its first run. Each later docstring that
+                        cites a ruling breaks the release again, and
+                        the fault shows only at release time, not at
+                        commit time.
+description:            |
+                        Sources:
+                        - The folders option leaves the decisions and
+                          their arguments behind
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_data_by_folders_named_in_the_build.yaml
+                          at brief).
+                        - Rulings travel in the folder of the decision
+                          whose options they settle
+                          (_data/register/reg_data_item_type.yaml
+                          at entries.type_ruling.note).
+                        - Shipped docstrings name
+                          ruling_cpp_built_when_staged and
+                          ruling_maintainer_decides_each_release
+                          (src/cctool/gate/gate.py;
+                          src/cctool/release/release.py).
+                          release.py just after TUPLE_LEVEL also names
+                          ruling_public_api_split_by_kind, but in a
+                          code comment, which the extractor does not
+                          read as a mention
+                          (src/cctool/graph/extract.py within parse, _docstring
+                          and _document_of), so it cannot dangle.
+                        - Any word with the prefix of a known type
+                          that names no item is a dangling mention,
+                          and ruling is such a prefix
+                          (src/cctool/check/check.lp within dangling_mention;
+                          _data/register/reg_data_item_type.yaml at
+                          entries.type_ruling.prefix).
+                        - A peer's own item that names a consumed item
+                          which did not ship fails as a dangling
+                          mention or reference
+                          (src/cctool/check/segment.py within union and attribute;
+                          context file).
+                        - The gate before each commit runs its stages
+                          in a copy of the staged content of the
+                          repository, where the decision folders exist
+                          (src/cctool/gate/gate.py within gate and
+                          copy_staged), and the wheel tests check only which
+                          files the wheel holds, not cctool check on
+                          them (src/cctool/_test/test_wheel.py within
+                          test_the_wheel_holds_every_file_of_data_under_cctool_data, test_the_wheel_holds_every_module_and_logic_program_of_cctool and test_the_wheel_holds_no_test_and_no_fixture), so neither catches this.
+                        - Also rests on sources stated once in
+                          ann_shipped_code_names_rulings_left_behind
+                          (the wheel holds the whole of src/cctool
+                          except the tests) and in
+                          ann_closure_leaves_no_dangling_name_in_the_package
+                          (the release gate checks the _data the
+                          package ships). Strength: strong; two
+                          citations fail today, and at ten times the
+                          size more code and more peer items cite
+                          rulings, so the failures grow with the tree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

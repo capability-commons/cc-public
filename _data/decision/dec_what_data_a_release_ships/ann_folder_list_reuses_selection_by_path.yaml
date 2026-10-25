@@ -1,0 +1,62 @@
+id_self:                ann_folder_list_reuses_selection_by_path
+guid_self:              ann_2d7244ee310a47a48a25c92dfa390350
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shipped folders chosen by the selection already in the build
+brief:                  |
+                        Naming the shipped folders in the build adds
+                        no new mechanism. The build already picks what
+                        ships by path, the release step already names
+                        the supported folders by path, and the ruled
+                        release gate already fails a shipped item that
+                        names one left behind. Only the two mentions
+                        of rulings in shipped code need rewording.
+description:            |
+                        Sources:
+                        - The wheel build picks what ships by path:
+                          the package folder, an
+                          exclude list of test paths, and a force-include of _data
+                          (pyproject.toml at tool.hatch.build.targets.wheel and tool.hatch.build.targets.wheel.force-include).
+                        - The release step names the supported data by
+                          folder, as
+                          _data/schema/ and _data/register/ (src/cctool/release/release.py
+                          within TUPLE_DIR_SUPPORT).
+                        - With _data/decision removed from a copy of
+                          the tree, cctool check
+                          fails only on dangling mentions in docstrings: of
+                          ruling_cpp_built_when_staged (src/cctool/gate/gate.py), of
+                          ruling_maintainer_decides_each_release
+                          (src/cctool/release/release.py), and one in a test file
+                          that does not ship (measured 2026-10-25).
+                        - The tests are left out of the wheel
+                          (pyproject.toml at tool.hatch.build.targets.wheel.exclude).
+                        - Also rests on a source stated once in
+                          ann_closure_leaves_no_dangling_name_in_the_package (the release
+                          gate checks that the built package holds _data and that cctool
+                          check passes on the _data it ships).
+                        Strength: strong; at ten times the size the
+                        list of folders stays about as short, because
+                        it grows with kinds of folder, not with items.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

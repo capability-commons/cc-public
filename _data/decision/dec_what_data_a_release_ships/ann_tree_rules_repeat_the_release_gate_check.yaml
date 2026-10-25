@@ -1,0 +1,65 @@
+id_self:                ann_tree_rules_repeat_the_release_gate_check
+guid_self:              ann_4000e01f2fb34023b5e1ee27d69a38bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A tree rule doing the release gate's job twice
+brief:                  |
+                        The all-data option and the type-field option
+                        each add a check of the tree that fails an
+                        item naming what does not ship. The ruled
+                        release gate already does that job, by
+                        checking the data the package ships. The
+                        type-field option also adds a new field to
+                        every type entry and to the schema of the type
+                        register, so it adds two mechanisms where the
+                        folder list adds none.
+description:            |
+                        Sources:
+                        - The type-field option records in each type
+                          entry whether its items
+                          ship, and adds a check of the tree that fails an item of a shipped
+                          type naming one that does not
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_data_by_a_field_of_each_type.yaml,
+                          brief).
+                        - The type register holds 36 type entries
+                          (_data/register/reg_data_item_type.yaml at entries).
+                        - Also rests on sources stated once in
+                          ann_rewording_drops_checked_links_to_build_files (the all-data
+                          option adds a check of the tree that fails any data item that
+                          names an item the package leaves behind) and in
+                          ann_closure_leaves_no_dangling_name_in_the_package (the release
+                          gate checks the _data the package ships; the 13 mentions of items
+                          that do not ship are all in annotations in decision folders).
+                        Strength: moderate; the tree rule does catch a
+                        bad mention at commit rather than at release,
+                        which another concern may value, but as a
+                        mechanism it repeats one already ruled. The
+                        count does not change at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_a_field_of_each_type
+    guid_target:        opt_00d3edd46dac452687a1d4a2b8b13ad2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

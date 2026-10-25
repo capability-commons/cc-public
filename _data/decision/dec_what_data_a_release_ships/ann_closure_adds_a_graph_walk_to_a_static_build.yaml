@@ -1,0 +1,71 @@
+id_self:                ann_closure_adds_a_graph_walk_to_a_static_build
+guid_self:              ann_bf722855ee5c454f97eb8363e002049a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A graph walk added to a static build
+brief:                  |
+                        The closure option needs the build to walk the
+                        graph, which today is a static list of paths
+                        with no build hook. Its start set, the
+                        registers, schemas and interfaces, is itself a
+                        list much like the folder list. The walk must
+                        also start from shipped code, whose items name
+                        rulings and components, so it pulls in a few
+                        decision files and gives a set that the folder
+                        list reaches with no walk.
+description:            |
+                        Sources:
+                        - The build backend is hatchling, configured
+                          only by paths, with no
+                          build hook in pyproject.toml and no hatch_build.py in the
+                          repository root (pyproject.toml at build-system, tool.hatch.build.targets.wheel and tool.hatch.build.targets.wheel.force-include).
+                        - The closure option starts from the items a
+                          peer may name, such as
+                          the register entries, the schemas and the supported interfaces,
+                          and ships every item they name in turn
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_the_closure_of_what_a_peer_may_name.yaml,
+                          brief).
+                        - The shipped package item has an edge to
+                          lco_tooling
+                          (src/cctool/__init__.py).
+                        - Also rests on a source stated once in
+                          ann_code_cites_rulings_that_folders_leave_behind (shipped
+                          docstrings mention rulings).
+                        - The registers, schemas, ICDs and components
+                          name no decision items
+                          except the name of one advice row about rulings (context file).
+                        - ASSUMPTION: matching ids as words, the
+                          closure from the registers,
+                          schemas and ICDs is 125 files with no decision files, and with
+                          shipped code added to the start it is about 146 files, 18 of them
+                          from 4 decision folders (rough estimate on the snapshot,
+                          2026-10-25; the real walk would follow the checker's own reading
+                          of mentions and edges).
+                        Strength: moderate; the walk is one mechanism,
+                        and it does adapt by itself as the graph
+                        grows, but at ten times the size it still
+                        reaches about the set a short folder list
+                        names.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

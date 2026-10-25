@@ -1,0 +1,95 @@
+id_self:                ann_selection_by_rule_needs_hatchling_build_hook
+guid_self:              ann_46d0c28131c04bbc985ed6aa8d48e9d6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Selection by rule tied to the hatchling hook interface
+brief:                  |
+                        Shipping all data needs no change to the
+                        build, and shipping named folders needs only
+                        more lines in the hatchling force-include
+                        table. Choosing items by a type field or by a
+                        closure needs code that runs at build time. In
+                        hatchling that is a custom build hook, a class
+                        that subclasses a hatchling plugin interface,
+                        which is one more part of a third-party tool
+                        the release then rests on. The extra exposure
+                        goes away if cctool itself stages the chosen
+                        items before the build.
+description:            |
+                        Sources:
+                        - The wheel takes _data through the
+                          force-include table of hatchling
+                          (pyproject.toml at tool.hatch.build.targets.wheel.force-include), and hatchling
+                          is the build backend (pyproject.toml at
+                          build-system.build-backend). The build-system table requires
+                          hatchling with no version bound
+                          (pyproject.toml at build-system.requires); only the pixi
+                          development environment holds it at
+                          >=1.32,<2 (pyproject.toml at tool.pixi.pypi-dependencies.hatchling).
+                        - Force-include maps files or directories to
+                          paths in the package and includes directory
+                          contents recursively
+                          (https://hatch.pypa.io/latest/config/build/,
+                          File selection, Forced inclusion).
+                        - The only built-in build hook is the custom
+                          hook, code that runs at stages of the build
+                          (https://hatch.pypa.io/latest/config/build/,
+                          Build hooks).
+                        - A custom build hook is a class in a python
+                          file, by default hatch_build.py, that
+                          inherits from BuildHookInterface in
+                          hatchling.builders.hooks.plugin.interface
+                          (https://hatch.pypa.io/latest/plugins/build-hook/custom/).
+                        - The hatchling page does not say whether the
+                          exclude option applies to force-included
+                          paths
+                          (https://hatch.pypa.io/latest/config/build/).
+                        - ASSUMPTION: the build hook interface may
+                          change within the range the development
+                          environment holds less often than not; its
+                          change history was not checked, and the
+                          build-system table itself sets no range.
+                          Strength: weak to moderate; it is a cost of
+                          how the rule is wired, not of the rule, and
+                          staging by cctool removes it. It does not
+                          grow at ten times the size, because the
+                          number of build interfaces used stays the
+                          same.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_a_field_of_each_type
+    guid_target:        opt_00d3edd46dac452687a1d4a2b8b13ad2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

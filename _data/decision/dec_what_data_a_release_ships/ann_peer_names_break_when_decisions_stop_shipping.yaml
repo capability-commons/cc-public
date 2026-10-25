@@ -1,0 +1,89 @@
+id_self:                ann_peer_names_break_when_decisions_stop_shipping
+guid_self:              ann_ba113200bd224d11a4a99aa1859826fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer mentions of rulings broken by a narrower package
+brief:                  |
+                        Today every data item ships, so a peer may
+                        name any cc-public item, and the public API
+                        ruling lets a peer use an unsupported item
+                        without a stability promise. Leaving the
+                        decision folders behind takes about 2500 items
+                        out of the package at once. Any peer item that
+                        names one of them then fails in the peer's own
+                        check, so the peer must reword it before it
+                        can take the release. Shipping all data keeps
+                        every name a peer could use; the per-type
+                        field keeps that choice open type by type.
+description:            |
+                        Sources:
+                        - The wheel ships the whole of _data today
+                          (pyproject.toml at tool.hatch.build.targets.wheel.force-include).
+                        - Of 2665 YAML files in _data, 2500 are under
+                          _data/decision (context file, counts in the
+                          snapshot, 2026-10-25).
+                        - A peer check fails only on failures about
+                          the peer's own items; failures about
+                          consumed items are notices
+                          (_data/decision/dec_what_a_peer_check_answers_for/ruling_peer_check_fails_on_its_own_items.yaml
+                          at brief; src/cctool/check/segment.py
+                          within attribute).
+                        - An unsupported item is usable without a
+                          stability promise, and anything not declared
+                          public is private
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          at brief).
+                        - Also rests on sources stated once in
+                          ann_code_cites_rulings_that_folders_leave_behind
+                          (a peer's own item that names an item which
+                          did not ship fails; the folders option
+                          leaves the decisions behind) and in
+                          ann_closure_adds_a_graph_walk_to_a_static_build
+                          (what the closure starts from, and that it
+                          names no decision items).
+                        - cc-patrol, the first peer, follows frequent
+                          0.y.z tags (owner's statement, 2026-10-24).
+                        - ASSUMPTION: no peer tree was read, so
+                          whether cc-patrol names any cc-public
+                          decision item today is not known. Strength:
+                          moderate, and conditional on peers naming
+                          decision items; before 1.0 such a break is
+                          allowed and cheaper than later (owner's
+                          statement, 2026-10-21/22), so the cost is a
+                          one-time rewording now. At ten times the
+                          size the number of nameable items that would
+                          vanish grows with the decision folders, so
+                          the cost of a later cut grows too.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

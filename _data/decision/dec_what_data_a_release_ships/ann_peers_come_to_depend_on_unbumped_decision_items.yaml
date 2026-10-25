@@ -1,0 +1,78 @@
+id_self:                ann_peers_come_to_depend_on_unbumped_decision_items
+guid_self:              ann_a88ec11870a04570b482e0e015f9ae81
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peers depending on items that change without a bump
+brief:                  |
+                        Whatever ships is something a peer can come to
+                        depend on. The computed bump watches only the
+                        schemas and registers, so the decision items
+                        can be reworded, renamed or removed in any
+                        release with no signal to the peer. Shipping
+                        all data puts about 2500 such items within a
+                        peer's reach. Shipping the closure of what a
+                        peer may name keeps what a peer can take close
+                        to the items that carry a promise, so a change
+                        upstream is less likely to break a peer
+                        unseen.
+description:            |
+                        Sources:
+                        - The computed bump looks only at items under
+                          _data/schema/ and _data/register/, and a
+                          removal or rename there is breaking
+                          (src/cctool/release/release.py within TUPLE_DIR_SUPPORT, SET_DELTA_BREAKS
+                          and level).
+                        - A supported item carries a stability
+                          promise; an unsupported one is usable
+                          without one
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          at brief).
+                        - The ship-all option itself rewords the 13
+                          mentions that name items left behind
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_naming_nothing_left_behind.yaml
+                          at brief; context file, 2026-10-25), an
+                          example of decision content changing between
+                          releases.
+                        - The closure option ships register entries,
+                          schemas and supported interfaces and what
+                          they name in turn
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_the_closure_of_what_a_peer_may_name.yaml
+                          at brief).
+                        - Also rests on sources stated once in
+                          ann_shipped_decisions_multiply_each_peer_check_cost
+                          (2500 of the 2665 YAML files are under
+                          _data/decision; cc-patrol follows frequent
+                          0.y.z tags). Strength: moderate; it speaks
+                          for the dependency a peer segment takes on
+                          cc-public, and it pulls against keeping
+                          every item nameable. It grows at ten times
+                          the size, since the unwatched items are the
+                          part of _data that grows fastest.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

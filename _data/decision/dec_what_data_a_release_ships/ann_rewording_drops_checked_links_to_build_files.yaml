@@ -1,0 +1,87 @@
+id_self:                ann_rewording_drops_checked_links_to_build_files
+guid_self:              ann_062e6d0d8794445a9c287721298e0768
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rewording drops checked links to build files
+brief:                  |
+                        Shipping everything with a rule against naming
+                        what stays behind turns 13 checked links into
+                        prose. A mention by id is checked against the
+                        graph, and prose is not. The rule also bars
+                        every later argument from naming
+                        pyproject.toml, a git hook or a test by id,
+                        though these are the subjects of decisions.
+description:            |
+                        Sources:
+                        - The all-data option fails any data item that
+                          names an item the package leaves behind, and
+                          rewords the mentions that do so today
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_naming_nothing_left_behind.yaml
+                          at brief).
+                        - Today 11 annotations name file_pyproject,
+                          one of them twice, for 12 mentions, and 1
+                          names shell_githooks_pre_merge_commit, so 13
+                          mentions in 12 annotations (grep of _data,
+                          2026-10-25), for example as the source of
+                          the rights a new item takes
+                          (_data/decision/dec_license/ann_license_field_copied_not_typed.yaml
+                          at description; context file).
+                        - The fix for a dangling mention includes
+                          saying it in prose without the prefix
+                          (src/cctool/check/check.lp within dangling_mention).
+                        - Only a word with the prefix of a known type
+                          is read as a mention
+                          (src/cctool/check/check.lp within dangling_mention).
+                        - A mention by an old id is flagged as an
+                          outdated mention (src/cctool/check/check.lp
+                          within outdated_mention).
+                        - Also rests on a source stated once in
+                          ann_folder_list_reuses_selection_by_path
+                          (the tests are left out of the wheel).
+                        - The owner finds it unsuitable to ship
+                          pyproject.toml or githooks or references to
+                          them (owner's statement, 2026-10-25).
+                        - In the folders and closure options the
+                          annotations stay behind, so their mentions
+                          can keep their ids in the tree
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_data_by_folders_named_in_the_build.yaml
+                          at brief;
+                          opt_ship_the_closure_of_what_a_peer_may_name.yaml
+                          at brief). Strength: moderate; 13 links
+                          is small today, but at ten times the size
+                          the rule bars more arguments about build
+                          files, hooks and tests from naming their
+                          subject.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

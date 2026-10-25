@@ -1,0 +1,74 @@
+id_self:                ann_closure_leaves_no_dangling_name_in_the_package
+guid_self:              ann_57b35dd2c16b4b74a93aae898bc17d62
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A closed set cannot dangle in the package
+brief:                  |
+                        A set closed under naming holds every item
+                        that any of its members names, so the shipped
+                        data cannot fail the ruled release check on a
+                        dangling mention or reference. The guarantee
+                        comes from how the set is built, not from
+                        rewording text by hand. It holds only if the
+                        shipped code is among the starting points,
+                        because the code ships whole and names
+                        rulings.
+description:            |
+                        Sources:
+                        - A dangling reference is an edge target that
+                          names no item, no guid and no old id
+                          (src/cctool/check/check.lp within dangling_reference).
+                        - The release gate checks that the built
+                          package holds _data and that cctool check
+                          passes on the _data it ships
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          at brief).
+                        - Also rests on sources stated once in
+                          ann_code_cites_rulings_that_folders_leave_behind
+                          (what a dangling mention is; the rulings
+                          that shipped code names) and in
+                          ann_shipped_code_names_rulings_left_behind
+                          (the wheel holds the whole of src/cctool
+                          except the tests).
+                        - The closure option starts from the items a
+                          peer may name and ships those and every item
+                          they name in turn
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_the_closure_of_what_a_peer_may_name.yaml
+                          at brief).
+                        - The 13 mentions that dangle today all sit in
+                          annotations in decision folders, and no item
+                          outside the decision folders names a
+                          decision, option, annotation or ruling by an
+                          edge (grep of _data, 2026-10-25; context
+                          file).
+                        - ASSUMPTION: the closure is computed with the
+                          same mention and reference facts that the
+                          check uses, so the two cannot disagree.
+                          Strength: strong if the code is a starting
+                          point, and it grows stronger at ten times
+                          the size, since a closure costs no more care
+                          as items are added while hand rewording
+                          does.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_the_closure_of_what_a_peer_may_name
+    guid_target:        opt_c26e8ad8a02f473ea7f536c4721c8418
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

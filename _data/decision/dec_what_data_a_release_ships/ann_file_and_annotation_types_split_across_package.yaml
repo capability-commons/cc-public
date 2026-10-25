@@ -1,0 +1,75 @@
+id_self:                ann_file_and_annotation_types_split_across_package
+guid_self:              ann_635c42724da249f79f867c944ac04af0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One type with items on both sides of the line
+brief:                  |
+                        Items of the file type and of the annotation
+                        type sit on both sides of what the package
+                        holds. A single field per type cannot state
+                        that truthfully. So the check of the tree and
+                        the check of the package can disagree, and a
+                        dangling name the tree check passes surfaces
+                        only at the release gate.
+description:            |
+                        Sources:
+                        - File data items live in a comment at the
+                          head of a file
+                          (_data/register/reg_data_item_type.yaml
+                          at entries.type_file.description).
+                        - file_review_js and file_review_css head
+                          files inside src/cctool, which ships
+                          (src/cctool/web/_static/review.js;
+                          src/cctool/web/_static/review.css;
+                          pyproject.toml at tool.hatch.build.targets.wheel.packages and tool.hatch.build.targets.wheel.exclude).
+                        - file_pyproject and file_gitignore head files
+                          outside the package (pyproject.toml;
+                          .gitignore).
+                        - 22 annotations sit in _data/annotation: 18
+                          map concepts to external classes, such as
+                          ann_mapping_of_item
+                          (_data/annotation/ann_mapping_of_item.yaml),
+                          and 4 map relations to external relations,
+                          such as ann_mapping_of_relation_is_about;
+                          1762 annotations sit in decision folders
+                          (count of files, 2026-10-25).
+                        - Also rests on a source stated once in
+                          ann_rewording_drops_checked_links_to_build_files
+                          (12 of the 13 dangling mentions today are of
+                          file_pyproject, all in annotations).
+                        - The type option has each type entry record
+                          whether its items ship, and fails a data
+                          item of a type that ships if it names an
+                          item that does not
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_data_by_a_field_of_each_type.yaml
+                          at brief).
+                        - ASSUMPTION: the option could be amended with
+                          a second field or an exception list, at the
+                          cost of more rules. Strength: moderate; the
+                          mismatch is real today for two types, and at
+                          ten times the size more types are likely to
+                          hold items both inside and outside the
+                          package.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_a_field_of_each_type
+    guid_target:        opt_00d3edd46dac452687a1d4a2b8b13ad2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

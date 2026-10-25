@@ -1,0 +1,96 @@
+id_self:                ann_shipped_code_names_rulings_left_behind
+guid_self:              ann_33057161c690400b9984465861f14efb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shipped code naming rulings that stay behind
+brief:                  |
+                        The code always ships, and its docstrings are
+                        data items whose mentions are checked. Some of
+                        them name rulings. If the decision folders
+                        stay behind, those mentions dangle in the
+                        package, so a peer that reads the installed
+                        package gets notices about content it cannot
+                        fix. A cut by folder does not follow
+                        references, so it has to be paired with
+                        rewording the code or with a check that the
+                        code names no decision item.
+description:            |
+                        Sources:
+                        - The wheel ships the package src/cctool,
+                          leaving out only the tests (pyproject.toml
+                          at tool.hatch.build.targets.wheel.packages and tool.hatch.build.targets.wheel.exclude), and the data filter does not
+                          touch it.
+                        - The extractor reads the docstrings of python
+                          modules, classes and functions as items
+                          (src/cctool/graph/extract.py within _docstring and definitions),
+                          and records a mention fact for each id in
+                          their text (src/cctool/graph/extract.py
+                          within _mention).
+                        - src/cctool/release/release.py just after
+                          TUPLE_LEVEL names
+                          ruling_public_api_split_by_kind in a code
+                          comment, not a docstring, and the extractor
+                          does not read it as a mention: for a python
+                          file it reads only the YAML documents in the
+                          docstrings of the module and of its classes
+                          and functions, through ast.get_docstring,
+                          and mentions come only from the text fields
+                          of those documents
+                          (src/cctool/graph/extract.py within
+                          parse, _docstring, _document_of and _text). A check
+                          of a copy of the tree without _data/decision
+                          reports dangling mentions at gate.py
+                          and release.py but none at
+                          release.py just after TUPLE_LEVEL (measured 2026-10-25).
+                        - The closure option starts from the items a
+                          peer may name, such as the register entries,
+                          the schemas and the supported interfaces,
+                          and does not say whether shipped code is
+                          among them
+                          (opt_ship_the_closure_of_what_a_peer_may_name.yaml
+                          at brief); since the code always ships,
+                          the closure avoids this only if the code is
+                          a starting point.
+                        - Also rests on sources stated once in
+                          ann_code_cites_rulings_that_folders_leave_behind
+                          (the rulings that shipped docstrings name;
+                          the folders option leaves the decisions
+                          behind), in
+                          ann_peer_names_break_when_decisions_stop_shipping
+                          (a row of a peer check that names only
+                          consumed items is a notice) and in
+                          ann_closure_leaves_no_dangling_name_in_the_package
+                          (the release gate checks the _data the
+                          package ships). Strength: moderate today,
+                          with two docstring mentions to reword; it
+                          holds at ten times the size, since each new
+                          module that cites a ruling adds a mention
+                          that a cut by folder leaves dangling.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_data_by_folders_named_in_the_build
+    guid_target:        opt_700a04b891e74aa88319ca71803d2196
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
