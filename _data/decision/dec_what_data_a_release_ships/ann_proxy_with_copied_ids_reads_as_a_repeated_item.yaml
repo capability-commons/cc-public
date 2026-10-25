@@ -1,0 +1,112 @@
+id_self:                ann_proxy_with_copied_ids_reads_as_a_repeated_item
+guid_self:              ann_b70bb511dcc04662b04a344864a19bcc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A proxy that the checker reads as a copy
+brief:                  |
+                        The new option gives each proxy the id and the
+                        guid of the item it stands for. The checker
+                        reads two items with one id and one guid as a
+                        copy and fails both, as a scratch check shows
+                        for all three items. No check reads an item
+                        and its proxy together today, but any reader
+                        that holds both, such as a server or a graph
+                        database over several segments, must first
+                        learn to tell a proxy from a copy, or need a
+                        rule for which of the two wins. The graph's
+                        own proxies avoid this, because their id and
+                        guid address the proxy, not the thing it
+                        points at.
+description:            |
+                        Sources:
+                        - The proxy of the new option holds only the
+                          id, the guid and the type of the item left
+                          behind and the federated segment that holds
+                          it
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_proxies_of_what_stays_behind.yaml
+                          at brief; context file).
+                        - The id and guid of a proxy in the graph
+                          address the proxy, not the thing it points
+                          at (_data/register/reg_concept.yaml at
+                          entries.concept_proxy.description).
+                        - An item written twice, with the same id and
+                          guid in two places, fails as a repeated
+                          item, since a copy carries both
+                          (src/cctool/check/check.lp within
+                          repeated_item).
+                        - In a copy of the tree, a YAML item under
+                          _data that holds only the id and guid of
+                          file_pyproject, the type type_file and the
+                          segment segment_cc_public fails
+                          repeated_item at both places, in that file
+                          and in pyproject.toml (measured 2026-10-25
+                          with cctool check on a copy of the snapshot:
+                          3 failures, 2 of them repeated_item and 1 a
+                          misplaced document).
+                        - With stand-ins for file_pyproject,
+                          file_gitignore and
+                          shell_githooks_pre_merge_commit added to a
+                          copy of the tree that also holds
+                          pyproject.toml, .gitignore and the git hook,
+                          the check gives 6 repeated item rows, two
+                          for each item (check of a scratch copy of
+                          the tree, 2026-10-25).
+                        - A consumed tree is read from the installed
+                          package when cctool was installed from a
+                          release, and otherwise from the checkout it
+                          runs from, never both, so today an item and
+                          its proxy do not meet in one check
+                          (src/cctool/check/segment.py within trees
+                          and consumed).
+                        - The owner is likely to build an MCP server
+                          soon and a graph-database backend later
+                          (owner's statement, 2026-10-24).
+                        - Later uses named for proxies include a
+                          segment that ships proxies of its private
+                          items, a graph-database segment that answers
+                          with proxies for items a peer cannot read,
+                          and keeping a removed item as a proxy
+                          (context file).
+                        - ASSUMPTION: a reader that serves or merges
+                          several segments, or both the private and
+                          the public view of one segment, will hold
+                          some item and its proxy at once.
+                        - ASSUMPTION: a reader of such a server, or a
+                          peer that consumes two segments, can receive
+                          the real item and its proxy for the same id
+                          in one graph. Strength: weak to moderate
+                          today, and conditional on such a reader,
+                          since no check reads both; it grows with the
+                          later uses and at ten times the size, since
+                          each item kept private or removed becomes a
+                          possible clash. The cost goes away if a
+                          proxy takes an id and guid of its own and
+                          carries those of the item as plain data.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_with_proxies_of_what_stays_behind
+    guid_target:        opt_18263b7d151f45b8a085f5d57711ef1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

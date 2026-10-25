@@ -1,0 +1,90 @@
+id_self:                ann_proxies_cost_nothing_but_keep_full_peer_check
+guid_self:              ann_40cc1edd5c004320867f715c2df02e95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Proxies that cost nothing and save nothing
+brief:                  |
+                        The proxies themselves are almost free: three
+                        small files, with no measurable change in
+                        check time or memory. But the option still
+                        ships every decision, so each check of every
+                        peer pays the full cost of the shipped data,
+                        several times the time of a package without
+                        the decisions. Finding what stays behind adds
+                        one extraction per release at build time,
+                        which is small next to that.
+description:            |
+                        Sources:
+                        - The option ships the whole of _data and adds
+                          a proxy for each item that the package
+                          leaves behind but a shipped item names
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_proxies_of_what_stays_behind.yaml
+                          at brief).
+                        - The check of a segment reads each consumed
+                          tree beside its own and checks the two
+                          together, and an installed release is read
+                          from the package's _data
+                          (src/cctool/check/segment.py within trees
+                          and union).
+                        - A copy of the snapshot without
+                          pyproject.toml, .gitignore, .githooks and
+                          the tests, as the wheel holds it, takes 39.9
+                          s and 228 MB peak memory for cctool check;
+                          with three proxy files added it takes 39.7 s
+                          and 227 MB; the whole tree takes 39.4 s and
+                          228 MB (measured 2026-10-25 on a 4-processor
+                          container, one run each).
+                        - The three proxy files, for file_pyproject,
+                          file_gitignore and
+                          shell_githooks_pre_merge_commit, hold 938
+                          bytes in all, with the guids of their type
+                          and segment as checked and timed, against
+                          3.02 MB for all of _data deflated (measured
+                          2026-10-25;
+                          ann_shipped_decisions_multiply_each_peer_check_cost
+                          for the deflated size).
+                        - Also rests on a source stated once in
+                          ann_shipped_decisions_multiply_each_peer_check_cost
+                          (a check of a copy without _data/decision
+                          takes 9.7 s and 87 MB).
+                        - Extracting the facts of the package copy
+                          takes 10.5 s and 151 MB and finds exactly
+                          those three names; extracting the whole
+                          tree, to find their guids and types, takes
+                          11.1 s and 157 MB (measured 2026-10-25 with
+                          cctool.graph.extract.extract, one run each).
+                        - cc-patrol, the first peer, follows frequent
+                          0.y.z tags (owner's statement, 2026-10-24).
+                        - ASSUMPTION: a peer's check over the union
+                          costs roughly what cc-public's own check
+                          costs over the same consumed items; this was
+                          not measured with a real peer. Strength:
+                          strong for the per-peer cost, which the
+                          proxies leave as it is for shipping all
+                          data; at ten times the size the proxies grow
+                          only with names that cross the package line,
+                          while the decisions, and so each peer check,
+                          grow with every argument.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_with_proxies_of_what_stays_behind
+    guid_target:        opt_18263b7d151f45b8a085f5d57711ef1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

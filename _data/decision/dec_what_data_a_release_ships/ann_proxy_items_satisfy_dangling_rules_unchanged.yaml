@@ -1,0 +1,94 @@
+id_self:                ann_proxy_items_satisfy_dangling_rules_unchanged
+guid_self:              ann_afae4a2964c44e5ab3f878c8d989db43
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dangling names resolved with no new check rule
+brief:                  |
+                        A proxy is an item, so the existing dangling
+                        rules already accept a name that a proxy
+                        holds, with no change to them. A name that no
+                        item holds, such as a typo, still fails as
+                        before. In a peer, edits already refuse files
+                        of a consumed tree, so a proxy needs no
+                        refusal of its own there. The option adds no
+                        rule to the tree and rewords no mention, which
+                        the rule against naming what stays behind
+                        needs.
+description:            |
+                        Sources:
+                        - A mention or reference dangles only when no
+                          item has its id or guid and no alias names
+                          it (src/cctool/check/check.lp within
+                          dangling_mention and dangling_reference).
+                        - Also rests on a source stated once in
+                          ann_proxies_let_a_peer_name_items_left_behind
+                          (a copy of the snapshot as the wheel holds
+                          it fails cctool check on 12 dangling
+                          mentions of three ids).
+                        - With one proxy file for each of the three,
+                          holding only the id, guid, type and segment,
+                          each with its guid, and placed in the folder
+                          of its type, the same check reports no
+                          dangling mention, no misplaced document and
+                          no guid mismatch, with no change to the code
+                          (measured 2026-10-25).
+                        - An edit raises an error for a file of a
+                          consumed tree (src/cctool/edit/edit.py
+                          within _refuse_consumed;
+                          src/cctool/graph/extract.py within
+                          consumer).
+                        - The option keeps a name that nothing holds a
+                          failure
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_proxies_of_what_stays_behind.yaml
+                          at brief).
+                        - Also rests on sources stated once in
+                          ann_tree_rules_repeat_the_release_gate_check
+                          (the all-data option adds a check of the
+                          tree that repeats the release gate) and in
+                          ann_rewording_drops_checked_links_to_build_files
+                          (that option rewords the mentions of what
+                          stays behind).
+                        - The owner expects references to dangle
+                          across federated peer boundaries sometimes
+                          (owner's statement, 2026-10-25); also rests
+                          on the owner's statement stated once in
+                          ann_proxies_let_a_peer_name_items_left_behind
+                          (a mechanism that turns an internal
+                          reference in one peer into an external one
+                          in another).
+                        - ASSUMPTION: proxies exist only in the built
+                          package, never in cc-public's own tree, so
+                          cc-public's own edits never meet one.
+                          Strength: moderate to strong; the
+                          measurement shows the existing rules take
+                          proxies as they are. It holds at ten times
+                          the size, since more names across the line
+                          add proxies, not rules.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ship_all_data_with_proxies_of_what_stays_behind
+    guid_target:        opt_18263b7d151f45b8a085f5d57711ef1e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_naming_nothing_left_behind
+    guid_target:        opt_254d404e115746b69d74b5f842b9c2b6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

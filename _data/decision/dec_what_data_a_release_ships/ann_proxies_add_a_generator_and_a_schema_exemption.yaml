@@ -1,0 +1,93 @@
+id_self:                ann_proxies_add_a_generator_and_a_schema_exemption
+guid_self:              ann_91c7809ee7c9455c8e2718a9b68e95f8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A build step and a schema exemption for proxies
+brief:                  |
+                        A proxy with only four fields breaks the
+                        schema of its type, so the schema check needs
+                        a way to know a proxy and pass it. The build,
+                        today a static list of paths, needs a step
+                        that reads both the package and the tree to
+                        find what stays behind. That step finds the
+                        same names that the release gate's check
+                        already reports as dangling, so the job is
+                        done twice unless one reuses the other. The
+                        option adds about three mechanisms where the
+                        folder list adds none.
+description:            |
+                        Sources:
+                        - The same three proxy files fail the schema
+                          of their type on 7 required fields each,
+                          brief, copyright, description, edge,
+                          license, protective_mark and title, for 21
+                          schema violation rows against sch_file and
+                          sch_shell_script (measured 2026-10-25 on a
+                          copy of the snapshot as the wheel holds it).
+                        - Placed in a folder of their own, such as
+                          _data/proxy, the proxies also fail as
+                          misplaced documents, since the folder of an
+                          item follows from its type
+                          (src/cctool/check/check.lp within
+                          misplaced_document; measured 2026-10-25).
+                        - The option says a proxy has no schema of its
+                          own to meet
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_proxies_of_what_stays_behind.yaml
+                          at brief); the type of a proxy and where it
+                          lives are not decided (context file).
+                        - The build takes _data through a hatchling
+                          force-include, configured only by paths
+                          (pyproject.toml at
+                          tool.hatch.build.targets.wheel.force-include
+                          and build-system).
+                        - Also rests on a source stated once in
+                          ann_proxies_cost_nothing_but_keep_full_peer_check
+                          (extracting the facts of the package finds
+                          the three names that stay behind, and the
+                          guid and type of each come from a second
+                          extraction of the tree).
+                        - Also rests on sources stated once in
+                          ann_proxies_absorb_new_names_while_typos_still_fail
+                          (the release gate checks that cctool check
+                          passes on the _data the package ships) and
+                          in
+                          ann_proxies_let_a_peer_name_items_left_behind
+                          (that check reports exactly those three
+                          names as dangling mentions).
+                        - Also rests on a source stated once in
+                          ann_folder_list_reuses_selection_by_path
+                          (naming the shipped folders adds no new
+                          mechanism).
+                        - ASSUMPTION: the new mechanisms are a build
+                          step that makes proxies, a marker that tells
+                          a proxy from a full item, and the schema
+                          check's exemption for that marker; a
+                          placement rule for proxies would be a fourth
+                          if they get a folder of their own. Strength:
+                          moderate; each mechanism is small, and the
+                          count stays the same at ten times the size,
+                          though more types and folders mean more
+                          cases the exemption must cover.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_with_proxies_of_what_stays_behind
+    guid_target:        opt_18263b7d151f45b8a085f5d57711ef1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,98 @@
+id_self:                ann_proxy_set_follows_upstream_text_not_peer_needs
+guid_self:              ann_240093e5e8434a30af7bf65b64bf2438
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Proxies that come and go with upstream wording
+brief:                  |
+                        The build makes a proxy only for an item that
+                        some shipped item names. So whether a peer can
+                        name an item left behind depends on the
+                        wording of cc-public's own arguments, which
+                        can change in any release with no signal to
+                        the peer. One annotation added on 2026-10-25
+                        brought in a third such item, and rewording
+                        two annotations would withdraw the proxy of
+                        the git hook. A minimal proxy also carries no
+                        old ids, so after a rename a peer mention of
+                        the old id dangles, where the full item would
+                        point to the new id.
+description:            |
+                        Sources:
+                        - The build adds a proxy for each item that
+                          the package leaves behind but a shipped item
+                          names
+                          (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_proxies_of_what_stays_behind.yaml
+                          at brief).
+                        - Measured earlier on 2026-10-25, the shipped
+                          data named two items that do not ship,
+                          file_pyproject and
+                          shell_githooks_pre_merge_commit (context
+                          file).
+                        - Measured later the same day on the snapshot,
+                          it names three: file_gitignore as well,
+                          mentioned only by
+                          ann_file_and_annotation_types_split_across_package
+                          (cctool check on a copy that holds only
+                          _data and src/cctool without its tests, and
+                          grep of _data, 2026-10-25).
+                        - In _data, shell_githooks_pre_merge_commit is
+                          named only by
+                          ann_file_ids_are_not_checked_against_path
+                          and
+                          ann_rewording_drops_checked_links_to_build_files
+                          (grep of _data, 2026-10-25).
+                        - Also rests on a source stated once in
+                          ann_proxies_let_a_peer_name_items_left_behind
+                          (a peer's own item that names a consumed
+                          item which did not ship fails).
+                        - The computed bump looks only at items under
+                          _data/schema/ and _data/register/
+                          (src/cctool/release/release.py within
+                          TUPLE_DIR_SUPPORT and level).
+                        - An item records its old ids in its alias
+                          field; a mention of an old id is an outdated
+                          mention, which names the current id, and a
+                          mention that names no item and no old id
+                          dangles (src/cctool/graph/extract.py within
+                          KEY_ALIAS; src/cctool/check/check.lp within
+                          outdated_mention and dangling_mention).
+                        - Also rests on a source stated once in
+                          ann_bare_proxy_hides_what_a_public_item_is
+                          (the proxy holds only the id, the guid, the
+                          type and the segment, and the owner agreed
+                          the proxies be minimal).
+                        - ASSUMPTION: where proxies live in the
+                          package is not decided, so whether the
+                          computed bump would see a proxy withdrawn is
+                          not known; outside _data/schema/ and
+                          _data/register/ it would not. Strength:
+                          moderate to strong; the set already changed
+                          once in a day, and at ten times the size
+                          more proxies rest on one or two mentions
+                          each, so more of them can vanish unseen. It
+                          weakens if the build proxies every item the
+                          package leaves behind, not only the named
+                          ones.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_data_a_release_ships
+    guid_target:        dec_54735107080849709bb2cfdbff177b56
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_ship_all_data_with_proxies_of_what_stays_behind
+    guid_target:        opt_18263b7d151f45b8a085f5d57711ef1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
