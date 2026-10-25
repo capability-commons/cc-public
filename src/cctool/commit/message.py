@@ -68,6 +68,7 @@ import jsonschema
 import ruamel.yaml
 
 import cctool.check.schema
+import cctool.check.segment
 import cctool.commit.change
 import cctool.edit.layout
 import cctool.graph.extract
@@ -261,8 +262,8 @@ def parse(text: str) -> tuple[str, dict]:
 def violations(root: pathlib.Path, text: str) -> list[str]:
     """
     Return a sentence for each way the commit message text fails
-    sch_commit, as the tree at root holds it, or fails to match its own
-    subject line and guid.
+    sch_commit, as the tree at root or a tree it consumes holds it, or
+    fails to match its own subject line and guid.
 
     """
 
@@ -271,7 +272,7 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
     except ErrorMessage as error:
         return [str(error)]
 
-    map_document = cctool.graph.extract.documents(root)
+    map_document = cctool.check.segment.union(root)
     list_schema  = [document for (document, _) in map_document.values()
                     if isinstance(document, dict)
                     and cctool.check.schema.KEY_ID_SCHEMA in document

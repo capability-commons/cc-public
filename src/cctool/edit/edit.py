@@ -207,12 +207,10 @@ class Tree:
 
         """
 
-        map_own              = cctool.graph.extract.documents(root)
-        (map_consumed, _, _) = cctool.check.segment.consumed(root, map_own)
-        self.root            = root
-        self.map_original    = {**map_own, **map_consumed}
-        self.map_document    = dict(self.map_original)
-        self.edit            = {}
+        self.root         = root
+        self.map_original = cctool.check.segment.union(root)
+        self.map_document = dict(self.map_original)
+        self.edit         = {}
         self._index()
 
     # -------------------------------------------------------------------------

@@ -104,6 +104,36 @@ def trees() -> list[tuple[str, pathlib.Path]]:
 
 
 # -----------------------------------------------------------------------------
+def union(root: pathlib.Path) -> cctool.graph.extract.Documents:
+    """
+    ---
+
+    id_self:                pyf_cctool.check.segment.union
+    guid_self:              pyf_d141e25605d14218b091f4cf671363bd
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Documents of a segment and what it consumes
+    brief:                  |
+                            Return the documents of the tree under root,
+                            with those of each tree that its segment item
+                            consumes, keyed as consumed returns them.
+    edge:                   []
+
+    ...
+    """
+
+    map_own              = cctool.graph.extract.documents(root)
+    (map_consumed, _, _) = consumed(root, map_own)
+    return {**map_own, **map_consumed}
+
+
+# -----------------------------------------------------------------------------
 def consumed(root:         pathlib.Path,
              map_document: cctool.graph.extract.Documents) -> tuple[
                  cctool.graph.extract.Documents, Rows, Rows]:

@@ -14,8 +14,10 @@ protective_mark:
 title:                  Segment tests
 brief:                  |
                         Tests that a peer is checked with the tree it
-                        consumes, fails only on its own items, and is
-                        edited without changing that tree.
+                        consumes, fails only on its own items, is
+                        edited without changing that tree, and checks
+                        its commit messages against the sch_commit of
+                        that tree.
 description:            |
                         Each test makes a peer, a tree that holds one
                         segment item and consumes release_0_1_0, and
@@ -37,6 +39,7 @@ import pytest
 
 import cctool.check.check
 import cctool.check.segment
+import cctool.commit.message
 import cctool.edit.edit
 
 
@@ -319,3 +322,20 @@ def test_an_edit_in_a_peer_may_not_change_a_consumed_item(tree, tmp_path_factory
 
     with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'held by segment_cc_public'):
         cctool.edit.edit.set_field(edit, 'concept_segment', 'title', 'Part')
+
+
+# -----------------------------------------------------------------------------
+def test_a_peer_checks_a_commit_message_against_the_consumed_schema(tree, tmp_path_factory,
+                                                                    monkeypatch):
+    """
+    A peer holds no sch_commit of its own, so its commit messages are
+    checked against that of the tree it consumes.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root = _peer(tmp_path_factory)
+    text = cctool.commit.message.compose('Add the peer', 'The first commit of the peer.')
+
+    assert cctool.commit.message.violations(root, text) == []
+    assert cctool.commit.message.violations(root, text.replace('Add the peer', 'Peer')) != []
