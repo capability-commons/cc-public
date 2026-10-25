@@ -85,7 +85,12 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   as `sch_ruling` requires:
   `cctool new ruling_NAME --field title TITLE --field brief TEXT --link relation_rejects OPT`.
   Only record a ruling that a person has made; the commit that adds it
-  says who and when.
+  says who and when. The brief ends `Ruled by WTP on YYYY-MM-DD.`,
+  with the maker's initials and the date only, never a time of day. It
+  may summarize or paraphrase what they said; it claims no more than
+  they said. The same holds wherever prose cites a statement by a
+  maintainer or developer: initials and date, such as
+  `(WTP, 2026-10-25)`.
 - **A ruling that upholds an option is refused while a driver
   is unargued** (`unargued_driver`). Every concern that the logical
   component the decision is about `relation_is_driven_by` needs an annotation

@@ -73,8 +73,9 @@ choice; do not call everything a tension.
    that challenges it rather than rewording it. Report how many
    arguments were checked and how many fixed.
 6. Check each ruling recorded in the range against the maintainer's
-   words: it quotes them with a timestamp, and claims no more than they
-   said. Note any ruling corrected after it was recorded.
+   words: it names the maker by initials, gives the date only (no time
+   of day), and claims no more than they said. Note any ruling
+   corrected after it was recorded.
 7. Use the instruments: `cctool timing --runs 20` for the gate (its
    log is per git directory, so say where it was read), and
    `cctool release check` against the newest release item if there is

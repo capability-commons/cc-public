@@ -76,6 +76,11 @@ unfinished edits of another.
 - `cctool check` reports 0 failures. A failure that was there before
   your change is still yours to report, not to hide.
 - Commit locally. Do not push unless asked.
+- Every commit is authored by William Payne <wtpayne@gmail.com>, the
+  person responsible for its being correct, whoever drafted it. Set
+  `git config user.name "William Payne"` and
+  `git config user.email wtpayne@gmail.com` in a new clone or
+  session; an agent says it helped in a `Co-Authored-By` trailer.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
   tests the staged content. The tests run only when code is staged,
   and leave out the tests marked slow and prepush; a commit of data
@@ -231,6 +236,7 @@ retrospectives, and how to record what they find.
 - Do not word around a check, quote a word to dodge it, or add an
   exception to a rule without saying so. Each of these is a tension,
   and it is reported, not hidden.
+
 ## Keep it small
 
 The previous iteration grew faster than it could be reviewed. Add a
