@@ -122,7 +122,7 @@ def new(id_self, list_field, list_link, root, is_dry_run):
     The type is the one whose prefix ID has. An item of a type held in
     a register is added after the last entry of its register; any other
     gets a file of its own under _data. The guid is made for it, and a
-    standalone item takes its rights from the item of pyproject.toml.
+    standalone item takes its rights from the segment item of the tree.
 
     """
 

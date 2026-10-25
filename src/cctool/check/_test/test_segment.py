@@ -51,7 +51,7 @@ FILE_RELEASE = '_data/release/release_cc_public_0_1_0.yaml'
 TEXT_PEER    = """\
 id_self:                segment_peer
 guid_self:              segment_5d1ae0c6bd3a4d4c9bd2b8e2a5c0f7e1
-copyright:              Copyright 2026 William Payne
+copyright:              Copyright 2026 The Peer
 license:                Apache-2.0
 
 protective_mark:
@@ -292,7 +292,7 @@ def test_an_edit_in_a_peer_may_name_consumed_items(tree, tmp_path_factory, monke
     """
     An edit in a peer is checked with the tree it consumes, so a new
     item that names its items adds no failure, and is written in the
-    peer.
+    peer, with the rights of the segment item of the peer.
 
     """
 
@@ -306,7 +306,8 @@ def test_an_edit_in_a_peer_may_name_consumed_items(tree, tmp_path_factory, monke
                                      [('relation_is_driven_by', 'concern_security')]))
 
     assert cctool.edit.edit.apply(edit) == {}
-    assert (root / '_data' / 'logical_component' / 'lco_peer_part.yaml').is_file()
+    assert 'Copyright 2026 The Peer' in (root / '_data' / 'logical_component'
+                                         / 'lco_peer_part.yaml').read_text(encoding = 'utf-8')
 
 
 # -----------------------------------------------------------------------------

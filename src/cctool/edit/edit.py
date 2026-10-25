@@ -104,9 +104,10 @@ MAP_KEY_FIXED     = {KEY_ID_SELF:   'cctool rename changes an id',
                      KEY_ALIAS:     'cctool rename keeps the old id as an alias'}
 SET_KEY_FIXED     = set(MAP_KEY_FIXED)
 
-# A standalone item takes its rights from the item of the project.
+# A standalone item takes its rights from the segment item of the tree,
+# which gives the default rights and protective marks of its federated
+# segment.
 #
-ID_RIGHTS         = 'file_pyproject'
 TUPLE_KEY_RIGHTS  = ('copyright', 'license', 'protective_mark')
 
 # A type is held in a register when it has this edge to one. A type
@@ -625,7 +626,7 @@ def _fields(tree:       Tree,
     Return the fields of a new item with id_self, the fields in
     list_field, and an edge for each relation and target in list_link,
     in the order they are written. A standalone item, whose register is
-    None, takes its rights from the item of the project; a register
+    None, takes its rights from the segment item of the tree; a register
     entry gets an empty alias list.
 
     """
@@ -1669,14 +1670,20 @@ def _register(tree: Tree, id_type: str) -> str | None:
 # -----------------------------------------------------------------------------
 def _rights(tree: Tree) -> dict:
     """
-    Return the rights fields of the item of the project.
+    Return the rights fields of the segment item of the tree, and not of
+    a tree it consumes.
 
     """
 
-    if ID_RIGHTS not in tree.map_item:
-        raise ErrorEdit('No item {id} gives the rights of a new item.'.format(id = ID_RIGHTS))
+    list_file = [row[3] for (id_self, row) in tree.map_item.items()
+                 if id_self.startswith(cctool.graph.extract.PREFIX_SEGMENT)
+                 and cctool.graph.extract.consumer(row[3]) is None]
 
-    (document, _) = tree.map_document[tree.map_item[ID_RIGHTS][3]]
+    if len(list_file) != 1:
+        raise ErrorEdit('The tree holds {count} segment items, not 1, so none gives the rights '
+                        'of a new item.'.format(count = len(list_file)))
+
+    (document, _) = tree.map_document[list_file[0]]
 
     return {key: _plain(document[key]) for key in TUPLE_KEY_RIGHTS if key in document}
 
