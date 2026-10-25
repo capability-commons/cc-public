@@ -22,7 +22,9 @@ description:            |
                         each YAML document against its schemas. Each
                         shown predicate of check.lp is one check, as
                         is schema validation, and each row of a check
-                        is one failure.
+                        is one failure. The ids that the comments of
+                        python modules mention are checked as dangling
+                        mentions too, by pym_cctool.check.comment.
 
                         advise.lp is evaluated in the same program.
                         Each of its shown predicates is one kind of
@@ -46,6 +48,7 @@ edge:
 import pathlib
 
 import cctool.check.citation
+import cctool.check.comment
 import cctool.check.schema
 import cctool.check.segment
 import cctool.edit.layout
@@ -87,6 +90,11 @@ NAME_CONSUMED     = 'consumed_release_disagreement'
 #
 NAME_LINE_CITE    = 'line_citation'
 NAME_NAME_CITE    = 'unresolved_citation'
+
+# The comments of a python module are not data items, so the ids they
+# mention are read from the files too, and checked as dangling mentions.
+#
+NAME_DANGLING     = 'dangling_mention'
 
 # The wording of the checks that are not logic program rules. The checks of
 # check.lp are worded there, in the item before each declaration.
@@ -226,6 +234,11 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
         (advice, _)         = cctool.check.segment.attribute(advice, facts)
 
     (list_line, list_name) = cctool.check.citation.violations(root, map_own)
+    list_comment           = cctool.check.comment.violations(
+                                 root, map_own, cctool.graph.extract.facts_of(map_document))
+
+    if list_comment:
+        failures[NAME_DANGLING] = sorted(set(failures.get(NAME_DANGLING, [])) | set(list_comment))
 
     for (name, list_row, found) in ((NAME_LINE_CITE, list_line, failures),
                                     (NAME_NAME_CITE, list_name, failures),

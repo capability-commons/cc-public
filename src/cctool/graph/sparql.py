@@ -36,8 +36,8 @@ import cctool.graph.item
 
 
 # The namespaces of the graph. An item, a type and a relation are each
-# named by its id under NS_ITEM, so that cc:ann_x is the item ann_x,
-# cc:type_annotation its type, and cc:relation_is_about a relation of it. A field
+# named by its id under NS_ITEM, so that cc:ID is the item with the id ID,
+# cc:type_annotation a type, and cc:relation_is_about a relation. A field
 # of an item is named under NS_FIELD, as f:title.
 #
 NS_ITEM           = 'urn:cc:'

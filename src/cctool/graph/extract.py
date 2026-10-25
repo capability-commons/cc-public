@@ -148,8 +148,8 @@ DIR_DATA          = '_data'
 
 # The documents of a consumed tree are keyed by their path in that tree,
 # under this folder and the id of its segment item, which no real path
-# in a tree has. So _consumed/segment_x/_data/... is a document of the
-# segment segment_x, at _data/... in its own tree.
+# in a tree has. So _consumed/SEGMENT/_data/... is a document of the
+# segment whose item is SEGMENT, at _data/... in its own tree.
 #
 DIR_CONSUMED      = '_consumed'
 PREFIX_SEGMENT    = cctool.graph.prefix.stem('type_federated_segment')

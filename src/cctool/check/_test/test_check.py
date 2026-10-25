@@ -760,8 +760,9 @@ def test_a_constraint_that_excludes_a_role_passes_only_types_without_it(tree):
 
 
 def test_an_edge_recorded_through_an_inverse_is_read_in_reverse(tree):
-    # opt_x records that it is the subject of ann_x, which is ann_x
-    # being about opt_x, so ann_x is about something.
+    # The option records that it is the subject of the annotation, which
+    # is the annotation being about the option, so the annotation is
+    # about something.
     path     = tree / '_data/register/reg_relation.yaml'
     register = ruamel.yaml.YAML().load(path.read_text())
     register['entries']['relation_is_about']['inverse'] = {
@@ -1173,6 +1174,17 @@ def test_a_mention_of_nothing_is_reported(tree):
     _replace(tree, location, 'description: A test item.', 'description: See concern_absent.')
     assert _check(tree) == {'dangling_mention': [
         ('ann_x', 'concern_absent', location, LINE_DESCRIPTION)]}
+
+
+def test_a_mention_of_nothing_in_a_python_comment_is_reported(tree):
+    path = tree / 'src/cctool/check/comment.py'
+    text = path.read_text(encoding = 'utf-8')
+    path.write_text(text.replace('SUFFIX_PYTHON     = ',
+                                 '# See concern_absent and concern_security.\n'
+                                 'SUFFIX_PYTHON     = '), encoding = 'utf-8')
+    line = _line(tree, 'src/cctool/check/comment.py', '# See concern_absent and concern_security.')
+    assert _check(tree) == {'dangling_mention': [
+        ('pym_cctool.check.comment', 'concern_absent', 'src/cctool/check/comment.py', line)]}
 
 
 def test_a_mention_of_a_guid_a_pattern_or_an_unknown_prefix_passes(tree):
