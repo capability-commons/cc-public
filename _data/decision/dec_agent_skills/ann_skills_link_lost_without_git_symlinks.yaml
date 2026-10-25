@@ -29,19 +29,18 @@ description:            |
                         .claude/skills/<skill-name>/SKILL.md
                         (https://code.claude.com/docs/en/skills,
                         fetched 2026-10-15). Will asked "Can git store
-                        symbolic links?" at 2026-10-14T10:11:03Z and
-                        at 10:11:55Z asked for a note that Windows is
-                        not supported; README.md lines 50-52 give the
-                        links as the first reason, and
-                        ruling_supported_dev_platforms rules Windows
-                        out. The cost is small today, since the pixi
-                        platforms are osx-arm64, osx-64 and linux-64
-                        (pyproject.toml line 59), all of which keep
-                        links, and the git hooks need /bin/sh. It
-                        grows if the platforms widen or an agent runs
-                        where links are not kept, since the link is
-                        the one barrier that fails silently. A check
-                        that .claude/skills resolves to the same
+                        symbolic links?" on 2026-10-14 and asked for a
+                        note that Windows is not supported; README.md
+                        lines 50-52 give the links as the first
+                        reason, and ruling_supported_dev_platforms
+                        rules Windows out. The cost is small today,
+                        since the pixi platforms are osx-arm64, osx-64
+                        and linux-64 (pyproject.toml line 59), all of
+                        which keep links, and the git hooks need
+                        /bin/sh. It grows if the platforms widen or an
+                        agent runs where links are not kept, since the
+                        link is the one barrier that fails silently. A
+                        check that .claude/skills resolves to the same
                         SKILL.md files would guard it while keeping
                         the layout. ASSUMPTION: Claude Code finds no
                         skills when .claude/skills is a plain file;
