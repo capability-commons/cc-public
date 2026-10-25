@@ -3396,22 +3396,41 @@ entries:
   concept_dataflow_tag:
     id_self:            concept_dataflow_tag
     guid_self:          concept_00cc708143e441569cd3e38d0b2b05ac
-    title:              Presence tag
+    title:              Dataflow tag
     brief:              |
-                        A name on a part of a [[dataflow graph]] that
-                        says in which [[dataflow variants]] the part
-                        is present.
+                        A registered name on [[dataflow nodes]] and
+                        [[dataflow edges]] that labels them as one
+                        group of related parts, such as a functional
+                        chain, or an aspect like logging or control,
+                        so that [[variant operations]] and views can
+                        select the group.
     description:        |
-                        Bare tag is not used as a term, since the tag
-                        that names a release is a git tag (WTP,
-                        2026-10-25).
+                        Each dataflow tag has an entry in a register,
+                        which records what the tag means by an edge to
+                        the logical component, decision, requirement
+                        or interface control document that it stands
+                        for. Selecting by tag is how a variant
+                        operation deletes a functional chain, and how
+                        a view hides logging and control edges so that
+                        the core of a system is drawn without clutter
+                        (WTP, 2026-10-25). A dataflow tag used to say
+                        in which [[dataflow variants]] a part is
+                        present is a presence tag. Bare tag is not
+                        used as a term, since the tag that names a
+                        release is a git tag (WTP, 2026-10-25).
     note:               |
                         A presence tag stands for a presence
                         condition, the term of annotative variability.
-    term_preferred:     presence tag
+                        WTP used tags in this wider way when building
+                        variants and views with StableFlow (WTP,
+                        2026-10-25).
+    term_preferred:     dataflow tag
 
     term_deprecated:
       - tag
+
+    term_admitted:
+      - presence tag
 
     alias:
       - concept_presence_tag

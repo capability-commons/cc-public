@@ -8,14 +8,43 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Registered presence tags with requires and excludes
+title:                  Registered dataflow tags with constraints
 brief:                  |
-                        Presence tags come from a registered
-                        vocabulary in which a presence tag may require
-                        or exclude others, much as Kconfig's depends
-                        on and select do, and each resolved dataflow
-                        graph is checked against those constraints.
-                        Variants are still written by hand.
+                        Dataflow tags on [[dataflow nodes]] and
+                        [[dataflow edges]] come from a register. Each
+                        entry names one group of related parts, such
+                        as a functional chain, or an aspect like
+                        logging or control, and records what the tag
+                        means by an edge to the logical component,
+                        decision, requirement or interface control
+                        document it stands for. Variant operations
+                        select parts by tag, as in deleting a
+                        functional chain, and so do views, as in
+                        hiding logging and control edges. Constraints
+                        follow from that meaning where they can, as
+                        when two tags stand for disjoint logical
+                        components and so are never on the same node
+                        or edge, and an entry may state requires or
+                        excludes, much as Kconfig's depends on and
+                        select do, where the meaning does not give
+                        them. Each resolved dataflow graph is checked
+                        against the constraints. Dataflow variants are
+                        still written by hand.
+description:            |
+                        Reworded when WTP upheld it (WTP, 2026-10-25).
+                        WTP tagged the nodes of functional chains when
+                        building variants with StableFlow, so that a
+                        chain could be deleted selectively, and used
+                        the same tags as flags in the user interface
+                        to show or hide functionally related parts,
+                        such as logging and control edges. Those tags
+                        gave the parts they label a meaning, and a
+                        register gives each tag an entry on which that
+                        meaning is recorded, most likely by a link to
+                        a logical component, decision, requirement or
+                        interface control document; the constraints
+                        can probably be inferred from that meaning
+                        (WTP, 2026-10-25).
 
 edge:
 
@@ -23,3 +52,18 @@ edge:
     guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
     id_target:          dec_feature_model_or_explicit_family
     guid_target:        dec_aa504fee58ff4b8bb28070106371f6a4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_tag
+    guid_target:        concept_00cc708143e441569cd3e38d0b2b05ac
