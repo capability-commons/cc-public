@@ -85,7 +85,7 @@ def violations(root:         pathlib.Path,
         if not key.endswith(SUFFIX_PYTHON) or key != cctool.graph.extract.file_of(key):
             continue
         holder = map_holder.get(key, key)
-        for (line, word) in _mentions((root / key).read_text(encoding = 'utf-8')):
+        for (line, word) in mentions((root / key).read_text(encoding = 'utf-8')):
             if word.partition('_')[0] in set_prefix and word not in set_held:
                 list_row.append((holder, word, key, str(line)))
 
@@ -93,11 +93,28 @@ def violations(root:         pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
-def _mentions(text: str) -> list[tuple[int, str]]:
+def mentions(text: str) -> list[tuple[int, str]]:
     """
-    Return the line and the word of each word shaped like an id in a
-    comment of the python module text.
+    ---
 
+    id_self:                pyf_cctool.check.comment.mentions
+    guid_self:              pyf_0793250a18624654a6084f01c9a3696a
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Ids in python comments
+    brief:                  |
+                            Return the line and the word of each word
+                            shaped like an id in a comment of the python
+                            module text.
+    edge:                   []
+
+    ...
     """
 
     list_mention = []

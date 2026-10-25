@@ -56,9 +56,13 @@ dependencies            = ["click>=8.2,<9",
 [project.scripts]
 cctool                  = "cctool.cli.command:main"
 
+# The build hook reads the tree with the extractor of cctool, to find
+# the items that the wheel leaves behind, so a build needs what the
+# extractor imports.
+#
 [build-system]
 build-backend           = "hatchling.build"
-requires                = ["hatchling"]
+requires                = ["hatchling", "click>=8.2,<9", "ruamel.yaml>=0.19.1,<0.20"]
 
 # The package that the wheel holds. Its name differs from that of the
 # project, so hatchling cannot find it by itself.
@@ -72,13 +76,20 @@ path                    = "src/cctool/version.py"
 
 [tool.hatch.build.targets.wheel]
 packages                = ["src/cctool"]
-exclude                 = ["src/cctool/**/_test", "src/cctool/conftest.py"]
+exclude                 = ["src/cctool/**/_test", "src/cctool/conftest.py",
+                           "src/cctool/release/hook.py"]
+
+# The build hook adds a shadow of each item that the wheel leaves behind
+# but a shipped item names, as ruling_what_data_a_release_ships says.
+#
+[tool.hatch.build.targets.wheel.hooks.custom]
+path                    = "src/cctool/release/hook.py"
 
 # The wheel carries the data items of the tree, under cctool/_data, so
 # that a release of the tool also carries the graph it was released
 # with. This is provisional: if the graph comes to be served, such as
-# by an API, it may stay out of the wheel. No code reads it from the
-# installed package; cctool reads the tree under --root.
+# by an API, it may stay out of the wheel. The check of a peer reads it
+# from the installed package as the tree that the peer consumes.
 #
 [tool.hatch.build.targets.wheel.force-include]
 "_data"                 = "cctool/_data"

@@ -152,6 +152,12 @@ DIR_DATA          = '_data'
 # segment whose item is SEGMENT, at _data/... in its own tree.
 #
 DIR_CONSUMED      = '_consumed'
+
+# A release writes, into the _data of its package, a file of shadows under
+# this folder: one for each item that the package leaves behind but a
+# shipped item names. No tree holds the folder.
+#
+DIR_SHADOW        = 'shadow'
 PREFIX_SEGMENT    = cctool.graph.prefix.stem('type_federated_segment')
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
@@ -384,6 +390,10 @@ PREDICATE         = {
     'consumed_file':      (('file',),
                            'The file was read from a tree that the tree being checked '
                            'consumes.'),
+    'shadow':             (('id', 'file'),
+                           'The item id is a shadow, written in file: it stands for an '
+                           'item that a release left behind, with its id and guid and '
+                           'nothing else.'),
     'check_severity':     (('check', 'severity'),
                            'The running cctool reports the rows of check as severity, '
                            'failure or advice. It is a fact of the tool, and not of any '
@@ -620,9 +630,11 @@ def files(map_document: Documents) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
-def facts_of(map_document: Documents) -> Facts:
+def facts_of(map_document: Documents, with_tool: bool = True) -> Facts:
     """
-    Return the facts that the YAML documents hold, keyed by predicate.
+    Return the facts that the YAML documents hold, keyed by predicate,
+    with the facts of cctool itself unless with_tool is False. Those
+    import its whole command line, and so every dependency it has.
 
     """
 
@@ -655,8 +667,9 @@ def facts_of(map_document: Documents) -> Facts:
     facts['segment_of']    = _segments(facts)
     facts['consumed_file'] = {(file,) for (file,) in facts['tree_file']
                               if consumer(file) is not None}
+    facts['shadow']        = {(row[0], row[3]) for row in facts['item'] if is_shadow(row[3])}
 
-    for (name, set_row) in cctool.graph.tool.facts().items():
+    for (name, set_row) in (cctool.graph.tool.facts() if with_tool else {}).items():
         facts[name].update(set_row)
 
     return facts
@@ -692,6 +705,18 @@ def consumer(key: str) -> str | None:
     if len(list_part) > 2 and list_part[0] == DIR_CONSUMED:
         return list_part[1]
     return None
+
+
+# -----------------------------------------------------------------------------
+def is_shadow(key: str) -> bool:
+    """
+    Return True if the document keyed by key is a file of shadows: one
+    under the folder DIR_SHADOW of _data, which a release writes and
+    no tree holds.
+
+    """
+
+    return pathlib.PurePosixPath(in_tree(key)).parts[:2] == (DIR_DATA, DIR_SHADOW)
 
 
 # -----------------------------------------------------------------------------

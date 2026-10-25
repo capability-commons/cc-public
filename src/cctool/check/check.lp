@@ -484,7 +484,8 @@ duplicate_guid(Guid, Id, Other) :-
 %                         No item is written twice. A copy carries the
 %                         id and the guid of the item it copies, so
 %                         neither duplicate_id nor duplicate_guid finds
-%                         it.
+%                         it. A shadow carries them too, so it is no
+%                         copy of the item it stands for.
 % did:                    |
 %                         {id} is written here and again elsewhere.
 % fix:                    |
@@ -502,7 +503,9 @@ duplicate_guid(Guid, Id, Other) :-
 repeated_item(Id, File, Line) :-
     item(Id, Guid, _, File, Line),
     item(Id, Guid, _, Other, Where),
-    (File, Line) != (Other, Where).
+    (File, Line) != (Other, Where),
+    not shadow(Id, File),
+    not shadow(Id, Other).
 
 
 % -----------------------------------------------------------------------------
@@ -562,7 +565,8 @@ misplaced_module(Id, Expected) :-
 %                         in a file named for its id. A document that
 %                         belongs to a decision is in the folder of the
 %                         decision instead, so that everything argued
-%                         about one decision is kept together.
+%                         about one decision is kept together. A shadow
+%                         is in the file of shadows of its release.
 % did:                    |
 %                         {id} is in {file}, not in {expected}.
 % fix:                    |
@@ -581,6 +585,7 @@ misplaced_module(Id, Expected) :-
 misplaced_document(Id, File, Expected) :-
     item(Id, _, "", File, _),
     @match("(.*/)?_data/.*\\.yaml", File) = 1,
+    not shadow(Id, File),
     not decision_of(Id, _),
     has_type(Id, Type),
     Stem     = @substr(Type, 5, @strlen(Type) - 5),

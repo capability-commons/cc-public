@@ -98,11 +98,13 @@ graph_edge(Holder, Field, Id) :-
 
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
+    not shadow(Id, _),
     has_type(Id, Type),
     primary_edge(Type, "relation_has_items_specified_by_schema", Schema).
 
 document_schema(Id, Schema) :-
     item(Id, _, "", _, _),
+    not shadow(Id, _),
     primary_edge(Id, "relation_is_specified_by_schema", Schema).
 
 

@@ -41,6 +41,8 @@ import cctool.check.check
 import cctool.check.segment
 import cctool.commit.message
 import cctool.edit.edit
+import cctool.graph.extract
+import cctool.release.shadow
 
 
 ID_PEER      = 'segment_peer'
@@ -94,13 +96,17 @@ def _peer(tmp_path_factory,
 def _package(tree, tmp_path_factory):
     """
     Return the folder of a cctool package installed from the copy tree:
-    its code, with its _data folder inside it.
+    its code, with its _data folder inside it, and the file of shadows
+    that the build adds to that folder.
 
     """
 
     dir_package = tmp_path_factory.mktemp('site') / 'cctool'
     shutil.copytree(tree / 'src' / 'cctool', dir_package)
     shutil.copytree(tree / '_data', dir_package / '_data')
+    dir_shadow  = dir_package / '_data' / cctool.graph.extract.DIR_SHADOW
+    dir_shadow.mkdir()
+    cctool.release.shadow.write(tree, dir_shadow)
     return dir_package
 
 
@@ -158,11 +164,11 @@ def test_a_peer_that_consumes_a_checkout_passes(tree, tmp_path_factory, monkeypa
 
 
 # -----------------------------------------------------------------------------
-def test_a_peer_that_consumes_a_release_has_only_notices(tree, tmp_path_factory, monkeypatch):
+def test_a_peer_that_consumes_a_release_passes(tree, tmp_path_factory, monkeypatch):
     """
     The installed package does not hold the files at the root of its
-    tree, so its mentions of them dangle. Those are notices, and the
-    peer has no failures.
+    tree, but holds a shadow of each that it names, so nothing it names
+    dangles, and the peer has neither failures nor notices.
 
     """
 
@@ -170,9 +176,7 @@ def test_a_peer_that_consumes_a_release_has_only_notices(tree, tmp_path_factory,
     (failures, _, notices) = cctool.check.check.review(_peer(tmp_path_factory))
 
     assert failures == {}
-    assert set(notices) <= {'dangling_mention'}
-    assert {row[1] for row in notices.get('dangling_mention', [])} <= {
-        'file_pyproject', 'shell_githooks_pre_merge_commit'}
+    assert notices  == {}
 
 
 # -----------------------------------------------------------------------------

@@ -19,13 +19,14 @@ description:            |
                         Each test reads one wheel, built from the tree
                         by hatchling, the build backend that
                         pyproject.toml names. The wheel holds every
-                        file under _data at cctool/_data, and every
-                        module and logic program of cctool, and leaves
-                        out the tests and their fixtures. The wheel
-                        grows with the data, so the tests are marked
-                        slow, and hatchling is imported only when they
-                        run, so that an environment without it can
-                        still collect them.
+                        file under _data at cctool/_data, with the
+                        file of shadows that its build hook adds, and
+                        every module and logic program of cctool, and
+                        leaves out the tests, their fixtures and the
+                        hook. The wheel grows with the data, so the
+                        tests are marked slow, and hatchling is
+                        imported only when they run, so that an
+                        environment without it can still collect them.
 edge:                   []
 
 ...
@@ -37,6 +38,7 @@ import zipfile
 import pytest
 
 import cctool.conftest
+import cctool.release.shadow
 
 
 pytestmark = pytest.mark.slow
@@ -50,15 +52,17 @@ NAME_TEST         = '_test'
 NAME_CONFTEST     = 'conftest.py'
 NAME_CACHE        = '__pycache__'
 TUPLE_SUFFIX      = ('.py', '.lp')
+PATH_HOOK         = DIR_PACKAGE / 'release' / 'hook.py'
+NAME_SHADOW       = PREFIX_DATA + 'shadow/segment_cc_public.yaml'
 
 
 # -----------------------------------------------------------------------------
 @pytest.fixture(scope = 'module')
-def set_name(tmp_path_factory):
+def wheel(tmp_path_factory):
     """
-    Return the name of each file in a wheel built from the tree, by the
-    build backend that pyproject.toml names, run from the root of the
-    tree as an installer would run it.
+    Return the path of a wheel built from the tree, by the build backend
+    that pyproject.toml names, run from the root of the tree as an
+    installer would run it.
 
     """
 
@@ -68,15 +72,27 @@ def set_name(tmp_path_factory):
     with pytest.MonkeyPatch.context() as monkeypatch:
         monkeypatch.chdir(cctool.conftest.DIR_REPO)
         name_wheel = hatchling.build.build_wheel(str(dir_wheel))
-    with zipfile.ZipFile(dir_wheel / name_wheel) as wheel:
-        return set(wheel.namelist())
+    return dir_wheel / name_wheel
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture(scope = 'module')
+def set_name(wheel):
+    """
+    Return the name of each file in the wheel.
+
+    """
+
+    with zipfile.ZipFile(wheel) as archive:
+        return set(archive.namelist())
 
 
 # -----------------------------------------------------------------------------
 def _is_shipped(path):
     """
     Return True if path, a file under src/cctool, is code the wheel
-    should hold: a module or logic program outside the tests.
+    should hold: a module or logic program outside the tests, other
+    than the build hook.
 
     """
 
@@ -84,14 +100,23 @@ def _is_shipped(path):
     return (path.suffix in TUPLE_SUFFIX
             and NAME_TEST not in list_part
             and NAME_CACHE not in list_part
-            and path.name != NAME_CONFTEST)
+            and path.name != NAME_CONFTEST
+            and path != PATH_HOOK)
 
 
 def test_the_wheel_holds_every_file_of_data_under_cctool_data(set_name):
     set_data = {PREFIX_DATA + str(path.relative_to(DIR_DATA))
                 for path in DIR_DATA.rglob('*') if path.is_file()}
     assert set_data
-    assert {name for name in set_name if name.startswith(PREFIX_DATA)} == set_data
+    assert {name for name in set_name if name.startswith(PREFIX_DATA)} == set_data | {NAME_SHADOW}
+
+
+def test_the_wheel_holds_a_shadow_of_each_item_it_leaves_behind_but_names(wheel, set_name):
+    with zipfile.ZipFile(wheel) as archive:
+        text = archive.read(NAME_SHADOW).decode('utf-8')
+    assert text == cctool.release.shadow.text(*cctool.release.shadow.shadows(cctool.conftest.DIR_REPO))
+    assert 'id_self:            file_pyproject' in text
+    assert PREFIX_PACKAGE + str(PATH_HOOK.relative_to(DIR_PACKAGE)) not in set_name
 
 
 def test_the_wheel_holds_every_module_and_logic_program_of_cctool(set_name):
