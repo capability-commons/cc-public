@@ -1,0 +1,88 @@
+id_self:                ann_tools_already_show_several_upheld_options
+guid_self:              ann_c386cb1e1dd648d3baf49f407ea03d86
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tools that already show every option a ruling upholds
+brief:                  |
+                        The decision page, the rulings panel, the
+                        standing of each option, search and the review
+                        request already handle one ruling that upholds
+                        several options, and no check limits a ruling
+                        to one. So this option shows a correct
+                        family-wide answer, every option some product
+                        takes marked upheld, with no change to the
+                        tools, though none of the 134 rulings has used
+                        that path yet.
+description:            |
+                        Sources:
+                        - Each option upheld by any ruling of the
+                          decision gets the standing upheld.
+                          (src/cctool/web/argument.py within
+                          Graph.decision)
+                        - The decision list shows the titles of every
+                          upheld option, and the rulings panel lists
+                          every option a ruling upholds.
+                          (src/cctool/web/page.py within _settlement
+                          and _rulings)
+                        - Search lists every upheld option of a
+                          decision. (src/cctool/graph/text.py within
+                          SQL_FOUND)
+                        - A request to uphold keeps the decision's one
+                          ruling and the standing of the other
+                          options, and its test leaves two options
+                          upheld. (src/cctool/web/request.py within
+                          _rule; src/cctool/web/_test/test_request.py
+                          within
+                          test_an_uphold_sent_changes_the_ruling_in_place)
+                        - The impact of a commit follows links of
+                          every relation alike.
+                          (src/cctool/commit/impact.lp within link)
+                        - No check limits the number of options a
+                          ruling upholds; the ruling checks require at
+                          least one settled option, no option both
+                          upheld and rejected, and at most one ruling
+                          per decision. (src/cctool/check/check.lp
+                          within no_option_in_ruling,
+                          upholds_and_rejects and competing_rulings)
+                          The ruling schema keeps settled options as
+                          edges "so that one ruling can settle a set
+                          of alternatives at once".
+                          (_data/schema/sch_ruling.yaml at
+                          description)
+                        - All 134 rulings in this snapshot uphold
+                          exactly one option. (count of
+                          _data/decision/*/ruling_*.yaml with a grep
+                          for the upholds relation in each) Strength:
+                          holds at any scale for showing which options
+                          are upheld; it does not show which product
+                          takes which, which needs the variants. Since
+                          no real ruling upholds two options yet, the
+                          path is covered by one test only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

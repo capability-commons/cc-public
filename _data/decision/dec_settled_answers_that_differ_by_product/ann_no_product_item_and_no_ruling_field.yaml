@@ -1,0 +1,77 @@
+id_self:                ann_no_product_item_and_no_ruling_field
+guid_self:              ann_2bc181777ddb42b7bbc32dae9b31d624
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One relation and one check, with no product item or ruling field
+brief:                  |
+                        This option adds one relation from a dataflow
+                        variant to an option and one check, and keeps
+                        one ruling for each decision in today's shape,
+                        since the ruling schema already lets one
+                        ruling settle several options. The one-ruling
+                        option adds a ruling field that every reader
+                        of upholds must learn, and named rulings add a
+                        relation and change the check on competing
+                        rulings.
+description:            |
+                        Sources:
+                        - The edge needs a new relation from a
+                          dataflow variant to an option, and no
+                          product item and no product field on a
+                          ruling is needed.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief and description)
+                        - Which options are upheld are edges, not
+                          fields, "so that one ruling can settle a set
+                          of alternatives at once".
+                          (_data/schema/sch_ruling.yaml at
+                          description)
+                        - A decision has at most one ruling.
+                          (src/cctool/check/check.lp within
+                          competing_rulings)
+                        - The earlier argument found the one-ruling
+                          pairing needs a structure no edge can carry,
+                          and named rulings one ordinary new edge and
+                          a changed check.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/ann_option_product_pairing_outside_edge_form.yaml
+                          at brief and description)
+                        - Simplicity counts distinct mechanisms
+                          introduced and asks whether a design follows
+                          from decisions already made.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure and
+                          entries.concern_simplicity.question)
+                          Strength: holds at any scale, since the
+                          added parts stay fixed in number. It depends
+                          on the dataflow variant type, as every
+                          option that names a product does, and on the
+                          check telling a member product from other
+                          complete variants.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_ruling_with_an_option_per_product
+    guid_target:        opt_8321685ea3324683af24b0cdbbd8c817
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

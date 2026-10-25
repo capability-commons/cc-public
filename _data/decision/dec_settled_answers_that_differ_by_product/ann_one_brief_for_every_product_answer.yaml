@@ -1,0 +1,94 @@
+id_self:                ann_one_brief_for_every_product_answer
+guid_self:              ann_c5591bc89b6e424281318046524658f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One ruling brief for the reasons of every product
+brief:                  |
+                        Under this option the family's answers share
+                        one ruling and so one brief, and a variant is
+                        not argued, so the reason one member product
+                        takes its option, the ordering of concerns
+                        that makes it an audience of its own, has no
+                        place of its own. Upholding a second option
+                        from the review page replaces the ruling's
+                        brief with the new reason. Named rulings give
+                        each override its own brief.
+description:            |
+                        Sources:
+                        - The decision keeps its one ruling, which
+                          upholds every option that some member
+                          product uses.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief)
+                        - A ruling's brief states what was ruled, and
+                          a ruling carries nothing beyond the
+                          standalone fields and its edges.
+                          (_data/schema/sch_ruling.yaml at
+                          description)
+                        - A request to uphold sets the ruling's brief
+                          to the reason typed, and adds the upheld
+                          option without unlinking the others; the
+                          edit form offers the existing brief as the
+                          starting reason. (src/cctool/web/request.py
+                          within _rule; src/cctool/web/page.py within
+                          edit) The test of an uphold leaves two
+                          options upheld and the brief replaced by the
+                          second reason.
+                          (src/cctool/web/_test/test_request.py within
+                          test_an_uphold_sent_changes_the_ruling_in_place)
+                        - In value-based argumentation audiences are
+                          individuated by their preferences between
+                          values, and an argument may be acceptable to
+                          one audience and not to another. (T. J. M.
+                          Bench-Capon, "Persuasion in Practical
+                          Argument Using Value-based Argumentation
+                          Frameworks", Journal of Logic and
+                          Computation 13(3), 2003, pages 429-448, doi
+                          10.1093/logcom/13.3.429, Section 5 and
+                          Definitions 6.1 and 6.2; author's copy at
+                          https://cgi.csc.liv.ac.uk/~tbc/publications/jcl03.pdf)
+                          The decision treats a product as behaving
+                          like an audience.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/dec_settled_answers_that_differ_by_product.yaml
+                          at description)
+                        - Under named rulings, a ruling that names a
+                          member product overrides the family-wide
+                          default for it, and each ruling has a brief
+                          of its own.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_ruling_names_the_products_it_holds_for.yaml
+                          at brief; _data/schema/sch_ruling.yaml at
+                          description) Strength: a careful author can
+                          still write every product's reason into the
+                          one brief, and who set a product's answer,
+                          and when, stays in the commits of that
+                          variant's file, mixed with its other
+                          changes. The loss grows with the number of
+                          products sharing one brief.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ruling_names_the_products_it_holds_for
+    guid_target:        opt_0b5f32f90d944170932ec0c7ffb93673
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

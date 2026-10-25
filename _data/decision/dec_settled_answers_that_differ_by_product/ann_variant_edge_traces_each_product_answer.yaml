@@ -1,0 +1,74 @@
+id_self:                ann_variant_edge_traces_each_product_answer
+guid_self:              ann_61c8282ac17a46b7975d27789ba492cf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge from each product's variant to the answer it takes
+brief:                  |
+                        Each complete dataflow variant names the
+                        upheld option it takes, so the difference a
+                        member product carries can be followed from
+                        the variant to the option and its arguments,
+                        and back from the option to every product that
+                        takes it. The earlier argument against keeping
+                        the difference only in variant operations said
+                        it would weaken if variants gained an edge to
+                        the options they realize, and this option adds
+                        that edge.
+description:            |
+                        Sources:
+                        - Each dataflow variant has an edge to the
+                          upheld option it takes, and a check holds
+                          that each complete dataflow variant takes
+                          exactly one upheld option of each decision
+                          whose ruling upholds more than one.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief)
+                        - The argument that a settled product answer
+                          has no ruling behind it under variant
+                          operations alone ends: "It would weaken if
+                          variants later gained an edge to the options
+                          they realize."
+                          (_data/decision/dec_settled_answers_that_differ_by_product/ann_settled_product_answer_with_no_ruling.yaml
+                          at description)
+                        - Traceability counts elements with no traced
+                          reason and needs with nothing that meets
+                          them. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.measure)
+                        - The Patrol variant drafts already carry a
+                          relation list on each variant, empty today.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml,
+                          its relation field)
+                        - The edge is an ordinary edge, so the impact
+                          of a change follows it like any other link.
+                          (src/cctool/commit/impact.lp within link)
+                          Strength: holds and grows at ten times the
+                          products, since each product's answer stays
+                          one edge that names its reason. It traces
+                          which answer a product takes, not why that
+                          product takes it; see the annotation on one
+                          brief for every product's answer. The edge
+                          states the answer; nothing checks it against
+                          the operations that realize it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

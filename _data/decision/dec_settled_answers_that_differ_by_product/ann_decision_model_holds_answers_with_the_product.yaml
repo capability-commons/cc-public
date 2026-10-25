@@ -1,0 +1,77 @@
+id_self:                ann_decision_model_holds_answers_with_the_product
+guid_self:              ann_6d51c4725c6a4a10b975b183c9f73c26
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Answers held with each product, as in a decision model
+brief:                  |
+                        In the DOPLER decision model a product is
+                        configured by taking the visible decisions,
+                        and assets are included by conditions over the
+                        answers, so the answers belong to the
+                        product's configuration, not to the decision.
+                        This option puts each product's answer on its
+                        variant in the same way, while the decision
+                        and its arguments stay shared.
+description:            |
+                        Sources:
+                        - DOPLER is the decision-oriented variability
+                          modeling approach and meta-tool of D.
+                          Dhungana, P. Gruenbacher and R. Rabiser,
+                          "The DOPLER meta-tool for decision-oriented
+                          variability modeling: a multiple case
+                          study", Automated Software Engineering
+                          18(1), 2011, pages 77-114, doi
+                          10.1007/s10515-010-0076-6. Only its metadata
+                          and abstract were read; the full text is
+                          behind a paywall.
+                        - "The key modeling elements are decisions
+                          (representing configuration variables)" and
+                          assets; "The assets are associated with
+                          decisions through boolean expressions called
+                          inclusion conditions"; "During
+                          configuration, a set of decisions is taken
+                          by the user." (D. Dhungana, C. H. Tang, C.
+                          Weidenbach, P. Wischnewski, "Automated
+                          Verification of Interactive Rule-Based
+                          Configuration Systems", arXiv 1309.0065,
+                          2013, Section II, which cites the 2011 paper
+                          for DOPLER; read in full)
+                        - The product line survey suggests a variant
+                          "can then name the options it realizes".
+                          (_sources/survey/product-lines.md, section
+                          3, idea 6)
+                        - Each dataflow variant has an edge to the
+                          upheld option it takes.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief) Strength: speaks for where an
+                          answer is held, not for how it is argued:
+                          DOPLER's decisions are configuration
+                          variables with no ruling or annotations. In
+                          DOPLER the inclusion of assets follows from
+                          the answers by rule; here the operations are
+                          written by hand, and nothing checks that a
+                          variant's operations match the option it
+                          takes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,81 @@
+id_self:                ann_new_product_caught_by_check_over_variants
+guid_self:              ann_13da141e9ded4b39910d76c1b73d9a2d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  New member product with no answer caught by the variant check
+brief:                  |
+                        A new member product, added as a complete
+                        dataflow variant without an edge to an upheld
+                        option, fails the check at once for each
+                        decision whose ruling upholds more than one
+                        option; as worded, no other option flags it,
+                        though named rulings give it the family-wide
+                        default where one stands. It is not caught
+                        where a decision upholds only one option and
+                        the new product needs another, and the check
+                        cannot be written before the dataflow variant
+                        type exists and the tooling can tell a
+                        complete variant.
+description:            |
+                        Sources:
+                        - A check holds that each complete dataflow
+                          variant takes exactly one upheld option of
+                          each decision whose ruling upholds more than
+                          one.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief)
+                        - The earlier argument found that none of the
+                          three options that record a ruling for each
+                          product's answer requires every product to
+                          have one.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/ann_product_with_no_ruling_goes_unnoticed.yaml
+                          at brief)
+                        - The variant type is ruled but has no schema
+                          or folder in _data yet.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          at brief; directory listing of _data/schema
+                          in this snapshot)
+                        - Whether a dataflow variant is abstract,
+                          superset or complete is an open decision.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/dec_how_a_variant_is_known_abstract_or_superset.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question)
+                          Strength: holds and grows with the number of
+                          products, since every new product is checked
+                          against every decision ruled by product. The
+                          option does not say whether an edge on an
+                          abstract variant holds for its descendants,
+                          as the Orin draft is shared by three; until
+                          it does, a leaf can be caught for an answer
+                          its base already gives.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

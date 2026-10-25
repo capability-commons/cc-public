@@ -1,0 +1,73 @@
+id_self:                ann_second_upheld_option_edits_every_variant
+guid_self:              ann_c30e1fc59d2d4a29bb51478229c086d7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second upheld option that must edit every product's variant
+brief:                  |
+                        When a decision first gets a second upheld
+                        option, the check fails for every complete
+                        dataflow variant of the family until each
+                        names the option it takes, so a change of
+                        answer for one product becomes an edit of
+                        every product's variant in one commit. Under
+                        named rulings the same change is one new
+                        ruling that overrides the default for that
+                        product.
+description:            |
+                        Sources:
+                        - The check holds only for decisions whose
+                          ruling upholds more than one option, and
+                          then for each complete dataflow variant.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_variant_names_the_upheld_option_it_takes.yaml
+                          at brief)
+                        - A ruling that names no member product holds
+                          for every member product that no other
+                          ruling names, so a family-wide default can
+                          stand with overrides.
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_ruling_names_the_products_it_holds_for.yaml
+                          at brief)
+                        - Reviewability measures the size of a change,
+                          in lines; cost counts development effort.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reviewability.measure and
+                          entries.concern_cost.measure) Strength:
+                          grows with the number of products, one short
+                          edge for each variant, each easy to judge;
+                          it is paid once for each decision that
+                          splits. It would shrink if a variant with no
+                          edge were taken to keep a default option, at
+                          the cost of a rule the option does not
+                          state.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settled_answers_that_differ_by_product
+    guid_target:        dec_f20b682140304e4e89de8e24d8eff719
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_variant_names_the_upheld_option_it_takes
+    guid_target:        opt_d1379d887a7e420ab812d4d78252253c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ruling_names_the_products_it_holds_for
+    guid_target:        opt_0b5f32f90d944170932ec0c7ffb93673
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e
