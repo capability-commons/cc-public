@@ -55,6 +55,7 @@ import ruamel.yaml
 import ruamel.yaml.scalarstring
 
 import cctool.check.check
+import cctool.check.segment
 import cctool.edit.layout
 import cctool.graph.extract
 import cctool.graph.prefix
@@ -200,14 +201,18 @@ class Tree:
     # -------------------------------------------------------------------------
     def __init__(self, root: pathlib.Path) -> None:
         """
-        Read the tree under root.
+        Read the tree under root, with the trees that its segment item
+        consumes, so that an edit may name their items. Only the tree
+        under root is ever written.
 
         """
 
-        self.root         = root
-        self.map_original = cctool.graph.extract.documents(root)
-        self.map_document = dict(self.map_original)
-        self.edit         = {}
+        map_own              = cctool.graph.extract.documents(root)
+        (map_consumed, _, _) = cctool.check.segment.consumed(root, map_own)
+        self.root            = root
+        self.map_original    = {**map_own, **map_consumed}
+        self.map_document    = dict(self.map_original)
+        self.edit            = {}
         self._index()
 
     # -------------------------------------------------------------------------
@@ -219,6 +224,7 @@ class Tree:
         """
 
         for (relative, text) in edit.items():
+            _refuse_consumed(relative)
             for key in [key for key in self.map_document
                         if cctool.graph.extract.file_of(key) == relative]:
                 del self.map_document[key]
@@ -263,12 +269,29 @@ class Tree:
 
         """
 
+        _refuse_consumed(relative)
         if relative in self.edit and self.edit[relative] is None:
             raise ErrorEdit('The file {file} is removed.'.format(file = relative))
 
         if relative in self.edit:
             return self.edit[relative]
         return (self.root / relative).read_text(encoding = 'utf-8')
+
+
+# -----------------------------------------------------------------------------
+def _refuse_consumed(relative: str) -> None:
+    """
+    Raise ErrorEdit if relative is the key of a file of a consumed tree,
+    which the tree being edited cannot change.
+
+    """
+
+    segment = cctool.graph.extract.consumer(relative)
+    if segment is not None:
+        raise ErrorEdit('{file} is held by {segment}, a segment that this tree consumes, so '
+                        'it cannot be changed here.'.format(
+                            file    = cctool.graph.extract.in_tree(relative),
+                            segment = segment))
 
 
 # -----------------------------------------------------------------------------

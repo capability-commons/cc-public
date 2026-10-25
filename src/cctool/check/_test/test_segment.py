@@ -14,7 +14,8 @@ protective_mark:
 title:                  Segment tests
 brief:                  |
                         Tests that a peer is checked with the tree it
-                        consumes, and fails only on its own items.
+                        consumes, fails only on its own items, and is
+                        edited without changing that tree.
 description:            |
                         Each test makes a peer, a tree that holds one
                         segment item and consumes release_0_1_0, and
@@ -36,6 +37,7 @@ import pytest
 
 import cctool.check.check
 import cctool.check.segment
+import cctool.edit.edit
 
 
 ID_PEER      = 'segment_peer'
@@ -280,3 +282,40 @@ def test_a_release_older_than_the_consumed_tree_disagrees(tree, tmp_path_factory
         == expected[cctool.check.check.NAME_CONSUMED]
     assert cctool.check.check.NAME_CONSUMED not in (notices if is_failure else failures)
     assert _without_layout(failures).keys() <= {cctool.check.check.NAME_CONSUMED}
+
+
+# -----------------------------------------------------------------------------
+def test_an_edit_in_a_peer_may_name_consumed_items(tree, tmp_path_factory, monkeypatch):
+    """
+    An edit in a peer is checked with the tree it consumes, so a new
+    item that names its items adds no failure, and is written in the
+    peer.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root = _peer(tmp_path_factory)
+    edit = cctool.edit.edit.Tree(root)
+
+    edit.update(cctool.edit.edit.new(edit, 'lco_peer_part',
+                                     [('title', 'Peer part'),
+                                      ('brief', 'A part of the peer, which is a segment.')],
+                                     [('relation_is_driven_by', 'concern_security')]))
+
+    assert cctool.edit.edit.apply(edit) == {}
+    assert (root / '_data' / 'logical_component' / 'lco_peer_part.yaml').is_file()
+
+
+# -----------------------------------------------------------------------------
+def test_an_edit_in_a_peer_may_not_change_a_consumed_item(tree, tmp_path_factory, monkeypatch):
+    """
+    The files of a consumed tree are read for an edit, but never
+    changed by one.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    edit = cctool.edit.edit.Tree(_peer(tmp_path_factory))
+
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'held by segment_cc_public'):
+        cctool.edit.edit.set_field(edit, 'concept_segment', 'title', 'Part')
