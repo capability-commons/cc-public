@@ -46,6 +46,7 @@ edge:
 import pathlib
 
 import cctool.check.schema
+import cctool.check.segment
 import cctool.edit.layout
 import cctool.graph.logic
 import cctool.graph.extract
@@ -73,7 +74,13 @@ NAME_LAYOUT       = 'unformatted_file'
 #
 NAME_VERSION      = 'version_disagreement'
 
-# The wording of the two checks that are not logic program rules. The checks of
+# And one more: a segment item names the newest release item of each tree
+# it consumes. Its rows are failures while that tree is an installed
+# release, and notices while it is a checkout.
+#
+NAME_CONSUMED     = 'consumed_release_disagreement'
+
+# The wording of the checks that are not logic program rules. The checks of
 # check.lp are worded there, in the item before each declaration.
 #
 WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
@@ -85,6 +92,11 @@ WORDING_VERSION   = {'did': '{id}, the newest release item, records the version 
                             'and the version module holds {module}.',
                      'fix': 'Let cctool release prepare write the version module and the '
                             'release item together. Do not edit the version by hand.'}
+
+WORDING_CONSUMED  = {'did': '{id} consumes {release}, but the {place} of the tree it '
+                            'consumes holds the newer release {newest}.',
+                     'fix': 'Change the edge of relation_consumes of the segment item to '
+                            'the newest release, or install the release that it names.'}
 
 # The severity of a check: a row of it is a failure, or advice.
 #
@@ -145,7 +157,7 @@ def check(root: pathlib.Path) -> Failures:
 
 
 # -----------------------------------------------------------------------------
-def review(root: pathlib.Path) -> tuple[Failures, Failures]:
+def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
     """
     ---
 
@@ -161,9 +173,16 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
 
     title:                  Review a tree
     brief:                  |
-                            Return the failures and the advice of the tree
-                            under root, each keyed by check, with the
-                            checks that find nothing left out.
+                            Return the failures, the advice and the
+                            notices of the tree under root, each keyed by
+                            check, with the checks that find nothing left
+                            out.
+    description:            |
+                            The trees that the segment item of the tree
+                            consumes are read and checked with it. A row
+                            that names only their items and files is a
+                            notice, and not a failure, and advice about
+                            them is left out.
 
     edge:
 
@@ -175,18 +194,29 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures]:
     ...
     """
 
-    map_document       = cctool.graph.extract.documents(root)
-    (failures, advice) = review_documents(map_document, CACHE_SCHEMA)
-    list_row           = cctool.edit.layout.violations(root, map_document)
+    map_own                         = cctool.graph.extract.documents(root)
+    (map_consumed, failing, noticed) = cctool.check.segment.consumed(root, map_own)
+    map_document                    = {**map_own, **map_consumed}
+    (failures, advice)              = review_documents(map_document, CACHE_SCHEMA)
+    notices                         = {}
 
-    if list_row:
-        failures[NAME_LAYOUT] = list_row
+    if map_consumed:
+        facts               = cctool.graph.extract.facts_of(map_document)
+        (failures, notices) = cctool.check.segment.attribute(failures, facts)
+        (advice, _)         = cctool.check.segment.attribute(advice, facts)
 
-    list_row = cctool.release.record.disagreements(root, map_document)
-    if list_row:
-        failures[NAME_VERSION] = list_row
+    for (name, list_row, found) in ((NAME_LAYOUT,
+                                     cctool.edit.layout.violations(root, map_own),
+                                     failures),
+                                    (NAME_VERSION,
+                                     cctool.release.record.disagreements(root, map_own),
+                                     failures),
+                                    (NAME_CONSUMED, failing, failures),
+                                    (NAME_CONSUMED, noticed, notices)):
+        if list_row:
+            found[name] = list_row
 
-    return (failures, advice)
+    return (failures, advice, notices)
 
 
 # -----------------------------------------------------------------------------
@@ -350,9 +380,10 @@ def columns() -> dict[str, tuple[str, ...]]:
                   for (name, tuple_column)
                   in cctool.graph.logic.declared(text).items()}
 
-    map_column[NAME_SCHEMA]  = cctool.check.schema.COLUMNS
-    map_column[NAME_LAYOUT]  = cctool.edit.layout.COLUMNS
-    map_column[NAME_VERSION] = cctool.release.record.COLUMNS
+    map_column[NAME_SCHEMA]   = cctool.check.schema.COLUMNS
+    map_column[NAME_LAYOUT]   = cctool.edit.layout.COLUMNS
+    map_column[NAME_VERSION]  = cctool.release.record.COLUMNS
+    map_column[NAME_CONSUMED] = cctool.check.segment.COLUMNS
     return map_column
 
 
@@ -406,7 +437,8 @@ def wording() -> dict[str, dict[str, str]]:
     text        = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
     map_wording = cctool.graph.logic.worded(text)
 
-    map_wording[NAME_SCHEMA]  = WORDING_SCHEMA
-    map_wording[NAME_LAYOUT]  = WORDING_LAYOUT
-    map_wording[NAME_VERSION] = WORDING_VERSION
+    map_wording[NAME_SCHEMA]   = WORDING_SCHEMA
+    map_wording[NAME_LAYOUT]   = WORDING_LAYOUT
+    map_wording[NAME_VERSION]  = WORDING_VERSION
+    map_wording[NAME_CONSUMED] = WORDING_CONSUMED
     return map_wording

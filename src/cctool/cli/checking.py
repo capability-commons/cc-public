@@ -56,13 +56,15 @@ def check(root: pathlib.Path) -> None:
     the name of the check, and a sentence that says what is wrong. The
     rows of a check are followed once by what to do about them. Advice
     is printed first, as "advice:" and then the same, and is not a
-    failure. The exit status is 1 when any check fails, and 2 when the
-    checks cannot be run.
+    failure. A row about the trees that the segment of the tree
+    consumes is printed next, as "notice:" and then the same, and is
+    not a failure either. The exit status is 1 when any check fails,
+    and 2 when the checks cannot be run.
 
     """
 
     try:
-        (failures, advice) = cctool.check.check.review(root.resolve())
+        (failures, advice, notices) = cctool.check.check.review(root.resolve())
     except cctool.graph.logic.ErrorLogic as error:
         click.echo('The checks could not be run: {error}'.format(error = error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
@@ -72,10 +74,16 @@ def check(root: pathlib.Path) -> None:
 
     for line in cctool.graph.logic.described(advice, map_column, map_wording, 'advice: '):
         click.echo(line)
+    for line in cctool.graph.logic.described(notices, map_column, map_wording, 'notice: '):
+        click.echo(line)
+
     for line in cctool.graph.logic.described(failures, map_column, map_wording):
         click.echo(line)
 
-    count = sum(len(list_row) for list_row in failures.values())
+    count  = sum(len(list_row) for list_row in failures.values())
+    notice = sum(len(list_row) for list_row in notices.values())
+    if notice:
+        click.echo('{count} notices about the trees it consumes'.format(count = notice))
     click.echo('{count} failures'.format(count = count))
     sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if count
              else cctool.cli.group.EXIT_OK)

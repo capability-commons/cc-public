@@ -136,6 +136,14 @@ PREFIX_ID         = 'id_'
 PREFIX_GUID       = 'guid_'
 DELIM_PREFIX      = '_'
 DIR_DATA          = '_data'
+
+# The documents of a consumed tree are keyed by their path in that tree,
+# under this folder and the id of its segment item, which no real path
+# in a tree has. So _consumed/segment_x/_data/... is a document of the
+# segment segment_x, at _data/... in its own tree.
+#
+DIR_CONSUMED      = '_consumed'
+PREFIX_SEGMENT    = cctool.graph.prefix.stem('type_segment')
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
 SUFFIX_PROGRAM    = '.lp'
@@ -359,6 +367,14 @@ PREDICATE         = {
                            'The interface control document interface states the member '
                            'as its check named check, whose rows are severity: failure '
                            'or advice.'),
+    'segment_of':         (('file', 'segment'),
+                           'The file is held by the segment: the segment item of the '
+                           'tree it was read from, or empty if that tree holds no '
+                           'segment item or more than one. A consumed tree is read '
+                           'beside the tree being checked, under DIR_CONSUMED.'),
+    'consumed_file':      (('file',),
+                           'The file was read from a tree that the tree being checked '
+                           'consumes.'),
     'check_severity':     (('check', 'severity'),
                            'The running cctool reports the rows of check as severity, '
                            'failure or advice. It is a fact of the tool, and not of any '
@@ -514,11 +530,18 @@ def extract(root: pathlib.Path) -> Facts:
 
 
 # -----------------------------------------------------------------------------
-def documents(root: pathlib.Path) -> Documents:
+def documents(root:    pathlib.Path,
+              package: pathlib.PurePosixPath | None = None) -> Documents:
     """
     Return each YAML document in the tree under root, with the line of
     its file that its first line is on, keyed by the file's path
     relative to root.
+
+    If package is given, root is the folder of an installed python
+    package, which holds the data items of its tree in a _data folder.
+    Each of its other files is keyed as if it were under package, where
+    it was in the tree the package was built from, so that its ids are
+    those that tree gives it.
 
     Documents are read from YAML files under a _data directory, from
     the docstrings of a python module and of its classes and functions,
@@ -533,6 +556,8 @@ def documents(root: pathlib.Path) -> Documents:
 
     for path in _files(root):
         relative = path.relative_to(root)
+        if package is not None and relative.parts[0] != DIR_DATA:
+            relative = pathlib.Path(package, relative)
         try:
             map_document.update(read(path, relative))
         except ErrorRead as error:
@@ -617,12 +642,61 @@ def facts_of(map_document: Documents) -> Facts:
         for (name, set_row) in MAP_FACTS[key][1].items():
             facts[name].update(set_row)
 
-    facts['term_form'] = _forms(facts)
+    facts['term_form']     = _forms(facts)
+    facts['segment_of']    = _segments(facts)
+    facts['consumed_file'] = {(file,) for (file,) in facts['tree_file']
+                              if consumer(file) is not None}
 
     for (name, set_row) in cctool.graph.tool.facts().items():
         facts[name].update(set_row)
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _segments(facts: Facts) -> set[tuple[str, str]]:
+    """
+    Return the segment that holds each file of the facts: the segment
+    that its key names for the file of a consumed tree, and for the
+    file of the tree being checked, its one segment item, or empty if
+    it holds none or more than one.
+
+    """
+
+    set_own = {row[0] for row in facts['item']
+               if row[0].startswith(PREFIX_SEGMENT) and consumer(row[3]) is None}
+    own     = next(iter(set_own)) if len(set_own) == 1 else ''
+
+    return {(file, consumer(file) or own) for (file,) in facts['tree_file']}
+
+
+# -----------------------------------------------------------------------------
+def consumer(key: str) -> str | None:
+    """
+    Return the segment of the consumed tree that the document keyed by
+    key was read from, or None if key is that of the tree being
+    checked.
+
+    """
+
+    list_part = pathlib.PurePosixPath(key).parts
+    if len(list_part) > 2 and list_part[0] == DIR_CONSUMED:
+        return list_part[1]
+    return None
+
+
+# -----------------------------------------------------------------------------
+def in_tree(key: str) -> str:
+    """
+    Return key as the path that it has in the tree it was read from:
+    key itself for the tree being checked, and key without its
+    DIR_CONSUMED folder and segment for a consumed tree.
+
+    """
+
+    if consumer(key) is None:
+        return key
+    return str(pathlib.PurePosixPath(*pathlib.PurePosixPath(key).parts[2:]))
 
 
 # -----------------------------------------------------------------------------
@@ -811,7 +885,7 @@ def module_name(relative: pathlib.Path) -> str:
 
     """
 
-    list_part = list(relative.with_suffix('').parts)
+    list_part = list(pathlib.PurePosixPath(in_tree(str(relative))).with_suffix('').parts)
     prefix    = MAP_PREFIX_MODULE[relative.suffix]
 
     if list_part and list_part[0] == DIR_IMPORT_ROOT:

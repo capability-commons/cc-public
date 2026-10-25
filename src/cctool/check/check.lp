@@ -2934,7 +2934,9 @@ schema_count(Type, Schemas) :-
 #show segment_count/1.
 
 segment_count(Segments) :-
-    Segments = #count { Segment : has_type(Segment, "type_segment") },
+    Segments = #count { Segment : has_type(Segment, "type_segment"),
+                                  item(Segment, _, _, File, _),
+                                  not consumed_file(File) },
     Segments != 1.
 
 
@@ -3670,3 +3672,82 @@ unheld_claim(Rule, Mechanism, File, Line) :-
     Mechanism != "judge",
     item(Rule, _, _, File, Line),
     not rule_held(Rule).
+
+
+% -----------------------------------------------------------------------------
+% The segment consumes the segment consumed: it has an edge of
+% relation_consumes to a release item that consumed holds.
+%
+% decl segment_consumes(segment:  symbol,
+%                       consumed: symbol)
+
+segment_consumes(Segment, Consumed) :-
+    edge(Segment, "relation_consumes", Release),
+    item(Release, _, _, File, _),
+    segment_of(File, Consumed).
+
+
+% -----------------------------------------------------------------------------
+% The item holder, in file at line, names the item id by a reference or a
+% mention.
+%
+% decl names_item(holder: symbol,
+%                 id:     symbol,
+%                 file:   symbol,
+%                 line:   number)
+
+names_item(Holder, Id, File, Line) :-
+    reference(Holder, _, Id, _, File, Line).
+
+names_item(Holder, Id, File, Line) :-
+    mention(Holder, Id, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.unconsumed_reference
+% guid_self:              lpp_0279eecdc70041bb914ca6a39f653b33
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unconsumed reference
+% brief:                  |
+%                         A reference or mention runs only within a
+%                         segment, or into a segment that its own
+%                         segment consumes.
+% did:                    |
+%                         {holder}, in the segment {segment}, names
+%                         {id}, which the segment {other} holds, but
+%                         {segment} does not consume {other}.
+% fix:                    |
+%                         Remove the reference. If the segment is to
+%                         rely on the other, give its segment item an
+%                         edge of relation_consumes to the release of
+%                         the other that it relies on. A consumed
+%                         segment never names a segment that consumes
+%                         it.
+% edge:                   []
+%
+% ...
+%
+% decl unconsumed_reference(holder:   symbol,
+%                           id:       symbol,
+%                           segment:  symbol,
+%                           other:    symbol,
+%                           file:     symbol,
+%                           line:     number)
+#show unconsumed_reference/6.
+
+unconsumed_reference(Holder, Id, Segment, Other, File, Line) :-
+    names_item(Holder, Id, File, Line),
+    segment_of(File, Segment),
+    item(Id, _, _, Target, _),
+    segment_of(Target, Other),
+    Segment != Other,
+    not segment_consumes(Segment, Other).

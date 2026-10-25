@@ -383,7 +383,7 @@ def test_an_argument_across_two_decisions_is_reported(tree):
 
 def test_a_decision_with_no_option_is_advice(tree):
     _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_subject(tree)])
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
     advice.pop('unmapped_concept', None)
@@ -478,7 +478,7 @@ def _unargued_drivers(tree):
 
     """
 
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     failures.pop(cctool.check.check.NAME_LAYOUT, None)
     assert failures == {}
     return advice.get('ruling_with_unargued_driver', [])
@@ -660,7 +660,7 @@ def test_a_mark_held_nowhere_here_is_advice_not_a_failure(tree):
     guid = _guid('mark')
     path.write_text(path.read_text().replace(
         _guid_of(tree, 'mark_public'), guid).replace('mark_public', 'mark_partner'))
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
     assert [row[:3] for row in advice['unresolved_mark']] == [('ann_x', 'mark_partner', guid)]
@@ -1545,7 +1545,7 @@ def _text_item(root, id_self, text, list_concept = ()):
 
 def test_a_link_finds_the_concept_its_item_uses(tree):
     _text_item(tree, 'lco_y', 'Each [[items]] has a guid.', ['concept_identifiable_data_item'])
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     failures.pop('unformatted_file', None)
     assert failures == {}
     assert 'concept_used_without_link' not in advice
@@ -1581,7 +1581,7 @@ def test_a_link_in_double_quotes_is_quoted_and_not_judged(tree):
 
 def test_a_concept_used_with_no_link_to_it_is_advice(tree):
     _text_item(tree, 'lco_y', 'Each item has a guid.', ['concept_item'])
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     assert advice['concept_used_without_link'] == [('lco_y', 'concept_item')]
 
 
@@ -1615,7 +1615,7 @@ def test_a_term_a_requirement_slot_writes_without_a_link_is_reported(tree):
 def test_a_term_of_a_declared_concept_written_without_a_link_is_advice(tree):
     _text_item(tree, 'lco_y', 'Each item has a guid, and the items have titles.',
                ['concept_identifiable_data_item'])
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     assert 'unlinked_term' not in failures
     assert ('lco_y', 'description', 'item') in [row[:3] for row in advice['term_to_link']]
 
@@ -1692,7 +1692,7 @@ def test_a_narrower_edge_that_the_release_implies_is_reported_when_missing(tree)
 
 def test_a_narrower_edge_that_a_chain_implies_is_advice(tree):
     _add_match(tree, 'concept_file', 'relation_is_narrower_than', 'concept_item')
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     assert advice['redundant_hierarchy_edge'] == [
         ('concept_file', 'relation_is_narrower_than', 'concept_item')]
 
@@ -1715,7 +1715,7 @@ def test_a_false_friend_with_an_annotation_about_both_is_not_reported(tree):
 
 
 def test_the_concept_of_a_type_with_no_match_is_advice(tree):
-    (failures, advice) = cctool.check.check.review(tree)
+    (failures, advice, _) = cctool.check.check.review(tree)
     list_row = advice['unmapped_concept']
     assert ('type_decision', 'concept_decision') in list_row
     assert ('type_role', 'concept_role') in list_row
@@ -1801,7 +1801,7 @@ def test_a_definition_that_opens_with_its_genus_needs_an_edge_to_it(tree):
     _replace(tree, '_data/register/reg_concept.yaml',
              'Holding a thing as it is, so that it does not\n',
              'A [[file]] held as it is, so that it does not\n')
-    (_, advice) = cctool.check.check.review(tree)
+    (_, advice, _) = cctool.check.check.review(tree)
     list_row = advice['unrecorded_genus']
     assert ('concept_keep', 'concept_file') in list_row
     assert [row for row in list_row if row[0] in ('concept_type', 'concept_document')] == []

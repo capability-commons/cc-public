@@ -857,6 +857,27 @@ check:
                         and names the releases it consumes.
     severity:           failure
 
+  unconsumed_reference:
+    id_self:            icm_cctool_check.unconsumed_reference
+    guid_self:          icm_0e9667701f5f4b6cbebe144d6a4d7fd4
+    name:               unconsumed_reference
+    brief:              |
+                        A reference or mention runs only within a
+                        segment, or into a segment that its own
+                        segment consumes.
+    severity:           failure
+
+  consumed_release_disagreement:
+    id_self:            icm_cctool_check.consumed_release_disagreement
+    guid_self:          icm_e8f7ee64ef004d1181dbeca5bb7eab45
+    name:               consumed_release_disagreement
+    brief:              |
+                        A segment item names the newest release item
+                        of each tree it consumes. A row is a notice,
+                        and not a failure, while that tree is a
+                        checkout.
+    severity:           failure
+
 surface:
 
   python:
@@ -913,13 +934,16 @@ surface:
           guid_self:    icm_c89919b74bcc45469035be90dc9682ec
           name:         review
           brief:        |
-                        Return the failures and the advice of the tree
-                        under root.
+                        Return the failures, the advice and the
+                        notices of the tree under root.
           guarantee:    |
                         The tree is read and nothing in it is written.
                         A check is either a failure or advice, never
                         both, so a caller may fail on the first and
-                        only report the second.
+                        only report the second. A notice is a row of a
+                        check that names only the items and files of
+                        the trees that the tree consumes, and is never
+                        also a failure.
 
           parameter:
 
@@ -937,11 +961,11 @@ surface:
           returns:
 
             type:
-              spelling:  tuple[Failures, Failures]
+              spelling:  tuple[Failures, Failures, Failures]
 
             brief:      |
-                        The failures, then the advice, each keyed by
-                        check.
+                        The failures, then the advice, then the
+                        notices, each keyed by check.
 
         check_documents:
           id_self:      icm_cctool_check.check_documents
