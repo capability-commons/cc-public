@@ -8,24 +8,24 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  A proxy that the checker reads as a copy
+title:                  A shadow that the checker reads as a copy
 brief:                  |
-                        The new option gives each proxy the id and the
-                        guid of the item it stands for. The checker
-                        reads two items with one id and one guid as a
-                        copy and fails both, as a scratch check shows
-                        for all three items. No check reads an item
-                        and its proxy together today, but any reader
-                        that holds both, such as a server or a graph
-                        database over several segments, must first
-                        learn to tell a proxy from a copy, or need a
-                        rule for which of the two wins. The graph's
-                        own proxies avoid this, because their id and
-                        guid address the proxy, not the thing it
-                        points at.
+                        The new option gives each shadow the id and
+                        the guid of the item it stands for. The
+                        checker reads two items with one id and one
+                        guid as a copy and fails both, as a scratch
+                        check shows for all three items. No check
+                        reads an item and its shadow together today,
+                        but any reader that holds both, such as a
+                        server or a graph database over several
+                        segments, must first learn to tell a shadow
+                        from a copy, or need a rule for which of the
+                        two wins. The graph's own proxies avoid this,
+                        because their id and guid address the proxy,
+                        not the thing it points at.
 description:            |
                         Sources:
-                        - The proxy of the new option holds only the
+                        - The shadow of the new option holds only the
                           id, the guid and the type of the item left
                           behind and the federated segment that holds
                           it
@@ -61,32 +61,31 @@ description:            |
                           package when cctool was installed from a
                           release, and otherwise from the checkout it
                           runs from, never both, so today an item and
-                          its proxy do not meet in one check
+                          its shadow do not meet in one check
                           (src/cctool/check/segment.py within trees
                           and consumed).
                         - The owner is likely to build an MCP server
                           soon and a graph-database backend later
                           (owner's statement, 2026-10-24).
-                        - Later uses named for proxies include a
-                          segment that ships proxies of its private
+                        - Later uses named for shadows include a
+                          segment that ships shadows of its private
                           items, a graph-database segment that answers
-                          with proxies for items a peer cannot read,
-                          and keeping a removed item as a proxy
+                          with shadows for items a peer cannot read,
+                          and keeping a removed item as a shadow
                           (context file).
                         - ASSUMPTION: a reader that serves or merges
                           several segments, or both the private and
                           the public view of one segment, will hold
-                          some item and its proxy at once.
+                          some item and its shadow at once.
                         - ASSUMPTION: a reader of such a server, or a
                           peer that consumes two segments, can receive
-                          the real item and its proxy for the same id
+                          the real item and its shadow for the same id
                           in one graph. Strength: weak to moderate
                           today, and conditional on such a reader,
                           since no check reads both; it grows with the
                           later uses and at ten times the size, since
                           each item kept private or removed becomes a
-                          possible clash. The cost goes away if a
-                          proxy takes an id and guid of its own and
+                          possible clash. The cost goes away if a shadow takes an id and guid of its own and
                           carries those of the item as plain data.
 
 edge:

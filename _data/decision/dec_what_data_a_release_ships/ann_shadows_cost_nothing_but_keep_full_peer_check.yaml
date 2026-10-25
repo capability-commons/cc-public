@@ -8,9 +8,9 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Proxies that cost nothing and save nothing
+title:                  Shadows that cost nothing and save nothing
 brief:                  |
-                        The proxies themselves are almost free: three
+                        The shadows themselves are almost free: three
                         small files, with no measurable change in
                         check time or memory. But the option still
                         ships every decision, so each check of every
@@ -22,7 +22,7 @@ brief:                  |
 description:            |
                         Sources:
                         - The option ships the whole of _data and adds
-                          a proxy for each item that the package
+                          a shadow for each item that the package
                           leaves behind but a shipped item names
                           (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_shadows_of_what_stays_behind.yaml
                           at brief).
@@ -36,11 +36,11 @@ description:            |
                           pyproject.toml, .gitignore, .githooks and
                           the tests, as the wheel holds it, takes 39.9
                           s and 228 MB peak memory for cctool check;
-                          with three proxy files added it takes 39.7 s
+                          with three shadow files added it takes 39.7 s
                           and 227 MB; the whole tree takes 39.4 s and
                           228 MB (measured 2026-10-25 on a 4-processor
                           container, one run each).
-                        - The three proxy files, for file_pyproject,
+                        - The three shadow files, for file_pyproject,
                           file_gitignore and
                           shell_githooks_pre_merge_commit, hold 938
                           bytes in all, with the guids of their type
@@ -65,10 +65,8 @@ description:            |
                           costs roughly what cc-public's own check
                           costs over the same consumed items; this was
                           not measured with a real peer. Strength:
-                          strong for the per-peer cost, which the
-                          proxies leave as it is for shipping all
-                          data; at ten times the size the proxies grow
-                          only with names that cross the package line,
+                          strong for the per-peer cost, which the shadows leave as it is for shipping all
+                          data; at ten times the size the shadows grow only with names that cross the package line,
                           while the decisions, and so each peer check,
                           grow with every argument.
 

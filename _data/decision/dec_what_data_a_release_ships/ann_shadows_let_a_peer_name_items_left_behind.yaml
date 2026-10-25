@@ -10,7 +10,7 @@ protective_mark:
 
 title:                  Names of build files that a peer can use
 brief:                  |
-                        With proxies, the package that a peer reads
+                        With shadows, the package that a peer reads
                         holds an entry for each item left behind that
                         cc-public names. The shipped arguments reach
                         the peer with their names intact, and a peer
@@ -19,7 +19,7 @@ brief:                  |
                         are reworded instead, and a peer item that
                         names, say, the item of pyproject.toml still
                         fails in the peer's own check. The same cctool
-                        package that ships the proxies reads them, so
+                        package that ships the shadows reads them, so
                         a peer installs nothing new.
 description:            |
                         Sources:
@@ -38,8 +38,7 @@ description:            |
                           reference (src/cctool/check/segment.py
                           within attribute; context file).
                         - In the new option, references and mentions
-                          from shipped items and from a peer resolve
-                          to the proxy, while a name that nothing
+                          from shipped items and from a peer resolve to the shadow, while a name that nothing
                           holds still fails
                           (_data/decision/dec_what_data_a_release_ships/opt_ship_all_data_with_shadows_of_what_stays_behind.yaml
                           at brief; context file).
@@ -62,8 +61,7 @@ description:            |
                         - ASSUMPTION: no peer tree was read, so
                           whether cc-patrol names any of these three
                           items today is not known. Strength:
-                          moderate; only three items are proxied
-                          today, and a peer that names none of them
+                          moderate; only three items have a shadow today, and a peer that names none of them
                           gains only the absence of 12 notices; at ten
                           times the size more arguments name build
                           files, hooks and tests, so more names reach
