@@ -1,0 +1,40 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_segment.yaml
+id_self:                sch_segment
+guid_self:              sch_512e05a569f74c45979892b851d53f95
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Segment schema
+brief:                  |
+                        The shape of a segment item, by which a
+                        federated repository declares itself and names
+                        the releases it consumes.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_edge, among them a relation_consumes
+                        edge to the release item of each segment
+                        consumed. A segment item carries nothing
+                        beyond them, and requires a brief.
+usage:                  |
+                        Named by type_segment as the schema of every
+                        item in _data/segment/.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - brief
+
+unevaluatedProperties:  false
+edge:                   []

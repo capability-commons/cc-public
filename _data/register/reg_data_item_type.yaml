@@ -1786,3 +1786,50 @@ entries:
         guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
         id_target:      sch_release
         guid_target:    sch_e2528cbf61a7479f9b4e8aae14b8d030
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_release
+        guid_target:    rol_735205edba274ae2b2e50b928dce130c
+
+  # ---------------------------------------------------------------------------
+  # type_segment -- Segment type
+  #
+  type_segment:
+    id_self:            type_segment
+    guid_self:          type_fb252f8b1e5946acb26f4dde2e3493bd
+    title:              Segment type
+    brief:              |
+                        Type of segment data items.
+    description:        |
+                        Each segment data item declares the federated
+                        repository that holds it a segment, and names
+                        the release of each segment it consumes.
+    usage:              |
+                        A segment data item lets the check find what
+                        its tree consumes from the data alone, without
+                        reading pixi or pyproject.toml, as ruled on
+                        how a segment declares itself.
+    note:               |
+                        Each federated repository holds exactly one
+                        segment data item, in _data/segment/.
+
+                        The shape of segment data items is defined by
+                        the sch_segment schema.
+    prefix:             segment
+    regex_id:           ^segment_[a-z][a-z0-9_]*$
+    id_concept:         concept_segment
+    guid_concept:       concept_a14ac366a4414b4697991d5136a370df
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_segment
+        guid_target:    sch_512e05a569f74c45979892b851d53f95
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_segment
+        guid_target:    rol_78f362fc44d6488296f6f6c5f44e781b
