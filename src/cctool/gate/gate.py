@@ -110,7 +110,12 @@ NAME_TEST     = 'test'
 # tests, which test the code. The gate of a push runs every stage on
 # what is pushed, so a test that the data breaks is still caught there.
 #
-TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/')
+# The skills and AGENTS.md count as code: they quote cctool commands,
+# and the tests check those quotes, so that the guidance for agents is
+# kept aligned with the code of the command line.
+#
+TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/', '.agents/skills/',
+                 'AGENTS.md')
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
 PREFIX_REPORT = 'cc_gate_report_'

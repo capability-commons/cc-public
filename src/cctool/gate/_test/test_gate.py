@@ -171,6 +171,13 @@ def test_a_commit_that_stages_code_runs_the_tests(repo):
     assert cctool.gate.gate.MARK_PUSH in dict(cctool.gate.gate.TUPLE_STAGE)['test']
 
 
+def test_a_commit_that_stages_agent_guidance_runs_the_tests(repo):
+    _commit(repo)
+    (repo / 'AGENTS.md').write_text('# Guidance for agents\n')
+    _git(repo, 'add', 'AGENTS.md')
+    assert cctool.gate.gate.is_code_staged(repo)
+
+
 def test_the_first_commit_runs_the_tests(repo):
     assert cctool.gate.gate.is_code_staged(repo)
 
