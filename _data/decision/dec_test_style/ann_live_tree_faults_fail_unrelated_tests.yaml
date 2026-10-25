@@ -23,8 +23,8 @@ description:            |
                         the staged content under the gate), less
                         version control, caches, all but two folders
                         of _data/decision and the source nothing in
-                        the copy names (src/cctool/conftest.py lines
-                        46-76, 185-207). 141 of the 149 tests in
+                        the copy names (src/cctool/conftest.py). 141
+                        of the 149 tests in
                         src/cctool/check/_test/test_check.py take it.
                         _guid_of reads guids from the copied tree at
                         test time (lines 80-96). The prefix test broke
@@ -33,10 +33,12 @@ description:            |
                         effect is noise during work: the check stage
                         of the gate, run beside the tests, also
                         reports such a fault (src/cctool/gate/gate.py
-                        line 87); the direct test at test_check.py
-                        lines 248-250 is marked slow and left out of
-                        the gate. A commit that stages only data runs
-                        no tests (gate.py lines 94-99).
+                        just after NAME_TEST); the direct test at
+                        test_check.py within
+                        test_the_repository_passes_every_check is
+                        marked slow and left out of the gate. A commit
+                        that stages only data runs no tests (gate.py
+                        within TUPLE_CODE).
 
 edge:
 

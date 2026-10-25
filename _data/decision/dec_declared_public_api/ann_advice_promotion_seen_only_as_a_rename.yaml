@@ -26,20 +26,19 @@ description:            |
                         - After 1.0 a new or tightened check is advice
                           in a minor release and a failure only in a
                           major
-                          one (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 33-37;
+                          one (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml at description;
                           owner's statement, 2026-10-24). Before 1.0 checks are added and tightened freely, so
                           none of this applies yet.
                         - Whether a check's rows are advice or
                           failures depends only on whether advise.lp
                           declares it
-                          (src/cctool/check/check.py lines 290-294).
+                          (src/cctool/check/check.py within _review).
                         - A check's id is made of the prefix, its file
                           name and the predicate name
-                          (_data/register/reg_data_item_type.yaml lines 1601-1628; src/cctool/check/advise.lp line 39;
-                          src/cctool/check/check.lp line 779). A move from advise.lp to check.lp therefore changes the
+                          (_data/register/reg_data_item_type.yaml at entries.type_logic_program_predicate; src/cctool/check/advise.lp within unresolved_mark;
+                          src/cctool/check/check.lp within parameter_member). A move from advise.lp to check.lp therefore changes the
                           id, which the commit rules see as a rename by guid; a tightened rule changes only content,
-                          reported by digest (src/cctool/commit/change.lp lines 100-124; src/cctool/commit/impact.lp
-                          lines 100-123).
+                          reported by digest (src/cctool/commit/change.lp within added; src/cctool/commit/impact.lp within touched).
                         - Under the option, what is public is the data
                           format, the command line and declared
                           Python, C
@@ -49,12 +48,11 @@ description:            |
                         - The check interface declares the check
                           functions and the shape of their failures,
                           not which
-                          checks exist or which are advice (_data/interface_control_document/icd_cctool_check.yaml
-                          lines 25-39 and 58-100). check.lp has 70 show statements and advise.lp 8 (grep of the
+                          checks exist or which are advice (_data/interface_control_document/icd_cctool_check.yaml at declaration and surface.python.native.function). check.lp has 70 show statements and advise.lp 8 (grep of the
                           snapshot).
                         - The simplicity measure counts jobs done by
                           more than one mechanism
-                          (_data/register/reg_concern.yaml lines 488-490).
+                          (_data/register/reg_concern.yaml at entries.concern_simplicity.measure).
                         - The owner wants the bump and the notes
                           determined mechanically from the graph
                           (owner's

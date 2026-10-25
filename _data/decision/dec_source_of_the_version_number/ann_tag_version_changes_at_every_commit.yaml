@@ -36,29 +36,29 @@ description:            |
                         later (https://pypi.org/pypi/hatch-vcs/json,
                         requires_dist). The lock records the local
                         package at version 0.1.0 with a sha256
-                        (pixi.lock lines 722-725). Every hook runs
-                        pixi with --locked (.githooks/pre-commit line
-                        30; .githooks/pre-push line 33), and a
-                        manifest changed without a new lock is refused
+                        (pixi.lock). Every hook runs pixi with
+                        --locked (.githooks/pre-commit;
+                        .githooks/pre-push), and a manifest changed
+                        without a new lock is refused
                         (_data/decision/dec_environment_manager/ruling_environment_manager.yaml
-                        lines 13-19). pixi checks that "All hashes for
+                        at brief). pixi checks that "All hashes for
                         the pypi editable packages are correct"
                         (https://pixi.prefix.dev/dev/workspace/lock_file/).
                         Lock file version 7 removes the input hashes
                         of source trees, and its satisfiability check
                         agrees with the resolution
                         (https://prefix.dev/blog/lock-file-v7); this
-                        lock is at version 6 (pixi.lock line 1).
-                        Assumptions: under lock version 6 pixi
-                        compares only the hash of the manifest, so a
-                        changing version leaves the lock fresh but
-                        wrong; under version 7 it may compare the
-                        version and refuse. Not tested in this review,
-                        since the pixi on the review machine only runs
-                        tasks. Strength: moderate; a test of a few
-                        minutes settles it, and a local scheme with no
-                        local version narrows the change to the
-                        distance but does not remove it.
+                        lock is at version 6 (pixi.lock). Assumptions:
+                        under lock version 6 pixi compares only the
+                        hash of the manifest, so a changing version
+                        leaves the lock fresh but wrong; under version
+                        7 it may compare the version and refuse. Not
+                        tested in this review, since the pixi on the
+                        review machine only runs tasks. Strength:
+                        moderate; a test of a few minutes settles it,
+                        and a local scheme with no local version
+                        narrows the change to the distance but does
+                        not remove it.
 
 edge:
 

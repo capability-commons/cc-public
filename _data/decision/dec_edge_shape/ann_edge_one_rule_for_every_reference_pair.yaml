@@ -19,20 +19,20 @@ description:            |
                         Every identifier field other than id_self and
                         guid_self refers to an identity declared
                         elsewhere
-                        (_data/schema/sch_trait_identity.yaml lines
-                        21-27). The same pair is used outside edges,
-                        for example id_mark and guid_mark in 1535
-                        files under _data. The extractor reads every
-                        id_<field> with its guid_<field> in one loop
-                        (src/cctool/graph/extract.py lines 1139-1144).
-                        The editor fills guid_<field> for any
-                        id_<field> by the same naming rule
-                        (src/cctool/edit/edit.py lines 1291-1318),
-                        though it builds edges in a function of its
-                        own (same file lines 1339-1348). One check,
-                        guid_mismatch, covers every field
-                        (src/cctool/check/check.lp lines 547-550). All
-                        30 relation_ entries in
+                        (_data/schema/sch_trait_identity.yaml at
+                        description). The same pair is used outside
+                        edges, for example id_mark and guid_mark in
+                        1535 files under _data. The extractor reads
+                        every id_<field> with its guid_<field> in one
+                        loop (src/cctool/graph/extract.py within
+                        _line_of_file). The editor fills guid_<field>
+                        for any id_<field> by the same naming rule
+                        (src/cctool/edit/edit.py within _added and
+                        _register), though it builds edges in a
+                        function of its own (same file lines
+                        1339-1348). One check, guid_mismatch, covers
+                        every field (src/cctool/check/check.lp within
+                        guid_mismatch). All 30 relation_ entries in
                         _data/register/reg_relation.yaml have a guid.
                         The gain is in the number of rules, so it
                         holds at any graph size. Merged from the

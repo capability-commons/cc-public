@@ -18,26 +18,26 @@ brief:                  |
 description:            |
                         The printer refills block scalars to width 70
                         with a fill of its own, which no longer uses
-                        textwrap (src/cctool/edit/layout.py lines 70,
-                        604-612, 685-757). cctool check reports
-                        unformatted_file for any file the printer
-                        would change, so a hand edit is followed by
-                        cctool format (src/cctool/check/check.py lines
-                        67, 164-167;
-                        .agents/skills/editing-data-items/SKILL.md
-                        lines 141-145). Advocate run at 89c74d8,
-                        2026-10-15: inserting "any" into the
-                        description of concern_reviewability, by hand
-                        then cctool format or by cctool set --dry-run,
-                        gave a diff of 3 removed and 3 added lines.
-                        Review run, 2026-10-22: the same insertion by
-                        hand, then format_file, gives 3 removed and 3
-                        added lines (_data/register/reg_concern.yaml
-                        lines 511-513), the last line of the paragraph
-                        unchanged and no line outside the field
-                        changed. The fragment writer also wrapped
-                        every value it wrote
-                        (c4a8721:src/cctool/edit/layout.py lines
+                        textwrap (src/cctool/edit/layout.py). cctool
+                        check reports unformatted_file for any file
+                        the printer would change, so a hand edit is
+                        followed by cctool format
+                        (src/cctool/check/check.py within NAME_LAYOUT
+                        and review;
+                        .agents/skills/editing-data-items/SKILL.md#by-hand).
+                        Advocate run at 89c74d8, 2026-10-15: inserting
+                        "any" into the description of
+                        concern_reviewability, by hand then cctool
+                        format or by cctool set --dry-run, gave a diff
+                        of 3 removed and 3 added lines. Review run,
+                        2026-10-22: the same insertion by hand, then
+                        format_file, gives 3 removed and 3 added lines
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_reviewability.description),
+                        the last line of the paragraph unchanged and
+                        no line outside the field changed. The
+                        fragment writer also wrapped every value it
+                        wrote (c4a8721:src/cctool/edit/layout.py lines
                         21-22, 39, 103, 124-136), so for edits made by
                         cctool the two give the same diff. The spread
                         is bounded by one paragraph, and git diff

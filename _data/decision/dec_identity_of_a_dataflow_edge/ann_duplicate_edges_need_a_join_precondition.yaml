@@ -23,20 +23,16 @@ description:            |
                         Sources:
                         - The input-fed-twice check counts edges by
                           file and line, so a second copy of one edge
-                          counts too. (src/cctool/check/check.lp lines
-                          3205-3208 and 3226-3229)
+                          counts too. (src/cctool/check/check.lp within input_fed_twice)
                         - The dataflow edge fact carries file and
-                          line. (src/cctool/graph/extract.py lines
-                          321-327 and 1724-1732)
+                          line. (src/cctool/graph/extract.py within PREDICATE and _dataflow_graph)
                         - The resolved graph is derived, never stored.
-                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
-                          line 15)
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml at brief)
                         - The extractor collects facts in a set, and
                           an atom in clingo is true once, so two edges
                           with the same ends and nothing else to tell
                           them apart would give one fact.
-                          (src/cctool/graph/extract.py lines
-                          1724-1731) Strength: moderate; the fix is
+                          (src/cctool/graph/extract.py within _dataflow_graph) Strength: moderate; the fix is
                           small, a precondition on join, but it must
                           be made and it touches the checks whichever
                           option is ruled.

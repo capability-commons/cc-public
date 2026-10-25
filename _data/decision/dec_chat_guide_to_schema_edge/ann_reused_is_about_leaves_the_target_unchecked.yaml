@@ -17,24 +17,27 @@ brief:                  |
                         annotations and decisions.
 description:            |
                         relation_is_about names one constraint, on its
-                        source (_data/register/reg_relation.yaml lines
-                        190-195), and none on its target. Its source
-                        must play rol_can_be_about_an_item, an item
-                        that states something about another item
-                        (_data/register/reg_role.yaml lines 121-130),
-                        which only the annotation and decision types
-                        play (_data/register/reg_data_item_type.yaml
-                        lines 489-491 and 973-975).
+                        source (_data/register/reg_relation.yaml at
+                        entries.relation_is_about.edge), and none on
+                        its target. Its source must play
+                        rol_can_be_about_an_item, an item that states
+                        something about another item
+                        (_data/register/reg_role.yaml at
+                        entries.rol_can_be_about_an_item), which only
+                        the annotation and decision types play
+                        (_data/register/reg_data_item_type.yaml at
+                        entries.type_annotation.edge and
+                        entries.type_decision.edge).
                         constraint_violation refuses an edge whose end
                         breaks a constraint of its relation
-                        (src/cctool/check/check.lp lines 1068-1078). A
-                        new relation constrained to a schema or to a
-                        type, as relcon_is_schema and relcon_is_type
-                        already allow, would let that check refuse a
-                        guide that points at anything else. Holds at
-                        ten times the size: yes, because more guides
-                        mean more edges that the constraint would
-                        check.
+                        (src/cctool/check/check.lp within
+                        constraint_violation). A new relation
+                        constrained to a schema or to a type, as
+                        relcon_is_schema and relcon_is_type already
+                        allow, would let that check refuse a guide
+                        that points at anything else. Holds at ten
+                        times the size: yes, because more guides mean
+                        more edges that the constraint would check.
 
 edge:
 

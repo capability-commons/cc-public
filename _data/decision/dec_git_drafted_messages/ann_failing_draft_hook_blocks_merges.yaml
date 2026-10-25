@@ -22,27 +22,29 @@ description:            |
                         revert leaves MERGE_MSG and a staged change.
                         The hook runs pixi run --frozen cctool message
                         draft on every commit
-                        (.githooks/prepare-commit-msg line 31). For a
-                        merge or revert the draft extracts facts from
-                        HEAD and the staged tree
-                        (src/cctool/commit/change.py lines 66-74,
-                        115-116). The command catches only ErrorGate
-                        and ErrorDatalog (src/cctool/cli/messaging.py
-                        lines 129-133), though its stated intent is to
-                        report and leave the message (lines 122-124).
-                        Extraction calls YAML.load and ast.parse with
-                        no handler (src/cctool/graph/extract.py lines
-                        305, 322, 334, 388), and the branch lookup
-                        runs git rev-parse with check=True (message.py
-                        lines 192-196). Bypass by git -c
-                        core.hooksPath=/dev/null commit is not in
-                        README.md or AGENTS.md. Under hand writing,
-                        --no-verify skips commit-msg (README.md line
-                        57; AGENTS.md line 14). ASSUMPTION: for a
-                        merge the gate in pre-merge-commit reports an
-                        unparseable item first; not checked. A revert
-                        runs no gate. The fix is small: catch broadly,
-                        leave the message, exit 0.
+                        (.githooks/prepare-commit-msg). For a merge or
+                        revert the draft extracts facts from HEAD and
+                        the staged tree (src/cctool/commit/change.py
+                        within check and is_commit). The command
+                        catches only ErrorGate and ErrorDatalog
+                        (src/cctool/cli/messaging.py within draft),
+                        though its stated intent is to report and
+                        leave the message (lines 122-124). Extraction
+                        calls YAML.load and ast.parse with no handler
+                        (src/cctool/graph/extract.py within
+                        Unreadable, is_document and extract), and the
+                        branch lookup runs git rev-parse with
+                        check=True (message.py within _branch). Bypass
+                        by git -c core.hooksPath=/dev/null commit is
+                        not in README.md or AGENTS.md. Under hand
+                        writing, --no-verify skips commit-msg
+                        (README.md#getting-started;
+                        AGENTS.md#working-beside-other-agents).
+                        ASSUMPTION: for a merge the gate in
+                        pre-merge-commit reports an unparseable item
+                        first; not checked. A revert runs no gate. The
+                        fix is small: catch broadly, leave the
+                        message, exit 0.
 
 edge:
 

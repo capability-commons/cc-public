@@ -18,17 +18,18 @@ brief:                  |
                         them.
 description:            |
                         edit.py and layout.py load with typ 'rt'
-                        (src/cctool/edit/edit.py line 140;
-                        src/cctool/edit/layout.py line 87). Edits use
-                        .lc.key and .lc.item (edit.py lines 1156,
-                        1166; layout.py lines 425, 496). layout.py
-                        uses CommentedMap, CommentedSeq,
-                        LiteralScalarString and FoldedScalarString
-                        (layout.py lines 91-92, 254, 474, 479). The
-                        extractor also loads in rt mode and reads .lc,
-                        but uses none of CommentedMap, CommentedSeq or
+                        (src/cctool/edit/edit.py within
+                        PATTERN_WHOLE_ID; src/cctool/edit/layout.py).
+                        Edits use .lc.key and .lc.item (edit.py within
+                        _ordered; layout.py within _span and
+                        _emit_lead). layout.py uses CommentedMap,
+                        CommentedSeq, LiteralScalarString and
+                        FoldedScalarString (layout.py within _spans
+                        and _lead). The extractor also loads in rt
+                        mode and reads .lc, but uses none of
+                        CommentedMap, CommentedSeq or
                         FoldedScalarString (src/cctool/graph/
-                        extract.py lines 41, 47, 501, 519-537).
+                        extract.py within read and parse_all).
                         ruamel.yaml lists one author and no separate
                         maintainer and is hosted on SourceForge
                         (https://pypi.org/pypi/ruamel.yaml/json).

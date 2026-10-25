@@ -19,15 +19,19 @@ description:            |
                         draft runs the change check and writes "It
                         removes ..." and "It renames ... to ..." into
                         the description (src/cctool/commit/message.py
-                        lines 167-180). The revert test expects such a
+                        within draft). The revert test expects such a
                         line and a passing message
-                        (src/cctool/commit/_test/test_draft.py lines
-                        106-118). The checks unannounced_removal and
+                        (src/cctool/commit/_test/test_draft.py within
+                        test_a_merge_into_the_main_branch_is_given_the_branch_and_an_item
+                        and
+                        test_a_revert_keeps_its_body_and_names_what_it_removes).
+                        The checks unannounced_removal and
                         unannounced_rename refuse a commit that does
                         not name them (src/cctool/commit/change.lp
-                        lines 122-146), so by hand the author must
-                        find and type the same ids. Where the check
-                        runs both alternatives end with the same
+                        within retyped_guid, unannounced_removal and
+                        unannounced_rename), so by hand the author
+                        must find and type the same ids. Where the
+                        check runs both alternatives end with the same
                         mentions; the gain is in reaching that state
                         reliably. The mention is a bare id in prose,
                         not a typed edge. ASSUMPTION: a revert of a

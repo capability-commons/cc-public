@@ -23,24 +23,24 @@ description:            |
                         chosen "so a run can be replayed in the same
                         order"
                         (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
-                        lines 12-16); the log option records the
-                        messages each actor received in order
+                        at brief); the log option records the messages
+                        each actor received in order
                         (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
-                        lines 12-19). rr allows only one recorded
-                        thread to run at a time, which imposes
-                        significant slowdown on highly parallel work;
-                        recording a make build cost 7.85 times its
-                        baseline (https://arxiv.org/pdf/1610.02144,
-                        table 1). Assumption: a log of message order
-                        per actor needs no more than one counter per
-                        actor, cheap unless many threads send to one
-                        actor. The engine logs at message level, much
-                        coarser than rr, so the rr figures bound the
-                        kind of cost rather than forecast it. This
-                        rests on how actors are run: it supports the
-                        log if actors run between steps, and
-                        challenges it if they run on a shared thread
-                        pool. Strength: weak to moderate.
+                        at brief). rr allows only one recorded thread
+                        to run at a time, which imposes significant
+                        slowdown on highly parallel work; recording a
+                        make build cost 7.85 times its baseline
+                        (https://arxiv.org/pdf/1610.02144, table 1).
+                        Assumption: a log of message order per actor
+                        needs no more than one counter per actor,
+                        cheap unless many threads send to one actor.
+                        The engine logs at message level, much coarser
+                        than rr, so the rr figures bound the kind of
+                        cost rather than forecast it. This rests on
+                        how actors are run: it supports the log if
+                        actors run between steps, and challenges it if
+                        they run on a shared thread pool. Strength:
+                        weak to moderate.
 
 edge:
 

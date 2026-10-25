@@ -18,26 +18,27 @@ brief:                  |
 description:            |
                         sch_trait_identity holds only id_self and
                         guid_self
-                        (_data/schema/sch_trait_identity.yaml lines
-                        16-36). Each schema has an absolute $id under
-                        https://capability-commons.org/schema/
-                        (sch_schema.yaml lines 57-62). The project is
-                        meant to be federated: guid_self separates ids
-                        that collide "across repositories in the
-                        federation" (sch_trait_identity.yaml lines
-                        28-31), and binding files are kept for
-                        "portability for federated partners"
-                        (memory/MEMORY.md line 11). sch_primitive has
-                        no type, properties or required list
-                        (sch_primitive.yaml lines 15-28), and every
-                        reference to it is a $ref into $defs, never an
-                        allOf; for example sch_register_entry.yaml
-                        lines 84-85 takes the id value type from it
-                        without composing any object shape (checked by
-                        the maintainability and simplicity advocates
-                        and by grep at 89c74d8). The gain grows with
-                        the number of item types, if the traits stay
-                        small and stable.
+                        (_data/schema/sch_trait_identity.yaml at
+                        description). Each schema has an absolute $id
+                        under https://capability-commons.org/schema/
+                        (sch_schema.yaml at properties.$id). The
+                        project is meant to be federated: guid_self
+                        separates ids that collide "across
+                        repositories in the federation"
+                        (sch_trait_identity.yaml at description), and
+                        binding files are kept for "portability for
+                        federated partners" (memory/MEMORY.md line
+                        11). sch_primitive has no type, properties or
+                        required list (sch_primitive.yaml at brief and
+                        description), and every reference to it is a
+                        $ref into $defs, never an allOf; for example
+                        sch_register_entry.yaml at
+                        properties.alias.items takes the id value type
+                        from it without composing any object shape
+                        (checked by the maintainability and simplicity
+                        advocates and by grep at 89c74d8). The gain
+                        grows with the number of item types, if the
+                        traits stay small and stable.
 
 edge:
 

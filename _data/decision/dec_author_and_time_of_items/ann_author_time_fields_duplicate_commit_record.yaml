@@ -21,17 +21,18 @@ description:            |
                         89c74d8). The id of each commit item is the
                         UTC time of the commit plus six hex digits of
                         its guid
-                        (_data/register/reg_data_item_type.yaml lines
-                        710-712 and 718; src/cctool/commit/message.py
-                        lines 72 and 118). cctool new builds an item
-                        only from the fields and edges it is given
-                        (src/cctool/edit/edit.py lines 233-271).
-                        ASSUMPTION: a time field could differ from the
-                        commit time, so keeping them consistent needs
-                        a further rule in the commit check. The cost
-                        is per type, not per item, and a creation time
-                        set once by cctool new would rarely change, so
-                        the saving is modest.
+                        (_data/register/reg_data_item_type.yaml;
+                        src/cctool/commit/message.py within
+                        FORMAT_TIME and compose). cctool new builds an
+                        item only from the fields and edges it is
+                        given (src/cctool/edit/edit.py within
+                        Tree.text and new). ASSUMPTION: a time field
+                        could differ from the commit time, so keeping
+                        them consistent needs a further rule in the
+                        commit check. The cost is per type, not per
+                        item, and a creation time set once by cctool
+                        new would rarely change, so the saving is
+                        modest.
 
 edge:
 

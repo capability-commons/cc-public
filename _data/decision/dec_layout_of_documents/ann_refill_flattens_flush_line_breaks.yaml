@@ -20,14 +20,14 @@ description:            |
                         scalar and fills it. Blank lines, lines
                         indented further and, since a5dea6e, lines
                         that open with a list marker are kept apart
-                        (src/cctool/edit/layout.py lines 721-757).
+                        (src/cctool/edit/layout.py within _body).
                         Every LiteralScalarString goes to _body,
-                        whatever its key (layout.py lines 604-612);
-                        literal keys include follows and breaks, 17
-                        each, besides the prose fields (grep,
-                        2026-10-22). The note field says formatted
-                        prose differs only in where its lines break
-                        (layout.py lines 40-45). At 89c74d8 a flush
+                        whatever its key (layout.py within
+                        _emit_value); literal keys include follows and
+                        breaks, 17 each, besides the prose fields
+                        (grep, 2026-10-22). The note field says
+                        formatted prose differs only in where its
+                        lines break (layout.py). At 89c74d8 a flush
                         list was joined into one line, in a
                         description and in a commit body (advocate
                         run, 2026-10-15). Review run, 2026-10-22: a
@@ -37,24 +37,27 @@ description:            |
                         Street" and "Springfield", are joined onto its
                         last item. The commit message writer uses the
                         same printer (src/cctool/commit/message.py
-                        lines 130-131). cctool check reports
+                        within compose). cctool check reports
                         unformatted_file for any file the printer
-                        would change (check.py lines 164-167). The
+                        would change (check.py within review). The
                         fragment writer also joined each paragraph it
                         wrote (c4a8721:src/cctool/edit/layout.py lines
                         124-142), but only the text of the edit, and
                         had no check over hand-written files. 111
                         files under _data now hold a flush list in
                         prose, which the fix keeps. Refill tests:
-                        src/cctool/edit/_test/test_edit.py lines
-                        831-843 and 887-901. ASSUMPTION: authors will
-                        want other line-by-line text, such as an
-                        address, in a description or commit body.
-                        Indenting such lines further keeps them, so
-                        the point argues for a documented rule more
-                        than for the fragment writer. Also bears
-                        weakly on opt_new_blank_line_rule, which keeps
-                        the same printer.
+                        src/cctool/edit/_test/test_edit.py within
+                        test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone
+                        and
+                        test_each_item_of_a_list_in_prose_is_filled_on_its_own.
+                        ASSUMPTION: authors will want other
+                        line-by-line text, such as an address, in a
+                        description or commit body. Indenting such
+                        lines further keeps them, so the point argues
+                        for a documented rule more than for the
+                        fragment writer. Also bears weakly on
+                        opt_new_blank_line_rule, which keeps the same
+                        printer.
 
 edge:
 

@@ -28,31 +28,25 @@ description:            |
                           control_packet and feedback_packet, and its
                           feedback input and control output name them
                           as declarations, each also spelled dict.
-                          (_data/interface_control_document/icd_system_controller.yaml
-                          lines 33-63, 74-98)
+                          (_data/interface_control_document/icd_system_controller.yaml at declaration, surface.step.dataflow_step.input.feedback and surface.step.dataflow_step.output)
                         - The ctrl input and the control and feedback
                           outputs of the process controller are
                           spelled dict and name no declaration.
-                          (_data/interface_control_document/icd_process_controller.yaml
-                          lines 42-73)
+                          (_data/interface_control_document/icd_process_controller.yaml at surface.step.dataflow_step.input.ctrl and surface.step.dataflow_step.output)
                         - The smoke test joins the control output of
                           the system controller to the ctrl input of
                           the process controller, and the feedback
                           output of the process controller to the
                           feedback input of the system controller.
-                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
-                          lines 99-137)
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at dataflow_edge)
                         - A declaration in a type reference is the key
                           of a type the same document shares.
-                          (_data/schema/sch_interface_control_document.yaml
-                          lines 119-145)
+                          (_data/schema/sch_interface_control_document.yaml at $defs.type_reference)
                         - The stated type of a port is the spelling of
                           its type reference only, and the check
                           compares the stated types at the two ends of
-                          an edge. (src/cctool/graph/extract.py
-                          lines 1459, 1570-1580;
-                          src/cctool/check/check.lp lines
-                          3229-3233)
+                          an edge. (src/cctool/graph/extract.py within _stated and _type_spelling;
+                          src/cctool/check/check.lp within port_type_mismatch)
                         - A type, relation, field or command is added
                           only when a real instance needs it.
                           (_data/decision/dec_growth_policy/ruling_growth_policy.yaml,

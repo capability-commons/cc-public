@@ -19,24 +19,26 @@ description:            |
                         One symbolic link, .claude/skills (find .
                         -type l). Each hook in .githooks/ is a /bin/sh
                         script whose only command is one exec pixi run
-                        --frozen line (commit-msg line 29, pre-commit
-                        line 28, pre-merge-commit line 32, pre-push
-                        line 33, prepare-commit-msg line 31). The
-                        Python code runs subprocesses with argument
-                        lists and no shell=True (grep over src;
-                        src/cctool/gate/gate.py lines 154, 174, 194),
-                        and builds a path with os.sep (gate.py line
-                        175). The pixi tasks use no shell syntax
-                        (pyproject.toml lines 63-68). ASSUMPTION:
-                        nothing else in src/ depends on POSIX
-                        behavior; only a grep for sys.platform,
-                        os.name, os.symlink, chmod, fcntl and termios
-                        was run, with no match outside tests. No one
-                        has tried pixi install on win-64 or
-                        linux-aarch64 for this repository. The list
-                        leaves out package builds: each conda-forge
-                        and PyPI dependency must also exist for the
-                        new platform (see
+                        --frozen line (commit-msg, pre-commit,
+                        pre-merge-commit, pre-push,
+                        prepare-commit-msg). The Python code runs
+                        subprocesses with argument lists and no
+                        shell=True (grep over src;
+                        src/cctool/gate/gate.py within copy_staged,
+                        copy_commit and _environment), and builds a
+                        path with os.sep (gate.py within copy_commit).
+                        The pixi tasks use no shell syntax
+                        (pyproject.toml at
+                        tool.pixi.pypi-dependencies.playwright and
+                        tool.pixi.dependencies). ASSUMPTION: nothing
+                        else in src/ depends on POSIX behavior; only a
+                        grep for sys.platform, os.name, os.symlink,
+                        chmod, fcntl and termios was run, with no
+                        match outside tests. No one has tried pixi
+                        install on win-64 or linux-aarch64 for this
+                        repository. The list leaves out package
+                        builds: each conda-forge and PyPI dependency
+                        must also exist for the new platform (see
                         ann_fewer_platforms_fewer_locked_builds). This
                         supports Windows as a later option, not as the
                         choice on 2026-10-14. It holds while new tools

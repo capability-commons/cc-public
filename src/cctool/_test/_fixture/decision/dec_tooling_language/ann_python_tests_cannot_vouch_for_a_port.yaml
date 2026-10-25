@@ -28,19 +28,20 @@ description:            |
                         test_browser.py, so no present test runs
                         cctool as a separate program. The rules call
                         @match, @strlen, @substr, @prefix and @cat
-                        (src/cctool/graph/logic.py lines 120-172; for
-                        example check.lp lines 106, 147, 321 and 740,
-                        change.lp lines 81-87). @match uses
-                        re.fullmatch, @strlen and @substr count code
-                        points, while Rust str::len counts bytes and
-                        the Rust regex crate has no lookaround or
-                        backreferences. The regexes the rules use
-                        today have no lookaround or backreference and
-                        the strings measured are ASCII ids and guids,
-                        so no present result is known to differ; the
-                        point is the missing evidence. ASSUMPTION:
-                        tests rewritten to run cctool as a separate
-                        program could serve both languages.
+                        (src/cctool/graph/logic.py within Context; for
+                        example check.lp within prefix_form and
+                        member_stem, change.lp within before_guid).
+                        @match uses re.fullmatch, @strlen and @substr
+                        count code points, while Rust str::len counts
+                        bytes and the Rust regex crate has no
+                        lookaround or backreferences. The regexes the
+                        rules use today have no lookaround or
+                        backreference and the strings measured are
+                        ASCII ids and guids, so no present result is
+                        known to differ; the point is the missing
+                        evidence. ASSUMPTION: tests rewritten to run
+                        cctool as a separate program could serve both
+                        languages.
 
 edge:
 

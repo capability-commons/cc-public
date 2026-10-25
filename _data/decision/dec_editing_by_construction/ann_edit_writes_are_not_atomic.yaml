@@ -18,9 +18,9 @@ brief:                  |
 description:            |
                         apply writes each file with path.write_text
                         and removes files with path.unlink in one loop
-                        (src/cctool/edit/edit.py lines 882-889). No
-                        module under src uses os.replace, fsync or a
-                        temporary file for data items (grep of src).
+                        (src/cctool/edit/edit.py within _move_folder).
+                        No module under src uses os.replace, fsync or
+                        a temporary file for data items (grep of src).
                         Path.write_text overwrites an existing file in
                         place
                         (https://docs.python.org/3/library/pathlib.html
@@ -30,7 +30,7 @@ description:            |
                         operations together (lines 789-822). A
                         truncated file that no longer parses stops
                         every command (src/cctool/cli/ editing.py
-                        lines 398-404). Recovery is by git.
+                        within batch and import_). Recovery is by git.
                         ASSUMPTION: an uncommitted change to that file
                         is lost by the restore. The fix is small and
                         local (write a temporary file, then rename),

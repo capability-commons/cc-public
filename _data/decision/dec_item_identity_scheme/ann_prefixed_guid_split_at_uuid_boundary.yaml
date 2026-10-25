@@ -18,17 +18,17 @@ brief:                  |
 description:            |
                         Guid pattern ^[a-z]{1,8}_[0-9a-f]{32}$ and the
                         rule to split on the first underscore:
-                        _data/schema/sch_primitive.yaml lines 99-115.
+                        _data/schema/sch_primitive.yaml at $defs.guid.
                         Python 3.13 uuid.UUID rejects the prefixed
                         string and accepts the 32 hex digits (local
                         test, 2026-10-14). The body is uuid4().hex
-                        (src/cctool/edit/edit.py line 410), so the
-                        split is mechanical. PostgreSQL uuid input has
-                        no letter prefix
+                        (src/cctool/edit/edit.py within _definition),
+                        so the split is mechanical. PostgreSQL uuid
+                        input has no letter prefix
                         (https://www.postgresql.org/docs/current/datatype-uuid.html).
                         Items are stored as YAML text, and the query
                         database is in-memory SQLite with TEXT columns
-                        (src/cctool/graph/sql.py lines 41, 61), so
+                        (src/cctool/graph/sql.py within connect), so
                         neither pays this cost today. ASSUMPTION:
                         other UUID parsers and column types also
                         reject the prefix. ASSUMPTION: the store may

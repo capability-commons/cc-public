@@ -15,20 +15,21 @@ brief:                  |
                         as passed only on status 0, so no automatic
                         caller tells a fault from a failed check.
 description:            |
-                        src/cctool/cli/checking.py lines 64-68 catch
+                        src/cctool/cli/checking.py within check catch
                         ErrorLogic from the checks, print "The checks
                         could not be run" and exit with EXIT_ERROR,
-                        which is status 2 (group.py lines 31-33). The
-                        gate runs its check stage as python -m
+                        which is status 2 (group.py within EXIT_OK,
+                        EXIT_NONCONFORMITY and EXIT_ERROR). The gate
+                        runs its check stage as python -m
                         cctool.cli.command check
-                        (src/cctool/gate/gate.py line 87) and counts a
-                        stage as passed only on return code 0 (line
-                        243), so a fault and a failed check fail a
-                        commit in the same way; only the printed text
-                        tells them apart. No other caller reads the
-                        status of cctool check (grep returncode over
-                        src). Cheap to close if the gate should name a
-                        fault.
+                        (src/cctool/gate/gate.py within TUPLE_STAGE)
+                        and counts a stage as passed only on return
+                        code 0 (line 243), so a fault and a failed
+                        check fail a commit in the same way; only the
+                        printed text tells them apart. No other caller
+                        reads the status of cctool check (grep
+                        returncode over src). Cheap to close if the
+                        gate should name a fault.
 
 edge:
 

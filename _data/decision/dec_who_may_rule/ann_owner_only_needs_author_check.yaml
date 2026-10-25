@@ -17,23 +17,24 @@ brief:                  |
                         check stays either way.
 description:            |
                         No field names who made a ruling
-                        (_data/schema/sch_ruling.yaml lines 32-35). No
+                        (_data/schema/sch_ruling.yaml at note). No
                         code in src/ reads a commit author: it reads
                         commit hashes and messages
-                        (src/cctool/commit/history.py lines 55, 114
-                        and 150), staged files, the git directory and
-                        revisions (src/cctool/gate/gate.py lines 182,
-                        204, 254 and 274). The optional Contributor
-                        trailer names the team member who supplied the
-                        content of a commit and is checked only
-                        against reg_team_member
-                        (src/cctool/commit/message.py lines 300-304);
-                        no rule ties it to a ruling. ASSUMPTION: a
-                        maintainer-only rule would be enforced, if at
-                        all, by comparing the author or Contributor
-                        trailer of the adding commit to William Payne;
-                        nothing in the repository proposes this.
-                        Merged from the simplicity and cost advocates.
+                        (src/cctool/commit/history.py within
+                        FORMAT_LOG, check and duplicates), staged
+                        files, the git directory and revisions
+                        (src/cctool/gate/gate.py). The optional
+                        Contributor trailer names the team member who
+                        supplied the content of a commit and is
+                        checked only against reg_team_member
+                        (src/cctool/commit/message.py within
+                        violations); no rule ties it to a ruling.
+                        ASSUMPTION: a maintainer-only rule would be
+                        enforced, if at all, by comparing the author
+                        or Contributor trailer of the adding commit to
+                        William Payne; nothing in the repository
+                        proposes this. Merged from the simplicity and
+                        cost advocates.
 
 edge:
 

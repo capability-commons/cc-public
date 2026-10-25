@@ -18,20 +18,22 @@ brief:                  |
                         entry without notice.
 description:            |
                         cc-public loads with ruamel.yaml in round-trip
-                        mode (src/cctool/graph/extract.py line 47),
-                        pinned >=0.19.1,<0.20 (pyproject.toml line
-                        41). Tested 2026-10-15: ruamel.yaml 0.19.1
-                        raises DuplicateKeyError on "a: 1\na: 2";
-                        PyYAML 6.0.1 safe_load and json.loads return
-                        the last value. RFC 8259 section 4 leaves
-                        duplicate names unpredictable; YAML 1.2.2
-                        section 3.2.1.1 requires unique keys.
-                        key_mismatch (check.lp lines 214-223) cannot
-                        see a key the loader dropped. An array does
-                        not make uniqueness a parse property for
-                        anyone, so this limits the reason rather than
-                        favoring arrays. Merged from the compatibility
-                        and flexibility advocates.
+                        mode (src/cctool/graph/extract.py), pinned
+                        >=0.19.1,<0.20 (pyproject.toml at
+                        project.requires-python). Tested 2026-10-15:
+                        ruamel.yaml 0.19.1 raises DuplicateKeyError on
+                        "a: 1\na: 2"; PyYAML 6.0.1 safe_load and
+                        json.loads return the last value. RFC 8259
+                        section 4 leaves duplicate names
+                        unpredictable; YAML 1.2.2 section 3.2.1.1
+                        requires unique keys. key_mismatch (check.lp
+                        within misplaced_register_entry and
+                        unrecorded_module) cannot see a key the loader
+                        dropped. An array does not make uniqueness a
+                        parse property for anyone, so this limits the
+                        reason rather than favoring arrays. Merged
+                        from the compatibility and flexibility
+                        advocates.
 
 edge:
 

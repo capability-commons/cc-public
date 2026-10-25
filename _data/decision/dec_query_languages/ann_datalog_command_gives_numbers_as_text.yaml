@@ -20,11 +20,11 @@ brief:                  |
                         text.
 description:            |
                         The query group says SQL and logic programs
-                        see the same predicates (querying.py lines
-                        85-87); a :number column is an integer in SQL
-                        (sql.py line 42). At 89c74d8 the Datalog
-                        command turned every value into text and
-                        sorted rows as text. Advocate's test,
+                        see the same predicates (querying.py within
+                        query); a :number column is an integer in SQL
+                        (sql.py within MAP_TYPE). At 89c74d8 the
+                        Datalog command turned every value into text
+                        and sorted rows as text. Advocate's test,
                         2026-10-15: Datalog gave ('10',), ('9',) and a
                         #count over a declared number gave ('203',);
                         SQL gave (9,), (10,). Commit 0e4408b fixed
@@ -32,8 +32,9 @@ description:            |
                         reads each value as text (_field, lines
                         341-351), and querying.py converts and sorts
                         the columns declared a number (lines 229-230,
-                        441-453; test at test_querying.py line 100). A
-                        column with no declaration, such as an
+                        441-453; test at test_querying.py within
+                        test_logic_gives_a_number_column_as_numbers).
+                        A column with no declaration, such as an
                         undeclared count, still comes back as text,
                         while SQL gives it as a number. Weak: it
                         affects only undeclared numeric columns and

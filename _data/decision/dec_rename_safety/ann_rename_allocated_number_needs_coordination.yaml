@@ -17,15 +17,17 @@ brief:                  |
 description:            |
                         New items get guid_self from uuid.uuid4() in
                         the local process (src/cctool/edit/edit.py
-                        line 410; src/cctool/commit/message.py line
-                        117). guid_self is assigned once, never
-                        changes, and tells apart items whose ids
-                        collide (_data/schema/sch_trait_identity.yaml
-                        lines 27-30 and 105-115). Global uniqueness of
-                        readable ids is impossible across a federation
-                        (same file lines 83-98). A rename is computed
-                        from the local tree alone (edit.py lines
-                        722-770). ASSUMPTION: an allocated number
+                        within _definition;
+                        src/cctool/commit/message.py within compose).
+                        guid_self is assigned once, never changes, and
+                        tells apart items whose ids collide
+                        (_data/schema/sch_trait_identity.yaml at
+                        description and
+                        properties.id_self.description). Global
+                        uniqueness of readable ids is impossible
+                        across a federation (same file lines 83-98). A
+                        rename is computed from the local tree alone
+                        (edit.py). ASSUMPTION: an allocated number
                         comes from one authority. The packet does not
                         say how allocation would work. Grows stronger
                         with more clones, partners and environments.

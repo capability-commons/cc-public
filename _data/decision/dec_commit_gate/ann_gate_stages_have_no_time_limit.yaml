@@ -16,19 +16,18 @@ brief:                  |
                         committing stops working before the gate does.
 description:            |
                         subprocess.run with no timeout:
-                        src/cctool/gate/gate.py lines 154-159. The
-                        hooks add no limit (.githooks/pre-commit line
-                        28, pre-merge-commit line 32). Device tool
-                        calls from a remote session die at 180s
-                        (memory MEMORY.md line 45). Gate time: over
-                        three minutes on two processors (5836f80),
-                        about 2 min after side by side stages, about
-                        67s after a cache, about 75s after the clingo
-                        switch (MEMORY.md lines 45, 47, 54).
-                        ASSUMPTION: the runner kills with SIGKILL,
-                        which leaves the temporary directory behind
-                        (gate.py line 95). ASSUMPTION: run time grows
-                        at least linearly with the graph.
+                        src/cctool/gate/gate.py within copy_staged.
+                        The hooks add no limit (.githooks/pre-commit,
+                        pre-merge-commit). Device tool calls from a
+                        remote session die at 180s (memory MEMORY.md
+                        line 45). Gate time: over three minutes on two
+                        processors (5836f80), about 2 min after side
+                        by side stages, about 67s after a cache, about
+                        75s after the clingo switch (MEMORY.md lines
+                        45, 47, 54). ASSUMPTION: the runner kills with
+                        SIGKILL, which leaves the temporary directory
+                        behind (gate.py within gate). ASSUMPTION: run
+                        time grows at least linearly with the graph.
 
 edge:
 

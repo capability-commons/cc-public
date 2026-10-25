@@ -20,7 +20,7 @@ description:            |
                         src/cctool/edit/edit.py has no _folder
                         function and no SET_LINK_SETTLE constant. A
                         new item is first written in the folder of its
-                        type (edit.py lines 274-278). The comment at
+                        type (edit.py within new). The comment at
                         lines 127-129 says that where the check says
                         it belongs elsewhere, apply moves it there.
                         apply calls _place (lines 1161-1183), and
@@ -28,12 +28,13 @@ description:            |
                         misplaced_document reports to the expected
                         path (lines 1187-1205). misplaced_document
                         builds that path from decision_of
-                        (src/cctool/check/check.lp lines 581-595;
-                        src/cctool/graph/derive.lp lines 132-147). So
-                        the decision branch of the rule is written
-                        once, in the logic programs. The type folder
-                        of a new file is still computed in edit.py.
-                        Found in the review of 2026-10-22.
+                        (src/cctool/check/check.lp within
+                        misplaced_document; src/cctool/graph/derive.lp
+                        within decision_of). So the decision branch of
+                        the rule is written once, in the logic
+                        programs. The type folder of a new file is
+                        still computed in edit.py. Found in the review
+                        of 2026-10-22.
 
 edge:
 

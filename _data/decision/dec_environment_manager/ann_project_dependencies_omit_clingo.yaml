@@ -17,16 +17,16 @@ brief:                  |
 description:            |
                         [project].dependencies lists click, clingo,
                         htpy, jsonschema, pyoxigraph, referencing and
-                        ruamel.yaml (pyproject.toml lines 42-48); jq
-                        is only under [tool.pixi.dependencies] (line
-                        67), as a conda package (pixi.lock line 22).
-                        cctool query jq runs the jq program as a
-                        subprocess and, where there is none, stops
-                        with "There is no jq program to run. Run pixi
-                        install" (src/cctool/graph/jq.py lines 84-91).
-                        This challenges how the choice was applied,
-                        not pixi itself. ASSUMPTION: an install
-                        outside pixi is an intended use, as
+                        ruamel.yaml (pyproject.toml at
+                        project.dependencies); jq is only under
+                        [tool.pixi.dependencies] (line 67), as a conda
+                        package (pixi.lock). cctool query jq runs the
+                        jq program as a subprocess and, where there is
+                        none, stops with "There is no jq program to
+                        run. Run pixi install" (src/cctool/graph/jq.py
+                        within query). This challenges how the choice
+                        was applied, not pixi itself. ASSUMPTION: an
+                        install outside pixi is an intended use, as
                         ann_clingo_in_project_dependencies_is_fixed
                         reports of commit 24e6ca9.
 

@@ -19,24 +19,27 @@ description:            |
                         edit.py restates decision_of from check.lp
                         with its own constants and function _folder,
                         and its comment points to check.lp
-                        (src/cctool/edit/edit.py lines 111-123,
-                        273-297; src/cctool/check/check.lp lines
-                        130-186). The two are written differently:
-                        _folder follows relation_upholds and
-                        relation_rejects through the target file's
-                        folder, while decision_of follows settles
-                        through the option's decision (edit.py lines
-                        290-294; check.lp lines 153-155). Commit
-                        1ba2895 changed check.lp (89 lines) and
-                        edit.py (47 lines) for the same move into
-                        decision folders (git show --stat 1ba2895).
-                        edit.py also holds other conventions as
-                        constants: TUPLE_KEY_PROSE, SET_PREFIX_SOURCE,
-                        ID_RIGHTS (lines 79-110). apply rechecks the
-                        result (lines 866-891). ASSUMPTION: drift
-                        shows as a refused edit, not silent damage.
-                        Grows with each new item type or layout rule
-                        the editor must build.
+                        (src/cctool/edit/edit.py within
+                        RELATION_HAS_ITEMS_HELD_IN_REGISTER,
+                        SET_PREFIX_SOURCE and new;
+                        src/cctool/check/check.lp within bad_guid,
+                        duplicate_prefix and regex_without_prefix).
+                        The two are written differently: _folder
+                        follows relation_upholds and relation_rejects
+                        through the target file's folder, while
+                        decision_of follows settles through the
+                        option's decision (edit.py within header;
+                        check.lp within repeated_item). Commit 1ba2895
+                        changed check.lp (89 lines) and edit.py (47
+                        lines) for the same move into decision folders
+                        (git show --stat 1ba2895). edit.py also holds
+                        other conventions as constants:
+                        TUPLE_KEY_PROSE, SET_PREFIX_SOURCE, ID_RIGHTS
+                        (lines 79-110). apply rechecks the result
+                        (lines 866-891). ASSUMPTION: drift shows as a
+                        refused edit, not silent damage. Grows with
+                        each new item type or layout rule the editor
+                        must build.
 
 edge:
 

@@ -124,6 +124,16 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   or drop the claim that no longer holds, before it goes in. The
   verifier of a run of advocates is not enough on its own: the tree
   moves between the draft and the write.
+- **A citation of a file of the tree by line number is refused**
+  (`line_citation`), since the lines move as the file changes. Name the
+  part that holds the line: `PATH within NAME` for a
+  function, `Class.method`, constant or predicate of code;
+  `pyproject.toml at project.dependencies` for a field of a
+  configuration or data file, or `just after KEY.PATH` for a line that
+  is not a field; `README.md#getting-started` for a section of
+  markdown. A named part the file does not hold is refused too
+  (`unresolved_citation`). Lines of one commit may be cited as
+  `REV:PATH lines N-M`. Files outside the tree are not checked.
 - **`schema_violation`** names the file, line and field. A list field
   given once on the command line is a string; name it twice, or use a
   batch.

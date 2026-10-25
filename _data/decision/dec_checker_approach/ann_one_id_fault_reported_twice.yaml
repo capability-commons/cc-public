@@ -18,22 +18,23 @@ brief:                  |
 description:            |
                         An id against its type's pattern gives both
                         bad_id and schema_violation rows
-                        (src/cctool/check/_test/test_check.py lines
-                        376-382), and a guid of the wrong form gives
-                        both bad_guid and schema_violation rows (same
-                        file, lines 384-390). An id that breaks only
-                        its type's narrower regex_id, or a well-formed
+                        (src/cctool/check/_test/test_check.py within
+                        test_an_argument_across_two_decisions_is_reported),
+                        and a guid of the wrong form gives both
+                        bad_guid and schema_violation rows (same file,
+                        lines 384-390). An id that breaks only its
+                        type's narrower regex_id, or a well-formed
                         guid with another type's prefix, gives one row
                         from the rule alone. The id form is both a
                         schema pattern and a rule
-                        (_data/schema/sch_primitive.yaml lines 67 and
-                        101; src/cctool/check/check.lp lines 56-60 and
-                        72-75; ann_identifier_form_checked_twice).
+                        (_data/schema/sch_primitive.yaml at
+                        $defs.id.pattern and $defs.guid.pattern;
+                        src/cctool/check/check.lp within bad_id and
+                        bad_guid; ann_identifier_form_checked_twice).
                         Each row of a check is one failure
-                        (src/cctool/check/check.py lines 22-25).
-                        Bounded to the identity fields. Assumption: no
-                        other field is checked by both a schema and a
-                        rule.
+                        (src/cctool/check/check.py). Bounded to the
+                        identity fields. Assumption: no other field is
+                        checked by both a schema and a rule.
 
 edge:
 

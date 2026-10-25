@@ -20,26 +20,28 @@ brief:                  |
 description:            |
                         An annotation's folder follows only its
                         relation_is_about edge
-                        (src/cctool/graph/derive.lp lines 139-142;
-                        src/cctool/check/check.lp lines 590-595).
-                        argument_across_decisions fails an annotation
-                        of one decision that argues an option of
-                        another (check.lp lines 1378-1384), but it
-                        needs a decision on both ends. The driver
-                        check counts any annotation that supports or
-                        challenges an option for the decision,
-                        whatever it is about (check.lp lines
-                        1482-1494). Tried on a copy of the tree
+                        (src/cctool/graph/derive.lp within
+                        decision_of; src/cctool/check/check.lp within
+                        misplaced_document). argument_across_decisions
+                        fails an annotation of one decision that
+                        argues an option of another (check.lp within
+                        argument_across_decisions), but it needs a
+                        decision on both ends. The driver check counts
+                        any annotation that supports or challenges an
+                        option for the decision, whatever it is about
+                        (check.lp within schema_count and
+                        unused_schema). Tried on a copy of the tree
                         (2026-10-22): an annotation in
                         _data/annotation/ about lco_argumentation that
                         supports opt_folder_per_type gives no failure.
                         An annotation not about a decision sits in
                         _data/annotation/
-                        (_data/register/reg_data_item_type.yaml lines
-                        439-442). The brief of misplaced_document
-                        states the aim that everything argued about
-                        one decision is kept together (check.lp lines
-                        562-563).
+                        (_data/register/reg_data_item_type.yaml at
+                        entries.type_annotation.description and
+                        entries.type_annotation.usage). The brief of
+                        misplaced_document states the aim that
+                        everything argued about one decision is kept
+                        together (check.lp within misplaced_document).
 
 edge:
 

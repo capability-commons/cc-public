@@ -17,18 +17,18 @@ brief:                  |
                         to a tool whose style may change in a minor
                         release.
 description:            |
-                        Sources: pyproject.toml line 66 (lint task
-                        runs "ruff check src" only);
-                        src/cctool/gate/gate.py line 65; no "ruff
-                        format" or black call in the repository at
-                        89c74d8; ruff makes a minor release when "the
-                        stable style changed"
+                        Sources: pyproject.toml (lint task runs "ruff
+                        check src" only); src/cctool/gate/gate.py
+                        within TUPLE_STAGE; no "ruff format" or black
+                        call in the repository at 89c74d8; ruff makes
+                        a minor release when "the stable style
+                        changed"
                         (https://docs.astral.sh/ruff/versioning/);
                         ruff pinned ">=0.16.6,<0.17" (pyproject.toml
-                        line 61) and locked at 0.16.10 (pixi.lock line
-                        42). ASSUMPTION: ruff format and black remove
-                        the aligned columns, so neither can produce
-                        the house style.
+                        at tool.pixi.pypi-dependencies) and locked at
+                        0.16.10 (pixi.lock). ASSUMPTION: ruff format
+                        and black remove the aligned columns, so
+                        neither can produce the house style.
 
 edge:
 

@@ -22,30 +22,31 @@ description:            |
                         (src/cctool/graph/datalog.py lines 303-309). A
                         broken integrity constraint gives UNSAT with
                         zero models, which check.py reads as all
-                        checks passing (check.py lines 96-106). Two
+                        checks passing (check.py within check). Two
                         rules that negate each other give one model,
                         and which one is not fixed by the rules.
                         Trials run on 2026-10-15 with clingo 5.8.2,
-                        the version pixi.lock locks (pixi.lock line
-                        16; pyproject.toml line 58 allows >=5.8.2,<6);
-                        the trial script is not in the repository.
-                        Souffle requires stratified negation and has
-                        no integrity constraints, so a program has one
+                        the version pixi.lock locks (pixi.lock;
+                        pyproject.toml just after
+                        build-system.requires allows >=5.8.2,<6); the
+                        trial script is not in the repository. Souffle
+                        requires stratified negation and has no
+                        integrity constraints, so a program has one
                         result (https://souffle-lang.github.io/rules).
                         The same run() serves the tree check, the
-                        commit check (change.py line 86) and logic
-                        queries with rules a user or agent writes
-                        (cli/querying.py line 172). check.lp,
-                        change.lp and derive.lp have no integrity
-                        constraints or choice rules today, but a rule
-                        that negates its own head, such as fail(X) :-
-                        item(X), not fail(X), also gives UNSAT with
-                        zero models (same trials). Holds at any graph
-                        size and grows with the number of rules.
-                        ASSUMPTION: a few lines in run() could raise
-                        unless there is exactly one model; not tried.
-                        So it weighs against the present clingo path
-                        more than against clingo.
+                        commit check (change.py within check_trees)
+                        and logic queries with rules a user or agent
+                        writes (cli/querying.py within logic).
+                        check.lp, change.lp and derive.lp have no
+                        integrity constraints or choice rules today,
+                        but a rule that negates its own head, such as
+                        fail(X) :- item(X), not fail(X), also gives
+                        UNSAT with zero models (same trials). Holds at
+                        any graph size and grows with the number of
+                        rules. ASSUMPTION: a few lines in run() could
+                        raise unless there is exactly one model; not
+                        tried. So it weighs against the present clingo
+                        path more than against clingo.
 
 edge:
 

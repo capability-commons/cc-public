@@ -16,19 +16,21 @@ brief:                  |
                         queries and impact. A change to a common
                         convention spreads to many files.
 description:            |
-                        --root in src/cctool/cli/auditing.py lines 69
-                        and 180, checking.py lines 44 and 86,
-                        editing.py lines 82 and 427, exporting.py line
-                        69, gating.py line 39, messaging.py line 42,
-                        querying.py line 109 and serving.py line 38.
-                        editing.py, exporting.py and querying.py each
-                        define their own _option helper; messaging.py
-                        uses a constant OPTION_ROOT. group.py holds no
-                        shared options. --limit is only in querying.py
-                        line 116; --json is in querying.py line 121
-                        and, for impact, auditing.py line 176. cctool
-                        check has no --json. A fault of the
-                        implementation, not of the shape: moving
+                        --root in src/cctool/cli/auditing.py within
+                        check and impact, checking.py within check and
+                        friction, editing.py within _option and
+                        format_, exporting.py within _option,
+                        gating.py within gate, messaging.py within
+                        OPTION_ROOT, querying.py within _option and
+                        serving.py within serve. editing.py,
+                        exporting.py and querying.py each define their
+                        own _option helper; messaging.py uses a
+                        constant OPTION_ROOT. group.py holds no shared
+                        options. --limit is only in querying.py within
+                        _option; --json is in querying.py within
+                        _option and, for impact, auditing.py within
+                        impact. cctool check has no --json. A fault of
+                        the implementation, not of the shape: moving
                         shared options into group.py answers it.
 
 edge:

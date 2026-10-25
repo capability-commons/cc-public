@@ -15,21 +15,22 @@ brief:                  |
                         repeats the layout, so a layout change must
                         touch all three in step.
 description:            |
-                        Sources: src/cctool/check/check.lp lines
-                        159-185; src/cctool/edit/edit.py lines 120-125
-                        and 273-298; .gitignore lines 76-98 in
+                        Sources: src/cctool/check/check.lp within
+                        misplaced_module and misplaced_document;
+                        src/cctool/edit/edit.py within
+                        QUOTE_DOCSTRING, new and header; .gitignore in
                         bb8c338. Commit 1ba2895 added the decision
                         branch to both check and edit tool, so the
                         rule now has two branches in each copy. No
                         test compares the copies directly, but
                         edit.apply runs the check on every edit and
-                        refuses one that adds a failure (edit.py lines
-                        866-869), so a disagreement between check and
-                        edit tool shows as a refused edit; the
-                        .gitignore copy is not checked. ASSUMPTION: a
-                        role-prefix layout would need the same three
-                        copies, so the cost belongs to any checked
-                        layout.
+                        refuses one that adds a failure (edit.py
+                        within _move_folder), so a disagreement
+                        between check and edit tool shows as a refused
+                        edit; the .gitignore copy is not checked.
+                        ASSUMPTION: a role-prefix layout would need
+                        the same three copies, so the cost belongs to
+                        any checked layout.
 
 edge:
 

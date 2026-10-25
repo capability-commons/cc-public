@@ -19,40 +19,42 @@ brief:                  |
 description:            |
                         A new standalone item takes copyright, license
                         and protective_mark from file_pyproject
-                        (src/cctool/edit/edit.py lines 104-105 and
-                        570-571, function _rights at lines 1290-1301).
-                        Fields given to cctool new are applied after
-                        the rights, so a given copyright replaces the
-                        default (src/cctool/edit/edit.py lines
-                        570-573). The copyright pattern checks only
-                        the shape of a notice, not its truth
-                        (_data/schema/sch_trait_rights.yaml lines 98
-                        and 119-121).
+                        (src/cctool/edit/edit.py within ID_RIGHTS,
+                        TUPLE_KEY_RIGHTS and _fields, function _rights
+                        at lines 1290-1301). Fields given to cctool
+                        new are applied after the rights, so a given
+                        copyright replaces the default
+                        (src/cctool/edit/edit.py within _fields). The
+                        copyright pattern checks only the shape of a
+                        notice, not its truth
+                        (_data/schema/sch_trait_rights.yaml at
+                        properties.copyright.pattern and
+                        properties.copyright.description).
                         opt_contributor_in_copyright_field names the
                         contributor in the copyright field of each
                         item they supply
                         (_data/decision/dec_chat_rights_in_contributions/opt_contributor_in_copyright_field.yaml
-                        lines 12-14). opt_one_time_assent and
+                        at brief). opt_one_time_assent and
                         opt_record_facts_only leave the rights fields
                         to the project item and write no contributor
-                        value into them (opt_one_time_assent.yaml
-                        lines 12-16, opt_record_facts_only.yaml lines
-                        12-14). The bot proposes items through cctool
-                        editing commands, which refuse an edit only
-                        when it adds a check failure (context file,
-                        "What is being designed"). ASSUMPTION: a
-                        contributor, or text an LLM reads during the
-                        conversation, can steer the value the bot
-                        writes, so a notice naming a third party or a
-                        false owner would pass every check.
-                        ASSUMPTION: with the copyright option the bot
-                        needs permission to pass a rights field to
-                        cctool new, whereas with the other two options
-                        it can be denied every rights field outright.
-                        Holds at ten times the size: yes, because each
-                        item is a new place to plant a false notice,
-                        while rights from the project item stay one
-                        value held in one file.
+                        value into them (opt_one_time_assent.yaml at
+                        brief, opt_record_facts_only.yaml at brief).
+                        The bot proposes items through cctool editing
+                        commands, which refuse an edit only when it
+                        adds a check failure (context file, "What is
+                        being designed"). ASSUMPTION: a contributor,
+                        or text an LLM reads during the conversation,
+                        can steer the value the bot writes, so a
+                        notice naming a third party or a false owner
+                        would pass every check. ASSUMPTION: with the
+                        copyright option the bot needs permission to
+                        pass a rights field to cctool new, whereas
+                        with the other two options it can be denied
+                        every rights field outright. Holds at ten
+                        times the size: yes, because each item is a
+                        new place to plant a false notice, while
+                        rights from the project item stay one value
+                        held in one file.
 
 edge:
 

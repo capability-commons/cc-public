@@ -45,6 +45,7 @@ edge:
 
 import pathlib
 
+import cctool.check.citation
 import cctool.check.schema
 import cctool.check.segment
 import cctool.edit.layout
@@ -80,6 +81,13 @@ NAME_VERSION      = 'version_disagreement'
 #
 NAME_CONSUMED     = 'consumed_release_disagreement'
 
+# And two more: prose cites a file of the tree by the part it means, not
+# by line number, and the cited file holds the part it names. These read
+# the cited files, so they too are checked over the files of a tree.
+#
+NAME_LINE_CITE    = 'line_citation'
+NAME_NAME_CITE    = 'unresolved_citation'
+
 # The wording of the checks that are not logic program rules. The checks of
 # check.lp are worded there, in the item before each declaration.
 #
@@ -97,6 +105,18 @@ WORDING_CONSUMED  = {'did': '{id} consumes {release}, but the {place} of the tre
                             'consumes holds the newer release {newest}.',
                      'fix': 'Change the edge of relation_consumes of the segment item to '
                             'the newest release, or install the release that it names.'}
+
+WORDING_LINE_CITE = {'did': '{id} cites {citation} by line number, which goes stale as the '
+                            'lines of the file move.',
+                     'fix': 'Cite the part that holds the line: within NAME for a function, '
+                            'Class.method, constant or predicate of code; at KEY.PATH for a '
+                            'field of a configuration or data file, or just after KEY.PATH for '
+                            'a line that is not a field; FILE#anchor for a section of markdown. '
+                            'Write REV:PATH where the lines of one commit are meant.'}
+WORDING_NAME_CITE = {'did': '{id} cites {name} in {cited}, which holds no such part.',
+                     'fix': 'Name the part as the cited file now holds it. If the part is '
+                            'gone, correct the claim that rests on it, or cite the commit that '
+                            'held it as REV:PATH.'}
 
 # The severity of a check: a row of it is a failure, or advice.
 #
@@ -205,7 +225,11 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
         (failures, notices) = cctool.check.segment.attribute(failures, facts)
         (advice, _)         = cctool.check.segment.attribute(advice, facts)
 
-    for (name, list_row, found) in ((NAME_LAYOUT,
+    (list_line, list_name) = cctool.check.citation.violations(root, map_own)
+
+    for (name, list_row, found) in ((NAME_LINE_CITE, list_line, failures),
+                                    (NAME_NAME_CITE, list_name, failures),
+                                    (NAME_LAYOUT,
                                      cctool.edit.layout.violations(root, map_own),
                                      failures),
                                     (NAME_VERSION,
@@ -380,10 +404,12 @@ def columns() -> dict[str, tuple[str, ...]]:
                   for (name, tuple_column)
                   in cctool.graph.logic.declared(text).items()}
 
-    map_column[NAME_SCHEMA]   = cctool.check.schema.COLUMNS
-    map_column[NAME_LAYOUT]   = cctool.edit.layout.COLUMNS
-    map_column[NAME_VERSION]  = cctool.release.record.COLUMNS
-    map_column[NAME_CONSUMED] = cctool.check.segment.COLUMNS
+    map_column[NAME_SCHEMA]    = cctool.check.schema.COLUMNS
+    map_column[NAME_LAYOUT]    = cctool.edit.layout.COLUMNS
+    map_column[NAME_VERSION]   = cctool.release.record.COLUMNS
+    map_column[NAME_CONSUMED]  = cctool.check.segment.COLUMNS
+    map_column[NAME_LINE_CITE] = cctool.check.citation.COLUMNS_LINE
+    map_column[NAME_NAME_CITE] = cctool.check.citation.COLUMNS_NAME
     return map_column
 
 
@@ -437,8 +463,10 @@ def wording() -> dict[str, dict[str, str]]:
     text        = RULES.read_text(encoding = 'utf-8') + '\n' + ADVICE.read_text(encoding = 'utf-8')
     map_wording = cctool.graph.logic.worded(text)
 
-    map_wording[NAME_SCHEMA]   = WORDING_SCHEMA
-    map_wording[NAME_LAYOUT]   = WORDING_LAYOUT
-    map_wording[NAME_VERSION]  = WORDING_VERSION
-    map_wording[NAME_CONSUMED] = WORDING_CONSUMED
+    map_wording[NAME_SCHEMA]    = WORDING_SCHEMA
+    map_wording[NAME_LAYOUT]    = WORDING_LAYOUT
+    map_wording[NAME_VERSION]   = WORDING_VERSION
+    map_wording[NAME_CONSUMED]  = WORDING_CONSUMED
+    map_wording[NAME_LINE_CITE] = WORDING_LINE_CITE
+    map_wording[NAME_NAME_CITE] = WORDING_NAME_CITE
     return map_wording

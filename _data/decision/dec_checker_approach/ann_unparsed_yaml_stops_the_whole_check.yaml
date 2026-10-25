@@ -16,16 +16,18 @@ brief:                  |
                         other result. The exit status is that of an
                         ordinary failure.
 description:            |
-                        src/cctool/check/check.py lines 73-74, 95-99;
-                        src/cctool/graph/extract.py lines 186-207,
-                        294-305 (no parse error caught). Experiment on
-                        a git archive of HEAD 89c74d8, 2026-10-15: one
-                        malformed file under _data gives a traceback,
-                        no failure rows and exit 1. Exit 1 means
-                        nonconformity and 2 means error
-                        (src/cctool/cli/group.py lines 31-33). It
-                        fails closed, and it is a gap in the code more
-                        than in the approach. Assumption: no
+                        src/cctool/check/check.py within
+                        WORDING_SCHEMA and check;
+                        src/cctool/graph/extract.py within
+                        ErrorRead.__init__ and Unreadable (no parse
+                        error caught). Experiment on a git archive of
+                        HEAD 89c74d8, 2026-10-15: one malformed file
+                        under _data gives a traceback, no failure rows
+                        and exit 1. Exit 1 means nonconformity and 2
+                        means error (src/cctool/cli/group.py within
+                        EXIT_OK, EXIT_NONCONFORMITY and EXIT_ERROR).
+                        It fails closed, and it is a gap in the code
+                        more than in the approach. Assumption: no
                         comparison with the legacy module is made.
 
 edge:

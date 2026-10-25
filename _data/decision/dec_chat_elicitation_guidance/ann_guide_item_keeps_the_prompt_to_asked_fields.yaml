@@ -20,29 +20,33 @@ description:            |
                         The decision schema adds no fields of its own
                         and takes identity, the descriptive fields and
                         rights from sch_standalone and the edges from
-                        sch_trait_edge (_data/schema/sch_decision.yaml
-                        lines 17-41). sch_standalone in turn refers to
+                        sch_trait_edge
+                        (_data/schema/sch_decision.yaml).
+                        sch_standalone in turn refers to
                         sch_trait_identity, sch_trait_descriptive and
                         sch_trait_rights
-                        (_data/schema/sch_standalone.yaml lines
-                        41-43), and the traits refer to sch_primitive
-                        (_data/schema/sch_trait_identity.yaml lines 81
-                        and 129). These six files hold 32018 bytes, of
-                        which sch_trait_identity, sch_trait_rights,
-                        sch_trait_edge and sch_primitive hold 25817
-                        bytes, about 81 percent, while
-                        sch_trait_descriptive holds 2499 bytes (wc -c
-                        on the snapshot, 2026-10-22). The edit module
-                        gives a new item its guid
-                        (src/cctool/edit/edit.py lines 1343-1373) and
-                        its copyright and license from file_pyproject
-                        (src/cctool/edit/edit.py line 104 and function
-                        _rights at line 1290). The guide option holds
-                        prompts and the fields to ask about
-                        (opt_interview_guide_item.yaml, brief). The
-                        schema-first option uses the descriptions in
-                        the schema and adds a guide item only when an
-                        instance needs one
+                        (_data/schema/sch_standalone.yaml at
+                        allOf.0.$ref, allOf.1.$ref and allOf.2.$ref),
+                        and the traits refer to sch_primitive
+                        (_data/schema/sch_trait_identity.yaml at
+                        properties.id_self.$ref and
+                        properties.guid_self.$ref). These six files
+                        hold 32018 bytes, of which sch_trait_identity,
+                        sch_trait_rights, sch_trait_edge and
+                        sch_primitive hold 25817 bytes, about 81
+                        percent, while sch_trait_descriptive holds
+                        2499 bytes (wc -c on the snapshot,
+                        2026-10-22). The edit module gives a new item
+                        its guid (src/cctool/edit/edit.py within
+                        _renamed_ids and dotted) and its copyright and
+                        license from file_pyproject
+                        (src/cctool/edit/edit.py within ID_RIGHTS and
+                        function _rights at line 1290). The guide
+                        option holds prompts and the fields to ask
+                        about (opt_interview_guide_item.yaml, brief).
+                        The schema-first option uses the descriptions
+                        in the schema and adds a guide item only when
+                        an instance needs one
                         (opt_schema_descriptions_first.yaml, brief).
                         ASSUMPTION: the bot sends its guidance with
                         every model call, and a model call takes

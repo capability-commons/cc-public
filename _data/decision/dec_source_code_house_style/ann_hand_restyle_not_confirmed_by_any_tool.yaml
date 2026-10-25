@@ -32,21 +32,23 @@ description:            |
                         commit as a new item type, a new schema and an
                         extractor change. The gate runs check, ruff
                         check and pytest and no formatter
-                        (src/cctool/gate/gate.py lines 87-90); 161
-                        test functions existed under src at 89c74d8,
-                        and 471 on the snapshot of 2026-10-23. A
-                        commit titled Reformat fails if it changes the
-                        content of a file beyond what the layout
-                        printer changes (src/cctool/commit/change.lp
-                        lines 395-400; src/cctool/commit/change.py
-                        lines 145-161), and that printer lays out only
-                        YAML documents, docstrings and comment headers
-                        (src/cctool/edit/layout.py lines 29-33), so a
-                        restyle of code cannot be titled Reformat. The
-                        restyle commits carry a Claude co-author line,
-                        so a person must judge a model's layout.
-                        Black: "By default, Black performs an AST
-                        safety check after formatting your code"
+                        (src/cctool/gate/gate.py within TUPLE_STAGE);
+                        161 test functions existed under src at
+                        89c74d8, and 471 on the snapshot of
+                        2026-10-23. A commit titled Reformat fails if
+                        it changes the content of a file beyond what
+                        the layout printer changes
+                        (src/cctool/commit/change.lp within
+                        reformat_changes_content;
+                        src/cctool/commit/change.py within _changed),
+                        and that printer lays out only YAML documents,
+                        docstrings and comment headers
+                        (src/cctool/edit/layout.py), so a restyle of
+                        code cannot be titled Reformat. The restyle
+                        commits carry a Claude co-author line, so a
+                        person must judge a model's layout. Black: "By
+                        default, Black performs an AST safety check
+                        after formatting your code"
                         (https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html).
                         ruff provides "ruff format --check" but its
                         formatter page states no such safety check

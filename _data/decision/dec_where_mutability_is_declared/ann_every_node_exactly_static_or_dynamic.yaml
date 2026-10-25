@@ -29,28 +29,22 @@ description:            |
                         - The os_process field of a dataflow node is
                           optional, and the graph's os_process section
                           is optional too.
-                          (_data/schema/sch_dataflow_node.yaml lines
-                          56-62; _data/schema/sch_dataflow_graph.yaml
-                          lines 77-85) The check that a node's OS
+                          (_data/schema/sch_dataflow_node.yaml at properties.os_process; _data/schema/sch_dataflow_graph.yaml at allOf.2.properties.os_process) The check that a node's OS
                           process exists fires only when one is named.
-                          (src/cctool/check/check.lp lines 3401-3404)
+                          (src/cctool/check/check.lp within unplaced)
                         - OS processes are filed under short local
                           keys in a dataflow graph, and the data item
                           type register lists no type for them.
-                          (_data/schema/sch_dataflow_graph.yaml lines
-                          37-40;
+                          (_data/schema/sch_dataflow_graph.yaml at description;
                           _data/register/reg_data_item_type.yaml)
                         - Node items are validated against JSON
                           Schema, where a required property with an
                           enum of two values admits exactly one.
-                          (_data/schema/sch_dataflow_node.yaml lines
-                          1, 38-42; an existing enum in
-                          _data/schema/sch_dataflow_graph.yaml lines
-                          193-198)
+                          (_data/schema/sch_dataflow_node.yaml at $schema, required and properties; an existing enum in
+                          _data/schema/sch_dataflow_graph.yaml at $defs.dataflow_edge.properties.direction)
                         - Today an OS process requires a host, and a
                           host a hostname.
-                          (_data/schema/sch_dataflow_graph.yaml lines
-                          112-142) The owner wants placement to apply
+                          (_data/schema/sch_dataflow_graph.yaml at $defs.host and $defs.os_process) The owner wants placement to apply
                           to embedded systems "where there may not be
                           an OS at all". (owner's statement,
                           2026-10-24)

@@ -20,16 +20,18 @@ description:            |
                         verb_contradicted rules out changes for Add,
                         Remove, Rename and Move only, and
                         reformat_changes_content applies to Reformat
-                        (src/cctool/commit/change.lp lines 307-314,
-                        362-366, 398-400), while sch_commit allows
-                        thirteen verbs (_data/schema/sch_commit.yaml
-                        line 50). Titles: git log --format=%s at
-                        89c74d8 gives 18 Add, 10 Change, 4 Fix, 1
-                        Split. Commit e3a2b5c is titled Change yet
-                        renames an annotation from its souffle id to
-                        its clingo id. The proposal suggested a rule
-                        to flag a Change that is a pure addition,
-                        removal or rename (project note
+                        (src/cctool/commit/change.lp within
+                        forbidden_change, verb_contradicted and
+                        reformat_changes_content), while sch_commit
+                        allows thirteen verbs
+                        (_data/schema/sch_commit.yaml at
+                        allOf.3.properties.title.pattern). Titles: git
+                        log --format=%s at 89c74d8 gives 18 Add, 10
+                        Change, 4 Fix, 1 Split. Commit e3a2b5c is
+                        titled Change yet renames an annotation from
+                        its souffle id to its clingo id. The proposal
+                        suggested a rule to flag a Change that is a
+                        pure addition, removal or rename (project note
                         notes/commit-title-templates.md lines 43-46);
                         change.lp has none. ASSUMPTION: the share of
                         Change and Fix rises as more commits modify

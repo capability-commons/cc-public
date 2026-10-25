@@ -18,19 +18,20 @@ brief:                  |
 description:            |
                         The chat core writes the draft through the
                         editing commands
-                        (_data/logical_component/lco_chat_core.yaml
-                        lines 12-17). The command that makes a new
-                        item maps its id prefix to a type, and the
-                        type to its register or its folder
-                        (src/cctool/edit/edit.py lines 269-281 and
-                        1280-1294). schema_count requires every type
+                        (_data/logical_component/lco_chat_core.yaml at
+                        brief). The command that makes a new item maps
+                        its id prefix to a type, and the type to its
+                        register or its folder
+                        (src/cctool/edit/edit.py within new and
+                        _register). schema_count requires every type
                         to name exactly one schema for its items
-                        (src/cctool/check/check.lp lines 2819-2823),
-                        and the tree finds the schema of an item
-                        through its type (src/cctool/graph/derive.lp
-                        lines 99-106). No check requires a schema to
-                        be named by at most one type, although none of
-                        the 34 types shares one today
+                        (src/cctool/check/check.lp within
+                        schema_count), and the tree finds the schema
+                        of an item through its type
+                        (src/cctool/graph/derive.lp within
+                        document_schema). No check requires a schema
+                        to be named by at most one type, although none
+                        of the 34 types shares one today
                         (_data/register/reg_data_item_type.yaml). An
                         edge to the schema would leave the core to
                         find the type by the reverse of that edge.

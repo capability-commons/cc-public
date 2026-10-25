@@ -23,17 +23,18 @@ description:            |
                         enforce style and graph-rule conformity".
                         cctool query logic adds the caller's rules to
                         a program that holds every predicate
-                        (src/cctool/cli/ querying.py lines 143-153;
-                        graph/logic.py lines 277-297). Every edit goes
-                        through _run, which writes nothing if the edit
-                        adds a failure (cli/editing.py lines 390-425;
-                        edit/edit.py lines 866-917). Before 6c8d3d5
-                        the only tool was src/check/check.py (git
-                        ls-tree -r 6c8d3d5^). ASSUMPTION: scripts run
-                        directly could call the same library
-                        functions, so the gain against them lies in
-                        what was built after 6c8d3d5, not in the click
-                        shape itself.
+                        (src/cctool/cli/ querying.py within sql;
+                        graph/logic.py within show, derived and base).
+                        Every edit goes through _run, which writes
+                        nothing if the edit adds a failure
+                        (cli/editing.py within format_ and _run;
+                        edit/edit.py within _move_folder,
+                        _refuse_source and batch). Before 6c8d3d5 the
+                        only tool was src/check/check.py (git ls-tree
+                        -r 6c8d3d5^). ASSUMPTION: scripts run directly
+                        could call the same library functions, so the
+                        gain against them lies in what was built after
+                        6c8d3d5, not in the click shape itself.
 
 edge:
 

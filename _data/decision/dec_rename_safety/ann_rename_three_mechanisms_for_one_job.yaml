@@ -18,33 +18,34 @@ brief:                  |
 description:            |
                         Every edge names its target by guid and by
                         readable id (_data/schema/sch_trait_edge.yaml
-                        lines 17-31). cctool rename rewrites every
+                        at description). cctool rename rewrites every
                         reference and mention in every YAML document
-                        (src/cctool/edit/edit.py lines 951-1034). The
-                        checker reports any later use of an old id. A
-                        reference is outdated, found through an alias
-                        or its guid, and a mention is outdated where
-                        it is an alias and dangling otherwise
-                        (src/cctool/check/check.lp lines 960-965,
-                        1618-1624 and 2026-2076). Alias adds its own
-                        rules: the exemption in dangling_reference and
-                        dangling_mention, alias_in_use,
+                        (src/cctool/edit/edit.py within _rename_one
+                        and _renamed_documents). The checker reports
+                        any later use of an old id. A reference is
+                        outdated, found through an alias or its guid,
+                        and a mention is outdated where it is an alias
+                        and dangling otherwise
+                        (src/cctool/check/check.lp). Alias adds its
+                        own rules: the exemption in dangling_reference
+                        and dangling_mention, alias_in_use,
                         outdated_reference, outdated_mention and
-                        rename_without_alias (check.lp lines 964, 1624
-                        and 1985-2076; src/cctool/commit/change.lp
-                        lines 291-296). rename_without_alias already
-                        needed an exception for Revert and Reapply
-                        (change.lp lines 295-296). What alias still
-                        serves is text the rewrite cannot reach, such
-                        as foreign repositories and imported data.
-                        cctool import now brings in outside classes,
-                        but keeps their keys in an identifier field
-                        and not in alias (src/cctool/cli/editing.py
-                        lines 360-377;
-                        _data/schema/sch_external_class.yaml lines
-                        47-69). Weakens once a federation exists, or
-                        an import that keeps its keys in alias. From
-                        the simplicity advocate.
+                        rename_without_alias (check.lp;
+                        src/cctool/commit/change.lp within
+                        rename_without_alias). rename_without_alias
+                        already needed an exception for Revert and
+                        Reapply (change.lp within
+                        rename_without_alias). What alias still serves
+                        is text the rewrite cannot reach, such as
+                        foreign repositories and imported data. cctool
+                        import now brings in outside classes, but
+                        keeps their keys in an identifier field and
+                        not in alias (src/cctool/cli/editing.py within
+                        import_; _data/schema/sch_external_class.yaml
+                        at allOf.2.properties.identifier). Weakens
+                        once a federation exists, or an import that
+                        keeps its keys in alias. From the simplicity
+                        advocate.
 
 edge:
 

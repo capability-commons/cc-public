@@ -33,18 +33,15 @@ description:            |
                           and
                           relations, and after 1.0 a new or tightened check lands as advice in a minor release and
                           becomes a failure only in a major one; before 1.0 checks are added and tightened freely
-                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 13-14 and
-                          33-37; owner's statement, 2026-10-24).
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml at brief and description; owner's statement, 2026-10-24).
                         - A check's rows are advice only when
                           advise.lp declares that check. Schema
                           validation is one
                           more check that is not a logic program rule, added after the logic program runs, so its rows
-                          are always failures (src/cctool/check/check.py lines 20-31, 56-61 and 285-294). JSON Schema
+                          are always failures (src/cctool/check/check.py within NAME_PAIR, NAME_SCHEMA and _review). JSON Schema
                           validation itself has no warning level.
                         - cctool set refuses an edit that adds a
-                          failure (src/cctool/check/check.py lines
-                          27-31 and
-                          72-74).
+                          failure (src/cctool/check/check.py within WORDING_SCHEMA).
                         - The first peer loads every cc-public schema
                           file and validates with stock jsonschema,
                           not
@@ -55,7 +52,7 @@ description:            |
                           the surface as exactly one of three named
                           forms,
                           and the schemas close 59 objects with additionalProperties or unevaluatedProperties false
-                          across 35 of the 51 files (_data/schema/sch_interface_control_document.yaml lines 564-589; advocate's
+                          across 35 of the 51 files (_data/schema/sch_interface_control_document.yaml at $defs.surface; advocate's
                           grep of _data/schema). A form or property added to a closed object is rejected by any
                           validator holding the older schema, and the command line form the option itself may need is
                           such an addition (option lines 17-21;
@@ -63,9 +60,8 @@ description:            |
                         - A changed constraint inside a schema file
                           renames and removes no item: the commit
                           rules find
-                          an item added, removed or renamed by its guid (src/cctool/commit/change.lp lines 100-124),
-                          and report any other change to an item only by its digest (src/cctool/commit/impact.lp lines
-                          118-123). No
+                          an item added, removed or renamed by its guid (src/cctool/commit/change.lp within added),
+                          and report any other change to an item only by its digest (src/cctool/commit/impact.lp within touched). No
                           schema under _data/schema carries a version of its own (grep of the 51 files).
                         - Prior art: schema registries name the
                           direction of compatibility, BACKWARD meaning

@@ -25,14 +25,15 @@ description:            |
                         ignored files unless --ignored is given
                         (https://git-scm.com/docs/git-status). The
                         commit gate checks a copy built from staged
-                        content (src/cctool/gate/gate.py lines
-                        166-181; test_gate.py lines 86-90), so it
-                        fails when a missing code or rule file breaks
-                        check, lint or test. ASSUMPTION: a prose or
-                        data file that no gate stage reads gets no
-                        such catch. The ordering of rules also needs
-                        notes to be understood (.gitignore lines
-                        22-27, 41-46).
+                        content (src/cctool/gate/gate.py within
+                        copy_staged and copy_commit; test_gate.py
+                        within
+                        test_the_copy_holds_what_is_staged_and_not_the_working_copy),
+                        so it fails when a missing code or rule file
+                        breaks check, lint or test. ASSUMPTION: a
+                        prose or data file that no gate stage reads
+                        gets no such catch. The ordering of rules also
+                        needs notes to be understood (.gitignore).
 
 edge:
 

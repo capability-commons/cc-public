@@ -21,8 +21,7 @@ description:            |
                         Sources:
                         - cc-public declares seven runtime
                           dependencies, each with an upper bound
-                          (pyproject.toml lines
-                          43-49), and a package installed into a partner's environment brings them with it
+                          (pyproject.toml at project.dependencies), and a package installed into a partner's environment brings them with it
                           (_data/decision/dec_how_peers_get_cc_public/ann_package_shares_partner_environment.yaml, brief).
                         - pipx installs end-user applications in
                           isolated environments so that "their
@@ -31,9 +30,9 @@ description:            |
                           environment, exposing only the necessary entry points"
                           (https://pixi.prefix.dev/v0.54.0/global_tools/introduction/).
                         - cctool is a command line program with an
-                          entry point (pyproject.toml lines 51-52),
+                          entry point (pyproject.toml at project.scripts),
                           run by hooks
-                          (pyproject.toml lines 25-27, 84 and 85).
+                          (pyproject.toml at tool.pixi.tasks.gate and tool.pixi.tasks.hooks).
                         - The release gate's fresh resolve is strong
                           at seeing an upstream change and only
                           moderate at
@@ -41,7 +40,7 @@ description:            |
                           (_data/decision/dec_release_gate/ann_fresh_install_tests_the_published_ranges.yaml, description).
                         - Compatibility counts conflicts with products
                           in a shared environment
-                          (_data/register/reg_concern.yaml lines 309-312).
+                          (_data/register/reg_concern.yaml at entries.concern_compatibility.measure).
                         Strength: strong, and stronger at ten times
                         the peers: each peer brings its own products
                         to clash with, while an isolated tool

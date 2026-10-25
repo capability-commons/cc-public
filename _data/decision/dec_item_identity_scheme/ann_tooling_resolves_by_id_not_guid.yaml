@@ -18,17 +18,21 @@ brief:                  |
                         trace link to the wrong item.
 description:            |
                         Guid resolves:
-                        _data/schema/sch_trait_identity.yaml lines
-                        28-31, 112-113; id_target is a copy not to
-                        resolve by: sch_trait_edge.yaml lines 112-123.
+                        _data/schema/sch_trait_identity.yaml at
+                        description and
+                        properties.id_self.description; id_target is a
+                        copy not to resolve by: sch_trait_edge.yaml at
+                        $defs.edge.properties.id_target.description.
                         Edges are built from ids only
-                        (src/cctool/graph/extract.py lines 458-462).
-                        dangling_reference and guid_mismatch look up
-                        by id (src/cctool/check/check.lp lines
-                        236-239, 243-256). The edit tool indexes by id
-                        (src/cctool/edit/edit.py line 204). This is a
-                        gap in the build, not in the chosen scheme; it
-                        could be fixed by keying edges on the guid.
+                        (src/cctool/graph/extract.py within extract
+                        and documents). dangling_reference and
+                        guid_mismatch look up by id
+                        (src/cctool/check/check.lp within
+                        member_stem). The edit tool indexes by id
+                        (src/cctool/edit/edit.py within Tree._index).
+                        This is a gap in the build, not in the chosen
+                        scheme; it could be fixed by keying edges on
+                        the guid.
 
 edge:
 

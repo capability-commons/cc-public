@@ -21,31 +21,33 @@ description:            |
                         YAML document part of every file, renames a
                         file named for the item, and adds the old id
                         to a register entry's alias list
-                        (src/cctool/edit/edit.py lines 722-771;
-                        pattern at line 137). The document part is the
-                        whole YAML file under _data, the docstring of
-                        a Python file or the header comment of another
-                        file (src/cctool/edit/layout.py lines
-                        182-200). Run by the advocate on 2026-10-15 at
-                        89c74d8 in a scratch copy, and repeated by the
-                        verifier: a dry run renaming lco_tooling to a
-                        new id is accepted and changes one reference
-                        line in each of 3 files and moves the 42-line
-                        file of the item (5 files in the diff); a real
-                        rename lists no file as still naming the old
-                        id (the list is not printed on a dry run,
-                        editing.py lines 296-308) and cctool check
-                        then reports 0 failures. A dry run of cctool
-                        remove lco_tooling is refused with 3 failures,
-                        all dangling_reference, and writes nothing.
-                        The checker reports dangling references and
-                        mentions (src/cctool/check/check.lp lines
-                        229-239, 460-472), so under hand editing a
-                        missed reference shows only at the next check.
-                        WTP asked for the command: "Then add edit
-                        commands to remove and rename items" (WTP
-                        2026-10-14). Grows stronger as the graph
-                        grows, since an id is named in more files.
+                        (src/cctool/edit/edit.py; pattern at line
+                        137). The document part is the whole YAML file
+                        under _data, the docstring of a Python file or
+                        the header comment of another file
+                        (src/cctool/edit/layout.py within
+                        format_file). Run by the advocate on
+                        2026-10-15 at 89c74d8 in a scratch copy, and
+                        repeated by the verifier: a dry run renaming
+                        lco_tooling to a new id is accepted and
+                        changes one reference line in each of 3 files
+                        and moves the 42-line file of the item (5
+                        files in the diff); a real rename lists no
+                        file as still naming the old id (the list is
+                        not printed on a dry run, editing.py within
+                        rename) and cctool check then reports 0
+                        failures. A dry run of cctool remove
+                        lco_tooling is refused with 3 failures, all
+                        dangling_reference, and writes nothing. The
+                        checker reports dangling references and
+                        mentions (src/cctool/check/check.lp within
+                        unrecorded_module and member_stem), so under
+                        hand editing a missed reference shows only at
+                        the next check. WTP asked for the command:
+                        "Then add edit commands to remove and rename
+                        items" (WTP 2026-10-14). Grows stronger as the
+                        graph grows, since an id is named in more
+                        files.
 
 edge:
 

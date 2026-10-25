@@ -17,24 +17,24 @@ brief:                  |
                         speed that matters.
 description:            |
                         Title pattern at sch_commit line 50, checked
-                        through jsonschema (message.py lines 61,
-                        247-270). Verb taken with str.partition
-                        (change.py line 120). Timings by the
-                        performance efficiency advocate, 2026-10-15,
-                        at 89c74d8 in a 4-core container with Python
-                        3.13: the pattern matched the title of 1ba2895
-                        in about 1.5 microseconds (timeit, 100000
-                        runs; the verifier re-measured 0.5 to 0.8
-                        microseconds in a scratch clone); one history
-                        check took 2.9 s to 4.2 s (verifier: 2.6 s to
-                        4.7 s). The pattern itself does not read the
-                        graph, so its cost does not grow with it; the
-                        schema check that applies it loads every YAML
-                        document of the tree to find sch_commit
-                        (message.py line 260), a cost any title form
-                        shares. This removes an objection more than it
-                        gives a gain. ASSUMPTION: a mood check for
-                        free imperatives would need a word list or a
+                        through jsonschema (message.py within
+                        violations). Verb taken with str.partition
+                        (change.py). Timings by the performance
+                        efficiency advocate, 2026-10-15, at 89c74d8 in
+                        a 4-core container with Python 3.13: the
+                        pattern matched the title of 1ba2895 in about
+                        1.5 microseconds (timeit, 100000 runs; the
+                        verifier re-measured 0.5 to 0.8 microseconds
+                        in a scratch clone); one history check took
+                        2.9 s to 4.2 s (verifier: 2.6 s to 4.7 s). The
+                        pattern itself does not read the graph, so its
+                        cost does not grow with it; the schema check
+                        that applies it loads every YAML document of
+                        the tree to find sch_commit (message.py within
+                        violations), a cost any title form shares.
+                        This removes an objection more than it gives a
+                        gain. ASSUMPTION: a mood check for free
+                        imperatives would need a word list or a
                         parser, which could add load time; not
                         measured.
 

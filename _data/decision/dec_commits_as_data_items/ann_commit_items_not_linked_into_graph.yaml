@@ -21,34 +21,36 @@ description:            |
                         The usage of type_commit says commit items let
                         the history be "read, linked and checked like
                         any other" item
-                        (_data/register/reg_data_item_type.yaml lines
-                        813-816). extract reads only the files of the
-                        tree (src/cctool/graph/extract.py lines
-                        451-495), and nothing in src reads a commit
+                        (_data/register/reg_data_item_type.yaml at
+                        entries.type_commit.usage). extract reads only
+                        the files of the tree
+                        (src/cctool/graph/extract.py within documents
+                        and _files), and nothing in src reads a commit
                         item into the graph (grep of src for git log
                         and the commit type). message.py writes each
                         item with "edge: []"
-                        (src/cctool/commit/message.py line 141); all
-                        33 items on main at 89c74d8 held "relation:
-                        []", as the field was then named; later
-                        commits were not rechecked, since the snapshot
-                        holds no git history. Were commits read in,
-                        only relation_cites and relation_uses_concept
-                        would admit one at its source, since every
-                        other relation constrains its source to a role
-                        that type_commit does not play
-                        (_data/register/reg_relation.yaml;
-                        src/cctool/check/check.lp lines 1018-1025 and
-                        1065-1075). A tree text naming a commit id
-                        fails dangling_mention (check.lp lines
-                        1618-1624). WTP deferred graph history: "We
-                        will probably want graph-changes-over-time
-                        history to build a graph-aware-history-aware
-                        browser, but that's something for later, not
-                        for now" (maintainer's statement 2026-10-14);
-                        the per-commit check (7520f91) was built next
-                        and graph history deferred (memory MEMORY.md
-                        line 43). Reading git log into the graph would
+                        (src/cctool/commit/message.py within compose);
+                        all 33 items on main at 89c74d8 held
+                        "relation: []", as the field was then named;
+                        later commits were not rechecked, since the
+                        snapshot holds no git history. Were commits
+                        read in, only relation_cites and
+                        relation_uses_concept would admit one at its
+                        source, since every other relation constrains
+                        its source to a role that type_commit does not
+                        play (_data/register/reg_relation.yaml;
+                        src/cctool/check/check.lp within satisfies and
+                        constraint_violation). A tree text naming a
+                        commit id fails dangling_mention (check.lp
+                        within dangling_mention). WTP deferred graph
+                        history: "We will probably want
+                        graph-changes-over-time history to build a
+                        graph-aware-history-aware browser, but that's
+                        something for later, not for now"
+                        (maintainer's statement 2026-10-14); the
+                        per-commit check (7520f91) was built next and
+                        graph history deferred (memory MEMORY.md line
+                        43). Reading git log into the graph would
                         close the gap without moving the item.
                         ASSUMPTION: that is feasible at the current
                         tooling size.

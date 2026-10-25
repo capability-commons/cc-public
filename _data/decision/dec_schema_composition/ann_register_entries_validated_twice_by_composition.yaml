@@ -18,19 +18,21 @@ brief:                  |
 description:            |
                         sch_register applies sch_register_entry to
                         every table value
-                        (_data/schema/sch_register.yaml lines 77-78).
+                        (_data/schema/sch_register.yaml at
+                        allOf.2.properties.entries.additionalProperties).
                         Each of the six sch_regentry_* schemas
                         composes sch_register_entry, for example
-                        sch_regentry_concern.yaml line 75, and each
+                        sch_regentry_concern.yaml at allOf, and each
                         sch_reg_* applies its sch_regentry_* to table
-                        values (sch_reg_concern.yaml lines 25-38).
-                        Commit 97291f6 (pre-squash, 2026-10-13)
-                        removed six more such references after WTP
-                        asked "Do we have any unnecessary duplication
-                        anywhere?" (WTP 2026-10-13). ASSUMPTION: no
-                        check detects a schema reached twice; only
-                        check.lp was searched. The result is the same
-                        either way, so this costs no correctness.
+                        values (sch_reg_concern.yaml at allOf.0.$ref,
+                        allOf.1.type and allOf.1.properties). Commit
+                        97291f6 (pre-squash, 2026-10-13) removed six
+                        more such references after WTP asked "Do we
+                        have any unnecessary duplication anywhere?"
+                        (WTP 2026-10-13). ASSUMPTION: no check detects
+                        a schema reached twice; only check.lp was
+                        searched. The result is the same either way,
+                        so this costs no correctness.
 
 edge:
 

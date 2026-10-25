@@ -27,15 +27,13 @@ description:            |
                         - The outdated reference rule reports a
                           reference that names an item by an old id,
                           through an alias or through the guid
-                          (src/cctool/check/check.lp lines
-                          2026-2035).
+                          (src/cctool/check/check.lp within outdated_reference).
                         - The extractor emits an alias fact for each
                           old id an item carries
-                          (src/cctool/graph/extract.py lines
-                          1232-1233), and the advisory rule for
+                          (src/cctool/graph/extract.py within _walk), and the advisory rule for
                           unresolved marks treats a mark reference as
                           resolved when it matches an alias
-                          (src/cctool/check/advise.lp lines 75-79).
+                          (src/cctool/check/advise.lp within unresolved_mark).
                           Strength: moderate; the conflict with the
                           existing check is direct, though the alias
                           still names the same item, so this is a loss

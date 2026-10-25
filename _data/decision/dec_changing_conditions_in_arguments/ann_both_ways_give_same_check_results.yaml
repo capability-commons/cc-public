@@ -18,28 +18,30 @@ brief:                  |
 description:            |
                         argued/2 looks only at annotations with a
                         direct edge to an option
-                        (src/cctool/check/check.lp lines 1482-1494,
-                        with practical at lines 2698-2707).
-                        relation_challenges is read only by edge,
-                        never through a chain: for practicality, for
-                        argued/2, for an annotation that both supports
-                        and challenges one target (lines 1261-1263)
-                        and for an argument across decisions (lines
-                        1378-1393). reg_relation.yaml lines 254-257
+                        (src/cctool/check/check.lp within
+                        unused_concept, with practical at lines
+                        2698-2707). relation_challenges is read only
+                        by edge, never through a chain: for
+                        practicality, for argued/2, for an annotation
+                        that both supports and challenges one target
+                        (lines 1261-1263) and for an argument across
+                        decisions (lines 1378-1393). reg_relation.yaml
+                        at entries.relation_challenges.description
                         says nothing computes which assertion
                         prevails. The review web pages do follow
                         chains: they light every path into an item and
                         ink each annotation by its net effect, a
                         challenge of a challenge being support
-                        (src/cctool/web/network.py lines 611-620;
-                        src/cctool/web/light.py lines 79-86), so a
+                        (src/cctool/web/network.py within _chain;
+                        src/cctool/web/light.py within times), so a
                         separate condition is drawn in the chain of
                         the argument it supports
-                        (src/cctool/web/_test/test_web.py line 493).
-                        This is display, not defeat. It holds only
-                        while the checks stay as they are; if the
-                        tooling came to evaluate arguments or read
-                        dates, it would favor the separate condition.
+                        (src/cctool/web/_test/test_web.py within
+                        test_graph_node_lights_both_its_chains). This
+                        is display, not defeat. It holds only while
+                        the checks stay as they are; if the tooling
+                        came to evaluate arguments or read dates, it
+                        would favor the separate condition.
                         ASSUMPTION: folding the condition into its
                         argument changes no check result.
 

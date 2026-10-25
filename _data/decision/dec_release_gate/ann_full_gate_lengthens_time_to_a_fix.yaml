@@ -23,26 +23,26 @@ description:            |
                         Sources: a code commit takes about 78 s in the
                         gate on atlas, with 2 CPUs (context note,
                         _sources/context.md line 31;
-                        src/cctool/gate/gate.py lines 105-106). The
-                        slow run tests on Python 3.12, 3.13 and 3.14
-                        and is "too slow for every commit" (README.md
-                        lines 64-67; pyproject.toml lines 85-87). The
-                        full suite in one process took 361 s in one
-                        rough measurement
+                        src/cctool/gate/gate.py just after DIR_STORE).
+                        The slow run tests on Python 3.12, 3.13 and
+                        3.14 and is "too slow for every commit"
+                        (README.md#getting-started; pyproject.toml at
+                        tool.pixi.tasks.slow). The full suite in one
+                        process took 361 s in one rough measurement
                         (_data/decision/dec_commit_gate/ann_gate_cost_scales_with_whole_graph.yaml
-                        lines 29-35). Each stage may run up to 600 s
-                        (gate.py line 108). Owner's statements:
-                        "performance DOES still matter a lot, as we
-                        will need to be able to respond quickly to
-                        things." (2026-10-22); "I'd like to be able to
-                        respond to reported problems quickly and
-                        largely automatically" (2026-10-22).
-                        Assumption: a fresh solve and install takes
-                        minutes. Strength: moderate; the delay is
-                        minutes, not hours, and a reduced patch path
-                        could recover most of it, so it bounds how
-                        heavy the full gate may become rather than
-                        overturning it.
+                        at description). Each stage may run up to 600
+                        s (gate.py just after NAME_TEST). Owner's
+                        statements: "performance DOES still matter a
+                        lot, as we will need to be able to respond
+                        quickly to things." (2026-10-22); "I'd like to
+                        be able to respond to reported problems
+                        quickly and largely automatically"
+                        (2026-10-22). Assumption: a fresh solve and
+                        install takes minutes. Strength: moderate; the
+                        delay is minutes, not hours, and a reduced
+                        patch path could recover most of it, so it
+                        bounds how heavy the full gate may become
+                        rather than overturning it.
 
 edge:
 

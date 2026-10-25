@@ -21,29 +21,31 @@ description:            |
                         declares alias (lines 67-84; grep of
                         _data/schema). cctool rename adds an alias
                         only to a register entry
-                        (src/cctool/edit/edit.py lines 971 and
-                        993-998). rename_without_alias applies only to
-                        a register entry (src/cctool/commit/change.lp
-                        lines 291-296). A reference whose readable id
-                        names nothing is found by its guid and
-                        reported as outdated
-                        (src/cctool/check/check.lp lines 2031-2035),
-                        but a mention of an id that names no item and
-                        no alias is dangling (check.lp lines
-                        1618-1624). The rewrite reaches only the local
-                        tree (edit.py lines 1014-1034), and copies
-                        held in a partner's repository cannot be
-                        refreshed from here
-                        (_data/schema/sch_trait_edge.yaml lines
-                        123-124). Commit e3a2b5c renamed an annotation
-                        from its Souffle name to its clingo name, and
-                        the old id now appears nowhere in the tree
-                        outside .git (grep of the clone, 2026-10-15).
-                        Grows with copies, partners and renames. It
-                        can be closed by giving standalone items an
-                        alias, without changing the chosen
-                        alternative. Merged from the compatibility,
-                        flexibility and traceability advocates.
+                        (src/cctool/edit/edit.py within _derived and
+                        _rename_one). rename_without_alias applies
+                        only to a register entry
+                        (src/cctool/commit/change.lp within
+                        rename_without_alias). A reference whose
+                        readable id names nothing is found by its guid
+                        and reported as outdated
+                        (src/cctool/check/check.lp within
+                        outdated_reference), but a mention of an id
+                        that names no item and no alias is dangling
+                        (check.lp within dangling_mention). The
+                        rewrite reaches only the local tree (edit.py
+                        within _renamed_documents), and copies held in
+                        a partner's repository cannot be refreshed
+                        from here (_data/schema/sch_trait_edge.yaml at
+                        $defs.edge.properties.id_target.description).
+                        Commit e3a2b5c renamed an annotation from its
+                        Souffle name to its clingo name, and the old
+                        id now appears nowhere in the tree outside
+                        .git (grep of the clone, 2026-10-15). Grows
+                        with copies, partners and renames. It can be
+                        closed by giving standalone items an alias,
+                        without changing the chosen alternative.
+                        Merged from the compatibility, flexibility and
+                        traceability advocates.
 
 edge:
 

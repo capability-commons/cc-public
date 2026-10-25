@@ -17,22 +17,24 @@ brief:                  |
                         Register-specific shapes need one reader or
                         schema per register.
 description:            |
-                        sch_register.yaml lines 16-20: "Registers
+                        sch_register.yaml at description: "Registers
                         differ in what their entries say, not in how
                         they are structured." Every entry schema
                         composes sch_register_entry through allOf
-                        (sch_register_entry.yaml lines 25-33). The
-                        extractor reads tables through one key,
-                        KEY_TABLE, with no per-register branch
-                        (src/cctool/graph/extract.py lines 53,
-                        426-435). No module under src outside _test
+                        (sch_register_entry.yaml at description and
+                        usage). The extractor reads tables through one
+                        key, KEY_TABLE, with no per-register branch
+                        (src/cctool/graph/extract.py within YAML and
+                        facts_of). No module under src outside _test
                         names a register id (grep). _append_entry in
-                        src/cctool/edit/edit.py lines 1066-1094 adds
-                        an entry to any register. key_mismatch and
-                        misplaced_register_entry apply to every
-                        register (src/cctool/check/check.lp lines
-                        195-198, 221-223). The legacy system had "14
-                        register schemas that are one template" (note
+                        src/cctool/edit/edit.py within _write and
+                        _added adds an entry to any register.
+                        key_mismatch and misplaced_register_entry
+                        apply to every register
+                        (src/cctool/check/check.lp within
+                        misplaced_document and unrecorded_module). The
+                        legacy system had "14 register schemas that
+                        are one template" (note
                         cc-public-session-context.md line 59). The gap
                         grows with the number of registers. Merged
                         from the compatibility, flexibility,

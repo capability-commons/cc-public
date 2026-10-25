@@ -16,16 +16,17 @@ brief:                  |
                         drift from it is caught.
 description:            |
                         cctool.edit.layout is called by the check
-                        (src/cctool/check/check.py lines 66-79,
-                        unformatted_file at line 54), by cctool format
-                        (src/cctool/cli/editing.py line 372), by every
-                        edit through _format (src/cctool/edit/edit.py
-                        lines 1052-1060 and 1182-1192), by the commit
-                        message writer (src/cctool/commit/message.py
-                        line 130) and by the before/after commit check
-                        (src/cctool/commit/change.py line 159). Its
-                        usage field: "a file is laid out the same way
-                        whoever writes it". The fragment writer of
+                        (src/cctool/check/check.py, unformatted_file
+                        at line 54), by cctool format
+                        (src/cctool/cli/editing.py within format_), by
+                        every edit through _format
+                        (src/cctool/edit/edit.py within _rename_one,
+                        _moves and _redotted), by the commit message
+                        writer (src/cctool/commit/message.py within
+                        compose) and by the before/after commit check
+                        (src/cctool/commit/change.py within _changed).
+                        Its usage field: "a file is laid out the same
+                        way whoever writes it". The fragment writer of
                         c4a8721 had its own blank-line logic
                         (c4a8721:src/cctool/edit/layout.py lines
                         53-70) and no check or format command;

@@ -31,16 +31,13 @@ description:            |
                           separate processes and embedded systems with
                           no OS. (owner's statement, 2026-10-24)
                         - A dataflow node names its OS process by a
-                          key. (_data/schema/sch_dataflow_node.yaml
-                          lines 56-62) An OS process is where dataflow
+                          key. (_data/schema/sch_dataflow_node.yaml at properties.os_process) An OS process is where dataflow
                           nodes run in order.
-                          (_data/schema/sch_dataflow_graph.yaml lines
-                          37-40, 77-85)
+                          (_data/schema/sch_dataflow_graph.yaml at description and allOf.2.properties.os_process)
                         - Under the per-process option, a process is
                           static or dynamic as a whole and every node
                           takes that from it.
-                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_os_process.yaml
-                          lines 11-14)
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_os_process.yaml at title and brief)
                         - Within one process an edge is a shared
                           buffer; between processes its transport is
                           still open.
@@ -58,16 +55,14 @@ description:            |
                           units at step boundaries in one placement
                           option, which the per-process grouping would
                           reuse.
-                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
-                          lines 21-23)
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml at brief)
                         - Naming note for whichever option wins: the
                           interface schema already uses "mutability",
                           with values immutable and mutable, for
                           whether a callee may change what a parameter
                           refers to and whether a caller may write an
                           attribute.
-                          (_data/schema/sch_interface_control_document.yaml
-                          lines 239-248 and 352-360) Strength: strong
+                          (_data/schema/sch_interface_control_document.yaml at $defs.parameter.allOf.1.properties.mutability and $defs.attribute.allOf.1.properties.mutability) Strength: strong
                           for maintainability, since under the
                           per-process option the edges touched by one
                           move grow with the node's fan-in and

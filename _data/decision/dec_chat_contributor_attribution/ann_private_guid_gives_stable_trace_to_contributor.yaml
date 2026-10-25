@@ -16,20 +16,20 @@ brief:                  |
                         the public trace at the bot.
 description:            |
                         A guid is minted once and never changed
-                        (AGENTS.md lines 114-115). A personal name is
-                        not an id of the graph and can be shared by
-                        two people or change (ASSUMPTION). No tooling
-                        parses commit trailers: a grep of src for
-                        "trailer" finds only text saying where
-                        trailers go (src/cctool/commit/message.py line
-                        21, src/cctool/cli/messaging.py line 81). A
+                        (AGENTS.md#changing-data-items). A personal
+                        name is not an id of the graph and can be
+                        shared by two people or change (ASSUMPTION).
+                        No tooling parses commit trailers: a grep of
+                        src for "trailer" finds only text saying where
+                        trailers go (src/cctool/commit/message.py,
+                        src/cctool/cli/messaging.py within new). A
                         reference that names neither an id, a guid nor
                         an alias held in the graph is a check failure,
                         and only references in the mark field are
-                        exempt (src/cctool/check/check.lp lines
-                        524-529). So a guid in a trailer is a pointer
-                        for a reader with private access, not an edge
-                        the checks resolve. Under
+                        exempt (src/cctool/check/check.lp within
+                        dangling_reference). So a guid in a trailer is
+                        a pointer for a reader with private access,
+                        not an edge the checks resolve. Under
                         opt_no_contributor_in_public, the link from a
                         public item to its source exists only in the
                         private store of the bot

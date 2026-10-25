@@ -21,29 +21,31 @@ description:            |
                         Unsupported is raised for documents that are
                         not YAML or not mappings, for anchors,
                         aliases, tags and comments at the end of a
-                        line (src/cctool/edit/layout.py lines 328,
-                        332, 345-382), and for folded scalars, nested
+                        line (src/cctool/edit/layout.py within format
+                        and _refuse), and for folded scalars, nested
                         sequences and plain scalars that need more
                         than one line (lines 615, 634, 678). Tests
                         show the new refusals
-                        (src/cctool/edit/_test/test_edit.py lines
-                        846-856). At 89c74d8 anchors and tags were not
-                        refused: a run of format on 2026-10-15 kept
-                        tags, wrote an alias of a scalar as a second
-                        copy of its anchor and expanded an alias of a
-                        mapping. No YAML document in the repository
-                        uses them: a check of a copy of the tree on
-                        2026-10-22 gave no unformatted_file row. An
-                        edit that would leave a refused file is
-                        refused (edit.py _format, lines 1466-1476).
-                        cctool check reports a refused file as one
-                        unformatted_file row (layout.py lines
-                        168-182). Only block scalars are refilled
-                        (layout.py lines 604-612). Layout is tested
+                        (src/cctool/edit/_test/test_edit.py within
+                        test_what_the_printer_would_drop_or_expand_is_refused).
+                        At 89c74d8 anchors and tags were not refused:
+                        a run of format on 2026-10-15 kept tags, wrote
+                        an alias of a scalar as a second copy of its
+                        anchor and expanded an alias of a mapping. No
+                        YAML document in the repository uses them: a
+                        check of a copy of the tree on 2026-10-22 gave
+                        no unformatted_file row. An edit that would
+                        leave a refused file is refused (edit.py
+                        _format, lines 1466-1476). cctool check
+                        reports a refused file as one unformatted_file
+                        row (layout.py within _violation). Only block
+                        scalars are refilled (layout.py within
+                        _emit_value and _emit_seq). Layout is tested
                         over the repository as a fixpoint that keeps
-                        the data (test_edit.py lines 823-828).
+                        the data (test_edit.py within
+                        test_layout_keeps_the_data_and_is_a_fixpoint).
                         violations catches only Unsupported (layout.py
-                        lines 175-178). ASSUMPTION: whether other
+                        within _violation). ASSUMPTION: whether other
                         exceptions can arise on valid YAML is not
                         shown.
 

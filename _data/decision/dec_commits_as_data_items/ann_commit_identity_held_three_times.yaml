@@ -16,16 +16,18 @@ brief:                  |
                         message, a further check exists only to catch
                         two commits that share one id.
 description:            |
-                        src/cctool/commit/history.py line 53 (log read
-                        by hash) and lines 128-154 (duplicate ids);
-                        src/cctool/commit/message.py lines 107-125
-                        (minting) and 278-283 (id suffix check);
-                        src/cctool/commit/change.py lines 105-124. No
-                        file in _data or src refers to a commit id
-                        except the regex in reg_data_item_type.yaml
-                        line 718 and one unit test (test_message.py
-                        line 66). Principle: "one mechanism does one
-                        job and nothing is done twice" (memory
+                        src/cctool/commit/history.py within FORMAT_LOG
+                        (log read by hash) and lines 128-154
+                        (duplicate ids); src/cctool/commit/message.py
+                        within compose (minting) and 278-283 (id
+                        suffix check); src/cctool/commit/change.py
+                        within is_commit and facts_of. No file in
+                        _data or src refers to a commit id except the
+                        regex in reg_data_item_type.yaml and one unit
+                        test (test_message.py within
+                        test_a_composed_message_passes_and_its_id_sorts_by_time).
+                        Principle: "one mechanism does one job and
+                        nothing is done twice" (memory
                         cc-public-design-principles.md). This weakens
                         if something comes to link to commit ids.
 

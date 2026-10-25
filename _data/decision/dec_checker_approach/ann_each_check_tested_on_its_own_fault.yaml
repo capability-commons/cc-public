@@ -19,23 +19,22 @@ description:            |
                         check.lp at 89c74d8 has 33 #show relations;
                         check.py adds schema_violation and
                         unformatted_file (src/cctool/check/check.py
-                        lines 47-54). Each shown relation is one check
-                        and each row one failure (check.py lines
-                        22-25). Each check test compares the whole
-                        failures dict with an exact expected value,
-                        for example
-                        src/cctool/check/_test/test_check.py lines
-                        371-373; the file has 59 test functions.
+                        within RULES). Each shown relation is one
+                        check and each row one failure (check.py).
+                        Each check test compares the whole failures
+                        dict with an exact expected value, for example
+                        src/cctool/check/_test/test_check.py; the file
+                        has 59 test functions.
                         test_the_repository_passes_every_check expects
                         no failures on a copy of the whole tree
-                        (test_check.py lines 227-228). No test names
+                        (test_check.py within _check). No test names
                         supersession_across_issues, added in 89c74d8.
                         The check tests drop unformatted_file
-                        (test_check.py lines 201-211), and no test
-                        names it. Assumption: the legacy module's
-                        checks were not each tested this way; its
-                        source is not in this clone. Holds only while
-                        new checks keep getting a firing test.
+                        (test_check.py within _module and _program),
+                        and no test names it. Assumption: the legacy
+                        module's checks were not each tested this way;
+                        its source is not in this clone. Holds only
+                        while new checks keep getting a firing test.
 
 edge:
 

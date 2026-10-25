@@ -16,21 +16,24 @@ brief:                  |
                         an inverse, so the mechanism has a cost before
                         its first use.
 description:            |
-                        primary_edge: src/cctool/graph/derive.lp lines
-                        62-69. edit.py reads raw edges and resolves
-                        the inverse itself for
+                        primary_edge: src/cctool/graph/derive.lp
+                        within primary_edge. edit.py reads raw edges
+                        and resolves the inverse itself for
                         relation_has_items_held_in_register (edit.py
-                        lines 1185-1200). Also
-                        src/cctool/graph/sparql.py lines 95-121 and
-                        src/cctool/commit/impact.lp lines 159-165.
-                        Schema: sch_regentry_relation.yaml lines
-                        78-102. No inverse key in reg_relation.yaml;
-                        only a check test declares one (test_check.py
-                        lines 688-700), and no edit test does. The
-                        fixed part is small; the copy grows with each
-                        tool that reads raw edges.
-                        opt_paired_relations would need the same
-                        reading.
+                        within _place). Also
+                        src/cctool/graph/sparql.py within store and
+                        src/cctool/commit/impact.lp within link.
+                        Schema: sch_regentry_relation.yaml at
+                        properties.inverse. No inverse key in
+                        reg_relation.yaml; only a check test declares
+                        one (test_check.py within
+                        test_a_constraint_that_excludes_a_role_passes_only_types_without_it
+                        and
+                        test_an_edge_recorded_through_an_inverse_is_read_in_reverse),
+                        and no edit test does. The fixed part is
+                        small; the copy grows with each tool that
+                        reads raw edges. opt_paired_relations would
+                        need the same reading.
 
 edge:
 

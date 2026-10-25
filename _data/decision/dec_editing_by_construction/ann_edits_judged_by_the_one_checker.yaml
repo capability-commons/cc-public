@@ -20,21 +20,21 @@ description:            |
                         edit.apply calls check_documents on the tree
                         before and after the edit and writes only if
                         no failure is added (src/cctool/edit/edit.py
-                        lines 866-891); added failures are found by
-                        comparing failure sets without line numbers
+                        within _move_folder); added failures are found
+                        by comparing failure sets without line numbers
                         (lines 894-918). The edit package imports
-                        cctool.check.check for validity (edit.py line
-                        54). The layout printer format_file is shared
-                        by the layout check, cctool format and every
-                        edit (src/cctool/edit/layout.py lines 36-38;
-                        src/cctool/check/check.py lines 37, 75).
-                        Commit 6230e98 moved every cross-item check
-                        from check.dl to check.lp (524 lines added)
-                        and changed edit.py by 4 lines (git show
-                        --stat 6230e98). WTP expects the checks to
-                        grow (WTP 2026-10-13). Holds at ten times the
-                        graph and twice the tooling, as long as new
-                        commands also go through apply.
+                        cctool.check.check for validity (edit.py). The
+                        layout printer format_file is shared by the
+                        layout check, cctool format and every edit
+                        (src/cctool/edit/layout.py;
+                        src/cctool/check/check.py within
+                        WORDING_LAYOUT). Commit 6230e98 moved every
+                        cross-item check from check.dl to check.lp
+                        (524 lines added) and changed edit.py by 4
+                        lines (git show --stat 6230e98). WTP expects
+                        the checks to grow (WTP 2026-10-13). Holds at
+                        ten times the graph and twice the tooling, as
+                        long as new commands also go through apply.
 
 edge:
 

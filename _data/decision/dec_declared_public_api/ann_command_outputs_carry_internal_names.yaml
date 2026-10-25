@@ -23,24 +23,22 @@ description:            |
                         - The query group's predicates command lists
                           the predicates SQL and logic programs see,
                           and its
-                          logic command returns their rows (src/cctool/cli/querying.py lines 15-29). Those predicates are
+                          logic command returns their rows (src/cctool/cli/querying.py). Those predicates are
                           the internal vocabulary of the checks and of extraction.
                         - cctool check prints each check's name in its
-                          output (src/cctool/cli/checking.py lines
-                          55-56).
+                          output (src/cctool/cli/checking.py within check).
                         - The option makes the command line public
                           through a document of its own
-                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 17-21).
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml at brief).
                         - Prior art: "Changing output for humans is
                           usually OK", and scripts should use "--plain
                           or
                           --json ... to keep output stable" (https://clig.dev/, Future-proofing). JSON outputs already
-                          exist (src/cctool/cli/querying.py lines 121-123; src/cctool/cli/auditing.py lines 176-178).
+                          exist (src/cctool/cli/querying.py within _option; src/cctool/cli/auditing.py within impact).
                         - The interface control document schema can
                           state a machine output as an artifact
                           surface with
-                          a payload schema and version (_data/schema/sch_interface_control_document.yaml lines 484-562
-                          and 816-822).
+                          a payload schema and version (_data/schema/sch_interface_control_document.yaml at $defs.artifact and $defs.surface_artifact).
                         Strength: moderate, growing with the number of
                         checks and predicates, each rename of which
                         would otherwise need a major release after

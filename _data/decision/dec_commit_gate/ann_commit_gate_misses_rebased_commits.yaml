@@ -16,16 +16,15 @@ brief:                  |
                         intermediate commit can hold trace links that
                         were never checked.
 description:            |
-                        src/cctool/commit/history.py lines 19-23.
-                        17de2f5 (a merge recorded unchecked).
-                        .githooks/pre-push lines 23-28. The push gate
-                        loops over ref tips: src/cctool/cli/
-                        auditing.py lines 136-152. The per-commit
+                        src/cctool/commit/history.py. 17de2f5 (a merge
+                        recorded unchecked). .githooks/pre-push. The
+                        push gate loops over ref tips: src/cctool/cli/
+                        auditing.py within _gated. The per-commit
                         history check does not cover
                         dangling_reference or dangling_mention
-                        (history.py lines 97-125; change.py lines
-                        78-88). CI only shares this gap unless CI
-                        gates each commit.
+                        (history.py within pushed and check; change.py
+                        within check_trees). CI only shares this gap
+                        unless CI gates each commit.
 
 edge:
 

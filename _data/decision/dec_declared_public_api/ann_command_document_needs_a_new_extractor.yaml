@@ -28,22 +28,20 @@ description:            |
                         - The parameter and signature checks apply
                           only to a Python function item that realizes
                           a
-                          member, and compare Python parameter names and positions (src/cctool/check/check.lp lines
-                          772-775 and 814-886).
+                          member, and compare Python parameter names and positions (src/cctool/check/check.lp within parameter_member and signature_mismatch).
                         - A click option's Python name can differ from
                           its command line spelling: --json binds
                           is_json
-                          (src/cctool/cli/querying.py lines 121-123). Spellings, types, defaults and help text are in
-                          the decorators, not the signature (src/cctool/cli/checking.py lines 43-50).
+                          (src/cctool/cli/querying.py within _option). Spellings, types, defaults and help text are in
+                          the decorators, not the signature (src/cctool/cli/checking.py within check).
                         - click's core objects have had a to_info_dict
                           method since click 8.0.0
                           (https://click.palletsprojects.com/en/stable/changes/, version 8.0.0);
-                          cctool requires click 8.2 or later (pyproject.toml line 43). With click 8.5.0 it returned
+                          cctool requires click 8.2 or later (pyproject.toml at project.dependencies). With click 8.5.0 it returned
                           each parameter's name, opts, type, required, default, multiple, is_flag and hidden for a test
                           command (advocate's run).
                         - Python facts are extracted today by parsing
-                          source (src/cctool/graph/extract.py line
-                          1134),
+                          source (src/cctool/graph/extract.py within _module),
                           not by importing it. Assumption: importing the command module at check time is acceptable;
                           if not, parsing click decorators from the syntax tree is more code.
                         - The surface forms are closed and extended by

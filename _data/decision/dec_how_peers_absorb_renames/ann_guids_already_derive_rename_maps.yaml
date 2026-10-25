@@ -28,30 +28,27 @@ description:            |
                         - An edge carries the id and the guid of its
                           target, and the guid tells items apart so
                           the id can be renamed
-                          (_data/decision/dec_edge_shape/ruling_edge_shape.yaml
-                          lines 12-18).
+                          (_data/decision/dec_edge_shape/ruling_edge_shape.yaml at brief).
                         - A guid is minted once and never changed
-                          (AGENTS.md lines 114-115).
+                          (AGENTS.md#changing-data-items).
                         - The outdated reference rule finds the
                           current id of a reference whose id names
                           nothing from its guid
-                          (src/cctool/check/check.lp lines 1971-1975).
+                          (src/cctool/check/check.lp within outdated_reference).
                           A mention is found outdated only through an
-                          alias (check.lp lines 2012-2016), and only
+                          alias (check.lp within outdated_mention), and only
                           register entries keep aliases
-                          (_data/schema/sch_register_entry.yaml lines
-                          67-81).
+                          (_data/schema/sch_register_entry.yaml at properties.alias).
                         - The release notes and rename maps are
                           derived from the commit items since the last
                           release
-                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml
-                          lines 13-17).
+                          (_data/decision/dec_home_of_the_release_record/ruling_release_file_in_data.yaml at brief).
                         - The commit check finds renamed items by
                           matching guids before and after
-                          (src/cctool/commit/change.lp lines 119-122).
+                          (src/cctool/commit/change.lp within added).
                         - cctool rename changes every YAML document
-                          that names the id (AGENTS.md lines 124-128;
-                          src/cctool/edit/edit.py lines 1002-1086).
+                          that names the id (AGENTS.md#changing-data-items;
+                          src/cctool/edit/edit.py within _rename_one and _renamed_documents).
                           Strength: weak; the option already resolves
                           edges by guid and the maps are ruled, so
                           only the cost of the command remains.

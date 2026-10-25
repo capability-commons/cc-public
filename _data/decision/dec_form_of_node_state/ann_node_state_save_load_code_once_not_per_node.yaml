@@ -24,15 +24,15 @@ description:            |
                         Sources: typed state is held by the engine,
                         which can copy, inspect and upgrade it
                         (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
-                        lines 12-16); feedback-edge state is an output
+                        at brief); feedback-edge state is an output
                         typed like any other port
-                        (opt_state_on_a_feedback_edge.yaml lines
-                        12-16); opaque state lives in the node's C++
-                        object with hooks to save it to bytes and load
-                        it (opt_state_opaque_with_hooks.yaml lines
-                        12-16). In the Stableflow drafts state is one
-                        block the framework allocates so it can
-                        snapshot or zero it
+                        (opt_state_on_a_feedback_edge.yaml at brief);
+                        opaque state lives in the node's C++ object
+                        with hooks to save it to bytes and load it
+                        (opt_state_opaque_with_hooks.yaml at brief).
+                        In the Stableflow drafts state is one block
+                        the framework allocates so it can snapshot or
+                        zero it
                         (_sources/axair-orchestrator/docs/component_interface.md
                         lines 47-48), coroutines were rejected because
                         they hide their frame so state could not be
@@ -69,29 +69,31 @@ description:            |
                         no serialization library, while each node
                         author may bring one, and the concern counts
                         direct and indirect dependencies
-                        (_data/register/reg_concern.yaml lines
-                        702-704), each needing a license check
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_dependency_risk.measure), each
+                        needing a license check
                         (_data/decision/dec_license/ann_permissive_dependencies_fit_any_license.yaml,
                         description). Flexibility: whether a node's
                         bytes survive a change of compiler,
                         architecture or host is settled node by node,
                         so a new platform means checking every node's
                         hooks, and the concern measures the effort to
-                        install on a new platform (reg_concern.yaml
-                        lines 354-356). Simplicity, a non-driver here:
-                        the count of upgrade mechanisms is one instead
-                        of one per stateful node type
-                        (reg_concern.yaml lines 488-490). Assumptions:
-                        node authors would reach for libraries such as
-                        Boost.Serialization or cereal rather than
-                        write bytes by hand; a C++ object may hold
-                        pointers or padding whose bytes differ between
-                        builds. This rests in part on the form of the
-                        data dictionary: under an external schema
-                        language, upgrading typed state is that
-                        library's code. Erlang/OTP shows the opaque
-                        form works in practice, with a code_change
-                        callback written per module
+                        install on a new platform (reg_concern.yaml at
+                        entries.concern_flexibility.measure).
+                        Simplicity, a non-driver here: the count of
+                        upgrade mechanisms is one instead of one per
+                        stateful node type (reg_concern.yaml at
+                        entries.concern_simplicity.measure).
+                        Assumptions: node authors would reach for
+                        libraries such as Boost.Serialization or
+                        cereal rather than write bytes by hand; a C++
+                        object may hold pointers or padding whose
+                        bytes differ between builds. This rests in
+                        part on the form of the data dictionary: under
+                        an external schema language, upgrading typed
+                        state is that library's code. Erlang/OTP shows
+                        the opaque form works in practice, with a
+                        code_change callback written per module
                         (https://www.erlang.org/doc/system/appup_cookbook.html).
                         Strength: strong, and stronger at ten times
                         the nodes, since the per-node code multiplies

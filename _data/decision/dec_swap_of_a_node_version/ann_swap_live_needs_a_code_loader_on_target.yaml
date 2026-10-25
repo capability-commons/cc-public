@@ -33,19 +33,19 @@ description:            |
                         state until the new version completes a step,
                         so both versions are present at once
                         (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
-                        lines 12-19); Erlang likewise keeps current
-                        and old code of a module, both valid at once
+                        at brief); Erlang likewise keeps current and
+                        old code of a module, both valid at once
                         (https://erlang.org/doc/system/code_loading).
                         Without a live swap, a new version takes
                         effect when its OS process restarts
-                        (opt_no_live_swap.yaml lines 12-15).
-                        Assumptions: a target with no OS has no
-                        dynamic loader; unique names per version would
-                        let n and n+1 link together, so such a target
-                        could swap only to versions it was built with.
-                        This rests on where mutability is declared: a
-                        node that must be static never swaps live.
-                        Strength: moderate; the loader is one platform
+                        (opt_no_live_swap.yaml at brief). Assumptions:
+                        a target with no OS has no dynamic loader;
+                        unique names per version would let n and n+1
+                        link together, so such a target could swap
+                        only to versions it was built with. This rests
+                        on where mutability is declared: a node that
+                        must be static never swaps live. Strength:
+                        moderate; the loader is one platform
                         dependency, not one per node, and it bounds
                         where the live options apply rather than
                         ruling them out.

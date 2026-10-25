@@ -22,42 +22,43 @@ brief:                  |
                         release repeats work every commit already did.
 description:            |
                         Sources: cc_public is installed in editable
-                        mode from the repository (pyproject.toml lines
-                        18-21 and 61-62). The commit gate checks,
-                        lints and tests the staged content, and runs
-                        tests only when code is staged (README.md
-                        lines 71-80; AGENTS.md lines 79-83); the
-                        pre-push hook runs the history check with the
-                        gate (README.md lines 105-108). pyproject.toml
+                        mode from the repository (pyproject.toml at
+                        tool.pixi.pypi-dependencies). The commit gate
+                        checks, lints and tests the staged content,
+                        and runs tests only when code is staged
+                        (README.md#getting-started;
+                        AGENTS.md#before-you-finish); the pre-push
+                        hook runs the history check with the gate
+                        (README.md#getting-started). pyproject.toml
                         has no build target settings beyond the
-                        hatchling backend (pyproject.toml lines
-                        53-55), and hatchling's wheel target, given no
-                        file selection, includes only the detected
-                        package
+                        hatchling backend (pyproject.toml at
+                        build-system), and hatchling's wheel target,
+                        given no file selection, includes only the
+                        detected package
                         (https://hatch.pypa.io/latest/plugins/builder/wheel/;
                         https://hatch.pypa.io/latest/config/build/). A
                         wheel built with hatchling from the tree at
                         e46c32b5 holds the 93 files of src/cc_public
                         and none of _data (built in the review of
                         2026-10-23). _data lies outside src/cc_public
-                        (README.md lines 12-21), and the owner wants
+                        (README.md#what-is-here), and the owner wants
                         "the whole of _data" shipped (owner's
                         statement, 2026-10-22). Peers bring in
                         cc-public as a versioned package
                         (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
-                        lines 12-16), and the owner said the release
+                        at brief), and the owner said the release
                         process is needed now (owner's statement,
                         2026-10-22). The full gate option builds,
                         installs and checks a fixture peer
                         (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml
-                        lines 12-16). No release has been made
-                        (context note, _sources/context.md line 33),
-                        and no pixi task or git hook builds or
-                        installs the package from a tag
-                        (pyproject.toml lines 73-87; .githooks).
-                        Strength: strong; the package build path is
-                        wholly untested, and a wheel built today
-                        already lacks what peers need.
+                        at brief). No release has been made (context
+                        note, _sources/context.md line 33), and no
+                        pixi task or git hook builds or installs the
+                        package from a tag (pyproject.toml at
+                        tool.pixi.tasks; .githooks). Strength: strong;
+                        the package build path is wholly untested, and
+                        a wheel built today already lacks what peers
+                        need.
 
 edge:
 

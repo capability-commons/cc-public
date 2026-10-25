@@ -16,15 +16,15 @@ brief:                  |
                         check and could break unseen.
 description:            |
                         The hooks are the check of record "until CI
-                        runs it too" (.githooks/pre-push lines 20-28).
-                        The repository has no .github directory or
-                        other CI workflow. All five hooks are /bin/sh
+                        runs it too" (.githooks/pre-push). The
+                        repository has no .github directory or other
+                        CI workflow. All five hooks are /bin/sh
                         scripts (line 1 of each file in .githooks/).
                         The gate and history code call git through
-                        subprocess (src/cctool/gate/gate.py lines 174,
-                        194; src/cctool/commit/history.py line 176).
-                        The point weakens once CI runs a platform
-                        matrix.
+                        subprocess (src/cctool/gate/gate.py within
+                        copy_commit and _environment;
+                        src/cctool/commit/history.py within _git). The
+                        point weakens once CI runs a platform matrix.
 
 edge:
 

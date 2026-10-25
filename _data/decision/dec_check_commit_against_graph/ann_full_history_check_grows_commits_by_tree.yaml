@@ -18,10 +18,10 @@ brief:                  |
                         5 s or more.
 description:            |
                         With no range, history check checks the whole
-                        history (src/cctool/cli/auditing.py lines
-                        80-81, 95). Each commit and its parent are
-                        copied whole and passed to check_trees
-                        (src/cctool/commit/history.py lines 114-133).
+                        history (src/cctool/cli/auditing.py within
+                        check). Each commit and its parent are copied
+                        whole and passed to check_trees
+                        (src/cctool/commit/history.py within check).
                         Measured 2026-10-15 in a 4-CPU session
                         container at 89c74d8: 33 commits in 1 min 59 s
                         to 2 min 25 s over two runs; five sampled
@@ -33,17 +33,17 @@ description:            |
                         the first commit of a run took 21 to 35 s and
                         each further one 9 to 10 s. The pre-push hook
                         checks only commits the remote lacks
-                        (history.py lines 81-102). A device tool call
+                        (history.py within pushed). A device tool call
                         dies at 180 s (memory/MEMORY.md line 45).
                         ASSUMPTION: tenfold files and tenfold commits
                         make a full run about a hundred times longer.
                         As built, the message check alone copies each
                         commit's tree and reads every YAML document in
-                        it to find sch_commit (history.py lines
-                        116-125; src/cctool/commit/message.py lines
-                        274-278), so a syntax-only history check grows
-                        the same way at a smaller cost per commit
-                        (0.75 s measured for the syntax part).
+                        it to find sch_commit (history.py within
+                        check; src/cctool/commit/message.py within
+                        violations), so a syntax-only history check
+                        grows the same way at a smaller cost per
+                        commit (0.75 s measured for the syntax part).
                         Proposed by the performance efficiency
                         advocate.
 

@@ -20,23 +20,24 @@ brief:                  |
 description:            |
                         Sources: the commit gate keeps layout and
                         schema verdicts in .git/cctool_store, shared
-                        by every worktree (README.md lines 94-99). The
-                        gate of a push uses no store, on purpose
-                        (README.md lines 99-100;
-                        src/cctool/gate/gate.py lines 31-32; context
-                        note, _sources/context.md line 31). The normal
+                        by every worktree (README.md#getting-started).
+                        The gate of a push uses no store, on purpose
+                        (README.md#getting-started;
+                        src/cctool/gate/gate.py; context note,
+                        _sources/context.md line 31). The normal
                         commit gate leaves out the slow and prepush
                         tests and the run on three Python versions
-                        (README.md lines 64-69 and 77-80;
-                        pyproject.toml lines 81-87), and README.md
-                        lines 66-67 already say to run the slow run
-                        before a release. The full gate runs every
-                        check and test "with no cached verdicts"
+                        (README.md#getting-started; pyproject.toml at
+                        tool.pixi.tasks.slow), and
+                        README.md#getting-started already say to run
+                        the slow run before a release. The full gate
+                        runs every check and test "with no cached
+                        verdicts"
                         (_data/decision/dec_release_gate/opt_full_gate_and_smoke_test.yaml
-                        lines 12-13). Strength: moderate; since the
-                        push gate already drops the store, the gain
-                        over a normal gate at push is mainly the slow
-                        and multi-Python tests.
+                        at brief). Strength: moderate; since the push
+                        gate already drops the store, the gain over a
+                        normal gate at push is mainly the slow and
+                        multi-Python tests.
 
 edge:
 

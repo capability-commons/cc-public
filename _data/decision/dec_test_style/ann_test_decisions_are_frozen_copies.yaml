@@ -18,18 +18,18 @@ brief:                  |
                         longer reaches the tests. A fault in the
                         registers, schemas or kept source still does.
 description:            |
-                        src/cctool/conftest.py lines 55-62 put the
-                        decisions held in
+                        src/cctool/conftest.py within DIR_DECISION and
+                        DIR_FIXTURE_DECISION put the decisions held in
                         src/cctool/_test/_fixture/decision
                         (dec_cross_item_checks_engine, and
                         dec_tooling_language without its ruling) in
                         place of every folder of _data/decision, and
                         lines 203-205 copy them in. The extractor
                         leaves any folder named _fixture out of the
-                        graph (src/cctool/graph/extract.py line 164),
-                        so the frozen copies are not items of the
-                        repository. The change followed two breakages
-                        on 2026-10-23: 9f9d7b98, when
+                        graph (src/cctool/graph/extract.py just after
+                        SIZE_HEAD), so the frozen copies are not items
+                        of the repository. The change followed two
+                        breakages on 2026-10-23: 9f9d7b98, when
                         dec_tooling_language was ruled on and three
                         tests failed at push, and c618661f. Found in
                         the daily review of 2026-10-24.

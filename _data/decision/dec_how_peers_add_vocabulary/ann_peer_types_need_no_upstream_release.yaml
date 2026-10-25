@@ -26,14 +26,12 @@ description:            |
                         - Under the all-upstream option, a peer that
                           needs a new entry proposes it upstream and
                           takes it up with the release that carries it
-                          (_data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml
-                          lines 12-17).
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml at brief).
                         - Under the entries-but-not-types option,
                           every type, relation, role and relation
                           constraint lives in cc-public, and a new one
                           is proposed upstream
-                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_adds_entries_but_not_types.yaml
-                          lines 12-20).
+                          (_data/decision/dec_how_peers_add_vocabulary/opt_peer_adds_entries_but_not_types.yaml at brief).
                         - The first peer, cc-patrol, needs a dataflow
                           variant item type with prefix dfv that
                           cc-public does not hold yet (owner's
@@ -50,20 +48,17 @@ description:            |
                           before it reads a tree, such as that of the
                           python module; a test requires the map to
                           equal the register's prefixes
-                          (src/cctool/graph/prefix.py lines 20-27 and
-                          34-67; src/cctool/graph/extract.py lines
-                          338-364;
-                          src/cctool/graph/_test/test_graph.py lines
-                          255-258).
+                          (src/cctool/graph/prefix.py within MAP_PREFIX; src/cctool/graph/extract.py within PREDICATE;
+                          src/cctool/graph/_test/test_graph.py within test_the_prefix_of_each_type_is_the_one_its_register_entry_gives).
                         - A type a peer holds only as YAML data needs
                           no entry in MAP_PREFIX: outside the tests,
                           code reads the map only by naming a
                           cc-public type (MAP_PREFIX and prefix.stem
                           over src/cctool, for example
-                          src/cctool/edit/edit.py lines 116-124), and
+                          src/cctool/edit/edit.py within SET_PREFIX_SOURCE), and
                           the test that compares the map with the
                           register runs over a copy of cc-public's own
-                          tree (src/cctool/conftest.py lines 188-207).
+                          tree (src/cctool/conftest.py within tree).
                         - ASSUMPTION: a partner other than the
                           maintainer cannot count on cc-public
                           accepting a type it proposes.
@@ -71,8 +66,7 @@ description:            |
                           ("All peers are my own, so this is
                           acceptable for now.", owner's statement,
                           2026-10-22, quoted in
-                          _data/decision/dec_what_crosses_between_segments/ann_no_stated_form_for_a_database_segment.yaml
-                          lines 40-42). Strength: weak while every
+                          _data/decision/dec_what_crosses_between_segments/ann_no_stated_form_for_a_database_segment.yaml at description). Strength: weak while every
                           peer is the maintainer's own; it holds and
                           grows at ten times the partners, since each
                           one otherwise waits on cc-public.

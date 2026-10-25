@@ -18,18 +18,18 @@ brief:                  |
 description:            |
                         MAP_READ, up to 4096 entries keyed by relative
                         path and blake2b digest
-                        (src/cctool/graph/extract.py lines 158-159,
-                        770-786). Commit 93a1428: "the tests take
-                        about a third of the time they did". The cache
-                        lives for one process, and the pre-commit hook
-                        starts a new one (.githooks/pre-commit), so
-                        each commit gate parses every file again.
-                        Since then the gate of a commit keeps what the
-                        layout check and schema validation found in a
-                        store from one run to the next
-                        (src/cctool/check/store.py lines 14-33;
-                        src/cctool/gate/gate.py lines 142-144), so
-                        only the parse starts cold. The tree has 2209
+                        (src/cctool/graph/extract.py within MAP_READ,
+                        COUNT_READ and read). Commit 93a1428: "the
+                        tests take about a third of the time they
+                        did". The cache lives for one process, and the
+                        pre-commit hook starts a new one
+                        (.githooks/pre-commit), so each commit gate
+                        parses every file again. Since then the gate
+                        of a commit keeps what the layout check and
+                        schema validation found in a store from one
+                        run to the next (src/cctool/check/store.py;
+                        src/cctool/gate/gate.py within gate), so only
+                        the parse starts cold. The tree has 2209
                         files, about half the size of the cache.
 
 edge:

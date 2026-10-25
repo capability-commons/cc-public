@@ -17,23 +17,23 @@ brief:                  |
                         no data.
 description:            |
                         cctool is cctool.cli.command:main
-                        (pyproject.toml lines 50-51); pixi installs
-                        cc_public in editable mode (line 62).
-                        .githooks/commit-msg line 29,
-                        prepare-commit-msg line 34 and pre-push line
-                        33 run "pixi run --locked cctool ...", and
-                        pre-commit line 30 and pre-merge-commit line
-                        34 run the pixi task gate, which is "cctool
-                        gate" (pyproject.toml line 77). Before 6c8d3d5
-                        the task was "python src/check/check.py .",
-                        which needed no package install but still
-                        needed pixi. Inside the gate each stage runs
-                        the staged copy's own source, the check stage
-                        as python -m cctool.cli.command check
-                        (src/cctool/gate/gate.py lines 87, 298).
-                        ASSUMPTION: a stale editable install, for
-                        example after a move, stops cctool starting;
-                        not tested.
+                        (pyproject.toml at project.scripts); pixi
+                        installs cc_public in editable mode (line 62).
+                        .githooks/commit-msg, prepare-commit-msg and
+                        pre-push run "pixi run --locked cctool ...",
+                        and pre-commit and pre-merge-commit run the
+                        pixi task gate, which is "cctool gate"
+                        (pyproject.toml at tool.pixi.tasks.gate).
+                        Before 6c8d3d5 the task was "python
+                        src/check/check.py .", which needed no package
+                        install but still needed pixi. Inside the gate
+                        each stage runs the staged copy's own source,
+                        the check stage as python -m
+                        cctool.cli.command check
+                        (src/cctool/gate/gate.py within TUPLE_STAGE
+                        and _environment). ASSUMPTION: a stale
+                        editable install, for example after a move,
+                        stops cctool starting; not tested.
 
 edge:
 

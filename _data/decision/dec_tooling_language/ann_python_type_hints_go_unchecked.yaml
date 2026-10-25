@@ -19,18 +19,19 @@ description:            |
                         600 of 653 function definitions outside tests
                         and conftest.py carry a return type hint
                         (Python ast over src, 2026-10-23), for example
-                        src/cctool/edit/edit.py line 494. The gate
-                        runs check, lint and test, and lint is ruff
-                        only (src/cctool/gate/gate.py lines 87-90;
-                        pyproject.toml line 71), with no annotation
-                        rules selected (pyproject.toml lines 131-142).
-                        Weak against Python as such: adding mypy or
-                        pyright to the gate would remove it without a
-                        port (ASSUMPTION that it fits the gate's
-                        time). It rests on the same fact as
-                        ann_the_compiler_maps_a_change but asserts
-                        what the reader of one diff can rely on, not
-                        how far a change reaches.
+                        src/cctool/edit/edit.py within _fields. The
+                        gate runs check, lint and test, and lint is
+                        ruff only (src/cctool/gate/gate.py within
+                        TUPLE_STAGE; pyproject.toml at
+                        tool.pixi.dependencies.ruff), with no
+                        annotation rules selected (pyproject.toml at
+                        tool.ruff.lint). Weak against Python as such:
+                        adding mypy or pyright to the gate would
+                        remove it without a port (ASSUMPTION that it
+                        fits the gate's time). It rests on the same
+                        fact as ann_the_compiler_maps_a_change but
+                        asserts what the reader of one diff can rely
+                        on, not how far a change reaches.
 
 edge:
 

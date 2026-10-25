@@ -26,26 +26,21 @@ description:            |
                           register entry whose type does not name that
                           register by
                           relation_has_items_held_in_register
-                          (src/cctool/check/check.lp lines 628-633).
+                          (src/cctool/check/check.lp within misplaced_register_entry).
                         - The type_concept entry names reg_concept by
                           that relation, on the type entry itself, in
                           cc-public
-                          (_data/register/reg_data_item_type.yaml
-                          lines 318 and 356).
+                          (_data/register/reg_data_item_type.yaml at entries.type_concept).
                         - The register entry of
                           relation_has_items_held_in_register embeds
                           no inverse, so only the type entry can state
-                          the edge (_data/register/reg_relation.yaml
-                          lines 134-166; src/cctool/graph/derive.lp
-                          lines 62-68).
+                          the edge (_data/register/reg_relation.yaml at entries.relation_has_items_held_in_register; src/cctool/graph/derive.lp within primary_edge).
                         - When it makes a new entry, cctool finds the
                           register from that same edge and takes the
-                          first one it finds (src/cctool/edit/edit.py
-                          lines 1629-1645).
+                          first one it finds (src/cctool/edit/edit.py within _register).
                         - Under the ruled direction, a reference runs
                           only into a segment consumed, never upward
-                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
-                          lines 12-18), so cc-public's type entry
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml at brief), so cc-public's type entry
                           cannot name a peer's register.
                         - Extension files keep each entry inside the
                           register its type names, as read

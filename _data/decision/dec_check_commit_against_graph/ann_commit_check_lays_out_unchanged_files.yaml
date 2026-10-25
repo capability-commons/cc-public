@@ -16,29 +16,31 @@ brief:                  |
                         not with the change.
 description:            |
                         facts_of extracts the whole tree after and
-                        before (src/cctool/commit/change.py lines
-                        131-132), and copy_commit and copy_staged
+                        before (src/cctool/commit/change.py within
+                        facts_of), and copy_commit and copy_staged
                         write whole trees (src/cctool/gate/gate.py
-                        lines 247-283). Since 5acf7c2, _changed lays
-                        out only files whose bytes differ (change.py
-                        lines 156-161), and extract.read parses each
-                        file content once within one process
-                        (src/cctool/graph/extract.py lines 759-802).
-                        The commit-msg hook runs the check on each
-                        commit it sees, merges included; git runs no
-                        commit-msg hook for a revert (README.md lines
-                        88-92). Measured 2026-10-15 in a 4-CPU session
-                        container at 89c74d8: _changed took 2.3 to 2.7
-                        s of a 6.7 s message check, and 123 of 128
-                        files were byte-identical. Tried 2026-10-23 on
-                        copies of the snapshot (2244 files), 4-CPU
-                        container under load: check_trees took 25 to
-                        41 s in a fresh process, as each hook run is,
-                        and about 5 s on later calls in the same
-                        process. ASSUMPTION: time is close to linear
-                        in files. The cost lies in how the check is
-                        built, not in checking the graph. Proposed by
-                        the performance efficiency advocate.
+                        within copy_staged and copy_commit). Since
+                        5acf7c2, _changed lays out only files whose
+                        bytes differ (change.py within _changed), and
+                        extract.read parses each file content once
+                        within one process
+                        (src/cctool/graph/extract.py within read). The
+                        commit-msg hook runs the check on each commit
+                        it sees, merges included; git runs no
+                        commit-msg hook for a revert
+                        (README.md#getting-started). Measured
+                        2026-10-15 in a 4-CPU session container at
+                        89c74d8: _changed took 2.3 to 2.7 s of a 6.7 s
+                        message check, and 123 of 128 files were
+                        byte-identical. Tried 2026-10-23 on copies of
+                        the snapshot (2244 files), 4-CPU container
+                        under load: check_trees took 25 to 41 s in a
+                        fresh process, as each hook run is, and about
+                        5 s on later calls in the same process.
+                        ASSUMPTION: time is close to linear in files.
+                        The cost lies in how the check is built, not
+                        in checking the graph. Proposed by the
+                        performance efficiency advocate.
 
 edge:
 

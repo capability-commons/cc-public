@@ -16,16 +16,21 @@ brief:                  |
                         8.5.0, so 8.2 to 8.4 are admitted but never
                         tested.
 description:            |
-                        pyproject.toml line 42 declares click>=8.2,<9.
-                        Tests build CliRunner() with no arguments and
-                        assert on result.stderr
-                        (src/cctool/cli/_test/test_editing.py lines
-                        43, 84, 92). In click 8.1.8 CliRunner mixes
-                        stderr by default and Result.stderr raises
-                        ValueError (click 8.1.8 src/click/testing.py
-                        lines 147-150, 184); click 8.2.0 keeps the
-                        streams apart (CHANGES.md). Every environment
-                        in pixi.lock pins the click 8.5.0 wheel, so no
+                        pyproject.toml at project.dependencies
+                        declares click>=8.2,<9. Tests build
+                        CliRunner() with no arguments and assert on
+                        result.stderr
+                        (src/cctool/cli/_test/test_editing.py within
+                        _run,
+                        test_an_edit_that_adds_a_failure_is_refused
+                        and
+                        test_an_edit_that_cannot_be_made_exits_with_2).
+                        In click 8.1.8 CliRunner mixes stderr by
+                        default and Result.stderr raises ValueError
+                        (click 8.1.8 src/click/testing.py lines
+                        147-150, 184); click 8.2.0 keeps the streams
+                        apart (CHANGES.md). Every environment in
+                        pixi.lock pins the click 8.5.0 wheel, so no
                         test runs on 8.2, 8.3 or 8.4. Testing the
                         lower bound, or raising it to the locked
                         version, would close this.

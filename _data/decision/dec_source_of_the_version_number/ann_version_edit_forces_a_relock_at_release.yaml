@@ -28,25 +28,24 @@ description:            |
                         --locked, refuses; the atlas VM has no
                         network, so only the owner can relock (context
                         note, _sources/context.md line 30). Every hook
-                        runs pixi with --locked (.githooks/pre-commit
-                        line 30; .githooks/pre-push line 33). The lock
-                        records the local package's version and a
-                        sha256 of its metadata (pixi.lock lines
-                        722-725). The gate treats src, pyproject.toml,
-                        pixi.lock and .githooks as code and runs the
-                        tests only when one is staged
-                        (src/cctool/gate/gate.py line 99; README.md
-                        lines 74-77). A code commit takes about 78 s
-                        in the gate and a data-only commit about 10 s
-                        (context note, _sources/context.md line 31).
-                        Assumptions: a relock that changes only the
-                        local version keeps the other locked versions
-                        where they still satisfy their ranges; whether
-                        a version read from tags leaves the lock
-                        stable between tags is not checked. Limit: the
-                        lock is at version 6 (pixi.lock line 1), and
-                        lock file version 7 removes the input hashes
-                        of source trees
+                        runs pixi with --locked (.githooks/pre-commit;
+                        .githooks/pre-push). The lock records the
+                        local package's version and a sha256 of its
+                        metadata (pixi.lock). The gate treats src,
+                        pyproject.toml, pixi.lock and .githooks as
+                        code and runs the tests only when one is
+                        staged (src/cctool/gate/gate.py within
+                        TUPLE_CODE; README.md#getting-started). A code
+                        commit takes about 78 s in the gate and a
+                        data-only commit about 10 s (context note,
+                        _sources/context.md line 31). Assumptions: a
+                        relock that changes only the local version
+                        keeps the other locked versions where they
+                        still satisfy their ranges; whether a version
+                        read from tags leaves the lock stable between
+                        tags is not checked. Limit: the lock is at
+                        version 6 (pixi.lock), and lock file version 7
+                        removes the input hashes of source trees
                         (https://prefix.dev/blog/lock-file-v7), which
                         may change this. Strength: strong on observed
                         behavior.

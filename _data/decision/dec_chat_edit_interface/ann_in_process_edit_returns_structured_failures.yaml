@@ -19,23 +19,24 @@ brief:                  |
                         parse it before it can ask.
 description:            |
                         apply returns the failures an edit adds, keyed
-                        by check (src/cctool/edit/edit.py lines
-                        1075-1098). edit.batch makes a list of
-                        operations (src/cctool/edit/edit.py, batch at
-                        line 992). Failures is a dict of check name to
-                        rows (src/cctool/check/check.py line 78). A
+                        by check (src/cctool/edit/edit.py within
+                        batch). edit.batch makes a list of operations
+                        (src/cctool/edit/edit.py, batch at line 992).
+                        Failures is a dict of check name to rows
+                        (src/cctool/check/check.py within Failures). A
                         schema failure row has the columns id, schema,
                         file, line, path and message
-                        (src/cctool/check/schema.py line 60). The
-                        command line prints described failures on
+                        (src/cctool/check/schema.py within COLUMNS).
+                        The command line prints described failures on
                         stderr and exits with 1 when the edit adds a
                         failure and with 2 when it cannot be made
                         (src/cctool/cli/editing.py, function _run,
-                        lines 474-520; src/cctool/cli/group.py lines
-                        31-33). The name of a check is the stable code
-                        that scripts match on, and the sentences may
-                        change (AGENTS.md lines 164-165). The
-                        checklist shows what failed a check
+                        lines 474-520; src/cctool/cli/group.py within
+                        EXIT_OK, EXIT_NONCONFORMITY and EXIT_ERROR).
+                        The name of a check is the stable code that
+                        scripts match on, and the sentences may change
+                        (AGENTS.md#failures-and-errors). The checklist
+                        shows what failed a check
                         (opt_checklist_led_conversation brief). The
                         bot source lives in cc-public (owner's
                         statement), and the gate runs the tests when

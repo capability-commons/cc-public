@@ -18,30 +18,31 @@ brief:                  |
 description:            |
                         draft calls change.check on every merge or
                         revert draft (src/cctool/commit/message.py
-                        line 167). message check calls the same
-                        function (src/cctool/cli/messaging.py line
-                        102), run by the commit-msg hook
-                        (.githooks/commit-msg line 29). change.check
-                        copies HEAD and the index, extracts facts from
-                        both whole trees and evaluates change.lp
-                        (src/cctool/commit/change.py lines 66-74,
-                        85-86, 115-116). Measured 2026-10-15 in the
-                        cloud container (Python 3.13.16, git 2.43.0,
-                        clone at 89c74d8, 129 files, no pixi), three
-                        runs each: draft on a staged revert 6.5 to 8.2
-                        s; check on the drafted message 8.6 to 10.0 s;
-                        44 MB peak memory each. One check: copy 0.19
-                        s, extraction 4.20 s, change.lp 1.46 s.
+                        within draft). message check calls the same
+                        function (src/cctool/cli/messaging.py within
+                        check), run by the commit-msg hook
+                        (.githooks/commit-msg). change.check copies
+                        HEAD and the index, extracts facts from both
+                        whole trees and evaluates change.lp
+                        (src/cctool/commit/change.py within check,
+                        check_trees and is_commit). Measured
+                        2026-10-15 in the cloud container (Python
+                        3.13.16, git 2.43.0, clone at 89c74d8, 129
+                        files, no pixi), three runs each: draft on a
+                        staged revert 6.5 to 8.2 s; check on the
+                        drafted message 8.6 to 10.0 s; 44 MB peak
+                        memory each. One check: copy 0.19 s,
+                        extraction 4.20 s, change.lp 1.46 s.
                         Re-measured by the verifier the same day in a
                         scratch clone at 89c74d8 with a staged revert,
                         no pixi, three runs each: draft 5.6 to 7.7 s,
                         check 6.7 to 8.8 s. The gate takes about 75 s
                         (memory/MEMORY.md line 54) and runs before a
-                        merge (.githooks/pre-merge-commit line 32). So
-                        a plain merge costs about 91 s under the hook
-                        against 84 s by hand, under 10 percent more. A
-                        plain git revert costs one draft check under
-                        the hook against nothing by hand, since no
+                        merge (.githooks/pre-merge-commit). So a plain
+                        merge costs about 91 s under the hook against
+                        84 s by hand, under 10 percent more. A plain
+                        git revert costs one draft check under the
+                        hook against nothing by hand, since no
                         commit-time hook checks a revert. By hand,
                         each failed commit-msg retry costs a full
                         check. WTP has said he may bring in "much

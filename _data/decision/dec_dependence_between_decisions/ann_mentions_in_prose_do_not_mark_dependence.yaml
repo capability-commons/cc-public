@@ -22,44 +22,46 @@ description:            |
                         Sources: the tooling extracts every id named
                         in the title, brief and description of an item
                         by a regular expression and returns ids only
-                        (src/cctool/web/argument.py lines 211-224 and
-                        282-288), shown as Mentions and Mentioned by
-                        (src/cctool/web/page.py lines 1136-1137). Some
+                        (src/cctool/web/argument.py within
+                        Graph.mentions and Graph.mentioned_by), shown
+                        as Mentions and Mentioned by
+                        (src/cctool/web/page.py within item). Some
                         cross-decision mentions are not dependence:
                         one annotation names the ruling of the growth
                         policy only as the source of a fact
                         (_data/decision/dec_branch_lines/ann_legacy_tag_lets_main_take_dev_history.yaml
-                        lines 22-28), and another names the cross-item
-                        checks engine decision only as the item a
-                        trial edge pointed at
+                        at description), and another names the
+                        cross-item checks engine decision only as the
+                        item a trial edge pointed at
                         (_data/decision/dec_folder_of_an_argument/ann_annotation_on_two_decisions_refused.yaml
-                        lines 30-35). 91 pairs of decisions (94
-                        counting direction) are linked by a decision
-                        id in prose outside edge fields, and 16 of the
-                        1453 annotations in decision folders cite
-                        another decision's ruling file by path
-                        (counted on the snapshot by the advocates),
-                        with nothing marking which are dependence. So
-                        a count of mentions would rank decisions by
-                        how often they are cited, not by what they
-                        constrain (inference). The checks keep prose
-                        ids valid (dangling mention,
-                        src/cctool/check/check.lp line 1621) but not
-                        complete. The prose option adds no new
-                        relation
+                        at description and edge). 91 pairs of
+                        decisions (94 counting direction) are linked
+                        by a decision id in prose outside edge fields,
+                        and 16 of the 1453 annotations in decision
+                        folders cite another decision's ruling file by
+                        path (counted on the snapshot by the
+                        advocates), with nothing marking which are
+                        dependence. So a count of mentions would rank
+                        decisions by how often they are cited, not by
+                        what they constrain (inference). The checks
+                        keep prose ids valid (dangling mention,
+                        src/cctool/check/check.lp within
+                        dangling_mention) but not complete. The prose
+                        option adds no new relation
                         (_data/decision/dec_dependence_between_decisions/opt_dependence_in_prose.yaml
-                        lines 13-15). Traceability asks for tracing in
+                        at brief). Traceability asks for tracing in
                         both directions
-                        (_data/register/reg_concern.yaml lines
-                        552-572); reviewability asks whether a person
-                        can judge a change in full (line 524); cost
-                        asks how cost grows with use (line 613), and
-                        here the cost of finding dependence is paid by
-                        a reader at each review rather than once by
-                        the author (inference). Strength: holds and
-                        grows; at ten times the decisions mentions
-                        grow with them, and the share that is not
-                        dependence has no reason to fall (assumption).
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_traceability); reviewability
+                        asks whether a person can judge a change in
+                        full (line 524); cost asks how cost grows with
+                        use (line 613), and here the cost of finding
+                        dependence is paid by a reader at each review
+                        rather than once by the author (inference).
+                        Strength: holds and grows; at ten times the
+                        decisions mentions grow with them, and the
+                        share that is not dependence has no reason to
+                        fall (assumption).
 
 edge:
 

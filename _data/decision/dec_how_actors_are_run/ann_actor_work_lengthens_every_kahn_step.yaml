@@ -22,28 +22,28 @@ description:            |
                         Sources: actors run on the engine's threads in
                         the gaps between Kahn steps
                         (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
-                        lines 11-16); the pool option runs actors
-                        alongside the threads that run the Kahn steps
-                        (opt_actors_on_a_shared_thread_pool.yaml in
-                        the same folder, lines 11-15). Patrol's Orin
-                        configuration holds a 30 Hz camera rate
+                        at title and brief); the pool option runs
+                        actors alongside the threads that run the Kahn
+                        steps (opt_actors_on_a_shared_thread_pool.yaml
+                        in the same folder, lines 11-15). Patrol's
+                        Orin configuration holds a 30 Hz camera rate
                         (_sources/cc-patrol-notes/plan.md lines
                         181-182), so one step is about 33 ms (derived,
                         not stated there), and Patrol applies commands
                         at a frame boundary anyway (same file, lines
                         166-167). The register measures time to reach
                         a safe state after a failure, in ms
-                        (_data/register/reg_concern.yaml line 442).
-                        ASSUMPTION: Kahn work cannot start the next
-                        step until the gap's actor work ends.
-                        ASSUMPTION: the between-steps option sets no
-                        bound on how many messages an actor drains in
-                        one gap; a bound would cut this cost and keep
-                        the order. Strength: moderate; weak for
-                        Patrol, whose commands wait for a frame
-                        boundary, and stronger with more actors,
-                        higher outside message rates or heavier actor
-                        work.
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_safety.measure). ASSUMPTION:
+                        Kahn work cannot start the next step until the
+                        gap's actor work ends. ASSUMPTION: the
+                        between-steps option sets no bound on how many
+                        messages an actor drains in one gap; a bound
+                        would cut this cost and keep the order.
+                        Strength: moderate; weak for Patrol, whose
+                        commands wait for a frame boundary, and
+                        stronger with more actors, higher outside
+                        message rates or heavier actor work.
 
 edge:
 

@@ -25,22 +25,19 @@ description:            |
                         - Each YAML document is validated against the
                           schema its type names by
                           relation_has_items_specified_by_schema
-                          (src/cctool/graph/derive.lp lines 99-102;
-                          _data/register/reg_data_item_type.yaml lines
-                          968-971 for type_decision).
+                          (src/cctool/graph/derive.lp within document_schema;
+                          _data/register/reg_data_item_type.yaml at entries.type_decision.edge for type_decision).
                         - The checks duplicate_prefix and
                           unknown_prefix run over every type and item
                           read, with no list of types in code
-                          (src/cctool/check/check.lp lines 62-64 and
-                          179-182).
+                          (src/cctool/check/check.lp within unknown_prefix and duplicate_prefix).
                         - cc-patrol follows frequent minor and point
                           release tags, and 1.0 is likely 6 months or
                           more away (owner's statement, 2026-10-24).
                         - Moving an entry to another register keeps
                           its id and guid, which are what an edge
                           names (any edge in _data, for example
-                          _data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml
-                          lines 19-24).
+                          _data/decision/dec_how_peers_add_vocabulary/opt_all_vocabulary_upstream.yaml at edge).
                         - ASSUMPTION: a peer type needs no
                           type-specific rule in check.lp or derive.lp;
                           a type that does, as type_dataflow_node does

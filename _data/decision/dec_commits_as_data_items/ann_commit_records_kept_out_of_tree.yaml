@@ -18,22 +18,23 @@ brief:                  |
                         more file for each commit ever made.
 description:            |
                         extract walks every file under its root
-                        (src/cctool/graph/extract.py lines 479-495,
+                        (src/cctool/graph/extract.py within _files,
                         with os.walk); the change check reads every
                         file of both trees and lays out those whose
                         bytes differ (src/cctool/commit/change.py
-                        lines 145-161). The items of the 33 commits on
-                        main are read from one git log call and parsed
-                        in 0.045 s (0.067 s in the verifier's re-run;
-                        src/cctool/commit/history.py lines 150-159;
-                        measured by the performance efficiency
-                        advocate, 2026-10-15). 93a1428 caches
-                        unchanged YAML documents in memory, keyed by
-                        the path and a digest of each file (extract.py
-                        lines 155-159), which softens the parsing cost
-                        within one process (such as a history check
-                        over many commits) but not across hook runs
-                        and not the reading of each file. ASSUMPTION:
+                        within _changed). The items of the 33 commits
+                        on main are read from one git log call and
+                        parsed in 0.045 s (0.067 s in the verifier's
+                        re-run; src/cctool/commit/history.py within
+                        duplicates; measured by the performance
+                        efficiency advocate, 2026-10-15). 93a1428
+                        caches unchanged YAML documents in memory,
+                        keyed by the path and a digest of each file
+                        (extract.py within SET_DIR_SKIP), which
+                        softens the parsing cost within one process
+                        (such as a history check over many commits)
+                        but not across hook runs and not the reading
+                        of each file. ASSUMPTION:
                         opt_commit_record_in_tree adds one file per
                         commit; no design of it exists. Grows stronger
                         with the number of commits.

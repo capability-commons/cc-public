@@ -30,19 +30,16 @@ description:            |
                           (_data/decision/dec_check_commit_against_graph/ruling_check_commit_against_graph.yaml,
                           brief).
                         - A commit item must name the id of every item
-                          the commit removes or renames (AGENTS.md
-                          lines 98-102).
+                          the commit removes or renames (AGENTS.md#before-you-finish).
                         - The outdated reference rule finds a
                           reference by an old id through the guid,
                           "which decides", where the old id names
-                          nothing (src/cctool/check/check.lp lines
-                          2015-2018 and 2041-2045).
+                          nothing (src/cctool/check/check.lp within outdated_reference).
                         - cctool rename rewrites the id in every YAML
                           document that names it
-                          (src/cctool/edit/edit.py lines 960-1021
-                          and 1023-1044), but refuses an id the tree
+                          (src/cctool/edit/edit.py within _derived and _rename_one), but refuses an id the tree
                           does not hold and a new id with another
-                          prefix (edit.py lines 908-913). Strength:
+                          prefix (edit.py within rename). Strength:
                           strong; each part exists, though the command
                           would call the rewrite without the guards of
                           cctool rename.

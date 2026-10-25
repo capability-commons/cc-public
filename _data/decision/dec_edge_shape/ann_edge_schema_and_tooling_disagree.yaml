@@ -20,13 +20,16 @@ description:            |
                         The edge schema calls the guid "the sole
                         resolvable reference in the edge" and says of
                         id_target "Never resolve by this field"
-                        (_data/schema/sch_trait_edge.yaml lines 119
-                        and 134). sch_trait_identity.yaml lines 43-54
-                        and the checks resolve by id first (see
+                        (_data/schema/sch_trait_edge.yaml at
+                        $defs.edge.properties.id_target.description
+                        and
+                        $defs.edge.properties.guid_target.description).
+                        sch_trait_identity.yaml at description and the
+                        checks resolve by id first (see
                         ann_edge_tooling_resolves_by_readable_id). The
                         editor removes an edge by matching
                         (id_relation, id_target)
-                        (src/cctool/edit/edit.py lines 534-536). The
+                        (src/cctool/edit/edit.py within unlink). The
                         gap widens as tools are added, since new tools
                         written from the edge schema would resolve by
                         guid. From the maintainability advocate.

@@ -19,16 +19,16 @@ brief:                  |
 description:            |
                         17 of the 31 files in _data/schema close with
                         unevaluatedProperties: false, for example
-                        sch_option.yaml lines 47-56 and
-                        sch_register.yaml line 80.
-                        additionalProperties cannot see properties
-                        declared in allOf branches (JSON Schema
-                        2020-12 Core sections 10.3.2.3 and 11.3). The
-                        dialect is pinned in sch_schema.yaml lines
-                        51-55, and the checker uses
-                        Draft202012Validator
-                        (src/cctool/check/schema.py lines 56-57 and
-                        107). OpenAPI 3.0 has no
+                        sch_option.yaml at allOf and
+                        unevaluatedProperties and sch_register.yaml at
+                        unevaluatedProperties. additionalProperties
+                        cannot see properties declared in allOf
+                        branches (JSON Schema 2020-12 Core sections
+                        10.3.2.3 and 11.3). The dialect is pinned in
+                        sch_schema.yaml at properties.$schema, and the
+                        checker uses Draft202012Validator
+                        (src/cctool/check/schema.py within DELIM_PATH
+                        and KEY_UNEVALUATED). OpenAPI 3.0 has no
                         unevaluatedProperties; 3.1 aligns with 2020-12
                         (spec URLs not fetched). WTP said he "may
                         revisit this and port the tooling to Rust or

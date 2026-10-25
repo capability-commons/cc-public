@@ -16,20 +16,21 @@ brief:                  |
                         check of more than a minute, so f-strings gain
                         almost nothing.
 description:            |
-                        Sources: pyproject.toml line 137 (UP032
-                        ignored); src/cctool/graph/logic.py lines
-                        307-325 and 329-338. Measured by the advocate
-                        on 2026-10-15: 359 ns against 54 ns and 247 ns
-                        against 46 ns per call; write() about 11 ms
-                        for 1376 facts; a full cctool check about 1.1
-                        to 2 s. Measured again on the snapshot on
-                        2026-10-23, on another machine: 670 ns against
-                        173 ns per call; write() 1.2 to 1.5 s for
-                        56928 facts, and the same writer with
-                        f-strings gave the same text in 0.85 to 1.4 s,
-                        within the noise; the checks with no store
-                        took 111 s. ASSUMPTION: about four format
-                        calls per fact, so about 0.1 s saved.
+                        Sources: pyproject.toml at
+                        tool.ruff.lint.ignore (UP032 ignored);
+                        src/cctool/graph/logic.py within write and
+                        _term. Measured by the advocate on 2026-10-15:
+                        359 ns against 54 ns and 247 ns against 46 ns
+                        per call; write() about 11 ms for 1376 facts;
+                        a full cctool check about 1.1 to 2 s. Measured
+                        again on the snapshot on 2026-10-23, on
+                        another machine: 670 ns against 173 ns per
+                        call; write() 1.2 to 1.5 s for 56928 facts,
+                        and the same writer with f-strings gave the
+                        same text in 0.85 to 1.4 s, within the noise;
+                        the checks with no store took 111 s.
+                        ASSUMPTION: about four format calls per fact,
+                        so about 0.1 s saved.
 
 edge:
 

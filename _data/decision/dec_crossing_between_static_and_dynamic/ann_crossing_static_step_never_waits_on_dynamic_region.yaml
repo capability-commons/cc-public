@@ -28,8 +28,8 @@ description:            |
                         and a static input takes the value of the step
                         before or an explicit empty token
                         (_data/decision/dec_crossing_between_static_and_dynamic/opt_one_step_delay_into_static.yaml
-                        lines 11-19). In the fixed-slot option the
-                        static schedule holds a call slot for each
+                        at title and brief). In the fixed-slot option
+                        the static schedule holds a call slot for each
                         dynamic region and values cross in the same
                         step (opt_same_step_through_fixed_slots.yaml
                         in the same folder, lines 11-21). The
@@ -44,23 +44,23 @@ description:            |
                         lines 35-40), while the dynamic host relies on
                         dlopen (same file, line 65). The register
                         measures time to reach a safe state after a
-                        failure (_data/register/reg_concern.yaml line
-                        442). The owner wants placement to reach
-                        systems with no OS (owner's statement,
-                        2026-10-24) and doubts the delay is needed
-                        (answer 2). ASSUMPTION: handing over pointers
-                        removes the copy but not the wait for the
-                        dynamic node to finish writing within the
-                        step. ASSUMPTION: a value of the step before
-                        must stay readable while the new one is
-                        written, so each such edge holds two buffers,
-                        which with a step of latency is the price.
-                        Strength: strong for fault isolation and
-                        hard-timed systems, and stronger as the
-                        dynamic subgraph grows; weak for performance
-                        where dynamic work is light. It does not
-                        answer the latency point, which weighs the
-                        other way.
+                        failure (_data/register/reg_concern.yaml at
+                        entries.concern_safety.measure). The owner
+                        wants placement to reach systems with no OS
+                        (owner's statement, 2026-10-24) and doubts the
+                        delay is needed (answer 2). ASSUMPTION:
+                        handing over pointers removes the copy but not
+                        the wait for the dynamic node to finish
+                        writing within the step. ASSUMPTION: a value
+                        of the step before must stay readable while
+                        the new one is written, so each such edge
+                        holds two buffers, which with a step of
+                        latency is the price. Strength: strong for
+                        fault isolation and hard-timed systems, and
+                        stronger as the dynamic subgraph grows; weak
+                        for performance where dynamic work is light.
+                        It does not answer the latency point, which
+                        weighs the other way.
 
 edge:
 

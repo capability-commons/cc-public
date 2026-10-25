@@ -17,19 +17,18 @@ brief:                  |
 description:            |
                         The checker copies the jsonschema message into
                         the failure row (src/cctool/check/schema.py
-                        lines 47 and 170). Eight assertions quote
+                        within violations). Eight assertions quote
                         message text, such as "7 is not of type
-                        'string'" (test_check.py lines 382, 391, 500,
-                        518, 529, 542, 554;
-                        src/cctool/commit/_test/test_message.py line
-                        124). jsonschema is pinned >=4.23,<5
-                        (pyproject.toml line 40). ASSUMPTION:
-                        jsonschema does not treat its wording as
-                        stable within a major version; its changelog
-                        was not checked. The cost is a false alarm,
-                        not a missed fault, and comparing every column
-                        but the message would remove it within the
-                        chosen option.
+                        'string'" (test_check.py;
+                        src/cctool/commit/_test/test_message.py within
+                        test_an_id_that_does_not_end_with_the_guid_is_reported).
+                        jsonschema is pinned >=4.23,<5 (pyproject.toml
+                        at project.license). ASSUMPTION: jsonschema
+                        does not treat its wording as stable within a
+                        major version; its changelog was not checked.
+                        The cost is a false alarm, not a missed fault,
+                        and comparing every column but the message
+                        would remove it within the chosen option.
 
 edge:
 

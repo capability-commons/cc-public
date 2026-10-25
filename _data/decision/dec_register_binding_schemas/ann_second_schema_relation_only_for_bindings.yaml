@@ -18,18 +18,20 @@ brief:                  |
 description:            |
                         The relation constrains its source to
                         relcon_is_register
-                        (_data/register/reg_relation.yaml lines
-                        86-89), which only type_register satisfies
-                        (_data/register/reg_data_item_type.yaml lines
-                        199-201). Every type names exactly one schema
-                        for its items (src/cctool/check/check.lp lines
-                        2624-2628). One derive rule per mechanism
-                        (src/cctool/graph/derive.lp lines 98-106);
-                        unused_schema names both
-                        (src/cctool/check/check.lp lines 2661-2665).
-                        The relation dates from the placeholder commit
-                        bb8c338, where types also used it; f587284
-                        (pre-squash) moved types to
+                        (_data/register/reg_relation.yaml at
+                        entries.relation_is_specified_by_schema.edge),
+                        which only type_register satisfies
+                        (_data/register/reg_data_item_type.yaml at
+                        entries.type_register.edge). Every type names
+                        exactly one schema for its items
+                        (src/cctool/check/check.lp within
+                        schema_count). One derive rule per mechanism
+                        (src/cctool/graph/derive.lp within
+                        document_schema); unused_schema names both
+                        (src/cctool/check/check.lp within
+                        unused_schema). The relation dates from the
+                        placeholder commit bb8c338, where types also
+                        used it; f587284 (pre-squash) moved types to
                         relation_has_items_specified_by_schema and
                         narrowed the relation to type_register.
                         Dropping the bindings would need the checker

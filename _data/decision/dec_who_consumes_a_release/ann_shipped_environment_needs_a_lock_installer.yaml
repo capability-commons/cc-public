@@ -25,7 +25,7 @@ description:            |
                         - The tested environment is a pixi lock,
                           version 6, that mixes conda-forge packages
                           and PyPI
-                          wheels (pixi.lock lines 1-8 and 12-66).
+                          wheels (pixi.lock).
                         - Conda packages are installed by
                           conda-compatible clients
                           (_data/decision/dec_publishing_route/ann_conda_channel_binds_partners_to_conda_tools.yaml,
@@ -42,23 +42,21 @@ description:            |
                           own, cloned at a rev it assumes is immutable, and its documentation describes no lock file for
                           those environments (https://pre-commit.com/).
                         - The declared ranges already exist
-                          (pyproject.toml lines 43-49), the ruled
+                          (pyproject.toml at project), the ruled
                           release gate already
                           installs the built package fresh and resolves them, tentatively
-                          (_data/decision/dec_release_gate/ruling_release_gate.yaml lines 13-22), and a peer brings in
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml at brief), and a peer brings in
                           cc-public as one versioned package
                           (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml).
                         - jq is declared only as a pixi dependency,
-                          not in the package metadata (pyproject.toml
-                          lines 72-74
+                          not in the package metadata (pyproject.toml at tool.hatch.build.targets.wheel
                           against lines 43-49), and cctool query jq stops with "There is no jq program to run" where it is
-                          missing (src/cctool/graph/jq.py lines 89-91).
+                          missing (src/cctool/graph/jq.py within query).
                         - The wheel selects only src/cctool
-                          (pyproject.toml lines 58-62), so it holds no
+                          (pyproject.toml at tool.hatch.build.targets.wheel), so it holds no
                           _data today; the
                           check that the built package holds _data, which the ruled gate adds, is needed under every
-                          option and does not separate them (_data/decision/dec_release_gate/ruling_release_gate.yaml
-                          lines 24-27).
+                          option and does not separate them (_data/decision/dec_release_gate/ruling_release_gate.yaml at brief).
                         - The cc-patrol plan recommends a pixi git
                           dependency on cc-public
                           (_sources/cc-patrol-notes/plan.md lines 69-72), and all peers are the owner's own for now
@@ -66,7 +64,7 @@ description:            |
                         - Compatibility counts tools a partner must
                           install, and simplicity counts distinct
                           mechanisms
-                          (_data/register/reg_concern.yaml lines 309-312 and 488-490).
+                          (_data/register/reg_concern.yaml at entries.concern_compatibility.measure and entries.concern_simplicity.measure).
                         - Assumption: a package's own lock is not read
                           when it is installed as a dependency by pip
                           or

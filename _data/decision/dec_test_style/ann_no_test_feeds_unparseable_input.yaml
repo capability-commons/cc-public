@@ -17,19 +17,24 @@ brief:                  |
                         program file that is not UTF-8, so that path
                         of the reader is untested.
 description:            |
-                        src/cctool/check/_test/test_check.py lines
-                        303-320 feed the checker a document with a
-                        repeated key and a module that is not Python,
-                        and expect one unreadable_file row each. The
+                        src/cctool/check/_test/test_check.py within
+                        test_a_document_with_a_repeated_key_is_reported
+                        and
+                        test_a_module_that_is_not_python_is_reported
+                        feed the checker a document with a repeated
+                        key and a module that is not Python, and
+                        expect one unreadable_file row each. The
                         reader turns a parse error into that row
-                        (src/cctool/graph/extract.py lines 1104-1105,
-                        1144-1145) and does the same for a checked
+                        (src/cctool/graph/extract.py within _module
+                        and _load) and does the same for a checked
                         file that is not UTF-8 (lines 770-781). No
                         test writes such a file: the only bytes a
                         checker test writes are to blob.bin, which is
-                        not a checked kind of file (test_check.py line
-                        941). ASSUMPTION: the not UTF-8 path works;
-                        not run. The other option has the same gap.
+                        not a checked kind of file (test_check.py
+                        within
+                        test_files_that_hold_no_item_are_passed_over).
+                        ASSUMPTION: the not UTF-8 path works; not run.
+                        The other option has the same gap.
 
 edge:
 

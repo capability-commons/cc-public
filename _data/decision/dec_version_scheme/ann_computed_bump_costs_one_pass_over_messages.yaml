@@ -23,13 +23,14 @@ description:            |
                         detects renames and removals (context note,
                         _sources/context.md line 34). A commit item
                         names the id of every item it removes or
-                        renames (AGENTS.md lines 98-102). The history
-                        code reads the messages of many commits with
-                        one git log call (src/cctool/commit/history.py
-                        lines 55 and 150). Re-checking each commit
-                        instead would extract two full graphs per
-                        commit (src/cctool/commit/change.py lines
-                        131-132), a cost that grows with the commits
+                        renames (AGENTS.md#before-you-finish). The
+                        history code reads the messages of many
+                        commits with one git log call
+                        (src/cctool/commit/history.py within
+                        FORMAT_LOG and duplicates). Re-checking each
+                        commit instead would extract two full graphs
+                        per commit (src/cctool/commit/change.py within
+                        facts_of), a cost that grows with the commits
                         since the release. Strength: weak, since no
                         option costs enough to matter at the rate
                         releases are cut.

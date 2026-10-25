@@ -21,27 +21,29 @@ brief:                  |
 description:            |
                         Sources: a dataflow edge may be feedback,
                         whose value comes from the invocation before
-                        (_data/schema/sch_dataflow_graph.yaml lines
-                        33-35 and 193-203), and a check requires one
-                        to close every loop (src/cctool/check/check.lp
-                        lines 3285-3286); the port type mismatch check
-                        holds the two ends of every edge to one stated
-                        type (check.lp lines 3229-3233); the framework
-                        fills feedback buffers and primes them on
-                        reset
+                        (_data/schema/sch_dataflow_graph.yaml at
+                        description and
+                        $defs.dataflow_edge.properties.direction), and
+                        a check requires one to close every loop
+                        (src/cctool/check/check.lp within
+                        feedforward_loop); the port type mismatch
+                        check holds the two ends of every edge to one
+                        stated type (check.lp within
+                        port_type_mismatch); the framework fills
+                        feedback buffers and primes them on reset
                         (_sources/axair-orchestrator/docs/component_interface.md
                         lines 41-44). The typed option has the engine
                         hold state and hand it to the node at each
                         step
                         (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
-                        lines 12-16). Simplicity, a non-driver here,
+                        at brief). Simplicity, a non-driver here,
                         counts jobs done by more than one mechanism
-                        (_data/register/reg_concern.yaml lines
-                        488-490). Assumption: tokens on a feedback
-                        edge are recorded like those on any other
-                        edge. Limits: what a feedback edge carries at
-                        its first invocation is not stated in the
-                        graph
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_simplicity.measure).
+                        Assumption: tokens on a feedback edge are
+                        recorded like those on any other edge. Limits:
+                        what a feedback edge carries at its first
+                        invocation is not stated in the graph
                         (_data/decision/dec_edge_policy/ann_first_value_of_feedback_edge_unstated.yaml);
                         and under actor semantics there is no step, so
                         "the invocation before" would have to read as

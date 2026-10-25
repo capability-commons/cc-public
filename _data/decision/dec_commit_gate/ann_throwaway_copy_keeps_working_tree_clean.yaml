@@ -16,17 +16,17 @@ brief:                  |
                         leaves no partial state there. A working tree
                         gate gives this up.
 description:            |
-                        src/cctool/gate/gate.py lines 95-98, 154-156
-                        and 167-179 (checkout-index into a temporary
-                        directory, stages run there). Stages run
-                        without the GIT_ variables of the hook (lines
-                        28-31, 215-216). Lint runs with --no-cache and
-                        pytest with the cache provider off (lines
-                        65-66). ASSUMPTION: some stages write files
-                        relative to their working directory. The whole
-                        tracked tree is copied on each commit (line
-                        174); ASSUMPTION: the copy stays small next to
-                        test time.
+                        src/cctool/gate/gate.py within gate,
+                        copy_staged and copy_commit (checkout-index
+                        into a temporary directory, stages run there).
+                        Stages run without the GIT_ variables of the
+                        hook (lines 28-31, 215-216). Lint runs with
+                        --no-cache and pytest with the cache provider
+                        off (lines 65-66). ASSUMPTION: some stages
+                        write files relative to their working
+                        directory. The whole tracked tree is copied on
+                        each commit (line 174); ASSUMPTION: the copy
+                        stays small next to test time.
 
 edge:
 

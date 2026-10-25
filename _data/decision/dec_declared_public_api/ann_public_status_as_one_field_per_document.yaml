@@ -23,14 +23,14 @@ description:            |
                         Sources:
                         - The option: documents "are to carry enough
                           to tell public seams from internal ones"
-                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml lines 31-33), and
+                          (_data/decision/dec_declared_public_api/opt_public_api_split_by_kind.yaml at description), and
                           undeclared code is private (owner's statement, 2026-10-24).
                         - The schema has no field saying whether a
                           document is offered to peers (advocate's
                           grep for
                           public, internal, visibility, peer and partner). Its top level admits no unnamed property, so a
                           new field is a schema change; it would sit with the interface version and the surfaces
-                          (_data/schema/sch_interface_control_document.yaml lines 83-115).
+                          (_data/schema/sch_interface_control_document.yaml at allOf.2.properties and unevaluatedProperties).
                         - A surface is an object with exactly one key
                           naming its form, and each form's definition
                           admits no other properties (same file, lines 564-589, 593, 691 and 818), so a per-surface
@@ -42,14 +42,14 @@ description:            |
                           does.
                         - Every member is an item with its own
                           identity, 29 member items today
-                          (_data/schema/sch_interface_member.yaml lines 18-37;
+                          (_data/schema/sch_interface_member.yaml;
                           _data/decision/dec_declared_public_api/ann_python_surface_without_items_needs_a_detector.yaml),
                           so a per-member status would be one more field on each.
                         - Every document already carries the
                           protective mark mark_public, meaning "May be
                           disclosed to
-                          anyone" (_data/interface_control_document/icd_cctool_check.yaml lines 6-9;
-                          _data/register/reg_protective_mark.yaml lines 67-77). A second field called public would give
+                          anyone" (_data/interface_control_document/icd_cctool_check.yaml at protective_mark;
+                          _data/register/reg_protective_mark.yaml at entries.mark_public). A second field called public would give
                           one word two meanings; a name such as exposure, with values peer and internal, avoids it
                           (advocate's suggestion; assumption that confusion is likely, as no partner has misread it).
                         - Rules the checks could then hold: a

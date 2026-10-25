@@ -19,7 +19,7 @@ description:            |
                         rename does not change text outside YAML
                         documents, such as code, and lists each file
                         that still names the old id
-                        (src/cctool/cli/editing.py lines 288-308).
+                        (src/cctool/cli/editing.py within rename).
                         check.lp names relation ids as string
                         literals, for example "relation_upholds" at
                         lines 326 and 338; edit.py names
@@ -31,8 +31,9 @@ description:            |
                         still naming relation_upholds (check.lp,
                         edit.py, two test files, one skill file);
                         cctool check then reports 0 failures. settles
-                        (check.lp lines 336-342) then no longer holds
-                        for ruling_cross_item_checks_engine, so
+                        (check.lp within parameter_member and
+                        signature_mismatch) then no longer holds for
+                        ruling_cross_item_checks_engine, so
                         unargued_driver (lines 448-453) no longer
                         checks that decision. A dry run of cctool new
                         for a ruling linked by the new id to
@@ -41,12 +42,13 @@ description:            |
                         an unchanged copy it is accepted.
                         test_check.py fails with KeyError
                         'relation_upholds' after the rename, and the
-                        pre-commit gate runs the tests (AGENTS.md
-                        lines 13-15). Hand editing with a check has
-                        the same blind spot. Weak against the option;
-                        it bounds what conformant by construction can
-                        promise. Grows with the tooling. ASSUMPTION:
-                        renaming an id named in code is rare.
+                        pre-commit gate runs the tests
+                        (AGENTS.md#working-beside-other-agents). Hand
+                        editing with a check has the same blind spot.
+                        Weak against the option; it bounds what
+                        conformant by construction can promise. Grows
+                        with the tooling. ASSUMPTION: renaming an id
+                        named in code is rare.
 
 edge:
 

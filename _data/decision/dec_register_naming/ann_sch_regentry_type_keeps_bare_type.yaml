@@ -15,27 +15,29 @@ brief:                  |
                         and the overloaded word "type" survives in its
                         id, title and brief.
 description:            |
-                        _data/schema/sch_reg_data_item_type.yaml line
-                        36 refers to sch_regentry_type. No file
+                        _data/schema/sch_reg_data_item_type.yaml at
+                        allOf.1.properties.entries.additionalProperties.allOf.0.$ref
+                        refers to sch_regentry_type. No file
                         _data/schema/sch_regentry_data_item_type.yaml
                         exists (_data/schema/ at 89c74d8). The schema
                         title is "Type register entry schema"
-                        (_data/schema/sch_regentry_type.yaml lines
-                        13-15), and the same file uses the JSON Schema
-                        keyword "type: object" at line 37. Every other
-                        entry schema takes the tail of its register
-                        schema. No code pairs the prefixes, so drift
-                        is caught only by a reader (grep of src/). A
-                        $ref to a missing schema is not reported: the
-                        checker catches referencing's Unresolvable and
-                        skips that validation
-                        (src/cctool/check/schema.py lines 58-60 and
-                        111-114), and check.lp has no rule over
-                        schema_ref beyond unused_schema (lines
-                        610-618). The fix renames the file, its $id
-                        and id_self, and three mentions
-                        (sch_reg_data_item_type.yaml line 36;
-                        reg_data_item_type.yaml lines 73 and 92).
+                        (_data/schema/sch_regentry_type.yaml at title
+                        and brief), and the same file uses the JSON
+                        Schema keyword "type: object" at line 37.
+                        Every other entry schema takes the tail of its
+                        register schema. No code pairs the prefixes,
+                        so drift is caught only by a reader (grep of
+                        src/). A $ref to a missing schema is not
+                        reported: the checker catches referencing's
+                        Unresolvable and skips that validation
+                        (src/cctool/check/schema.py within _compiled),
+                        and check.lp has no rule over schema_ref
+                        beyond unused_schema (lines 610-618). The fix
+                        renames the file, its $id and id_self, and
+                        three mentions (sch_reg_data_item_type.yaml at
+                        allOf.1.properties.entries.additionalProperties.allOf.0.$ref;
+                        reg_data_item_type.yaml at
+                        entries.type_type.edge).
 
 edge:
 

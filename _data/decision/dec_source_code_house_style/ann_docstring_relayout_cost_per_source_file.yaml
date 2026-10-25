@@ -15,21 +15,21 @@ brief:                  |
                         about 9 ms per file on the snapshot, and this
                         grows with the number of source files.
 description:            |
-                        Sources: src/cctool/check/check.py line 164;
-                        src/cctool/edit/layout.py lines 133-164 and
-                        168. Measured by the advocate on 2026-10-15:
-                        0.14 to 0.16 s for the 37 .py files, against
-                        0.66 s for 75 YAML files. Measured again on
-                        the snapshot on 2026-10-23, on another
-                        machine: 0.67 to 0.86 s for the 80 .py files
-                        under src, 0.44 s for the 6 logic program
-                        files, and about 20 s for the 2141 YAML files
-                        under _data. The gate of a commit now reuses
-                        verdicts for unchanged files (layout.py lines
-                        143-162). ASSUMPTION: the common style would
-                        drop this step, and a ruff format check would
-                        cost less; neither is stated in the packet or
-                        measured.
+                        Sources: src/cctool/check/check.py within
+                        review; src/cctool/edit/layout.py within
+                        violations and _violation. Measured by the
+                        advocate on 2026-10-15: 0.14 to 0.16 s for the
+                        37 .py files, against 0.66 s for 75 YAML
+                        files. Measured again on the snapshot on
+                        2026-10-23, on another machine: 0.67 to 0.86 s
+                        for the 80 .py files under src, 0.44 s for the
+                        6 logic program files, and about 20 s for the
+                        2141 YAML files under _data. The gate of a
+                        commit now reuses verdicts for unchanged files
+                        (layout.py within violations). ASSUMPTION: the
+                        common style would drop this step, and a ruff
+                        format check would cost less; neither is
+                        stated in the packet or measured.
 
 edge:
 

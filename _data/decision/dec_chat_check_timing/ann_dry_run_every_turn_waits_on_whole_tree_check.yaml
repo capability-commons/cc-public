@@ -27,18 +27,19 @@ description:            |
                         every file of the tree for each edit, and
                         reuses the parsed documents of a file whose
                         content has not changed
-                        (src/cctool/edit/edit.py lines 183-193;
-                        src/cctool/graph/extract.py lines 454-478 and
-                        759-789). apply checks the tree before and
-                        after the edit, and a third time when it moves
-                        a new file that the check finds misplaced
-                        (src/cctool/edit/edit.py lines 1170-1192 and
-                        _place, lines 1196-1214). In one process the
-                        review of an unchanged tree is kept, so the
-                        check before the edit is reused, but the check
-                        after it re-grounds the whole graph in clingo
-                        (src/cctool/check/check.py lines 86-94 and
-                        247-263;
+                        (src/cctool/edit/edit.py within ErrorEdit and
+                        Tree; src/cctool/graph/extract.py within
+                        documents and read). apply checks the tree
+                        before and after the edit, and a third time
+                        when it moves a new file that the check finds
+                        misplaced (src/cctool/edit/edit.py within
+                        apply and _place, lines 1196-1214). In one
+                        process the review of an unchanged tree is
+                        kept, so the check before the edit is reused,
+                        but the check after it re-grounds the whole
+                        graph in clingo (src/cctool/check/check.py
+                        within CACHE_REVIEW, COUNT_REVIEW and
+                        review_documents;
                         _data/decision/dec_checker_approach/ann_rules_checker_regrounds_the_whole_tree.yaml).
                         In a copy of dev at e1a6b2b4, with 2159 YAML
                         files under _data, an in-process dry run of

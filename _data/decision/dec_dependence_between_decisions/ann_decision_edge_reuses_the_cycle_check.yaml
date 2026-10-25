@@ -23,34 +23,32 @@ description:            |
                         Sources: the simplicity measures are distinct
                         mechanisms introduced and jobs done by more
                         than one mechanism
-                        (_data/register/reg_concern.yaml lines
-                        488-490); the cost measure is development
-                        effort in person days (line 616). A relation
-                        is made acyclic by one field, already set on
-                        six relations
-                        (_data/register/reg_relation.yaml lines 225,
-                        295, 840, 958, 1319, 1469), and one generic
-                        rule computes chains and finds cycles in any
-                        acyclic relation (src/cctool/check/check.lp
-                        lines 2096-2137). The constraint that an end
-                        is a decision already exists
-                        (relcon_is_decision,
-                        _data/register/reg_relation_constraint.yaml
-                        line 296). The decisions page has a sort table
-                        to extend (src/cctool/web/page.py lines
-                        203-229). Every existing ruling check works
-                        within one decision (src/cctool/check/check.lp
-                        lines 1188-1191, 1224-1228, 1299-1301,
-                        1470-1475 and 1539-1545), so the option check
-                        is new logic. The option of edges between
-                        options names required and excluded options
-                        and a check that enforces exclusion
+                        (_data/register/reg_concern.yaml at
+                        entries.concern_simplicity.measure); the cost
+                        measure is development effort in person days
+                        (line 616). A relation is made acyclic by one
+                        field, already set on six relations
+                        (_data/register/reg_relation.yaml at entries),
+                        and one generic rule computes chains and finds
+                        cycles in any acyclic relation
+                        (src/cctool/check/check.lp within reaches and
+                        cycle). The constraint that an end is a
+                        decision already exists (relcon_is_decision,
+                        _data/register/reg_relation_constraint.yaml at
+                        entries.relcon_is_decision). The decisions
+                        page has a sort table to extend
+                        (src/cctool/web/page.py). Every existing
+                        ruling check works within one decision
+                        (src/cctool/check/check.lp), so the option
+                        check is new logic. The option of edges
+                        between options names required and excluded
+                        options and a check that enforces exclusion
                         (_data/decision/dec_dependence_between_decisions/opt_option_requires_or_excludes_option.yaml
-                        lines 12-18). The prose option adds no new
+                        at brief). The prose option adds no new
                         relation
                         (_data/decision/dec_dependence_between_decisions/opt_dependence_in_prose.yaml
-                        lines 13-15). A code commit costs about 78 s
-                        of gate time and a data-only commit about 10 s
+                        at brief). A code commit costs about 78 s of
+                        gate time and a data-only commit about 10 s
                         (context note, _sources/context.md line 31);
                         every option but prose needs a code change.
                         Assumption: the person-day figures are

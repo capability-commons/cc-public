@@ -15,14 +15,14 @@ brief:                  |
                         so offering logic programs only has the fewest
                         parts that can fail.
 description:            |
-                        querying.py lines 204-230; logic.py lines
-                        355-422; sql.py lines 52-87. The SQL path also
+                        querying.py within logic; logic.py within run;
+                        sql.py within connect. The SQL path also
                         builds an FTS5 table of the prose of every
-                        item for each query (sql.py lines 44-48,
-                        84-85). Weak: sqlite3 is a mature standard
-                        library part (3.45.1 here), and the logic
-                        command uses SQLite too when --text is given
-                        (querying.py lines 213-218). ASSUMPTION:
+                        item for each query (sql.py within SQL_TEXT
+                        and connect). Weak: sqlite3 is a mature
+                        standard library part (3.45.1 here), and the
+                        logic command uses SQLite too when --text is
+                        given (querying.py within logic). ASSUMPTION:
                         in-memory SQLite adds few failures in
                         practice; there is no failure data for it in
                         this project.

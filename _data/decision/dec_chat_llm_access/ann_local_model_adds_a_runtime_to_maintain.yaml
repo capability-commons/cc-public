@@ -22,20 +22,20 @@ description:            |
                         brief). The runtime dependencies of cc-public
                         today are seven Python packages, none of them
                         a model client or a model runtime
-                        (pyproject.toml lines 42-48). The host is one
-                        container image with one volume, its host
-                        chosen per deployment (ruling_chat_host), so
-                        the hardware differs from one deployment to
-                        the next. ASSUMPTION: a local model needs an
-                        inference server or library and a weights file
-                        of many gigabytes, each with releases of its
-                        own, and a change of model means a new
-                        download and a check that the host can run it.
-                        ASSUMPTION: a hosted model is changed by a
-                        model name in the configuration. Holds at ten
-                        times the size: yes, because the runtime is
-                        kept once per host, and more hosts multiply
-                        it.
+                        (pyproject.toml at project.dependencies). The
+                        host is one container image with one volume,
+                        its host chosen per deployment
+                        (ruling_chat_host), so the hardware differs
+                        from one deployment to the next. ASSUMPTION: a
+                        local model needs an inference server or
+                        library and a weights file of many gigabytes,
+                        each with releases of its own, and a change of
+                        model means a new download and a check that
+                        the host can run it. ASSUMPTION: a hosted
+                        model is changed by a model name in the
+                        configuration. Holds at ten times the size:
+                        yes, because the runtime is kept once per
+                        host, and more hosts multiply it.
 
 edge:
 

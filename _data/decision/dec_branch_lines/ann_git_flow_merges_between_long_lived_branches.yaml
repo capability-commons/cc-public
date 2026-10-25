@@ -37,24 +37,17 @@ description:            |
                           note of 2020-03-05).
                         - dev is the integration branch, only moves
                           forward by fast-forward merges, and its
-                          history stays linear (AGENTS.md lines 13-15
-                          and 45-48).
+                          history stays linear (AGENTS.md#working-beside-other-agents).
                         - Landing a branch runs the history check with
-                          the gate over each rebased commit (AGENTS.md
-                          lines 40-45); git runs no pre-commit hook
+                          the gate over each rebased commit (AGENTS.md#working-beside-other-agents); git runs no pre-commit hook
                           for a merge, so the pre-merge-commit hook
-                          runs the gate in its place (README.md lines
-                          87-89); the history check extracts two full
+                          runs the gate in its place (README.md#getting-started); the history check extracts two full
                           graphs per commit it checks
-                          (src/cctool/commit/change.py lines
-                          131-132; src/cctool/commit/history.py
-                          lines 22-26).
+                          (src/cctool/commit/change.py within facts_of; src/cctool/commit/history.py).
                         - Merge commit titles are the words git drafts
-                          for them (_data/schema/sch_commit.yaml lines
-                          62-72); the computed bump reads the commit
+                          for them (_data/schema/sch_commit.yaml at allOf.3.properties.title.description); the computed bump reads the commit
                           items since the last release
-                          (_data/decision/dec_version_scheme/opt_semver_computed.yaml
-                          lines 11-15). Strength: moderate overall.
+                          (_data/decision/dec_version_scheme/opt_semver_computed.yaml at title and brief). Strength: moderate overall.
                           Merges between release lines are rare next
                           to ordinary commits, so the gate cost is
                           small; merged commits stay reachable, so the

@@ -24,12 +24,10 @@ description:            |
                         Sources:
                         - The port type check fires when the stated
                           types of the two ports of an edge differ as
-                          text. (src/cctool/check/check.lp lines
-                          2996-3034)
+                          text. (src/cctool/check/check.lp within port_type_mismatch)
                         - The stated type of a port is the spelling
                           field of its type reference only.
-                          (src/cctool/graph/extract.py lines 1443,
-                          1555-1564)
+                          (src/cctool/graph/extract.py within _stated and _type_spelling)
                         - "The analysis result is used by seven ICDs
                           but can be declared only inside one; the
                           others spell AnalysisResult and rely on
@@ -40,20 +38,16 @@ description:            |
                           control packet, its copy and a
                           load-and-exceptions report, are all spelled
                           dict.
-                          (_data/interface_control_document/icd_process_controller.yaml
-                          lines 42-50, 54-63, 65-73)
+                          (_data/interface_control_document/icd_process_controller.yaml at surface.step.dataflow_step)
                         - A type reference may name a declaration only
                           of the same document; otherwise it is a
                           spelling.
-                          (_data/schema/sch_interface_control_document.yaml
-                          lines 119-145)
+                          (_data/schema/sch_interface_control_document.yaml at $defs.type_reference)
                         - An interface member's identity lets a
                           requirement name one declaration.
-                          (_data/schema/sch_interface_member.yaml
-                          lines 25-27)
+                          (_data/schema/sch_interface_member.yaml at description)
                         - cctool rename rewrites every reference to a
-                          renamed id. (src/cctool/edit/edit.py
-                          lines 1014-1034) Strength: strong; the
+                          renamed id. (src/cctool/edit/edit.py within _renamed_documents) Strength: strong; the
                           duplication is measured in real drafts and
                           the shared spelling is in the repository.
 

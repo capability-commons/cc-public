@@ -19,16 +19,19 @@ brief:                  |
 description:            |
                         extract.documents catches ErrorRead and keeps
                         an Unreadable in place of the YAML document
-                        (src/cctool/graph/extract.py lines 202-215,
-                        258-264 at 360ec14); facts_of adds a row of
-                        unreadable for it (lines 280-282), and
-                        check.lp shows it as unreadable_file (lines
-                        476-482). A YAML error, a repeated key and a
-                        Python syntax error are each reported with
-                        file and line
-                        (src/cctool/check/_test/test_check.py lines
-                        267-283). The exit status is 1, as for any
-                        failed check, which is now correct.
+                        (src/cctool/graph/extract.py within PREDICATE
+                        at 360ec14); facts_of adds a row of unreadable
+                        for it (lines 280-282), and check.lp shows it
+                        as unreadable_file (lines 476-482). A YAML
+                        error, a repeated key and a Python syntax
+                        error are each reported with file and line
+                        (src/cctool/check/_test/test_check.py within
+                        test_a_schema_ref_to_no_schema_is_reported,
+                        test_a_pattern_end_matches_only_at_the_end_of_the_text
+                        and
+                        test_a_title_that_ends_in_a_newline_is_reported).
+                        The exit status is 1, as for any failed check,
+                        which is now correct.
 
 edge:
 

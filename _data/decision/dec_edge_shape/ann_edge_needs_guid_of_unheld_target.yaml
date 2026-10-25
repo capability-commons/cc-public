@@ -18,18 +18,20 @@ brief:                  |
 description:            |
                         An edge requires all four fields, with
                         additionalProperties false
-                        (_data/schema/sch_trait_edge.yaml lines
-                        71-77). The edit tool looks up both guids with
-                        tree.guid (src/cctool/edit/edit.py lines
-                        1011-1018), which raises "No item has the id"
-                        for an id not in the local tree (same file
-                        lines 207-215). A guid is not a bare UUID and
-                        must be split on its first underscore to enter
-                        a UUID column (_data/schema/sch_primitive.yaml
-                        lines 110-115). This is a property of the
-                        tooling, not of the edge shape: a tool that
-                        fetches a partner's register would remove it.
-                        From the compatibility advocate.
+                        (_data/schema/sch_trait_edge.yaml at
+                        $defs.edge.required and
+                        $defs.edge.additionalProperties). The edit
+                        tool looks up both guids with tree.guid
+                        (src/cctool/edit/edit.py within _rename_one),
+                        which raises "No item has the id" for an id
+                        not in the local tree (same file lines
+                        207-215). A guid is not a bare UUID and must
+                        be split on its first underscore to enter a
+                        UUID column (_data/schema/sch_primitive.yaml
+                        at $defs.guid.description). This is a property
+                        of the tooling, not of the edge shape: a tool
+                        that fetches a partner's register would remove
+                        it. From the compatibility advocate.
 
 edge:
 

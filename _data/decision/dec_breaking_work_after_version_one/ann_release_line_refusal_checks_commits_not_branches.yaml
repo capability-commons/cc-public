@@ -27,30 +27,25 @@ description:            |
                         Sources:
                         - The check of record judges each commit from
                           what it records, however git made it
-                          (_data/decision/dec_enforcement_approach/ruling_enforcement_approach.yaml
-                          lines 13-15). Its per-commit check reads the
+                          (_data/decision/dec_enforcement_approach/ruling_enforcement_approach.yaml at brief). Its per-commit check reads the
                           message and the change against the first
-                          parent (src/cctool/commit/history.py
-                          lines 15-26), and nothing there names a
+                          parent (src/cctool/commit/history.py), and nothing there names a
                           branch.
                         - At pre-push it takes the commits a push
                           would send, and a commit any ref of the
                           remote already has is not sent; it reads the
                           local ref and commit of each line git gives
                           it, not the remote ref
-                          (src/cctool/commit/history.py lines
-                          81-101).
+                          (src/cctool/commit/history.py within pushed).
                         - Topic branches land on dev by fast-forward
-                          merge (AGENTS.md lines 40-48), so a commit
+                          merge (AGENTS.md#working-beside-other-agents), so a commit
                           already pushed elsewhere reaches the release
                           line with no new commit.
                         - A rule that keeps needing exceptions is
-                          fixed in the rule (AGENTS.md lines 96-97).
+                          fixed in the rule (AGENTS.md#before-you-finish).
                         - The bump is computed from the commit items
                           since the last release
-                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml
-                          lines 13-14; opt_semver_computed.yaml lines
-                          12-15), so a breaking commit in that range
+                          (_data/decision/dec_version_scheme/ruling_semver_computed.yaml at brief; opt_semver_computed.yaml at brief), so a breaking commit in that range
                           makes the bump major under either option.
                         - Assumption: next would be pushed to the
                           remote between major releases, as the owner

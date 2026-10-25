@@ -19,20 +19,20 @@ brief:                  |
                         run no change check and pay nothing.
 description:            |
                         The commit-msg hook runs cctool message check
-                        (.githooks/commit-msg line 29), which checks
-                        the staged tree against HEAD
-                        (src/cctool/commit/change.py lines 59-74); the
-                        pre-push hook runs cctool history check on
+                        (.githooks/commit-msg), which checks the
+                        staged tree against HEAD
+                        (src/cctool/commit/change.py within check);
+                        the pre-push hook runs cctool history check on
                         each commit the remote lacks
-                        (.githooks/pre-push line 33); with no range
-                        the history check covers the whole history
-                        (src/cctool/cli/auditing.py lines 80-81 and
-                        95). Each check copies both trees and extracts
-                        both graphs (src/cctool/commit/history.py
-                        lines 116-133; src/cctool/commit/change.py
-                        lines 131-132), and since 5acf7c2 it lays out
-                        only the files whose bytes differ (change.py
-                        lines 145-161). Measured by the performance
+                        (.githooks/pre-push); with no range the
+                        history check covers the whole history
+                        (src/cctool/cli/auditing.py within check).
+                        Each check copies both trees and extracts both
+                        graphs (src/cctool/commit/history.py within
+                        check; src/cctool/commit/change.py within
+                        facts_of), and since 5acf7c2 it lays out only
+                        the files whose bytes differ (change.py within
+                        _changed). Measured by the performance
                         efficiency advocate, 2026-10-15, at 89c74d8
                         (33 commits, 129 files, 660 KB), single runs
                         without pixi start-up: history.check median

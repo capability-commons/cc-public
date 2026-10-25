@@ -23,14 +23,14 @@ description:            |
                         lines of reg_concern.yaml and 461 of the 576
                         lines of reg_concept.yaml; values lose their
                         alignment at column 25. The layout puts values
-                        at column 25 (COLUMN_VALUE 24, layout.py line
-                        64). The printer uses ruamel for key and item
-                        lines (layout.py lines 425, 496), literal
-                        block style (line 474) and quoting one scalar
-                        (lines 522-546). PyYAML 6.0.1 yaml.compose on
-                        "a: |\n x\nb: y\n" gives key a at line 0 with
-                        style '|' and key b at line 2. Lines on
-                        compose nodes are in
+                        at column 25 (COLUMN_VALUE 24, layout.py). The
+                        printer uses ruamel for key and item lines
+                        (layout.py within _span and _emit_lead),
+                        literal block style (line 474) and quoting one
+                        scalar (lines 522-546). PyYAML 6.0.1
+                        yaml.compose on "a: |\n x\nb: y\n" gives key a
+                        at line 0 with style '|' and key b at line 2.
+                        Lines on compose nodes are in
                         ann_pyyaml_compose_nodes_carry_lines; this
                         adds the style. ASSUMPTION: porting the
                         printer and splice to compose nodes is a few

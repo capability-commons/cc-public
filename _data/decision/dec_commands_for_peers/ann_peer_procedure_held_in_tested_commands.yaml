@@ -23,19 +23,16 @@ description:            |
                         - The worktree procedure is documented as
                           manual shell steps with warnings such as "Do
                           not run git worktree repair or git worktree
-                          move" (AGENTS.md lines 20-35), and the
+                          move" (AGENTS.md#working-beside-other-agents), and the
                           bundle procedure warns never to use git
-                          format-patch and git am (AGENTS.md lines
-                          49-60).
+                          format-patch and git am (AGENTS.md#working-beside-other-agents).
                         - Procedures for agents are kept as skills
-                          (AGENTS.md lines 175-182); the tests check
+                          (AGENTS.md#skills); the tests check
                           only that the commands, pixi tasks and ids
                           the guides name exist, and nothing runs the
-                          steps (src/cctool/cli/_test/test_guidance.py
-                          lines 15-25 and 151-198), while the gate
+                          steps (src/cctool/cli/_test/test_guidance.py within test_every_cctool_command_in_the_guides_exists, test_every_pixi_task_in_the_guides_exists and test_every_id_in_the_guides_names_an_item), while the gate
                           runs the tests under src only when code is
-                          staged (src/cctool/gate/gate.py lines 99 and
-                          165-191).
+                          staged (src/cctool/gate/gate.py within TUPLE_CODE, stages and is_code_staged).
                         - Setting up a peer now takes two installs:
                           the tool in an environment of its own from
                           the lock a release publishes, and the parts
@@ -53,7 +50,7 @@ description:            |
                           brief). That tests a setup the gate scripts,
                           not the steps the guidance gives.
                         - The workspace locks osx-arm64, osx-64 and
-                          linux-64 (pyproject.toml line 66), and the
+                          linux-64 (pyproject.toml at tool.pixi.workspace.platforms), and the
                           atlas VM has no network (context note,
                           _sources/context.md line 30).
                         - The owner will move to main "before outside

@@ -28,21 +28,19 @@ description:            |
                           (_data/decision/dec_what_crosses_between_segments/opt_segments_answer_queries.yaml,
                           brief).
                         - The checks are logic program rules evaluated
-                          over the extracted facts (README.md lines
-                          22-23 and 54-56).
+                          over the extracted facts (README.md#what-is-here and README.md#getting-started).
                         - The gate copies the staged content and runs
                           the check, the lint and the tests over the
-                          copy (README.md lines 71-74;
-                          src/cctool/gate/gate.py lines 120-152).
+                          copy (README.md#getting-started;
+                          src/cctool/gate/gate.py within gate).
                         - The atlas VM has no network (context note,
                           _sources/context.md line 30).
                         - The web server binds to 127.0.0.1 by
                           default, though --host can change it
-                          (src/cctool/web/server.py line 65;
-                          src/cctool/cli/serving.py lines 45-47),
+                          (src/cctool/web/server.py within HOST_DEFAULT;
+                          src/cctool/cli/serving.py within serve),
                           and refuses forms not from a local host
-                          (src/cctool/web/server.py lines 159-162
-                          and 189-199); it has no authentication.
+                          (src/cctool/web/server.py within submit and _is_local); it has no authentication.
                         - A standard query protocol exists, which a
                           graph database partner might already offer
                           (SPARQL 1.1 Protocol,

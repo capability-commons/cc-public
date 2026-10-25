@@ -21,50 +21,51 @@ brief:                  |
 description:            |
                         The tool exports the graph as an Obsidian
                         vault and as an Open Knowledge Format 0.2
-                        bundle (src/cctool/cli/exporting.py lines
-                        15-24; src/cctool/export/okf.py lines 15-27).
-                        The Obsidian export writes the type id as the
-                        type and the type id without "type_" as the
-                        tag of each note
-                        (src/cctool/export/obsidian.py lines 63-66).
+                        bundle (src/cctool/cli/exporting.py;
+                        src/cctool/export/okf.py). The Obsidian export
+                        writes the type id as the type and the type id
+                        without "type_" as the tag of each note
+                        (src/cctool/export/obsidian.py within pages).
                         The Open Knowledge Format export writes the
                         type title without " type" as the type of each
-                        concept (src/cctool/export/okf.py line 69;
-                        src/cctool/graph/item.py lines 164-175). Both
-                        exports put each page at <type id without
-                        "type_">/<item id>.md
-                        (src/cctool/export/obsidian.py lines 81-89;
-                        src/cctool/export/okf.py lines 89-97;
-                        src/cctool/graph/item.py lines 179-187). The
+                        concept (src/cctool/export/okf.py within
+                        pages; src/cctool/graph/item.py within
+                        type_name). Both exports put each page at
+                        <type id without "type_">/<item id>.md
+                        (src/cctool/export/obsidian.py within path;
+                        src/cctool/export/okf.py within path;
+                        src/cctool/graph/item.py within folder). The
                         frontmatter of every page carries the guid of
-                        its item (src/cctool/export/page.py lines
-                        96-112). A guid keeps its type prefix, so a
-                        change of type prefix gives an item a new guid
-                        (src/cctool/commit/change.lp lines 130-155).
-                        The admitted terms of a concept are fields of
-                        the concept entry, not of the type or its
-                        items (_data/register/reg_concept.yaml lines
-                        670-676;
-                        _data/register/reg_data_item_type.yaml lines
-                        929-954). Every node with an id_self is an
-                        item (src/cctool/graph/extract.py lines
-                        1221-1229), so both exports also write a page
-                        for concept_decision, and its short list
-                        fields, term_admitted among them, go in the
+                        its item (src/cctool/export/page.py within
+                        properties). A guid keeps its type prefix, so
+                        a change of type prefix gives an item a new
+                        guid (src/cctool/commit/change.lp within
+                        retyped_guid). The admitted terms of a concept
+                        are fields of the concept entry, not of the
+                        type or its items
+                        (_data/register/reg_concept.yaml at
+                        entries.concept_ruling;
+                        _data/register/reg_data_item_type.yaml at
+                        entries.type_decision). Every node with an
+                        id_self is an item
+                        (src/cctool/graph/extract.py within _walk), so
+                        both exports also write a page for
+                        concept_decision, and its short list fields,
+                        term_admitted among them, go in the
                         frontmatter of that page
-                        (src/cctool/export/page.py lines 96-125). The
-                        tree today names the type "decision", with
-                        prefix dec, and folder _data/decision/ holds
-                        92 decision folders
-                        (_data/register/reg_data_item_type.yaml lines
-                        929-953; count of _data/decision/dec_* in the
-                        snapshot). These facts weaken the mitigation
-                        by the admitted term in
-                        ann_compendium_names_the_node_question and
-                        ann_admitted_term_keeps_the_plain_word for a
-                        partner who reads the item pages of an export,
-                        though not for one who opens the page of
-                        concept_decision. They also contradict the
+                        (src/cctool/export/page.py within properties
+                        and is_prose). The tree today names the type
+                        "decision", with prefix dec, and folder
+                        _data/decision/ holds 92 decision folders
+                        (_data/register/reg_data_item_type.yaml at
+                        entries.type_decision; count of
+                        _data/decision/dec_* in the snapshot). These
+                        facts weaken the mitigation by the admitted
+                        term in ann_compendium_names_the_node_question
+                        and ann_admitted_term_keeps_the_plain_word for
+                        a partner who reads the item pages of an
+                        export, though not for one who opens the page
+                        of concept_decision. They also contradict the
                         statement in
                         ann_partners_still_read_own_yaml_schemas that
                         the repository has no export, on which

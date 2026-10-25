@@ -18,25 +18,27 @@ brief:                  |
 description:            |
                         Edge facts are extracted from id_relation and
                         id_target only (src/cctool/graph/extract.py
-                        lines 1146-1149). dangling_reference fails a
-                        reference only when neither its id nor its
-                        guid names an item, and its id is no alias
-                        (src/cctool/check/check.lp lines 524-529).
-                        guid_mismatch reports a guid that differs from
-                        the guid of the item its readable id names
-                        (same file lines 547-550). outdated_reference
-                        fails a reference that uses an alias, or an
-                        old id whose guid names an item (same file
-                        lines 1082-1091). Tests confirm an absent id
-                        is reported and an old id is found by guid
-                        (src/cctool/check/_test/test_check.py lines
-                        604-618). The edit tool fills each guid by
-                        looking up the readable id
-                        (src/cctool/edit/edit.py lines 217-225 and
-                        1339-1348). This contradicts the claim that
-                        the guid alone resolves today, not the
-                        federation case for carrying a guid. Raised by
-                        all five advocates.
+                        within _line_of_file). dangling_reference
+                        fails a reference only when neither its id nor
+                        its guid names an item, and its id is no alias
+                        (src/cctool/check/check.lp within key_mismatch
+                        and dangling_reference). guid_mismatch reports
+                        a guid that differs from the guid of the item
+                        its readable id names (same file lines
+                        547-550). outdated_reference fails a reference
+                        that uses an alias, or an old id whose guid
+                        names an item (same file lines 1082-1091).
+                        Tests confirm an absent id is reported and an
+                        old id is found by guid
+                        (src/cctool/check/_test/test_check.py within
+                        test_a_reference_to_nothing_is_reported and
+                        test_a_reference_by_an_old_id_is_resolved_by_its_guid).
+                        The edit tool fills each guid by looking up
+                        the readable id (src/cctool/edit/edit.py
+                        within Tree.guid and _edge). This contradicts
+                        the claim that the guid alone resolves today,
+                        not the federation case for carrying a guid.
+                        Raised by all five advocates.
 
 edge:
 

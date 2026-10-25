@@ -20,9 +20,10 @@ description:            |
                         parent's tree with git archive, checks the
                         message, and returns at once if the message
                         fails, before check_trees runs
-                        (src/cctool/commit/history.py lines 97-118;
-                        src/cctool/gate/gate.py lines 186-203). Timing
-                        of history.check on every commit of a clone,
+                        (src/cctool/commit/history.py within pushed
+                        and check; src/cctool/gate/gate.py within
+                        copy_commit and _environment). Timing of
+                        history.check on every commit of a clone,
                         2026-10-15, 4 cores, python3 -I: main, 33
                         commits, 140.88 s total, median 4.152 s, all
                         passing; pre_squash_20261014, 45 commits,
@@ -36,16 +37,16 @@ description:            |
                         together, and 66326b6 and 987cd9f, which pass,
                         3.54 s and 3.08 s. The pre-push hook checks
                         only commits the remote lacks
-                        (.githooks/pre-push line 33; history.py lines
-                        72-94), so the early commits would be checked
-                        at the first push that sends them (again on
-                        each retry if that push fails); only cctool
-                        history check with no range walks all history
-                        (src/cctool/cli/auditing.py line 92).
-                        ASSUMPTION: git archive time grows roughly
-                        with tree size, so the cost grows with the
-                        tree but stays well below one passing check
-                        per commit. Weak: it removes a possible
+                        (.githooks/pre-push; history.py within commits
+                        and pushed), so the early commits would be
+                        checked at the first push that sends them
+                        (again on each retry if that push fails); only
+                        cctool history check with no range walks all
+                        history (src/cctool/cli/auditing.py within
+                        check). ASSUMPTION: git archive time grows
+                        roughly with tree size, so the cost grows with
+                        the tree but stays well below one passing
+                        check per commit. Weak: it removes a possible
                         objection to keeping the history rather than
                         giving a reason for it.
 

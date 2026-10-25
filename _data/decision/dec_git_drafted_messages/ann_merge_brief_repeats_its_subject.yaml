@@ -17,26 +17,31 @@ brief:                  |
 description:            |
                         draft sets the brief to git's body, or to the
                         subject and a full stop
-                        (src/cctool/commit/message.py line 166). The
-                        plain merge test expects the brief "Merge
+                        (src/cctool/commit/message.py within draft).
+                        The plain merge test expects the brief "Merge
                         branch 'topic' into main." and a passing
                         message (src/cctool/commit/_test/test_draft.py
-                        lines 100-104). git's "# Conflicts:" lines are
-                        kept as comments (test_draft.py lines
-                        130-132), outside the item. git strips them
-                        when the message is edited and keeps them, as
-                        plain text, with --no-edit (default cleanup is
-                        strip when editing, whitespace otherwise;
+                        within
+                        test_a_merge_into_the_main_branch_is_given_the_branch_and_an_item).
+                        git's "# Conflicts:" lines are kept as
+                        comments (test_draft.py within
+                        test_a_draft_that_cannot_be_made_leaves_the_message_and_exits_0),
+                        outside the item. git strips them when the
+                        message is edited and keeps them, as plain
+                        text, with --no-edit (default cleanup is strip
+                        when editing, whitespace otherwise;
                         https://git-scm.com/docs/git-commit,
-                        --cleanup; tested with git 2.43.0). AGENTS.md
-                        lines 22-24 tell authors to keep the message
-                        git drafts. type_commit records "what it
-                        changes and why" (reg_data_item_type.yaml
-                        lines 698-700). There are no merge commits yet
-                        (git log --merges). A revert does carry git's
-                        "This reverts commit HASH." as its brief.
-                        ASSUMPTION: a hand-written brief more often
-                        states a reason; nothing checks that it does.
+                        --cleanup; tested with git 2.43.0).
+                        AGENTS.md#working-beside-other-agents tell
+                        authors to keep the message git drafts.
+                        type_commit records "what it changes and why"
+                        (reg_data_item_type.yaml just after
+                        entries.type_python_package.edge). There are
+                        no merge commits yet (git log --merges). A
+                        revert does carry git's "This reverts commit
+                        HASH." as its brief. ASSUMPTION: a
+                        hand-written brief more often states a reason;
+                        nothing checks that it does.
 
 edge:
 

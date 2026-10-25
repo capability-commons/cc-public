@@ -21,28 +21,31 @@ description:            |
                         sch_regentry_concern with standard keywords
                         only (allOf, $ref, properties,
                         additionalProperties, unevaluatedProperties)
-                        (_data/schema/sch_reg_concern.yaml lines
-                        24-38). sch_register types each table value
-                        only as sch_register_entry
-                        (_data/schema/sch_register.yaml lines 76-77),
+                        (_data/schema/sch_reg_concern.yaml at allOf).
+                        sch_register types each table value only as
+                        sch_register_entry
+                        (_data/schema/sch_register.yaml at
+                        allOf.2.properties.entries.additionalProperties),
                         which leaves an entry open
-                        (_data/schema/sch_register_entry.yaml lines
-                        36-38). The checker pairs schemas with YAML
+                        (_data/schema/sch_register_entry.yaml at
+                        allOf). The checker pairs schemas with YAML
                         documents in clingo
-                        (src/cctool/graph/derive.lp lines 98-106) and
-                        applies them with the jsonschema 2020-12
-                        validator, extended only so that pattern is
-                        read as JSON Schema reads it
-                        (src/cctool/check/schema.py lines 158-162). On
-                        a copy of the tree, a stray field in a concern
-                        entry is reported under sch_reg_concern, and
-                        passes unreported once the binding edge is
-                        removed. The toolchain is declared for
-                        osx-arm64, osx-64 and linux-64 (pyproject.toml
-                        line 59). ASSUMPTION: a partner also needs the
-                        schema files locally, since the $id URLs could
-                        not be fetched here. Merged from the
-                        compatibility and flexibility advocates.
+                        (src/cctool/graph/derive.lp within
+                        document_schema) and applies them with the
+                        jsonschema 2020-12 validator, extended only so
+                        that pattern is read as JSON Schema reads it
+                        (src/cctool/check/schema.py within Validator).
+                        On a copy of the tree, a stray field in a
+                        concern entry is reported under
+                        sch_reg_concern, and passes unreported once
+                        the binding edge is removed. The toolchain is
+                        declared for osx-arm64, osx-64 and linux-64
+                        (pyproject.toml at
+                        tool.pixi.workspace.platforms). ASSUMPTION: a
+                        partner also needs the schema files locally,
+                        since the $id URLs could not be fetched here.
+                        Merged from the compatibility and flexibility
+                        advocates.
 
 edge:
 

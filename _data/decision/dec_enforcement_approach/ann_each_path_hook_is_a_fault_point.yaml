@@ -17,20 +17,19 @@ brief:                  |
 description:            |
                         Each existing hook runs "pixi run --locked
                         ...", so each depends on a working pixi
-                        environment (.githooks/commit-msg line 29,
-                        pre-commit line 30, pre-merge-commit line 34,
-                        prepare-commit-msg line 34, pre-push line 33).
-                        prepare-commit-msg succeeds whatever happens
-                        (lines 31-35), so it cannot block work; the
-                        other four can. The gate of a code commit
-                        takes about 78 s on WTP's 2-CPU VM, and of a
-                        commit of data alone about 10 s with a warm
-                        store (notes of 2026-10-22 on gate speed). A
-                        remote device tool call dies at 180 s (memory
-                        MEMORY.md, "Gate parallel"). ASSUMPTION: a
-                        hook that fails partway through a rebase
-                        leaves the rebase stopped, to be resumed or
-                        aborted by hand.
+                        environment (.githooks/commit-msg, pre-commit,
+                        pre-merge-commit, prepare-commit-msg,
+                        pre-push). prepare-commit-msg succeeds
+                        whatever happens (lines 31-35), so it cannot
+                        block work; the other four can. The gate of a
+                        code commit takes about 78 s on WTP's 2-CPU
+                        VM, and of a commit of data alone about 10 s
+                        with a warm store (notes of 2026-10-22 on gate
+                        speed). A remote device tool call dies at 180
+                        s (memory MEMORY.md, "Gate parallel").
+                        ASSUMPTION: a hook that fails partway through
+                        a rebase leaves the rebase stopped, to be
+                        resumed or aborted by hand.
 
 edge:
 

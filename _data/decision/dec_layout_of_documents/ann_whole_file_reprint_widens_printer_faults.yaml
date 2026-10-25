@@ -18,29 +18,30 @@ brief:                  |
 description:            |
                         Every edit lays out the whole file (b544e09
                         commit message; _Item.replace and _format,
-                        src/cctool/edit/edit.py lines 1466-1476,
-                        1632-1642). apply compares check failures, not
-                        item data (edit.py lines 1161-1183). cctool
+                        src/cctool/edit/edit.py within _format and
+                        _Item.replace). apply compares check failures,
+                        not item data (edit.py within apply). cctool
                         format writes changed files with no data
-                        comparison (src/cctool/cli/editing.py lines
-                        457-466). The fixpoint and data test runs over
+                        comparison (src/cctool/cli/editing.py within
+                        format_). The fixpoint and data test runs over
                         the files of the repository that hold a YAML
                         document and compares prose by words
-                        (src/cctool/edit/_test/test_edit.py lines
-                        823-828, 940-966); the gate runs it on one
+                        (src/cctool/edit/_test/test_edit.py within
+                        test_layout_keeps_the_data_and_is_a_fixpoint,
+                        _shapes and _shape); the gate runs it on one
                         file of each folder (lines 801-821). layout.py
                         grew from 183 lines at c4a8721 to 558 at
                         b544e09, 586 at 89c74d8 and 757 now, and now
                         also lays out the docstrings of classes and
                         functions and the comments before predicates
-                        (layout.py lines 250-315). 3ba3a5c (after the
-                        squash) fixed a lost empty mapping in a list;
-                        no file at 3ba3a5c~1 held "- {}", so the
-                        repository test could not catch it. Merged
-                        from the maintainability and reliability
-                        advocates. ASSUMPTION: no data-equality check
-                        exists outside the tests; a grep of src on
-                        2026-10-22 found none.
+                        (layout.py within _spans and _documented).
+                        3ba3a5c (after the squash) fixed a lost empty
+                        mapping in a list; no file at 3ba3a5c~1 held
+                        "- {}", so the repository test could not catch
+                        it. Merged from the maintainability and
+                        reliability advocates. ASSUMPTION: no
+                        data-equality check exists outside the tests;
+                        a grep of src on 2026-10-22 found none.
 
 edge:
 

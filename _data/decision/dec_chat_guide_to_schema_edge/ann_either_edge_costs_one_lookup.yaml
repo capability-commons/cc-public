@@ -18,18 +18,18 @@ brief:                  |
 description:            |
                         The command that makes a new item already
                         finds its type and its register
-                        (src/cctool/edit/edit.py lines 269-281 and
-                        1280-1294). The type register holds 34 types
+                        (src/cctool/edit/edit.py within new and
+                        _register). The type register holds 34 types
                         (_data/register/reg_data_item_type.yaml). From
                         a type, the schema is one edge away
-                        (src/cctool/graph/derive.lp lines 99-102).
-                        From a schema, the type is the reverse of that
-                        edge, a scan of those 34 entries. ASSUMPTION:
-                        a conversation turn waits on the LLM for
-                        seconds, so a scan of a few dozen entries is
-                        lost in it. Holds at ten times the size: yes,
-                        because a few hundred types still scan in well
-                        under a millisecond.
+                        (src/cctool/graph/derive.lp within
+                        document_schema). From a schema, the type is
+                        the reverse of that edge, a scan of those 34
+                        entries. ASSUMPTION: a conversation turn waits
+                        on the LLM for seconds, so a scan of a few
+                        dozen entries is lost in it. Holds at ten
+                        times the size: yes, because a few hundred
+                        types still scan in well under a millisecond.
 
 edge:
 

@@ -16,22 +16,23 @@ brief:                  |
                         unchecked, and no one can tell from history
                         whether a commit passed.
 description:            |
-                        .githooks/pre-push lines 20-28 and 33: the
-                        check of record "until CI runs it too"; it
-                        stores no result. "git push --no-verify"
-                        bypasses the pre-push hook completely
+                        .githooks/pre-push: the check of record "until
+                        CI runs it too"; it stores no result. "git
+                        push --no-verify" bypasses the pre-push hook
+                        completely
                         (https://git-scm.com/docs/git-push). Hooks run
-                        only after "pixi run hooks" (pyproject.toml
-                        line 68; README.md lines 56-58). The repo at
+                        only after "pixi run hooks" (pyproject.toml at
+                        tool.pixi.tasks.hooks;
+                        README.md#getting-started). The repo at
                         89c74d8 has no CI configuration, and the
                         memory note says CI will run the check "once
                         there is a remote". Agents push only when
-                        asked (AGENTS.md line 12). The memory note
-                        says "Only this check has to be waterproof",
-                        which today it is not. Falls away once CI runs
-                        the check on a shared remote; it argues for
-                        finishing the chosen approach rather than for
-                        an alternative.
+                        asked (AGENTS.md#working-beside-other-agents).
+                        The memory note says "Only this check has to
+                        be waterproof", which today it is not. Falls
+                        away once CI runs the check on a shared
+                        remote; it argues for finishing the chosen
+                        approach rather than for an alternative.
 
 edge:
 

@@ -38,19 +38,18 @@ description:            |
                         file from 0.1.0 to 0.2.0 left pixi install
                         --locked passing and the wheel was version
                         0.2.0. The lock records the local package at
-                        version 0.1.0 (pixi.lock lines 722-725), and
-                        every hook runs pixi with --locked
-                        (.githooks/pre-commit line 30;
-                        .githooks/pre-push line 33). Limits: the
-                        editable install in a pixi environment kept
-                        the version it was built with until
-                        reinstalled, so only a built package shows the
-                        exact version; pixi 0.83.0, which offers lock
-                        format 7, refused neither edit, so an upgrade
-                        of pixi would remove the relock cost of the
-                        pyproject option. Strength: strong; it is
-                        measured on the owner's pixi, and the relock
-                        cost repeats at every release.
+                        version 0.1.0 (pixi.lock), and every hook runs
+                        pixi with --locked (.githooks/pre-commit;
+                        .githooks/pre-push). Limits: the editable
+                        install in a pixi environment kept the version
+                        it was built with until reinstalled, so only a
+                        built package shows the exact version; pixi
+                        0.83.0, which offers lock format 7, refused
+                        neither edit, so an upgrade of pixi would
+                        remove the relock cost of the pyproject
+                        option. Strength: strong; it is measured on
+                        the owner's pixi, and the relock cost repeats
+                        at every release.
 
 edge:
 

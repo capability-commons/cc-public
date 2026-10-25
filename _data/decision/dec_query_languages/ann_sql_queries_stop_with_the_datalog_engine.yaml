@@ -17,19 +17,18 @@ brief:                  |
 description:            |
                         sql.connect calls cctool.graph.logic.run
                         before it fills any table
-                        (src/cctool/graph/sql.py lines 54-59; at the
-                        decision, commit 12f83b7, with souffle as a
-                        subprocess raising ErrorDatalog). cctool query
-                        sql reports ErrorLogic as an SQL error
-                        (querying.py lines 129-132). clingo is
-                        imported at module level (logic.py line 55;
-                        querying.py lines 41-43). At the decision
-                        Souffle was a hand-kept binary outside the
-                        locked environment
+                        (src/cctool/graph/sql.py within connect; at
+                        the decision, commit 12f83b7, with souffle as
+                        a subprocess raising ErrorDatalog). cctool
+                        query sql reports ErrorLogic as an SQL error
+                        (querying.py within sql). clingo is imported
+                        at module level (logic.py; querying.py). At
+                        the decision Souffle was a hand-kept binary
+                        outside the locked environment
                         (ann_souffle_is_outside_the_locked_environment).
                         Offsetting fact: the checker already needed
-                        the engine (commit ba66f33; check.py lines
-                        96-99), so this adds no new dependency to the
+                        the engine (commit ba66f33; check.py within
+                        check), so this adds no new dependency to the
                         tool as a whole.
 
 edge:

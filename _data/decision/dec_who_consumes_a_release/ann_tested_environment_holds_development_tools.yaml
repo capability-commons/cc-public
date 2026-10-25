@@ -25,25 +25,21 @@ description:            |
                         - The default linux-64 environment in
                           pixi.lock holds 54 packages from conda-forge
                           and PyPI plus
-                          cc-public itself (pixi.lock lines 12-66), among them pytest (line 43), ruff (line 47), python
+                          cc-public itself (pixi.lock), among them pytest (line 43), ruff (line 47), python
                           3.15.0 (line 45), and playwright with greenlet and pyee (lines 55-60).
                         - The package declares seven runtime
-                          dependencies (pyproject.toml lines 43-49);
+                          dependencies (pyproject.toml at project.dependencies);
                           pytest,
-                          pytest-xdist, ruff, jq and playwright are declared only for the pixi workspace (pyproject.toml
-                          lines 68-78), and the browser tests also fetch a Chromium outside the lock (pyproject.toml lines
-                          28-31 and 86).
+                          pytest-xdist, ruff, jq and playwright are declared only for the pixi workspace (pyproject.toml at tool.pixi.pypi-dependencies and tool.pixi.dependencies), and the browser tests also fetch a Chromium outside the lock (pyproject.toml at tool.pixi.tasks.browsers).
                         - The slow run tests Python 3.12, 3.13 and
                           3.14 in environments of their own
-                          (pyproject.toml lines
-                          92-108).
+                          (pyproject.toml at tool.pixi).
                         - The engine will be built into cc-patrol's
                           product on hosts such as a Jetson Orin Nano
                           (_sources/cc-patrol-notes/plan.md lines 88-92 and 128-131).
                         - Dependency risk counts direct and indirect
                           dependencies
-                          (_data/register/reg_concern.yaml lines
-                          702-704); the security concern asks what an attacker can reach.
+                          (_data/register/reg_concern.yaml at entries.concern_dependency_risk.measure); the security concern asks what an attacker can reach.
                         - Assumption: a runtime-only pixi environment
                           could be locked beside the development one,
                           which
