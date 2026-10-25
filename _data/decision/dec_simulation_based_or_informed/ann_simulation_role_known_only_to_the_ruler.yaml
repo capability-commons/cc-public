@@ -1,0 +1,68 @@
+id_self:                ann_simulation_role_known_only_to_the_ruler
+guid_self:              ann_2865a14180b4424bbd45284128b54565
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A role of runs that only the ruler knows
+brief:                  |
+                        Whether runs decided a ruling or only informed
+                        it is the ruler's judgment; the graph shows
+                        which support cites runs but not which support
+                        carried the decision, so the role is lost if
+                        it is not recorded. A field can be checked
+                        against the graph, since a ruling marked
+                        simulation-based whose upheld option has no
+                        run-citing support is wrong; a convention in
+                        the brief records it but cannot be checked.
+description:            |
+                        Sources:
+                        - Simulation-based decisions use results
+                          "directly as the basis for decision making";
+                          in simulation-informed ones results "play a
+                          role but are not the sole basis". (prostep
+                          ivip, section 1.1, p. 7,
+                          https://www.prostep.org/fileadmin/prod-download/TechnicalPaper_Simulation-Credibility_2024_V8.1_v2.pdf,
+                          read by the functional suitability advocate
+                          and re-read by the verifier)
+                        - Registers, register entries and options
+                          carry no status field until machinery acts
+                          on them, and a tool that needs a status
+                          derives it from the ruling.
+                          (_data/decision/dec_status_fields/ruling_status_fields.yaml
+                          lines 11-22) Assumption: the check above is
+                          such machinery, and the rule extends to a
+                          field on the ruling. Strength: moderate; it
+                          grows with simulation-backed rulings, and
+                          supports the convention only weakly.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_simulation_based_or_informed
+    guid_target:        dec_ede68817f019420794c0d8bbf4ecd103
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_field_on_the_ruling
+    guid_target:        opt_fbc8e78a1c9647f1a0eb687240ecdd0f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_convention_in_the_ruling_brief
+    guid_target:        opt_c9d81a675655485a91825ab61f6b256a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_role_of_runs_not_recorded
+    guid_target:        opt_d1381d6ac5a44fe68351c1bc437148e4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

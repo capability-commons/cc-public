@@ -1,0 +1,66 @@
+id_self:                ann_simulation_role_field_on_rulings_with_no_runs
+guid_self:              ann_2f1f759f114d4201a2ccf679069981e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A field on every ruling where none rests on a run
+brief:                  |
+                        The tree holds 134 rulings and none rests on a
+                        dataflow run, since no run type exists, so a
+                        field on the ruling schema is one more value
+                        to write, check and review on every ruling,
+                        for a question most rulings never meet. Not
+                        recording the role costs nothing.
+description:            |
+                        Sources:
+                        - 134 ruling files in the snapshot. (count of
+                          ruling files under _data/decision)
+                        - No run schema exists.
+                          (_data/decision/dec_shape_of_a_dataflow_run/dec_shape_of_a_dataflow_run.yaml
+                          lines 13-17)
+                        - The field option changes the ruling schema.
+                          (_data/decision/dec_simulation_based_or_informed/opt_field_on_the_ruling.yaml
+                          lines 12-15)
+                        - Add a field only when a real instance needs
+                          it. (AGENTS.md lines 236-238;
+                          _data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-17)
+                        - Reviewability asks whether a change carries
+                          only what it needs; cost asks how cost grows
+                          with use. (_data/register/reg_concern.yaml
+                          lines 525 and 611-617) Strength: weak to
+                          moderate; the cost per ruling is small but
+                          paid on every ruling, and falls if the field
+                          is optional, which the option does not say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_simulation_based_or_informed
+    guid_target:        dec_ede68817f019420794c0d8bbf4ecd103
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_field_on_the_ruling
+    guid_target:        opt_fbc8e78a1c9647f1a0eb687240ecdd0f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_role_of_runs_not_recorded
+    guid_target:        opt_d1381d6ac5a44fe68351c1bc437148e4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

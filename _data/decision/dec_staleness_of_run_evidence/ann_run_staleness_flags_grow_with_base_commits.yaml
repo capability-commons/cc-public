@@ -1,0 +1,69 @@
+id_self:                ann_run_staleness_flags_grow_with_base_commits
+guid_self:              ann_da3703f27fa249a182ec731721d62613
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Flags that grow with every commit to a shared base
+brief:                  |
+                        Flagging on any digest change raises a flag on
+                        every citation above any edited base, each
+                        cleared by a recorded note, which may outrun
+                        what can be reviewed. Flagging only on
+                        upstream change keeps the flags to changes
+                        that can reach the measure, at the price of
+                        trusting a trace a reviewer cannot check by
+                        reading.
+description:            |
+                        Sources:
+                        - The any-change option clears a flag only
+                          when someone records that the change does
+                          not affect the measured property.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_any_digest_change.yaml
+                          lines 12-16)
+                        - The upstream option needs an origin trace.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_upstream_change.yaml
+                          lines 12-15)
+                        - Reviewability asks whether the rate of
+                          change stays within what can be reviewed,
+                          measured as changes awaiting review.
+                          (_data/register/reg_concern.yaml lines 526
+                          and 530)
+                        - Assumption: a content digest over the
+                          canonical graph includes ids, so a rename
+                          changes it and raises flags with no effect
+                          on any measure. The impact digest includes
+                          each item's own fields, keyed by id.
+                          (src/cctool/commit/impact.py lines 139-160)
+                          Strength: strong at ten times the runs,
+                          where flags scale as citations times base
+                          commits; weak now, with no runs. The cost
+                          advocate disputes how many flags the
+                          upstream rule saves (see the annotation on
+                          clearing cost).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,68 @@
+id_self:                ann_run_staleness_resolved_graph_not_in_impact
+guid_self:              ann_8c43ec4a2bb44ddf9f52b90ccd9efea8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A changed resolved graph that no reviewer sees
+brief:                  |
+                        A commit that edits a base, a dictionary or an
+                        interface control document changes the
+                        resolved graph of every variant above it, but
+                        the resolved graph is no item, so the impact
+                        command cannot list it, and the chain from
+                        variant to run to citing annotation is longer
+                        than its default walk. With no flag, the
+                        reviewer of that commit has nothing that shows
+                        the evidence it touched.
+description:            |
+                        Sources:
+                        - The no-flag option leaves reviewers to judge
+                          whether a cited run still holds.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_no_staleness_flag.yaml
+                          lines 12-13)
+                        - Impact matches items by guid and walks links
+                          one step by default.
+                          (src/cctool/commit/impact.py lines 19-25
+                          and 50)
+                        - The resolved graph is never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-16)
+                        - Three Patrol variants resolve on the
+                          abstract Orin variant, and all resolve on
+                          the Patrol base graph.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 26-34) Strength: strong; deeper
+                          variant chains widen what one base edit
+                          reaches.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_staleness_flag
+    guid_target:        opt_c5233828bc644db29f86dc6dcd1c07e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

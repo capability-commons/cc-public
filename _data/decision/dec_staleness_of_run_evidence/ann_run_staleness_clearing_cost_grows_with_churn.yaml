@@ -1,0 +1,78 @@
+id_self:                ann_run_staleness_clearing_cost_grows_with_churn
+guid_self:              ann_0ae5b0d18ab94573b99047b5b1594790
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Clearing cost that grows with runs times churn
+brief:                  |
+                        Before 1.0 the owner accepts many renames, and
+                        a rename of a base node changes every resolved
+                        graph that holds it. Under either flagging
+                        option each such rename flags every annotation
+                        citing a run of those graphs until someone
+                        clears it by hand, so the effort grows as runs
+                        cited times renames; the upstream rule saves
+                        few of these flags, since a renamed node
+                        upstream of a measure still counts as a
+                        change.
+description:            |
+                        Sources:
+                        - The owner accepts "lots of churn in this
+                          pre-version-1.0 phase", including prefix
+                          changes, and wants renames tolerated before
+                          1.0. (owner's statements, 2026-10-22T16:23
+                          and 2026-10-21, _sources/context.md lines 16
+                          and 26)
+                        - A node the base declares keeps its id in
+                          every variant.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          79-82)
+                        - A flagged annotation stays stale "until
+                          someone records that the change does not
+                          affect the measured property".
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_any_digest_change.yaml
+                          lines 12-16)
+                        - Assumption: a content digest over node ids
+                          changes on a rename, as the impact digest,
+                          keyed by id, would.
+                          (src/cctool/commit/impact.py lines 139-160)
+                        - Cost asks how cost grows with use.
+                          (_data/register/reg_concern.yaml lines
+                          611-617) Strength: strong while churn is
+                          high; it weakens after 1.0, when the owner
+                          expects breaking changes to be bundled
+                          (_sources/context.md line 16). It falls away
+                          if the digest is rename-neutral, which no
+                          option says.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_staleness_flag
+    guid_target:        opt_c5233828bc644db29f86dc6dcd1c07e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_cost
+    guid_target:        concern_81e01128257c4e0d9129b70682dd122e

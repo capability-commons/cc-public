@@ -1,0 +1,78 @@
+id_self:                ann_run_staleness_flags_from_existing_digest_comparison
+guid_self:              ann_d444ec64db084ec291e422b458854723
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Staleness from digests cctool already compares per commit
+brief:                  |
+                        The commit impact code already computes a
+                        digest of each item before and after a commit,
+                        so a flag on any change of a resolved graph's
+                        digest needs the same kind of comparison,
+                        applied to graphs that must first be resolved
+                        since the resolved graph is no item, and one
+                        check. A flag only on upstream change adds an
+                        origin trace and a map from measures to output
+                        ports on top; no flag adds nothing but leaves
+                        the job to the advocates' review, which runs
+                        only before a ruling.
+description:            |
+                        Sources:
+                        - The impact code computes a digest of what
+                          each item holds, as sorted JSON hashed with
+                          blake2b, for the tree before and after a
+                          commit. (src/cctool/commit/impact.py lines
+                          119-120 and 139-160)
+                        - The upstream option "needs an origin trace",
+                          which is a separate open decision.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_upstream_change.yaml
+                          lines 12-15;
+                          _data/decision/dec_origin_trace_of_a_resolved_graph/dec_origin_trace_of_a_resolved_graph.yaml
+                          lines 12-15)
+                        - The advocate process adds what went stale or
+                          unargued before a person rules, and nothing
+                          in that ruling covers a decision once ruled.
+                          (_data/decision/dec_concern_advocate_process/ruling_concern_advocate_process.yaml
+                          lines 16-20)
+                        - Simplicity counts distinct mechanisms
+                          introduced and jobs done by more than one.
+                          (_data/register/reg_concern.yaml lines
+                          489-490) Strength: moderate to strong; the
+                          digest comparison is the same mechanism at
+                          any number of runs, while the upstream
+                          analysis grows with graph size. The existing
+                          comparison covers items only, so resolving
+                          each variant before and after a commit is
+                          new work.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_staleness_flag
+    guid_target:        opt_c5233828bc644db29f86dc6dcd1c07e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

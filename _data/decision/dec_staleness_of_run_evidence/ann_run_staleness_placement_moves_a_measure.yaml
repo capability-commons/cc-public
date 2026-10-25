@@ -1,0 +1,70 @@
+id_self:                ann_run_staleness_placement_moves_a_measure
+guid_self:              ann_3c5453ac2c3f4e8384337aa3bd32946b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A measure moved by placement, not by anything upstream
+brief:                  |
+                        The first measure the Patrol notes name for
+                        the video mode is the processor cost of
+                        software encoding beside the detector on the
+                        Orin, which a change of host, process or
+                        placement can move though no node upstream of
+                        the measured output changes what it computes.
+                        A rule that looks only at upstream nodes may
+                        keep that evidence fresh after a placement
+                        change, unless a change of placement counts as
+                        a change to a node; a rule on any change of
+                        digest catches it.
+description:            |
+                        Sources:
+                        - "The cost of software encoding on the Orin
+                          Nano's six A78 cores beside the detector is
+                          unmeasured and is the first thing to measure
+                          for this mode."
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 71-74)
+                        - The host, process and place operations vary
+                          the mapping, not the application.
+                          (_sources/variants-framing.md lines 25-27)
+                        - The upstream option flags a run only when
+                          nodes upstream of its measured outputs
+                          change.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_upstream_change.yaml
+                          lines 12-15)
+                        - The measures a run records include rates,
+                          latency, frame age, CPU and GPU load.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 104-106) Strength: moderate; it holds
+                          for timing and load measures, which are most
+                          of the measures the Patrol notes name, and
+                          depends on whether the upstream rule counts
+                          placement as a change to a node, which the
+                          option does not say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

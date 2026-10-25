@@ -1,0 +1,92 @@
+id_self:                ann_run_staleness_citations_go_stale_unseen
+guid_self:              ann_198edcf4ef614017b0047001a0a7bc8d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Citations of a graph that no longer resolves the same
+brief:                  |
+                        With no flag, a rename, a dictionary upgrade
+                        or a new operation changes the graph under an
+                        old run, and the decision graph keeps citing
+                        evidence about a graph that no longer exists;
+                        the one condition the tree kept as its own
+                        annotation went stale and was never
+                        challenged. A flag is what turns such a change
+                        into a challenge someone writes, and for a
+                        parity variant such as replay the answer to a
+                        flag is cheap: run it again.
+description:            |
+                        Sources:
+                        - "Without idea 13 the decision graph will
+                          quietly cite evidence about a graph that no
+                          longer exists."
+                          (_sources/survey/simulation-backed-decisions.md
+                          line 169)
+                        - A later fact that changes a condition is a
+                          factual annotation that challenges the
+                          argument, and the one condition kept as its
+                          own annotation "went stale and was never
+                          challenged".
+                          (_data/decision/dec_changing_conditions_in_arguments/ruling_changing_conditions_in_arguments.yaml
+                          lines 12-23)
+                        - The register already says that an extracted
+                          edge goes stale when its source changes.
+                          (_data/register/reg_concept.yaml lines
+                          1831-1835)
+                        - The resolved graph is derived and never
+                          stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-16)
+                        - The replay variant is "the parity check for
+                          every change to analysis".
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          lines 13-17)
+                        - Traceability covers following each element
+                          to its reason "and back again".
+                          (_data/register/reg_concern.yaml lines
+                          556-560) Strength: strong; the citations
+                          that can go stale unseen grow with runs
+                          times commits. The functional suitability
+                          advocate adds that a flag on any change of
+                          digest is right only if the digest is
+                          rename-neutral; otherwise every rename
+                          stales every run (see the annotations on
+                          clearing cost and on flags from a shared
+                          base).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_staleness_flag
+    guid_target:        opt_c5233828bc644db29f86dc6dcd1c07e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_upstream_change
+    guid_target:        opt_93ff2000b9be43d592808bb2d7092e49
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

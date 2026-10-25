@@ -1,0 +1,90 @@
+id_self:                ann_variant_option_trials_held_only_in_prose
+guid_self:              ann_53f0befe9df14c548b57139a8cf1c412
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trials of an option held only in prose
+brief:                  |
+                        With no link, the variants that tried an
+                        option are named only in the prose sources of
+                        annotations, and a check sees them only as ids
+                        that an annotation's prose mentions, which
+                        does not say whether the variant tried the
+                        option or was cited for another reason; so no
+                        check can reliably find an option with no run,
+                        a variant whose option was ruled out, or the
+                        reason for a variant no annotation cites yet.
+                        With a relation, which variants tried an
+                        option and which options a variant tries are
+                        both queries over edges.
+description:            |
+                        Sources:
+                        - Under the no-link option, an annotation
+                          names the variant and run it rests on in its
+                          sources.
+                          (_data/decision/dec_variant_and_option/opt_annotations_cite_variants.yaml
+                          lines 12-16)
+                        - What an annotation is about and what it
+                          argues with are edges, and its description
+                          carries reasoning.
+                          (_data/schema/sch_annotation.yaml lines
+                          23-30)
+                        - The checks are logic programs over facts the
+                          extractor takes from the tree, among them
+                          one row per edge.
+                          (src/cctool/graph/extract.py lines 18-31 and
+                          222-224) An id named in prose yields only a
+                          mention fact, which records that a field
+                          names the id and nothing of its role.
+                          (src/cctool/graph/extract.py lines 301-304)
+                        - The Patrol notes give a variant its reason
+                          in its brief and description.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 102-103)
+                        - Traceability asks whether each need can be
+                          traced to what meets it, and counts elements
+                          with no traced reason.
+                          (_data/register/reg_concern.yaml lines
+                          569-576) Strength: strong; with ten times
+                          the variants and runs, a tie held in prose
+                          must be found by reading every annotation,
+                          while an edge query does not grow with the
+                          reader's effort. It matters only once runs
+                          exist.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_variant_and_option
+    guid_target:        dec_cc217598957643379117e7cff8e0bec8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_annotations_cite_variants
+    guid_target:        opt_6e105475794e43fdbe718f123980c7b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_option_tried_by_variant_relation
+    guid_target:        opt_7fbd10a5d50944b097a952766ce7b683
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_option_tried_by_variant_with_comparability_check
+    guid_target:        opt_6557cf36c96c4f0c8014fcd4c05553f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
