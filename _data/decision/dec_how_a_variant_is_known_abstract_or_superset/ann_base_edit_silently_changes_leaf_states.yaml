@@ -1,0 +1,66 @@
+id_self:                ann_base_edit_silently_changes_leaf_states
+guid_self:              ann_93a944d861ab4dee9ede4d0e64df71ec
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Base edit that silently changes which descendants run
+brief:                  |
+                        Under the derived options an edit to a base,
+                        such as removing its second decoder or adding
+                        a consumer to an output, can change the state
+                        of variants that were not edited, and so which
+                        of them are checked and run, with no failure
+                        to show it. The declared state reports it as a
+                        mismatch at each variant affected.
+description:            |
+                        Sources:
+                        - Both derived options compute the state from
+                          the graph, with no field.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_placeholders_declared_and_state_derived.yaml
+                          at brief;
+                          _data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_unfed_required_ports_and_state_derived.yaml
+                          at brief)
+                        - Three Patrol leaves are built on the Orin
+                          variant, which is built on the Patrol base.
+                          (_sources/cc-patrol-notes/draft/README.md#files)
+                        - A maintainability question asks how far a
+                          change in one part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                          Strength: moderate; the change of state is
+                          often the right one, and the harm is that it
+                          is silent. The flag has the opposite fault,
+                          covered by the annotation on a flag that
+                          nothing compares with the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,81 @@
+id_self:                ann_mechanisms_added_to_know_a_variant_state
+guid_self:              ann_7bbecb15756b492db32951269adc3ef0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mechanisms each option adds to know a variant's state
+brief:                  |
+                        The unfed-ports option adds no data and reads
+                        the abstract state from a condition an
+                        existing check already holds; the flag adds
+                        one field on two item types and an exemption
+                        in the checks; the declared state adds a field
+                        and a consistency check that can reuse the
+                        unfed-input and input-fed-twice checks, though
+                        it states one fact twice; placeholders add a
+                        new construct with a schema, facts and a check
+                        that it is filled. Patrol, the first real
+                        family, has no lacking base to use a
+                        placeholder on.
+description:            |
+                        Sources:
+                        - The unfed-input check already holds the
+                          unfed-ports option's condition.
+                          (src/cctool/check/check.lp within
+                          unfed_input)
+                        - Both Patrol graphs marked abstract hold
+                          surplus and lack nothing.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py,
+                          run on the Patrol base and the Orin variant,
+                          2026-10-25)
+                        - The flag sits on a dataflow graph and on a
+                          variant in the drafts.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          at abstract;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          at abstract) Nothing in src or _data/schema
+                          mentions abstract today (grep by the
+                          verifier, 2026-10-25).
+                        - The simplicity measures count distinct
+                          mechanisms introduced and jobs done by more
+                          than one mechanism.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0 and
+                          entries.concern_simplicity.measure.1)
+                        - Under every option these checks need a graph
+                          argument or one solve per resolved graph,
+                          since they match nodes by id with the graph
+                          left open. (src/cctool/check/check.lp within
+                          fed;
+                          _data/decision/dec_which_resolved_graphs_are_checked/ann_checked_graphs_rules_match_nodes_by_id_alone.yaml
+                          at brief) Strength: moderate. The flag and
+                          the declared state each add one small
+                          mechanism, so this neither supports nor
+                          challenges them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

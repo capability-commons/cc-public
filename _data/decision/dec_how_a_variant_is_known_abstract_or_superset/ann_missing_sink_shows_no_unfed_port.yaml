@@ -1,0 +1,78 @@
+id_self:                ann_missing_sink_shows_no_unfed_port
+guid_self:              ann_155d771d8e3c4164960fbbde355d940f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Missing sink that no unfed port shows
+brief:                  |
+                        An unfed required input shows a missing block
+                        only when something downstream needs it, so a
+                        base that lacks a sink, as Patrol's replay
+                        lacks its dump writer once filtered to
+                        analysis, has no unfed input and would be
+                        called complete by the option of unfed
+                        required ports. A placeholder can say that the
+                        sink is missing; the declared state can say
+                        abstract but its check finds nothing in the
+                        graph to confirm it, and the flag can only say
+                        not run.
+description:            |
+                        Sources:
+                        - The replay variant filters the base to
+                          analysis, then adds a dump writer fed by
+                          analysis.result.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          at operation)
+                        - No dataflow check reports an output that no
+                          edge reads; the unfed-input check looks only
+                          at inputs. (src/cctool/check/check.lp within
+                          unfed_input and edge_end)
+                        - A placeholder declares a block the base
+                          lacks, with the interface it must present.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_placeholders_declared_and_state_derived.yaml
+                          at brief)
+                        - The declared option fails when a declaration
+                          disagrees with what the resolved graph
+                          shows.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - A functional suitability question asks
+                          whether every function that is needed is
+                          present. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                          Strength: moderate; no Patrol item is in
+                          this state today, but splitting the replay
+                          variant into a filtering base and an adding
+                          leaf would make one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

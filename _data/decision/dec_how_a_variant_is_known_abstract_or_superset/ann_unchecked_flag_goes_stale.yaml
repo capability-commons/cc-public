@@ -1,0 +1,74 @@
+id_self:                ann_unchecked_flag_goes_stale
+guid_self:              ann_07789fd98c0e4404812fe229aa821167
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Flag that nothing compares with the graph
+brief:                  |
+                        Under the flag, a variant whose base later
+                        changes so that it could run stays unchecked,
+                        and a leaf flagged by mistake escapes the gate
+                        for good, since nothing compares the flag with
+                        the graph. The declared state fails at that
+                        variant when its declaration no longer
+                        matches, and the derived states cannot go
+                        stale.
+description:            |
+                        Sources:
+                        - The flag option resolves, checks and runs
+                          every variant without the field, whatever it
+                          lacks or holds.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_abstract_flag_only.yaml
+                          at brief)
+                        - The declared option fails when a declaration
+                          disagrees with the resolved graph.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - The Patrol notes recommend a flag on a graph
+                          that only variants may resolve, as the
+                          alternative to exempting the base from
+                          input_fed_twice and similar checks.
+                          (_sources/cc-patrol-notes/variants.md#3-patrol-with-this-mechanism)
+                        - A maintainability question asks how readily
+                          a change can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                          Strength: strong; the gap is structural and
+                          grows with the family.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_abstract_flag_only
+    guid_target:        opt_c4b581d8b40d4a3581a0ee6209d3d753
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

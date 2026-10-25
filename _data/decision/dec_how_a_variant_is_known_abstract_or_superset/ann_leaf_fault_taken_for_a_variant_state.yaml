@@ -1,0 +1,103 @@
+id_self:                ann_leaf_fault_taken_for_a_variant_state
+guid_self:              ann_3af328dd3c7d409e8a4d81c9ba1c6a7d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Forgotten or doubled edge in a leaf taken for a variant state
+brief:                  |
+                        Under the option of unfed required ports, an
+                        unfed required input makes a variant abstract,
+                        and that is exactly the fault the unfed-input
+                        check fails today, so a leaf with a forgotten
+                        edge would be read as abstract and left out of
+                        what is run instead of failing. If either
+                        derived option detects remaining alternatives
+                        by inputs fed twice, the only symptom Patrol's
+                        superset graphs show, a doubled edge in a leaf
+                        would likewise read as superset; the flag and
+                        the declared state keep both faults as
+                        failures in every variant not marked.
+description:            |
+                        Sources:
+                        - The option of unfed required ports: a
+                          dataflow variant is abstract while a
+                          required input port of one of its dataflow
+                          nodes has no dataflow edge.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_unfed_required_ports_and_state_derived.yaml
+                          at brief)
+                        - The unfed-input check fails an input that
+                          the interface does not state optional and no
+                          edge feeds. (src/cctool/check/check.lp
+                          within unfed_input) The input-fed-twice
+                          check fails an input fed by more than one
+                          edge. (src/cctool/check/check.lp within
+                          input_fed_twice)
+                        - Both derived options make a variant superset
+                          "while alternatives under presence tags
+                          remain", without saying how that is seen.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_placeholders_declared_and_state_derived.yaml
+                          at brief)
+                        - The resolver finds inputs fed twice, and
+                          nothing unfed, in both Patrol graphs marked
+                          abstract.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py,
+                          run by both the advocate and the verifier)
+                        - The flag option resolves, checks and runs
+                          every variant without the field; the
+                          declared option treats a variant that
+                          declares neither state as complete.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_abstract_flag_only.yaml
+                          at brief;
+                          _data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - A functional suitability question asks
+                          whether the design does anything it should
+                          not. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.3)
+                        - ASSUMPTION: the derived options add no rule
+                          that a variant nothing builds on must be
+                          complete; their text does not say. With that
+                          rule the fault fails at the leaf again.
+                          Strength: strong against the unfed-ports
+                          option as written; moderate against the
+                          placeholder option, whose abstract half does
+                          not depend on unfed ports and whose superset
+                          half depends on wording not yet given; weak
+                          if a leaf rule is added.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_abstract_flag_only
+    guid_target:        opt_c4b581d8b40d4a3581a0ee6209d3d753
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

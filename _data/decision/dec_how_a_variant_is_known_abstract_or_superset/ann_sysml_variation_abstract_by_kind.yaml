@@ -1,0 +1,73 @@
+id_self:                ann_sysml_variation_abstract_by_kind
+guid_self:              ann_9505a2ca1969484fa1676d6e12a8ed2c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  SysML v2 variation abstract by its kind, not by a written keyword
+brief:                  |
+                        In SysML v2 a variation is always abstract,
+                        the abstract keyword is not written on it, and
+                        constraints added in 2.0b2 enforce this, so
+                        the standard closest to the partners does not
+                        let an author state the abstractness of a
+                        variation. The derived options follow that
+                        practice and the declared state is at least
+                        checked against the graph, while the flag asks
+                        a partner tool to trust a field that nothing
+                        checks.
+description:            |
+                        Sources:
+                        - "A variation is always abstract, so the
+                          abstract keyword is not used on a
+                          variation", resolved in SysML 2.0b2 by
+                          adding constraints that enforce it.
+                          (https://issues.omg.org/issues/SYSML2-488)
+                        - The flag option marks a variant that is only
+                          built on, whatever it lacks or holds.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_abstract_flag_only.yaml
+                          at brief)
+                        - A compatibility question asks whether a
+                          partner can read and use what the design
+                          produces. (_data/register/reg_concern.yaml
+                          at entries.concern_compatibility.question.0)
+                        - ASSUMPTION: a partner's exporter to SysML v2
+                          maps a superset base to a variation; no such
+                          mapping is drafted. Strength: weak to
+                          moderate; it is an alignment with prior art,
+                          and SysML fixes abstractness by the kind of
+                          element, not by deriving it from a graph.
+                          The declared state lies between, stated by
+                          the author and checked, so this neither
+                          supports nor challenges it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_unfed_required_ports_and_state_derived
+    guid_target:        opt_947ce279e22446a7b01fa825bcae2067
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_abstract_flag_only
+    guid_target:        opt_c4b581d8b40d4a3581a0ee6209d3d753
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
