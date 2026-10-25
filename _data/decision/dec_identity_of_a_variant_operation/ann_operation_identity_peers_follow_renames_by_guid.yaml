@@ -1,0 +1,81 @@
+id_self:                ann_operation_identity_peers_follow_renames_by_guid
+guid_self:              ann_b0cf2a6dbe8043d6acc87cfbd8658236
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer references to an operation followed through rename maps by guid
+brief:                  |
+                        A peer whose own dataflow variant builds on a
+                        variant that a release publishes, and so names
+                        an operation of it, follows renames through
+                        the rename maps each release ships, which work
+                        by guid. An operation named by an id with a
+                        guid is covered by those maps as any other
+                        item is; one named by a local key or by its
+                        position has no guid for the peer's command to
+                        follow, so a peer would need a second scheme,
+                        or would break when the operation list
+                        changes.
+description:            |
+                        Sources:
+                        - Each release ships the renames it makes,
+                          each as an old id, a new id and the guid,
+                          and a command in the peer rewrites each
+                          reference to the id its guid names.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief)
+                        - The id-with-guid option gives each variant
+                          operation an id with a guid, as other items
+                          do, so that rename maps cover it.
+                          (_data/decision/dec_identity_of_a_variant_operation/opt_operation_named_by_id_with_guid.yaml
+                          at brief)
+                        - The local-key option names an operation by
+                          the variant id and a key unique within the
+                          variant, and the position option by the
+                          variant id and its place in the list.
+                          (_data/decision/dec_identity_of_a_variant_operation/opt_operation_named_by_a_local_key.yaml
+                          at brief;
+                          _data/decision/dec_identity_of_a_variant_operation/opt_operation_named_by_position.yaml
+                          at brief)
+                        - Compatibility asks whether a partner can
+                          read and use what the design produces, and
+                          what a partner must adopt to do so.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question)
+                          Assumption: a peer will build its own
+                          dataflow variants on variants that a release
+                          publishes; no peer does so yet. Strength:
+                          moderate. It holds only once that happens,
+                          and grows with the number of peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_variant_operation
+    guid_target:        dec_6d679965a15d4d5987eea01d52612f8d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_id_with_guid
+    guid_target:        opt_b9ebd7ab64564021b4445493d6caf539
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_a_local_key
+    guid_target:        opt_5d2be70b9fde4547ac5a24243cb01aae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_position
+    guid_target:        opt_08c1a021cdeb4d5cab729a05229531fe
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
