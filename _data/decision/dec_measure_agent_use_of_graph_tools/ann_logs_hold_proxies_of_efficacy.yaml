@@ -1,0 +1,51 @@
+id_self:                ann_logs_hold_proxies_of_efficacy
+guid_self:              ann_ebdd123253264e55a9cd1e879a245002
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Logs hold proxies of efficacy
+brief:                  |
+                        Logs of both kinds give proxies of efficacy
+                        without trials: a query that is followed by a
+                        grep for the same words, which suggests the
+                        query did not answer; a query that exits with
+                        an error; the share of lookups made with
+                        cctool while the guidance is neutral; and
+                        edits refused, or check failures, after a
+                        lookup. The proxies are confounded by the mix
+                        of tasks.
+description:            |
+                        Sources: cctool exits with 2 on an error and 1
+                        on a nonconformity (src/cctool/cli/group.py
+                        within EXIT_ERROR). Assumption: a lookup
+                        repeated by other means soon after a query
+                        marks a query that failed the agent. Strength:
+                        weak to moderate; the proxies are cheap and
+                        continuous, but noisy.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_measure_agent_use_of_graph_tools
+    guid_target:        dec_7128083f7c8f45dd9b6ae50297ec9459
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_log_runs_and_agent_commands
+    guid_target:        opt_95089a433a174ccb928ee9038fcd3646
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_logs_and_paired_trials
+    guid_target:        opt_196f570daf534d63808b3d1741fd65fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

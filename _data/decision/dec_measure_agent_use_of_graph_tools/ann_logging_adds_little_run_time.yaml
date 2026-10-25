@@ -1,0 +1,51 @@
+id_self:                ann_logging_adds_little_run_time
+guid_self:              ann_2bd09c72e68c4fc1baba0e7b4d09ad7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Logging adds little run time
+brief:                  |
+                        Adding one line to a local file costs far less
+                        than the run of cctool it records. A hook on
+                        agent commands starts one more short process
+                        for each command, which adds a little to each
+                        call. Neither slows the gate, which runs no
+                        agent.
+description:            |
+                        Assumptions: a cctool run takes at least the
+                        start of Python and the read of the tree,
+                        about a second or more; a hook process takes
+                        tens of milliseconds. Not measured. Strength:
+                        weak; run time hardly tells the options apart.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_measure_agent_use_of_graph_tools
+    guid_target:        dec_7128083f7c8f45dd9b6ae50297ec9459
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_count_cctool_runs
+    guid_target:        opt_5dd373e4e0d54922a01b4fdd3a857a78
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_log_runs_and_agent_commands
+    guid_target:        opt_95089a433a174ccb928ee9038fcd3646
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_logs_and_paired_trials
+    guid_target:        opt_196f570daf534d63808b3d1741fd65fd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
