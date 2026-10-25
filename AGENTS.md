@@ -16,7 +16,7 @@ unfinished edits of another.
 - Read the claims before you start. In the main checkout,
   `cat .git/worktrees/*/locked` lists each worktree with its claimant
   and the area it changes. If another worktree claims files you need,
-  agree it with the claimant, or ask the maintainer, Will, first.
+  agree it with the claimant, or ask the maintainer, WTP, first.
 - Start a topic from the main checkout. TOPIC is a short name for the
   work, in lower case with hyphens:
 
