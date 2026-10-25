@@ -1,0 +1,74 @@
+id_self:                ann_variant_resolver_desk_speed_not_the_bottleneck
+guid_self:              ann_566ddf2126ee453fb857c0b1c0da2597
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resolver speed on the desk
+brief:                  |
+                        A C++ resolver would resolve faster than
+                        Python, but the gate's time goes to checks and
+                        tests, and the tooling ruling already found
+                        that speed does not call for a port. Resolving
+                        Patrol's five variants of a 22-node base is
+                        likely small next to the clingo checks run on
+                        each.
+description:            |
+                        Sources:
+                        - "Speed does not yet call for a port, as the
+                          gate takes 78 s for a
+                          commit that changes code"
+                          (_data/decision/dec_tooling_language/ruling_tooling_language.yaml
+                          lines 17-19). A data-only commit, which skips the tests, takes
+                          about 10 s (context note, _sources/context.md line 31).
+                        - Patrol's base has 22 nodes and 41 edges,
+                          with five runnable
+                          variants (_sources/cc-patrol-notes/draft/README.md lines 22-34).
+                        - Checking per resolved variant makes resolved
+                          graphs facts keyed by
+                          variant, which multiplies the facts by the number of leaves
+                          (_sources/variants-framing.md line 62).
+                        - "performance DOES still matter a lot, as we
+                          will need to be able
+                          to respond quickly to things" (owner's statement,
+                          2026-10-22T16:31, _sources/context.md line 23).
+                        - ASSUMPTION: resolving is roughly linear in
+                          operations times graph
+                          size, and clingo grounding per leaf dominates; not measured.
+                        Concerns: performance efficiency. Strength:
+                        weak to moderate; a sweep of many unstored
+                        variants (_sources/variants-framing.md
+                        line 84) is the case that would test it, and a
+                        resolve-time measurement on the Patrol drafts
+                        would settle it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_python_and_cpp_operation_interpreter
+    guid_target:        opt_cc96962767d04ad28b59e46022603638
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

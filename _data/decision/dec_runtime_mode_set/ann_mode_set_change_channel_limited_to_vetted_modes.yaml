@@ -1,0 +1,88 @@
+id_self:                ann_mode_set_change_channel_limited_to_vetted_modes
+guid_self:              ann_5703c2d7bfb4441086b272864c94824c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change channel limited to choosing a vetted mode
+brief:                  |
+                        Under a named set, the worst a forged or
+                        replayed switch message can do is select
+                        another member that was already checked; under
+                        any change set, the same channel can carry new
+                        topology and, where new nodes are loaded, new
+                        code. With no switching there is no change
+                        channel to attack, while a named set still
+                        needs the switch authenticated and must
+                        exclude members never meant for service, such
+                        as replay.
+description:            |
+                        Sources:
+                        - A digest match proves neither the content
+                          nor the sender of a
+                          change set
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_digest_proves_neither_content_nor_sender.yaml),
+                          and no option there says who may send one
+                          (ann_change_set_sender_and_its_record_unstated.yaml in the same
+                          folder).
+                        - A live change that brings in a node version
+                          is a channel for new
+                          code into a running process
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_live_is_a_code_loading_channel.yaml).
+                        - Patrol takes commands from outside systems
+                          through an API,
+                          FastAPI to start with
+                          (_sources/cc-patrol-notes/draft/README.md lines 88-91).
+                        - Patrol's family holds a replay variant that
+                          keeps analysis only
+                          and feeds it from a clip reader
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml lines 12-30;
+                          listed in _sources/cc-patrol-notes/draft/README.md line 33).
+                        - Security asks "What can an attacker reach,
+                          and what would it
+                          cost?" (_data/register/reg_concern.yaml line 166).
+                        - ASSUMPTION: a switch message under the named
+                          set carries only a
+                          mode name, and the selector rejects names outside the shipped
+                          set.
+                        Concerns: security, safety. Strength: strong
+                        and scale-free for the attack surface; the
+                        risk of a wrong mode chosen grows with the
+                        number of members, which argues for a small
+                        set per deployment.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_mode_set
+    guid_target:        dec_9ceced1467644e24badfe5706f688e55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_set_of_pre_resolved_modes
+    guid_target:        opt_750947b2212b40639d5340e849bd259f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_runtime_switching_at_first
+    guid_target:        opt_365797bc6cec40218b626fce8529eaea
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_any_change_set_checked_against_the_running_graph
+    guid_target:        opt_b84feb42ec61471dae4235f926c90168
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

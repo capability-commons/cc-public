@@ -1,0 +1,123 @@
+id_self:                ann_variant_resolver_target_applies_differences
+guid_self:              ann_f96114a8bbc54d69b46e75fb23a9e01b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Target that applies differences rather than operations
+brief:                  |
+                        When a target receives the difference between
+                        two resolved graphs, it adds, removes and
+                        rewires exactly the named nodes and edges,
+                        which the drafted dynamic host does, in a
+                        fixed form the generator writes, and a
+                        reviewer reads exactly what will change. When
+                        it interprets operations, a filter by tag or a
+                        place must search the whole running graph
+                        between steps, the target needs a reader for
+                        the operation form and the preconditions of
+                        each operation, and a reviewer must resolve
+                        the operations against the running graph in
+                        their head.
+description:            |
+                        Sources:
+                        - Under the Python-only option a target
+                          "receives resolved graphs or
+                          the difference between two of them, never operations"
+                          (_data/decision/dec_where_variants_are_resolved/opt_variants_resolved_in_python_only.yaml
+                          lines 12-16). A change set is the difference between two resolved
+                          variants (_sources/variants-framing.md line 55), and it can carry
+                          the digest of the graph it was checked against
+                          (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                          lines 12-18).
+                        - The dynamic host loads, wires, checks every
+                          edge and refuses a
+                          mismatch, only between steps
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines
+                          65-72).
+                        - filter removes nodes by host, process, id or
+                          tag and every edge
+                          touching them (_sources/cc-patrol-notes/variants.md line 19).
+                        - Whatever runs between steps delays the next
+                          step
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_runtime_check_lengthens_step_gap.yaml).
+                        - Graph items are YAML read with ruamel.yaml
+                          (pyproject.toml line
+                          54); a runtime that loads a graph is likely to need a parser
+                          library or a hand-written parser
+                          (_data/decision/dec_first_engine/ann_graph_loading_runtime_needs_a_parser.yaml).
+                          The survey proposes that each operation state what must and must
+                          not exist (_sources/survey/README.md lines 45-47).
+                        - The frozen schedule is already generated C++
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines
+                          35-40).
+                        - ASSUMPTION: a selector such as a tag is
+                          evaluated against every
+                          node, so its cost grows with the graph, while a difference lists
+                          only what changes. ASSUMPTION: a generated difference can be
+                          emitted as C++ data or a form read without a library.
+                        - Counterpoint: an operation list is usually
+                          shorter than the
+                          difference it produces; for a filter that drops many edges the
+                          difference is longer to read (assumption, unmeasured).
+                        Concerns: performance efficiency (work sized
+                        to the change), reliability (less done in the
+                        gap between steps), dependency risk (no
+                        operation reader or parser on the target),
+                        reviewability (the change is read as its
+                        effect), simplicity (the target need not
+                        interpret operations). Strength: moderate; it
+                        strengthens at ten times the nodes, and falls
+                        away for one C++ resolver if that resolver
+                        runs only on the desk and ships differences.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_python_and_cpp_operation_interpreter
+    guid_target:        opt_cc96962767d04ad28b59e46022603638
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,70 @@
+id_self:                ann_mode_set_shipped_members_grow_target_size
+guid_self:              ann_5ea8929a44ab4536b7d2181351cdca7e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Size of a shipped mode set
+brief:                  |
+                        A named set ships every member, so code and
+                        data on the target grow with the number of
+                        modes, each member is one more generated
+                        schedule to build and check, and the permitted
+                        switches can grow as the square of the
+                        members. Any change set and no switching ship
+                        one graph.
+description:            |
+                        Sources:
+                        - "Each runnable variant is one generated
+                          static schedule, so the
+                          build matrix grows with the number of leaves"
+                          (_sources/variants-framing.md line 61).
+                        - A change set between modes is the difference
+                          of two resolved
+                          variants (_sources/variants-framing.md line 55), and one carrying
+                          a digest applies only to the exact graph it was made against
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_digest_pins_one_exact_graph.yaml).
+                        - Peak memory is a measure of performance
+                          efficiency
+                          (_data/register/reg_concern.yaml lines 211-214).
+                        - ASSUMPTION: with N modes and every switch
+                          allowed there are N(N-1)
+                          differences; a declared list of allowed switches would bound that.
+                        Concerns: performance efficiency. Strength:
+                        moderate; weak at Patrol's scale of five
+                        runnable variants
+                        (_sources/cc-patrol-notes/draft/README.md
+                        lines 24-34), of which a deployment would ship
+                        few, and stronger at ten times the modes
+                        unless members share one superset schedule.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_mode_set
+    guid_target:        dec_9ceced1467644e24badfe5706f688e55
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_named_set_of_pre_resolved_modes
+    guid_target:        opt_750947b2212b40639d5340e849bd259f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_any_change_set_checked_against_the_running_graph
+    guid_target:        opt_b84feb42ec61471dae4235f926c90168
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_runtime_switching_at_first
+    guid_target:        opt_365797bc6cec40218b626fce8529eaea
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

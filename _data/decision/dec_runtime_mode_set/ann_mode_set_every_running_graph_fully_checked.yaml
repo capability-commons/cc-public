@@ -1,0 +1,91 @@
+id_self:                ann_mode_set_every_running_graph_fully_checked
+guid_self:              ann_a8eae7caeb394ba98c02b5c3446b8d7b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every running graph covered by a full check
+brief:                  |
+                        With a named set of pre-resolved modes or with
+                        no switching, every graph a deployment can run
+                        was resolved and checked in full before it
+                        shipped, which the orchestrator draft asks so
+                        that a safety case covers what is deployed.
+                        With any change set, a run of accepted change
+                        sets can reach a graph no one resolved as a
+                        variant, so no simulation run or safety
+                        argument covered it ahead of time, and it gets
+                        all eleven checks only if each change set is
+                        checked in full by cctool.
+description:            |
+                        Sources:
+                        - Within a segment, reconfiguration "should
+                          select from a finite set
+                          of pre-validated topologies (modes) rather than rewire
+                          arbitrarily, so the deployed configuration is always one that a
+                          safety case covers"
+                          (_sources/axair-orchestrator/docs/execution_levels.md lines
+                          212-215; also lines 169-171). The draft leaves open how such modes
+                          are declared and checked (same file, line 233).
+                        - The named-set option resolves and checks
+                          each member ahead of
+                          time, and a change set only switches between members
+                          (_data/decision/dec_runtime_mode_set/opt_named_set_of_pre_resolved_modes.yaml
+                          lines 12-16); the any-change-set option admits any change set that
+                          checks against the running graph
+                          (opt_any_change_set_checked_against_the_running_graph.yaml in the
+                          same folder, lines 12-15).
+                        - Resolved variants are checked by all eleven
+                          dataflow checks
+                          (_sources/cc-patrol-notes/variants.md lines 86-89); the runtime
+                          checks listed so far cover four, three of them among the eleven
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_runtime_checks_cover_part_of_eleven.yaml).
+                        - The owner expects the engine to support
+                          safety-involved and
+                          security-involved systems "to some reasonable degree" (owner's
+                          statement, 2026-10-22T20:19, _sources/context.md line 25).
+                        - ASSUMPTION: under any change set, the graph
+                          after the k-th change
+                          set depends on all earlier ones, so the reachable set cannot be
+                          enumerated ahead of time.
+                        Concerns: safety, reliability. Strength:
+                        strong, and grows with scale: the checked set
+                        grows linearly with modes, while the
+                        reachable, never-checked graphs grow with the
+                        change sets applied in the field.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_mode_set
+    guid_target:        dec_9ceced1467644e24badfe5706f688e55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_set_of_pre_resolved_modes
+    guid_target:        opt_750947b2212b40639d5340e849bd259f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_runtime_switching_at_first
+    guid_target:        opt_365797bc6cec40218b626fce8529eaea
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_any_change_set_checked_against_the_running_graph
+    guid_target:        opt_b84feb42ec61471dae4235f926c90168
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,72 @@
+id_self:                ann_mode_set_restart_as_only_mode_change
+guid_self:              ann_629e3f9f528043bca7e2278b59efeffa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Restart as the only way to change mode
+brief:                  |
+                        With no runtime switching, the only way to
+                        move from one configuration to another, such
+                        as Patrol's fallback to drawn-on video, is to
+                        stop the process and start the other variant,
+                        so every change of mode is an outage. Patrol
+                        needs no automatic switching today, so the
+                        cost is real but not yet incurred.
+description:            |
+                        Sources:
+                        - Patrol's headless output may fall back "to
+                          drawn-on video if they
+                          cannot be kept in step" (_sources/cc-patrol-notes/draft/README.md
+                          lines 6-7); that fallback is a configuration choice, with no
+                          automatic switching for now (same file, lines 86-87).
+                        - The no-switching option runs one resolved
+                          graph and does not
+                          switch while it runs
+                          (_data/decision/dec_runtime_mode_set/opt_no_runtime_switching_at_first.yaml
+                          lines 12-15).
+                        - Reliability measures availability and mean
+                          time to recover
+                          (_data/register/reg_concern.yaml lines 123-126).
+                        - ASSUMPTION: a restart of the engine process
+                          with a new
+                          configuration takes longer than a switch between steps; neither is
+                          measured.
+                        Concerns: reliability. Any change set also
+                        avoids the restart, but more weakly here,
+                        since its other costs are argued elsewhere.
+                        Strength: weak now, moderate later; nil while
+                        every change of mode is made on the bench, and
+                        it grows with fielded systems whose modes
+                        change in service.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_mode_set
+    guid_target:        dec_9ceced1467644e24badfe5706f688e55
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_runtime_switching_at_first
+    guid_target:        opt_365797bc6cec40218b626fce8529eaea
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_set_of_pre_resolved_modes
+    guid_target:        opt_750947b2212b40639d5340e849bd259f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_any_change_set_checked_against_the_running_graph
+    guid_target:        opt_b84feb42ec61471dae4235f926c90168
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,71 @@
+id_self:                ann_variant_resolver_target_without_python
+guid_self:              ann_ed68aa579a114f88b4cc6ac7f43ebf7f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What a target with no Python can do
+brief:                  |
+                        With Python only, a target receives resolved
+                        graphs or their difference, which meets every
+                        Patrol need today, since no Patrol
+                        configuration switches by itself. A target
+                        that must act on its own, such as an
+                        unattended embedded board, could then only
+                        apply differences made ahead of time, and only
+                        a resolver that runs on the target lifts that
+                        limit.
+description:            |
+                        Sources:
+                        - The engine never sees variants and loads
+                          only resolved
+                          configurations (_sources/cc-patrol-notes/variants.md lines
+                          92-95).
+                        - "No automatic switching for now"
+                          (_sources/cc-patrol-notes/draft/README.md lines 86-87).
+                        - C++17 is planned for embedded reach (owner's
+                          statement,
+                          2026-10-21, paraphrased in _sources/context.md line 9).
+                        - An existing annotation argues the case of
+                          change sets made where
+                          cctool is absent
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_made_where_cctool_is_absent.yaml).
+                        - The C++ resolver option shares one
+                          implementation between the
+                          tooling and the target
+                          (_data/decision/dec_where_variants_are_resolved/opt_one_cpp_resolver_with_python_bindings.yaml
+                          lines 12-16).
+                        Concerns: functional suitability. It supports
+                        Python only for the first instances and one
+                        C++ resolver for unattended targets later; the
+                        two-interpreter option also reaches such
+                        targets but is argued under the
+                        two-interpreter annotation. Strength: weak
+                        now, moderate later; it grows with unattended
+                        targets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

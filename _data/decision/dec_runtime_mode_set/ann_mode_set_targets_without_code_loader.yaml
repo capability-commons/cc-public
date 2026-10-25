@@ -1,0 +1,70 @@
+id_self:                ann_mode_set_targets_without_code_loader
+guid_self:              ann_3badaac4a1184b7dace398569a3ce9ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Targets with no code loader
+brief:                  |
+                        A named set or a single graph can be linked
+                        whole ahead of time, so it runs where there is
+                        no dlopen or no OS. Any change set that may
+                        add a node not in the binary needs a loader on
+                        the target, and must fall back to one of the
+                        other two where none exists.
+description:            |
+                        Sources:
+                        - The dynamic host loads component libraries
+                          with dlopen
+                          (_sources/axair-orchestrator/docs/execution_levels.md line 65); a
+                          component can also be linked statically and called directly (same
+                          file, lines 16-31).
+                        - On a target with no OS or no loader, live
+                          code needs every version
+                          linked ahead of time
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_live_needs_a_code_loader_on_target.yaml).
+                        - The owner wants placement to cover systems
+                          with no OS (owner's
+                          statement, 2026-10-24 13:06Z, as quoted in
+                          _data/decision/dec_change_set_at_a_step/ann_change_set_made_where_cctool_is_absent.yaml).
+                        - C++17 is planned for embedded reach (owner's
+                          statement,
+                          2026-10-21, paraphrased in _sources/context.md line 9).
+                        - ASSUMPTION: the any-change-set option admits
+                          change sets that add
+                          nodes; if it were limited to rewiring nodes already linked, this
+                          point would fall away.
+                        Concerns: flexibility. Strength: strong for
+                        the number of platforms; it does not depend on
+                        the number of nodes or modes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_mode_set
+    guid_target:        dec_9ceced1467644e24badfe5706f688e55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_named_set_of_pre_resolved_modes
+    guid_target:        opt_750947b2212b40639d5340e849bd259f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_runtime_switching_at_first
+    guid_target:        opt_365797bc6cec40218b626fce8529eaea
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_any_change_set_checked_against_the_running_graph
+    guid_target:        opt_b84feb42ec61471dae4235f926c90168
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

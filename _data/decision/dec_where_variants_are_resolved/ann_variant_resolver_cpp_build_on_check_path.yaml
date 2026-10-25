@@ -1,0 +1,114 @@
+id_self:                ann_variant_resolver_cpp_build_on_check_path
+guid_self:              ann_15f83e36b48c4ade8202e22681d82cca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  C++ build on the path of every cctool check
+brief:                  |
+                        Checks run on every resolved variant, so a C++
+                        resolver bound into cctool puts a C++
+                        compiler, a binding library and a compiled
+                        extension on the path of every commit gate,
+                        every peer that builds cctool and every
+                        supported platform, and every change to an
+                        operation's signature also touches the binding
+                        layer. Resolving in Python, with or without a
+                        separate C++ interpreter kept with the engine,
+                        leaves cctool with no compiled code of its
+                        own.
+description:            |
+                        Sources:
+                        - Checks run on every resolved variant
+                          (_sources/cc-patrol-notes/variants.md lines 86-89), so cctool
+                          cannot check without resolving.
+                        - cctool builds its wheel with hatchling from
+                          src/cctool, with no
+                          extension build of its own (pyproject.toml lines 59-61 and 73-75);
+                          it has seven dependencies (lines 48-54). Two of them, clingo and
+                          pyoxigraph, ship compiled wheels (general knowledge, not checked in
+                          the repository), so the new cost is a compiled extension built in
+                          house, not compiled code as such.
+                        - Under the accepted route for the engine
+                          code, peers that use only
+                          the tooling inherit a C++ build
+                          (_data/decision/dec_home_of_the_engine_code/ann_tooling_only_peers_inherit_cpp_build.yaml).
+                        - Any edit to pyproject.toml makes pixi.lock
+                          stale, the pre-push
+                          hook refuses, and only the owner can relock (context note,
+                          2026-10-22, _sources/context.md line 30).
+                        - The commit gate takes about 78 s on 2 CPUs
+                          (context note,
+                          _sources/context.md line 31).
+                        - Development is on Linux and macOS
+                          (_data/decision/dec_supported_dev_platforms/ruling_supported_dev_platforms.yaml
+                          lines 12-16).
+                        - The C++ resolver option shares one
+                          implementation between the
+                          tooling and the target
+                          (_data/decision/dec_where_variants_are_resolved/opt_one_cpp_resolver_with_python_bindings.yaml
+                          lines 12-16); it names no binding library.
+                        - ASSUMPTION: the option needs a binding
+                          library such as pybind11 or
+                          nanobind and a build backend that compiles extensions.
+                        Concerns: dependency risk (compiler, binding
+                        library, build backend), reliability (the gate
+                        depends on a compiled build on each platform),
+                        maintainability (an operation change needs a
+                        C++ build), simplicity (a compiled extension
+                        in a Python-only package), reviewability (a
+                        binding layer that each signature change
+                        touches). Strength: strong; the cost is per
+                        build, per platform and per peer, not per
+                        node.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_python_and_cpp_operation_interpreter
+    guid_target:        opt_cc96962767d04ad28b59e46022603638
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
