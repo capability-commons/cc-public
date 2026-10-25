@@ -1,0 +1,64 @@
+id_self:                ann_split_edge_plain_by_ends_open_for_a_key
+guid_self:              ann_a4144a6e45794b508ff5e1c9906182d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A split edge plain under ends and open under a key
+brief:                  |
+                        Insert-on-edge and edge-policy lowering split
+                        an edge in two. With ends the result is plain,
+                        the old pair gone and two new pairs present;
+                        with a key the rule must say which half keeps
+                        the key, or later operations and the lowering
+                        may act on the wrong half. A key does survive
+                        a substitution that changes a node's id, but
+                        if substitution keeps the id, that advantage
+                        disappears.
+description:            |
+                        Sources:
+                        - Insert-on-edge is needed for a tap such as a
+                          recorder. (_sources/variants-framing.md
+                          line 47)
+                        - A lowered edge policy turns the policy into
+                          an adapter node on the edge.
+                          (_data/decision/dec_edge_policy/opt_edge_policy_declared_and_lowered_to_nodes.yaml
+                          lines 20-24)
+                        - Substitution replaces a node's
+                          implementation, as in CVL's fragment
+                          substitution; whether it keeps the node id
+                          is open, and Guix distinguishes rewriting by
+                          identity from rewriting by name.
+                          (_sources/variants-framing.md line 50;
+                          _sources/survey/generative-and-transforms.md
+                          lines 62-63 and 132)
+                        - ASSUMPTION: a substitute that keeps the node
+                          id leaves every pair of ends unchanged.
+                          Strength: moderate; it grows with the number
+                          of lowering passes and taps.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_its_ends
+    guid_target:        opt_34a1624fdf2346ef8306f74102ed94ff
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_explicit_key
+    guid_target:        opt_893ecd1bc2084ad1a256fed4bc80891d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

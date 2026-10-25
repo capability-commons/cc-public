@@ -1,0 +1,75 @@
+id_self:                ann_named_deltas_as_units_peers_can_share
+guid_self:              ann_5d2f55cd53284a08a0301d539f54486b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named delta items as units that peers can share
+brief:                  |
+                        A partner such as an SSP tool receives whole
+                        resolved structures, so the family shape does
+                        not show at that boundary. Between peers, a
+                        named delta item is a unit one peer can
+                        publish and another include, whereas a pure
+                        tree makes a peer copy the operations, and
+                        merging bases from two peers puts conflict
+                        rules across two owners.
+description:            |
+                        Sources:
+                        - SSP variants are whole alternative SSD files
+                          with one default.
+                          (https://ssp-standard.org/docs/2.0,
+                          chapter 3) The resolved graph is derived and
+                          checked under every option.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-17)
+                        - Peers take cc-public as a versioned package,
+                          and Patrol code will live in cc-patrol, a
+                          private federated peer.
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          lines 11-15; owner's statement, 2026-10-21,
+                          paraphrased in _sources/context.md line 9)
+                        - Kustomize components are reusable, ordered
+                          transformations that an overlay includes.
+                          (KEP-1802,
+                          https://www.kubernetes.dev/resources/keps/1802/)
+                        - References across federated repositories use
+                          segments with directional consumption, ruled
+                          but not yet built.
+                          (_data/decision/dec_references_across_instances/ruling_references_across_instances.yaml
+                          lines 12-17) ASSUMPTION: a variant in a peer
+                          may include a delta item from a segment the
+                          peer consumes. Strength: weak now, with one
+                          peer and no shared delta; moderate with
+                          several peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_single_base_with_included_deltas
+    guid_target:        opt_02300d0e12254475a41b3185faf6e831
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_single_base_per_variant
+    guid_target:        opt_5e41897c7add4276a224b85ade13e7d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_several_bases_merged
+    guid_target:        opt_9b29ef61d4954b75a1453e0d6737a091
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

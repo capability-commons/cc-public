@@ -1,0 +1,83 @@
+id_self:                ann_closed_vocabulary_a_partner_can_implement
+guid_self:              ann_585845f92c024b7eac3b054899af92e8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A closed vocabulary a partner can implement from its specification
+brief:                  |
+                        A closed set of operations is a format a
+                        partner can read and apply with its own code,
+                        as JSON Patch and the change classes of SED-ML
+                        are. Plugins make each variant depend on
+                        Python code that every partner must install
+                        into its own environment, alongside
+                        cc-public's own pins, before it can resolve or
+                        check the variant.
+description:            |
+                        Sources:
+                        - JSON Patch defines a fixed set of operations
+                          that any implementation applies to any JSON
+                          document.
+                          (https://www.rfc-editor.org/rfc/rfc6902)
+                        - SED-ML applies a fixed set of change classes
+                          to a referenced model before simulation, in
+                          a format that is not specific to particular
+                          simulation tools. (https://sed-ml.org/,
+                          Model section)
+                        - Guix exposes package variants as a closed
+                          set of named transformations with string
+                          arguments.
+                          (https://guix.gnu.org/manual/en/html_node/Defining-Package-Variants.html,
+                          as summarized in
+                          _sources/survey/generative-and-transforms.md
+                          lines 62-63)
+                        - A plugin supplies the operation's schema and
+                          semantics.
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_open_operations_through_plugins.yaml
+                          lines 13-16)
+                        - Peers take cc-public as a versioned package,
+                          which already shares the partner's
+                          environment and its version pins.
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          lines 11-15;
+                          _data/decision/dec_how_peers_get_cc_public/ann_package_shares_partner_environment.yaml
+                          lines 11-31)
+                        - Composites expand to core operations held as
+                          data in the graph.
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_composite_operations.yaml
+                          lines 13-18) Strength: strong; each new peer
+                          or partner multiplies the tools that must be
+                          installed. (_data/register/reg_concern.yaml
+                          line 311)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_vocabulary_of_variant_operations
+    guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_closed_set_of_variant_operations
+    guid_target:        opt_5bb9bde9503e41ad822afde24cf6afa5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_closed_core_with_composite_operations
+    guid_target:        opt_f5e409e8656044b1bbac5ac3eec90f73
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_open_operations_through_plugins
+    guid_target:        opt_0adc3f9da83947189c187e1b3ae06b4c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

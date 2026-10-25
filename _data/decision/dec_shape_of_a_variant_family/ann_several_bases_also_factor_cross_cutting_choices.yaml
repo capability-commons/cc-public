@@ -1,0 +1,57 @@
+id_self:                ann_several_bases_also_factor_cross_cutting_choices
+guid_self:              ann_507342955b414473b6bf5f3b445dcc71
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Several bases as another way to factor cross-cutting choices
+brief:                  |
+                        A variant that merges a platform base with a
+                        feature base also writes a cross-cutting
+                        choice once instead of in every leaf, so the
+                        several-bases option answers the same limit of
+                        a pure tree, though at the price of the merge
+                        rules it still lacks.
+description:            |
+                        Sources:
+                        - A pure tree repeats a choice that cuts
+                          across branches, and Kustomize added
+                          included components for this reason.
+                          (KEP-1802,
+                          https://www.kubernetes.dev/resources/keps/1802/)
+                        - A variant may name several bases, merged
+                          before its own operations apply.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_several_bases_merged.yaml
+                          lines 13-17)
+                        - The decision names combinations such as a
+                          platform plus video output plus lab logging.
+                          (_data/decision/dec_shape_of_a_variant_family/dec_shape_of_a_variant_family.yaml
+                          lines 17-25) Strength: weak; both advocates
+                          rank it below included deltas, which give
+                          the same factoring without a merge.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_several_bases_merged
+    guid_target:        opt_9b29ef61d4954b75a1453e0d6737a091
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

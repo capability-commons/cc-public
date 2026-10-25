@@ -1,0 +1,122 @@
+id_self:                ann_every_reader_must_know_each_operation
+guid_self:              ann_75eda7ced284412bb39f933147d101a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readers that must know every operation they meet
+brief:                  |
+                        Checks, rename maps, dictionary upgrades, the
+                        resolver's origin records and a runtime
+                        change-set check each have to interpret every
+                        operation they meet. With a closed core, the
+                        schema declares each operation and which of
+                        its fields are references, and a new kind
+                        arrives as one checked change to schema,
+                        interpreter and checks; with plugins, an
+                        operation's schema, references and effects are
+                        known only to its own Python code, which the
+                        runtime and string-valued addresses such as
+                        those of write cannot see.
+description:            |
+                        Sources:
+                        - "every check, rename, dictionary upgrade and
+                          run-time change set must understand each
+                          operation it meets".
+                          (_data/decision/dec_vocabulary_of_variant_operations/dec_vocabulary_of_variant_operations.yaml
+                          lines 17-22)
+                        - A plugin "supplies the operation's schema
+                          and semantics".
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_open_operations_through_plugins.yaml
+                          lines 13-16)
+                        - Rename maps rewrite each reference to the id
+                          its guid names.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-17) A plugin that uses the usual
+                          reference fields would be renamed anyway,
+                          which narrows the claim to references and
+                          addresses held in a plugin's own form.
+                        - A dictionary upgrade maps each field as
+                          kept, renamed, converted or new with a
+                          default.
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml
+                          lines 12-18) A write addresses a setting by
+                          a dotted string, not a reference field.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 30-32)
+                        - One open option checks a change set in C++
+                          in the runtime, where a Python plugin
+                          supplies nothing.
+                          (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml
+                          lines 12-19)
+                        - The Patrol draft asks that check failures
+                          name the variant and the operation that
+                          introduced the fault.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - Refactorings held as a closed vocabulary of
+                          typed graph rules allow conflict and
+                          dependency analysis at the vocabulary level.
+                          (Mens, Taentzer, Runge 2007,
+                          https://user.tu-berlin.de/lieske/tfs/publikationen/Papers07/MTR07.pdf,
+                          as summarized in
+                          _sources/survey/generative-and-transforms.md
+                          lines 25-26)
+                        - Traceability had the largest estimated
+                          effect on perceived comprehensibility among
+                          113 transformation users, though above the
+                          paper's threshold for significance. (Hoppner
+                          and Tichy 2023,
+                          https://arxiv.org/pdf/2305.06764, section
+                          5.2)
+                        - A grep of src/ and pyproject.toml for plugin
+                          and entry_points finds nothing; cctool has
+                          no plugin mechanism today.
+                        - The maintainability questions include how
+                          readily a change can be checked before it
+                          ships. (_data/register/reg_concern.yaml line
+                          396) Strength: strong; the readers to
+                          update, and the places an unknown operation
+                          gives a wrong or missing result, grow with
+                          every plugin and every variant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_vocabulary_of_variant_operations
+    guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_closed_set_of_variant_operations
+    guid_target:        opt_5bb9bde9503e41ad822afde24cf6afa5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_closed_core_with_composite_operations
+    guid_target:        opt_f5e409e8656044b1bbac5ac3eec90f73
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_open_operations_through_plugins
+    guid_target:        opt_0adc3f9da83947189c187e1b3ae06b4c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

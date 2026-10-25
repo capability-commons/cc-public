@@ -1,0 +1,73 @@
+id_self:                ann_rewired_edge_loses_its_trace_under_ends
+guid_self:              ann_5dc231420df84193b3eb70bb8171ca0a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trace lost when an operation moves an edge's end
+brief:                  |
+                        If an edge is its ends, an operation that
+                        rewires one end makes a different edge, and
+                        insert-on-edge replaces one edge with two. The
+                        link from the old edge, and from the policy
+                        and tags it carried, to the new ones then
+                        exists only if an origin record keeps it. An
+                        explicit key can survive a rewire and give
+                        lowered adapter nodes a stable root for their
+                        names, but rename maps cover it only if the
+                        key is an id with a guid, which the option
+                        does not say.
+description:            |
+                        Sources:
+                        - The decision asks how an operation names the
+                          edge it removes, rewrites or inserts a node
+                          on.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/dec_identity_of_a_dataflow_edge.yaml
+                          lines 12-15)
+                        - The Patrol base adds policy and tag on
+                          edges, and 5 of its 41 edges carry a tag.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 3-4, with tags at lines 434, 439, 484,
+                          489 and 518)
+                        - An edge with attributes is stored as a
+                          record of its own, linked to both ends.
+                          (_data/register/reg_concept.yaml lines
+                          1798-1801)
+                        - A lowered adapter is an element with no
+                          traced reason unless its id or a recorded
+                          link names the edge and the policy.
+                          (_data/decision/dec_edge_policy/ann_lowered_adapter_nodes_need_a_naming_rule.yaml
+                          lines 13-26)
+                        - Rename map entries are an old id, a new id
+                          and the guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-15) Strength: moderate; rewires
+                          grow with lowering and edge policy, but an
+                          origin record closes the gap under either
+                          option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_its_ends
+    guid_target:        opt_34a1624fdf2346ef8306f74102ed94ff
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_explicit_key
+    guid_target:        opt_893ecd1bc2084ad1a256fed4bc80891d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

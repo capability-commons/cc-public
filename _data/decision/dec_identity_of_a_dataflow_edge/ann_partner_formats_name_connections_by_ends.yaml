@@ -1,0 +1,72 @@
+id_self:                ann_partner_formats_name_connections_by_ends
+guid_self:              ann_60460f79b1dc4c9d97c4ad9fe2111f92
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partner formats that name a connection by its ends
+brief:                  |
+                        An SSP connection names its two ends, element
+                        and connector, and lists no key, so a graph
+                        whose edges are identified by ends maps to and
+                        from SSP with no invented data. A key has to
+                        be made up on import and is lost on export,
+                        and a position has no stable counterpart in a
+                        partner's format.
+description:            |
+                        Sources:
+                        - The SSP 2.0 connection has start element and
+                          connector and end element and connector,
+                          plus indices and a unit conversion flag, and
+                          its attribute table lists no key.
+                          (https://ssp-standard.org/docs/2.0, section
+                          5.3.2)
+                        - SSP model entities may carry an optional
+                          file-wide unique id; whether a connection is
+                          one could not be confirmed. ASSUMPTION: an
+                          SSP file from a partner tool usually gives
+                          connections no id. (same source, section
+                          4.1)
+                        - SED-ML addresses its changes by XPath, and
+                          the BioSimulations conventions show a target
+                          selected by an element's id; they do not
+                          discuss positions.
+                          (https://docs.biosimulations.org/concepts/conventions/simulation-experiments/)
+                        - Rename maps rewrite each reference in a
+                          peer, and edge keys would add one more class
+                          of reference for them to carry.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-16) Strength: moderate; it holds at
+                          any size, and its weight depends on whether
+                          an SSP or FMI exchange is ever built.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_its_ends
+    guid_target:        opt_34a1624fdf2346ef8306f74102ed94ff
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_explicit_key
+    guid_target:        opt_893ecd1bc2084ad1a256fed4bc80891d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_position
+    guid_target:        opt_6be13e1911d24ae4bb98523b013516e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

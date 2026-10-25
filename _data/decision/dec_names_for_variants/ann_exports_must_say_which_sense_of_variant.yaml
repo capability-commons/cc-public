@@ -1,0 +1,85 @@
+id_self:                ann_exports_must_say_which_sense_of_variant
+guid_self:              ann_e952010b03b24e22a40a0b461a51bb67
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two outside senses of variant that an export keeps apart
+brief:                  |
+                        The partner standards closest to this work use
+                        variant in two senses: in SSP 2.0 a whole
+                        alternative system structure, in SysML v2 one
+                        alternative at one variation. The repository's
+                        exports write its own field names as
+                        frontmatter, so a qualified term lets a
+                        partner read which sense is meant; the plain
+                        terms leave it unstated, and no exchange
+                        format cc-public has reason to use speaks of
+                        stacks, modifiers or cooking.
+description:            |
+                        Sources:
+                        - In SSP 2.0 a package may hold several SSD
+                          files with one named default, and tools not
+                          supporting variants ignore the others.
+                          (https://ssp-standard.org/docs/2.0,
+                          chapter 3)
+                        - In SysML v2 a variant is a VariantMembership
+                          of a variation. (Weilkiens et al., INCOSE IS
+                          2025,
+                          https://www.incose.org/wp-content/uploads/legacy/presentation/is2025-pdf/Paper-212.pdf,
+                          as summarized in
+                          _sources/survey/product-lines.md lines 35
+                          and 156-159)
+                        - The register names a variant of a system as
+                          a whole thing derived from a dataflow graph,
+                          which is the SSP sense.
+                          (_data/register/reg_concept.yaml lines
+                          1195-1199)
+                        - The Obsidian and OKF exports write the
+                          repository's own fields as frontmatter.
+                          (_data/decision/dec_follow_standards_by_default/ann_repository_exports_obsidian_and_okf.yaml
+                          lines 11-35)
+                        - A later rename reaches peers through each
+                          release's rename map, so each change of term
+                          adds entries that every peer's upgrade must
+                          apply.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 11-17)
+                        - ASSUMPTION: no exchange format cc-public
+                          reads or writes (SSP, FMI, SED-ML, SysML v2,
+                          AUTOSAR) uses the graphics tool terms;
+                          checked only in the parts of SSP 2.0 the
+                          advocate read. Strength: strong; it grows
+                          with the number of exchange formats and
+                          peers, not with the number of variants.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_names_for_variants
+    guid_target:        dec_15ecfd05c41d4231a6d770a2d22a8115
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_qualified_variant_terms
+    guid_target:        opt_1a5aa4d86c3043959fc5544f1dc8d707
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_plain_product_line_terms
+    guid_target:        opt_fdd01150d0d9468bad318c9994ca0877
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graphics_tool_terms
+    guid_target:        opt_098718f01dcf45859795e5300afe7f15
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

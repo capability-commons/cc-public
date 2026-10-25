@@ -1,0 +1,58 @@
+id_self:                ann_included_deltas_need_a_conflict_and_order_check
+guid_self:              ann_e0ab61524b3a42f3bd97386b0ad9c237
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Included deltas that are right only with a conflict check
+brief:                  |
+                        Included deltas compose without a merge, since
+                        each is applied to one chain in a stated
+                        order, but they give the right result only if
+                        two included deltas that touch one element are
+                        caught or ordered on purpose. Without that
+                        check the order of inclusion silently decides
+                        the graph; with it, and with a check that a
+                        variant does not include itself, the option is
+                        sound.
+description:            |
+                        Sources:
+                        - Included deltas are applied in a stated
+                          order before the variant's own.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_single_base_with_included_deltas.yaml
+                          lines 13-18)
+                        - The survey asks for a conflict check before
+                          included deltas land.
+                          (_sources/survey/README.md lines 65-68 and
+                          141)
+                        - A check that reports binary conflicts can be
+                          written as one clingo rule.
+                          (_sources/survey/generative-and-transforms.md
+                          line 114)
+                        - A variant that includes itself is a cycle
+                          that a check can catch.
+                          (_sources/variants-framing.md line 94)
+                          Strength: strong as a condition; the number
+                          of possible conflicts grows roughly with the
+                          square of the number of included deltas.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_single_base_with_included_deltas
+    guid_target:        opt_02300d0e12254475a41b3185faf6e831
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

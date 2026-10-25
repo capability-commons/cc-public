@@ -1,0 +1,89 @@
+id_self:                ann_edge_positions_shift_on_every_edit
+guid_self:              ann_e04ea41905734c2c818c9b3e298deede
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge positions that shift on every edit
+brief:                  |
+                        Every Patrol variant starts with a filter, and
+                        a filter removes edges, so the positions of
+                        all later edges change; a child variant
+                        resolves on its parent's output, so any change
+                        to an ancestor shifts the list the child's
+                        positions name. An operation that names an
+                        edge by position then names a different edge
+                        without any error, every variant naming a
+                        later edge must be edited, and a base
+                        generated from a table can reorder its edges
+                        on regeneration.
+description:            |
+                        Sources:
+                        - All six Patrol variant drafts begin with a
+                          filter, and "A tag filter removes tagged
+                          nodes with their edges, and tagged edges."
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          lines 21-24, and the first operation of each
+                          other variant draft)
+                        - Three variants have the abstract Orin
+                          variant as base.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          line 18, dfv_patrol_orin_tracks.yaml line
+                          17, dfv_patrol_orin_video.yaml line 18)
+                        - The edge list is an ordered array in the
+                          schema.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          98-106)
+                        - The sketch resolver rebuilds the edge list
+                          on every filter.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 40-43)
+                        - "If removing an element from an array, any
+                          elements above the specified index are
+                          shifted one position to the left." (RFC 6902
+                          section 4.2,
+                          https://www.rfc-editor.org/rfc/rfc6902)
+                        - The Patrol base is generated from a table.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 22-23)
+                        - A position carries no guid for rename maps
+                          to follow.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-15)
+                        - One maintainability question is how far a
+                          change in one part spreads to others.
+                          (_data/register/reg_concern.yaml line 395)
+                          Strength: strong; the spread grows with
+                          variants, edges and the depth of variant
+                          chains.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_position
+    guid_target:        opt_6be13e1911d24ae4bb98523b013516e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

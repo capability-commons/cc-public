@@ -1,0 +1,65 @@
+id_self:                ann_edge_ends_add_no_field_or_rule
+guid_self:              ann_14e10675f31e4effaa2a605697c2d4a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ends that already name an edge, with no field added
+brief:                  |
+                        An edge is written as its two ends, and the
+                        draft join names its new edge the same way, so
+                        naming an edge by its ends adds no field and
+                        no rule. A key adds a field, a uniqueness
+                        check and a naming rule; a position adds a
+                        rule for what an index means once a filter has
+                        dropped edges.
+description:            |
+                        Sources:
+                        - A dataflow edge requires source and target,
+                          each an end naming a node and a port.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          144-191)
+                        - The replay draft's joins name ends as edges
+                          do.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          lines 47-63)
+                        - The Patrol base has 41 edges and no two with
+                          the same pair of ends.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 349-520)
+                        - The sketch resolver rebuilds the edge list
+                          on every filter.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 40-43) Strength: strong; ten times the
+                          edges changes nothing in the mechanism.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_its_ends
+    guid_target:        opt_34a1624fdf2346ef8306f74102ed94ff
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_explicit_key
+    guid_target:        opt_893ecd1bc2084ad1a256fed4bc80891d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_position
+    guid_target:        opt_6be13e1911d24ae4bb98523b013516e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

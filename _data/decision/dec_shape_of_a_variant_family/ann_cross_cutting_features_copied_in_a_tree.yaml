@@ -1,0 +1,99 @@
+id_self:                ann_cross_cutting_features_copied_in_a_tree
+guid_self:              ann_175c5c2273604541b19bacfa7e636430
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cross-cutting features copied into each leaf of a tree
+brief:                  |
+                        A pure tree factors out what siblings share
+                        through an abstract parent, but not a choice
+                        that cuts across branches, such as lab logging
+                        on both Legion and Orin variants, which is
+                        then written into each leaf; the copies can
+                        drift, a change touches every copy, and no one
+                        item holds why the feature exists. With
+                        included deltas the feature and its reason sit
+                        in one item, and which variants include it is
+                        a query; Kustomize hit this limit and added
+                        included components.
+description:            |
+                        Sources:
+                        - The decision names the combination "a
+                          platform plus video output plus lab
+                          logging".
+                          (_data/decision/dec_shape_of_a_variant_family/dec_shape_of_a_variant_family.yaml
+                          lines 17-25) The owner wants composition to
+                          generate product lines. (owner's statement,
+                          2026-10-24T23:00:32Z,
+                          _sources/owner-2026-10-24-late.md line 3)
+                        - The abstract Orin variant holds what all
+                          headless Orin variants share.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 14-19)
+                        - Leaves already repeat tag exclusions, across
+                          branches as well as between siblings: relay
+                          and console are excluded by separate filters
+                          in the Legion, Orin tracks and Orin video
+                          drafts.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          line 25, dfv_patrol_orin_tracks.yaml line
+                          22, dfv_patrol_orin_video.yaml line 23)
+                        - Kustomize records that "modular applications
+                          cannot always be expressed in a tall
+                          hierarchy", and its components are reusable
+                          pieces that distinct overlays mix and match,
+                          where order matters. (KEP-1802,
+                          https://www.kubernetes.dev/resources/keps/1802/)
+                        - In industrial clone-and-own, fixes are
+                          propagated by hand. (Dubinsky et al. 2013,
+                          https://people.csail.mit.edu/mjulia/publications/An_Exploratory_Study_of_Cloning_in_Industrial_Software_Product_Lines_2013.pdf,
+                          as summarized in
+                          _sources/survey/product-lines.md lines
+                          116-118)
+                        - The maintainability measure counts parts
+                          touched by a representative change.
+                          (_data/register/reg_concern.yaml line 400)
+                        - ASSUMPTION: Patrol will gain a cross-cutting
+                          choice such as lab logging; no draft holds
+                          one today. Strength: weak to moderate at
+                          Patrol's present size; strong at ten times
+                          the variants with two or more independent
+                          features, since copies multiply as leaves
+                          times features.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_single_base_with_included_deltas
+    guid_target:        opt_02300d0e12254475a41b3185faf6e831
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_single_base_per_variant
+    guid_target:        opt_5e41897c7add4276a224b85ade13e7d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,60 @@
+id_self:                ann_hand_written_operations_drift_from_schema
+guid_self:              ann_d1bdb3503136447f93b8dcbffd5f3499
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hand-written generic operations that drift from the schema
+brief:                  |
+                        Under either closed option, add, remove and
+                        write are hand-written for each section of the
+                        dataflow graph schema, so a new schema section
+                        needs a matching change to the operations or
+                        variants cannot reach it. The drafts already
+                        add fields beyond the schema on dev, and
+                        deriving the generic operations from the
+                        schema would keep the two in step.
+description:            |
+                        Sources:
+                        - The schema has four sections, three keyed
+                          maps and one list.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          67-106)
+                        - The drafts add abstract, runtime and tag on
+                          nodes, and policy and tag on edges.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 1-4)
+                        - DeltaEcore generates a delta language's
+                          syntax and much of its semantics from the
+                          source metamodel. (Seidl, Schaefer, Assmann
+                          2014,
+                          https://dl.gi.de/handle/20.500.12116/20956,
+                          abstract only) Strength: moderate now,
+                          strong at ten times the schema changes; it
+                          does not depend on the number of variants.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_vocabulary_of_variant_operations
+    guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_closed_set_of_variant_operations
+    guid_target:        opt_5bb9bde9503e41ad822afde24cf6afa5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_closed_core_with_composite_operations
+    guid_target:        opt_f5e409e8656044b1bbac5ac3eec90f73
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

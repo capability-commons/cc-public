@@ -1,0 +1,84 @@
+id_self:                ann_pair_of_ends_unique_in_every_checked_graph
+guid_self:              ann_60c935813eaf4204b8b8f7f763a2e180
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A pair of ends unique in every checked graph
+brief:                  |
+                        A check already allows at most one edge into
+                        each input, so in every runnable resolved
+                        graph a pair of ends names exactly one edge,
+                        and each end is a reference that renames keep.
+                        An operation naming an edge that an earlier
+                        operation removed then finds nothing, and with
+                        a precondition fails rather than picking
+                        another edge, and a failure on a resolved
+                        edge, which has no file and line, can name the
+                        edge by its ends as the resolver sketch
+                        already does.
+description:            |
+                        Sources:
+                        - The input-fed-twice check fails when more
+                          than one edge ends at an input, counting a
+                          second copy of one edge too.
+                          (src/cctool/check/check.lp lines 3204-3229)
+                        - Among the 41 edges of the Patrol base no
+                          pair of ends repeats, though six inputs take
+                          two or more edges, which an abstract base
+                          may. (count over
+                          _sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 349-520;
+                          _sources/cc-patrol-notes/variants.md lines
+                          124-127)
+                        - Each end names a node and a port by id and
+                          guid, and both are references, so a rename
+                          keeps the edge.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          28-32 and 144-171)
+                        - The extractor records each edge with the
+                          file and line of its place in the list, and
+                          a resolved graph is never stored.
+                          (src/cctool/graph/extract.py lines
+                          1719-1732;
+                          _data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-16)
+                        - The sketch's output reports the edges that
+                          cross hosts by their ends, such as
+                          rtp_forward to console_rtp_receive.
+                          (_sources/cc-patrol-notes/draft/resolved.txt
+                          line 14)
+                        - The survey recommends that each operation
+                          state a precondition, so that removing an
+                          absent element fails.
+                          (_sources/survey/README.md lines 45-48)
+                          Strength: strong for runnable graphs at any
+                          size, held by a check rather than habit;
+                          weak for abstract bases, which need their
+                          own uniqueness check on pairs of ends.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_its_ends
+    guid_target:        opt_34a1624fdf2346ef8306f74102ed94ff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
