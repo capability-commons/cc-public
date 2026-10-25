@@ -1,0 +1,92 @@
+id_self:                ann_run_shape_record_read_by_checks_from_the_tree
+guid_self:              ann_f2304e3d89214915b8f07c17e95f7e63
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A run record the checks can read
+brief:                  |
+                        The proposed staleness and comparability
+                        checks read a variant's resolved digest and a
+                        run's scenario, measures and seed policy, and
+                        the checks read facts extracted from the tree.
+                        A run item puts them there, held to its schema
+                        and references by the checker that exists, and
+                        reached by a rename. A record in an artifact
+                        store is a second storage mechanism that the
+                        checks do not read, in a store that does not
+                        exist, and a digest that names nothing there
+                        fails no check.
+description:            |
+                        Sources:
+                        - A run records host, commits, inputs and
+                          rates, latency, frame
+                          age, CPU and GPU load. (_sources/cc-patrol-notes/draft/README.md
+                          lines 104-106)
+                        - The extractor reads the YAML files under a
+                          _data directory and
+                          returns the facts they hold, which the logic programs are
+                          grounded on. (src/cctool/graph/extract.py lines 19-25;
+                          src/cctool/graph/logic.py lines 390-392)
+                        - The staleness option reads the variant's
+                          resolved digest, and the
+                          comparability option the scenario, measures, seed policy and
+                          fidelity of runs.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_any_digest_change.yaml
+                          lines 12-16;
+                          _data/decision/dec_comparability_of_runs_across_options/opt_comparability_check_over_sibling_runs.yaml
+                          lines 12-18)
+                        - The rename command rewrites every whole-id
+                          match in YAML text.
+                          (src/cctool/edit/edit.py lines 1086-1106)
+                        - A new item type adds a prefix, a schema, a
+                          register entry and a
+                          folder.
+                          (_data/decision/dec_how_variants_are_held/ann_new_variant_type_adds_parts.yaml
+                          lines 12-17)
+                        - The Patrol draft adds the run type at the
+                          first experiment.
+                          (_sources/cc-patrol-notes/draft/README.md lines 112-113)
+                        - ASSUMPTION: no artifact store exists for
+                          cc-public; none appears
+                          in pyproject.toml or src.
+                        Strength: strong for the measure table. At ten
+                        times the runs the volume in _data may favor a
+                        store for bulk outputs, which no option
+                        separates from the measures.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_dataflow_run
+    guid_target:        dec_446544f1f15b4a3a9fda71ba5e3a0af2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_run_item_in_the_tree
+    guid_target:        opt_f26ac1ec747c46e8b3967bbe1505e4c7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_run_record_in_an_artifact_store
+    guid_target:        opt_2c27c3af74a242888228fbc34c961624
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

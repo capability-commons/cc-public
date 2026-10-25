@@ -1,0 +1,61 @@
+id_self:                ann_binding_time_as_autosar_and_fmi_declare_it
+guid_self:              ann_dad727691d3e4af393cfc73d05986aee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Binding time as partner formats declare it
+brief:                  |
+                        AUTOSAR declares a configuration class on each
+                        parameter definition, and FMI declares the
+                        variability of each variable, tunable among
+                        them. A latest binding time per setting maps
+                        one to one onto both. A time per operation has
+                        no counterpart in either, and a two-valued
+                        flag loses the difference between pre-compile,
+                        link and post-build.
+description:            |
+                        Sources:
+                        - A parameter definition has a value
+                          configuration class that says
+                          in which class it is available, with values that include
+                          PreCompile, Link and PostBuild. (AUTOSAR TPS ECU Configuration R4.2.2, section 2.3.4.3,
+                          https://autosar.org/fileadmin/standards/R4.2.2/CP/AUTOSAR_TPS_ECUConfiguration.pdf)
+                        - An FMU exports a tunable parameter with
+                          causality parameter and
+                          variability tunable.
+                          (https://www.mathworks.com/help/fmuexport/ug/fmu-paramater-tunability-limitations.html)
+                          FMI's own definitions of fixed and tunable were not read.
+                        Strength: moderate; it depends on AUTOSAR or
+                        FMI exchange.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_binding_time_of_a_variation
+    guid_target:        dec_a8a9c8cadf23420f8fc08d4940d16dfd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_latest_binding_time_per_setting
+    guid_target:        opt_4a543acc18e047978995501e8fdb6616
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_binding_time_per_operation
+    guid_target:        opt_eb7f25fafedf4e709b6a032c9d480199
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_flag_only
+    guid_target:        opt_26bf2591f12a441da2f753d232a19c0d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

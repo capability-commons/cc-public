@@ -1,0 +1,55 @@
+id_self:                ann_cloned_graph_variants_imported_from_ssp
+guid_self:              ann_470c7e680e8b4d0ca7ae34ad09c02a34
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Variants that arrive from SSP as whole structures
+brief:                  |
+                        SSP holds variants as whole alternative SSD
+                        files, so importing an SSP package with
+                        several variants gives several whole graphs,
+                        each a near copy of the others. Forbidding
+                        copies refuses such an import unless it is
+                        first factored into a base and operations, and
+                        allowing them silently loses how they relate.
+                        A cloned-from link keeps them, with a drift
+                        report, until someone factors them.
+description:            |
+                        Sources:
+                        - An SSP archive may contain multiple SSD file
+                          entries at root
+                          level, with SystemStructure.ssd as the default.
+                          (https://ssp-standard.org/docs/2.0, chapter 3)
+                        Strength: moderate; it depends on SSP import.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_cloned_graphs
+    guid_target:        dec_3a36f2e03993421bade33c843f8bf9af
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_copies_with_cloned_from_link
+    guid_target:        opt_2162e36eeaec400da9ed4e5b9acc907e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_copies_forbidden_by_check
+    guid_target:        opt_c4c9a82f0bc3480cb4ae552017f29512
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_copies_allowed_silently
+    guid_target:        opt_015b56401e964215b2c94f03d452fbff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

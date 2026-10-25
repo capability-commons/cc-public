@@ -1,0 +1,53 @@
+id_self:                ann_deployment_item_per_host_with_history_in_git
+guid_self:              ann_d9f2c28569da4c0db8e312354d84f55c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A host item with its history in git
+brief:                  |
+                        An item for each host gives the current state
+                        in one place, is overwritten in place at each
+                        deployment, and keeps its past in git, so a
+                        maintainer can still find what a host ran,
+                        more slowly than from a record per event.
+description:            |
+                        Sources:
+                        - The per-host item names the variant, commit
+                          and resolved digest a
+                          host runs now. (the per-host option, brief)
+                        - Author and time come from git.
+                          (_data/decision/dec_author_and_time_of_items/ruling_author_and_time_of_items.yaml
+                          lines 12-14)
+                        - ASSUMPTION: cctool query reads the current
+                          tree, not past
+                          commits.
+                        Strength: weak; weaker than a record per
+                        event, and weaker still at ten times the
+                        hosts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_deployment_record
+    guid_target:        dec_8a2c9dcfee454a648336268c934cbe71
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_deployment_item_per_host
+    guid_target:        opt_21e9629c704f475d86301a1f35388553
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

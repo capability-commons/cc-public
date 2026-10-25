@@ -1,0 +1,68 @@
+id_self:                ann_origin_trace_faults_caused_by_removal
+guid_self:              ann_6de7bd3d922d4f05a38b23b8f79cce05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faults caused by a removal
+brief:                  |
+                        Some Patrol faults would come from a removal:
+                        a filter drops the only edge into a required
+                        input, and the unfed input check fires on a
+                        node whose own trace shows only the base. Both
+                        trace options record origins only for parts
+                        that are present, so they name the filter only
+                        if the resolver also records what each
+                        operation removed. No trace names nothing.
+description:            |
+                        Sources:
+                        - The unfed input check is a negation: a
+                          required input with no
+                          edge. (src/cctool/check/check.lp lines 3300-3305)
+                        - A tag filter removes tagged nodes with their
+                          edges, and tagged
+                          edges. (_sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          lines 21-25; _sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 40-43)
+                        - Failures should name the variant and the
+                          operation that
+                          introduced the fault. (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - Both trace options record, for each part of
+                          the resolved graph,
+                          the operations that produced or touched it. (the two trace
+                          options, briefs)
+                        Strength: strong; removals grow with
+                        tag-driven filtering. The support for either
+                        trace holds only if removals are recorded.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_origin_trace_of_a_resolved_graph
+    guid_target:        dec_365f6806883c47fd82a9df6bc89bdc24
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_origin_trace
+    guid_target:        opt_e47159af4ae54a8e978989228a432a7c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_the_last_producing_operation
+    guid_target:        opt_a1dcbae7aa18454fa7b874720d0f2a3e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_every_touching_operation
+    guid_target:        opt_0bca200b050c40aaabc72c4bc1bcd2f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

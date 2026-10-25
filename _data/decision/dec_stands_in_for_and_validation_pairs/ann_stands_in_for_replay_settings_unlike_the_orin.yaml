@@ -1,0 +1,76 @@
+id_self:                ann_stands_in_for_replay_settings_unlike_the_orin
+guid_self:              ann_5d2767c77fe74041a12e3b8983cae354
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay that runs the Legion analysis settings
+brief:                  |
+                        Replay leaves the analysis profile at the
+                        base's console value, which only Legion keeps,
+                        while the Orin variants write leaner. With a
+                        shared base alone, or with nothing recorded
+                        yet, replay evidence about analysis could be
+                        read as holding for the Orin, where it does
+                        not. A stands-in-for relation states which
+                        variant replay models, and the base's
+                        recorder, kept by the deployment variants,
+                        could supply the recorded input a validation
+                        pair needs.
+description:            |
+                        Sources:
+                        - The base gives the analysis profile console.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml lines 223-232)
+                        - The abstract Orin variant writes the
+                          analysis profile leaner, and
+                          Legion writes nothing.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml lines 30-32;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml lines 19-25)
+                        - Replay writes no analysis setting.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml lines
+                          18-63)
+                        - The recorder keeps the camera's encoded
+                          stream.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml lines 251-255)
+                        - The recorder carries no tag and is in every
+                          resolved deployment
+                          variant; replay keeps only analysis.
+                          (_sources/cc-patrol-notes/draft/resolved.txt lines 2, 5, 8 and
+                          12; _sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml lines
+                          25-26)
+                        - A validation pair is two runs on one
+                          recorded input, one through
+                          each variant. (the stands-in-for option, brief)
+                        Strength: strong; mismatched settings multiply
+                        with deployment variants.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_stands_in_for_and_validation_pairs
+    guid_target:        dec_ac10ada5fb5a4879974457ef919a3936
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stands_in_for_relation_with_validation_pairs
+    guid_target:        opt_05e6a143d5a741a9a6fa0825432b614c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shared_base_only
+    guid_target:        opt_5c2d60b965a84ce09553404de6c6dcc8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_link_deferred_until_reuse
+    guid_target:        opt_1d4f81349f4346798d4852538b9d128a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

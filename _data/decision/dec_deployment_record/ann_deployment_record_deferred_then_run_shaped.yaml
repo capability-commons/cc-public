@@ -1,0 +1,67 @@
+id_self:                ann_deployment_record_deferred_then_run_shaped
+guid_self:              ann_3257660893a445909a4191345c3ead3a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A deployment record deferred, then shaped like a run
+brief:                  |
+                        No deployment from cc-public exists, so
+                        deferring adds nothing. If a record is needed,
+                        one for each deployment event reuses the run
+                        record's shape, one mechanism for two jobs. An
+                        item per host holds current state overwritten
+                        at every deployment, a new kind of item in a
+                        tree whose items are otherwise records.
+description:            |
+                        Sources:
+                        - The event option is shaped like a run
+                          record. (the per-event
+                          option, brief)
+                        - The per-host item names what a host runs
+                          now. (the per-host
+                          option, brief)
+                        - Who made a ruling, and when, is left to
+                          commits.
+                          (_data/schema/sch_ruling.yaml lines 33-35)
+                        - ASSUMPTION: no item in _data today holds
+                          state that is
+                          overwritten on each event.
+                        - A type, relation, field or command is added
+                          only when a real
+                          instance needs it.
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml lines
+                          13-17)
+                        Strength: moderate; it turns once the first
+                        over-the-air update exists.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_deployment_record
+    guid_target:        dec_8a2c9dcfee454a648336268c934cbe71
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_deployment_record_deferred
+    guid_target:        opt_f309786b5b8b4066be207b44bcc1af94
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_record_per_deployment_event
+    guid_target:        opt_5da7aa8942cd48b7922ffb55bbf0d2bc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_deployment_item_per_host
+    guid_target:        opt_21e9629c704f475d86301a1f35388553
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,87 @@
+id_self:                ann_origin_trace_failure_on_unstored_resolved_part
+guid_self:              ann_42ebe7943d514d90ac1a405b6689903d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failures on resolved parts with no file and line
+brief:                  |
+                        A resolved dataflow graph is never stored, so
+                        a failure on one of its parts has no file and
+                        line, and without a trace it is traced by hand
+                        up the chain of variants to the base. Either
+                        trace maps the part back to the base item or
+                        operation, so the failure names the line to
+                        fix, as the drafts ask, at the cost of a
+                        record emitted by each operation kind in the
+                        interpreter.
+description:            |
+                        Sources:
+                        - Each failure says what is wrong and how to
+                          fix it.
+                          (_data/decision/dec_failure_report_form/ruling_failure_report_form.yaml
+                          lines 13-14)
+                        - The upheld option prints each failure as its
+                          file and line, the
+                          name of the check and a sentence on what it records.
+                          (_data/decision/dec_failure_report_form/opt_failures_say_what_and_how.yaml
+                          lines 13-17)
+                        - A dataflow edge fact carries file and line.
+                          (src/cctool/graph/extract.py lines 329-330 and 1798-1806)
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-16)
+                        - Failures should name the variant and the
+                          operation that
+                          introduced the fault. (_sources/cc-patrol-notes/variants.md lines
+                          86-89)
+                        - The mixed Orin variant resolves through the
+                          abstract Orin variant
+                          to the Patrol base. (_sources/cc-patrol-notes/draft/README.md
+                          lines 26-34)
+                        - Spack gives each directive a condition id so
+                          that a failure names
+                          its cause. (https://arxiv.org/abs/2210.08404, as summarized in
+                          _sources/survey/product-lines.md lines 88-90)
+                        - Maintainability asks how readily a newcomer
+                          understands the
+                          design. (_data/register/reg_concern.yaml line 394)
+                        Strength: strong; every resolved part of every
+                        leaf is affected, and hand tracing grows with
+                        chain depth.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_origin_trace_of_a_resolved_graph
+    guid_target:        dec_365f6806883c47fd82a9df6bc89bdc24
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_origin_trace
+    guid_target:        opt_e47159af4ae54a8e978989228a432a7c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_the_last_producing_operation
+    guid_target:        opt_a1dcbae7aa18454fa7b874720d0f2a3e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_every_touching_operation
+    guid_target:        opt_0bca200b050c40aaabc72c4bc1bcd2f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

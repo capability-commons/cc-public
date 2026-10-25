@@ -1,0 +1,49 @@
+id_self:                ann_deployment_item_per_host_lags_a_switch
+guid_self:              ann_9126060f21ca49c4a21027099dba4953
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A host item that lags a mode switch
+brief:                  |
+                        An item for each host that says what it runs
+                        now is wrong after a mode switch or an update
+                        until someone commits a change, and it holds
+                        what ran at the time of a failure only through
+                        git history.
+description:            |
+                        Sources:
+                        - The per-host item names what a host runs
+                          now. (the per-host
+                          option, brief)
+                        - One open option of the run-time mode
+                          decision has a deployment
+                          switch among a named set of pre-resolved modes.
+                          (_data/decision/dec_runtime_mode_set/opt_named_set_of_pre_resolved_modes.yaml
+                          lines 12-16)
+                        - Author and time come from git.
+                          (_data/decision/dec_author_and_time_of_items/ruling_author_and_time_of_items.yaml
+                          lines 12-14)
+                        Strength: strong once a deployment switches
+                        modes or takes updates.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_deployment_record
+    guid_target:        dec_8a2c9dcfee454a648336268c934cbe71
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_deployment_item_per_host
+    guid_target:        opt_21e9629c704f475d86301a1f35388553
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

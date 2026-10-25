@@ -1,0 +1,74 @@
+id_self:                ann_origin_trace_one_entry_per_part_for_file_and_line
+guid_self:              ann_8e43862810f34e71abe0066646e42a92
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One trace entry per part in place of file and line
+brief:                  |
+                        A trace of the operation that last produced
+                        each part gives that part the file and line of
+                        the operation, so the existing failure columns
+                        keep working with one mechanism and one entry
+                        per part. No trace leaves a failure on a
+                        resolved part with no file and line to fix. A
+                        trace of every touching operation keeps a list
+                        per part that no current need reads.
+description:            |
+                        Sources:
+                        - The foreign node, unknown port and port type
+                          mismatch checks
+                          carry file and line. (src/cctool/check/check.lp lines 3166, 3208
+                          and 3345)
+                        - The resolved graph is never stored, so its
+                          edges have no file and
+                          line.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_duplicate_edges_need_a_join_precondition.yaml
+                          lines 12-21)
+                        - Each failure says what is wrong and how to
+                          fix it.
+                          (_data/decision/dec_failure_report_form/ruling_failure_report_form.yaml
+                          lines 12-15)
+                        - An element produced inside a composite has
+                          two origins, the
+                          composite and the core operation within it, so one entry per part
+                          holds only if composites are not ruled in.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_composite_traces_through_two_levels.yaml
+                          lines 12-20)
+                        - The simplicity measure counts distinct
+                          mechanisms and jobs done
+                          by more than one mechanism. (_data/register/reg_concern.yaml lines
+                          489-490)
+                        Strength: strong; the record is one entry per
+                        part at any scale.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_origin_trace_of_a_resolved_graph
+    guid_target:        dec_365f6806883c47fd82a9df6bc89bdc24
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_the_last_producing_operation
+    guid_target:        opt_a1dcbae7aa18454fa7b874720d0f2a3e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_origin_trace
+    guid_target:        opt_e47159af4ae54a8e978989228a432a7c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_trace_of_every_touching_operation
+    guid_target:        opt_0bca200b050c40aaabc72c4bc1bcd2f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

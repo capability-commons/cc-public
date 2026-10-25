@@ -1,0 +1,74 @@
+id_self:                ann_origin_trace_parts_touched_by_several_operations
+guid_self:              ann_82344611896344838ce2f256fb02669a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Parts touched by several operations
+brief:                  |
+                        A node added by one operation, placed by
+                        another and written by a third has three
+                        reasons, and a later write can override an
+                        earlier one. A last-producer trace keeps only
+                        the winner, so why a node exists, and why an
+                        earlier write has no effect, are still found
+                        by hand. A trace of every touching operation
+                        keeps the chain, at the cost of a list in
+                        place of one entry per part.
+description:            |
+                        Sources:
+                        - The mixed Orin variant places nodes of its
+                          base by tag after
+                          filtering. (_sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          lines 22-35)
+                        - The replay variant adds nodes and then joins
+                          them.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml lines
+                          28-63)
+                        - The abstract Orin variant writes the
+                          analysis profile that its
+                          children inherit. (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 30-32)
+                        - Last-writer-wins stacks can undo an earlier
+                          layer with no record
+                          of the conflict. (_sources/survey/generative-and-transforms.md
+                          line 154)
+                        - Two included deltas touching one key need
+                          both operations named.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_one_chain_of_origins_per_resolved_element.yaml
+                          lines 12-19)
+                        - ASSUMPTION: a child may later write the same
+                          setting. Strength: moderate to strong;
+                          chains grow with included units, lowering
+                          stages and overrides.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_origin_trace_of_a_resolved_graph
+    guid_target:        dec_365f6806883c47fd82a9df6bc89bdc24
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_trace_of_every_touching_operation
+    guid_target:        opt_0bca200b050c40aaabc72c4bc1bcd2f4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_trace_of_the_last_producing_operation
+    guid_target:        opt_a1dcbae7aa18454fa7b874720d0f2a3e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
