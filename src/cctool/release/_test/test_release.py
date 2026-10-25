@@ -170,11 +170,11 @@ def repo(tree, monkeypatch):
 def test_the_first_release_takes_the_version_of_the_module(repo):
     result = cctool.release.release.prepare(repo, 'The first release.')
     assert (result['base'], result['version'], result['level']) == (None, '0.1.0', None)
-    assert result['written'] == ['_data/release/release_0_1_0.yaml', 'src/cctool/version.py']
-    _commit(repo, cctool.commit.message.compose('Add release_0_1_0', 'The first release.'))
+    assert result['written'] == ['_data/release/release_cc_public_0_1_0.yaml', 'src/cctool/version.py']
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
     assert cctool.release.release.verify(repo, 'v0.1.0', 'HEAD') == []
     assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == [
-        '_data/release/release_0_1_0.yaml records the version 0.1.0, not 0.2.0.',
+        '_data/release/release_cc_public_0_1_0.yaml records the version 0.1.0, not 0.2.0.',
         'The version module at {short} holds 0.1.0, not 0.2.0.'.format(short = _short(repo))]
 
 
@@ -207,20 +207,20 @@ def test_the_release_item_records_the_renames_and_the_check_holds_it_to_them(rep
     _commit(repo, cctool.commit.message.compose('Rename concern_simplicity to concern_plainness',
                                                 'A plainer name.'))
     cctool.release.release.prepare(repo, 'A plainer name for a concern.')
-    path = repo / '_data/release/release_0_2_0.yaml'
-    item = cctool.edit.edit.Tree(repo).map_document['_data/release/release_0_2_0.yaml'][0]
+    path = repo / '_data/release/release_cc_public_0_2_0.yaml'
+    item = cctool.edit.edit.Tree(repo).map_document['_data/release/release_cc_public_0_2_0.yaml'][0]
     assert [dict(rename) for rename in item['rename']] == [
         {'old': 'concern_simplicity', 'new': 'concern_plainness', 'guid': guid}]
-    _commit(repo, cctool.commit.message.compose('Add release_0_2_0', 'A plainer name.'))
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_2_0', 'A plainer name.'))
     assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == []
     path.write_text(path.read_text().replace('new:                concern_plainness',
                                              'new:                concern_plain'))
-    _commit(repo, cctool.commit.message.compose('Change release_0_2_0 so that it is wrong',
+    _commit(repo, cctool.commit.message.compose('Change release_cc_public_0_2_0 so that it is wrong',
                                                 'A wrong rename.'))
     _git(repo, 'reset', '--quiet', '--soft', 'HEAD~2')
-    _commit(repo, cctool.commit.message.compose('Add release_0_2_0', 'A wrong rename.'))
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_2_0', 'A wrong rename.'))
     assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == [
-        '_data/release/release_0_2_0.yaml does not record the renames since v0.1.0. Remove the '
+        '_data/release/release_cc_public_0_2_0.yaml does not record the renames since v0.1.0. Remove the '
         'release item, and run cctool release prepare again.']
 
 

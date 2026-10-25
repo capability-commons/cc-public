@@ -185,7 +185,7 @@ def consumed(root:         pathlib.Path,
             continue
         package  = DIR_PACKAGE if place == PLACE_RELEASE else None
         map_tree = cctool.graph.extract.documents(path, package)
-        segment  = _segment(map_tree)
+        segment  = segment_of(map_tree)
         if segment is None:
             continue
         map_consumed.update({str(pathlib.PurePosixPath(cctool.graph.extract.DIR_CONSUMED,
@@ -222,11 +222,28 @@ def _consumes(map_document: cctool.graph.extract.Documents) -> list[tuple[str, i
 
 
 # -----------------------------------------------------------------------------
-def _segment(map_document: cctool.graph.extract.Documents) -> str | None:
+def segment_of(map_document: cctool.graph.extract.Documents) -> str | None:
     """
-    Return the id of the one segment item of the documents, or None if
-    they hold none or more than one.
+    ---
 
+    id_self:                pyf_cctool.check.segment.segment_of
+    guid_self:              pyf_71c9105d812749949ddb9037b6b12ac2
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Segment item of a tree
+    brief:                  |
+                            Return the id of the one segment item of the
+                            documents, or None if they hold none or more
+                            than one.
+    edge:                   []
+
+    ...
     """
 
     set_id = {_segment_id(document) for (document, _) in map_document.values()} - {None}

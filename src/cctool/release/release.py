@@ -53,6 +53,7 @@ import tempfile
 import ruamel.yaml
 
 import cctool.check.check
+import cctool.check.segment
 import cctool.commit.change
 import cctool.commit.history
 import cctool.commit.impact
@@ -318,10 +319,18 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
         raise ErrorRelease('The version module holds {version}, which is not a release '
                            'version, such as 1.2.3.'.format(version = version))
 
-    id_release = cctool.release.record.PREFIX + version.replace('.', '_')
+    tree       = cctool.edit.edit.Tree(root)
+    segment    = cctool.check.segment.segment_of(cctool.graph.extract.documents(root))
+    if segment is None:
+        raise ErrorRelease('The tree holds no segment item, or more than one, so the release '
+                           'cannot be named for its federated segment.')
+
+    id_release = '{prefix}{segment}_{version}'.format(
+                     prefix  = cctool.release.record.PREFIX,
+                     segment = segment.removeprefix(cctool.graph.extract.PREFIX_SEGMENT),
+                     version = version.replace('.', '_'))
     path_lock  = root / PATH_LOCK
     text_lock  = path_lock.read_text(encoding = 'utf-8') if path_lock.is_file() else ''
-    tree       = cctool.edit.edit.Tree(root)
     list_field = [('title',        'Release {v}'.format(v = version)),
                   ('brief',        brief),
                   ('version',      version),

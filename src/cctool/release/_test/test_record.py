@@ -41,7 +41,7 @@ def test_the_version_module_and_the_newest_release_disagree(tree):
     (tree / cctool.release.record.PATH_MODULE).write_text("VERSION = '0.9.0'\n")
     map_document = cctool.edit.edit.Tree(tree).map_document
     assert cctool.release.record.disagreements(tree, map_document) == [
-        ('_data/release/release_0_10_0.yaml', '1', 'release_0_10_0', '0.10.0', '0.9.0')]
+        ('_data/release/release_cc_public_0_10_0.yaml', '1', 'release_cc_public_0_10_0', '0.10.0', '0.9.0')]
     (tree / cctool.release.record.PATH_MODULE).write_text("VERSION = '0.10.0'\n")
     assert cctool.release.record.disagreements(tree, map_document) == []
 
@@ -52,7 +52,7 @@ def test_the_check_reports_a_version_module_that_disagrees(tree):
     _release(tree, '0.2.0')
     failures = cctool.check.check.check(tree)
     assert failures[cctool.check.check.NAME_VERSION] == [
-        ('_data/release/release_0_2_0.yaml', '1', 'release_0_2_0', '0.2.0', '0.1.0')]
+        ('_data/release/release_cc_public_0_2_0.yaml', '1', 'release_cc_public_0_2_0', '0.2.0', '0.1.0')]
 
 
 # -----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ def _release(root, version):
 
     tree = cctool.edit.edit.Tree(root)
     tree.update(cctool.edit.edit.new(tree,
-                                     'release_' + version.replace('.', '_'),
+                                     'release_cc_public_' + version.replace('.', '_'),
                                      [('title',      'Release ' + version),
                                       ('brief',      'A release.'),
                                       ('version',    version),

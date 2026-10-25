@@ -1766,16 +1766,22 @@ entries:
                         tag be checked against the version module.
     note:               |
                         Release data items travel on their own, one
-                        per file, in _data/release/. The id is the
-                        version with each dot written as an
-                        underscore. cctool release prepare writes one,
-                        and the tag of the release names the commit
-                        that adds it.
+                        per file, in _data/release/. The id names the
+                        federated segment released, by the id of its
+                        segment data item without the segment prefix,
+                        and then the version, with each dot written as
+                        an underscore, so that release_cc_public_0_1_0
+                        is release 0.1.0 of segment_cc_public. Every
+                        federated segment numbers its own releases, so
+                        the segment in the id keeps their release data
+                        items apart. cctool release prepare writes
+                        one, and the tag of the release names the
+                        commit that adds it.
 
                         The shape of release data items is defined by
                         the sch_release schema.
     prefix:             release
-    regex_id:           ^release_[0-9]+_[0-9]+_[0-9]+$
+    regex_id:           ^release_[a-z][a-z0-9_]*_(0|[1-9][0-9]*)_(0|[1-9][0-9]*)_(0|[1-9][0-9]*)$
     id_concept:         concept_release
     guid_concept:       concept_a471f9716b3c49778a797fd66921b517
     alias:              []

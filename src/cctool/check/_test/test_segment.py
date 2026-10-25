@@ -20,13 +20,13 @@ brief:                  |
                         that tree.
 description:            |
                         Each test makes a peer, a tree that holds one
-                        segment item and consumes release_0_1_0, and
-                        checks it against a copy of the repository: as
-                        a checkout, or laid out as the installed
-                        package. A fault is put into the peer or into
-                        the consumed copy, and the test expects that
-                        fault, as a failure or as a notice, and
-                        nothing else.
+                        segment item and consumes
+                        release_cc_public_0_1_0, and checks it against
+                        a copy of the repository: as a checkout, or
+                        laid out as the installed package. A fault is
+                        put into the peer or into the consumed copy,
+                        and the test expects that fault, as a failure
+                        or as a notice, and nothing else.
 edge:                   []
 
 ...
@@ -45,8 +45,8 @@ import cctool.edit.edit
 
 ID_PEER      = 'segment_peer'
 FILE_PEER    = '_data/federated_segment/segment_peer.yaml'
-FILE_NEWER   = '_data/release/release_0_2_0.yaml'
-FILE_RELEASE = '_data/release/release_0_1_0.yaml'
+FILE_NEWER   = '_data/release/release_cc_public_0_2_0.yaml'
+FILE_RELEASE = '_data/release/release_cc_public_0_1_0.yaml'
 
 TEXT_PEER    = """\
 id_self:                segment_peer
@@ -76,7 +76,7 @@ edge:
 
 # -----------------------------------------------------------------------------
 def _peer(tmp_path_factory,
-          release = 'release_0_1_0',
+          release = 'release_cc_public_0_1_0',
           guid    = 'release_b9909b2c09ac45e08e9e4fd466d0ded3'):
     """
     Return the root of a new peer, which consumes release, with guid.
@@ -117,12 +117,12 @@ def _consume(monkeypatch, place, path):
 # -----------------------------------------------------------------------------
 def _newer(tree):
     """
-    Give the copy tree a release item newer than release_0_1_0.
+    Give the copy tree a release item newer than release_cc_public_0_1_0.
 
     """
 
     text = (tree / FILE_RELEASE).read_text(encoding = 'utf-8')
-    text = (text.replace('release_0_1_0', 'release_0_2_0')
+    text = (text.replace('release_cc_public_0_1_0', 'release_cc_public_0_2_0')
                 .replace('release_b9909b2c09ac45e08e9e4fd466d0ded3',
                          'release_0f4c3b2a19d84e6f8a7b6c5d4e3f2a10')
                 .replace('Release 0.1.0', 'Release 0.2.0')
@@ -278,7 +278,7 @@ def test_a_release_older_than_the_consumed_tree_disagrees(tree, tmp_path_factory
     _consume(monkeypatch, place, path)
     (failures, _, notices) = cctool.check.check.review(_peer(tmp_path_factory))
 
-    row      = (FILE_PEER, '1', ID_PEER, 'release_0_1_0', 'release_0_2_0', place)
+    row      = (FILE_PEER, '1', ID_PEER, 'release_cc_public_0_1_0', 'release_cc_public_0_2_0', place)
     expected = {cctool.check.check.NAME_CONSUMED: [row]}
 
     assert (failures if is_failure else notices).get(cctool.check.check.NAME_CONSUMED) \
