@@ -2925,7 +2925,7 @@ schema_count(Type, Schemas) :-
 %                         which declares it a segment of the federation
 %                         and names the releases it consumes.
 % did:                    The tree holds {segments} segment items, not 1.
-% fix:                    Give the tree one segment item in _data/segment/, naming with relation_consumes the release item of each segment it consumes.
+% fix:                    Give the tree one segment item in _data/federated_segment/, naming with relation_consumes the release item of each segment it consumes.
 % edge:                   []
 %
 % ...
@@ -2934,7 +2934,7 @@ schema_count(Type, Schemas) :-
 #show segment_count/1.
 
 segment_count(Segments) :-
-    Segments = #count { Segment : has_type(Segment, "type_segment"),
+    Segments = #count { Segment : has_type(Segment, "type_federated_segment"),
                                   item(Segment, _, _, File, _),
                                   not consumed_file(File) },
     Segments != 1.

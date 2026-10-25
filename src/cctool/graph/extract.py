@@ -152,7 +152,7 @@ DIR_DATA          = '_data'
 # segment segment_x, at _data/... in its own tree.
 #
 DIR_CONSUMED      = '_consumed'
-PREFIX_SEGMENT    = cctool.graph.prefix.stem('type_segment')
+PREFIX_SEGMENT    = cctool.graph.prefix.stem('type_federated_segment')
 SUFFIX_YAML       = '.yaml'
 SUFFIX_PYTHON     = '.py'
 SUFFIX_PROGRAM    = '.lp'

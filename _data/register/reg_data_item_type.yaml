@@ -1793,10 +1793,10 @@ entries:
         guid_target:    rol_735205edba274ae2b2e50b928dce130c
 
   # ---------------------------------------------------------------------------
-  # type_segment -- Segment type
+  # type_federated_segment -- Segment type
   #
-  type_segment:
-    id_self:            type_segment
+  type_federated_segment:
+    id_self:            type_federated_segment
     guid_self:          type_fb252f8b1e5946acb26f4dde2e3493bd
     title:              Segment type
     brief:              |
@@ -1812,24 +1812,27 @@ entries:
                         how a segment declares itself.
     note:               |
                         Each federated repository holds exactly one
-                        segment data item, in _data/segment/.
+                        segment data item, in
+                        _data/federated_segment/.
 
                         The shape of segment data items is defined by
-                        the sch_segment schema.
+                        the sch_federated_segment schema.
     prefix:             segment
     regex_id:           ^segment_[a-z][a-z0-9_]*$
-    id_concept:         concept_segment
+    id_concept:         concept_federated_segment
     guid_concept:       concept_a14ac366a4414b4697991d5136a370df
-    alias:              []
+
+    alias:
+      - type_segment
 
     edge:
 
       - id_relation:    relation_has_items_specified_by_schema
         guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
-        id_target:      sch_segment
+        id_target:      sch_federated_segment
         guid_target:    sch_512e05a569f74c45979892b851d53f95
 
       - id_relation:    relation_has_items_that_play
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
-        id_target:      rol_segment
+        id_target:      rol_federated_segment
         guid_target:    rol_78f362fc44d6488296f6f6c5f44e781b

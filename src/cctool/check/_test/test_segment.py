@@ -44,7 +44,7 @@ import cctool.edit.edit
 
 
 ID_PEER      = 'segment_peer'
-FILE_PEER    = '_data/segment/segment_peer.yaml'
+FILE_PEER    = '_data/federated_segment/segment_peer.yaml'
 FILE_NEWER   = '_data/release/release_0_2_0.yaml'
 FILE_RELEASE = '_data/release/release_0_1_0.yaml'
 
@@ -62,8 +62,8 @@ protective_mark:
 title:                  The peer segment
 brief:                  |
                         A peer of cc-public, made for a test. Its
-                        brief names concept_segment, which cc-public
-                        holds.
+                        brief names concept_federated_segment, which
+                        cc-public holds.
 
 edge:
 
@@ -201,7 +201,7 @@ def test_a_fault_in_the_consumed_tree_is_a_notice(tree, tmp_path_factory, monkey
 
     """
 
-    path = tree / '_data' / 'segment' / 'segment_cc_public.yaml'
+    path = tree / '_data' / 'federated_segment' / 'segment_cc_public.yaml'
     path.write_text(path.read_text(encoding = 'utf-8')
                         .replace('It consumes nothing.', 'It consumes concept_nowhere.'),
                     encoding = 'utf-8')
@@ -211,7 +211,7 @@ def test_a_fault_in_the_consumed_tree_is_a_notice(tree, tmp_path_factory, monkey
     assert _without_layout(failures) == {}
     assert notices == {'dangling_mention': [
         ('segment_cc_public', 'concept_nowhere',
-         '_consumed/segment_cc_public/_data/segment/segment_cc_public.yaml', '14')]}
+         '_consumed/segment_cc_public/_data/federated_segment/segment_cc_public.yaml', '14')]}
 
 
 # -----------------------------------------------------------------------------
@@ -232,7 +232,7 @@ def test_a_peer_that_names_a_missing_release_fails(tree, tmp_path_factory, monke
                                                 FILE_PEER, '21')]
     assert sorted(failures['unconsumed_reference']) == [
         (ID_PEER, id_named, ID_PEER, 'segment_cc_public', FILE_PEER, line)
-        for (id_named, line) in (('concept_segment', '14'), ('mark_public', '8'),
+        for (id_named, line) in (('concept_federated_segment', '14'), ('mark_public', '8'),
                                  ('relation_consumes', '19'))]
     assert set(failures) == {'dangling_reference', 'unconsumed_reference'}
     assert notices == {}
@@ -246,7 +246,7 @@ def test_a_consumed_item_that_names_the_peer_fails(tree, tmp_path_factory, monke
 
     """
 
-    path = tree / '_data' / 'segment' / 'segment_cc_public.yaml'
+    path = tree / '_data' / 'federated_segment' / 'segment_cc_public.yaml'
     path.write_text(path.read_text(encoding = 'utf-8')
                         .replace('It consumes nothing.', 'It names segment_peer.'),
                     encoding = 'utf-8')
@@ -255,7 +255,7 @@ def test_a_consumed_item_that_names_the_peer_fails(tree, tmp_path_factory, monke
 
     assert _without_layout(failures) == {'unconsumed_reference': [
         ('segment_cc_public', ID_PEER, 'segment_cc_public', ID_PEER,
-         '_consumed/segment_cc_public/_data/segment/segment_cc_public.yaml', '14')]}
+         '_consumed/segment_cc_public/_data/federated_segment/segment_cc_public.yaml', '14')]}
     assert notices == {}
 
 
@@ -321,7 +321,7 @@ def test_an_edit_in_a_peer_may_not_change_a_consumed_item(tree, tmp_path_factory
     edit = cctool.edit.edit.Tree(_peer(tmp_path_factory))
 
     with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'held by segment_cc_public'):
-        cctool.edit.edit.set_field(edit, 'concept_segment', 'title', 'Part')
+        cctool.edit.edit.set_field(edit, 'concept_federated_segment', 'title', 'Part')
 
 
 # -----------------------------------------------------------------------------
