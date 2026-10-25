@@ -27,31 +27,25 @@ description:            |
                         - An edge has exactly id_relation,
                           guid_relation, id_target and guid_target,
                           with no additional properties allowed.
-                          (_data/schema/sch_trait_edge.yaml lines
-                          70-84, the four properties defined in lines
+                          (_data/schema/sch_trait_edge.yaml at $defs.edge, the four properties defined in lines
                           86-141)
                         - A ruling carries nothing beyond the
                           standalone fields and its edges, which
                           options it upholds or rejects are edges, not
                           fields, and no unevaluated property is
-                          allowed. (_data/schema/sch_ruling.yaml lines
-                          17-27 and 47)
+                          allowed. (_data/schema/sch_ruling.yaml at description and unevaluatedProperties)
                         - This option has one ruling uphold several
                           options, each paired with the products it
                           holds for.
-                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_one_ruling_with_an_option_per_product.yaml
-                          lines 13-16)
-                        - The upholds edge is read in derive.lp line
-                          117, text.py lines 126-152, argument.py
-                          lines 321 and 341, page.py lines 1200 and
-                          2339, request.py lines 104 and 358,
-                          change.lp lines 423 and 432, advise.lp line
-                          437 and check.lp line 1358, all under
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_one_ruling_with_an_option_per_product.yaml at brief)
+                        - The upholds edge is read in derive.lp,
+                          text.py, argument.py, page.py lines 1200 and
+                          2339, request.py,
+                          change.lp, advise.lp and check.lp, all under
                           src/cctool. (grep of the upholds relation in
                           src/cctool, tests excluded)
                         - A ruling may not both uphold and reject one
-                          option. (src/cctool/check/check.lp lines
-                          1467-1469) This bears only if the single
+                          option. (src/cctool/check/check.lp) This bears only if the single
                           ruling also records that an option is
                           rejected for the other products; a ruling
                           that only upholds an option for each product
@@ -66,9 +60,7 @@ description:            |
                           holds for, and changes the
                           at-most-one-ruling check from each decision
                           to each product.
-                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_ruling_names_the_products_it_holds_for.yaml
-                          lines 13-19; src/cctool/check/check.lp lines
-                          1638-1643)
+                          (_data/decision/dec_settled_answers_that_differ_by_product/opt_ruling_names_the_products_it_holds_for.yaml at brief; src/cctool/check/check.lp)
                         - Assumption, the advocate's estimate and not
                           measured: named rulings take about 3 to 5
                           person-days including tests, one ruling with

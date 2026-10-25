@@ -28,31 +28,24 @@ description:            |
                           there is one, and a new ruling's id is made
                           from the decision's id alone, so a review
                           request cannot make a second ruling.
-                          (src/cctool/web/request.py lines 265-294)
+                          (src/cctool/web/request.py)
                         - To uphold or reject an option changes the
                           one ruling of the decision in place of what
-                          it was before. (src/cctool/web/request.py
-                          lines 30-37; src/cctool/web/page.py lines
-                          1050-1053)
+                          it was before. (src/cctool/web/request.py; src/cctool/web/page.py within _controls)
                         - Each option gets one standing, open, upheld
                           or rejected, set from every ruling of the
-                          decision. (src/cctool/web/argument.py lines
-                          339-344) Search derives one standing for
+                          decision. (src/cctool/web/argument.py within Graph.decision) Search derives one standing for
                           each option in the same way.
-                          (src/cctool/graph/text.py lines 100-104 and
-                          140-146)
+                          (src/cctool/graph/text.py)
                         - Under either per-product option, an option
                           upheld for one product and open or rejected
                           for another has no single correct standing.
                           (inference from the two option texts,
-                          _data/decision/dec_settled_answers_that_differ_by_product/opt_one_ruling_with_an_option_per_product.yaml
-                          lines 13-18 and
-                          opt_ruling_names_the_products_it_holds_for.yaml
-                          lines 13-19)
+                          _data/decision/dec_settled_answers_that_differ_by_product/opt_one_ruling_with_an_option_per_product.yaml at brief and
+                          opt_ruling_names_the_products_it_holds_for.yaml)
                         - The option with a decision for each product
                           keeps the rules for rulings as they are.
-                          (opt_one_decision_for_each_product.yaml
-                          lines 16-17, same folder) Strength: does not
+                          (opt_one_decision_for_each_product.yaml, same folder) Strength: does not
                           grow with scale. It is a one-time build
                           obligation that goes away once the tools
                           take a product into account.
