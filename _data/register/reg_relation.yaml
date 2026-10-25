@@ -1547,3 +1547,38 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_release
         guid_target:    relcon_413e2dcf42f049b5b8bd0921517b16f2
+
+  # ---------------------------------------------------------------------------
+  # relation_takes_option -- Takes option relation
+  #
+  relation_takes_option:
+    id_self:            relation_takes_option
+    guid_self:          relation_131b2a68e26c45d59fe372d52c20cd4c
+    title:              Takes option relation
+    brief:              |
+                        SOURCE takes TARGET
+    description:        |
+                        The dataflow variant identified by SOURCE
+                        takes the option identified by TARGET as its
+                        answer to the decision of that option. The
+                        option is upheld, and a dataflow variant takes
+                        at most one option of each decision.
+
+                        The edge is optional. Where it is absent,
+                        nothing is inferred, other than that the
+                        dataflow variant has not yet been argued
+                        against that decision, or needs no argument
+                        (WTP, 2026-10-25).
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_can_take_an_option
+        guid_target:    relcon_8c280bfeb39c4252b2f8a6a2ab44d5d9
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_option
+        guid_target:    relcon_72a33d1a1fb543cfac75c57192d14a4f

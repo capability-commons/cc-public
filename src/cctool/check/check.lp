@@ -1646,6 +1646,83 @@ competing_rulings(Decision, Ruling, Other) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.option_taken_but_not_upheld
+% guid_self:              lpp_aaa9b2cbb49744a2afcc04eba3538ddb
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Option taken but not upheld
+% brief:                  |
+%                         A dataflow variant takes only an option that a
+%                         ruling upholds.
+% did:                    |
+%                         {variant} takes {option}, which no ruling
+%                         upholds.
+% fix:                    |
+%                         Take an upheld option of the decision, or
+%                         remove the edge until the decision is ruled.
+% edge:                   []
+%
+% ...
+%
+% decl option_taken_but_not_upheld(variant: symbol,
+%                                  option:  symbol)
+#show option_taken_but_not_upheld/2.
+
+option_taken_but_not_upheld(Variant, Option) :-
+    primary_edge(Variant, "relation_takes_option", Option),
+    not primary_edge(_, "relation_upholds", Option).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.two_options_taken
+% guid_self:              lpp_58b2ab16b31b46be86ce6d809e217e96
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Two options taken
+% brief:                  |
+%                         A dataflow variant takes at most one option of
+%                         each decision.
+% did:                    |
+%                         {variant} takes both {option} and {other} of
+%                         {decision}.
+% fix:                    |
+%                         Keep the edge to the option the dataflow
+%                         variant takes.
+% edge:                   []
+%
+% ...
+%
+% decl two_options_taken(variant:  symbol,
+%                        decision: symbol,
+%                        option:   symbol,
+%                        other:    symbol)
+#show two_options_taken/4.
+
+two_options_taken(Variant, Decision, Option, Other) :-
+    primary_edge(Variant, "relation_takes_option", Option),
+    primary_edge(Variant, "relation_takes_option", Other),
+    decision_of(Option, Decision),
+    decision_of(Other, Decision),
+    Option < Other.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unreadable_file
 % guid_self:              lpp_4ea0e7c691ca44c2aa6835f18e809982
 % copyright:              Copyright 2026 William Payne

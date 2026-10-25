@@ -426,6 +426,41 @@ def test_a_ruling_that_upholds_and_rejects_one_option_is_reported(tree):
     assert _check(tree) == {'upholds_and_rejects': [('ruling_x', 'opt_x')]}
 
 
+def test_a_dataflow_graph_that_takes_an_upheld_option_passes(tree):
+    _option(tree, 'opt_x')
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
+    _dataflow_graph(tree, LIST_RING,
+                    map_extra = {'edge': [_edge(tree, 'relation_takes_option', 'opt_x')]})
+    assert _check(tree) == {}
+
+
+def test_a_dataflow_graph_that_takes_no_option_passes(tree):
+    _option(tree, 'opt_x')
+    _option(tree, 'opt_y')
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x'),
+                                                    _edge(tree, 'relation_upholds', 'opt_y')])
+    _dataflow_graph(tree, LIST_RING)
+    assert _check(tree) == {}
+
+
+def test_a_dataflow_graph_that_takes_an_option_no_ruling_upholds_is_reported(tree):
+    _option(tree, 'opt_x')
+    _dataflow_graph(tree, LIST_RING,
+                    map_extra = {'edge': [_edge(tree, 'relation_takes_option', 'opt_x')]})
+    assert _check(tree) == {'option_taken_but_not_upheld': [('dfg_x', 'opt_x')]}
+
+
+def test_a_dataflow_graph_that_takes_two_options_of_a_decision_is_reported(tree):
+    _option(tree, 'opt_x')
+    _option(tree, 'opt_y')
+    _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x'),
+                                                    _edge(tree, 'relation_upholds', 'opt_y')])
+    _dataflow_graph(tree, LIST_RING,
+                    map_extra = {'edge': [_edge(tree, 'relation_takes_option', 'opt_x'),
+                                          _edge(tree, 'relation_takes_option', 'opt_y')]})
+    assert _check(tree) == {'two_options_taken': [('dfg_x', 'dec_x', 'opt_x', 'opt_y')]}
+
+
 def test_an_option_that_supersedes_a_ruling_is_reported(tree):
     _option(tree, 'opt_x')
     _item(tree, DIR_DECISION + 'ruling_x.yaml', 'ruling_x', [_edge(tree, 'relation_upholds', 'opt_x')])
