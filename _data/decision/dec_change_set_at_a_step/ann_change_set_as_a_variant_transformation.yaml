@@ -11,21 +11,20 @@ protective_mark:
 title:                  Run-time change set as a variant transformation
 brief:                  |
                         A change set checked by cctool first is the
-                        same kind of thing as a dataflow variant: a
-                        delta of variant operations, such as add,
-                        remove, join and place, whose base is the
-                        running resolved dataflow graph. The ruling on
-                        how variants are held adopts that form, a base
-                        and an ordered list of operations whose
-                        resolved graph is derived and checked, and the
-                        Patrol proposal puts the interpreter of those
-                        operations in cctool's Python, so the checks a
-                        change set needs are ones cctool is to hold
-                        anyway, and the runtime needs only a digest
-                        comparison. Where variants are resolved is
-                        still an open decision, and this holds only
-                        while the answer keeps the interpreter in
-                        cctool.
+                        same kind of thing as a dataflow variant: an
+                        operation list, such as add, remove, join and
+                        place, whose base is the running resolved
+                        dataflow graph. The ruling on how variants are
+                        held adopts that form, a base and an ordered
+                        list of operations whose resolved graph is
+                        derived and checked, and the Patrol proposal
+                        puts the interpreter of those operations in
+                        cctool's Python, so the checks a change set
+                        needs are ones cctool is to hold anyway, and
+                        the runtime needs only a digest comparison.
+                        Where variants are resolved is still an open
+                        decision, and this holds only while the answer
+                        keeps the interpreter in cctool.
 description:            |
                         Sources:
                         - A variant holds a base, a dataflow graph or
@@ -56,7 +55,8 @@ description:            |
                           (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml at brief) The runtime option checks in
                           C++.
                           (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml at brief)
-                        - A change set is a delta whose base is the
+                        - A change set is an operation list whose base
+                          is the
                           running resolved graph; the condition this
                           argument rested on now holds.
                           (_sources/variants-framing.md, section 2)

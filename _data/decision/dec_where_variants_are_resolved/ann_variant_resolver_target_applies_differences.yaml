@@ -16,11 +16,11 @@ brief:                  |
                         which the drafted dynamic host does, in a
                         fixed form the generator writes, and a
                         reviewer reads exactly what will change. When
-                        it interprets operations, a filter by tag or a
-                        place must search the whole running graph
-                        between steps, the target needs a reader for
-                        the operation form and the preconditions of
-                        each operation, and a reviewer must resolve
+                        it interprets operations, a filter by presence
+                        tag or a place must search the whole running
+                        graph between steps, the target needs a reader
+                        for the operation form and the preconditions
+                        of each operation, and a reviewer must resolve
                         the operations against the running graph in
                         their head.
 description:            |
@@ -38,7 +38,7 @@ description:            |
                           (_sources/axair-orchestrator/docs/execution_levels.md lines
                           65-72).
                         - filter removes nodes by host, process, id or
-                          tag and every edge
+                          presence tag and every edge
                           touching them (_sources/cc-patrol-notes/variants.md line 19).
                         - Whatever runs between steps delays the next
                           step
@@ -52,7 +52,8 @@ description:            |
                         - The frozen schedule is already generated C++
                           (_sources/axair-orchestrator/docs/execution_levels.md lines
                           35-40).
-                        - ASSUMPTION: a selector such as a tag is
+                        - ASSUMPTION: a selector such as a presence
+                          tag is
                           evaluated against every
                           node, so its cost grows with the graph, while a difference lists
                           only what changes. ASSUMPTION: a generated difference can be
