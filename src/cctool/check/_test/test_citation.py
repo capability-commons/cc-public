@@ -68,6 +68,17 @@ def test_a_plain_word_or_a_commit_after_a_path_is_prose(tmp_path):
 
 
 # -----------------------------------------------------------------------------
+def test_a_citation_by_line_of_a_name_two_files_share_is_reported(tmp_path):
+    _files(tmp_path)
+    (tmp_path / 'src/copy').mkdir()
+    (tmp_path / 'src/copy/tool.py').write_text('LIMIT = 4\n')
+    (list_line, list_name) = _violations(tmp_path, 'It is so (tool.py lines 3-4), and'
+                                                   ' tool.py within gone is not read.')
+    assert list_line == [('_data/item.yaml', '1', 'item_x', 'tool.py lines 3-4')]
+    assert list_name == []
+
+
+# -----------------------------------------------------------------------------
 def _files(root):
     """
     Write a small tree: a python module, a logic program, a pyproject.toml,

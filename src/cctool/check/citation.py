@@ -65,6 +65,12 @@ COLUMNS_NAME      = ('file', 'line', 'id', 'cited', 'name')
 SET_DIR_SKIPPED   = {'.git', '.pixi', '_tools', '__pycache__', '.pytest_cache',
                      '.ruff_cache', 'node_modules', 'build', 'dist'}
 
+# A tail of a path that more than one file shares names no one file, so
+# no part of it can be checked, but a citation of it by line is still a
+# citation of a file of the tree.
+#
+FILE_AMBIGUOUS    = ''
+
 # A path in prose, a citation by line after it, a named part after it, and
 # a further name in a list of parts. A path just after a colon is the
 # path of a file in a commit, REV:PATH, and is not read. A name that is a
@@ -146,6 +152,8 @@ def citations(text:     str,
         found = REGEX_BY_LINE.match(rest)
         if found:
             list_cite.append(('line', match.group(1) + found.group(0), cited, ''))
+            continue
+        if cited == FILE_AMBIGUOUS:
             continue
         found = REGEX_ANCHOR.match(rest)
         if found and cited.endswith('.md'):
@@ -311,7 +319,8 @@ def files(root: pathlib.Path) -> dict[str, str]:
     """
     Return a map from each way prose may write the path of a file of the
     tree at root to its path: the path itself, and each tail of it after
-    a slash that no other file shares.
+    a slash that no other file shares. A tail that files share maps to
+    FILE_AMBIGUOUS.
 
     """
 
@@ -331,8 +340,8 @@ def files(root: pathlib.Path) -> dict[str, str]:
             tail = '/'.join(list_part[index:])
             map_count.setdefault(tail, set()).add(file)
     for (tail, set_file) in map_count.items():
-        if len(set_file) == 1 and tail not in map_file:
-            map_file[tail] = next(iter(set_file))
+        if tail not in map_file:
+            map_file[tail] = next(iter(set_file)) if len(set_file) == 1 else FILE_AMBIGUOUS
 
     return map_file
 
