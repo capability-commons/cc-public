@@ -2909,6 +2909,38 @@ schema_count(Type, Schemas) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.segment_count
+% guid_self:              lpp_2c85487f26b845f5ba777dd4af81a0d3
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Segment count
+% brief:                  |
+%                         Every tree holds exactly one segment item,
+%                         which declares it a segment of the federation
+%                         and names the releases it consumes.
+% did:                    The tree holds {segments} segment items, not 1.
+% fix:                    Give the tree one segment item in _data/segment/, naming with relation_consumes the release item of each segment it consumes.
+% edge:                   []
+%
+% ...
+%
+% decl segment_count(segments: number)
+#show segment_count/1.
+
+segment_count(Segments) :-
+    Segments = #count { Segment : has_type(Segment, "type_segment") },
+    Segments != 1.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unused_schema
 % guid_self:              lpp_c09ca296e370441ab621d46dd6a02c1d
 % copyright:              Copyright 2026 William Payne
