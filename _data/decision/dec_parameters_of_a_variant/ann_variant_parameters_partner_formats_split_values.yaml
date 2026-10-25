@@ -1,0 +1,65 @@
+id_self:                ann_variant_parameters_partner_formats_split_values
+guid_self:              ann_927e8cbf5da24f1d94112cc81e877e57
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partner formats that keep values apart from structure
+brief:                  |
+                        SSP keeps parameter values in files apart from
+                        the system structure, OpenSCENARIO's
+                        distribution file references a scenario and
+                        computes values when loaded, and SED-ML has
+                        repeated tasks over ranges. Both parameter
+                        options give these formats a counterpart; with
+                        no parameters each imported value set becomes
+                        a written-out variant, and an export loses the
+                        split.
+description:            |
+                        Sources:
+                        - An SSP package may hold entries describing
+                          parameter values beside the SSD files.
+                          (https://ssp-standard.org/docs/2.0,
+                          chapter 3)
+                        - An OpenSCENARIO file is referenced from the
+                          parameter distribution file, values are
+                          computed at load time, and a deterministic
+                          distribution is a Cartesian product.
+                          (https://openscenario.asam.net/ASAM_OpenSCENARIO_XML/latest/09_reuse_mechanisms/09_03_parameter_distribution.html)
+                        - SED-ML has repeated tasks with Range and
+                          SetValue and is a software-independent
+                          format for simulation experiments.
+                          (https://sed-ml.org/) Strength: moderate;
+                          its weight depends on whether SSP,
+                          OpenSCENARIO or SED-ML exchange is built.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declared_parameters_bound_by_child
+    guid_target:        opt_002959d3a1504cc28f6415eb0e037871
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

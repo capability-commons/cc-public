@@ -1,0 +1,76 @@
+id_self:                ann_graph_identity_traced_both_ways
+guid_self:              ann_3a699d5ac2764870a4cc3e34658a5372
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A graph name that leads back to what was asked for and forward to what came out
+brief:                  |
+                        Traceability runs both ways, from a run to the
+                        inputs that made its graph and from those
+                        inputs to the graph they gave. An input digest
+                        alone loses what came out, a content digest
+                        alone loses what was asked for, and a variant
+                        with a commit gives the inputs only by
+                        resolving again; the paired digests with the
+                        mapping recorded give both.
+description:            |
+                        Sources:
+                        - Traceability means each element can be
+                          followed to the need that called for it and
+                          back again. (_data/register/reg_concern.yaml
+                          lines 556-560)
+                        - A content-addressed Nix output depends only
+                          on the derivation's name, data and method,
+                          and an input-addressed one changes when any
+                          input changes.
+                          (https://nix.dev/manual/nix/2.28/store/derivation/outputs/content-address)
+                        - A Nix realization record associates a
+                          derivation output with the store path it
+                          produced, because outputs are a product of
+                          the build.
+                          (https://tweag.io/blog/2021-12-02-nix-cas-4)
+                        - A content digest alone cannot say what was
+                          asked for.
+                          (_sources/survey/generative-and-transforms.md
+                          line 156) Strength: strong; sharing evidence
+                          across variants that resolve alike needs the
+                          content side, and staleness needs the input
+                          side. The variant and commit name serves
+                          only as an input-side name.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_named_by_variant_and_commit
+    guid_target:        opt_f885c033335c474086f75873040bb9a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

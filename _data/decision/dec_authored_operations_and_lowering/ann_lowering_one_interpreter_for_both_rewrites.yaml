@@ -1,0 +1,85 @@
+id_self:                ann_lowering_one_interpreter_for_both_rewrites
+guid_self:              ann_d3ba0192c5e9458e8a2d16698ae2eab2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One interpreter for authored and generated rewrites
+brief:                  |
+                        A lowering pass and a variant operation both
+                        rewrite a graph. Written as variant
+                        operations, edge-policy lowering and recorder
+                        taps get one interpreter, one set of checks,
+                        and the preconditions, origin records, naming
+                        and failure reports that exist for authored
+                        variants; separate code passes give the job a
+                        second mechanism, each needing its own way to
+                        fail and to name what it made, and leave a
+                        lowered adapter tracing only to code outside
+                        the graph.
+description:            |
+                        Sources:
+                        - The edge-policy and engine-behavior
+                          transforms do to a resolved graph what
+                          variant operations do to a base.
+                          (_data/decision/dec_authored_operations_and_lowering/dec_authored_operations_and_lowering.yaml,
+                          description; _sources/variants-framing.md
+                          lines 53-54)
+                        - A lowered adapter is an element with no
+                          traced reason unless its id or a recorded
+                          link names the edge and the policy.
+                          (_data/decision/dec_edge_policy/ann_lowered_adapter_nodes_need_a_naming_rule.yaml
+                          lines 13-26)
+                        - The survey proposes preconditions and an
+                          origin trace for each operation.
+                          (_sources/survey/README.md lines 45-48)
+                        - Separate passes run as tooling or generator
+                          code.
+                          (_data/decision/dec_authored_operations_and_lowering/opt_lowering_as_separate_passes.yaml,
+                          brief)
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism.
+                          (_data/register/reg_concern.yaml line 490)
+                          Strength: strong; each new lowering pass
+                          repeats the cost under separate passes, and
+                          adapters multiply with edges, policies and
+                          cross-host placements. The same holds for
+                          the four-stage option if its generated
+                          transforms are variant operations, which it
+                          does not say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_authored_operations_and_lowering
+    guid_target:        dec_984a188b4abf407897de4a60ae34c9ef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_vocabulary_for_authoring_and_lowering
+    guid_target:        opt_be507c5e042f4446ab6716a88dbe562b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_lowering_as_separate_passes
+    guid_target:        opt_e69d040ca603420e933d666e4c464f30
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

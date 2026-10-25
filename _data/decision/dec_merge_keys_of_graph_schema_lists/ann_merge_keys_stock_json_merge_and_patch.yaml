@@ -1,0 +1,58 @@
+id_self:                ann_merge_keys_stock_json_merge_and_patch
+guid_self:              ann_7059c7f07ee2484497bc98d223698a24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole replacement and keyed members as the JSON standards do them
+brief:                  |
+                        Replacing unkeyed lists whole is exactly JSON
+                        Merge Patch, so a partner can apply such
+                        operations with a stock implementation, and
+                        keyed lists turn elements into members with
+                        stable paths that JSON Patch can also address,
+                        while index paths into an array shift. Both
+                        the every-list and the replace-whole options
+                        therefore have a standard counterpart.
+description:            |
+                        Sources:
+                        - Merge patch replaces an array whole, and
+                          null values in the patch remove existing
+                          values. (RFC 7396, sections 1 and 2,
+                          https://www.rfc-editor.org/rfc/rfc7396)
+                        - Removing an array element in JSON Patch
+                          shifts the elements above it. (RFC 6902,
+                          section 4.2,
+                          https://www.rfc-editor.org/rfc/rfc6902)
+                          Strength: weak to moderate; the functional
+                          cost of whole replacement outweighs it
+                          unless JSON-level exchange becomes a
+                          requirement. Keys added as needed have
+                          whichever counterpart the list has at the
+                          time.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_merge_keys_of_graph_schema_lists
+    guid_target:        dec_7d017b8627b24d089aa1f50666217fc4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_unkeyed_lists_replaced_whole
+    guid_target:        opt_c57ba5aaf7ad468ab8d31d8954ab6a95
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_merge_key_declared_for_every_list
+    guid_target:        opt_e5a0a77348e0478193deedd7b2ea54d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,60 @@
+id_self:                ann_merge_keys_addresses_a_rename_rewrites
+guid_self:              ann_51e37d07d22a4086b4e3f8e200bd0ae3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Addresses that a rename rewrites
+brief:                  |
+                        An address that names an element by its id is
+                        rewritten by the rename command, while one
+                        built from local keys and field names is not,
+                        and the drafts write such addresses, one
+                        naming a field the schema calls by another
+                        name. Only the whole-list option says that
+                        elements with an id are addressed by that id;
+                        the two keyed options are silent on whether
+                        the key is the id.
+description:            |
+                        Sources:
+                        - The rename command rewrites whole ids in
+                          text, and changes a node's map key with its
+                          id; a dotted path of local keys holds no id.
+                          (src/cctool/edit/edit.py lines 163,
+                          1029-1030, 1072-1080 and 1086-1106)
+                        - The Orin draft writes
+                          dataflow_node.analysis.config.profile.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 30-32)
+                        - The schema names a node's settings field
+                          settings, not config.
+                          (_data/schema/sch_dataflow_node.yaml lines
+                          64-68)
+                        - Lists whose elements have an id are
+                          addressed by that id.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/opt_unkeyed_lists_replaced_whole.yaml,
+                          brief) Strength: strong; every node rename
+                          breaks each key-path address to it, and
+                          those grow with variants. It supports the
+                          whole-list option on this point only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_merge_keys_of_graph_schema_lists
+    guid_target:        dec_7d017b8627b24d089aa1f50666217fc4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_unkeyed_lists_replaced_whole
+    guid_target:        opt_c57ba5aaf7ad468ab8d31d8954ab6a95
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

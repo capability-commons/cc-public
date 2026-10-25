@@ -1,0 +1,67 @@
+id_self:                ann_merge_keys_one_rule_for_the_few_lists
+guid_self:              ann_599a006de6684fb79f445eb0888305ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One key rule for the few lists left
+brief:                  |
+                        Three of the four sections of a dataflow graph
+                        are already keyed maps, and the lists left,
+                        the edges, a node's item edges and the drafts'
+                        tag lists, each have a natural key: the ends,
+                        the relation and target, and the value. One
+                        rule declaring keys for every list costs about
+                        three declarations, while adding keys as
+                        operations need them applies the same
+                        mechanism piecemeal, with a period where some
+                        lists cannot be addressed.
+description:            |
+                        Sources:
+                        - host, os_process and dataflow_node are maps
+                          keyed by a short local name, and
+                          dataflow_edge is an array.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          67-106)
+                        - A dataflow node has an edge array.
+                          (_data/schema/sch_dataflow_node.yaml lines
+                          70-79)
+                        - Until a list declares a key, no operation
+                          may address one of its elements.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/opt_merge_keys_added_as_operations_need_them.yaml,
+                          brief)
+                        - Machinery that grows to carry exceptions
+                          hides the problem.
+                          (_data/register/reg_design_rule.yaml lines
+                          92-94)
+                        - The simplicity measure counts distinct
+                          mechanisms introduced.
+                          (_data/register/reg_concern.yaml line 489)
+                          Strength: strong; the rule is one rule
+                          whatever the number of lists.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_merge_keys_of_graph_schema_lists
+    guid_target:        dec_7d017b8627b24d089aa1f50666217fc4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_merge_key_declared_for_every_list
+    guid_target:        opt_e5a0a77348e0478193deedd7b2ea54d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_merge_keys_added_as_operations_need_them
+    guid_target:        opt_128fcddb0c6e438b8959c439cb2bb6f6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

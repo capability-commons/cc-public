@@ -1,0 +1,82 @@
+id_self:                ann_lowering_stage_cannot_follow_operation_kind
+guid_self:              ann_f87f9c6db4784cd89972970663f6c5af
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Application and mapping choices mixed in one variant
+brief:                  |
+                        A separate mapping stage means each operation
+                        is assigned to the application or the mapping
+                        stage, but the drafts mix them: the abstract
+                        Orin variant uses write both for a hostname
+                        and for a node setting, a parent's mapping
+                        write comes before its child's application
+                        filter, and the mixed variant's filter drops
+                        edges because of where the console is placed.
+                        Stage then cannot follow operation kind,
+                        chains would be reordered across variants, the
+                        unplaced check cannot run before mapping, and
+                        one more stage with its digest and checks must
+                        be kept.
+description:            |
+                        Sources:
+                        - The mapped graph comes from the host, OS
+                          process and placement operations.
+                          (_data/decision/dec_authored_operations_and_lowering/opt_four_stages_with_the_mapping_split_out.yaml,
+                          brief)
+                        - The abstract Orin variant writes the station
+                          hostname, a mapping value, and the analysis
+                          profile, an application value, with the same
+                          operation kind, and its mixed child filters
+                          after it.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 26-32;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          lines 18-35)
+                        - The direct result edges are dropped in the
+                          mixed variant because the console reads the
+                          published track stream.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 82-85)
+                        - The unplaced check fails a node or OS
+                          process that is not placed.
+                          (src/cctool/check/check.lp lines 3517-3524)
+                        - The simplicity measure counts distinct
+                          mechanisms introduced.
+                          (_data/register/reg_concern.yaml line 489)
+                          Strength: moderate; the extra stage is a
+                          fixed cost, and the weight rests on how
+                          often operations mix, which Patrol shows in
+                          three of six variants.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_authored_operations_and_lowering
+    guid_target:        dec_984a188b4abf407897de4a60ae34c9ef
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_four_stages_with_the_mapping_split_out
+    guid_target:        opt_5ef87800e207460fa983503d0e92c7ac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

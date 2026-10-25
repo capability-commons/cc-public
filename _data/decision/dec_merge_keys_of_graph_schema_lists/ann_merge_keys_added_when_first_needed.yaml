@@ -1,0 +1,58 @@
+id_self:                ann_merge_keys_added_when_first_needed
+guid_self:              ann_b22eb19d7e114809b0bd3edff677797e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Keys added when an operation first needs them, with nothing to migrate
+brief:                  |
+                        A key added when an operation first needs to
+                        address a list costs one schema change with no
+                        operation to migrate, since none could address
+                        the list before. Keys declared for every list
+                        up front are kept for lists no operation
+                        touches, and no Patrol variant yet addresses
+                        one element of a list.
+description:            |
+                        Sources:
+                        - Until a list declares a key, no operation
+                          may address one of its elements.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/opt_merge_keys_added_as_operations_need_them.yaml,
+                          brief)
+                        - The schema has two lists of objects in a
+                          graph, the dataflow edges and each node's
+                          edge list.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          98-106; _data/schema/sch_dataflow_node.yaml
+                          lines 70-79)
+                        - No Patrol variant addresses one element of a
+                          list.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_no_variant_yet_names_a_single_edge.yaml,
+                          brief) Strength: moderate; the saving is
+                          small with few lists.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_merge_keys_of_graph_schema_lists
+    guid_target:        dec_7d017b8627b24d089aa1f50666217fc4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_merge_keys_added_as_operations_need_them
+    guid_target:        opt_128fcddb0c6e438b8959c439cb2bb6f6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_merge_key_declared_for_every_list
+    guid_target:        opt_e5a0a77348e0478193deedd7b2ea54d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

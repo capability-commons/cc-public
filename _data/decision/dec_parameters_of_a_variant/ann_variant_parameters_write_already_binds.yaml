@@ -1,0 +1,70 @@
+id_self:                ann_variant_parameters_write_already_binds
+guid_self:              ann_41382f4ec0084240a25330a402745d45
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A child's write that already binds a value
+brief:                  |
+                        A child variant already binds a value with
+                        write, as the abstract Orin variant does for
+                        the detector profile, so declared parameters
+                        bound by a child would do the same job a
+                        second way. A sweep is the one need write
+                        cannot meet alone, since it names many values,
+                        but a sweep can bind them through write
+                        addresses with no declarations; the sweep
+                        option as worded requires declared parameters.
+description:            |
+                        Sources:
+                        - Writes in the abstract Orin variant bind a
+                          setting and a hostname, and the sketch
+                          checks that the address exists.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 26-32;
+                          _sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 44-50)
+                        - The sweep option holds a dataflow variant
+                          with declared parameters.
+                          (_data/decision/dec_parameters_of_a_variant/opt_sweep_items_generate_unstored_variants.yaml,
+                          brief)
+                        - No draft declares a parameter. (the dfv
+                          drafts in _sources/cc-patrol-notes/draft/;
+                          README.md lines 26-34)
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism.
+                          (_data/register/reg_concern.yaml line 490)
+                          Strength: strong on the overlap with write
+                          at any scale; moderate on deferring sweeps,
+                          which lasts until the first exploration.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declared_parameters_bound_by_child
+    guid_target:        opt_002959d3a1504cc28f6415eb0e037871
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

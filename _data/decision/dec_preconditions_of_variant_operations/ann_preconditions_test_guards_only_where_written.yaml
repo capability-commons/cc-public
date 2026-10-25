@@ -1,0 +1,69 @@
+id_self:                ann_preconditions_test_guards_only_where_written
+guid_self:              ann_a9b89b6edbe5486cbe96b67c59c9c5cb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A test operation that guards only where an author writes one
+brief:                  |
+                        A test operation guards only where an author
+                        remembers to add one, the failures it misses
+                        fall to the resolved-graph checks, and it
+                        restates the address of the operation it
+                        guards, so a changed address must change in
+                        two places. It adds an operation kind where a
+                        precondition inside the interpreter adds none,
+                        though it can be added later beside built-in
+                        preconditions, as JSON Patch has both.
+description:            |
+                        Sources:
+                        - Operations state no preconditions of their
+                          own, and a test operation asserts what must
+                          or must not exist.
+                          (_data/decision/dec_preconditions_of_variant_operations/opt_explicit_test_operation.yaml,
+                          brief)
+                        - JSON Patch's test checks that a value at the
+                          target equals a given value, beside
+                          preconditions on remove, replace and move.
+                          (RFC 6902, sections 4.2 and 4.6,
+                          https://www.rfc-editor.org/rfc/rfc6902)
+                        - The sketch asserts a precondition for write
+                          inside the interpreter.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          line 49)
+                        - The simplicity measure counts distinct
+                          mechanisms introduced.
+                          (_data/register/reg_concern.yaml line 489)
+                          Strength: moderate; it grows with
+                          operations.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_preconditions_of_variant_operations
+    guid_target:        dec_952053cc3f7745a3b89570973c2040cf
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_explicit_test_operation
+    guid_target:        opt_e97d8c775a7c49819d9386c5598825e5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

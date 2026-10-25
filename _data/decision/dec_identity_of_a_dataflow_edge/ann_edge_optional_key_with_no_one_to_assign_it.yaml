@@ -1,0 +1,67 @@
+id_self:                ann_edge_optional_key_with_no_one_to_assign_it
+guid_self:              ann_cbb51d2509584ed896ba9a95b8850f28
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An optional key that a pair of ends gains only once it repeats
+brief:                  |
+                        Under the optional-key option an edge needs a
+                        key only once a second edge shares its ends.
+                        Such a pair can come only from a hand-written
+                        abstract base or a join that copies an
+                        existing pair, and in the second case the base
+                        edge has no key and cannot gain one from a
+                        child, so the option names no one who gives
+                        it; and once the first edge must gain a key,
+                        every operation that named it by its ends
+                        changes meaning. A precondition that refuses
+                        such a join removes the case.
+description:            |
+                        Sources:
+                        - The input-fed-twice check fails when more
+                          than one edge ends at an input, so no
+                          runnable graph holds a repeated pair.
+                          (src/cctool/check/check.lp lines 3260-3263)
+                        - Among the 41 edges of the Patrol base no
+                          pair of ends repeats.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_pair_of_ends_unique_in_every_checked_graph.yaml,
+                          description)
+                        - Each edge of a pair of ends that carries
+                          more than one edge carries a key.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/opt_edge_identified_by_ends_with_optional_key.yaml,
+                          brief)
+                        - The resolved graph is never stored, so only
+                          the base or the operation that creates an
+                          edge can write its key.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 12-16) Strength: moderate; the case is
+                          rare at any scale, but undefined behavior is
+                          still a fault. It falls away with the
+                          rewording proposed in the merge notes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_ends_with_optional_key
+    guid_target:        opt_3a41ebf4b8904d6d99582a49be496437
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

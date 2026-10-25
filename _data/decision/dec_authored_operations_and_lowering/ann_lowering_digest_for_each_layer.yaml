@@ -1,0 +1,64 @@
+id_self:                ann_lowering_digest_for_each_layer
+guid_self:              ann_8dfc26981a6b4160b580a842384e461b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A digest for each layer a run depends on
+brief:                  |
+                        Four named stages give a run a digest for the
+                        mapped graph and the lowered graph, so a run
+                        traces to the exact mapping it used. With two
+                        stages a host or placement change and an
+                        application change move the same digest, and
+                        separate passes give the lowered graph no
+                        named digest.
+description:            |
+                        Sources:
+                        - The four-stage option names and digests each
+                          stage.
+                          (_data/decision/dec_authored_operations_and_lowering/opt_four_stages_with_the_mapping_split_out.yaml,
+                          brief)
+                        - Patrol's operations split into application
+                          kinds, filter, add, join and write, and
+                          mapping kinds, host, OS process and place.
+                          (_sources/variants-framing.md lines 25-27;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          lines 22-35)
+                        - The one-vocabulary option checks two graphs,
+                          the resolved and the lowered.
+                          (_data/decision/dec_authored_operations_and_lowering/opt_one_vocabulary_for_authoring_and_lowering.yaml,
+                          brief) Strength: moderate; it grows with
+                          sweeps that vary only the mapping, and is
+                          mild against the one-vocabulary option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_authored_operations_and_lowering
+    guid_target:        dec_984a188b4abf407897de4a60ae34c9ef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_four_stages_with_the_mapping_split_out
+    guid_target:        opt_5ef87800e207460fa983503d0e92c7ac
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_vocabulary_for_authoring_and_lowering
+    guid_target:        opt_be507c5e042f4446ab6716a88dbe562b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_lowering_as_separate_passes
+    guid_target:        opt_e69d040ca603420e933d666e4c464f30
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

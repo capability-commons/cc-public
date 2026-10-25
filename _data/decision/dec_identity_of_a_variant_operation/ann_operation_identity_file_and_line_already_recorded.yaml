@@ -1,0 +1,74 @@
+id_self:                ann_operation_identity_file_and_line_already_recorded
+guid_self:              ann_e82ff6e0df31492d907b1c5b5f9005e3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  File and line, which the extractor already records
+brief:                  |
+                        Operations are stored in a variant's own YAML
+                        file, and the extractor already records the
+                        file and line of each element of a list, so a
+                        failure or a trace can name an operation as
+                        failures name edges today. Unlike an edge
+                        position, an operation's position shifts only
+                        when its own variant is edited, not when an
+                        ancestor is, and no item references an
+                        operation, while a local key adds a field and
+                        a uniqueness check and an id with a guid adds
+                        rename-map entries too.
+description:            |
+                        Sources:
+                        - Each edge fact carries the file and line of
+                          its list element.
+                          (src/cctool/graph/extract.py lines
+                          1793-1805)
+                        - A variant is stored, and its resolved graph
+                          is not.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 12-16)
+                        - Rename map entries are an old id, a new id
+                          and a guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-17)
+                        - A type, relation, field or command is added
+                          only when a real instance needs it.
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-17)
+                        - ASSUMPTION: no item will reference a single
+                          operation until something such as a change
+                          set needs to. Strength: moderate; it fails
+                          once items start to reference operations,
+                          for example from a ruling, a change set or a
+                          declared order.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_variant_operation
+    guid_target:        dec_6d679965a15d4d5987eea01d52612f8d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_position
+    guid_target:        opt_08c1a021cdeb4d5cab729a05229531fe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_a_local_key
+    guid_target:        opt_5d2be70b9fde4547ac5a24243cb01aae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_id_with_guid
+    guid_target:        opt_b9ebd7ab64564021b4445493d6caf539
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

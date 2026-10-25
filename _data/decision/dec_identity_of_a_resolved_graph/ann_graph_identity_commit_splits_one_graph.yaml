@@ -1,0 +1,73 @@
+id_self:                ann_graph_identity_commit_splits_one_graph
+guid_self:              ann_474f8f8c94d9471eab563b50e6803fde
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Variant and commit that split one graph and miss uncommitted runs
+brief:                  |
+                        A variant id with a commit never goes stale,
+                        but it gives one unchanged graph a new name at
+                        every commit, cannot name a graph resolved
+                        from an uncommitted tree, and cannot be
+                        computed by a target from the graph it runs. A
+                        content digest changes exactly when the
+                        resolved graph does.
+description:            |
+                        Sources:
+                        - Every commit carries a commit item. (context
+                          note, _sources/context.md line 34)
+                        - Patrol's first measurement is the cost of
+                          software encoding beside the detector on the
+                          Orin.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 71-74) ASSUMPTION: such runs will be
+                          made while a variant is still being edited,
+                          before it is committed.
+                        - A content digest names the canonical form,
+                          so two variants that resolve alike share one
+                          name.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_content_digest.yaml,
+                          brief)
+                        - An open change-set option has the runtime
+                          check the digest of the graph a change set
+                          was checked against.
+                          (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml,
+                          brief) Strength: strong; more commits mean
+                          more names for one graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_and_commit
+    guid_target:        opt_f885c033335c474086f75873040bb9a6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

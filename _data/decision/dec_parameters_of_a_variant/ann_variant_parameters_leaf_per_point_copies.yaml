@@ -1,0 +1,82 @@
+id_self:                ann_variant_parameters_leaf_per_point_copies
+guid_self:              ann_9c1401ca4557455eb5627d3ba2f01da0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One written leaf per point, against one sweep item
+brief:                  |
+                        With no parameters, leaves that differ in one
+                        value each carry a copy of the shared
+                        operations and of one reason, so every change
+                        to the shared part touches each copy. A sweep
+                        item holds the definition, the values and the
+                        reason for the whole range once, and its
+                        points are never written, provided the run
+                        record and the graph identity carry each
+                        point's bindings.
+description:            |
+                        Sources:
+                        - Design space exploration and
+                          simulation-backed decisions call for running
+                          one variant many times with varied values.
+                          (_data/decision/dec_parameters_of_a_variant/dec_parameters_of_a_variant.yaml,
+                          description) The owner expects variants to
+                          be most useful for rapidly building dataflow
+                          simulations that support or oppose
+                          simulation-backed decisions. (owner's
+                          statement, 2026-10-24T23:00:32Z,
+                          _sources/owner-2026-10-24-late.md line 3)
+                        - The sweep option generates one resolved
+                          graph per point without storing it.
+                          (_data/decision/dec_parameters_of_a_variant/opt_sweep_items_generate_unstored_variants.yaml,
+                          brief)
+                        - Each variant holds its reason in its brief.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 102-103)
+                        - The proposed run item records parameter
+                          bindings.
+                          (_data/decision/dec_shape_of_a_dataflow_run/opt_run_item_in_the_tree.yaml,
+                          brief)
+                        - Neither input-digest option lists parameter
+                          bindings among its inputs.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_digest.yaml
+                          and
+                          opt_resolved_graph_input_and_content_digests.yaml,
+                          briefs)
+                        - One maintainability measure counts parts
+                          touched by a representative change.
+                          (_data/register/reg_concern.yaml line 400)
+                          Strength: weak now, since no sweep exists;
+                          strong at ten times the points.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

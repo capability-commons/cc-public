@@ -1,0 +1,83 @@
+id_self:                ann_operation_identity_lasting_references_shift
+guid_self:              ann_f1bc84c4df1e48a69ca8d774b88f5abe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stored references to an operation that shift
+brief:                  |
+                        A failure report is read against the commit
+                        that produced it, so a position is right
+                        there. A position goes wrong in any record
+                        that outlives the commit, such as an order
+                        declared between two included deltas, an
+                        annotation or a note that a change does not
+                        affect a run: once an operation is inserted
+                        above the one named, it names another
+                        operation without any error. A key or a guid
+                        keeps such references right, and only a guid
+                        is followed by rename maps.
+description:            |
+                        Sources:
+                        - A failure naming the third operation
+                          addresses it by a position that shifts as an
+                          edge position does.
+                          (_data/decision/dec_identity_of_a_variant_operation/dec_identity_of_a_variant_operation.yaml,
+                          description)
+                        - Each failure says what is wrong and how to
+                          fix it.
+                          (_data/decision/dec_failure_report_form/ruling_failure_report_form.yaml
+                          lines 12-15)
+                        - A check is asked for operations from
+                          different included deltas that touch one key
+                          unless an order is declared between them.
+                          (_sources/survey/product-lines.md line 323)
+                        - An annotation citing a run stays stale until
+                          someone records that the change does not
+                          affect the measured property.
+                          (_data/decision/dec_staleness_of_run_evidence/opt_stale_on_any_digest_change.yaml,
+                          brief)
+                        - Rename maps rewrite references by guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 12-18)
+                        - ASSUMPTION: annotations and order
+                          declarations will name single operations.
+                          Strength: moderate; it grows with lasting
+                          references to operations, which do not exist
+                          yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_variant_operation
+    guid_target:        dec_6d679965a15d4d5987eea01d52612f8d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_position
+    guid_target:        opt_08c1a021cdeb4d5cab729a05229531fe
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_a_local_key
+    guid_target:        opt_5d2be70b9fde4547ac5a24243cb01aae
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_id_with_guid
+    guid_target:        opt_b9ebd7ab64564021b4445493d6caf539
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

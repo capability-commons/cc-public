@@ -1,0 +1,68 @@
+id_self:                ann_edge_id_as_a_link_target
+guid_self:              ann_61791b71c53e452aafa79565120ed9dc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An edge that a requirement or ruling can name
+brief:                  |
+                        Nodes carry an id, a guid and a brief, so
+                        other items can link to them. An edge with an
+                        id and a guid becomes a link target too, so a
+                        need on one connection, such as a cross-host
+                        stream, traces to one element and renames keep
+                        the link; ends, alone or with an optional key,
+                        and target ends give no single target.
+description:            |
+                        Sources:
+                        - A node in a checked graph carries id_self
+                          and guid_self.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 48-49) Patrol nodes carry a brief.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 36-40)
+                        - Rename map entries are an old id, a new id
+                          and the guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-17)
+                        - In the mixed variant four edges cross hosts,
+                          each with a policy.
+                          (_sources/cc-patrol-notes/draft/resolved.txt
+                          lines 14-17)
+                        - ASSUMPTION: requirements or rulings will
+                          target single connections, such as a
+                          cross-host policy; none does today.
+                          Strength: moderate; it grows with
+                          requirements on links, and is void if none
+                          ever targets an edge.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_identified_by_id_with_guid
+    guid_target:        opt_3a22be8c5d8a4ed8b159c3f0614db39a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_ends_with_optional_key
+    guid_target:        opt_3a41ebf4b8904d6d99582a49be496437
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_its_target_end
+    guid_target:        opt_6ab764040b7444f5851a2131cae93520
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

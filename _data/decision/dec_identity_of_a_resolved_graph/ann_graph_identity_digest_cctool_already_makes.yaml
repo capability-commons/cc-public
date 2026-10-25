@@ -1,0 +1,63 @@
+id_self:                ann_graph_identity_digest_cctool_already_makes
+guid_self:              ann_0644e4a3bae44ee697b5ff31db3fa57b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A content digest that cctool already knows how to make
+brief:                  |
+                        cctool already digests each item as sorted
+                        JSON hashed with blake2b, so applying the same
+                        function to a resolved graph gives a content
+                        digest with no new mechanism. Two digests with
+                        a recorded mapping add an input list and a
+                        stored record, under a ruling that stores
+                        nothing resolved, and no instance yet needs
+                        caching.
+description:            |
+                        Sources:
+                        - Item digests are json.dumps with sorted keys
+                          hashed with blake2b.
+                          (src/cctool/commit/impact.py lines 150-160)
+                        - The verdict store keys a verdict by a digest
+                          of cctool's code and versions, an input key
+                          of the kind the input-digest option needs.
+                          (src/cctool/check/store.py lines 17-28)
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 12-16)
+                        - A type, relation, field or command is added
+                          only when a real instance needs it.
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-17)
+                        - The simplicity measure counts distinct
+                          mechanisms introduced.
+                          (_data/register/reg_concern.yaml line 489)
+                          Strength: strong; one digest function serves
+                          any number of graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

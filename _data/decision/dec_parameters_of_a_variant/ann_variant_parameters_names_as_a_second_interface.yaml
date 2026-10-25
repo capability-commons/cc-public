@@ -1,0 +1,70 @@
+id_self:                ann_variant_parameters_names_as_a_second_interface
+guid_self:              ann_7beb07baa2ab4f67999aa03ee943ae1a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Parameter names as a second interface between variants
+brief:                  |
+                        A declared parameter is a name a parent offers
+                        and children or a sweep bind, and that name is
+                        not an id, so renaming it means finding every
+                        binding by hand. With no Patrol variant
+                        needing one, writing leaves out costs little
+                        now, and abstract variants already hold what
+                        siblings share.
+description:            |
+                        Sources:
+                        - A child variant binds the parameters its
+                          parent declares, and a sweep item holds a
+                          variant with declared parameters.
+                          (_data/decision/dec_parameters_of_a_variant/opt_declared_parameters_bound_by_child.yaml
+                          and
+                          opt_sweep_items_generate_unstored_variants.yaml,
+                          briefs)
+                        - The rename command rewrites whole ids in
+                          text, not other names.
+                          (src/cctool/edit/edit.py lines 163 and
+                          1086-1106)
+                        - The abstract Orin variant holds the filter
+                          and two writes its three children share.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 21-32)
+                        - A field is added only when a real instance
+                          needs it.
+                          (_data/decision/dec_growth_policy/ruling_growth_policy.yaml
+                          lines 13-17)
+                        - ASSUMPTION: parameters would be plain names,
+                          not ids with guids. Strength: moderate; it
+                          holds until the first sweep.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declared_parameters_bound_by_child
+    guid_target:        opt_002959d3a1504cc28f6415eb0e037871
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

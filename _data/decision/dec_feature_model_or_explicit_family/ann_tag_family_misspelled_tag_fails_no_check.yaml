@@ -1,0 +1,100 @@
+id_self:                ann_tag_family_misspelled_tag_fails_no_check
+guid_self:              ann_311109a00e204f33b31b3db9f8b4aa84
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A misspelled tag that fails no check
+brief:                  |
+                        The draft resolver filters by set
+                        intersection, so a filter naming a tag that no
+                        element carries silently removes nothing, and
+                        a design note already spells one tag two ways.
+                        A registered vocabulary turns that into a
+                        check failure, gives each tag an entry it
+                        traces to and makes retiring a tag a checked
+                        change; the analysis checks add the reverse
+                        question, a dead tag that nothing uses, though
+                        they find none in Patrol today.
+description:            |
+                        Sources:
+                        - The sketch drops nodes and edges whose tags
+                          meet the exclude list, with no test that
+                          each excluded tag exists.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 33-43)
+                        - The design note and the earlier v1 drafts
+                          write display_local; the current base and
+                          the Orin filter both write local_display,
+                          and every tag the current variant drafts
+                          name is carried by the base.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          48, 107 and 112;
+                          _sources/cc-patrol-notes/draft/v1/dfv_patrol_orin_headless.yaml
+                          line 25;
+                          _sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          line 100;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          line 24)
+                        - In the Linux kernel features are retired
+                          often, so retiring a tag should be a
+                          supported, checked change. (Passos et al.,
+                          https://www.se.cs.uni-saarland.de/publications/docs/PTD+16.pdf,
+                          as summarized in
+                          _sources/survey/product-lines.md lines
+                          97-100)
+                        - A dead tag is one present in no non-abstract
+                          variant, and dead, core and void-family
+                          checks are small once tags are registered.
+                          (_sources/survey/product-lines.md lines
+                          196-204)
+                        - Traceability asks whether anything exists
+                          that nothing calls for.
+                          (_data/register/reg_concern.yaml line 572)
+                        - No base node or edge is dropped by all five
+                          runnable leaves. (func-compat advocate's
+                          resolution of the drafts) Strength: strong;
+                          misspellings and dead tags grow with tags
+                          and variants. The analysis checks gain value
+                          as the leaves grow.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_feature_model_or_explicit_family
+    guid_target:        dec_aa504fee58ff4b8bb28070106371f6a4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_registered_tags_with_constraints
+    guid_target:        opt_3fef6343e79146f5a83ee407547b4277
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_registered_tags_with_family_analysis_checks
+    guid_target:        opt_7c919b688b024830b66b16a981d6cb8c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_explicit_family_with_free_tags
+    guid_target:        opt_f99b1f65d9e54383b4fe2767844737dc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

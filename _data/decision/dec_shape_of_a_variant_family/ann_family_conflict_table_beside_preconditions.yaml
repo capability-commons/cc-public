@@ -1,0 +1,57 @@
+id_self:                ann_family_conflict_table_beside_preconditions
+guid_self:              ann_87e8be63b2214de5b3f5fdb01e67c05b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A conflict table beside preconditions that already catch part of it
+brief:                  |
+                        The conflict-check option adds a table for
+                        every pair of operation kinds and a check.
+                        With preconditions, a delete-then-use conflict
+                        already fails at resolution, because removing
+                        or naming an absent node fails, so the table
+                        would duplicate that part and add only the
+                        write-write case, where the last writer wins,
+                        a narrower check than a full table.
+description:            |
+                        Sources:
+                        - The option checks conflicts by a table of
+                          operation kinds that conflict or depend.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_single_base_with_included_deltas_checked_for_conflicts.yaml,
+                          brief)
+                        - The precondition option fails removing an
+                          absent node or adding one that exists.
+                          (_data/decision/dec_preconditions_of_variant_operations/opt_every_operation_states_its_preconditions.yaml,
+                          brief)
+                        - Null-as-delete and last-writer-wins hide
+                          intent.
+                          (_sources/survey/generative-and-transforms.md
+                          line 154)
+                        - The simplicity measure counts jobs done by
+                          more than one mechanism.
+                          (_data/register/reg_concern.yaml line 490)
+                          Strength: moderate; the table grows with the
+                          square of operation kinds, and the overlap
+                          holds only if preconditions are ruled.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_single_base_with_included_deltas_checked_for_conflicts
+    guid_target:        opt_3b3481d55257496f9d8f7443bdbe37e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

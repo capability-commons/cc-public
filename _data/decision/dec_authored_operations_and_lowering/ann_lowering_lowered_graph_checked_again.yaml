@@ -1,0 +1,78 @@
+id_self:                ann_lowering_lowered_graph_checked_again
+guid_self:              ann_1946890577324972af09f17b6c7d4593
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A lowered graph that must be checked again
+brief:                  |
+                        In Patrol the kind of an edge, and so the
+                        adapter that lowering inserts, follows from
+                        the runtimes at its two ends and whether they
+                        share a process or host, so lowering must run
+                        after the mapping, and its output can break a
+                        check. Both staged options check the lowered
+                        graph, and the four-stage option also gives it
+                        a digest; the separate-passes option does not
+                        say that the lowered graph is checked.
+description:            |
+                        Sources:
+                        - The kind of an edge, and what realizes it,
+                          follows from the runtimes at its two ends
+                          and whether they share an OS process or
+                          host.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 40-51)
+                        - Place makes edges cross processes and hosts.
+                          (_sources/cc-patrol-notes/variants.md
+                          line 66)
+                        - An adapter inserted by lowering must appear
+                          in the lowered graph and its digest, or two
+                          runs that differ only in an adapter are
+                          mistaken for runs of one graph.
+                          (_sources/survey/simulation-backed-decisions.md
+                          line 185)
+                        - The separate-passes option says the passes
+                          run on the resolved graph and does not say
+                          their output is checked.
+                          (_data/decision/dec_authored_operations_and_lowering/opt_lowering_as_separate_passes.yaml,
+                          brief) The one-vocabulary option checks the
+                          lowered graph again, and the four-stage
+                          option checks and digests each stage.
+                          (opt_one_vocabulary_for_authoring_and_lowering.yaml
+                          and
+                          opt_four_stages_with_the_mapping_split_out.yaml
+                          in the same folder, briefs) Strength:
+                          strong; adapters grow with edges that cross
+                          runtimes and hosts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_authored_operations_and_lowering
+    guid_target:        dec_984a188b4abf407897de4a60ae34c9ef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_vocabulary_for_authoring_and_lowering
+    guid_target:        opt_be507c5e042f4446ab6716a88dbe562b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_four_stages_with_the_mapping_split_out
+    guid_target:        opt_5ef87800e207460fa983503d0e92c7ac
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_lowering_as_separate_passes
+    guid_target:        opt_e69d040ca603420e933d666e4c464f30
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,59 @@
+id_self:                ann_operation_identity_embedded_ids_renamed_already
+guid_self:              ann_cd052d3b43ec4d19afae477188879a7c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Embedded ids that the rename command already handles
+brief:                  |
+                        Dataflow nodes are embedded items whose ids
+                        are built from their holder's id, and the
+                        rename command already renames them with their
+                        holder, so an operation id with a guid built
+                        the same way needs no new rename code. A key
+                        within the variant needs a new uniqueness
+                        check, a second naming scheme kept by hand,
+                        though a name written as the variant id, a
+                        full stop and the key is rewritten when the
+                        variant is renamed.
+description:            |
+                        Sources:
+                        - The rename command renames each item whose
+                          id is made from the renamed item's id, as a
+                          dataflow graph's nodes are.
+                          (src/cctool/edit/edit.py lines 958-1021)
+                        - The whole-id pattern matches an id followed
+                          by a full stop. (src/cctool/edit/edit.py
+                          line 163)
+                        - The drafts hold 18 operations in six
+                          variants. (count over the dfv drafts in
+                          _sources/cc-patrol-notes/draft/) Strength:
+                          moderate; the gain is a fixed saving in
+                          code, and the guid costs two lines per
+                          operation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_variant_operation
+    guid_target:        dec_6d679965a15d4d5987eea01d52612f8d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_id_with_guid
+    guid_target:        opt_b9ebd7ab64564021b4445493d6caf539
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_a_local_key
+    guid_target:        opt_5d2be70b9fde4547ac5a24243cb01aae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

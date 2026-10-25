@@ -1,0 +1,49 @@
+id_self:                ann_vocab_generic_operations_map_onto_json_patch
+guid_self:              ann_4653909c23b846ef95d83062d03737e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generic operations that map onto JSON Patch
+brief:                  |
+                        Generic add, remove and write over keyed maps
+                        correspond one to one with JSON Patch add,
+                        remove and replace on paths that do not move,
+                        so a partner can apply them with a stock
+                        implementation. Over an array the same paths
+                        shift on every removal.
+description:            |
+                        Sources:
+                        - JSON Patch add on an existing member
+                          replaces it, remove requires the target to
+                          exist, and removing an array element shifts
+                          the elements above it. (RFC 6902, sections
+                          4.1 and 4.2,
+                          https://www.rfc-editor.org/rfc/rfc6902)
+                        - Hosts, OS processes and dataflow nodes are
+                          maps keyed by short local names.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          67-96) Strength: moderate; it depends on
+                          JSON-level exchange being used, and covers
+                          keyed sections only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_vocabulary_of_variant_operations
+    guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_operations_generated_from_the_schema
+    guid_target:        opt_2a9ca9f0851e47d3b373886f44c2d7e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

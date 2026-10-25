@@ -1,0 +1,88 @@
+id_self:                ann_edge_target_end_ambiguous_in_abstract_graphs
+guid_self:              ann_e595a7c651894b1896884f1b108f7171
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A target end that names no single edge where operations act
+brief:                  |
+                        A target end is unique only where each input
+                        is fed once, which holds in runnable graphs,
+                        but every Patrol variant applies its
+                        operations to an abstract graph, where six
+                        inputs take two or more edges. There the
+                        target end names no single edge, so the rule
+                        needs a fallback in the common case, and if a
+                        parent has rewired an input, a child's
+                        operation on the old edge silently acts on the
+                        new one, where a name of both ends would find
+                        nothing and fail.
+description:            |
+                        Sources:
+                        - The option rests on an input being fed by at
+                          most one edge in a checked graph.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/opt_edge_identified_by_its_target_end.yaml,
+                          brief)
+                        - Six inputs of the Patrol base take two or
+                          more edges, which an abstract base may.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_pair_of_ends_unique_in_every_checked_graph.yaml,
+                          description)
+                        - The base of every Patrol variant is the
+                          abstract base or the abstract Orin variant.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 26-34;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 18-19)
+                        - A child variant resolves on its parent's
+                          output
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          lines 24-31), and every Patrol variant
+                          starts with a filter. (the six dfv drafts in
+                          _sources/cc-patrol-notes/draft/)
+                        - Removing an absent element fails when
+                          operations state preconditions.
+                          (_data/decision/dec_preconditions_of_variant_operations/opt_every_operation_states_its_preconditions.yaml,
+                          brief)
+                        - One maintainability question asks how far a
+                          change in one part spreads to others.
+                          (_data/register/reg_concern.yaml line 395)
+                          Strength: strong; abstract bases sit at the
+                          root of every variant family, and silent
+                          misdirection grows with the depth of variant
+                          chains.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_its_target_end
+    guid_target:        opt_6ab764040b7444f5851a2131cae93520
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

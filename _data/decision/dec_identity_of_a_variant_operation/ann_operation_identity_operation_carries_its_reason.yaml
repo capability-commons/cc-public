@@ -1,0 +1,73 @@
+id_self:                ann_operation_identity_operation_carries_its_reason
+guid_self:              ann_d035277eb7c745f898ac3ce08a995382
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An operation that can carry its reason as a node does
+brief:                  |
+                        A node carries an id, a guid and a brief, but
+                        an operation carries none, so the drafts give
+                        reasons for single operations in YAML comments
+                        that the graph never sees. An operation with
+                        an id and a guid can carry a brief, be the
+                        target of an option or annotation, and survive
+                        renames; a local key is stable but outside
+                        rename maps; a position is neither.
+description:            |
+                        Sources:
+                        - Reasons for single operations are YAML
+                          comments.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          lines 22-23 and 47-48;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          lines 21-22)
+                        - ASSUMPTION: the extractor makes no facts
+                          from comments inside YAML items; it reads
+                          comment headers only of non-YAML files.
+                          (src/cctool/graph/extract.py lines 154-167)
+                        - Nodes carry id_self and guid_self.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          lines 48-49)
+                        - Rename maps carry old id, new id and guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 13-17)
+                        - The comparability check requires that the
+                          resolved graphs of sibling options differ
+                          only in the operations of the options, so
+                          its report names operations.
+                          (_data/decision/dec_comparability_of_runs_across_options/opt_comparability_check_over_sibling_runs.yaml,
+                          brief) Strength: strong; operations
+                          outnumber variants, and positions shift with
+                          every inserted operation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_variant_operation
+    guid_target:        dec_6d679965a15d4d5987eea01d52612f8d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_id_with_guid
+    guid_target:        opt_b9ebd7ab64564021b4445493d6caf539
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_operation_named_by_a_local_key
+    guid_target:        opt_5d2be70b9fde4547ac5a24243cb01aae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_operation_named_by_position
+    guid_target:        opt_08c1a021cdeb4d5cab729a05229531fe
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

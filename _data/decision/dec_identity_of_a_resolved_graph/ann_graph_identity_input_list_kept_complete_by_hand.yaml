@@ -1,0 +1,83 @@
+id_self:                ann_graph_identity_input_list_kept_complete_by_hand
+guid_self:              ann_198732f1ceee431991d453d8316070af
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An input digest right only while its list of inputs is complete
+brief:                  |
+                        An input digest is correct only if it covers
+                        everything the resolver reads, so each new
+                        operation that reads a new kind of item, such
+                        as a substitute reading a node definition,
+                        must also extend the digest, and an omission
+                        gives a wrong match with no error. A content
+                        digest is computed from the output and needs
+                        no such list, though both need a canonical
+                        form kept in step with the schema.
+description:            |
+                        Sources:
+                        - The input digest covers the chain of bases,
+                          the operations, the dictionary and interface
+                          versions they refer to and, in the
+                          two-digest option, the resolver version.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_digest.yaml
+                          and
+                          opt_resolved_graph_input_and_content_digests.yaml,
+                          briefs)
+                        - Insert-on-edge and substitute, not yet
+                          drafted, are proposed for the core.
+                          (_sources/variants-framing.md lines 53, 56
+                          and 94)
+                        - A digest computed alike in Python and C++
+                          means every field added to the model is
+                          added to both.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_digest_needs_matching_code_on_target.yaml,
+                          brief)
+                        - The simplicity measure counts distinct
+                          mechanisms introduced.
+                          (_data/register/reg_concern.yaml line 489)
+                        - ASSUMPTION: cctool has no sandbox that
+                          records what the resolver reads, as Bazel
+                          and Nix do, so the input list is kept by
+                          hand. Strength: moderate; it grows with
+                          operation kinds and kinds of referenced
+                          item, not with variants, and its weight
+                          falls if caching and staleness, the input
+                          digest's uses, are not needed soon.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

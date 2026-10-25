@@ -1,0 +1,88 @@
+id_self:                ann_graph_identity_digest_a_partner_can_recompute
+guid_self:              ann_5b280d5abe15434a858c5312e486e858
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A graph name a partner can recompute
+brief:                  |
+                        A content digest of a published canonical form
+                        can be recomputed by anyone who holds the
+                        resolved graph, without cctool and without the
+                        repository. An input digest can be checked
+                        only from the inputs it covers, which the
+                        repository holds, and where it includes the
+                        resolver version only by running the same
+                        cctool, and a variant id or commit needs the
+                        repository at that commit, which for Patrol
+                        will be private.
+description:            |
+                        Sources:
+                        - Hashing and signing need the data expressed
+                          in an invariant format. (RFC 8785, JSON
+                          Canonicalization Scheme,
+                          https://www.rfc-editor.org/rfc/rfc8785,
+                          abstract)
+                        - The two-digest option has runs and
+                          deployments cite the content digest; an
+                          input digest covers the chain of bases, the
+                          operations and the versions they refer to,
+                          and in the two-digest option the resolver
+                          version.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          and opt_resolved_graph_input_digest.yaml,
+                          briefs)
+                        - Patrol code will live in cc-patrol, a
+                          private federated peer. (owner's statement,
+                          2026-10-21, paraphrased in
+                          _sources/context.md line 9)
+                        - One compatibility measure is the number of
+                          tools a partner must install to take part.
+                          (_data/register/reg_concern.yaml line 311)
+                          Strength: moderate; it grows with the
+                          partners who receive runs or deployments,
+                          and matters little while every peer is the
+                          owner's (owner's statement,
+                          2026-10-22T16:21, _sources/context.md line
+                          15).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_and_commit
+    guid_target:        opt_f885c033335c474086f75873040bb9a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_id
+    guid_target:        opt_c258428912f8424ca972414f303f64f3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

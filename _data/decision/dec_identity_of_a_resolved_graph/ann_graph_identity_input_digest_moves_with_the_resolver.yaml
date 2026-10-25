@@ -1,0 +1,80 @@
+id_self:                ann_graph_identity_input_digest_moves_with_the_resolver
+guid_self:              ann_144613d69d3946249fbb746b0d5a58ec
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An input digest that changes when only the resolver changes
+brief:                  |
+                        In the two-digest option the input digest
+                        covers the resolver version, so a resolver
+                        change gives every graph a new input name even
+                        where the output does not; the single
+                        input-digest option leaves the resolver out,
+                        so a resolver change that alters the output
+                        keeps the old name, and the name no longer
+                        says what ran. A content digest names exactly
+                        what was run, and the paired digests cite it
+                        for runs while also saying what was asked for;
+                        each is right only if the resolver is
+                        hermetic.
+description:            |
+                        Sources:
+                        - The two-digest option's input digest covers
+                          the resolver version, while the single
+                          input-digest option's covers the chain of
+                          bases, the operations and the interface and
+                          dictionary versions they refer to, not the
+                          resolver.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          and opt_resolved_graph_input_digest.yaml,
+                          briefs)
+                        - Input-addressed outputs rename everything
+                          downstream when any input changes, and
+                          content addresses depend only on name and
+                          content.
+                          (https://nix.dev/manual/nix/2.28/store/derivation/outputs/content-address,
+                          as summarized in
+                          _sources/survey/generative-and-transforms.md
+                          line 156)
+                        - The two-digest option has runs and
+                          deployments cite the content digest.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml,
+                          brief)
+                        - Digests drift if the resolver reads the
+                          environment, the clock or unordered dicts.
+                          (_sources/survey/generative-and-transforms.md
+                          line 157) Strength: strong; more resolver
+                          releases and more cited runs make the splits
+                          more frequent.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

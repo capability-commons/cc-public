@@ -1,0 +1,81 @@
+id_self:                ann_edge_guids_minted_stably_by_generators
+guid_self:              ann_2ffb95e5a1c94b69bf338651b1e50214
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge guids that whatever generates edges must mint stably
+brief:                  |
+                        Edges come from a base generated from a table,
+                        from joins, and during resolution from
+                        insert-on-edge and lowering. A guid per edge
+                        must then be kept in the table, or every
+                        regeneration mints new ones and breaks each
+                        operation that names an edge, and edges made
+                        during resolution, which is never stored, need
+                        guids from a fixed rule, or the content digest
+                        and any staleness check drift. Renames gain
+                        nothing, since the ends are ids the rename
+                        command already rewrites.
+description:            |
+                        Sources:
+                        - The Patrol base has 41 edges and is
+                          generated from a table.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 22-23)
+                        - Each edge carries an id with a guid, unique
+                          within its graph.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/opt_edge_identified_by_id_with_guid.yaml,
+                          brief)
+                        - Insert-on-edge and edge-policy lowering
+                          split one edge into two.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_split_edge_plain_by_ends_open_for_a_key.yaml,
+                          brief)
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 12-16)
+                        - Non-hermetic transforms break every identity
+                          scheme.
+                          (_sources/survey/generative-and-transforms.md
+                          line 157)
+                        - The rename command rewrites every whole-id
+                          match, including the node ids at each end of
+                          an edge. (src/cctool/edit/edit.py lines 163
+                          and 1086-1106;
+                          _data/schema/sch_dataflow_graph.yaml lines
+                          28-32)
+                        - The table generator writes no guids today.
+                          (_sources/cc-patrol-notes/draft/tools/gen_base.py
+                          line 77) ASSUMPTION: once it writes them, it
+                          mints a fresh guid on each run unless the
+                          table stores one. Strength: moderate; the
+                          upkeep grows with edges, lowering passes and
+                          taps, and falls away if bases stop being
+                          generated and the option gives a
+                          deterministic rule for generated edges.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_dataflow_edge
+    guid_target:        dec_4bf0d8403ad0409d93f5786c575660c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_identified_by_id_with_guid
+    guid_target:        opt_3a22be8c5d8a4ed8b159c3f0614db39a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

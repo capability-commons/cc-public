@@ -1,0 +1,78 @@
+id_self:                ann_graph_identity_digests_that_change_on_a_rename
+guid_self:              ann_fb567af06c8e4296a984b176ea91549d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Digests that change on a rename
+brief:                  |
+                        Rename maps rewrite every reference id, and
+                        renames are routine before 1.0. If the
+                        canonical form spells ids, a rename changes
+                        the digest of a graph whose content is
+                        unchanged, so a peer one release behind
+                        computes a different digest and every run
+                        cited across the rename looks stale. A digest
+                        over guids, or over ids mapped back through
+                        the rename maps, keeps a rename a pure
+                        refactoring; no digest option says which.
+description:            |
+                        Sources:
+                        - Each release ships its renames, as an old
+                          id, a new id and the guid, and a peer
+                          command rewrites each reference.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          lines 12-18)
+                        - The owner tolerates renames and prefix
+                          changes before 1.0. (owner's statement,
+                          2026-10-21, paraphrased in
+                          _sources/context.md line 26)
+                        - An edge end carries both an id and a guid.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          144-171)
+                        - The survey proposes that a rename come out
+                          as a pure refactoring of the family.
+                          (_sources/survey/product-lines.md lines
+                          206-210)
+                        - ASSUMPTION: no option yet says whether the
+                          canonical form holds ids or guids. Strength:
+                          strong; it grows with renames and with cited
+                          runs. It is a condition on all three digest
+                          options, not a reason to prefer a name
+                          without a digest.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
