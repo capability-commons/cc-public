@@ -11,31 +11,64 @@ protective_mark:
 title:                  Run-time change set as a variant transformation
 brief:                  |
                         A change set checked by cctool first is the
-                        same kind of thing as a variant
-                        transformation, which the Patrol plan already
-                        holds as data items with add, remove, join and
-                        place operations checked against the graph, so
-                        the runtime needs only a digest comparison.
-                        This rests on how variants are held, which is
-                        not yet ruled, adopting transformation items.
+                        same kind of thing as a dataflow variant: a
+                        delta of variant operations, such as add,
+                        remove, join and place, whose base is the
+                        running resolved dataflow graph. The ruling on
+                        how variants are held adopts that form, a base
+                        and an ordered list of operations whose
+                        resolved graph is derived and checked, and the
+                        Patrol proposal puts the interpreter of those
+                        operations in cctool's Python, so the checks a
+                        change set needs are ones cctool is to hold
+                        anyway, and the runtime needs only a digest
+                        comparison. Where variants are resolved is
+                        still an open decision, and this holds only
+                        while the answer keeps the interpreter in
+                        cctool.
 description:            |
-                        Sources: Variants are a base plus
-                        transformation items, derived, not stored
-                        (_sources/cc-patrol-notes/plan.md lines
-                        173-175). The planned operations are filter,
-                        add, join, write, host, process, place and
-                        remove, with joins checked because ports are
-                        interface members
-                        (_sources/cc-patrol-notes/variants.md lines
-                        57-67). The cctool-first option sends a change
-                        set as a checked data item and the runtime
-                        checks only the digest
-                        (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
-                        lines 11-18); the runtime option checks in C++
-                        (opt_change_set_checked_by_the_runtime.yaml,
-                        lines 11-19). Strength: strong for the count
-                        of mechanisms; it says nothing on targets
-                        without cctool at hand.
+                        Sources:
+                        - A variant holds a base, a dataflow graph or
+                          another variant, and an ordered list of
+                          operations; the resolved graph is derived,
+                          never stored, and checked. Ruled by William
+                          Payne on 2026-10-24.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-23)
+                        - Variants are a base plus transformation
+                          items, derived, not stored.
+                          (_sources/cc-patrol-notes/plan.md lines
+                          173-175)
+                        - The fluent API is to be ported as the Python
+                          interpreter of the operations, and the
+                          engine never sees variants; variant logic
+                          stays in Python with the rest of the
+                          tooling.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          36-40 and 92-95)
+                        - The planned operations are filter, add,
+                          join, write, host, process, place and
+                          remove, with joins checked because ports are
+                          interface members.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          57-67)
+                        - The cctool-first option sends a change set
+                          as a checked data item and the runtime
+                          checks only the digest.
+                          (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_cctool_first.yaml
+                          lines 12-19) The runtime option checks in
+                          C++.
+                          (_data/decision/dec_change_set_at_a_step/opt_change_set_checked_by_the_runtime.yaml
+                          lines 12-19)
+                        - A change set is a delta whose base is the
+                          running resolved graph; the condition this
+                          argument rested on now holds.
+                          (_sources/variants-framing.md, section 2)
+                          Strength: strong for the count of
+                          mechanisms, now that the variant form is
+                          ruled, while the interpreter stays in
+                          cctool; it says nothing on targets without
+                          cctool at hand.
 
 edge:
 

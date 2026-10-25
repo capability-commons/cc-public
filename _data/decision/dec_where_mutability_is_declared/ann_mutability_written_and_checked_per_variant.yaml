@@ -1,0 +1,90 @@
+id_self:                ann_mutability_written_and_checked_per_variant
+guid_self:              ann_7953cd8a53d0406095bbb32dcee06ee9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mutability set by a variant and checked across a deployment's modes
+brief:                  |
+                        When each configured node states static or
+                        dynamic, one base gives a fixed deployment and
+                        a changeable lab variant by a write operation
+                        per node, with no change of placement, where
+                        under the per-process option the lab variant
+                        must move nodes to another process, by process
+                        and place operations and, as in the mixed Orin
+                        variant, perhaps a host operation. A per-node
+                        field also lets a check hold that a node
+                        declared static in a deployment is unchanged
+                        across every mode, every sibling variant, that
+                        the deployment may switch between, which is
+                        one answer to how static and dynamic relate to
+                        variants.
+description:            |
+                        Sources:
+                        - Each configured node says whether it is
+                          static or dynamic, so the same node code can
+                          run either way in different configurations.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_each_configured_node.yaml
+                          lines 12-17)
+                        - An OS process is static or dynamic as a
+                          whole.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_os_process.yaml
+                          lines 12-15)
+                        - The drafted write operation sets a node's
+                          settings by a dotted address, and the mixed
+                          Orin variant uses host, process and place
+                          operations to move nodes.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 26-32;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          lines 25-35)
+                        - "How static and dynamic relate to variants"
+                          is listed as a missing decision.
+                          (notes/engine-shape-2026-10-24/ruling-guide.md
+                          line 73, in the project files)
+                        - A node is static in a deployment when it is
+                          unchanged across every mode the deployment
+                          may switch between.
+                          (_sources/variants-framing.md, section 2)
+                          Strength: weak to moderate; the placement
+                          part extends the existing argument on moving
+                          one node alone to whole variants, and the
+                          check across modes is a proposal not yet
+                          made.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_mutability_is_declared
+    guid_target:        dec_5c7b14759607418b85a29355076e4360
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_each_configured_node
+    guid_target:        opt_8c94bb343e6644a9b040a8ec4fd8dc3f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mutability_on_node_with_interface_limit
+    guid_target:        opt_7b0a9ea51aea488b84cb0127401db9eb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mutability_on_os_process
+    guid_target:        opt_9274c44ab9a841d8bdd97238b1f7aaff
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

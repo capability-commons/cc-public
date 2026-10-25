@@ -1,0 +1,80 @@
+id_self:                ann_swap_target_mix_checked_as_a_resolved_variant
+guid_self:              ann_2d9b3405b6404b0c9e3f84a66e3ea8d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mix of node versions after a swap held as a resolved variant
+brief:                  |
+                        A swap substitutes one node's implementation
+                        version, which is fragment substitution in
+                        CVL's terms, and a dataflow variant can pin
+                        the version of each node, so the mix of
+                        versions a live swap leads to can itself be a
+                        resolved dataflow graph, checked and tested
+                        before the change set is sent. That narrows
+                        the gap by which only a system with no live
+                        swap has every running mix configured and
+                        checked whole, provided the variant operations
+                        gain a substitution and change sets are
+                        generated between resolved variants.
+description:            |
+                        Sources:
+                        - With no live swap every running mix of node
+                          versions was configured and checked; with a
+                          live swap the mix is covered only if its
+                          change set was.
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_none_keeps_every_version_mix_checked.yaml
+                          lines 12-20)
+                        - The swap at a step is part of a change set,
+                          and a swap whose state cannot be upgraded is
+                          refused by a check before it is sent.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          lines 12-19)
+                        - The planned operations hold no substitution.
+                          (_sources/cc-patrol-notes/variants.md lines
+                          57-67)
+                        - CVL names fragment substitution, the
+                          replacement of one set of elements by
+                          another, as a kind of variation point beside
+                          existence and value assignment.
+                          (https://caosd.lcc.uma.es/vexgine/cvl/)
+                        - A swap is a substitution operation, and a
+                          variant can pin a node version.
+                          (_sources/variants-framing.md, section 2)
+                          Strength: weak to moderate; it rests on two
+                          open questions, the vocabulary of operations
+                          and how change sets are made, and a check of
+                          the mix says nothing of the state upgrade
+                          itself.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_a_node_version
+    guid_target:        dec_de6fa7831ff347f5b4dd78dcf9018859
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_at_a_step_with_state_upgrade
+    guid_target:        opt_041b4c7f24574ebaa5d1733b3d44971a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_by_restart_from_saved_state
+    guid_target:        opt_cae21730b61d485db81c0bdfbe4d658f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

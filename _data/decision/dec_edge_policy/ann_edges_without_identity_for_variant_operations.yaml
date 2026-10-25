@@ -1,0 +1,104 @@
+id_self:                ann_edges_without_identity_for_variant_operations
+guid_self:              ann_3fc75c0c516245e68fd3c9362152d32f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge fields that variant operations cannot yet address
+brief:                  |
+                        Under the ruling a variant changes its base
+                        only through operations, and the drafted write
+                        operation addresses keyed sections, but a
+                        dataflow edge has no key, only its two ends
+                        and a direction. A delivery policy on the edge
+                        is a value a variant may need to change, for
+                        example when placement makes an edge cross
+                        hosts and a different policy then suits it, so
+                        any option that adds an edge field now also
+                        needs a way for an operation to name an edge;
+                        leaving the edge as it is defers that question
+                        with it. The Patrol drafts so far avoid the
+                        need by holding alternative edges, tagged, in
+                        the base and filtering them.
+description:            |
+                        Sources:
+                        - A dataflow edge has a required source and
+                          target and an optional direction, and no
+                          other field.
+                          (_data/schema/sch_dataflow_graph.yaml lines
+                          173-203)
+                        - The drafted write operation addresses host
+                          and node settings by a dotted address.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          lines 26-32)
+                        - The planned remove operation removes one
+                          node or edge by id, which edges do not have.
+                          (_sources/cc-patrol-notes/variants.md
+                          line 67)
+                        - The place operation makes edges cross
+                          processes or hosts, and the policy has to
+                          say what the transport must preserve.
+                          (_sources/cc-patrol-notes/variants.md line
+                          66 and lines 144-146)
+                        - The kind of an edge follows from where its
+                          ends run, and a policy must suit its edge
+                          kind, such as rtp only between hosts.
+                          (_sources/cc-patrol-notes/draft/README.md
+                          lines 42-51 and 59-61)
+                        - The draft base holds a policy on each edge
+                          and tags the edges that only some variants
+                          keep, and the mixed Orin variant drops those
+                          by a filter rather than changing a policy.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          lines 3-4 and 431-443;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_mixed.yaml
+                          lines 22-23)
+                        - Edges have no identity, and operations must
+                          address them. (_sources/variants-framing.md,
+                          section 2 and section 4, Q10) Strength:
+                          weak; naming an edge by its two ends, which
+                          a rename already keeps, is a small addition,
+                          the insert operation needs it whatever is
+                          decided here, and no drafted variant yet
+                          changes the policy of an edge it keeps.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_edge_policy
+    guid_target:        dec_a20c1d8a0dfe4c57b3bd7b8b26f657a2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_policy_later
+    guid_target:        opt_ac62025e4e284ce3a2fe9ab3da949afa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_on_edge_now
+    guid_target:        opt_a32108cf5e8347baa3ce6fc2814057c4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_named_delivery_policy_on_edge_now
+    guid_target:        opt_451c1b30c8954d1cbf3223f912538dac
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_policy_declared_and_lowered_to_nodes
+    guid_target:        opt_879a2c6dcae442d6ba224937173feb33
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

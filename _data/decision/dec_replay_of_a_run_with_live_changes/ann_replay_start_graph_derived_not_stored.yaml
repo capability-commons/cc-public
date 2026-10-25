@@ -1,0 +1,71 @@
+id_self:                ann_replay_start_graph_derived_not_stored
+guid_self:              ann_832df0416935411884f4592c9e9f4f50
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Starting graph of a replay that is derived and never stored
+brief:                  |
+                        Under the ruling no resolved dataflow graph is
+                        stored, so a log of change sets and inputs
+                        replays a run only if it also names exactly
+                        which resolved graph the run started from, and
+                        a replay must then resolve that graph again
+                        from the same base chain, operations,
+                        interface versions and cctool, or carry the
+                        graph with the log. Both replay options take
+                        on that record, beside keeping old node
+                        versions buildable.
+description:            |
+                        Sources:
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          lines 13-16)
+                        - The log records the step at which each
+                          change set and swap took effect, actor
+                          messages and outside values, but not the
+                          graph a run starts from.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                          lines 12-20)
+                        - A replay needs every node version that ran
+                          kept buildable.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ann_replay_needs_old_node_versions_kept_buildable.yaml
+                          lines 12-22)
+                        - The replay log needs the identity of the
+                          resolved graph at the start.
+                          (_sources/variants-framing.md, section 2 and
+                          section 4, Q5) Strength: weak; a digest and
+                          a commit per run cost little, and the same
+                          identity serves runs, deployments and change
+                          sets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_replay_of_a_run_with_live_changes
+    guid_target:        dec_f13aad9acb7d44158dacae619ed4026e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_from_a_recorded_log
+    guid_target:        opt_ff934607edde4356812857f5a724bead
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_of_the_static_part_only
+    guid_target:        opt_307a5068c39d4f6080ccb03935022943
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
