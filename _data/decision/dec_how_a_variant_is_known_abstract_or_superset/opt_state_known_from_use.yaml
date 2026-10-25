@@ -1,0 +1,55 @@
+id_self:                opt_state_known_from_use
+guid_self:              opt_ef4a71a6650b4530868cb97ed49a5b73
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State known from how a dataflow variant is used
+brief:                  |
+                        Nothing is declared. A [[dataflow variant]]
+                        that nothing builds on, that a
+                        [[dataflow run]] cites, or that takes an
+                        option, is meant to run and must be complete:
+                        every check holds on its
+                        [[resolved dataflow graph]], so a forgotten or
+                        doubled edge fails there. Any other dataflow
+                        variant is only built on, and is checked only
+                        for what holds whatever its descendants add.
+                        Whether a built-on dataflow variant is
+                        abstract, superset or hybrid is derived from
+                        its resolved dataflow graph when wanted, and
+                        never stored.
+description:            |
+                        Proposed after WTP asked whether the state
+                        needs declaring at all, since it becomes
+                        obvious through use (WTP, 2026-10-25). It is
+                        close to the derived option with a leaf rule
+                        that the arguments on this decision named as
+                        missing. relation_takes_option gives one of
+                        the uses.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_run
+    guid_target:        concept_d068df3fbf2240d19a060fde90d4405b
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7
