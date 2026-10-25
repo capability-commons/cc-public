@@ -1211,15 +1211,16 @@ entries:
                         their ports, and where each [[dataflow node]]
                         runs.
     description:        |
-                        A dataflow graph is complete enough to be run.
-                        Each dataflow node names the interface control
-                        document whose dataflow step surface it
-                        presents, so that every dataflow edge can be
-                        checked against the ports at its ends. A
-                        variant of a system, for a test, a simulation
-                        or a deployment, is derived from a dataflow
-                        graph by transformations, and is not kept as a
-                        copy.
+                        A dataflow graph holds enough to be run,
+                        unless it is a dataflow variant that is not
+                        complete, whose resolved dataflow graph is not
+                        run. Each dataflow node names the interface
+                        control document whose dataflow step surface
+                        it presents, so that every dataflow edge can
+                        be checked against the ports at its ends. A
+                        dataflow variant, for a test, a simulation or
+                        a deployment, is derived from its base by
+                        variant operations, and is not kept as a copy.
     note:               |
                         The sections of a dataflow graph follow the
                         configuration model of Stableflow, the data
@@ -3019,10 +3020,11 @@ entries:
     guid_self:          concept_4854339472fc4e5c9732ee751b4769f6
     title:              Variant realization
     brief:              |
-                        The adding, by variant operations, of the
-                        functional blocks or chains that an abstract
-                        dataflow variant lacks, which makes a
-                        descendant of it less abstract or complete.
+                        The adding, by [[variant operations]], of the
+                        functional blocks or chains that an
+                        [[abstract dataflow variant]] lacks, which
+                        makes a descendant of it less abstract or
+                        complete.
     description:        |
                         Realize also names component realization
                         (concept_component_realization), so the bare
@@ -3046,11 +3048,11 @@ entries:
     guid_self:          concept_48be37e211c64aa8a215e0e315f28d76
     title:              Variant tailoring
     brief:              |
-                        The removing, by variant operations, of the
-                        surplus or redundant functional blocks or
-                        chains that a superset dataflow variant holds,
-                        which makes a descendant of it less of a
-                        superset or complete.
+                        The removing, by [[variant operations]], of
+                        the surplus or redundant functional blocks or
+                        chains that a [[superset dataflow variant]]
+                        holds, which makes a descendant of it less of
+                        a superset or complete.
     description:        |
                         The opposite direction is variant realization
                         (concept_variant_realization).
@@ -3104,3 +3106,449 @@ entries:
         guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
         id_target:      concept_identifiable_data_item
         guid_target:    concept_a125aa49d2a145368ebb6c79d85c375b
+
+  # ---------------------------------------------------------------------------
+  # concept_dataflow_variant -- Dataflow variant
+  #
+  concept_dataflow_variant:
+    id_self:            concept_dataflow_variant
+    guid_self:          concept_ea664695cb894e15aa3e3cbcb3853cc1
+    title:              Dataflow variant
+    brief:              |
+                        A member of a [[variant family]]: a
+                        [[dataflow graph]] written whole, as the root
+                        of the family, or as a [[base]] and the
+                        [[operation list]] that applies to it.
+    description:        |
+                        Variant is admitted where the dataflow sense
+                        is clear. Product line engineering also uses
+                        variant for the value bound at one variation
+                        point rather than for a whole system, so the
+                        qualified term is preferred. Configuration is
+                        not used as a term: product line engineering
+                        uses it for a feature selection, and
+                        concept_dataflow_graph keeps system
+                        configuration in its systems engineering sense
+                        (WTP, 2026-10-25).
+    note:               |
+                        The term follows common industrial usage, as
+                        in product variant, qualified as the register
+                        already qualifies dataflow graph.
+    term_preferred:     dataflow variant
+
+    term_admitted:
+      - variant
+
+    term_deprecated:
+      - configuration
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_graph
+        guid_target:    concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  # ---------------------------------------------------------------------------
+  # concept_base -- Base
+  #
+  concept_base:
+    id_self:            concept_base
+    guid_self:          concept_40c6780590f446cfbee05359090e1b89
+    title:              Base
+    brief:              |
+                        The [[dataflow variant]] that another
+                        [[dataflow variant]] is built on, and to which
+                        its [[operation list]] applies.
+    description:        |
+                        Base names the role of a dataflow variant in a
+                        family, not a kind: a base is itself a
+                        dataflow variant, and may have a base of its
+                        own.
+    note:               |
+                        The base model of the Common Variability
+                        Language, and the core of delta modeling.
+    term_preferred:     base
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  # ---------------------------------------------------------------------------
+  # concept_variant_operation -- Variant operation
+  #
+  concept_variant_operation:
+    id_self:            concept_variant_operation
+    guid_self:          concept_8c4884eebd444315809afb0ea4c5488e
+    title:              Variant operation
+    brief:              |
+                        One member of an [[operation list]] or a
+                        [[delta module]]: the adding, removing or
+                        changing of a part of a [[dataflow graph]],
+                        such as a [[dataflow node]], a
+                        [[dataflow edge]] or a setting.
+    description:        |
+                        Operation alone is not registered, and is
+                        qualified so that it is not read as a method
+                        of an interface.
+    term_preferred:     variant operation
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_operation_list -- Operation list
+  #
+  concept_operation_list:
+    id_self:            concept_operation_list
+    guid_self:          concept_3c1495849d7646259842a9be105d1660
+    title:              Operation list
+    brief:              |
+                        The ordered list of [[variant operations]]
+                        that a [[dataflow variant]] applies to its
+                        [[base]].
+    description:        |
+                        Bare delta is not used as a term, since it was
+                        given two senses, the whole list of a dataflow
+                        variant and a reusable named list (WTP,
+                        2026-10-25). A reusable named list is a delta
+                        module (concept_delta_module).
+    term_preferred:     operation list
+
+    term_deprecated:
+      - delta
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_delta_module -- Delta module
+  #
+  concept_delta_module:
+    id_self:            concept_delta_module
+    guid_self:          concept_3d0dd6755b224df0bb0cf1e98f017137
+    title:              Delta module
+    brief:              |
+                        A named list of [[variant operations]], held
+                        apart from any one [[dataflow variant]], that
+                        [[dataflow variants]] include.
+    description:        |
+                        A delta module is included by dataflow
+                        variants rather than built on, so it is not a
+                        base.
+    note:               |
+                        The term of delta-oriented programming:
+                        Schaefer, Bettini, Bono, Damiani and
+                        Tanzarella, Delta-oriented programming of
+                        software product lines, SPLC 2010
+                        (https://research.chalmers.se/en/publication/124332).
+    term_preferred:     delta module
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_resolved_dataflow_graph -- Resolved dataflow graph
+  #
+  concept_resolved_dataflow_graph:
+    id_self:            concept_resolved_dataflow_graph
+    guid_self:          concept_9748e2401bed4ce3a81fc36c3b4745d7
+    title:              Resolved dataflow graph
+    brief:              |
+                        The [[dataflow graph]] that a
+                        [[dataflow variant]] yields when its
+                        [[operation list]], and those of each [[base]]
+                        beneath it in turn, are applied, derived and
+                        never written back.
+    description:        |
+                        Every dataflow variant has a resolved dataflow
+                        graph, and only that of a complete dataflow
+                        variant is run (WTP, 2026-10-25).
+    note:               |
+                        The resolved model of the Common Variability
+                        Language.
+    term_preferred:     resolved dataflow graph
+
+    term_admitted:
+      - resolved graph
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_graph
+        guid_target:    concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  # ---------------------------------------------------------------------------
+  # concept_variant_family -- Variant family
+  #
+  concept_variant_family:
+    id_self:            concept_variant_family
+    guid_self:          concept_a2022a4dcea94c2bab6df623a8772c90
+    title:              Variant family
+    brief:              |
+                        All the [[dataflow variants]] built, directly
+                        or in turn, on one root [[dataflow variant]].
+    description:        |
+                        Variant tree is not used, since tree already
+                        names the repository tree, and the family need
+                        not stay a tree.
+    note:               |
+                        After program families: Parnas, On the design
+                        and development of program families, IEEE
+                        Transactions on Software Engineering 2, 1976.
+    term_preferred:     variant family
+
+    term_deprecated:
+      - variant tree
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_simulation_variant -- Simulation variant
+  #
+  concept_simulation_variant:
+    id_self:            concept_simulation_variant
+    guid_self:          concept_e0d16dd9d5c04c70abbf6e8a8f4bfbc8
+    title:              Simulation variant
+    brief:              |
+                        A [[dataflow variant]] in which a simulated or
+                        replayed source stands in for a part of the
+                        system, so that a [[dataflow run]] of it can
+                        back a [[decision]].
+    description:        |
+                        World model is not used as a term, since in
+                        machine learning it names a learned simulator
+                        (Ha and Schmidhuber, World models, 2018), and
+                        WTP preferred simulation variant (WTP,
+                        2026-10-25).
+    term_preferred:     simulation variant
+
+    term_deprecated:
+      - world model
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  # ---------------------------------------------------------------------------
+  # concept_dataflow_run -- Dataflow run
+  #
+  concept_dataflow_run:
+    id_self:            concept_dataflow_run
+    guid_self:          concept_d068df3fbf2240d19a060fde90d4405b
+    title:              Dataflow run
+    brief:              |
+                        One run of one [[resolved dataflow graph]],
+                        recorded with what went in and what came out.
+    description:        |
+                        A dataflow run is not one run of a dataflow
+                        step, which is an invocation
+                        (concept_dataflow_step).
+    term_preferred:     dataflow run
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_member_product -- Member product
+  #
+  concept_member_product:
+    id_self:            concept_member_product
+    guid_self:          concept_db2d8314c03a44689794aabc8bdc0d3d
+    title:              Member product
+    brief:              |
+                        One product of a product line, represented by
+                        one [[complete dataflow variant]] of its
+                        [[variant family]].
+    description:        |
+                        Bare product is not used as a term for one
+                        dataflow variant. An abstract or superset
+                        dataflow variant is not a member product (WTP,
+                        2026-10-25).
+    note:               |
+                        The term of ISO/IEC 26580:2021 for one product
+                        of a product line, as its public preview uses
+                        it
+                        (https://webstore.ansi.org/preview-pages/ISO/preview_ISO+IEC+26580-2021.pdf).
+    term_preferred:     member product
+
+    term_deprecated:
+      - product
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_presence_tag -- Presence tag
+  #
+  concept_presence_tag:
+    id_self:            concept_presence_tag
+    guid_self:          concept_00cc708143e441569cd3e38d0b2b05ac
+    title:              Presence tag
+    brief:              |
+                        A name on a part of a [[dataflow graph]] that
+                        says in which [[dataflow variants]] the part
+                        is present.
+    description:        |
+                        Bare tag is not used as a term, since the tag
+                        that names a release is a git tag (WTP,
+                        2026-10-25).
+    note:               |
+                        A presence tag stands for a presence
+                        condition, the term of annotative variability.
+    term_preferred:     presence tag
+
+    term_deprecated:
+      - tag
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_abstract_dataflow_variant -- Abstract dataflow variant
+  #
+  concept_abstract_dataflow_variant:
+    id_self:            concept_abstract_dataflow_variant
+    guid_self:          concept_6c0f76bc2810425393ea09da1a88fc92
+    title:              Abstract dataflow variant
+    brief:              |
+                        A [[dataflow variant]] that lacks functional
+                        blocks or chains, which
+                        [[variant realization]] adds to it.
+    description:        |
+                        The state belongs to the dataflow variant
+                        itself: a descendant that adds a block which
+                        fills no gap does not make its base abstract.
+                        Bare abstract, in the drafted sense of any
+                        dataflow variant that is only built on, is not
+                        used (WTP, 2026-10-25).
+    note:               |
+                        The positive variability of product line
+                        engineering: Voelter and Groher, Product line
+                        implementation using aspect-oriented and
+                        model-driven software development, SPLC 2007.
+    term_preferred:     abstract dataflow variant
+
+    term_admitted:
+      - abstract variant
+
+    term_deprecated:
+      - abstract
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  # ---------------------------------------------------------------------------
+  # concept_superset_dataflow_variant -- Superset dataflow variant
+  #
+  concept_superset_dataflow_variant:
+    id_self:            concept_superset_dataflow_variant
+    guid_self:          concept_9c3bfe5215a44d4c80a7e78c1ba4798a
+    title:              Superset dataflow variant
+    brief:              |
+                        A [[dataflow variant]] that holds surplus or
+                        redundant functional blocks or chains, which
+                        [[variant tailoring]] removes from it.
+    description:        |
+                        The state belongs to the dataflow variant
+                        itself, as for an abstract dataflow variant.
+                        Both Patrol items drafted with the field
+                        abstract are superset dataflow variants.
+    note:               |
+                        The negative variability of product line
+                        engineering (Voelter and Groher, SPLC 2007). A
+                        superset base is the shared asset superset of
+                        ISO/IEC 26580, also called a 150 percent
+                        model.
+    term_preferred:     superset dataflow variant
+
+    term_admitted:
+      - superset variant
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  # ---------------------------------------------------------------------------
+  # concept_hybrid_dataflow_variant -- Hybrid dataflow variant
+  #
+  concept_hybrid_dataflow_variant:
+    id_self:            concept_hybrid_dataflow_variant
+    guid_self:          concept_9ec6bfeae6d2417499d75c95eed871f2
+    title:              Hybrid dataflow variant
+    brief:              |
+                        A [[dataflow variant]] that is both abstract
+                        and superset: it lacks some functional blocks
+                        or chains and holds others in surplus.
+    description:        |
+                        Patrol's graph of GStreamer, engine and Python
+                        nodes is called mixed-engine, not hybrid, so
+                        that hybrid keeps this one sense here.
+    term_preferred:     hybrid dataflow variant
+
+    term_admitted:
+      - hybrid variant
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  # ---------------------------------------------------------------------------
+  # concept_complete_dataflow_variant -- Complete dataflow variant
+  #
+  concept_complete_dataflow_variant:
+    id_self:            concept_complete_dataflow_variant
+    guid_self:          concept_c73fdf802424410cab7f57b760669dcd
+    title:              Complete dataflow variant
+    brief:              |
+                        A [[dataflow variant]] that is neither
+                        abstract nor superset, and the only kind whose
+                        [[resolved dataflow graph]] is run.
+    description:        |
+                        Operational is not used, since Arcadia uses it
+                        for its operational analysis level (WTP,
+                        2026-10-25).
+    term_preferred:     complete dataflow variant
+
+    term_admitted:
+      - complete variant
+
+    term_deprecated:
+      - operational
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_dataflow_variant
+        guid_target:    concept_ea664695cb894e15aa3e3cbcb3853cc1
