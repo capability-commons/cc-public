@@ -218,24 +218,19 @@ def test_a_fault_in_the_consumed_tree_is_a_notice(tree, tmp_path_factory, monkey
 def test_a_peer_that_names_a_missing_release_fails(tree, tmp_path_factory, monkeypatch):
     """
     A segment item that names a release item no tree holds fails, as a
-    reference that dangles, and it then consumes nothing, so each item
-    of the consumed tree that the peer names fails too.
+    reference that dangles, and only so: what the peer names in the
+    tree it reads is left to that failure.
 
     """
 
     _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
-    root                   = _peer(tmp_path_factory, 'release_9_9_9',
+    root                   = _peer(tmp_path_factory, 'release_cc_public_9_9_9',
                                    'release_9f9e9d9c9b9a49998897969594939291')
     (failures, _, notices) = cctool.check.check.review(root)
 
-    assert failures['dangling_reference'] == [(ID_PEER, 'target', 'release_9_9_9',
-                                                FILE_PEER, '21')]
-    assert sorted(failures['unconsumed_reference']) == [
-        (ID_PEER, id_named, ID_PEER, 'segment_cc_public', FILE_PEER, line)
-        for (id_named, line) in (('concept_federated_segment', '14'), ('mark_public', '8'),
-                                 ('relation_consumes', '19'))]
-    assert set(failures) == {'dangling_reference', 'unconsumed_reference'}
-    assert notices == {}
+    assert failures == {'dangling_reference': [(ID_PEER, 'target', 'release_cc_public_9_9_9',
+                                                FILE_PEER, '21')]}
+    assert notices  == {}
 
 
 # -----------------------------------------------------------------------------

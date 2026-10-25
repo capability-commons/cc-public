@@ -3688,6 +3688,18 @@ segment_consumes(Segment, Consumed) :-
 
 
 % -----------------------------------------------------------------------------
+% The segment has an edge of relation_consumes to a release item that no
+% tree holds. Its references into the trees it reads are then left to
+% the dangling reference of that edge.
+%
+% decl unresolved_consumes(segment: symbol)
+
+unresolved_consumes(Segment) :-
+    edge(Segment, "relation_consumes", Release),
+    not item(Release, _, _, _, _).
+
+
+% -----------------------------------------------------------------------------
 % The item holder, in file at line, names the item id by a reference or a
 % mention.
 %
@@ -3750,4 +3762,5 @@ unconsumed_reference(Holder, Id, Segment, Other, File, Line) :-
     item(Id, _, _, Target, _),
     segment_of(Target, Other),
     Segment != Other,
-    not segment_consumes(Segment, Other).
+    not segment_consumes(Segment, Other),
+    not unresolved_consumes(Segment).
