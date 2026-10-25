@@ -2071,10 +2071,11 @@ entries:
     guid_self:          concept_650632820e2346cc8ed4d33b944fe79e
     title:              Federated repository
     brief:              |
-                        One repository that holds [[data items]] under
-                        the conventions of cc-public and refers to
-                        [[data items]] in other repositories of its
-                        [[concept_federation|federation]].
+                        A
+                        [[concept_federated_segment|federated segment]]
+                        held in a repository, such as a git repository
+                        or another source control or [[document]]
+                        control system.
     description:        |
                         After Sheth and Larson, "Federated database
                         systems for managing distributed,
@@ -2090,7 +2091,13 @@ entries:
       - member repository
 
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_federated_segment
+        guid_target:    concept_a14ac366a4414b4697991d5136a370df
 
   # ---------------------------------------------------------------------------
   # concept_federation -- Federation
@@ -2918,28 +2925,32 @@ entries:
   concept_federated_segment:
     id_self:            concept_federated_segment
     guid_self:          concept_a14ac366a4414b4697991d5136a370df
-    title:              Segment
+    title:              Federated segment
     brief:              |
-                        A
-                        [[concept_federated_repository|federated repository]]
-                        as it declares itself to its
-                        [[concept_federation|federation]], naming the
-                        [[release]] of each other segment whose
-                        [[data items]] its own may refer to.
+                        A part of a [[concept_federation|federation]]
+                        that holds [[data items]] under the
+                        conventions of cc-public, declares itself with
+                        a segment [[data item]], and names the
+                        [[release]] of each other federated segment
+                        whose [[data items]] its own may refer to.
     description:        |
-                        A reference may run within a segment, or into
-                        a segment it consumes, and never the other
-                        way, so dependence between segments runs one
-                        way. A segment that consumes cc-public is
-                        called a peer of it.
-    term_preferred:     segment
+                        A reference may run within a federated
+                        segment, or into one it consumes, and never
+                        the other way, so dependence between federated
+                        segments runs one way. A federated segment
+                        that consumes cc-public is called a peer of
+                        it.
+
+                        A federated segment held in a repository is a
+                        [[concept_federated_repository|federated repository]].
+                        One held in another store, such as a graph
+                        database, is a federated segment but not a
+                        federated repository. The bare word segment is
+                        avoided, since it is likely to take other
+                        senses.
+    term_preferred:     federated segment
 
     alias:
       - concept_segment
 
-    edge:
-
-      - id_relation:    relation_is_narrower_than
-        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
-        id_target:      concept_federated_repository
-        guid_target:    concept_650632820e2346cc8ed4d33b944fe79e
+    edge:               []
