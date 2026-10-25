@@ -174,8 +174,19 @@ def test_the_first_release_takes_the_version_of_the_module(repo):
     _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
     assert cctool.release.release.verify(repo, 'v0.1.0', 'HEAD') == []
     assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == [
-        '_data/release/release_cc_public_0_1_0.yaml records the version 0.1.0, not 0.2.0.',
-        'The version module at {short} holds 0.1.0, not 0.2.0.'.format(short = _short(repo))]
+        'The tree at {short} holds 0 release items for 0.2.0, not one. Run cctool release '
+        'prepare, and commit what it writes.'.format(short = _short(repo))]
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.prepush
+def test_a_commit_after_the_one_that_adds_the_release_item_may_be_tagged(repo):
+    cctool.release.release.prepare(repo, 'The first release.')
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
+    (repo / 'README.md').write_text((repo / 'README.md').read_text() + 'More.\n')
+    _commit(repo, cctool.commit.message.compose('Change README.md so that it says more',
+                                                'More words.'))
+    assert cctool.release.release.verify(repo, 'v0.1.0', 'HEAD') == []
 
 
 # -----------------------------------------------------------------------------
@@ -226,12 +237,12 @@ def test_the_release_item_records_the_renames_and_the_check_holds_it_to_them(rep
 
 # -----------------------------------------------------------------------------
 @pytest.mark.prepush
-def test_a_commit_that_adds_no_release_item_may_not_be_tagged(repo):
+def test_a_tree_with_no_release_item_may_not_be_tagged(repo):
     result = click.testing.CliRunner().invoke(cctool.cli.command.main,
                                               ['release', 'check', 'v0.1.0', '--root', str(repo)])
     assert result.exit_code == 1
-    assert result.stdout.startswith('The commit {short} adds 0 release items, not one.'.format(
-                                        short = _short(repo)))
+    assert result.stdout.startswith('The tree at {short} holds 0 release items for 0.1.0, '
+                                    'not one.'.format(short = _short(repo)))
 
 
 # -----------------------------------------------------------------------------

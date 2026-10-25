@@ -369,10 +369,12 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
 def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
     """
     Return a sentence for each reason the commit rev of the repository
-    at root may not be tagged tag: it must add exactly one release item,
-    whose version is that of the tag and of the version module, and
-    which records the dependencies of the runtime lock at rev and the
-    renames since the last release tag before rev.
+    at root may not be tagged tag: its tree must hold exactly one
+    release item whose version is that of the tag, the version module
+    must hold that version too, and the item must record the
+    dependencies of the runtime lock at rev and the renames since the
+    last release tag before rev. The item may have been added by an
+    earlier commit.
 
     """
 
@@ -383,28 +385,23 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
 
     short      = _git(root, 'rev-parse',
                       '--short={n}'.format(n = cctool.commit.history.LENGTH_SHORT), rev).strip()
-    list_added = _git(root, 'diff-tree', '-r', '--root', '--no-commit-id', '--name-only',
-                      '--diff-filter=A', rev, '--', DIR_RELEASE).split()
+    list_file  = [file for file in _git(root, 'ls-tree', '-r', '--name-only', rev, '--',
+                                        DIR_RELEASE).split()
+                  if file.endswith('.yaml')]
+    list_match = [file for file in list_file
+                  if _version_of(_shown(root, rev, file)) == version]
 
-    if len(list_added) != 1:
-        return ['The commit {short} adds {count} release items, not one. Only the commit that '
-                'adds the release item is tagged: run cctool release prepare, and commit what '
-                'it writes.'.format(short = short, count = len(list_added))]
+    if len(list_match) != 1:
+        return ['The tree at {short} holds {count} release items for {version}, not one. Run '
+                'cctool release prepare, and commit what it writes.'.format(
+                    short = short, count = len(list_match), version = version)]
 
-    file       = list_added[0]
-    item       = cctool.graph.extract.YAML.load(_git(root, 'show', rev + ':' + file))
+    file       = list_match[0]
+    item       = cctool.graph.extract.YAML.load(_shown(root, rev, file))
     module     = cctool.release.record.module_version(
                      _shown(root, rev, str(cctool.release.record.PATH_MODULE)))
     list_found = []
 
-    if not isinstance(item, dict):
-        return ['{file} at {short} holds no release item.'.format(file = file, short = short)]
-
-    if str(item.get(cctool.release.record.KEY_VERSION)) != version:
-        list_found.append('{file} records the version {found}, not {version}.'.format(
-                              file    = file,
-                              found   = item.get(cctool.release.record.KEY_VERSION),
-                              version = version))
     if module != version:
         list_found.append('The version module at {short} holds {found}, not {version}.'.format(
                               short = short, found = module, version = version))
@@ -428,6 +425,21 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
                               file = file, base = base))
 
     return list_found
+
+
+# -----------------------------------------------------------------------------
+def _version_of(text: str) -> str | None:
+    """
+    Return the version that the release item in text records, or None
+    if text holds no release item.
+
+    """
+
+    item = cctool.graph.extract.YAML.load(text) if text else None
+
+    if not isinstance(item, dict) or cctool.release.record.KEY_VERSION not in item:
+        return None
+    return str(item[cctool.release.record.KEY_VERSION])
 
 
 # -----------------------------------------------------------------------------
