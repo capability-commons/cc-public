@@ -19,14 +19,15 @@ description:            |
                         layout.dump and insert them with _Item.replace
                         at ranges from _Item.extent and _Item.column
                         (src/cctool/edit/edit.py). extent scans
-                        indentation (lines 1159-1180). dump returns
-                        YAML "not laid out" (layout.py within _spans).
-                        The printer reads comments from source lines
-                        (layout.py _lead, line 348). The splice is
-                        about 90 lines and does not grow with the
-                        graph. opt_fragment_writer has the same splice
-                        plus its own layout rules. ASSUMPTION: editing
-                        the loaded YAML document instead would need
+                        indentation (src/cctool/edit/edit.py within
+                        _Item.extent). dump returns YAML "not laid
+                        out" (layout.py within _spans). The printer
+                        reads comments from source lines (layout.py
+                        within _lead). The splice is about 90 lines
+                        and does not grow with the graph.
+                        opt_fragment_writer has the same splice plus
+                        its own layout rules. ASSUMPTION: editing the
+                        loaded YAML document instead would need
                         comments carried another way; not tested.
 
 edge:

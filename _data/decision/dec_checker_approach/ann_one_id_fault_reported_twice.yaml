@@ -19,15 +19,15 @@ description:            |
                         An id against its type's pattern gives both
                         bad_id and schema_violation rows
                         (src/cctool/check/_test/test_check.py within
-                        test_an_argument_across_two_decisions_is_reported),
+                        test_an_id_against_the_pattern_of_its_type_is_reported),
                         and a guid of the wrong form gives both
-                        bad_guid and schema_violation rows (same file,
-                        lines 384-390). An id that breaks only its
-                        type's narrower regex_id, or a well-formed
-                        guid with another type's prefix, gives one row
-                        from the rule alone. The id form is both a
-                        schema pattern and a rule
-                        (_data/schema/sch_primitive.yaml at
+                        bad_guid and schema_violation rows (same file
+                        within test_a_malformed_guid_is_reported). An
+                        id that breaks only its type's narrower
+                        regex_id, or a well-formed guid with another
+                        type's prefix, gives one row from the rule
+                        alone. The id form is both a schema pattern
+                        and a rule (_data/schema/sch_primitive.yaml at
                         $defs.id.pattern and $defs.guid.pattern;
                         src/cctool/check/check.lp within bad_id and
                         bad_guid; ann_identifier_form_checked_twice).

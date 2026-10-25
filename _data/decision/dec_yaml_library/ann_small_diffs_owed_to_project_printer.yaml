@@ -26,11 +26,12 @@ description:            |
                         at column 25 (COLUMN_VALUE 24, layout.py). The
                         printer uses ruamel for key and item lines
                         (layout.py within _span and _emit_lead),
-                        literal block style (line 474) and quoting one
-                        scalar (lines 522-546). PyYAML 6.0.1
-                        yaml.compose on "a: |\n x\nb: y\n" gives key a
-                        at line 0 with style '|' and key b at line 2.
-                        Lines on compose nodes are in
+                        literal block style (layout.py within
+                        _emit_value) and quoting one scalar (layout.py
+                        within _render). PyYAML 6.0.1 yaml.compose on
+                        "a: |\n x\nb: y\n" gives key a at line 0 with
+                        style '|' and key b at line 2. Lines on
+                        compose nodes are in
                         ann_pyyaml_compose_nodes_carry_lines; this
                         adds the style. ASSUMPTION: porting the
                         printer and splice to compose nodes is a few

@@ -20,15 +20,18 @@ description:            |
                         layout.violations (src/cctool/edit/layout.py
                         within violations) keys each verdict on the
                         path and the digest of the text. It keeps up
-                        to 4096 verdicts in MAP_VIOLATION (lines
-                        105-106), and loads and saves them through the
-                        store of src/cctool/check/store.py under the
-                        kind layout (line 111). The store is the
-                        folder that CC_PUBLIC_STORE names, which the
-                        gate of a commit sets; the gate of a push sets
-                        none. Each check still reads and hashes every
-                        file, but lays out only those it has not seen.
-                        Found in the review of 2026-10-22.
+                        to 4096 verdicts in MAP_VIOLATION
+                        (src/cctool/edit/layout.py within
+                        MAP_VIOLATION and COUNT_VIOLATION), and loads
+                        and saves them through the store of
+                        src/cctool/check/store.py under the kind
+                        layout (src/cctool/edit/layout.py within
+                        KIND_STORE). The store is the folder that
+                        CC_PUBLIC_STORE names, which the gate of a
+                        commit sets; the gate of a push sets none.
+                        Each check still reads and hashes every file,
+                        but lays out only those it has not seen. Found
+                        in the review of 2026-10-22.
 
 edge:
 

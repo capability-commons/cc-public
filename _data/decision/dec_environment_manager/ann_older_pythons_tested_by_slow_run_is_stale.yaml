@@ -20,17 +20,28 @@ brief:                  |
 description:            |
                         pyproject.toml at tool.pixi.tasks.slow define
                         the task slow, which runs the test task in the
-                        environments py312, py313 and py314. Lines
-                        89-101 pin python to 3.12.*, 3.13.* and 3.14.*
-                        in those environments. pixi.lock holds them at
-                        lines 169, 332 and 496, with python 3.12.15,
-                        3.13.16 and 3.14.8 for linux-64 (lines 211,
-                        373 and 537). requires-python is still ">=
-                        3.12" (line 41). The comment above the task
-                        says it is too slow for the gate and is run on
-                        its own. So the lowest claimed version is
-                        checked, though not at each commit. Found in
-                        the review of 2026-10-22.
+                        environments py312, py313 and py314.
+                        pyproject.toml at
+                        tool.pixi.feature.py312.dependencies.python,
+                        tool.pixi.feature.py313.dependencies.python
+                        and
+                        tool.pixi.feature.py314.dependencies.python
+                        pin python to 3.12.*, 3.13.* and 3.14.* in
+                        those environments. pixi.lock at
+                        environments.py312, environments.py313 and
+                        environments.py314 holds them, with python
+                        3.12.15, 3.13.16 and 3.14.8 for linux-64
+                        (pixi.lock at
+                        environments.py312.packages.linux-64.22,
+                        environments.py313.packages.linux-64.21 and
+                        environments.py314.packages.linux-64.21).
+                        requires-python is still ">= 3.12"
+                        (pyproject.toml at project.requires-python).
+                        The comment above the task says it is too slow
+                        for the gate and is run on its own. So the
+                        lowest claimed version is checked, though not
+                        at each commit. Found in the review of
+                        2026-10-22.
 
 edge:
 

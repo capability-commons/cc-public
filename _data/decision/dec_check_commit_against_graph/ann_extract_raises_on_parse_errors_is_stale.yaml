@@ -17,14 +17,13 @@ brief:                  |
                         UnicodeDecodeError. The extractor now catches
                         parse errors and keeps the file as unreadable.
 description:            |
-                        src/cctool/graph/extract.py raises ErrorRead
-                        for a Python syntax error (lines 1092-1096)
-                        and for a YAML error (lines 1132-1138), and
+                        src/cctool/graph/extract.py within _module,
+                        _load and documents raises ErrorRead for a
+                        Python syntax error and for a YAML error, and
                         documents catches ErrorRead and keeps an
-                        Unreadable in place of the document (lines
-                        459-462). So a file that does not parse no
-                        longer raises out of extraction. Found in the
-                        review of 2026-10-22.
+                        Unreadable in place of the document. So a file
+                        that does not parse no longer raises out of
+                        extraction. Found in the review of 2026-10-22.
 
 edge:
 

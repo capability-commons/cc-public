@@ -23,18 +23,20 @@ description:            |
                         title is "Type register entry schema"
                         (_data/schema/sch_regentry_type.yaml at title
                         and brief), and the same file uses the JSON
-                        Schema keyword "type: object" at line 37.
-                        Every other entry schema takes the tail of its
-                        register schema. No code pairs the prefixes,
-                        so drift is caught only by a reader (grep of
-                        src/). A $ref to a missing schema is not
-                        reported: the checker catches referencing's
-                        Unresolvable and skips that validation
+                        Schema keyword "type: object"
+                        (sch_regentry_type.yaml at type). Every other
+                        entry schema takes the tail of its register
+                        schema. No code pairs the prefixes, so drift
+                        is caught only by a reader (grep of src/). A
+                        $ref to a missing schema is not reported: the
+                        checker catches referencing's Unresolvable and
+                        skips that validation
                         (src/cctool/check/schema.py within _compiled),
                         and check.lp has no rule over schema_ref
-                        beyond unused_schema (lines 610-618). The fix
-                        renames the file, its $id and id_self, and
-                        three mentions (sch_reg_data_item_type.yaml at
+                        beyond unused_schema (check.lp within
+                        unused_schema). The fix renames the file, its
+                        $id and id_self, and three mentions
+                        (sch_reg_data_item_type.yaml at
                         allOf.1.properties.entries.additionalProperties.allOf.0.$ref;
                         reg_data_item_type.yaml at
                         entries.type_type.edge).

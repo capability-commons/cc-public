@@ -21,18 +21,19 @@ description:            |
                         beb23ab added Python item checks about five
                         minutes after 09ac7a6.
                         src/cctool/graph/extract.py raises ErrorRead
-                        for a header that is not YAML (lines
-                        1145-1148) and for a module that is not Python
-                        (lines 1105-1107), and documents keeps the
-                        file as unreadable (lines 461-473), which
-                        check.lp shows as unreadable_file with its
-                        file, line and message (lines 1575-1581).
+                        for a header that is not YAML (extract.py
+                        within _load) and for a module that is not
+                        Python (extract.py within _module), and
+                        documents keeps the file as unreadable
+                        (extract.py within documents), which check.lp
+                        shows as unreadable_file with its file, line
+                        and message (check.lp within unreadable_file).
                         Rerun on a copy of the snapshot on 2026-10-23:
                         a YAML error in the header of derive.lp gives
-                        one unreadable row for that file, at line 14.
-                        The gate fails closed, so no data is harmed.
-                        ASSUMPTION: under the common style source
-                        files would carry no items.
+                        one unreadable row for that file, whose line
+                        is 14. The gate fails closed, so no data is
+                        harmed. ASSUMPTION: under the common style
+                        source files would carry no items.
 
 edge:
 

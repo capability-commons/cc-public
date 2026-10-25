@@ -24,14 +24,14 @@ description:            |
                         Each kind of command has its own module
                         (auditing, checking, editing, exporting,
                         gating, messaging, querying, serving), and
-                        command.py only imports them (lines 31-39), so
-                        a new command module adds one import line.
-                        Before 6c8d3d5, check.py read list_arg[1] by
-                        hand and returned 1 or 0 itself (git show
-                        6c8d3d5^:src/check/check.py lines 343-365).
-                        ASSUMPTION: further scripts would have
-                        repeated this; no second script existed before
-                        6c8d3d5 to show it.
+                        command.py only imports them (the import lines
+                        above main), so a new command module adds one
+                        import line. Before 6c8d3d5, the old checker
+                        read list_arg[1] by hand and returned 1 or 0
+                        itself (git show 6c8d3d5^:src/check/check.py
+                        lines 343-365). ASSUMPTION: further scripts
+                        would have repeated this; no second script
+                        existed before 6c8d3d5 to show it.
 
 edge:
 

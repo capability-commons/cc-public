@@ -29,10 +29,11 @@ description:            |
                         #count over a declared number gave ('203',);
                         SQL gave (9,), (10,). Commit 0e4408b fixed
                         this for declared columns: logic.py still
-                        reads each value as text (_field, lines
-                        341-351), and querying.py converts and sorts
-                        the columns declared a number (lines 229-230,
-                        441-453; test at test_querying.py within
+                        reads each value as text (logic.py within
+                        _field), and querying.py converts and sorts
+                        the columns declared a number (querying.py
+                        within logic and _typed; test at
+                        test_querying.py within
                         test_logic_gives_a_number_column_as_numbers).
                         A column with no declaration, such as an
                         undeclared count, still comes back as text,

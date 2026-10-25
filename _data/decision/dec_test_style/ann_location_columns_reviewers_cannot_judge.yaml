@@ -19,24 +19,33 @@ description:            |
                         About 21 of the 149 tests in
                         src/cctool/check/_test/test_check.py expect
                         rows with a file path and line number, such as
-                        lines 615-623, 1093 and 1335-1344. 6 of them
-                        expect a schema_violation row with a schema
-                        path and message, such as 'allOf/2/type' with
-                        "'objct' is not valid under any of the given
-                        schemas" (lines 970-977). Some lines are found
-                        at test time by searching the written file
-                        (lines 974, 1344; helper _line at 99-106);
-                        others are constants (LINE_ITEM = '1', line
-                        64). One fault can raise two rows (lines
-                        445-449). ASSUMPTION: such columns are copied
-                        from a run of the checker, so a reviewer who
-                        accepts them confirms only that the checker
-                        agrees with itself; no source says how they
-                        were written. Comparing check name and item
-                        for every failure, with location and message
-                        in a few dedicated tests, would keep the
-                        whole-set rule. The other tests expect no file
-                        path and are not affected.
+                        test_check.py within
+                        test_a_reference_to_nothing_is_reported,
+                        test_a_document_in_the_wrong_folder_is_reported
+                        and
+                        test_an_edge_to_a_node_of_another_dataflow_graph_is_reported.
+                        6 of them expect a schema_violation row with a
+                        schema path and message, such as
+                        'allOf/2/type' with "'objct' is not valid
+                        under any of the given schemas" (test_check.py
+                        within
+                        test_a_schema_that_is_not_json_schema_is_reported_and_not_used).
+                        Some lines are found at test time by searching
+                        the written file (as in the schema and foreign
+                        node tests above, by test_check.py within
+                        _line); others are constants (LINE_ITEM = '1',
+                        test_check.py within LINE_ITEM). One fault can
+                        raise two rows (test_check.py within
+                        test_a_copy_of_an_item_is_reported).
+                        ASSUMPTION: such columns are copied from a run
+                        of the checker, so a reviewer who accepts them
+                        confirms only that the checker agrees with
+                        itself; no source says how they were written.
+                        Comparing check name and item for every
+                        failure, with location and message in a few
+                        dedicated tests, would keep the whole-set
+                        rule. The other tests expect no file path and
+                        are not affected.
 
 edge:
 

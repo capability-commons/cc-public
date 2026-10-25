@@ -24,8 +24,9 @@ description:            |
                         line (src/cctool/edit/layout.py within format
                         and _refuse), and for folded scalars, nested
                         sequences and plain scalars that need more
-                        than one line (lines 615, 634, 678). Tests
-                        show the new refusals
+                        than one line (src/cctool/edit/layout.py
+                        within _emit_value, _emit_seq and _render).
+                        Tests show the new refusals
                         (src/cctool/edit/_test/test_edit.py within
                         test_what_the_printer_would_drop_or_expand_is_refused).
                         At 89c74d8 anchors and tags were not refused:
@@ -36,9 +37,9 @@ description:            |
                         check of a copy of the tree on 2026-10-22 gave
                         no unformatted_file row. An edit that would
                         leave a refused file is refused (edit.py
-                        _format, lines 1466-1476). cctool check
-                        reports a refused file as one unformatted_file
-                        row (layout.py within _violation). Only block
+                        within _format). cctool check reports a
+                        refused file as one unformatted_file row
+                        (layout.py within _violation). Only block
                         scalars are refilled (layout.py within
                         _emit_value and _emit_seq). Layout is tested
                         over the repository as a fixpoint that keeps

@@ -19,28 +19,31 @@ description:            |
                         rename does not change text outside YAML
                         documents, such as code, and lists each file
                         that still names the old id
-                        (src/cctool/cli/editing.py within rename).
-                        check.lp names relation ids as string
-                        literals, for example "relation_upholds" at
-                        lines 326 and 338; edit.py names
+                        (src/cctool/cli/editing.py within rename). The
+                        rules name relation ids as string literals,
+                        for example "relation_upholds"
+                        (89c74d8:src/cc_public/check/check.lp lines
+                        326 and 338); the editor names
                         relation_upholds and relation_rejects in
-                        SET_LINK_SETTLE (line 123). Runs by the
-                        advocate on 2026-10-15 at 89c74d8 in a scratch
-                        copy: renaming relation_upholds to a new id
-                        exits 0, writes two files and lists five files
-                        still naming relation_upholds (check.lp,
-                        edit.py, two test files, one skill file);
-                        cctool check then reports 0 failures. settles
-                        (check.lp within parameter_member and
-                        signature_mismatch) then no longer holds for
+                        SET_LINK_SETTLE
+                        (89c74d8:src/cc_public/edit/edit.py line 123).
+                        Runs by the advocate on 2026-10-15 at 89c74d8
+                        in a scratch copy: renaming relation_upholds
+                        to a new id exits 0, writes two files and
+                        lists five files still naming relation_upholds
+                        (check.lp, edit.py, two test files, one skill
+                        file); cctool check then reports 0 failures.
+                        settles (89c74d8:src/cc_public/check/check.lp
+                        lines 336-342) then no longer holds for
                         ruling_cross_item_checks_engine, so
-                        unargued_driver (lines 448-453) no longer
-                        checks that decision. A dry run of cctool new
-                        for a ruling linked by the new id to
-                        opt_tooling_in_python is then refused with
-                        no_option_in_ruling; with relation_upholds in
-                        an unchanged copy it is accepted.
-                        test_check.py fails with KeyError
+                        unargued_driver
+                        (89c74d8:src/cc_public/check/check.lp lines
+                        448-453) no longer checks that decision. A dry
+                        run of cctool new for a ruling linked by the
+                        new id to opt_tooling_in_python is then
+                        refused with no_option_in_ruling; with
+                        relation_upholds in an unchanged copy it is
+                        accepted. test_check.py fails with KeyError
                         'relation_upholds' after the rename, and the
                         pre-commit gate runs the tests
                         (AGENTS.md#working-beside-other-agents). Hand

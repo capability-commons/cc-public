@@ -22,11 +22,12 @@ description:            |
                         (src/cctool/cli/querying.py within sql and jq;
                         gating.py; messaging.py). Commit 12f83b7
                         (pre-squash) records the convention. Before
-                        6c8d3d5, check.py returned 1 on a failed check
-                        (line 360) and raised ValueError on a bad row
-                        (line 307) with no handler around main (lines
-                        364-365); an unhandled Python exception exits
-                        with status 1 (observed 2026-10-15).
+                        6c8d3d5, the old checker returned 1 on a
+                        failed check and raised ValueError on a bad
+                        row with no handler around main
+                        (6c8d3d5^:src/check/check.py lines 360, 307
+                        and 364-365); an unhandled Python exception
+                        exits with status 1 (observed 2026-10-15).
 
 edge:
 

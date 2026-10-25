@@ -18,12 +18,13 @@ brief:                  |
                         so logic programs only would not remove
                         SQLite.
 description:            |
-                        src/cctool/graph/text.py imports sqlite3 (line
-                        44). search, behind cctool query text, opens
-                        its database with cctool.graph.sql.connect
-                        (line 365). hits opens an in-memory SQLite
-                        database with an FTS5 table (lines 380-405),
-                        and cctool query logic adds its rows as
+                        src/cctool/graph/text.py imports sqlite3 at
+                        the top of the module. search, behind cctool
+                        query text, opens its database with
+                        cctool.graph.sql.connect (text.py within
+                        search). hits opens an in-memory SQLite
+                        database with an FTS5 table (text.py within
+                        hits), and cctool query logic adds its rows as
                         text_hit facts when --text is given
                         (src/cctool/cli/querying.py within logic). A
                         plain logic query with no --text still runs

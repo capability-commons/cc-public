@@ -16,11 +16,15 @@ brief:                  |
                         tested only by pixi run slow, which is run on
                         its own and not at each commit.
 description:            |
-                        pyproject.toml at project.requires-python sets
-                        requires-python ">= 3.12" and line 68 python
+                        pyproject.toml at project.requires-python and
+                        tool.pixi.feature.tool.dependencies.python
+                        sets requires-python ">= 3.12" and python
                         ">=3.12"; the default environment in pixi.lock
-                        holds python 3.15.0 only (lines 45, 96 and
-                        147). The pre-commit hook runs the gate in the
+                        holds python 3.15.0 only (pixi.lock at
+                        environments.default.packages.linux-64.22,
+                        environments.default.packages.osx-64.32 and
+                        environments.default.packages.osx-arm64.32).
+                        The pre-commit hook runs the gate in the
                         default environment (.githooks/pre-commit).
                         The task slow runs the tests in environments
                         for Python 3.12, 3.13 and 3.14 (pyproject.toml
