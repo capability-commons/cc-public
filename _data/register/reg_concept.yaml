@@ -2277,9 +2277,11 @@ entries:
                         identifier, such as a DOI or an ISBN, they
                         point at the same thing. A concept entry is
                         not a proxy: it is the concept itself, as the
-                        record of our convention for its use. The
-                        owner (concept_owner) of the thing is recorded
-                        on the proxy.
+                        record of our convention for its use. Nor is a
+                        [[concept_shadow|shadow]], which takes the id
+                        and guid of the item it stands for. The owner
+                        (concept_owner) of the thing is recorded on
+                        the proxy.
     term_preferred:     proxy
     alias:              []
 
@@ -3060,3 +3062,45 @@ entries:
     term_preferred:     variant tailoring
     alias:              []
     edge:               []
+
+  # ---------------------------------------------------------------------------
+  # concept_shadow -- Shadow
+  #
+  concept_shadow:
+    id_self:            concept_shadow
+    guid_self:          concept_84227b6e49df4393a73a5878e133b5b2
+    title:              Shadow
+    brief:              |
+                        A minimal [[data item]] that a
+                        [[federated segment]] ships in place of one
+                        that it leaves behind, so that a name of the
+                        one left behind still resolves in what ships.
+    description:        |
+                        A shadow keeps the id, guid and type of the
+                        item it stands for, and the federated segment
+                        that holds that item, and nothing else: no
+                        title, no brief, no edges. It is made when a
+                        release is built, for each item that a shipped
+                        item names but the package does not hold, and
+                        it is never kept in the tree of the segment or
+                        edited. A name that resolves to a shadow is
+                        expected where data crosses a segment
+                        boundary, and is not a fault; a name that
+                        nothing holds still fails. The word follows
+                        the shadow boards of 5S: everything has its
+                        place, and what is missing shows as the shadow
+                        of what it is. A shadow is not a
+                        [[concept_proxy|proxy]]: the id and guid of a
+                        proxy are its own, and a proxy stands for
+                        something outside the graph, while a shadow
+                        takes the id and guid of an item that is in
+                        the graph, held by another segment.
+    term_preferred:     shadow
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_identifiable_data_item
+        guid_target:    concept_a125aa49d2a145368ebb6c79d85c375b
