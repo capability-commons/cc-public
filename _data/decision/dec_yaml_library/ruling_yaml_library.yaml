@@ -8,29 +8,43 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  ruamel.yaml in round-trip mode
+title:                  libyaml parsing into round-trip types
 brief:                  |
-                        The data items are read with ruamel.yaml in
-                        round-trip mode, since one load gives the
-                        values with the line of each key, which the
-                        checks, the edits and the schema errors
-                        report, and it reads YAML 1.2 as JSON Schema
-                        expects and refuses a repeated key. PyYAML
-                        reads YAML 1.1, keeps the last of a repeated
-                        key and gives lines only on its nodes, so it
-                        would need more code of our own. A cold read
-                        about twice as slow and a single upstream
-                        maintainer are the accepted costs. Ruled by
-                        WTP on 2026-10-23.
+                        The data items are read by parsing with
+                        libyaml and building the nodes into the
+                        round-trip types of ruamel.yaml, which keeps
+                        the line of each key that the checks, the
+                        edits and the schema errors report, the YAML
+                        1.2 rules that JSON Schema expects, and the
+                        refusal of a repeated key, at about fourteen
+                        times the speed of a round-trip load. Edits
+                        and layout keep ruamel.yaml in round-trip
+                        mode, since they write documents back, so the
+                        two libraries serve different purposes. PyYAML
+                        alone stays rejected, since it reads YAML 1.1,
+                        keeps the last of a repeated key and gives no
+                        lines on its values. A second library and a
+                        node builder of our own are the accepted
+                        costs. Ruled by WTP on 2026-10-23 for
+                        ruamel.yaml in round-trip mode, and changed by
+                        WTP on 2026-10-26 at 21:13 UTC, by choosing
+                        "Uphold the libyaml option" for the question
+                        "Rule that libyaml parsing into ruamel types
+                        replaces the ruamel-only reading?".
 
 edge:
-
-  - id_relation:        relation_upholds
-    guid_relation:      relation_538f3139da924083bff07cb94193bf14
-    id_target:          opt_ruamel_round_trip
-    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
 
   - id_relation:        relation_rejects
     guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
     id_target:          opt_pyyaml
     guid_target:        opt_3ce01cad603b4fd0a4d7e24c76474ffc
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_libyaml_parse_into_round_trip_types
+    guid_target:        opt_6e4cc8477d0b45f59bbaabfb8004a295
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_ruamel_round_trip
+    guid_target:        opt_b65bb7dcebac4012b72248d650ade8cb
