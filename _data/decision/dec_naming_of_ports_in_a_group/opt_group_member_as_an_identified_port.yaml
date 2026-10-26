@@ -1,0 +1,72 @@
+id_self:                opt_group_member_as_an_identified_port
+guid_self:              opt_60ab9dc001764bbc95c13a96bfd8263e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Group member as an identified port with a guid
+brief:                  |
+                        A port in a group is a port in its own right,
+                        with an id and a guid, so an edge names it
+                        exactly as it names any other port. Three
+                        things are kept apart. Order is the position
+                        of the member in its group's list, which is
+                        what the node implementation sees as port 0,
+                        1, 2, and may shift. Name is a key the member
+                        gets when it is added, by default its ordinal
+                        at that moment, never renumbered and never
+                        reused, so removing a member leaves a gap in
+                        the names and none in the order. Identity is a
+                        guid minted when the member is added, as for
+                        any item, so two merged branches that each add
+                        a member with the same key are told apart by
+                        their guids, and the merge's join commands
+                        rename one.
+description:            |
+                        How it works:
+                        - The interface control document declares the
+                          group once, as one member with a type,
+                          marked as a group.
+                        - The configuration of each dataflow node
+                          lists the members of each group in order,
+                          each with its key. Each member's id is
+                          derived from the node's id and its key, so
+                          the input group "input" of node "merge" in
+                          graph "patrol" has members whose ids end in
+                          merge.input.0, merge.input.1 and
+                          merge.input.3, and cctool mints a guid for
+                          each.
+                        - An edge end names id_port and guid_port as
+                          it does today, so the shape of an edge end,
+                          the merge key of edges and the ruling that
+                          an edge is identified by its ends stay as
+                          they are.
+                        - The port checks read a node's group members
+                          beside the ports of its interface, and each
+                          member carries the group's type, so unknown
+                          ports, unfed inputs and port type mismatches
+                          are checked as for any port.
+                        - A variant operation or generator that adds a
+                          member mints its guid, as operations already
+                          carry ids with guids; a member that is
+                          renamed keeps its guid. A generator may
+                          choose keys, such as the key of the node
+                          that feeds a member, or ordinals for a
+                          variant made for a number of cores. Proposed
+                          by the advocates on
+                          dec_naming_of_ports_in_a_group, with
+                          ordinals as the default key from WTP's
+                          remark that ordinals may be hard to avoid,
+                          and added at WTP's request (WTP,
+                          2026-10-26).
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
