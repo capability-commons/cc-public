@@ -1,0 +1,73 @@
+id_self:                ann_generated_members_need_stable_guids_and_rename_entries
+guid_self:              ann_099b3b56c636419e9fb3d38ca7e734a1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Member guids that generators must keep, and rename entries for each member
+brief:                  |
+                        The Patrol base is generated from a table, and
+                        this option has generators add members, such
+                        as one per core. Each run must give a member
+                        the guid it had before, by storing it or by a
+                        fixed rule, or every operation that names the
+                        member breaks. Members are held by their node,
+                        so renaming a node renames every member id
+                        with it; each then becomes a rename-map entry,
+                        and each edge end at a member is rewritten.
+                        The machinery exists, but the upkeep grows
+                        with the number of members.
+description:            |
+                        Sources:
+                        - The Patrol base graph is generated from a
+                          table.
+                          (_sources/cc-patrol-notes/draft/README.md#files)
+                        - A generator may choose keys, such as
+                          ordinals for a variant made
+                          for a number of cores, and an operation or generator that adds a
+                          member mints its guid.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at description)
+                        - A guid per edge must be kept by whatever
+                          generates edges, or
+                          each regeneration breaks every operation that names one.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_edge_guids_minted_stably_by_generators.yaml
+                          at brief)
+                        - Renaming an item renames each item it holds
+                          whose id is made
+                          from its own. (src/cctool/edit/edit.py within rename and
+                          _derived)
+                        - Each release ships its renames as an old id,
+                          a new id and the
+                          guid.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to
+                          others. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                        - Assumption: bases with groups will be
+                          generated, as Patrol's is.
+                          Strength: moderate; it grows with members and regenerations, and
+                          falls away if bases are written by hand.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

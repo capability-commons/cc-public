@@ -1,0 +1,91 @@
+id_self:                ann_identified_member_needs_a_new_item_type_and_checks
+guid_self:              ann_ca4027a198844975a1e39c608d8ac007
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A new item type and new checks for group members
+brief:                  |
+                        A member id made from a dataflow node id and a
+                        key cannot take the dfn prefix, whose ids
+                        allow one full stop, so members need a type of
+                        their own, with a prefix, an id pattern, a
+                        concept and a schema. The interface port
+                        schema needs a group marker, and the dataflow
+                        node schema a member list. The extractor must
+                        read the members, unknown_port, unfed_input
+                        and port_type_mismatch must read them beside
+                        interface ports, and new checks must hold that
+                        a member's id follows from its node and key,
+                        that it names a group its interface declares,
+                        and that an end names a member of its own
+                        node. The rename command, which already moves
+                        a node's key with its id, needs the same for a
+                        member's key. The id_port of an end then means
+                        either an interface member shared by every
+                        node or an item of one node.
+description:            |
+                        Sources:
+                        - The id of a dataflow node is the graph's id
+                          with dfn in place of
+                          dfg, a full stop and its key, and the pattern allows one full
+                          stop. (_data/register/reg_data_item_type.yaml at
+                          entries.type_dataflow_node.regex_id)
+                        - A port has a type and may be optional, and
+                          has no field for a
+                          group. (_data/schema/sch_interface_control_document.yaml at
+                          $defs.port)
+                        - A dataflow node holds a brief, an OS
+                          process, settings and edges,
+                          and nothing else.
+                          (_data/schema/sch_dataflow_node.yaml at properties)
+                        - The extractor records each dataflow node,
+                          setting and edge of a
+                          graph, and no ports of a node.
+                          (src/cctool/graph/extract.py within _dataflow_graph)
+                        - The port checks read the ports of the
+                          interface a node presents
+                          and the types stated on them. (src/cctool/check/check.lp within
+                          unknown_port, unfed_input and port_type_mismatch)
+                        - A check already holds a node's id to its
+                          graph and key.
+                          (src/cctool/check/check.lp within misnamed_node)
+                        - A renamed dataflow node is filed under the
+                          last part of its id,
+                          so its key changes with it.
+                          (src/cctool/edit/edit.py within _rename_one)
+                        - Simplicity counts the distinct mechanisms a
+                          design introduces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0)
+                        - Assumption: the key option needs fewer of
+                          these, since its key
+                          is not an item; it still needs the schema and check changes.
+                          Strength: moderate; the cost is paid once and does not grow
+                          with the number of graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

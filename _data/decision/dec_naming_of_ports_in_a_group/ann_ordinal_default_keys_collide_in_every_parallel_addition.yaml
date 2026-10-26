@@ -1,0 +1,80 @@
+id_self:                ann_ordinal_default_keys_collide_in_every_parallel_addition
+guid_self:              ann_65fa7e2137f34124a71e99621a063734
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ordinal default keys that collide whenever two branches add a member
+brief:                  |
+                        With ordinals as the default key, two branches
+                        that each add a member to one group give both
+                        the same key, so this option keeps the
+                        collision of the numbered suffix as its
+                        default. The guids tell the two apart, but
+                        every such merge must carry a rename in its
+                        join commands, and must also say which new
+                        member comes first in the list, since order is
+                        what the node sees. The ruling on merges
+                        leaves which side wins a conflict to be worked
+                        out, so neither rule exists yet.
+description:            |
+                        Sources:
+                        - The default key is the member's ordinal when
+                          it is added, and
+                          the merge's join commands rename one of two members with the
+                          same key.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - Two branches that each add a port to one
+                          group pick the same
+                          next number.
+                          (_data/decision/dec_naming_of_ports_in_a_group/ann_numbered_suffix_collides_across_merged_branches.yaml
+                          at brief)
+                        - Which side wins a conflict in a merge is to
+                          be worked through
+                          during implementation.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Every list of the graph schema declares a
+                          merge key.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/ruling_merge_key_declared_for_every_list.yaml
+                          at brief)
+                        - An ambiguous id is a nonconformity, and the
+                          guid tells the items
+                          apart so the id can be renamed.
+                          (_data/decision/dec_edge_shape/ruling_edge_shape.yaml at brief)
+                        - On the engine, slot order is the order the
+                          inputs are listed in.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - Assumption: branches will often add members
+                          to the same group
+                          in parallel, as variants for different cameras or cores would.
+                          Strength: moderate; it grows with the number of branches that
+                          touch one group, and falls away where authors choose keys of
+                          purpose.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,67 @@
+id_self:                ann_ordinal_default_key_read_as_a_position
+guid_self:              ann_d3df6e7dc369483f970cdb9bc79e746c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ordinal default keys that read as positions
+brief:                  |
+                        The option keeps name and order apart, but
+                        with ordinals as the default key the two look
+                        alike. After one removal the member keyed 3
+                        sits at position 2, as in the option's own
+                        example of members ending in merge.input.0,
+                        merge.input.1 and merge.input.3, so a reader
+                        of a configuration or a diff, or whoever
+                        labels a logger's columns, can take a key for
+                        the slot the node sees. A default key that
+                        cannot be read as a number, such as a letter,
+                        keeps the separation the option draws, at no
+                        cost to its identity, which rests on the guid.
+description:            |
+                        Sources:
+                        - Order is the member's position in its
+                          group's list, which the
+                          node sees as port 0, 1, 2 and may shift; the name is by default
+                          its ordinal when added, never renumbered.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - The option's example has members whose ids
+                          end in merge.input.0,
+                          merge.input.1 and merge.input.3.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at description)
+                        - On the engine, inputs reach a component as
+                          slots numbered in the
+                          order its spec lists them.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - Maintainability asks how readily a newcomer
+                          can understand the
+                          design. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.0)
+                        - Assumption: readers meet ordinal keys in
+                          configurations and
+                          diffs often enough to confuse them with slots. Strength:
+                          moderate; it is a cost of the default only, and falls away where
+                          authors or generators choose keys of purpose.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

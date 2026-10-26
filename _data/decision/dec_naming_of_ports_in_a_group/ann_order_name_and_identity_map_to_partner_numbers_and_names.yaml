@@ -1,0 +1,71 @@
+id_self:                ann_order_name_and_identity_map_to_partner_numbers_and_names
+guid_self:              ann_4501261cd7a54f8786e0b88593f50758
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Order, name and identity that map to partner numbers, names and rename maps
+brief:                  |
+                        This option keeps a member's position apart
+                        from its name. The Simulink Mux does the same,
+                        with a port number by position and a signal
+                        name, and a GStreamer request pad is named by
+                        a template with a number, which the ordinal
+                        default key matches. A peer that builds a
+                        variant on a published one and names a member
+                        follows its renames through the rename maps,
+                        which work by guid, as it does for operations.
+                        A key with no guid, or a name taken from the
+                        edge, gives a peer nothing to follow.
+description:            |
+                        Sources:
+                        - The Mux block's Number of inputs may be a
+                          list of signal names;
+                          with a scalar, each input is named signalN, N being its port
+                          number. (https://www.mathworks.com/help/simulink/slref/mux.html)
+                        - GStreamer's funnel has a sink_%u pad
+                          template whose presence is
+                          request.
+                          (https://gstreamer.freedesktop.org/documentation/coreelements/funnel.html)
+                        - Order is the member's position, which may
+                          shift; the name is a
+                          key never renumbered or reused; identity is a guid.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - Each release ships its renames as an old id,
+                          a new id and the
+                          guid, and a command in the peer rewrites each reference.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief)
+                        - A peer follows renames of an operation by
+                          guid; a local key
+                          gives it nothing to follow.
+                          (_data/decision/dec_identity_of_a_variant_operation/ann_operation_identity_peers_follow_renames_by_guid.yaml
+                          at brief)
+                        - Assumption: export gives a Mux the order as
+                          port numbers and the
+                          keys as signal names, and closes gaps in the ordinals; no
+                          exporter exists yet, and no peer yet builds on a published
+                          variant. Strength: moderate; the peer gain grows with peers,
+                          and the partner mapping is the same as the key option's.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

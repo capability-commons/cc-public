@@ -1,0 +1,83 @@
+id_self:                ann_identified_member_gives_every_end_a_declared_item
+guid_self:              ann_fbd5a353f3be4c4dbd4f170935c08cf5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An item with an id and a guid at every end of a group edge
+brief:                  |
+                        Under this option each port in a group is an
+                        item of its own, so an edge end that reaches a
+                        group names an item that exists, by id and
+                        guid, as every other end does. That answers
+                        the gap found on
+                        dec_ports_whose_count_comes_from_configuration,
+                        where a group member had no interface member
+                        for an end to name. A requirement, an
+                        annotation or a variant operation can then
+                        name one member, and the reference check finds
+                        a name that no longer resolves. A key, or a
+                        name taken from the edge, gives no item to
+                        name.
+description:            |
+                        Sources:
+                        - An end of a dataflow edge names a port by id
+                          and guid, and the
+                          checker finds an end that names nothing.
+                          (_data/schema/sch_dataflow_graph.yaml at description)
+                        - A group member has no interface member of
+                          its own for an end to
+                          name.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/ann_group_member_with_no_interface_member_to_name.yaml
+                          at brief)
+                        - The identity of an interface member is what
+                          lets a requirement
+                          or an implementation name one declaration.
+                          (_data/schema/sch_interface_member.yaml at description)
+                        - This option gives each member an id derived
+                          from the node and
+                          its key, and a guid that cctool mints.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at description)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        - Assumption: something will need to name a
+                          single member, such
+                          as a requirement on one input of a merge; nothing in the
+                          repository names a port or a dataflow node from outside its
+                          graph today. Strength: moderate now, and it grows with the
+                          number of requirements written against dataflow graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,73 @@
+id_self:                ann_identified_member_can_exist_unfed_with_a_stable_name
+guid_self:              ann_c5a294f11a39419a9b062f468bd46001
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Members that exist before they are fed, with a name that survives a removal
+brief:                  |
+                        A member is listed in the node's
+                        configuration, so it exists whether or not an
+                        edge feeds it, and unfed_input reports one
+                        that is missing its edge, which a member named
+                        by its edge cannot be. Its key is never
+                        renumbered, so removing one member changes no
+                        other member's name or edges. Its position
+                        still shifts, so a node that keeps state by
+                        slot, such as a logger's column for each
+                        input, sees a different member at a slot after
+                        a removal unless it is also given the keys.
+description:            |
+                        Sources:
+                        - An input that no edge feeds fails a check
+                          unless the interface
+                          states it to be optional. (src/cctool/check/check.lp within
+                          unfed_input)
+                        - The edge option adds or removes the port
+                          with the edge.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_named_by_its_edge.yaml
+                          at brief)
+                        - Removing a member leaves a gap in the names
+                          and none in the
+                          order.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - On the engine, inputs reach a component as
+                          an array of slots,
+                          in the order its spec lists them.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - Functional suitability asks whether every
+                          function that is
+                          needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                        - Assumption: some group nodes keep state or
+                          labels by slot.
+                          Strength: moderate; a node that treats its inputs as a set loses
+                          nothing from the shift.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

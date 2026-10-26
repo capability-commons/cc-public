@@ -1,0 +1,83 @@
+id_self:                ann_identified_member_keeps_the_edge_end_and_its_rulings
+guid_self:              ann_5710fb5e56c742b9a1e2282a41d4a302
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  An edge end and its rulings left as they are
+brief:                  |
+                        An edge end holds only id_port and guid_port
+                        beside its node, so a key in the configuration
+                        has to be carried on the end by a new field,
+                        or folded into id_port. An identified member
+                        fills id_port and guid_port as any port does,
+                        so the end schema, the pair of ends as the
+                        merge key of edges, and the one-edge-per-input
+                        check stay as they are, and the rename command
+                        already renames items held by a node, keeping
+                        their guids. It follows from the rulings on
+                        edge identity, merge keys and operation
+                        identity, rather than adding a second way to
+                        name a port.
+description:            |
+                        Sources:
+                        - An end has exactly four fields,
+                          id_dataflow_node,
+                          guid_dataflow_node, id_port and guid_port, and allows no other.
+                          (_data/schema/sch_dataflow_graph.yaml at $defs.end)
+                        - A dataflow edge is identified by its two
+                          ends, and the pair of
+                          ends is its merge key.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - Each variant operation is named by an id
+                          with a guid.
+                          (_data/decision/dec_identity_of_a_variant_operation/ruling_operation_named_by_id_with_guid.yaml
+                          at brief)
+                        - An input takes its value from at most one
+                          edge.
+                          (src/cctool/check/check.lp within input_fed_twice)
+                        - Renaming an item renames each item it holds
+                          whose id is made
+                          from its own, and each keeps its guid.
+                          (src/cctool/edit/edit.py within rename and _derived)
+                        - Simplicity asks whether a design follows
+                          from decisions already
+                          made. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.2)
+                        - Assumption: the key option would carry its
+                          key on the end, since
+                          an interface member id is shared by every node that presents
+                          the interface. Strength: strong; it holds at any number of
+                          graphs, since the end shape is fixed once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_as_an_identified_port
+    guid_target:        opt_60ab9dc001764bbc95c13a96bfd8263e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
