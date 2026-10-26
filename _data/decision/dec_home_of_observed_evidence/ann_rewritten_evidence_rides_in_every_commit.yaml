@@ -1,0 +1,136 @@
+id_self:                ann_rewritten_evidence_rides_in_every_commit
+guid_self:              ann_79dc03efd7cf425e8027be607f87b4a7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence file in every commit after a test run
+brief:                  |
+                        Evidence items rewritten each run put a
+                        changed, machine-written file into every
+                        commit that follows a test run. A reviewer
+                        must read or skip its rows beside the authored
+                        change, and git keeps every version. A local
+                        store beside the timing log and the check
+                        store commits nothing observed, so a change to
+                        code touches only the code and what declares
+                        it, and the cost of a run stays on the machine
+                        that made it.
+description:            |
+                        Sources:
+                        - The gate already keeps a timing log and a
+                          check store in the git directory, which
+                          every worktree shares and no commit records
+                          [_data/decision/dec_home_of_observed_evidence/dec_home_of_observed_evidence.yaml
+                          at description, src/cctool/gate/gate.py at
+                          functions timing_log and store,
+                          src/cctool/check/store.py at module
+                          docstring, src/cctool/gate/timing.py].
+                        - The check store keys each verdict by a
+                          digest of the text and of the code that
+                          checked it, so a file whose text changes is
+                          checked afresh [src/cctool/check/store.py at
+                          module docstring].
+                        - September rewrote one evidence item per
+                          observer on every pytest session, so the
+                          working tree was dirty by that file after
+                          every test run, and its history was in git
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at consequence and at decision].
+                        - September's rewritten rows were never
+                          removed, so dividing or deleting a test left
+                          a row a person had to remove by hand, and
+                          nothing settled what prunes them
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at consequence and at question pruning].
+                        - September rejected one evidence item per run
+                          because the tree would gain an item per run
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at context and at alternative].
+                        - September's CI refused a push when the run
+                          observed something the committed evidence
+                          did not hold, so each pushed commit had to
+                          carry the latest observation
+                          [origin/main:.github/workflows/gate.yml at
+                          step "The committed evidence is what a run
+                          observes"].
+                        - The commit gate runs about 486 tests, and
+                          the source tree holds 555 test functions
+                          [measured by Claude in the cloud container,
+                          2026-10-26; count of "def test_" under src].
+                        - The local store option commits nothing
+                          observed except a digest and counts at a
+                          release, and with no store the rules that
+                          need observations stay silent
+                          [_data/decision/dec_home_of_observed_evidence/opt_evidence_in_a_local_store_read_as_facts.yaml
+                          at brief].
+                        - The daily review runs at 03:00 UTC
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description].
+                        - AGENTS.md asks that each change be small
+                          enough to read in one sitting [AGENTS.md at
+                          section Keep it small]. Strength for
+                          concern_maintainability: Strong. The store
+                          reuses a pattern the gate already maintains,
+                          while a committed item adds a file to every
+                          code commit and a pruning chore that grows
+                          with the number of tests. At ten times the
+                          tests the committed item grows ten times and
+                          its stale rows with it, while the store
+                          holds only the current rows. The cost on the
+                          store side is that a rule that reads
+                          observations needs a store in its test
+                          fixtures, or it is silent there. Strength
+                          for concern_performance_efficiency:
+                          Moderate. At today's size one rewritten file
+                          per commit is small. At ten times the tests,
+                          a rewritten item grows with tests times
+                          verified items, every version of it stays in
+                          git, and each commit re-checks it because
+                          its text changed. The local store's growth
+                          stays outside history at any size. Strength
+                          for concern_reviewability: Strong. The rows
+                          grow with the number of tests and
+                          requirements, so at ten times the size the
+                          rewritten item dominates the diff of an
+                          ordinary code commit. The governed run
+                          option is milder, since its items arrive in
+                          commits of their own that a reviewer can
+                          tell apart, but it still adds a daily commit
+                          if the overnight review is governed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_observed_evidence
+    guid_target:        dec_0f5243498c8a468a976e848877286964
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_evidence_in_a_local_store_read_as_facts
+    guid_target:        opt_d6432f22ad3041ec81d1f694f7d6f604
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_items_rewritten_each_run
+    guid_target:        opt_b44892076d5940b1ae89190846919522
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,72 @@
+id_self:                ann_coverage_floor_is_one_number_and_one_flag
+guid_self:              ann_8c499cd81cb94ebeaae1e4514eb5ab9f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mechanisms of each coverage granularity
+brief:                  |
+                        A floor for the suite is one number checked by
+                        one flag of the coverage tool. A ratchet per
+                        module reuses the idea of the term ratchets
+                        but keeps a recorded value per module. Rows
+                        per test add a fact kind, a core and rules.
+description:            |
+                        Sources:
+                        - September gated with one floor of 87 per
+                          cent branch coverage through the coverage
+                          tool's fail-under option
+                          [origin/main:pyproject.toml at the comment
+                          on the coverage floor and the coverage
+                          tasks].
+                        - Term ratchets on dev keep a count that may
+                          fall and may not rise
+                          [_data/decision/dec_granularity_of_coverage/dec_granularity_of_coverage.yaml
+                          at description].
+                        - The ratchet option records coverage per
+                          module and compares it with the last
+                          recorded value
+                          [_data/decision/dec_granularity_of_coverage/opt_coverage_ratchet_per_module.yaml
+                          at brief].
+                        - The rows option records per test the
+                          function executed and the lines and branches
+                          reached, and has rules over the graph use
+                          them
+                          [_data/decision/dec_granularity_of_coverage/opt_coverage_rows_per_test_and_function.yaml
+                          at brief].
+                        - WTP asked that code coverage become part of
+                          the graph [owner's statement, 2026-10-25].
+                          Strength: moderate. The floor adds one
+                          mechanism and the ratchet two, a store of
+                          values and a comparison. The rows add a fact
+                          kind, a slower coverage core and rules to
+                          read them. WTP's wish to put coverage in the
+                          graph is the real case for rows, and it
+                          belongs to another concern. The count holds
+                          at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_floor_for_the_suite
+    guid_target:        opt_52d7dbff8c9d4380877b575b5df459f1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_rows_per_test_and_function
+    guid_target:        opt_cd875ccb99444b6e8c146e5c12773fc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

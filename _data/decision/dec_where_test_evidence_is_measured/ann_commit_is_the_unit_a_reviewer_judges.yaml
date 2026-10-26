@@ -1,0 +1,71 @@
+id_self:                ann_commit_is_the_unit_a_reviewer_judges
+guid_self:              ann_387fdebfb59143d4b47cdbac4631d180
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage of each commit for its reviewer
+brief:                  |
+                        The unit of review is one commit that does one
+                        thing. Coverage measured at every commit lets
+                        a reviewer judge whether that commit carried
+                        its own tests. Measuring at push or overnight
+                        only can answer that for a range of commits or
+                        a day.
+description:            |
+                        Sources:
+                        - AGENTS.md asks that one commit do one thing
+                          and that each change be small enough to read
+                          in one sitting [AGENTS.md at sections Before
+                          you finish and Keep it small].
+                        - September found that a suite floor says
+                          nothing about whether a change carried its
+                          own tests, and read changed line coverage
+                          from the coverage.xml the gate wrote
+                          [origin/main:pyproject.toml at the comment
+                          on changed line coverage].
+                        - Also rests on a source stated once in
+                          ann_measuring_at_push_keeps_the_commit_gate_fast
+                          (about 6 per cent for aggregate coverage).
+                        - Atlas runs Python 3.15 [measured by Claude
+                          in the cloud container, 2026-10-26].
+                        - Also rests on a source stated once in
+                          ann_hosted_ci_adds_a_runner_and_a_fetch_path
+                          (overnight only records no coverage at the
+                          gates).
+                        - Also rests on a source stated once in
+                          ann_every_kind_of_test_needs_a_measuring_point
+                          (the push option measures each pushed tip).
+                          Strength: Moderate. It needs coverage over
+                          the whole run, not per test, so it does not
+                          require the costly tracer. At ten times the
+                          size the gap between one commit and one push
+                          grows with the commits per push. It does not
+                          help a data-only commit, whose gate runs no
+                          tests.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_every_commit
+    guid_target:        opt_2ceba64902c34addbb7727c43d7c5c3c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_overnight_only
+    guid_target:        opt_a004ff0c71e648dd8722ea07165f272b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,96 @@
+id_self:                ann_per_test_rows_need_the_slow_tracer_core
+guid_self:              ann_66d3d4ba848145d0aab0906a631e277d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rows per test that need the slow non-default core
+brief:                  |
+                        A suite floor or a module ratchet needs only
+                        aggregate branch coverage, which the default
+                        sys.monitoring core gives for about 6 per cent
+                        on Python 3.14 or later. Rows per test and
+                        function need the C tracer core, a heavier and
+                        less used path of the same library, at 2.6
+                        times the run time and an 18 MB data file.
+description:            |
+                        Sources:
+                        - Branch coverage with the sys.monitoring core
+                          on Python 3.14 took 221 s against 209 s
+                          without coverage, about 6 per cent [measured
+                          by Claude in the cloud container,
+                          2026-10-26].
+                        - Single runs differ by up to about 10 per
+                          cent from noise [measured by Claude in the
+                          cloud container, 2026-10-26].
+                        - On Python 3.13 sys.monitoring has no branch
+                          support, and atlas runs Python 3.15
+                          [measured by Claude in the cloud container,
+                          2026-10-26].
+                        - Coverage per test needs the C tracer core,
+                          which took 534 s, 2.6 times the base, wrote
+                          an 18 MB data file and made two tests that
+                          pass without tracing fail [measured by
+                          Claude in the cloud container, 2026-10-26].
+                        - coverage.py records a separate dynamic
+                          context per test function when
+                          dynamic_context is test_function
+                          [https://coverage.readthedocs.io/en/latest/contexts.html].
+                        - coverage.py 7.17.0 is under Apache-2.0, and
+                          pytest-cov 7.1.0 is under MIT and needs
+                          coverage, pluggy and pytest
+                          [https://pypi.org/pypi/coverage/json,
+                          https://pypi.org/pypi/pytest-cov/json].
+                        - Neither coverage nor pytest-cov is in the
+                          lock file of dev today [pixi.lock, by search
+                          for their names]. Strength for
+                          concern_dependency_risk: Moderate. Every
+                          option adds coverage.py, so the new
+                          dependency itself does not separate them.
+                          What separates them is the path within it.
+                          The aggregate options use the default core,
+                          and rows per test rely on a core that has
+                          broken tests here. The point holds at ten
+                          times the size and grows with the data file.
+                          Strength for concern_performance_efficiency:
+                          strong. The 6 per cent figure sits inside
+                          the noise, and the factor of 2.6 does not.
+                          At ten times the tests the factor holds and
+                          the per-test data grows with tests times
+                          lines reached.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_floor_for_the_suite
+    guid_target:        opt_52d7dbff8c9d4380877b575b5df459f1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_ratchet_per_module
+    guid_target:        opt_ce7f94eba78c41428c499b8374bb7f6f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_rows_per_test_and_function
+    guid_target:        opt_cd875ccb99444b6e8c146e5c12773fc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

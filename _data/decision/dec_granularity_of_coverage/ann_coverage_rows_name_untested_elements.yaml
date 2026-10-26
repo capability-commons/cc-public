@@ -1,0 +1,70 @@
+id_self:                ann_coverage_rows_name_untested_elements
+guid_self:              ann_b431b62c2fb74b8f9d1822b09671329c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage rows that name the element
+brief:                  |
+                        Rows per test and function let rules name each
+                        function that no test reaches. They also let
+                        rules name each realizing function that no
+                        test verifying its member reaches. A suite
+                        percentage or a module ratchet cannot name the
+                        element. Coverage shows reach and not
+                        verification.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_coverage_floor_is_one_number_and_one_flag
+                          (what the rows option records).
+                        - The floor option reduces coverage to one
+                          percentage for the suite
+                          [_data/decision/dec_granularity_of_coverage/opt_coverage_floor_for_the_suite.yaml
+                          at brief].
+                        - Also rests on a source stated once in
+                          ann_coverage_floor_is_one_number_and_one_flag
+                          (the ratchet option per module).
+                        - Code names the interface member it realizes
+                          by relation_realizes in its function item
+                          [_data/decision/dec_interface_implementation_link/ruling_interface_implementation_link.yaml
+                          at brief].
+                        - September rejected inferring verification
+                          from coverage, because a line executed is
+                          not a requirement observed
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at alternative].
+                        - Also rests on a source stated once in
+                          ann_suite_floor_is_deterministic_and_cheap
+                          (282 contexts on the default core).
+                          Strength: Strong for tracing code to the
+                          tests that reach it, and it holds at ten
+                          times the size, where a percentage hides
+                          more. Weak as a trace to needs, since reach
+                          is not verification.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_rows_per_test_and_function
+    guid_target:        opt_cd875ccb99444b6e8c146e5c12773fc2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_floor_for_the_suite
+    guid_target:        opt_52d7dbff8c9d4380877b575b5df459f1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

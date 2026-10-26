@@ -1,0 +1,105 @@
+id_self:                ann_text_digest_stales_evidence_on_prose_edits
+guid_self:              ann_9cfaafa7a542494dbd25dfaf6972cb93
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stale evidence from edits to prose
+brief:                  |
+                        A digest of source text stales evidence
+                        whenever a docstring or a layout changes,
+                        which September saw happen. Evidence that goes
+                        stale for reasons unrelated to what it
+                        observed teaches people to renew it without
+                        looking. A digest of the declared syntax
+                        stales only on code a reviewer can name from
+                        its edges.
+description:            |
+                        Sources:
+                        - September first took the source text, and a
+                          reworded description staled the evidence of
+                          a requirement nothing about had moved
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at decision,
+                          _data/decision/dec_what_an_evidence_digest_covers/dec_what_an_evidence_digest_covers.yaml
+                          at description].
+                        - September then took the syntax tree of each
+                          definition with its docstrings removed, so
+                          that a change to prose or layout does not
+                          stale evidence
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at decision].
+                        - An analysis that goes stale for a reason
+                          unconnected to what it read teaches a reader
+                          to renew it without reading it
+                          [origin/main:ddr/ddr_coverage_analysis.yaml
+                          at rationale].
+                        - On dev the items of functions live in their
+                          docstrings, so an edit to an item is an edit
+                          to the source text of the function
+                          [_data/decision/dec_python_definition_items/ruling_python_definition_items.yaml
+                          at brief].
+                        - The extractor already parses each python
+                          module into a syntax tree
+                          [src/cctool/graph/extract.py at functions
+                          definitions and _module].
+                        - The declared syntax option covers the test,
+                          the code declared to realize what it
+                          verifies, and the statement fields
+                          [_data/decision/dec_what_an_evidence_digest_covers/opt_digest_of_declared_code_syntax.yaml
+                          at brief].
+                        - The executed option covers every function
+                          the test executed, as coverage recorded it
+                          [_data/decision/dec_what_an_evidence_digest_covers/opt_digest_of_what_the_test_executed.yaml
+                          at brief].
+                        - ASSUMPTION: a change to a helper that many
+                          tests execute stales many results at once
+                          under the executed digest, and the report
+                          names functions that no item declares.
+                          Strength for concern_maintainability:
+                          Strong. On dev an edge added to a function
+                          item changes its source text, so a text
+                          digest would stale evidence on every trace
+                          edit as well as on every reworded docstring.
+                          The syntax digest reuses parsing the
+                          extractor already does. At ten times the
+                          code, false staleness from a text digest
+                          grows with every prose edit. Strength for
+                          concern_reviewability: Strong against the
+                          source text, from a past failure. Moderate
+                          against the executed digest, which rests on
+                          the assumption above. At ten times the size
+                          false staleness grows with every docstring
+                          edit, so the case against source text gets
+                          stronger.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_an_evidence_digest_covers
+    guid_target:        dec_f37f799346b34b06be1890d851378a6a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_of_declared_code_syntax
+    guid_target:        opt_e8e367e9743a449d9bba0fb212bc57d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_of_source_text
+    guid_target:        opt_f4c3f3a3d27b420aa6211743ff7af6d8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

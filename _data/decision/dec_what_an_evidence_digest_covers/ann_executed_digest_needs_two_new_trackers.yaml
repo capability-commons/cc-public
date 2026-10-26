@@ -1,0 +1,71 @@
+id_self:                ann_executed_digest_needs_two_new_trackers
+guid_self:              ann_59800e33b40349ba9cd257b72a372437
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mechanisms behind each digest
+brief:                  |
+                        The executed digest needs coverage per test
+                        and a second way to learn which data files a
+                        test read, since executed lines do not show
+                        data reads. The declared code digests need
+                        only the realizes edges and a parse or a hash.
+description:            |
+                        Sources:
+                        - The executed digest covers every function
+                          the test executed, the data files it read,
+                          and the statement fields
+                          [_data/decision/dec_what_an_evidence_digest_covers/opt_digest_of_what_the_test_executed.yaml
+                          at brief].
+                        - September noted that a test reads a data
+                          item without executing a line that names it,
+                          so a map of executed lines cannot see that
+                          [origin/main:pyproject.toml at the comment
+                          on test-changed].
+                        - Code names what it realizes by an edge
+                          relation_realizes in its function item
+                          [src/cctool/check/check.lp at predicate
+                          realized_function].
+                        - The syntax digest also strips docstrings
+                          from the syntax tree, a step the source text
+                          digest does not need
+                          [_data/decision/dec_what_an_evidence_digest_covers/opt_digest_of_declared_code_syntax.yaml
+                          at brief]. Strength: moderate. The executed
+                          digest adds two mechanisms. The source text
+                          digest is the narrowest, one step fewer than
+                          the syntax digest. Both declared code
+                          digests reuse edges the graph already holds.
+                          The count does not change at ten times the
+                          size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_an_evidence_digest_covers
+    guid_target:        dec_f37f799346b34b06be1890d851378a6a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_of_source_text
+    guid_target:        opt_f4c3f3a3d27b420aa6211743ff7af6d8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_of_declared_code_syntax
+    guid_target:        opt_e8e367e9743a449d9bba0fb212bc57d7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_of_what_the_test_executed
+    guid_target:        opt_c7359eb4d6324fbe886aaf9ae1a12b95
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

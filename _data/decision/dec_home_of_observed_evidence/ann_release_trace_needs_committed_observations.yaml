@@ -1,0 +1,72 @@
+id_self:                ann_release_trace_needs_committed_observations
+guid_self:              ann_53db53705de0483f99d6977f2c0748ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release claims traceable to per-requirement observations
+brief:                  |
+                        A release should be traceable from the
+                        committed graph to the observation of each
+                        requirement it was gated on. A local store
+                        that leaves only a digest and counts in the
+                        release cannot be followed from another
+                        machine to which requirement passed. An
+                        execution item kept per governed run can.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (local store commits only a digest and
+                          counts).
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (git directory recorded by no commit).
+                        - Also rests on a source stated once in
+                          ann_local_evidence_store_follows_existing_stores
+                          (governed runs write unchanging items).
+                        - September left open whether a release should
+                          keep the evidence it shipped with as an item
+                          of its own, because the rewritten item loses
+                          the observation the release rested on to git
+                          alone
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at question history].
+                        - WTP asked that test results be part of the
+                          graph and linked through test cases to
+                          requirements and interface control documents
+                          [owner's statement, 2026-10-25]. Strength:
+                          Strong for the release trace, weak for the
+                          trace during development, where the local
+                          store keeps rules current at every run. It
+                          holds at ten times the size, since the gap
+                          is per requirement and grows with their
+                          number. A local store whose release snapshot
+                          held a row per requirement would meet it
+                          too.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_observed_evidence
+    guid_target:        dec_0f5243498c8a468a976e848877286964
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_evidence_kept_only_for_governed_runs
+    guid_target:        opt_9d12f03c67a3460b86dd7216f1d08ae8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_in_a_local_store_read_as_facts
+    guid_target:        opt_d6432f22ad3041ec81d1f694f7d6f604
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

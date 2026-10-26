@@ -1,0 +1,72 @@
+id_self:                ann_commit_measurement_promise_fails_on_data
+guid_self:              ann_be11bc6e50e74e56b1af5b87cb61fd69
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit measurement that skips data commits
+brief:                  |
+                        Measuring at every commit promises evidence
+                        never older than the last commit, but the
+                        commit gate runs no tests for a data-only
+                        commit, and such a commit has already broken
+                        112 tests. The pre-push gate tests every
+                        pushed tip, data or code, so measuring there
+                        covers the case the commit gate misses.
+                        Coverage at commit also adds cost to the gate
+                        that must stay fast.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no tests at commit without staged code).
+                        - A data-only commit that added 13 concepts
+                          broke 112 check tests, and only the pre-push
+                          gate caught it [owner's statement,
+                          2026-10-25].
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (the pre-push gate runs every test not
+                          marked slow).
+                        - The commit-gate option claims the evidence
+                          is never older than the last commit
+                          [_data/decision/dec_where_test_evidence_is_measured/opt_measure_at_every_commit.yaml
+                          at brief].
+                        - Also rests on a source stated once in
+                          ann_measuring_at_push_keeps_the_commit_gate_fast
+                          (the cost of coverage).
+                        - Two passing tests failed under per-test
+                          contexts on the C tracer [measured by Claude
+                          in the cloud container, 2026-10-26].
+                        - Also rests on a source stated once in
+                          ann_measuring_at_push_keeps_the_commit_gate_fast
+                          (a fast commit gate of about 78 s).
+                          Strength: strong. It holds at ten times the
+                          size, since data commits and the cost of
+                          coverage both grow with the tree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_at_every_commit
+    guid_target:        opt_2ceba64902c34addbb7727c43d7c5c3c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

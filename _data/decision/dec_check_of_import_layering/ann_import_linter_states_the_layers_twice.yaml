@@ -1,0 +1,114 @@
+id_self:                ann_import_linter_states_the_layers_twice
+guid_self:              ann_3ccbc8c8b92f43e69c11df8a8c3375d4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layers declared in two places
+brief:                  |
+                        An import rule over the graph states which
+                        part may depend on which once, beside the
+                        logical components that already hold the
+                        modules. import-linter states the same layers
+                        again in pyproject.toml, a second place that
+                        can drift from the components. The graph rule
+                        costs more to build now: import facts,
+                        component edges and a relation between
+                        components.
+description:            |
+                        Sources:
+                        - September declared one layers contract for
+                          import-linter in pyproject.toml, a list of
+                          twelve layers of package names
+                          [origin/main:pyproject.toml at
+                          tool.importlinter].
+                        - An import-linter layers contract lists layer
+                          modules from highest to lowest, and siblings
+                          on one line separated by pipes
+                          [https://import-linter.readthedocs.io/en/v2.1/contract_types.html].
+                        - On dev, modules sit under logical components
+                          only by convention, and nothing checks
+                          imports
+                          [_data/decision/dec_check_of_import_layering/dec_check_of_import_layering.yaml
+                          at description].
+                        - Only the top package realizes a logical
+                          component today, lco_tooling, and a
+                          subpackage such as the checker has no edge
+                          [src/cctool/__init__.py at module docstring
+                          edge, src/cctool/check/__init__.py at module
+                          docstring edge].
+                        - The extractor parses python modules but
+                          records no import between them
+                          [src/cctool/graph/extract.py at function
+                          definitions, by search for ast.Import].
+                        - The graph rule option adds import facts,
+                          edges from modules to components and a
+                          relation between components
+                          [_data/decision/dec_check_of_import_layering/opt_import_rule_over_the_graph.yaml
+                          at brief].
+                        - No relation in the register says that one
+                          component may depend on another
+                          [_data/register/reg_relation.yaml, list of
+                          entries].
+                        - relation_is_part_of already records a
+                          breakdown of logical components
+                          [_data/register/reg_relation.yaml at
+                          entries.relation_is_part_of].
+                        - Dev's lint stage runs ruff alone, and
+                          import-linter is not a dependency on dev
+                          [src/cctool/gate/gate.py at TUPLE_STAGE,
+                          pyproject.toml at dependencies and
+                          tool.pixi.dependencies, pixi.lock with no
+                          entry for import-linter].
+                        - cctool impact lists the items a change
+                          touches and the items linked to them
+                          [AGENTS.md at section Finding things out].
+                          Strength for concern_maintainability:
+                          Moderate. With the rule over the graph a
+                          change to the architecture is one edit in
+                          the graph that impact can show. With
+                          import-linter it is an edit in a table that
+                          names packages, not components. The build
+                          cost of the graph rule is real: import
+                          facts, a relation, a rule and an edge on
+                          each package. At ten times the packages the
+                          second place to keep grows with them, which
+                          favors the graph rule. Strength for
+                          concern_simplicity: moderate. No check is
+                          the fewest mechanisms, at the cost of
+                          nothing checking imports. import-linter adds
+                          a tool and a second statement of the layers.
+                          The graph rule adds three things to one
+                          place. Two statements of layering drift
+                          further apart as modules grow tenfold.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_rule_over_the_graph
+    guid_target:        opt_04e09fce10254167bb77c0462bdfa206
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_import_linter_contracts
+    guid_target:        opt_f0cc282ae7f346148dc157ee97e304ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

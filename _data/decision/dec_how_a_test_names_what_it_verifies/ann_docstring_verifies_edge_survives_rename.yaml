@@ -1,0 +1,71 @@
+id_self:                ann_docstring_verifies_edge_survives_rename
+guid_self:              ann_51afd0aef4bd4d02b338cf6e36824c5c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Link that survives a rename
+brief:                  |
+                        An edge in a docstring item carries the guid
+                        of its target and is rewritten by a rename, so
+                        the link survives the renames the tooling
+                        already makes. A marker string in a decorator
+                        is neither a document nor a logic program, so
+                        a rename leaves it naming an id that no longer
+                        exists.
+description:            |
+                        Sources:
+                        - A rename rewrites the id in the item's own
+                          document, in every reference and mention of
+                          it in a document, and in every quoted string
+                          of a logic program [src/cctool/edit/edit.py
+                          at function _rename_one, docstring].
+                        - The same docstring notes that rules left
+                          naming an old id match nothing, and so pass
+                          without a word [src/cctool/edit/edit.py at
+                          function _rename_one, docstring].
+                        - Also rests on a source stated once in
+                          ann_test_item_gives_the_trace_a_stable_end
+                          (references resolve by guid).
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (relation_realizes in the function item).
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (marker with no docstring item).
+                        - ASSUMPTION: the rename edit does not rewrite
+                          string arguments of python decorators, since
+                          its docstring names only documents and logic
+                          programs. Strength: strong, and stronger at
+                          ten times the size, since more verifies
+                          edges mean more of them broken by each
+                          rename. The marker option could be repaired
+                          by teaching rename to rewrite decorators and
+                          by a check of unresolved ids, but that is
+                          new code to keep right.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_test_names_what_it_verifies
+    guid_target:        dec_d38e77489f4341b88a3138c1b3102e0c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_verifies_edge_in_a_test_function_item
+    guid_target:        opt_fd8ef82fac1c43008ca7a73a9b689633
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_verifies_marker_read_by_the_extractor
+    guid_target:        opt_2be8341e9c7445f7b5c4392ba5d0b95f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

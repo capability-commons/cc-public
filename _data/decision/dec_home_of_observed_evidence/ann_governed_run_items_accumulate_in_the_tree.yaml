@@ -1,0 +1,66 @@
+id_self:                ann_governed_run_items_accumulate_in_the_tree
+guid_self:              ann_f7fb3af9a29e4ba481dab42034d47e21
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Immutable run items that pile up in the tree
+brief:                  |
+                        An execution item that is never changed once
+                        committed adds one item to the tree for every
+                        governed run. With an overnight review every
+                        day, the tree gains hundreds of items a year
+                        that nobody edits and every load of the tree
+                        reads.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_local_evidence_store_follows_existing_stores
+                          (governed runs write unchanging items).
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (daily review at 03:00 UTC).
+                        - September kept only governed runs as items
+                          because a permanent item per development run
+                          fills the repository with history nobody
+                          reads
+                          [origin/main:ddr/ddr_test_execution.yaml at
+                          rationale].
+                        - Between governed runs the graph holds no
+                          observation newer than the last of them
+                          [_data/decision/dec_home_of_observed_evidence/opt_evidence_kept_only_for_governed_runs.yaml
+                          at brief]. Strength: Moderate. One item per
+                          release is cheap to keep. One item per night
+                          is about 365 items a year, since the option
+                          names the overnight review as a governed run
+                          and that review runs daily
+                          [_data/decision/dec_home_of_observed_evidence/opt_evidence_kept_only_for_governed_runs.yaml
+                          at brief,
+                          _data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description]. At ten times the cadence
+                          the same argument September made against
+                          items per run applies. The weakness is that
+                          a release snapshot is wanted anyway, and the
+                          store option also records a digest and
+                          counts at release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_observed_evidence
+    guid_target:        dec_0f5243498c8a468a976e848877286964
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_kept_only_for_governed_runs
+    guid_target:        opt_9d12f03c67a3460b86dd7216f1d08ae8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

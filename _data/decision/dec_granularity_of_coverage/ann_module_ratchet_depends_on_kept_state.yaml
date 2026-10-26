@@ -1,0 +1,66 @@
+id_self:                ann_module_ratchet_depends_on_kept_state
+guid_self:              ann_d64ee39d3fb14985ae5bb5c6b36832cb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ratchet state that can be lost or moved
+brief:                  |
+                        A ratchet per module compares against a value
+                        last recorded for each module, so it is only
+                        as reliable as the place that keeps that
+                        value. If it lives in a local store, a lost
+                        store resets every ratchet without a word. If
+                        code moves between modules, a module's
+                        coverage can fall with no loss of tests.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_coverage_floor_is_one_number_and_one_flag
+                          (the ratchet option's recorded value).
+                        - Under the plan WTP said to proceed with,
+                          observations live in a local evidence store
+                          read as facts [owner's statement,
+                          2026-10-25], and the gate keeps its local
+                          stores in the git directory, which no commit
+                          records [src/cctool/gate/gate.py at
+                          functions store and timing_log,
+                          src/cctool/gate/timing.py at module
+                          docstring].
+                        - The existing check store returns nothing
+                          when it cannot be read
+                          [src/cctool/check/store.py at function
+                          load].
+                        - The ratchet option does not say where the
+                          value last recorded for each module is kept
+                          [_data/decision/dec_granularity_of_coverage/opt_coverage_ratchet_per_module.yaml
+                          at brief].
+                        - ASSUMPTION: moving a well tested function
+                          out of a module lowers that module's
+                          percentage even when no test is lost.
+                          Strength: moderate, and conditional on where
+                          the value is kept. With a committed record
+                          the first point falls away. The second holds
+                          at ten times the size, since refactors touch
+                          more modules.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_ratchet_per_module
+    guid_target:        opt_ce7f94eba78c41428c499b8374bb7f6f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,72 @@
+id_self:                ann_test_link_cost_is_in_files_read
+guid_self:              ann_3ea4a2a15efe438186dad7c651a4d43f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Extraction cost of a test link
+brief:                  |
+                        The edge and marker options both read the
+                        syntax tree the extractor already parses, so
+                        neither adds measurable work. A test case item
+                        for every verification adds a file of about
+                        fifty lines for the extractor to read and
+                        check for each link.
+description:            |
+                        Sources:
+                        - The extractor already parses every python
+                          module with the ast module to find the items
+                          in docstrings [src/cctool/graph/extract.py
+                          at functions definitions and _module].
+                        - The extractor caches the documents it has
+                          read, keyed by path and file digest
+                          [src/cctool/graph/extract.py at MAP_READ and
+                          its comment].
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (a test case of 46 to 50 lines).
+                        - The check store keeps layout and schema
+                          verdicts per file text, so a new file is
+                          checked once and then reused while unchanged
+                          [src/cctool/check/store.py at module
+                          docstring].
+                        - ASSUMPTION: the time to extract and check an
+                          item grows roughly with the number of items
+                          and their lines. Strength: weak. Today there
+                          are 4 requirements and 6 interface control
+                          documents, so the difference is small. At
+                          ten times the size, a case per link adds
+                          hundreds of files to every cold check, while
+                          the edge and the marker add a few lines to
+                          files already read.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_test_names_what_it_verifies
+    guid_target:        dec_d38e77489f4341b88a3138c1b3102e0c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_verifies_edge_in_a_test_function_item
+    guid_target:        opt_fd8ef82fac1c43008ca7a73a9b689633
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_verifies_marker_read_by_the_extractor
+    guid_target:        opt_2be8341e9c7445f7b5c4392ba5d0b95f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_test_case_item_names_the_test
+    guid_target:        opt_fff62534d9f04df18b599b393e8cef0d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

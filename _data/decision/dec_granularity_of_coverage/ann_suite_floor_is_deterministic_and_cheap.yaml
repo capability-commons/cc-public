@@ -1,0 +1,72 @@
+id_self:                ann_suite_floor_is_deterministic_and_cheap
+guid_self:              ann_6beb5045248d47e59a63969e6ddd4bec
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deterministic floor against fragile rows
+brief:                  |
+                        A suite floor is measured on the cheap core,
+                        repeated exactly in two runs on one commit,
+                        and adds about 6 per cent to the run. Rows per
+                        test and function need the C tracer, which
+                        changed the outcome of two tests and took 2.6
+                        times as long. Gating on the floor keeps the
+                        gate working while rows are still unproven.
+description:            |
+                        Sources:
+                        - Two runs of branch coverage on one commit
+                          agreed exactly, at 87.12 per cent, and three
+                          later gate runs gave 88.03, 88.07 and 88.08
+                          per cent [origin/main:pyproject.toml at the
+                          comment on the coverage floor].
+                        - Also rests on a source stated once in
+                          ann_per_test_rows_need_the_slow_tracer_core
+                          (221 s against 209 s).
+                        - Per-test contexts on the sys.monitoring core
+                          recorded 282 contexts for about 500 tests,
+                          and on the C tracer core took 534 s and made
+                          two passing tests fail [measured by Claude
+                          in the cloud container, 2026-10-26].
+                        - Also rests on a source stated once in
+                          ann_per_test_rows_need_the_slow_tracer_core
+                          (Python 3.13 and atlas on 3.15).
+                        - The rows option gates no work on a
+                          percentage and leaves the rules to use the
+                          rows
+                          [_data/decision/dec_granularity_of_coverage/opt_coverage_rows_per_test_and_function.yaml
+                          at brief].
+                        - Also rests on a source stated once in
+                          ann_module_ratchet_says_where_coverage_fell
+                          (0.12 of a point of headroom). Strength:
+                          strong for what gates the work. It holds at
+                          ten times the size, since the floor's cost
+                          stays a fixed fraction. It does not argue
+                          against recording rows overnight for rules
+                          that only advise.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_floor_for_the_suite
+    guid_target:        opt_52d7dbff8c9d4380877b575b5df459f1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_rows_per_test_and_function
+    guid_target:        opt_cd875ccb99444b6e8c146e5c12773fc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

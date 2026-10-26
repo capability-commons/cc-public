@@ -1,0 +1,74 @@
+id_self:                ann_unchecked_imports_leave_layering_unanswered
+guid_self:              ann_4913bad4110e4690841c33e04141f379
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layering with nothing to check it
+brief:                  |
+                        With no import check, nothing answers whether
+                        a module depends on a part it should not. Both
+                        checks answer it, and import-linter also
+                        follows chains through other modules, which a
+                        rule over the graph must reproduce to give the
+                        same result. Neither sees an import made by
+                        name at run time, and one module makes two
+                        such imports today.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (nothing checks imports on dev).
+                        - The import-linter layers contract includes
+                          indirect imports, that is chains of imports
+                          via other modules
+                          [https://import-linter.readthedocs.io/en/stable/contract_types/layers/].
+                        - The graph module of facts imports
+                          cctool.cli.command and cctool.check.check by
+                          name at run time, because each imports it in
+                          turn [src/cctool/graph/tool.py at
+                          NAME_COMMAND, NAME_CHECK and functions facts
+                          and _command_line].
+                        - The import-linter layers page does not
+                          mention imports made at run time
+                          [https://import-linter.readthedocs.io/en/stable/contract_types/layers/].
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (the extractor parses each module).
+                        - ASSUMPTION: a rule over the graph reports an
+                          indirect chain only if it is written to
+                          follow one. Strength: strong against having
+                          no check. It grows at ten times the size,
+                          where more modules make a wrong-way import
+                          harder to see in review.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_linter_contracts
+    guid_target:        opt_f0cc282ae7f346148dc157ee97e304ce
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_rule_over_the_graph
+    guid_target:        opt_04e09fce10254167bb77c0462bdfa206
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_import_check
+    guid_target:        opt_f40a679878e449f7a98c24e6151eee15
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

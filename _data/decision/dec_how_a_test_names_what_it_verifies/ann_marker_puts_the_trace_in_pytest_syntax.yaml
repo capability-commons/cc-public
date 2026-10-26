@@ -1,0 +1,63 @@
+id_self:                ann_marker_puts_the_trace_in_pytest_syntax
+guid_self:              ann_dc43d154300447f487651e36e2777fb7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trace written in the test runner's syntax
+brief:                  |
+                        A pytest marker writes each verifies edge in
+                        the decorator syntax of one third-party test
+                        runner. The other two options hold the edge in
+                        the item format of the repository, which no
+                        outside project controls.
+description:            |
+                        Sources:
+                        - With this option a test carries a marker
+                          such as pytest.mark.verifies with the ids it
+                          verifies
+                          [_data/decision/dec_how_a_test_names_what_it_verifies/opt_verifies_marker_read_by_the_extractor.yaml
+                          at brief].
+                        - pytest is a development dependency of
+                          cc-public, taken from conda-forge
+                          [pyproject.toml at tool.pixi.dependencies].
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_adds_no_new_link_mechanism
+                          (strict_markers registration).
+                        - WTP ruled that the check tests are pytest
+                          tests with exact expected failures
+                          [_data/decision/dec_test_style/ruling_test_style.yaml
+                          at title]. Strength: Weak. The extractor
+                          reads the decorator from the syntax tree, so
+                          the check itself does not import pytest, and
+                          pytest is already a dependency that WTP
+                          ruled for. The risk is only that a change of
+                          test runner would also mean rewriting every
+                          verifies edge. It does not grow with size
+                          beyond the count of tests to rewrite.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_test_names_what_it_verifies
+    guid_target:        dec_d38e77489f4341b88a3138c1b3102e0c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_verifies_edge_in_a_test_function_item
+    guid_target:        opt_fd8ef82fac1c43008ca7a73a9b689633
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_verifies_marker_read_by_the_extractor
+    guid_target:        opt_2be8341e9c7445f7b5c4392ba5d0b95f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

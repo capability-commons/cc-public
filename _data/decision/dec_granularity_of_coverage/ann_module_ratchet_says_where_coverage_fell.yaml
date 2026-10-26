@@ -1,0 +1,78 @@
+id_self:                ann_module_ratchet_says_where_coverage_fell
+guid_self:              ann_ccfff95b2a3e4cbda79bc8b37da11913
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage drop named by its module
+brief:                  |
+                        A ratchet per module says which module lost
+                        coverage, as the term ratchets already say
+                        which count rose. A suite floor says only that
+                        the total fell, and September had to tune it
+                        by hand in long comments.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_coverage_floor_is_one_number_and_one_flag
+                          (term ratchets on dev).
+                        - September's suite floor stood at 87 per cent
+                          branch coverage with 0.12 of a point of
+                          headroom, about thirteen statements or
+                          branch exits, and its level was argued over
+                          in comments of pyproject.toml across several
+                          measurements [origin/main:pyproject.toml at
+                          the comment above tool.mypy].
+                        - September noted that the floor says nothing
+                          about whether a change carried its own
+                          tests, and added diff-cover for changed
+                          lines [origin/main:pyproject.toml at the
+                          comment above tool.mypy].
+                        - The tooling has about 70 python modules
+                          outside the test folders [src/cctool, by
+                          count of python files not under _test].
+                        - Coverage rows per test needed 1543 contexts
+                          and an 18 MB data file for about 500 tests
+                          [measured by Claude in the cloud container,
+                          2026-10-26]. Strength: Moderate. The ratchet
+                          keeps one number per module, about 70 today,
+                          and a failure points at one part. The floor
+                          is one number but a failure points nowhere,
+                          and its level needs judgment each time it
+                          moves. Rows per test hold far more data, and
+                          the rules over them are new code to keep. At
+                          ten times the modules the ratchet holds ten
+                          times the numbers, which is still small,
+                          while rows per test grow with tests times
+                          functions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_granularity_of_coverage
+    guid_target:        dec_1dc47285c2674620bf5d5a377ff6fbb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coverage_ratchet_per_module
+    guid_target:        opt_ce7f94eba78c41428c499b8374bb7f6f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_floor_for_the_suite
+    guid_target:        opt_52d7dbff8c9d4380877b575b5df459f1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_coverage_rows_per_test_and_function
+    guid_target:        opt_cd875ccb99444b6e8c146e5c12773fc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

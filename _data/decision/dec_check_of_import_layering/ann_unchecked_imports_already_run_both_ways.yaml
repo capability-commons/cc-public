@@ -1,0 +1,68 @@
+id_self:                ann_unchecked_imports_already_run_both_ways
+guid_self:              ann_368116eca6fa4680a4a840eb1a522af0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Package imports that already run both ways
+brief:                  |
+                        With nothing checking imports, two pairs of
+                        packages already import each other. A change
+                        in one of each pair can spread to the other,
+                        and either kind of check would have to start
+                        by fixing or excusing them.
+description:            |
+                        Sources:
+                        - The checker imports the editor and the
+                          release package [src/cctool/check/check.py,
+                          the imports of cctool.edit.layout and
+                          cctool.release.record].
+                        - The editor imports the checker
+                          [src/cctool/edit/edit.py, the import of
+                          cctool.check.check, and
+                          src/cctool/edit/layout.py, the import of
+                          cctool.check.store].
+                        - The release package imports the checker
+                          [src/cctool/release/release.py, the import
+                          of cctool.check.check].
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (nothing checks imports on dev).
+                        - The option of no check relies on review and
+                          the tests to catch a dependency that runs
+                          the wrong way
+                          [_data/decision/dec_check_of_import_layering/opt_no_import_check.yaml
+                          at brief].
+                        - The maintainability concern asks how far a
+                          change in one part spreads to others
+                          [_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question].
+                          Strength: Strong against no check. The
+                          mutual imports exist now and no review or
+                          test has reported them. A layers contract,
+                          or a rule over components, would fail on day
+                          one until they are fixed or listed as
+                          exceptions. At ten times the packages the
+                          number of pairs that can tangle grows faster
+                          than the packages.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_import_check
+    guid_target:        opt_f40a679878e449f7a98c24e6151eee15
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

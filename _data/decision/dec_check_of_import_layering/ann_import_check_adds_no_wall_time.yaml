@@ -1,0 +1,61 @@
+id_self:                ann_import_check_adds_no_wall_time
+guid_self:              ann_891d76a2000746b7b0713a2ac97652d4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate time of an import check
+brief:                  |
+                        The stages of the gate run side by side, and
+                        the test stage takes minutes. An import check
+                        in the lint stage or in the check stage
+                        finishes well before the tests, so neither
+                        choice adds measurable wall time.
+description:            |
+                        Sources:
+                        - The gate runs its stages side by side in a
+                          thread pool [src/cctool/gate/gate.py at
+                          function gate and the module docstring].
+                        - The tests the commit gate runs took 209 s in
+                          the container [measured by Claude in the
+                          cloud container, 2026-10-26].
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (the extractor parses each module).
+                        - Dev has 70 python modules outside the test
+                          folders [count of python files under
+                          src/cctool excluding _test on the snapshot].
+                        - ASSUMPTION: import-linter builds its own
+                          import graph, so it reads the 70 modules a
+                          second time. Strength: weak. Both checks
+                          take seconds at 70 modules. At ten times the
+                          modules the graph rule reads no file twice.
+                          import-linter reads them again, but it runs
+                          beside the test stage, so wall time still
+                          does not change.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_rule_over_the_graph
+    guid_target:        opt_04e09fce10254167bb77c0462bdfa206
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_linter_contracts
+    guid_target:        opt_f0cc282ae7f346148dc157ee97e304ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

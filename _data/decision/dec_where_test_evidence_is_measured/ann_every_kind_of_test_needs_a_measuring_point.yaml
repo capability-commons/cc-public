@@ -1,0 +1,83 @@
+id_self:                ann_every_kind_of_test_needs_a_measuring_point
+guid_self:              ann_12fc53586c6643659ca340c1a95871ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence from every kind of test in the tree
+brief:                  |
+                        Only measuring at push and overnight records
+                        coverage on every pushed tip and also has a
+                        measuring point for every kind of test,
+                        benchmarks and property tests included,
+                        overnight. Hosted CI keeps evidence outside
+                        the tree, so the checks can read it only by
+                        fetching it from the service.
+description:            |
+                        Sources:
+                        - The push and overnight option records
+                          results and coverage at the pre-push gate,
+                          and the daily review records the slow tests,
+                          the property tests and the benchmarks
+                          [_data/decision/dec_where_test_evidence_is_measured/opt_measure_at_push_and_overnight.yaml
+                          at brief].
+                        - The every commit option runs the commit
+                          gate's tests under coverage, and that gate
+                          leaves out tests marked slow or prepush
+                          [_data/decision/dec_where_test_evidence_is_measured/opt_measure_at_every_commit.yaml
+                          at brief, src/cctool/gate/gate.py at
+                          MARK_COMMIT].
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no tests at commit without staged code).
+                        - WTP asked that results of the overnight
+                          property tests go to the same evidence as
+                          other tests [owner's statement, 2026-10-25].
+                        - September did not take evidence in a CI
+                          attestation outside the tree, because the
+                          checks read the tree and could not check it
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at alternative].
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no CI on the remote).
+                        - Also rests on a source stated once in
+                          ann_hosted_ci_makes_evidence_depend_on_a_service
+                          (a later check fetches CI evidence).
+                          Strength: Strong, and it holds at ten times
+                          the size, since slow and benchmark tests
+                          grow with the data. The every commit option
+                          could add the overnight run too, but as
+                          written it leaves benchmarks with no
+                          measuring point.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_at_every_commit
+    guid_target:        opt_2ceba64902c34addbb7727c43d7c5c3c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

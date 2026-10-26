@@ -1,0 +1,63 @@
+id_self:                ann_september_contract_cannot_be_copied_as_is
+guid_self:              ann_24bcf44e3f4944ac9f0c69292a3830a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  September contract naming packages dev lacks
+brief:                  |
+                        September's import-linter contract names the
+                        root package cc_public and twelve layers of
+                        its packages, while dev's code is the cctool
+                        package with other subpackages. The contract
+                        must be rewritten, not brought across, and a
+                        copied contract would fail at once. A rule
+                        over the graph takes its layers from component
+                        edges, which do not exist yet, so it gives no
+                        result until they are written.
+description:            |
+                        Sources:
+                        - September's import-linter configuration sets
+                          root_package to cc_public and lists layers
+                          such as cc_public.workflow and
+                          cc_public.evidence
+                          [origin/main:pyproject.toml at
+                          tool.importlinter].
+                        - Dev's code is under src/cctool, with
+                          packages such as check, cli, commit, edit,
+                          gate, graph, release, requirement and web
+                          [src/cctool, directory listing].
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (what the graph rule option needs).
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (components by convention on dev).
+                        - WTP named September's gate and code-quality
+                          tooling as the next theme to bring across,
+                          after the federation work [owner's
+                          statement, 2026-10-25]. Strength: moderate.
+                          It bears on effort to a correct result, not
+                          on which option is right in the end. It does
+                          not change at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_import_linter_contracts
+    guid_target:        opt_f0cc282ae7f346148dc157ee97e304ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

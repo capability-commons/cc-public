@@ -1,0 +1,84 @@
+id_self:                ann_local_evidence_store_degrades_safely_and_is_rebuilt
+guid_self:              ann_989c5229f8794ca88bce9a02ac4f4d3b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recoverable local evidence without commit churn
+brief:                  |
+                        A local store keyed by a digest of what was
+                        observed loses nothing that a rerun cannot
+                        rebuild, and a damaged file reads as absent
+                        rather than as wrong. Evidence items rewritten
+                        and committed on each run put a changing file
+                        into every commit of every worktree, which
+                        turns parallel work into repeated conflicts on
+                        one file.
+description:            |
+                        Sources:
+                        - The existing check store writes each file to
+                          a temporary file and then renames it into
+                          place, so a run stopped while writing leaves
+                          the old file whole
+                          [src/cctool/check/store.py at function
+                          save].
+                        - The existing check store returns nothing
+                          when its file cannot be read or was written
+                          by other code, so a damaged store is treated
+                          as an empty one [src/cctool/check/store.py
+                          at function load].
+                        - The timing log skips a line that is not
+                          whole, as a run stopped while writing would
+                          leave [src/cctool/gate/timing.py at function
+                          read].
+                        - Observations of the commit-gate tests can be
+                          produced again by running them, which took
+                          209 s in the container [measured by Claude
+                          in the cloud container, 2026-10-26].
+                        - Several agents work at once, each in its own
+                          worktree and branch, and each branch is
+                          rebased on dev before it lands [AGENTS.md at
+                          section Working beside other agents].
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (September's tree dirty after every run).
+                        - Rows keyed by a digest of content avoid the
+                          circle in which evidence committed after a
+                          run names a commit that does not contain it
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at rationale].
+                        - ASSUMPTION: two branches that each commit a
+                          rewrite of the same evidence item conflict
+                          on rebase whenever both ran tests. Strength:
+                          strong for development runs. It holds at ten
+                          times the size, since a rerun stays the
+                          recovery path and the number of worktrees,
+                          and so of conflicts, grows with the work.
+                          Overnight results are the exception, because
+                          a lost overnight run costs a night to redo.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_observed_evidence
+    guid_target:        dec_0f5243498c8a468a976e848877286964
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_evidence_in_a_local_store_read_as_facts
+    guid_target:        opt_d6432f22ad3041ec81d1f694f7d6f604
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_items_rewritten_each_run
+    guid_target:        opt_b44892076d5940b1ae89190846919522
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

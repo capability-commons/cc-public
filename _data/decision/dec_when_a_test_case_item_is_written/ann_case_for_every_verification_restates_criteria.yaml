@@ -1,0 +1,138 @@
+id_self:                ann_case_for_every_verification_restates_criteria
+guid_self:              ann_acaeecd43e46473d889960238ba7edb4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Case items that restate the success criteria
+brief:                  |
+                        A test case for every verification adds about
+                        fifty lines per verification, and much of its
+                        expectation repeats the success criteria the
+                        requirement already states. Each such case is
+                        a second thing to keep current and a second
+                        thing that can disagree with the first. A copy
+                        that is not kept current goes on reporting
+                        against criteria that have moved, and a
+                        reviewer reads the criteria twice. Writing a
+                        case only where code cannot carry the content
+                        keeps one statement of each expectation and
+                        keeps each change to what is new. Its known
+                        weakness is that evidence from a bare test
+                        function does not see a change to the harness,
+                        which the digest must then cover.
+description:            |
+                        Sources:
+                        - September measured a case at 46 to 50 lines,
+                          and a quarter to two thirds of the words of
+                          its expectation repeated the success
+                          criteria of what it verified
+                          [origin/main:ddr/ddr_test_case_adoption.yaml
+                          at context].
+                        - September rejected a case for every
+                          requirement because it costs about fifty
+                          lines each to restate success criteria the
+                          requirement already carries, and a case that
+                          adds only a restatement adds a second thing
+                          to keep current and a second thing to
+                          disagree with the first
+                          [origin/main:ddr/ddr_test_case_adoption.yaml
+                          at rationale and at alternative].
+                        - September found that an assertion deleted
+                          from a shared function leaves both
+                          requirements verified, passing and current,
+                          and nothing notices
+                          [origin/main:ddr/ddr_test_case_adoption.yaml
+                          at rationale].
+                        - The closure of a case covers its method and
+                          the adapter that ran it, and the closure of
+                          a bare function covers neither
+                          [origin/main:ddr/ddr_test_case_adoption.yaml
+                          at rationale].
+                        - September's rule includes review by someone
+                          who does not read the code among the
+                          instances that call for a case
+                          [origin/main:ddr/ddr_test_case_adoption.yaml
+                          at decision].
+                        - The dev option names inspection, analysis,
+                          demonstration, several expected conditions,
+                          reuse, a tolerance or external vector, and a
+                          function that verifies more than one
+                          requirement and is not divided. It does not
+                          name review by a non-reader of code
+                          [_data/decision/dec_when_a_test_case_item_is_written/opt_test_case_where_code_cannot_carry_it.yaml
+                          at brief].
+                        - Dev holds 4 requirements, one verified by
+                          inspection and three by test
+                          [_data/requirement/ at verification_method].
+                        - The tooling has about 555 test functions
+                          [src/cctool, by count of def test_ in python
+                          files].
+                        - AGENTS.md asks that a type, relation, field
+                          or command be added only when a real
+                          instance needs it [AGENTS.md at section Keep
+                          it small].
+                        - The reviewability measure is the size of a
+                          change in lines
+                          [_data/register/reg_concern.yaml at
+                          entries.concern_reviewability.measure]. Strength
+                          for concern_maintainability: Strong against
+                          a case for every verification, and it grows
+                          linearly: at ten times the requirements the
+                          duplicated lines grow ten times. Between the
+                          other two options the point is weaker. No
+                          test case type is the least to keep today,
+                          since only one requirement has no test
+                          function. The conditional option adds a
+                          type, a schema and a check that serve few
+                          items now, but avoids prose that no check
+                          reads for verifications that need inputs
+                          held outside the code. Strength for
+                          concern_reliability: moderate. The drift
+                          grows with the number of requirements, so it
+                          holds and worsens at ten times the size. The
+                          harness blind spot is real and is for
+                          dec_what_an_evidence_digest_covers to close.
+                          Strength for concern_reviewability: Strong,
+                          from a measurement. At ten times the size
+                          the cost grows with the requirement count,
+                          while the targeted option grows only with
+                          the hard cases. The missing instance of
+                          review by a non-reader of code is a small
+                          gap that a ruling can close by adding it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_test_case_item_is_written
+    guid_target:        dec_cdd9fa68f6fd45f5a688f39fb13ce708
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_test_case_where_code_cannot_carry_it
+    guid_target:        opt_7f86e716ba2747e5809cac10a075522b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_test_case_for_every_verification
+    guid_target:        opt_439f0abc3c0a4573a82c6b8ffb0adcaa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,101 @@
+id_self:                ann_budget_as_requirement_reuses_the_trace
+guid_self:              ann_1c4cd28255164157b5419edadb43b88c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Budget that reuses the requirement and its trace
+brief:                  |
+                        A budget held as a requirement uses the type,
+                        schema, verification fields, trace and
+                        evidence that every requirement already has,
+                        and the verifies edge this work adds anyway. A
+                        register of budgets adds a register, two
+                        schemas, an edge and a path from budget to
+                        evidence for the same content. A field on the
+                        constrained item adds the same field to two
+                        schemas.
+description:            |
+                        Sources:
+                        - Each register on dev has a schema for the
+                          register and a schema for its entries
+                          [_data/schema, sch_reg_concern.yaml and
+                          sch_regentry_concern.yaml as one example].
+                        - A requirement already carries
+                          verification_method and
+                          verification_approach
+                          [_data/requirement/rqt_edit_refuses_new_failure.yaml
+                          at verification_method].
+                        - With the requirement option the measure
+                          becomes a structured field and the budget is
+                          verified by a benchmark test like any other
+                          requirement
+                          [_data/decision/dec_home_of_a_performance_budget/opt_budget_as_a_requirement.yaml
+                          at brief].
+                        - The register option makes budgets entries of
+                          a register of their own, each naming its
+                          target by an edge
+                          [_data/decision/dec_home_of_a_performance_budget/opt_budget_register.yaml
+                          at brief].
+                        - A field on the constrained item touches the
+                          schema of both the requirement and the
+                          interface member
+                          [_data/decision/dec_home_of_a_performance_budget/opt_budget_field_on_the_constrained_item.yaml
+                          at brief, _data/schema at
+                          sch_requirement.yaml and
+                          sch_interface_member.yaml].
+                        - A requirement item on dev is 43 to 46 lines
+                          [_data/requirement/, by line count].
+                        - AGENTS.md asks that a type, relation, field
+                          or command be added only when a real
+                          instance needs it [AGENTS.md at section Keep
+                          it small].
+                        - WTP asked that tests link to functional
+                          requirements and interface control documents
+                          [owner's statement, 2026-10-25]. Strength
+                          for concern_maintainability: Moderate. The
+                          requirement option adds one field and no new
+                          path. The field option is fewer lines per
+                          budget, but changes two schemas and gives
+                          one item two things to verify. The register
+                          adds the most structure. At ten times the
+                          budgets the requirement option costs about
+                          45 lines each, which is the main cost
+                          against it. Strength for concern_simplicity:
+                          moderate. The requirement option adds one
+                          structured field. The register adds a type,
+                          an edge and a path from budget to evidence.
+                          The field adds one field in two places. The
+                          count does not change at ten times the
+                          budgets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_a_performance_budget
+    guid_target:        dec_09f8667f75454260bd957fbbe792dd23
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_budget_as_a_requirement
+    guid_target:        opt_e85a96c2bfdf4976919929a505395745
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_budget_register
+    guid_target:        opt_a591d295c2804e689fdc2e0b3a95160e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

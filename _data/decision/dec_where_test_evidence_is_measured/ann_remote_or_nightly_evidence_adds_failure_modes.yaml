@@ -1,0 +1,77 @@
+id_self:                ann_remote_or_nightly_evidence_adds_failure_modes
+guid_self:              ann_a2a33fff1f374b7d99cf54f47bdf47e8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failure modes of remote and nightly measurement
+brief:                  |
+                        Hosted CI makes the check depend on fetching
+                        evidence from a service that does not run
+                        today, so a network failure or a missing job
+                        leaves the check without evidence. Measuring
+                        only overnight leaves up to a day of commits
+                        unmeasured and finds a fault the next morning.
+                        The stage time limit also caps how heavy any
+                        local measurement can be.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no CI on the remote).
+                        - Also rests on a source stated once in
+                          ann_hosted_ci_makes_evidence_depend_on_a_service
+                          (a later check fetches CI evidence).
+                        - The daily review runs at 03:00 UTC
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description].
+                        - Also rests on a source stated once in
+                          ann_hosted_ci_adds_a_runner_and_a_fetch_path
+                          (overnight only records only results at the
+                          gates).
+                        - A gate stage that runs longer than 600 s is
+                          stopped and fails [src/cctool/gate/gate.py
+                          at SECONDS_STAGE].
+                        - Per-test coverage on the C tracer took 534 s
+                          for the commit-gate tests on 4 CPUs in the
+                          container [measured by Claude in the cloud
+                          container, 2026-10-26].
+                        - ASSUMPTION: a check that cannot reach the
+                          hosted evidence either fails or stays
+                          silent, and neither is stated by the option.
+                          Strength: moderate. The stage limit point
+                          grows at ten times the size, where a heavy
+                          local measurement would be stopped. It
+                          argues for cheap coverage at push and heavy
+                          measurement overnight.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_overnight_only
+    guid_target:        opt_a004ff0c71e648dd8722ea07165f272b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

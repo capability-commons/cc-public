@@ -1,0 +1,72 @@
+id_self:                ann_push_gate_already_runs_the_tests_to_measure
+guid_self:              ann_92a9e4a27be64789a8fd505b6f857a28
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Measurement where the tests already run in full
+brief:                  |
+                        The pre-push gate already runs every test not
+                        marked slow on each pushed tip, so measuring
+                        there adds no new place to configure. Hosted
+                        CI adds a second configuration and a fetch
+                        path to keep in step with the local gate.
+description:            |
+                        Sources:
+                        - The pre-push gate runs every test not marked
+                          slow on each pushed tip, and the commit gate
+                          runs the tests not marked slow or prepush
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description, src/cctool/gate/gate.py at
+                          MARK_PUSH and MARK_COMMIT].
+                        - The commit gate leaves out the tests when no
+                          code is staged, so a data-only commit
+                          records no test observation at commit
+                          [owner's statement, 2026-10-25;
+                          src/cctool/gate/gate.py at function
+                          is_code_staged and TUPLE_CODE].
+                        - There is a GitHub remote and no CI runs on
+                          it
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description].
+                        - September's CI was a separate workflow file
+                          with a matrix over ubuntu and macos and its
+                          own steps
+                          [origin/main:.github/workflows/gate.yml at
+                          runs-on and matrix].
+                        - The stages of the local gate are declared
+                          once [src/cctool/gate/gate.py at
+                          TUPLE_STAGE]. Strength: Moderate. Measuring
+                          at push and overnight keeps one definition
+                          of the stages. Measuring at every commit
+                          also keeps one definition, but its evidence
+                          still misses data-only commits. Hosted CI
+                          needs a workflow file and a fetch step that
+                          must change whenever the gate does. At ten
+                          times the tests the argument is unchanged.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

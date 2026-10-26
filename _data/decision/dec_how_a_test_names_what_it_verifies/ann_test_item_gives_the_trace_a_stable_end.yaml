@@ -1,0 +1,83 @@
+id_self:                ann_test_item_gives_the_trace_a_stable_end
+guid_self:              ann_1562c84fa7b84629a094fa4fa0d28584
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stable item at the test end of the trace
+brief:                  |
+                        A function item for the test gives the
+                        verifies edge a source with a guid, running
+                        the same way as relation_realizes. A marker
+                        makes the edge from an id derived from the
+                        test's name, with no guid, so a rename breaks
+                        the trace from the requirement to its test.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (marker id derived, no item).
+                        - A reference resolves by its guid where its
+                          id does not, and a rename that changed the
+                          guid would break every reference at once
+                          [_data/requirement/rqt_rename_keeps_guid.yaml
+                          at rationale].
+                        - A definition item carries a guid_self in its
+                          docstring, as the function items of check.py
+                          do [src/cctool/check/check.py at function
+                          review, docstring].
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (relation_realizes ruling).
+                        - The earlier annotation on one direction for
+                          every trace argues that every trace from an
+                          implementation runs from its item to the
+                          item of the specification, so a trace query
+                          needs no special case
+                          [_data/decision/dec_interface_implementation_link/ann_one_direction_for_every_trace.yaml
+                          at brief].
+                        - The test case item option leaves the test
+                          function with nothing, so the case names a
+                          function that has no item
+                          [_data/decision/dec_how_a_test_names_what_it_verifies/opt_test_case_item_names_the_test.yaml
+                          at brief].
+                        - Also rests on a source stated once in
+                          ann_verifies_edge_reuses_the_realizes_mechanism
+                          (items only when needed). Strength: Strong.
+                          It holds at ten times the size, since
+                          renames grow with the number of tests. The
+                          test case option keeps a guid on the case,
+                          but its pointer to the function has nothing
+                          stable to land on unless the function gets
+                          an item anyway.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_test_names_what_it_verifies
+    guid_target:        dec_d38e77489f4341b88a3138c1b3102e0c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_verifies_edge_in_a_test_function_item
+    guid_target:        opt_fd8ef82fac1c43008ca7a73a9b689633
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_verifies_marker_read_by_the_extractor
+    guid_target:        opt_2be8341e9c7445f7b5c4392ba5d0b95f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_test_case_item_names_the_test
+    guid_target:        opt_fff62534d9f04df18b599b393e8cef0d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,80 @@
+id_self:                ann_measuring_at_push_keeps_the_commit_gate_fast
+guid_self:              ann_aa947b83b9be432c9c6649ada32c6266
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Where the cost of measuring lands
+brief:                  |
+                        Aggregate coverage adds about 6 per cent to a
+                        run, and coverage per test multiplies it by
+                        2.6. The pre-push gate and the daily review
+                        absorb either. The commit gate, which must
+                        stay fast, absorbs neither.
+description:            |
+                        Sources:
+                        - The commit gate must stay fast, and
+                          gate-speed work took a code commit's gate
+                          from 2m13s to about 78 s on atlas [owner's
+                          statements in the gate-speed work,
+                          2026-10-22].
+                        - Branch coverage with the sys.monitoring core
+                          added about 6 per cent, and coverage per
+                          test with the C tracer core took 2.6 times
+                          the base [measured by Claude in the cloud
+                          container, 2026-10-26].
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no tests at commit without staged code).
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (the pre-push gate runs every test not
+                          marked slow).
+                        - Also rests on a source stated once in
+                          ann_remote_or_nightly_evidence_adds_failure_modes
+                          (daily review at 03:00 UTC).
+                        - WTP agreed that property tests run overnight
+                          with a large example count [owner's
+                          statement, 2026-10-25].
+                        - September's local gate measured about
+                          thirteen minutes, and its CI allowed about
+                          three times that, as hosted runners are
+                          slower
+                          [origin/main:.github/workflows/gate.yml at
+                          the comments on the gate job and
+                          timeout-minutes]. Strength: strong against
+                          coverage per test at commit, which would
+                          turn about 78 s into over three minutes on
+                          atlas (ASSUMPTION: the factor of 2.6
+                          measured in the container carries over to
+                          atlas). Aggregate coverage at commit is
+                          within noise today, but the commit gate
+                          still measures nothing on data-only commits.
+                          At ten times the tests the slow runs belong
+                          overnight even more.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_at_every_commit
+    guid_target:        opt_2ceba64902c34addbb7727c43d7c5c3c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

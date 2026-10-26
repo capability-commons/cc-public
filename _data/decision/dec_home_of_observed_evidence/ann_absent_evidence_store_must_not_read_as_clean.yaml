@@ -1,0 +1,79 @@
+id_self:                ann_absent_evidence_store_must_not_read_as_clean
+guid_self:              ann_9670d702d7c843828963c5f41a314326
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silence when the evidence store is missing
+brief:                  |
+                        As written, the local store option lets the
+                        rules stay silent when there is no store, so a
+                        fresh clone or a new session reports the same
+                        as a tree whose tests all passed. The option
+                        is safe only if a missing or empty store is
+                        itself reported, as September made absent
+                        evidence critical in a closed world. Kept only
+                        for governed runs, evidence is immutable and
+                        cannot be damaged, but it is stale between
+                        those runs by construction.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (rules silent with no store).
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (stores in the shared git directory).
+                        - The gate of a push uses no check store and
+                          finds every verdict afresh
+                          [src/cctool/check/store.py at module
+                          docstring].
+                        - September's evidence check made absent
+                          evidence, or evidence observed and not a
+                          pass, critical in a closed world and
+                          advisory in an open one
+                          [origin/main:ddr/ddr_verification_evidence.yaml
+                          at decision].
+                        - Also rests on a source stated once in
+                          ann_rewritten_evidence_rides_in_every_commit
+                          (only a digest and counts at release).
+                        - September kept immutable execution items
+                          only for governed runs, because a record
+                          that can be edited is not a record of what
+                          happened
+                          [origin/main:ddr/ddr_test_execution.yaml at
+                          rationale].
+                        - Also rests on a source stated once in
+                          ann_governed_run_items_accumulate_in_the_tree
+                          (nothing newer than the last governed run).
+                          Strength: strong as a condition on the local
+                          store rather than as a reason to reject it.
+                          It grows with size, since more machines and
+                          sessions mean more trees that start with no
+                          store.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_home_of_observed_evidence
+    guid_target:        dec_0f5243498c8a468a976e848877286964
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_in_a_local_store_read_as_facts
+    guid_target:        opt_d6432f22ad3041ec81d1f694f7d6f604
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_evidence_kept_only_for_governed_runs
+    guid_target:        opt_9d12f03c67a3460b86dd7216f1d08ae8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

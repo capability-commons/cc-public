@@ -1,0 +1,91 @@
+id_self:                ann_graph_import_rule_adds_no_gate_dependency
+guid_self:              ann_0a25d8312da8430e8fb016e7cde5364e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gate availability under each import check
+brief:                  |
+                        An import cycle can stop the command line from
+                        loading, and the code already works around one
+                        by importing at run time, so a check of
+                        direction guards the tool's availability. A
+                        rule over the graph runs inside the check
+                        stage on syntax trees the extractor already
+                        builds, while import-linter adds a third-party
+                        tool to the lint stage whose own failure would
+                        stop the gate.
+description:            |
+                        Sources:
+                        - The graph module of facts defers its imports
+                          of the command line and the checks because
+                          each of those imports it in turn
+                          [src/cctool/graph/tool.py at module
+                          docstring].
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (the lint stage runs ruff only).
+                        - Also rests on a source stated once in
+                          ann_import_linter_states_the_layers_twice
+                          (the extractor parses each module).
+                        - The check store keeps only what the layout
+                          check and schema validation found, and
+                          reuses those verdicts for files unchanged
+                          since the last check by the same code; it
+                          keeps no result of the rules
+                          [src/cctool/check/store.py at module
+                          docstring].
+                        - The extractor reuses the documents of a file
+                          whose digest is unchanged
+                          [src/cctool/graph/extract.py at MAP_READ and
+                          its comment].
+                        - September pinned import-linter at 2.15 or
+                          later, below 3 [origin/main:pyproject.toml
+                          at optional dependency lint].
+                        - Atlas runs Python 3.15 [measured by Claude
+                          in the cloud container, 2026-10-26].
+                        - ASSUMPTION: Python raises an error at load
+                          time when two modules import each other at
+                          top level and one uses a name the other has
+                          not yet defined.
+                        - import-linter 2.15 is pure python, needs
+                          Python 3.10 or later and lists versions up
+                          to 3.14; grimp 3.17 lists Python 3.15 and
+                          ships cp315 wheels for linux x86_64, but for
+                          macOS only free-threaded cp315t wheels
+                          [https://pypi.org/pypi/import-linter/json,
+                          https://pypi.org/pypi/grimp/json]. Strength:
+                          moderate. A rule over the graph is new code
+                          that must itself be verified, which counts
+                          against it. At ten times the size both
+                          options scale. The rule shares the
+                          extractor's reuse of unchanged documents,
+                          but the check store does not keep the
+                          results of rules, so the rule runs afresh on
+                          each check.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_import_rule_over_the_graph
+    guid_target:        opt_04e09fce10254167bb77c0462bdfa206
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_import_check
+    guid_target:        opt_f40a679878e449f7a98c24e6151eee15
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

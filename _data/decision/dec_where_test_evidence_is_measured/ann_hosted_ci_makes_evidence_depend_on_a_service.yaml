@@ -1,0 +1,75 @@
+id_self:                ann_hosted_ci_makes_evidence_depend_on_a_service
+guid_self:              ann_00600b278c6f4561b09e884493757d15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Evidence that depends on a hosted service
+brief:                  |
+                        Measuring in hosted CI makes the evidence the
+                        checks read depend on a third-party service
+                        and its actions. Measuring at every commit
+                        makes coverage.py a part of every commit that
+                        stages code. Measuring at push and overnight
+                        keeps both risks off the path of work.
+description:            |
+                        Sources:
+                        - With hosted CI, a later run of the check
+                          fetches the evidence the CI job published
+                          [_data/decision/dec_where_test_evidence_is_measured/opt_measure_in_hosted_ci.yaml
+                          at brief].
+                        - September's CI used three third-party
+                          actions, actions/checkout,
+                          prefix-dev/setup-pixi and
+                          actions/upload-artifact, pinned by commit
+                          [origin/main:.github/workflows/gate.yml at
+                          uses].
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no CI on the remote).
+                        - Under the C tracer core two tests that pass
+                          without tracing failed, while no failure is
+                          recorded for the sys.monitoring core
+                          [measured by Claude in the cloud container,
+                          2026-10-26].
+                        - coverage.py 7.17.0 is under Apache-2.0
+                          [https://pypi.org/pypi/coverage/json].
+                          Strength: Moderate. A hosted service can
+                          change its terms, its runners or its
+                          actions, and evidence fetched from it fails
+                          when it does, which a local store does not.
+                          Coverage in the commit gate is a smaller
+                          risk, but a fault in it would then stop
+                          every code commit. The point holds at ten
+                          times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_overnight_only
+    guid_target:        opt_a004ff0c71e648dd8722ea07165f272b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

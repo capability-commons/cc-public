@@ -1,0 +1,74 @@
+id_self:                ann_hosted_ci_adds_a_runner_and_a_fetch_path
+guid_self:              ann_445d905952244758a9e931ba45ceb8e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Measuring points that exist already
+brief:                  |
+                        The pre-push gate and the daily review already
+                        exist, and the pre-push gate already runs the
+                        tests. Measuring there adds no new runner.
+                        Hosted CI adds a workflow, a place to publish
+                        evidence and a step that fetches it, and no CI
+                        runs today.
+description:            |
+                        Sources:
+                        - Also rests on a source stated once in
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          (no CI on the remote).
+                        - Also rests on a source stated once in
+                          ann_hosted_ci_makes_evidence_depend_on_a_service
+                          (a later check fetches CI evidence).
+                        - September's CI workflow pinned actions to
+                          commits and needed setup and caching steps
+                          of its own
+                          [origin/main:.github/workflows/gate.yml at
+                          steps].
+                        - The overnight only option measures at one
+                          point and has the gates record only results
+                          [_data/decision/dec_where_test_evidence_is_measured/opt_measure_overnight_only.yaml
+                          at brief].
+                        - The daily review runs at 03:00 UTC
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description].
+                        - ASSUMPTION: the daily review can run the
+                          tests without a new runner, as the push and
+                          overnight option has it run the slow tests,
+                          the property tests and the benchmarks.
+                          Strength: moderate. Overnight only measures
+                          at one point, one fewer than push and
+                          overnight. Both reuse points that exist.
+                          Hosted CI adds three mechanisms, which is
+                          the same at ten times the size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_test_evidence_is_measured
+    guid_target:        dec_6e4f860df85b4640b3ac87eb7f539170
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_overnight_only
+    guid_target:        opt_a004ff0c71e648dd8722ea07165f272b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
