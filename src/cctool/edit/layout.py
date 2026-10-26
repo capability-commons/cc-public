@@ -404,11 +404,13 @@ def dump(value: dict | list, indent: int) -> list[str]:
 # -----------------------------------------------------------------------------
 def _prose(key: str, value: typing.Any) -> typing.Any:
     """
-    Return value as a literal block if key names a prose field.
+    Return value as a literal block if key names a prose field and
+    value holds words. An empty value stays a plain scalar, since an
+    empty block reads back as a different value.
 
     """
 
-    if key in SET_KEY_PROSE and isinstance(value, str):
+    if key in SET_KEY_PROSE and isinstance(value, str) and value.strip():
         return ruamel.yaml.scalarstring.LiteralScalarString(value.rstrip('\n') + '\n')
     return value
 
@@ -605,7 +607,7 @@ def _emit_value(value:  typing.Any,
     # regex with spaces in it, and stays on its line however long it
     # runs, since breaking it would change it.
     #
-    if isinstance(value, ruamel.yaml.scalarstring.LiteralScalarString):
+    if isinstance(value, ruamel.yaml.scalarstring.LiteralScalarString) and value.strip():
         out.append(head.ljust(column) + ('|' if value.endswith('\n') else '|-'))
         out.extend(_body(value, max(COLUMN_VALUE, indent + INDENT_STEP)))
         return
