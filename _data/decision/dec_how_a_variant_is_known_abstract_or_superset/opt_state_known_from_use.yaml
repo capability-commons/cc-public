@@ -16,13 +16,20 @@ brief:                  |
                         option, is meant to run and must be complete:
                         every check holds on its
                         [[resolved dataflow graph]], so a forgotten or
-                        doubled edge fails there. Any other dataflow
-                        variant is only built on, and is checked only
-                        for what holds whatever its descendants add.
-                        Whether a built-on dataflow variant is
+                        doubled edge fails there. It stays so when
+                        other dataflow variants are built on it, so
+                        building a child on a member product does not
+                        relax the member product's checks. Any other
+                        dataflow variant is only built on: the checks
+                        that what a descendant adds cannot mend, such
+                        as an unknown port, a port type mismatch or a
+                        foreign node, hold on it, and the checks that
+                        it can, unfed input and input fed twice, do
+                        not. Whether a built-on dataflow variant is
                         abstract, superset or hybrid is derived from
                         its resolved dataflow graph when wanted, and
-                        never stored.
+                        never stored. A leaf that lacks a sink still
+                        counts as complete.
 description:            |
                         Proposed after WTP asked whether the state
                         needs declaring at all, since it becomes
@@ -30,7 +37,11 @@ description:            |
                         close to the derived option with a leaf rule
                         that the arguments on this decision named as
                         missing. relation_takes_option gives one of
-                        the uses.
+                        the uses. Reworded after the arguments on it
+                        (WTP, 2026-10-26): it now says that a dataflow
+                        variant meant to run stays so when built on,
+                        which checks hold on a built-on dataflow
+                        variant, and that a missing sink is not seen.
 
 edge:
 
