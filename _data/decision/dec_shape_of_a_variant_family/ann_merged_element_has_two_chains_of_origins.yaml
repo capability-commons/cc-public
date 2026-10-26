@@ -1,0 +1,78 @@
+id_self:                ann_merged_element_has_two_chains_of_origins
+guid_self:              ann_39cb28a1e8f1449ab868b9b933d928c9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merged element with two chains of origins
+brief:                  |
+                        After a merge an element held by both sides
+                        has two chains of origins, and an element
+                        brought in has the merge as the last
+                        [[variant operation]] that produced it, so a
+                        trace of the last producing operation names
+                        the merge and not the reason in the merged
+                        [[dataflow variant]]. The trace has to follow
+                        into the merged side's chain, which a single
+                        base never needs.
+description:            |
+                        Sources:
+                        - With one base every resolved element has a
+                          single chain of origins.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_one_chain_of_origins_per_resolved_element.yaml
+                          at brief)
+                        - One option traces the operation that last
+                          produced each part, another every operation
+                          that touched it.
+                          (_data/decision/dec_origin_trace_of_a_resolved_graph/opt_trace_of_the_last_producing_operation.yaml
+                          at brief;
+                          _data/decision/dec_origin_trace_of_a_resolved_graph/opt_trace_of_every_touching_operation.yaml
+                          at brief)
+                        - A merge is one more variant operation that
+                          brings a second dataflow variant in.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Traceability asks whether each element can
+                          be traced to the reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                          Strength: moderate; it grows with merges per
+                          variant, and falls away if the trace records
+                          every touching operation through both
+                          chains.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_single_base_per_variant
+    guid_target:        opt_5e41897c7add4276a224b85ade13e7d7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

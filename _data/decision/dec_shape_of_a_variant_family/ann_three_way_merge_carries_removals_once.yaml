@@ -1,0 +1,75 @@
+id_self:                ann_three_way_merge_carries_removals_once
+guid_self:              ann_f5691094f70640df8e375673fa2ea366
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Three-way merge that writes a shared removal once
+brief:                  |
+                        If the merge compares both sides with their
+                        common [[base]], a merged-in
+                        [[dataflow variant]] carries what it removed
+                        as well as what it added, so a choice that
+                        cuts across branches, such as no relay and no
+                        console, now removed by separate filters in
+                        three leaves, can be written once and merged.
+                        A merge that only adds or agrees cannot factor
+                        a removal, which included delta modules can.
+description:            |
+                        Sources:
+                        - Relay and console are removed by separate
+                          filters in the Legion, Orin tracks and Orin
+                          video drafts.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          at operation;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_tracks.yaml
+                          at operation;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_orin_video.yaml
+                          at operation)
+                        - A pure tree copies a cross-cutting choice
+                          into each leaf, and included delta modules
+                          hold it in one item.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_cross_cutting_features_copied_in_a_tree.yaml
+                          at brief)
+                        - git merge-base finds the common ancestor for
+                          a three-way merge.
+                          (https://code.googlesource.com/git/+/v1.6.1/Documentation/git-merge-base.txt)
+                        - The maintainability measure counts parts
+                          touched by a representative change.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure.1)
+                          Strength: moderate, and conditional: it
+                          holds only with a three-way rule the option
+                          does not yet state, and the three copies in
+                          Patrol are short.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

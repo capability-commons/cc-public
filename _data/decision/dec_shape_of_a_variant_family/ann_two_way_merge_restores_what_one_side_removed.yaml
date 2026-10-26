@@ -1,0 +1,93 @@
+id_self:                ann_two_way_merge_restores_what_one_side_removed
+guid_self:              ann_70da361109ab4065acb293c224ba892b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two-way merge that restores what one side removed
+brief:                  |
+                        The option does not say what a merge does with
+                        an element only one side holds, or against
+                        which common [[base]] it compares. Two
+                        [[dataflow variants]] of the Patrol base share
+                        its nodes, so a merge that takes the union
+                        would, merging a lab variant built on the base
+                        into Legion, bring back the second decoder and
+                        every node Legion's filter removed, which
+                        fails Legion's checks. A three-way merge
+                        against the nearest common base, as git's
+                        merge is, tells a removal from an addition.
+description:            |
+                        Sources:
+                        - A merge brings a second dataflow variant
+                          into the one being built, matching nodes,
+                          edges and list entries by their merge keys;
+                          most variants build on one base.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - The Patrol base holds 22 nodes for every
+                          platform and output mode, and Legion removes
+                          the L4T decoder, console, video out, tracks
+                          out, relay and remote command nodes by one
+                          filter.
+                          (_sources/cc-patrol-notes/draft/README.md#files;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_legion.yaml
+                          at operation)
+                        - A node the base declares keeps its id in
+                          every variant, so variants of one root share
+                          node ids.
+                          (_sources/cc-patrol-notes/variants.md#2-proposal-for-cc-public)
+                        - Both decoders feed the analysis branch in
+                          the base, the input-fed-twice fault of a
+                          superset graph.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          at dataflow_edge; src/cctool/check/check.lp
+                          within input_fed_twice)
+                        - git merge-base finds the best common
+                          ancestors of two commits to use in a
+                          three-way merge.
+                          (https://code.googlesource.com/git/+/v1.6.1/Documentation/git-merge-base.txt)
+                        - The earlier argument against several bases
+                          found that every node two bases share
+                          arrives twice.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_merged_bases_need_rules_not_yet_drafted.yaml
+                          at brief)
+                        - Functional suitability asks whether the
+                          design does anything it should not.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.3)
+                          Strength: strong as the option is worded; it
+                          falls away if the merge is defined three-way
+                          against the nearest common base, or limited
+                          to dataflow variants with no base in common.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

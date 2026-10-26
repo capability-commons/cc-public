@@ -1,0 +1,91 @@
+id_self:                ann_leaf_rule_blind_to_peers_that_build_on_it
+guid_self:              ann_40436d0d4f40405583c3f14238d58303
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Leaf rule blind to peers that build on a shared variant
+brief:                  |
+                        A [[dataflow variant]] that cc-public
+                        publishes for peers to build on, and that
+                        nothing in cc-public builds on, is a leaf
+                        there and must be complete, although its
+                        builders are in other repositories that
+                        cc-public does not consume and so cannot see.
+                        A shared superset [[base]] would then fail in
+                        its own repository. A flag or a declared state
+                        lets its author say what it is.
+description:            |
+                        Sources:
+                        - A dataflow variant that nothing builds on
+                          must be complete.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - References across federated repositories use
+                          segments with directional consumption, ruled
+                          but not yet built.
+                          (_data/decision/dec_references_across_instances/ruling_references_across_instances.yaml
+                          at brief)
+                        - Peers take cc-public as a versioned package.
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          at brief)
+                        - The flag and the declared state are written
+                          on the variant itself.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_built_on_flag_only.yaml
+                          at brief;
+                          _data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - A compatibility question asks whether a
+                          partner can read and use what the design
+                          produces. (_data/register/reg_concern.yaml
+                          at entries.concern_compatibility.question.0)
+                        - ASSUMPTION: a variant in a peer may name a
+                          cc-public variant as its base; no such
+                          variant exists. Strength: weak now, with one
+                          peer and no shared variant; moderate with
+                          several peers. It falls away if the rule
+                          counts a peer that builds on the variant,
+                          which needs a reference the publisher cannot
+                          see, or if a shared base keeps a child in
+                          its own repository.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_built_on_flag_only
+    guid_target:        opt_c4b581d8b40d4a3581a0ee6209d3d753
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89

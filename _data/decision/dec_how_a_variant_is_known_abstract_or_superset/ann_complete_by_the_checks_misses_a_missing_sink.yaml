@@ -1,0 +1,95 @@
+id_self:                ann_complete_by_the_checks_misses_a_missing_sink
+guid_self:              ann_a29473034f3f48b49be9298fdfafbd21
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Completeness by the checks that misses a missing sink
+brief:                  |
+                        The use rule holds a leaf complete when every
+                        check holds on its
+                        [[resolved dataflow graph]], but no check
+                        shows a missing sink, so a replay leaf that
+                        forgot its dump writer would pass and be run,
+                        and a built-on [[dataflow variant]] keeps no
+                        record of which block it lacks. A placeholder
+                        names the gap and its interface, and its fill
+                        can be checked.
+description:            |
+                        Sources:
+                        - A dataflow variant meant to run must be
+                          complete: every check holds on its resolved
+                          dataflow graph. The state of a built-on
+                          dataflow variant is derived when wanted, and
+                          never stored.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - No dataflow check reports an output that no
+                          edge reads; the unfed-input check looks only
+                          at inputs. (src/cctool/check/check.lp within
+                          unfed_input and edge_end)
+                        - The replay variant keeps analysis and adds a
+                          dump writer fed by its result.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          at operation)
+                        - A placeholder declares a block the base
+                          lacks, with the interface it must present.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_placeholders_declared_and_state_derived.yaml
+                          at brief)
+                        - A complete dataflow variant is neither
+                          abstract nor superset, which is wider than
+                          passing the checks.
+                          (_data/register/reg_concept.yaml at
+                          entries.concept_complete_dataflow_variant.brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present;
+                          traceability asks whether each need traces
+                          to what meets it.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1
+                          and entries.concern_traceability.question.1)
+                          Strength: moderate; it repeats against this
+                          option the fault the missing-sink annotation
+                          found in the unfed-ports option, and no
+                          Patrol item is in this state today.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_placeholders_declared_and_state_derived
+    guid_target:        opt_c9e3a08fb9934a55bc2ea65fca1164ce
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

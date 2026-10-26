@@ -1,0 +1,99 @@
+id_self:                ann_first_descendant_relaxes_checks_on_its_base
+guid_self:              ann_25c32f61238247ada04a7219bf6d6312
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First descendant that relaxes the checks on its base
+brief:                  |
+                        Building the first [[dataflow variant]] on a
+                        leaf that is meant to run, such as a lab
+                        variant on Legion, makes Legion only built on,
+                        so a doubled edge in it no longer fails,
+                        unless a [[dataflow run]] cites it or it takes
+                        an option. No dataflow run item exists yet and
+                        the edge that takes an option is optional, so
+                        today nothing would hold it. The reverse also
+                        holds: removing the three Orin leaves makes
+                        the Orin variant a leaf that fails four inputs
+                        fed twice.
+description:            |
+                        Sources:
+                        - A dataflow variant that nothing builds on,
+                          that a dataflow run cites, or that takes an
+                          option must be complete; any other is
+                          checked only for what holds whatever its
+                          descendants add.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - The shape of a dataflow run is an open
+                          decision with no ruling, and the type
+                          register has no run type.
+                          (_data/decision/dec_shape_of_a_dataflow_run/dec_shape_of_a_dataflow_run.yaml;
+                          _data/register/reg_data_item_type.yaml at
+                          entries)
+                        - relation_takes_option is optional, and where
+                          it is absent nothing is inferred.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_takes_option.description)
+                        - The Orin variant has three descendants and
+                          four inputs fed twice.
+                          (_sources/cc-patrol-notes/draft/README.md#files;
+                          _sources/cc-patrol-notes/draft/resolve_sketch.py
+                          within report, run 2026-10-25)
+                        - The declared state keeps a variant that
+                          declares neither state complete, whatever
+                          builds on it.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                          Strength: moderate to strong; it grows with
+                          variants of variants, since each new child
+                          changes what its parent is held to. It falls
+                          away once every member product takes an
+                          option or is cited by a run, and failing an
+                          orphaned superset base is arguably right.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_run
+    guid_target:        concept_d068df3fbf2240d19a060fde90d4405b

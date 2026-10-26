@@ -1,0 +1,91 @@
+id_self:                ann_use_rule_fails_a_broken_leaf_where_it_breaks
+guid_self:              ann_9ed7da24cd574cf09fd35cf4ceb90026
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Leaf rule that fails a broken leaf where it breaks
+brief:                  |
+                        Under the use rule a forgotten or doubled edge
+                        in a leaf, or a [[base]] edit that leaves a
+                        leaf with an unfed input, fails at that leaf,
+                        and which [[dataflow variants]] are run
+                        depends on the shape of the family and on runs
+                        and options, not on the content of a graph. So
+                        the two faults earlier annotations raised
+                        against the derived options, a leaf fault read
+                        as a state and a base edit that silently
+                        changes which descendants run, do not arise.
+description:            |
+                        Sources:
+                        - Every check holds on the resolved dataflow
+                          graph of a dataflow variant that nothing
+                          builds on, that a dataflow run cites or that
+                          takes an option, so a forgotten or doubled
+                          edge fails there.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - The earlier argument that a leaf fault is
+                          read as a state assumed the derived options
+                          add no rule that a variant nothing builds on
+                          must be complete, and rated itself weak if
+                          such a rule is added.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/ann_leaf_fault_taken_for_a_variant_state.yaml
+                          at description)
+                        - Under the derived options a base edit can
+                          change the state of variants that were not
+                          edited, and so which of them are checked and
+                          run, with no failure.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/ann_base_edit_silently_changes_leaf_states.yaml
+                          at brief)
+                        - The unfed-input and input-fed-twice checks
+                          fail these faults today.
+                          (src/cctool/check/check.lp within
+                          unfed_input and input_fed_twice)
+                        - Maintainability asks how far a change in one
+                          part spreads to others and how readily it
+                          can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1
+                          and
+                          entries.concern_maintainability.question.2)
+                          Strength: strong for leaves; it says nothing
+                          about a variant that is built on, whose own
+                          faults stay unchecked, see the annotation on
+                          a first descendant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

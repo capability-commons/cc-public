@@ -1,0 +1,77 @@
+id_self:                ann_merge_reuse_one_operation_for_a_partner
+guid_self:              ann_7f074ba3b49942039a0b5c45114ef935
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One merge operation for a partner instead of an include mechanism
+brief:                  |
+                        A partner that implements the closed core
+                        implements one more [[variant operation]], a
+                        keyed merge with preconditions, and reads
+                        every reusable piece as an ordinary
+                        [[dataflow variant]]; with the one reuse item
+                        it also reads a second item kind and expands
+                        it both inline and as an include. A keyed
+                        merge over the whole graph is, though, more to
+                        implement than the stock add, remove and
+                        replace of JSON Patch.
+description:            |
+                        Sources:
+                        - The core is closed, one of its operations is
+                          merge, and there is no separate reuse item.
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_merge_as_the_reuse_operation.yaml
+                          at brief)
+                        - The reuse item serves as a composite within
+                          a variant's own list and as a delta module
+                          that a variant includes.
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_one_reuse_item.yaml
+                          at brief)
+                        - A closed vocabulary is a format a partner
+                          can implement from its specification, as
+                          JSON Patch is.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_closed_vocabulary_a_partner_can_implement.yaml
+                          at brief)
+                        - Kustomize tracks a resource by its original
+                          id, and refuses a generated resource whose
+                          id a base already holds unless its behavior
+                          is merge or replace.
+                          (https://github.com/kubernetes-sigs/kustomize/issues/4829)
+                        - Compatibility asks what a partner must adopt
+                          to read and use what the design produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                          Strength: weak to moderate; both options are
+                          closed, so the difference is one item kind
+                          against one harder operation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_vocabulary_of_variant_operations
+    guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_closed_core_with_merge_as_the_reuse_operation
+    guid_target:        opt_45484fbff1a54e7fb50f503fce6e4880
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

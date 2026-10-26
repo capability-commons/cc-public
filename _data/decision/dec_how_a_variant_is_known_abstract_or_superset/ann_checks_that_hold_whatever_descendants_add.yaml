@@ -1,0 +1,79 @@
+id_self:                ann_checks_that_hold_whatever_descendants_add
+guid_self:              ann_ba4759d1265e4e5f9ffa087c1959c4e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Set of checks that hold whatever descendants add
+brief:                  |
+                        A built-on [[dataflow variant]] is checked
+                        only for what holds whatever its descendants
+                        add, but no list of such checks exists. Read
+                        as additions only, an input fed twice stays
+                        fed twice, so the Patrol base and the Orin
+                        variant would fail; read as any edit, a
+                        descendant can remove whatever fails, so no
+                        dataflow check holds. Either way someone must
+                        name, check by check, which ones run on a
+                        built-on variant.
+description:            |
+                        Sources:
+                        - Any other dataflow variant is only built on,
+                          and is checked only for what holds whatever
+                          its descendants add.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - The input-fed-twice check fails an input fed
+                          by more than one edge.
+                          (src/cctool/check/check.lp within
+                          input_fed_twice) Both Patrol graphs that are
+                          built on have inputs fed twice.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          within report, run 2026-10-25)
+                        - Descendants remove nodes and edges by
+                          filter.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin_tracks.yaml
+                          at operation)
+                        - The Patrol notes name the choice as
+                          exempting the base from input_fed_twice and
+                          similar checks, or flagging it.
+                          (_sources/cc-patrol-notes/variants.md#3-patrol-with-this-mechanism)
+                        - Simplicity counts distinct mechanisms
+                          introduced. (_data/register/reg_concern.yaml
+                          at entries.concern_simplicity.measure.0)
+                          Strength: moderate; the list is small and
+                          fixed, and the derived and placeholder
+                          options need the same list for the variants
+                          they find incomplete. It weighs against the
+                          claim that the use rule adds nothing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

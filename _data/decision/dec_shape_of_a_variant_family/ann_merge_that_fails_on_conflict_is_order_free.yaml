@@ -1,0 +1,106 @@
+id_self:                ann_merge_that_fails_on_conflict_is_order_free
+guid_self:              ann_15ca756682984df18a0b39deeb3bd404
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge that fails on conflict, and so does not depend on order
+brief:                  |
+                        Since two sides that give one key different
+                        values fail the merge instead of the later one
+                        winning, a merge that succeeds gives the same
+                        graph whichever [[dataflow variant]] is merged
+                        into which, the commutativity the model
+                        merging literature asks of a merge.
+                        Delta-oriented programming gets the same
+                        result by requiring unordered delta modules to
+                        be compatible. Included delta modules applied
+                        in a stated order let the order decide
+                        instead.
+description:            |
+                        Sources:
+                        - Where both sides give one key different
+                          values, the merge's preconditions fail
+                          unless an earlier operation settles it.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Brunet et al. list commutativity,
+                          associativity and idempotency among the
+                          ideal properties of a merge, and a merge
+                          takes a relationship between the models,
+                          which here the merge keys give. (Brunet,
+                          Chechik, Easterbrook, Nejati, Niu and
+                          Sabetzadeh, A manifesto for model merging,
+                          GaMMa 2006,
+                          https://homepages.uc.edu/~niunn/papers/GAMMA06.pdf)
+                        - In delta-oriented programming, delta modules
+                          not ordered by after clauses must be
+                          compatible, no class added or removed in
+                          more than one, and the partial order ensures
+                          that all compatible application orders
+                          generate the same product. (Schaefer,
+                          Bettini, Bono, Damiani and Tanzarella,
+                          Delta-oriented programming of software
+                          product lines, SPLC 2010,
+                          https://iris.unito.it/bitstream/2318/79356/1/main.pdf)
+                        - FeatureHouse superimposes trees by merging
+                          nodes identified by name and type, composes
+                          terminal nodes by rules for each language,
+                          and notes that the order of elements can
+                          matter. (Apel, Kastner and Lengauer,
+                          FeatureHouse, ICSE 2009,
+                          https://www.se.cs.uni-saarland.de/publications/docs/ICSE2009fh.pdf)
+                        - Included delta modules make the resolved
+                          graph depend on the order of inclusion where
+                          two touch one key.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_inclusion_order_as_a_new_source_of_faults.yaml
+                          at brief)
+                        - Functional suitability asks whether each
+                          function gives the right result;
+                          maintainability asks how readily a change
+                          can be checked.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0
+                          and
+                          entries.concern_maintainability.question.2)
+                          Strength: moderate to strong; the merge
+                          still sits at a place in an ordered list, so
+                          it is order free only with respect to its
+                          two sides, and only if an element held by
+                          one side is treated alike from either side.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_single_base_with_included_delta_modules
+    guid_target:        opt_02300d0e12254475a41b3185faf6e831
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

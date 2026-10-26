@@ -1,0 +1,71 @@
+id_self:                ann_edit_to_a_merged_variant_reaches_every_merger
+guid_self:              ann_8d583c3bb0ad4c14a74ec2befb5a9fcc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edit to a merged variant that reaches every variant that merges it
+brief:                  |
+                        An edit to a [[dataflow variant]] that others
+                        merge reaches each of them and their
+                        descendants, as a [[base]] edit does, so a
+                        variant gains a second kind of dependent
+                        beside its children. Additions that conflict
+                        with nothing arrive silently, and only a
+                        conflict fails, at the merge.
+description:            |
+                        Sources:
+                        - A variant family is a directed acyclic graph
+                          of dataflow variants, each built from the
+                          dataflow variants it names.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Including built-on variants gives one
+                          variant children and includers, so an edit
+                          for its children also changes every
+                          includer.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_family_built_on_variant_as_parent_and_mixin.yaml
+                          at brief)
+                        - A base edit can change variants that were
+                          not edited with no failure.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/ann_base_edit_silently_changes_leaf_states.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                          Strength: moderate; the spread is the point
+                          of reuse, and the checks on each variant
+                          meant to run catch a spread that breaks it.
+                          It grows with merges.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89

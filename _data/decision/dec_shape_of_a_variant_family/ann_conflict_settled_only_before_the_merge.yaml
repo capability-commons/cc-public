@@ -1,0 +1,67 @@
+id_self:                ann_conflict_settled_only_before_the_merge
+guid_self:              ann_c6d193254a4946dc816f3cadfd92c0d6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Conflict that only an operation before the merge can settle
+brief:                  |
+                        A conflict is settled only by an operation
+                        earlier in the [[operation list]], so to keep
+                        a value of its own against a merged-in one a
+                        dataflow variant must first write its side to
+                        the incoming value, merge, then write its own
+                        value back; a write after the merge comes too
+                        late. Delta-oriented programming settles such
+                        a clash by order or by a further delta module,
+                        after the fact.
+description:            |
+                        Sources:
+                        - The merge's preconditions fail unless an
+                          earlier operation in the list settles it.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - In delta-oriented programming conflicts on
+                          one class are resolved by the ordering, or
+                          prohibited at the price of writing further
+                          delta modules for the combinations.
+                          (Schaefer et al., SPLC 2010,
+                          https://iris.unito.it/bitstream/2318/79356/1/main.pdf)
+                        - Maintainability asks how readily a newcomer
+                          can understand the design.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.0)
+                        - ASSUMPTION: settling means making the two
+                          sides agree, by a write or a removal on the
+                          receiving side; the option does not say.
+                          Strength: weak to moderate; the extra write
+                          is short, but its only reason is to let the
+                          merge pass, which a reader must know. It
+                          falls away if a merge may name the keys on
+                          which its receiving side wins.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_operation_list
+    guid_target:        concept_3c1495849d7646259842a9be105d1660

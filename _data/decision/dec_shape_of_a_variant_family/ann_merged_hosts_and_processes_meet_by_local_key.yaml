@@ -1,0 +1,77 @@
+id_self:                ann_merged_hosts_and_processes_meet_by_local_key
+guid_self:              ann_d760f0840455461b9b145cbaad3dd8b9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hosts and OS processes of two merged systems that meet by local key
+brief:                  |
+                        Dataflow node ids are qualified by the item
+                        that declares them, so two systems of
+                        different roots never match a node by
+                        accident. Hosts and OS processes are keyed
+                        only by short local names, such as station and
+                        main in Patrol, so a second system merged in
+                        that also has a host named station shares it
+                        when the hostnames agree and fails when they
+                        differ, and the merge cannot tell a meant
+                        share from a clash of names.
+description:            |
+                        Sources:
+                        - A trait model, or a second system to
+                          integrate, is a dataflow variant merged in,
+                          matching by merge keys.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Hosts and OS processes are keyed by a short
+                          local name.
+                          (_data/schema/sch_dataflow_graph.yaml at
+                          allOf.2.properties.host.description and
+                          allOf.2.properties.os_process.description)
+                        - Patrol names its host station and its OS
+                          process main; the smoke test names localhost
+                          and main_process.
+                          (_sources/cc-patrol-notes/draft/dfg_patrol.yaml
+                          at host and os_process;
+                          _data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          at host and os_process)
+                        - A node keeps the id its declaring item gives
+                          it, and a node a variant adds is named after
+                          the variant.
+                          (_sources/cc-patrol-notes/variants.md#2-proposal-for-cc-public;
+                          _sources/cc-patrol-notes/draft/dfv_patrol_replay.yaml
+                          at operation)
+                        - Compatibility asks whether the design can
+                          read and use what a partner produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.1)
+                          Strength: moderate; it is fixed by
+                          qualifying hosts and OS processes by their
+                          graph, or by a rename in the merge, either
+                          of which the option does not yet state.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_shape_of_a_variant_family
+    guid_target:        dec_248ca134716c41ff92b8594480e6de83
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_as_a_graph_of_edits_with_merge
+    guid_target:        opt_e3aeda6a995545aca4aedba5139a1ed9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
