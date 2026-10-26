@@ -115,9 +115,9 @@ COUNT_VIOLATION   = 4096
 #
 KIND_STORE        = 'layout'
 
-YAML              = ruamel.yaml.YAML(typ = 'rt')
-YAML.width        = 10 ** 9        # a scalar is never folded across lines
-YAML.preserve_quotes = True
+# A scalar is never folded across lines.
+#
+YAML              = cctool.graph.extract.Yaml('rt', width = 10 ** 9, preserve_quotes = True)
 
 Map               = ruamel.yaml.comments.CommentedMap
 Seq               = ruamel.yaml.comments.CommentedSeq

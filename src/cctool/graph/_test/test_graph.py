@@ -26,6 +26,7 @@ edge:                   []
 
 
 import sqlite3
+import threading
 
 import pytest
 
@@ -264,3 +265,15 @@ def test_a_cited_part_is_not_read_as_a_mention_of_an_item():
                                               'and member_gone.'}
     facts    = cctool.graph.extract.facts_of({'_data/item.yaml': (document, 1)})
     assert {row[1] for row in facts['mention'] if row[0] == 'item_x'} == {'member_gone'}
+
+
+# -----------------------------------------------------------------------------
+def test_each_thread_reads_yaml_with_a_loader_of_its_own():
+    yaml        = cctool.graph.extract.Yaml('rt', width = 7)
+    list_yaml   = []
+    thread      = threading.Thread(target = lambda: list_yaml.append(yaml.instance()))
+    thread.start()
+    thread.join()
+    assert list_yaml[0] is not yaml.instance()
+    assert list_yaml[0].width == yaml.instance().width == 7
+    assert yaml.load('key: value') == {'key': 'value'}

@@ -179,7 +179,7 @@ REGEX_SPELLING    = re.compile(r'^(\s*(?:- )?spelling:\s+)(.*)$', re.MULTILINE)
 # that a move carries along. None removes the file.
 #
 Edit              = dict[str, str | bytes | None]
-YAML              = ruamel.yaml.YAML(typ = 'rt')
+YAML              = cctool.graph.extract.Yaml('rt')
 
 
 # -----------------------------------------------------------------------------
