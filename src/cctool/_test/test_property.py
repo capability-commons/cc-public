@@ -54,6 +54,7 @@ import ruamel.yaml
 
 import cctool.check.citation
 import cctool.cli.command
+import cctool.commit.message
 import cctool.conftest
 import cctool.edit.edit
 import cctool.edit.layout
@@ -218,17 +219,13 @@ def test_a_file_of_any_text_is_read_or_reported_unreadable(tmp_path, text, suffi
                       r'(Add|Remove|Fix [a-z ]{1,20} so that) [^ \n][^\n]{0,40}[^.\n]',
                       fullmatch = True),
                   brief = TEXT.filter(str.strip))
-def test_a_message_that_message_new_prints_passes_message_check(tmp_path, title, brief):
+def test_a_message_that_message_new_prints_passes_message_check(title, brief):
     runner = click.testing.CliRunner()
     result = runner.invoke(cctool.cli.command.main,
                            ['message', 'new', title, '--brief', brief,
                             '--root', str(DIR_REPO)])
     hypothesis.assume(result.exit_code == 0)
-    path   = tmp_path / 'COMMIT_EDITMSG'
-    path.write_text(result.stdout, encoding = 'utf-8')
-    result = runner.invoke(cctool.cli.command.main,
-                           ['message', 'check', str(path), '--root', str(DIR_REPO)])
-    assert result.exit_code == 0, result.output
+    assert cctool.commit.message.violations(DIR_REPO, result.stdout) == []
 
 
 # -----------------------------------------------------------------------------
