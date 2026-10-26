@@ -14,26 +14,37 @@ brief:                  |
                         graph of [[dataflow variants]], each built by
                         its [[operation list]] from the dataflow
                         variants it names; most build on one [[base]].
-                        A merge is one more [[variant operation]],
-                        which brings a second dataflow variant into
-                        the one being built, matching nodes, edges and
-                        list entries by their merge keys. Where both
-                        sides give one key different values, the
-                        merge's preconditions fail unless an earlier
-                        operation in the list settles it. A trait
-                        model, or a second system to integrate, is a
-                        dataflow variant merged in.
+                        A merge is one more [[variant operation]], and
+                        an atomic one: it selects two or more dataflow
+                        variants to combine, which need share no
+                        element and no common base, and carries the
+                        commands that join edges between them in the
+                        combined graph. No three-way merge against a
+                        common base is made. Where the merged dataflow
+                        variants conflict, as when two of them use the
+                        same port of the same node, a rule says which
+                        wins. A trait model, or a second system to
+                        integrate, is a dataflow variant merged in.
 description:            |
                         WTP leaned to several bases merged, with a
                         merge as one more operation in the graph of
                         edits (WTP, 2026-10-25), then asked for a
                         variant family as a directed acyclic graph,
                         with a merge as one more operation in a family
-                        of edits (WTP, 2026-10-25). It rests on the
-                        rulings that every variant operation states
-                        its preconditions, that a dataflow edge is
-                        identified by its ends, and that every list of
-                        the graph schema declares a merge key.
+                        of edits (WTP, 2026-10-25). When upholding it,
+                        WTP made the merge an atomic operation that
+                        selects the models to merge and carries the
+                        commands that join edges between them, so that
+                        graphs with no common element can be merged
+                        without a three-way merge against a common
+                        base; the rules for conflicts, such as two
+                        upstream models using the same port of the
+                        same node, are to be worked through during
+                        implementation (WTP, 2026-10-26). It rests on
+                        the rulings that every variant operation
+                        states its preconditions, that a dataflow edge
+                        is identified by its ends, and that every list
+                        of the graph schema declares a merge key.
 
 edge:
 
