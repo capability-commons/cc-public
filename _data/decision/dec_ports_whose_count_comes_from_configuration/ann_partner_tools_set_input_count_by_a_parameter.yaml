@@ -1,0 +1,69 @@
+id_self:                ann_partner_tools_set_input_count_by_a_parameter
+guid_self:              ann_13577e4c676c4884b3b30a78dd63c079
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partner tools that set an input count by a parameter
+brief:                  |
+                        Simulink's Mux block takes its number of
+                        inputs as a parameter, Houdini's Merge node
+                        takes up to 9999 inputs, and GStreamer's
+                        funnel makes sink pads on request from one
+                        template. Each is one node kind whose input
+                        count is set per use, which port groups match.
+                        FMI 3.0 sizes array variables by structural
+                        parameters, which matches the collection form
+                        of fixed ports instead.
+description:            |
+                        Sources:
+                        - The Mux block's Number of inputs is a
+                          scalar, vector, cell array or list of signal
+                          names, and its inputs are numbered by
+                          position.
+                          (https://www.mathworks.com/help/simulink/slref/mux.html)
+                        - Houdini's Merge node merges a maximum of
+                          9999 inputs.
+                          (https://www.sidefx.com/docs/houdini/nodes/sop/merge.html)
+                        - GStreamer's funnel has a sink_%u pad
+                          template whose presence is request.
+                          (https://gstreamer.freedesktop.org/documentation/coreelements/funnel.html)
+                        - FMI 3.0 adds structural parameters that
+                          describe and change array sizes.
+                          (https://fmi-standard.org/docs/3.0/)
+                        - The Patrol notes read a fan-out as an
+                          implied GStreamer tee, and mark appsink and
+                          appsrc adapters between runtimes.
+                          (_sources/cc-patrol-notes/drawing-lessons.md#7-ports-fan-out-and-fan-in;
+                          _sources/cc-patrol-notes/drawing-lessons.md#6-edge-kind-and-policy-as-line-style)
+                        - Assumption: graphs will be exchanged with
+                          tools of these kinds, of which only
+                          GStreamer is in the Patrol drafts. Strength:
+                          moderate; it holds for import and export,
+                          not for the engine.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_ports_whose_count_comes_from_configuration
+    guid_target:        dec_e30323547dfc43de89538fb765f82de2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_groups_sharing_a_type
+    guid_target:        opt_33f2318696684a6e8205d57280b27c55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_ports_only
+    guid_target:        opt_17da717c7588490383c1b08f6d9474b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

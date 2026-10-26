@@ -1,0 +1,71 @@
+id_self:                ann_port_groups_reach_into_three_checks
+guid_self:              ann_00f5f04d464d459899bb3720ab7218bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Port groups that reach into three checks and a new decision
+brief:                  |
+                        Port groups add a construct to the interface
+                        schema, a count to the configuration of each
+                        node, and a way to name each member. The
+                        checks of unknown ports, unfed inputs and port
+                        types must then read members as well as
+                        declared ports. Fixed ports add nothing, and
+                        the many-edges option changes only the rule
+                        that an input is fed once.
+description:            |
+                        Sources:
+                        - A port has a type and may be optional, and
+                          has no field for a group or a count.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.port)
+                        - The checks of unknown ports and unfed inputs
+                          read the ports of the interface a node
+                          presents, and the port type check reads the
+                          types those ports state.
+                          (src/cctool/check/check.lp within
+                          unknown_port, unfed_input and
+                          port_type_mismatch)
+                        - An input takes its value from at most one
+                          edge. (src/cctool/check/check.lp within
+                          input_fed_twice)
+                        - Naming the ports of a group is a decision of
+                          its own.
+                          (_data/decision/dec_naming_of_ports_in_a_group/dec_naming_of_ports_in_a_group.yaml
+                          at brief)
+                        - Simplicity counts the distinct mechanisms a
+                          design introduces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0)
+                        - Assumption: the many-edges option needs an
+                          ordering rule as well, which adds to its
+                          count. Strength: moderate; the cost is paid
+                          once and does not grow with the number of
+                          graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_ports_whose_count_comes_from_configuration
+    guid_target:        dec_e30323547dfc43de89538fb765f82de2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_port_groups_sharing_a_type
+    guid_target:        opt_33f2318696684a6e8205d57280b27c55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_ports_only
+    guid_target:        opt_17da717c7588490383c1b08f6d9474b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

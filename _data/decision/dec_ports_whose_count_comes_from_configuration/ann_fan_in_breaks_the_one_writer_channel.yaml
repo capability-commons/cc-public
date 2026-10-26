@@ -1,0 +1,70 @@
+id_self:                ann_fan_in_breaks_the_one_writer_channel
+guid_self:              ann_7d288d6f7ea84c12b172ca7dcecf6032
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fan-in against the one-writer channel of a Kahn network
+brief:                  |
+                        In a Kahn process network each channel has one
+                        writer and one reader, and that is what makes
+                        the result independent of timing. Several
+                        edges into one input make one channel with
+                        many writers, so the order in which the node
+                        sees their tokens must be fixed by a rule.
+                        Edges are identified by their ends, not by
+                        their place in a list, so the stated order
+                        needs a key or a sort that the option does not
+                        give.
+description:            |
+                        Sources:
+                        - "A FIFO cannot be consumed by multiple
+                          processes, nor can multiple processes write
+                          to a single FIFO", and timing or execution
+                          order must not affect the result.
+                          (https://en.wikipedia.org/wiki/Kahn_process_networks)
+                        - The option hands the node all the tokens
+                          that arrived on the port at a step, in a
+                          stated order.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/opt_many_edges_on_one_input_port.yaml
+                          at brief)
+                        - A dataflow edge is identified by its two
+                          ends.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - Every list of the graph schema declares a
+                          merge key.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/ruling_merge_key_declared_for_every_list.yaml
+                          at brief)
+                        - Assumption: a sort by the ids of the source
+                          ends would give a stated order, but one that
+                          changes when a node is renamed. Strength:
+                          strong for determinism within a step; it
+                          does not apply to nodes that treat their
+                          inputs as a set.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_ports_whose_count_comes_from_configuration
+    guid_target:        dec_e30323547dfc43de89538fb765f82de2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_many_edges_on_one_input_port
+    guid_target:        opt_bbfbaabe094549269f4081014d71b2d2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_groups_sharing_a_type
+    guid_target:        opt_33f2318696684a6e8205d57280b27c55
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

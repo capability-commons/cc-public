@@ -1,0 +1,71 @@
+id_self:                ann_first_value_chosen_per_use_not_per_type
+guid_self:              ann_1f8b0b37f93f49f0a73762aac672487e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First values chosen per use, not per type
+brief:                  |
+                        Dataflow tools that give a type-wide initial
+                        value also let the user set one for a
+                        particular delay, which suggests that one
+                        default per type is not enough for every loop.
+                        The dictionary option gives one default per
+                        type wherever it is used. The port and edge
+                        options let the value differ between uses.
+description:            |
+                        Sources:
+                        - In the SDF domain of Ptolemy, "a delay with
+                          parameter equal to one is simply an initial
+                          particle on an arc"; "for most particle
+                          types, the initial value of a delay will be
+                          zero"; "Initializable delays allow the user
+                          to give values to the initial particles
+                          placed in the buffer."
+                          (https://ptolemy.berkeley.edu/papers/almagest/docs/user/pdf/sdf.pdf)
+                        - The Initial condition parameter of the
+                          Simulink Unit Delay block gives the output
+                          for the first sampling period, and is 0 by
+                          default.
+                          (https://www.mathworks.com/help/simulink/slref/unitdelay.html)
+                        - The dictionary option gives a type the same
+                          default wherever it is used.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_the_data_dictionary.yaml
+                          at brief)
+                        - Assumption: some types, such as a frame from
+                          a camera or a handle to a resource, have no
+                          value that would be right as a first value
+                          everywhere. Strength: moderate; the
+                          dictionary default could serve as a fallback
+                          beneath a port or edge value.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_default_values_on_feedback_edges
+    guid_target:        dec_9f9339a2bf554dd08963c1a42265c0fe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_from_the_data_dictionary
+    guid_target:        opt_2d6814068cb9490686eac58491a983e1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_from_a_port_that_declares_it
+    guid_target:        opt_b569736049b14509bbd3874fc3ab6339
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_value_written_on_the_edge
+    guid_target:        opt_c6534977c25f46598ec8ee0ee395cd9b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

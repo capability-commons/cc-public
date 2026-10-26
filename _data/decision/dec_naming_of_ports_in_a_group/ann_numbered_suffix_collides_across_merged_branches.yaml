@@ -1,0 +1,75 @@
+id_self:                ann_numbered_suffix_collides_across_merged_branches
+guid_self:              ann_3cacd9f29e6141ac86154f7fd3ce4a5f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Numbered suffixes that collide across merged branches
+brief:                  |
+                        Two branches of a graph of edits that each add
+                        a port to one group pick the next free number
+                        independently, and pick the same one, so the
+                        merge meets a conflict that no author made.
+                        Numbers that are never reused need the highest
+                        number ever given, but a resolved graph is
+                        derived and never stored, so nothing holds it.
+                        A key chosen by an author, or a name taken
+                        from the edge, gives two different additions
+                        two different names.
+description:            |
+                        Sources:
+                        - A variant family is a graph of edits, and a
+                          merge selects the dataflow variants to
+                          merge; which side wins a conflict, such as
+                          two upstream variants using the same port of
+                          the same node, is to be worked out.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          at brief)
+                        - Numbers are given when a port is added and
+                          are not reused.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_name_with_a_numbered_suffix.yaml
+                          at brief)
+                        - Assumption: each branch gives numbers from
+                          what its own base holds, since nothing
+                          shared counts them. Strength: strong; it
+                          grows with the number of branches that touch
+                          one group.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_name_with_a_numbered_suffix
+    guid_target:        opt_310c0acc18804f2e8fa029695ea8e3c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

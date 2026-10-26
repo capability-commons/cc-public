@@ -1,0 +1,75 @@
+id_self:                ann_port_default_rule_already_ruled_for_slots
+guid_self:              ann_d723e28eae8d41a89b0b793002d769ba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Port rule already ruled for slots
+brief:                  |
+                        The ruling on crossing between static and
+                        dynamic subgraphs already rests on ports that
+                        declare whether they can supply a default, and
+                        lets a slot inherit that ability from the
+                        ports it joins. The port option adds no
+                        mechanism beyond what that ruling needs. The
+                        edge and dictionary options have nodes declare
+                        nothing, so the slot ruling would need a
+                        second source of first values, or rewording.
+description:            |
+                        Sources:
+                        - The ruling gives slots an optional default
+                          and states that each node declares, for each
+                          port, whether it can supply a default, and
+                          that a slot inherits that ability from the
+                          ports it joins.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ruling_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - The edge option and the dictionary option
+                          both say that nodes declare nothing about
+                          defaults.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_value_written_on_the_edge.yaml
+                          at brief;
+                          _data/decision/dec_default_values_on_feedback_edges/opt_default_from_the_data_dictionary.yaml
+                          at brief)
+                        - Simplicity asks whether a design follows
+                          from decisions already made.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.2)
+                        - Assumption: a slot could also take its first
+                          value from an edge or a dictionary entry, so
+                          the conflict is one of wording and of a
+                          second mechanism, not of possibility.
+                          Strength: strong while the slot ruling
+                          stands; it does not grow or shrink with the
+                          number of graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_default_values_on_feedback_edges
+    guid_target:        dec_9f9339a2bf554dd08963c1a42265c0fe
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_from_a_port_that_declares_it
+    guid_target:        opt_b569736049b14509bbd3874fc3ab6339
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_value_written_on_the_edge
+    guid_target:        opt_c6534977c25f46598ec8ee0ee395cd9b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_from_the_data_dictionary
+    guid_target:        opt_2d6814068cb9490686eac58491a983e1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

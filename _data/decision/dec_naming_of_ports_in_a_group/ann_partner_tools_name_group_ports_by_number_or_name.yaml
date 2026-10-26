@@ -1,0 +1,68 @@
+id_self:                ann_partner_tools_name_group_ports_by_number_or_name
+guid_self:              ann_04f817a5cd47447b915e2a94f56421cb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partner tools that name group ports by number or by name
+brief:                  |
+                        GStreamer names request pads from a template
+                        with a number, as in sink_%u, and Simulink's
+                        Mux numbers its inputs by position or takes a
+                        list of signal names. A numbered suffix maps
+                        to both, and a key maps to the named form of
+                        the Mux. A port named by its edge has no
+                        counterpart, and gets a number or a name on
+                        export.
+description:            |
+                        Sources:
+                        - GStreamer's funnel has a sink_%u pad
+                          template whose presence is request.
+                          (https://gstreamer.freedesktop.org/documentation/coreelements/funnel.html)
+                        - The Mux block's Number of inputs may be a
+                          list of signal names; with a scalar, each
+                          input is named signalN, N being its port
+                          number.
+                          (https://www.mathworks.com/help/simulink/slref/mux.html)
+                        - The Patrol notes read a fan-out as an
+                          implied GStreamer tee.
+                          (_sources/cc-patrol-notes/drawing-lessons.md#7-ports-fan-out-and-fan-in)
+                        - In Stableflow a port in a group was named by
+                          the group's name with a numbered suffix.
+                          (_data/decision/dec_naming_of_ports_in_a_group/dec_naming_of_ports_in_a_group.yaml
+                          at description)
+                        - Assumption: a name made on export need not
+                          be stable for import to work. Strength: weak
+                          to moderate; export can always number the
+                          ports, so the gap is in round trips.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_name_with_a_numbered_suffix
+    guid_target:        opt_310c0acc18804f2e8fa029695ea8e3c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

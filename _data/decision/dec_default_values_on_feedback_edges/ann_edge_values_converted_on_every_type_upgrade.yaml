@@ -1,0 +1,74 @@
+id_self:                ann_edge_values_converted_on_every_type_upgrade
+guid_self:              ann_b313d663474e4b71b8108ed1c1180637
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edge values to convert on every type upgrade
+brief:                  |
+                        A value written on a feedback edge is data of
+                        one version of a type, so every upgrade of
+                        that type must convert each such value in
+                        every graph and variant operation that writes
+                        one. Under the dictionary option the default
+                        sits in the entry beside the upgrade mapping,
+                        and under the port option it sits in node code
+                        built against the type. An edge split by a
+                        transform also has to say which half keeps the
+                        value.
+description:            |
+                        Sources:
+                        - Each type is a dictionary item with a
+                          version; a new version maps each field as
+                          kept, renamed, converted, or new with a
+                          default.
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml
+                          at brief)
+                        - Port types name entries of data
+                          dictionaries.
+                          (_data/decision/dec_port_types/ruling_port_types_from_data_dictionaries.yaml
+                          at brief)
+                        - The edge option writes the first value in
+                          the configuration of each feedback edge.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_value_written_on_the_edge.yaml
+                          at brief)
+                        - Insert-on-edge and edge-policy lowering
+                          split an edge in two.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_split_edge_plain_by_ends_open_for_a_key.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                        - Assumption: the upgrade mapping can be
+                          applied to a literal value as it is to a
+                          token, so the cost is in finding every
+                          literal, not in converting it. Strength:
+                          moderate; it grows with the number of
+                          feedback edges and of type versions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_default_values_on_feedback_edges
+    guid_target:        dec_9f9339a2bf554dd08963c1a42265c0fe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_value_written_on_the_edge
+    guid_target:        opt_c6534977c25f46598ec8ee0ee395cd9b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_from_the_data_dictionary
+    guid_target:        opt_2d6814068cb9490686eac58491a983e1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

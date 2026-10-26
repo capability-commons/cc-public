@@ -1,0 +1,67 @@
+id_self:                ann_group_member_with_no_interface_member_to_name
+guid_self:              ann_7950513587184e33ae9b2fece843b07c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Group members with no interface member for an edge end to name
+brief:                  |
+                        An end of a dataflow edge names a port by the
+                        id and guid of a member of the interface
+                        control document, so every end traces to a
+                        declared member. A port group declares one
+                        member for the group, and its ports exist only
+                        in the configuration of each node, so an end
+                        at one of them has no member of its own to
+                        name. Under fixed ports every end names a
+                        declared member, as today.
+description:            |
+                        Sources:
+                        - An end names a dataflow node and a port of
+                          the interface the node presents, by id and
+                          guid. (_data/schema/sch_dataflow_graph.yaml
+                          at $defs.end.properties.id_port and
+                          description)
+                        - A port is an interface member, with an
+                          identity that lets a requirement name one
+                          declaration.
+                          (_data/schema/sch_interface_member.yaml at
+                          description)
+                        - A check fails an end that names no port of
+                          the node's interface.
+                          (src/cctool/check/check.lp within
+                          unknown_port)
+                        - The number of ports in a group is set by the
+                          configuration of each dataflow node.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/opt_port_groups_sharing_a_type.yaml
+                          at brief)
+                        - Assumption: the naming decision can give
+                          group members an identity, which would
+                          answer this; it is open. Strength: strong
+                          until that decision is made.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_ports_whose_count_comes_from_configuration
+    guid_target:        dec_e30323547dfc43de89538fb765f82de2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_port_groups_sharing_a_type
+    guid_target:        opt_33f2318696684a6e8205d57280b27c55
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_ports_only
+    guid_target:        opt_17da717c7588490383c1b08f6d9474b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

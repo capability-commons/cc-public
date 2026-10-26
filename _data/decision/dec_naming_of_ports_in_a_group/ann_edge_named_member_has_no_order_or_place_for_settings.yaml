@@ -1,0 +1,65 @@
+id_self:                ann_edge_named_member_has_no_order_or_place_for_settings
+guid_self:              ann_9b4265abdf244905a7aa00d98f9d236f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Members named by edges, with no order and no place for settings
+brief:                  |
+                        A node implementation sees its inputs in a
+                        slot order, and a merge or a logger may depend
+                        on it, but members named by their edges have
+                        no stated order. They also have no place for a
+                        setting of one member, such as a label for a
+                        logged input, and cannot exist unfed. A key
+                        list gives the order and a place for such
+                        settings.
+description:            |
+                        Sources:
+                        - On the engine, the slot order is the order
+                          the inputs and outputs are listed in the
+                          component's spec.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - Under the key option, the order of the list
+                          is the order the node implementation sees.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_named_by_a_key.yaml
+                          at brief)
+                        - The edge option gives a port in a group no
+                          name of its own.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_named_by_its_edge.yaml
+                          at brief)
+                        - Which side wins a conflict in a merge is to
+                          be worked out.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Assumption: some group nodes depend on the
+                          order of their inputs, as a merge that
+                          settles conflicts by order would. Strength:
+                          moderate; a node that treats its inputs as a
+                          set loses nothing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

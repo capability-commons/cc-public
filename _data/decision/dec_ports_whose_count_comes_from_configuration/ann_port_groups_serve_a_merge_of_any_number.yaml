@@ -1,0 +1,73 @@
+id_self:                ann_port_groups_serve_a_merge_of_any_number
+guid_self:              ann_b27fa368dd1f4591bf38ac7a84585d68
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge and logger nodes with any number of inputs
+brief:                  |
+                        The ruled variant family merges any number of
+                        dataflow variants, and a logger may take any
+                        number of inputs, but a dataflow step reads a
+                        fixed set of inputs, so neither fits fixed
+                        ports. Under fixed ports such a node takes a
+                        collection, which needs a gathering node
+                        upstream and a fixed capacity, or one node
+                        kind for each count. Port groups give one node
+                        kind whose count each configuration sets.
+description:            |
+                        Sources:
+                        - A merge selects the dataflow variants to
+                          merge.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - A dataflow step reads a fixed set of inputs.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.surface_dataflow_step.description)
+                        - An input takes its value from at most one
+                          edge. (src/cctool/check/check.lp within
+                          input_fed_twice)
+                        - The decision names a logger with any number
+                          of inputs and a merge of any number of
+                          models.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/dec_ports_whose_count_comes_from_configuration.yaml
+                          at brief)
+                        - The fixed-ports option writes a node kind
+                          for each count, or takes one input carrying
+                          a collection.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/opt_fixed_ports_only.yaml
+                          at brief)
+                        - Every sequence on the engine has a fixed
+                          capacity declared in the component's spec.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - Assumption: the merge in the graph of edits
+                          is run as a dataflow node, which is not yet
+                          ruled. Strength: strong for loggers and
+                          merges; it does not apply to node kinds
+                          whose inputs are fixed by their function.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_ports_whose_count_comes_from_configuration
+    guid_target:        dec_e30323547dfc43de89538fb765f82de2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_port_groups_sharing_a_type
+    guid_target:        opt_33f2318696684a6e8205d57280b27c55
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fixed_ports_only
+    guid_target:        opt_17da717c7588490383c1b08f6d9474b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

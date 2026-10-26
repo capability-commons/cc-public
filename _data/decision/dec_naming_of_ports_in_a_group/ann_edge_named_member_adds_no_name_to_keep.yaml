@@ -1,0 +1,78 @@
+id_self:                ann_edge_named_member_adds_no_name_to_keep
+guid_self:              ann_961be0f179164a458ad5ec1dd1158208
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Members named by their edges, with no name to keep
+brief:                  |
+                        An edge is identified by its ends and each
+                        port in a group carries one edge, so naming a
+                        member by its other end adds no field, no
+                        counter and no list, and the count of a group
+                        is the number of its edges. A key or a number
+                        states the members a second time, beside the
+                        edges, and needs checks that every member is
+                        fed and every edge names a member. The ends
+                        are references, so a rename already rewrites
+                        them.
+description:            |
+                        Sources:
+                        - A dataflow edge is identified by its two
+                          ends.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - The ends of an edge are references, so a
+                          rename keeps the edge.
+                          (_data/schema/sch_dataflow_graph.yaml at
+                          description)
+                        - A check fails an end that names no port, and
+                          an input that no edge feeds unless it is
+                          optional. (src/cctool/check/check.lp within
+                          unknown_port and unfed_input)
+                        - The edge option says adding or removing an
+                          edge adds or removes the port, and nothing
+                          is renumbered.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_named_by_its_edge.yaml
+                          at brief)
+                        - Assumption: one output port never feeds two
+                          members of one group; if it may, the edge
+                          name no longer tells them apart. Strength:
+                          strong on the count of mechanisms; it holds
+                          as long as one edge per port holds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_ports_in_a_group
+    guid_target:        dec_025e30ee5b694c3eb5da9d699e688f54
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_group_member_named_by_its_edge
+    guid_target:        opt_740afe812195418c9496a753a625eb48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_member_named_by_a_key
+    guid_target:        opt_74dbb57ff7df4c6cbd892e14a647079b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_group_name_with_a_numbered_suffix
+    guid_target:        opt_310c0acc18804f2e8fa029695ea8e3c7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

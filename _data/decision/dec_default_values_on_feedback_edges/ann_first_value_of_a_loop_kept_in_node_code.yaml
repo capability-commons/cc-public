@@ -1,0 +1,74 @@
+id_self:                ann_first_value_of_a_loop_kept_in_node_code
+guid_self:              ann_a3a589c7eb0842128c11cb0dbe0a7b4e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First value of a loop kept in node code
+brief:                  |
+                        Under the port option the items record only
+                        that a port can supply a default, and the
+                        value itself lives in the code of the node. A
+                        reader of the graph cannot see what a loop
+                        starts from, or why. The edge option writes
+                        the value in the graph item, and settings
+                        already show a way to keep a value in the
+                        interface, which the port option could borrow.
+description:            |
+                        Sources:
+                        - The port option declares, for each port,
+                          whether it can supply a default value; it
+                          states no value.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The edge option gives the first value in the
+                          configuration of each feedback edge.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_value_written_on_the_edge.yaml
+                          at brief)
+                        - A setting of an interface may state its
+                          default, as the surface language writes it;
+                          a port has no such field.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.setting.allOf.1.properties.default
+                          and $defs.port)
+                        - Traceability asks whether each element can
+                          be traced to the reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        - Assumption: the first value of a feedback
+                          loop matters to the behavior of the system,
+                          as the initial condition of a delay does.
+                          Strength: moderate; it falls away if the
+                          port declares its value rather than a yes or
+                          no.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_default_values_on_feedback_edges
+    guid_target:        dec_9f9339a2bf554dd08963c1a42265c0fe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_from_a_port_that_declares_it
+    guid_target:        opt_b569736049b14509bbd3874fc3ab6339
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_value_written_on_the_edge
+    guid_target:        opt_c6534977c25f46598ec8ee0ee395cd9b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,72 @@
+id_self:                ann_optional_input_already_marks_a_port_with_no_first_value
+guid_self:              ann_0c529d393cd846f0ad27ee0ff88a5bca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Optional input as a destination that needs no first value
+brief:                  |
+                        An interface can already state that an input
+                        is optional, meaning that an invocation may
+                        run with no value there. The one feedback edge
+                        in the tree ends at such an input, whose
+                        packet type carries a flag for an empty
+                        packet. Under the port option the destination
+                        case may need no new field, if an optional
+                        input counts as one that can close a feedback
+                        edge.
+description:            |
+                        Sources:
+                        - A port may state optional, "Whether an
+                          invocation may run with no value here."
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.port.allOf.1.properties.optional)
+                        - The smoketest's one feedback edge ends at
+                          the feedback input of the system controller.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml
+                          at dataflow_edge.2.direction)
+                        - That input states optional: true.
+                          (_data/interface_control_document/icd_system_controller.yaml
+                          at
+                          surface.step.dataflow_step.input.feedback.optional)
+                        - The feedback packet carries ena, true when
+                          the packet carries data.
+                          (_data/interface_control_document/icd_system_controller.yaml
+                          at declaration.feedback_packet.shape)
+                        - The port option has the destination use its
+                          default when nothing has arrived.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - Assumption: WTP's rule speaks of a default
+                          value, and an optional input that runs with
+                          no value may not be what he means; whether
+                          optional is enough is his call. Strength:
+                          moderate; it covers the destination side
+                          only, and a source that emits a first token
+                          still needs a declaration.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_default_values_on_feedback_edges
+    guid_target:        dec_9f9339a2bf554dd08963c1a42265c0fe
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_from_a_port_that_declares_it
+    guid_target:        opt_b569736049b14509bbd3874fc3ab6339
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
