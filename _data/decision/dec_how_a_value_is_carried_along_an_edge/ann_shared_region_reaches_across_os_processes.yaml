@@ -1,0 +1,81 @@
+id_self:                ann_shared_region_reaches_across_os_processes
+guid_self:              ann_bf2d6cf78abf44719e7adb4f092d0db3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared region that reaches across the boundary of an OS process
+brief:                  |
+                        An OS process used as an execution unit
+                        contains a memory fault and keeps nodes of
+                        different trust apart. A region shared by two
+                        OS processes is memory both can reach: if the
+                        reader's mapping is writable, a fault or a
+                        hostile node in one process can change a value
+                        the other has already checked. Read-only once
+                        sent holds across OS processes only if the
+                        receiver maps the region read-only, and within
+                        one OS process it is only a const pointer.
+                        When an OS process dies holding regions,
+                        something must reclaim them; iceoryx runs a
+                        daemon for this. Copying keeps each OS
+                        process's memory its own, and shared write
+                        gives every holder write access by design.
+description:            |
+                        Sources:
+                        - An execution unit that is an OS process can
+                          contain a crash and
+                          keep nodes of different trust apart.
+                          (ann_spread_execution_unit_as_containment_boundary)
+                        - A node receives its inputs as const
+                          pointers.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - The iceoryx daemon RouDi cleans up the
+                          shared resources of an
+                          application that ended abnormally.
+                          (https://docs.rs/iceoryx-rs)
+                        - Assumption: the operating system can map a
+                          region read-only for
+                          the receiver. Strength: moderate; it applies only to regions
+                          shared between OS processes, not within one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_with_shared_write
+    guid_target:        opt_42121c6874a2446cb99186efafc5534a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_value_copied_into_each_queue
+    guid_target:        opt_bd2f0852e8284ff28ea7f83ddb794ae2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

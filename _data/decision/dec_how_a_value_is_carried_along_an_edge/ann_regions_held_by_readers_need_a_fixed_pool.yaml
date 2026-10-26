@@ -1,0 +1,75 @@
+id_self:                ann_regions_held_by_readers_need_a_fixed_pool
+guid_self:              ann_c1926b0d4992453294fd0a860ba80c33
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed pool and exhaustion rule for regions held by readers
+brief:                  |
+                        A copied value sits in a queue of fixed
+                        capacity, so its memory is bounded by
+                        construction. A region carried as a token
+                        stays in use until its last reader lets it go,
+                        so a slow or stalled reader holds regions, and
+                        the engine needs a fixed pool sized before the
+                        system starts and a stated rule for when it
+                        runs out: refuse the send, drop a value, or
+                        wait. iceoryx bounds this with a maximum
+                        number of samples a publisher may loan at
+                        once. Neither token option states this yet.
+description:            |
+                        Sources:
+                        - Every buffer has a size known before the
+                          system starts, and
+                          nothing is allocated on the heap while stepping.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - An iceoryx2 publisher has a maximum number
+                          of samples it can
+                          loan in parallel.
+                          (https://docs.rs/iceoryx2/latest)
+                        - A real application cannot have unbounded
+                          FIFOs.
+                          (https://en.wikipedia.org/wiki/Kahn_process_networks)
+                        - The same need was argued where messages
+                          become tokens in
+                          ann_bounded_capacity_needed_where_messages_become_tokens.
+                        - Assumption: readers may hold a region for
+                          longer than one step.
+                          Strength: strong; the exposure grows with fan-out and with how
+                          long readers hold regions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_with_shared_write
+    guid_target:        opt_42121c6874a2446cb99186efafc5534a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_value_copied_into_each_queue
+    guid_target:        opt_bd2f0852e8284ff28ea7f83ddb794ae2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

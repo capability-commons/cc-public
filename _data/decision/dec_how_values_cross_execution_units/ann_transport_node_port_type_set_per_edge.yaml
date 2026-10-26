@@ -1,0 +1,73 @@
+id_self:                ann_transport_node_port_type_set_per_edge
+guid_self:              ann_4caa67c5b972447e8bb4ef7ca3b009ec
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Port type of a generic transport node set for each edge
+brief:                  |
+                        A sender or receiver must accept whatever type
+                        the split edge carries, but node ports are
+                        declared with fixed types in the node's spec
+                        and checked by type id and size. So either a
+                        node is generated for each value type and
+                        library, or the port type of a transport node
+                        is set for each instance and the port type
+                        check learns to read it. Both node options
+                        carry this cost and the engine option does
+                        not. Since every value that crosses an edge is
+                        plain data of a fixed size, one generic node
+                        for each library can serve, so the cost is a
+                        rule in the check, not code for each type.
+description:            |
+                        Sources:
+                        - Each node's spec declares the types of its
+                          inputs and outputs.
+                          (_sources/axair-orchestrator/docs/component_interface.md#4-how-a-component-is-declared)
+                        - Everything that crosses an edge is
+                          standard-layout, trivially
+                          copyable and of fixed size, described by a type id and a size.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#4-types-a-numpy-compatible-description)
+                        - The same need for inserted nodes of every
+                          port type was argued
+                          in ann_inserted_node_kinds_needed_per_port_type.
+                        - Assumption: the generic form is chosen over
+                          generated nodes.
+                          Strength: moderate; a fixed, one-time cost that does not grow
+                          with the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_cross_execution_units
+    guid_target:        dec_f34ef9d7480a4cd8a32e33ae2e9b1c74
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_transport_nodes_inserted_by_a_transform
+    guid_target:        opt_bfbe2d8a763342499dcc546d84ac66e0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_transport_nodes_written_by_the_author
+    guid_target:        opt_5bcc1a73be9c4db4a01f5ef1e48c1077
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pluggable_transport_chosen_by_the_engine
+    guid_target:        opt_61fe9bcd8d53402dbb80ac55ccd32004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

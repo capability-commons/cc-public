@@ -1,0 +1,68 @@
+id_self:                ann_copies_removed_where_pictures_queue_or_cross
+guid_self:              ann_686cabcd97204e01bfdcc0149ae9430b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Picture copies removed where values queue, fan out or cross
+brief:                  |
+                        Within one execution unit a Kahn edge already
+                        costs no copy, since an input points at the
+                        upstream output buffer. Copies arise where a
+                        value waits in a queue of several tokens,
+                        crosses to another OS process on the same
+                        host, or goes to a node that writes into it.
+                        Patrol carries full-size pictures at 30 Hz,
+                        and its overlay drawing node draws onto
+                        pictures, the case where a moved region lets a
+                        node write in place. Copying into each queue
+                        pays a copy for each queue and picture; a
+                        token pays none where it applies.
+description:            |
+                        Sources:
+                        - Within an OS process an input points at the
+                          upstream node's
+                          output buffer itself, so an edge costs nothing.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - An edge may deliver every value in order up
+                          to a stated
+                          capacity.
+                          (_data/decision/dec_edge_policy/opt_edge_policy_declared_and_lowered_to_nodes.yaml
+                          at brief)
+                        - Patrol holds a 720p stream at 30 Hz.
+                          (_sources/cc-patrol-notes/plan.md#4-the-engine-updated-2026-10-21-after-wills-answers)
+                        - Patrol's overlay drawing node draws marks
+                          onto pictures.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_overlay_draw.yaml
+                          at brief)
+                        - Assumption: a 720p NV12 picture is about 1.4
+                          MB, so each copy
+                          costs about 41 MB per second at 30 Hz. Strength: moderate;
+                          nothing is measured yet, and the ruling on engine behavior asks
+                          for a measurement before each exception.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_value_copied_into_each_queue
+    guid_target:        opt_bd2f0852e8284ff28ea7f83ddb794ae2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

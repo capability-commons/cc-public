@@ -1,0 +1,83 @@
+id_self:                ann_read_only_or_moved_matches_library_ownership
+guid_self:              ann_d25b3a644849426bb0111e731272a8f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Read-only or moved, the rule the transport libraries follow
+brief:                  |
+                        GStreamer lets an element write a buffer only
+                        when it holds the one reference, and copies on
+                        demand otherwise; rclcpp hands a message with
+                        no copy to one subscription that takes
+                        ownership, shares it read-only among several,
+                        and copies when ownership must go to more than
+                        one; ZeroMQ takes ownership of a buffer handed
+                        to it; iceoryx loans a sample that the
+                        publisher fills and then publishes. A memory
+                        token with the same two states maps onto each
+                        of these, so a transport node can pass it
+                        through, and replacing one library with
+                        another does not change what nodes see. Shared
+                        write matches none of them.
+description:            |
+                        Sources:
+                        - A GStreamer buffer is writable only when its
+                          reference count is
+                          exactly 1, and making it writable copies only when needed.
+                          (https://gstreamer.freedesktop.org/documentation/gstreamer/gstbuffer.html)
+                        - In rclcpp intra-process communication a
+                          unique pointer passes
+                          with no copy to a single subscription; subscriptions taking
+                          const shared pointers share one message; with two owners one
+                          gets a copy.
+                          (https://github.com/ros2/ros2_documentation/pull/6048/files)
+                        - A ROS 2 loaned message is returned to the
+                          middleware on publish,
+                          and the design covers POD message types only.
+                          (https://github.com/ros2/design/blob/gh-pages/articles/zero_copy.md)
+                        - zmq_msg_init_data performs no copy and takes
+                          ownership of the
+                          buffer it is given.
+                          (https://libzmq.readthedocs.io/en/latest/zmq_msg_init_data.html)
+                        - An iceoryx publisher loans a sample and
+                          publishes it.
+                          (https://docs.rs/iceoryx-rs)
+                        - The leading option names the same approach.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/opt_memory_token_read_only_or_moved.yaml
+                          at description)
+                        - Assumption: transport nodes are built on one
+                          or more of these
+                          libraries. Strength: strong; the rule is fixed once and does not
+                          grow with the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_with_shared_write
+    guid_target:        opt_42121c6874a2446cb99186efafc5534a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

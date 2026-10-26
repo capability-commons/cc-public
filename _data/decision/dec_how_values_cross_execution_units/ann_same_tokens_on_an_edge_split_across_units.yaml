@@ -1,0 +1,87 @@
+id_self:                ann_same_tokens_on_an_edge_split_across_units
+guid_self:              ann_2f53ef7b535b433c8187586d5932303d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same tokens on an edge split across execution units
+brief:                  |
+                        A Kahn network gives the same tokens whatever
+                        the timing only if each read waits for its
+                        token. If a receiver hands its step whatever
+                        has arrived, as a latest-value policy does,
+                        the tokens downstream depend on how fast the
+                        sending unit ran, so moving a node to another
+                        unit changes results that simulation, replay
+                        and a safety case rely on. The transform
+                        option leaves this to the delivery policy on
+                        the edge; it should state that an edge between
+                        Kahn nodes keeps a waiting, ordered read
+                        unless its policy says otherwise. The engine
+                        option must make the same choice inside the
+                        engine.
+description:            |
+                        Sources:
+                        - A Kahn network behaves the same whatever the
+                          timing; reading
+                          from a channel blocks, and a process may not test a channel for
+                          tokens without consuming them.
+                          (https://en.wikipedia.org/wiki/Kahn_process_networks)
+                        - Kahn semantics need blocking reads across OS
+                          processes.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#option-memory-mapped-edge-files)
+                        - Kahn semantics matter most at the small
+                          scale, where safety
+                          cases rest on simulation.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#where-each-applies)
+                        - Anyone can re-run a cited scenario and get
+                          the same tokens on
+                          every edge.
+                          (_sources/mapping.md#what-i-understand-you-want)
+                        - In the transform option the delivery policy
+                          on the edge says how
+                          arrivals at the receiver become a step's token.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - Patrol's drafts give engine-to-engine edges
+                          ordered,
+                          latest-value or ordered and acknowledged policies.
+                          (_sources/cc-patrol-notes/draft/README.md#hybrid-nodes-and-edges)
+                        - The timing of a crossing between units is
+                          already noted as
+                          unstated in ann_spread_unit_crossing_timing_unstated.
+                        - Assumption: the edges at stake join Kahn
+                          nodes, not actors.
+                          Strength: strong; it holds for every crossing edge, and is
+                          cheap to meet if the transform states its default.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_cross_execution_units
+    guid_target:        dec_f34ef9d7480a4cd8a32e33ae2e9b1c74
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_transport_nodes_inserted_by_a_transform
+    guid_target:        opt_bfbe2d8a763342499dcc546d84ac66e0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pluggable_transport_chosen_by_the_engine
+    guid_target:        opt_61fe9bcd8d53402dbb80ac55ccd32004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

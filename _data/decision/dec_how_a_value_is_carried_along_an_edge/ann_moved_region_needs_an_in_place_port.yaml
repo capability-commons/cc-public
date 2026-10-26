@@ -1,0 +1,64 @@
+id_self:                ann_moved_region_needs_an_in_place_port
+guid_self:              ann_5c91bec145e34d8685c788ef44b73780
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  In-place port that the node interface lacks
+brief:                  |
+                        The node interface passes inputs as read-only
+                        pointers and outputs as buffers the engine
+                        allocated, so no node writes into what it
+                        received. A moved region pays off only if a
+                        node such as Patrol's overlay drawing can take
+                        its input region as its output, which needs
+                        the interface to declare an input and an
+                        output as one region, and the engine to give a
+                        copy when the region is still shared. Until
+                        the interface has that, the moved half of the
+                        leading option has no user.
+description:            |
+                        Sources:
+                        - Inputs are const pointers, and outputs point
+                          at buffers the
+                          framework allocated, written in place.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - A node that would write into a region it
+                          received must own it,
+                          or is given a copy.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/opt_memory_token_read_only_or_moved.yaml
+                          at brief)
+                        - Patrol's overlay drawing node draws onto
+                          full-size pictures.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_overlay_draw.yaml
+                          at brief)
+                        - Assumption: a moved region is wanted for
+                          nodes that change a
+                          large value in place. Strength: moderate; a one-time change to
+                          the interface, needed only by such nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

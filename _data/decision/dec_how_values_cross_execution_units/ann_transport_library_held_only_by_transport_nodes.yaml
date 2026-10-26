@@ -1,0 +1,107 @@
+id_self:                ann_transport_library_held_only_by_transport_nodes
+guid_self:              ann_435f0544568948b698d5bd3d41f3d953
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport library held only by the nodes that use it
+brief:                  |
+                        Under either node option, a transport library
+                        such as ZeroMQ or iceoryx is a dependency of
+                        the sender and receiver nodes that use it, and
+                        a build whose execution units never cross an
+                        OS process or a host carries none. Replacing a
+                        library, or adding one, is a new pair of nodes
+                        and, under the transform, one new transform,
+                        so a desktop variant and an embedded variant
+                        can use different libraries. Under the engine
+                        option the transport interface and the rule
+                        that picks a plugin are in every engine build,
+                        and the ruling on engine behavior admits that
+                        only with a recorded exception. Libraries do
+                        change: libzmq changed its license in 4.3.5,
+                        and the classic iceoryx line is now in
+                        maintenance.
+description:            |
+                        Sources:
+                        - A behavior moves into the engine only when a
+                          recorded decision
+                          shows that no inserted node can do it within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief)
+                        - Under the transform option, transport
+                          libraries are
+                          dependencies of the transport nodes only; under the engine
+                          option, the engine holds a transport interface with plugins.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief;
+                          _data/decision/dec_how_values_cross_execution_units/opt_pluggable_transport_chosen_by_the_engine.yaml
+                          at brief)
+                        - An execution unit may be an OS process, a
+                          thread or a core with
+                          no operating system.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Within one OS process no queue is needed;
+                          between hosts the
+                          transport is very likely ZeroMQ, and between OS processes on one
+                          host it is still open.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#5-transport-for-edges-not-yet-decided)
+                        - The owner asked for a variant for each
+                          transport library
+                          (owner's statement, 2026-10-26, recorded in
+                          _data/decision/dec_how_values_cross_execution_units/dec_how_values_cross_execution_units.yaml
+                          at description).
+                        - libzmq was relicensed from LGPL-3.0+ to
+                          MPL-2.0 in release
+                          4.3.5.
+                          (https://newreleases.io/project/github/zeromq/libzmq/release/v4.3.5)
+                        - iceoryx classic is in maintenance mode, and
+                          its maintainers
+                          recommend iceoryx2 for new projects.
+                          (https://github.com/eclipse-iceoryx/iceoryx)
+                        - The same point was made for the fixed slots
+                          between static and
+                          dynamic nodes in ann_crossing_transport_library_inside_the_engine.
+                        - Assumption: an engine could load its plugins
+                          only where needed,
+                          which narrows the gap but still leaves the interface and the
+                          choosing rule in the engine. Strength: strong; the dependency
+                          stays at the boundary of the units at ten times the nodes, and
+                          grows only with the number of libraries.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_cross_execution_units
+    guid_target:        dec_f34ef9d7480a4cd8a32e33ae2e9b1c74
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_transport_nodes_inserted_by_a_transform
+    guid_target:        opt_bfbe2d8a763342499dcc546d84ac66e0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_transport_nodes_written_by_the_author
+    guid_target:        opt_5bcc1a73be9c4db4a01f5ef1e48c1077
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pluggable_transport_chosen_by_the_engine
+    guid_target:        opt_61fe9bcd8d53402dbb80ac55ccd32004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

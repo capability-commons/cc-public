@@ -1,0 +1,70 @@
+id_self:                ann_shared_memory_allocator_for_tokens_across_processes
+guid_self:              ann_efd00cdc1282448bb41a5501d5c2b9b5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared-memory allocator needed for tokens across OS processes
+brief:                  |
+                        Within one OS process a token needs only a
+                        reference count the engine can keep itself.
+                        Across OS processes on one host it needs
+                        regions in shared memory and a way to hand
+                        them out and take them back, which is either
+                        engine code or a library such as iceoryx,
+                        whose classic line is now in maintenance.
+                        Copying needs neither. If the allocator sits
+                        in transport nodes, the dependency stays with
+                        them, but the source node's output buffer must
+                        still be taken from it, which is engine work
+                        under a recorded exception.
+description:            |
+                        Sources:
+                        - The framework owns all memory and allocates
+                          every output buffer.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - The transport between OS processes on one
+                          host, ZeroMQ or a
+                          shared-memory queue, is still open.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#5-transport-for-edges-not-yet-decided)
+                        - iceoryx classic is in maintenance mode, and
+                          iceoryx2 is
+                          recommended for new projects.
+                          (https://github.com/eclipse-iceoryx/iceoryx)
+                        - iceoryx2 is licensed MIT OR Apache-2.0.
+                          (https://docs.rs/iceoryx2/latest)
+                        - Assumption: tokens are wanted across OS
+                          processes, not only
+                          within one. Strength: moderate; the dependency is one library
+                          whatever the graph's size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_token_with_shared_write
+    guid_target:        opt_42121c6874a2446cb99186efafc5534a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_value_copied_into_each_queue
+    guid_target:        opt_bd2f0852e8284ff28ea7f83ddb794ae2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

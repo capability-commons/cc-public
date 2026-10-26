@@ -1,0 +1,74 @@
+id_self:                ann_sender_copies_out_of_process_memory
+guid_self:              ann_d13f2cd2016a4c40b06eaeda53254240
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Copy into the transport at every sender node
+brief:                  |
+                        The engine allocates each output buffer in the
+                        memory of the OS process that runs the node,
+                        so a sender node can only copy the value into
+                        its transport, and each transport node adds a
+                        call in its unit. On one host the receiving OS
+                        process could read the same bytes with no copy
+                        only if the engine allocated the source's
+                        output buffer in shared memory, which no node
+                        can do. The engine option can place that
+                        buffer itself. Under the ruling on engine
+                        behavior the node options need a recorded
+                        exception for it, which is what the decision
+                        on how a value is carried along an edge
+                        covers.
+description:            |
+                        Sources:
+                        - The framework owns all memory, and each
+                          output points at a
+                          buffer the framework allocated.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - With memory-mapped edge files both OS
+                          processes read the same
+                          bytes with no copy.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#option-memory-mapped-edge-files)
+                        - Patrol holds a 720p stream at 30 Hz.
+                          (_sources/cc-patrol-notes/plan.md#4-the-engine-updated-2026-10-21-after-wills-answers)
+                        - The extra call at a gateway was argued in
+                          ann_crossing_gateway_adds_a_call_per_boundary_edge, and the
+                          carrying of values in dec_how_a_value_is_carried_along_an_edge
+                          is open.
+                        - Assumption: a 720p frame in NV12 is about
+                          1.4 MB, so one copy
+                          per crossing is about 41 MB per second. Strength: moderate;
+                          small for small values, large for pictures, and nothing is
+                          measured yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_cross_execution_units
+    guid_target:        dec_f34ef9d7480a4cd8a32e33ae2e9b1c74
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_transport_nodes_inserted_by_a_transform
+    guid_target:        opt_bfbe2d8a763342499dcc546d84ac66e0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_transport_nodes_written_by_the_author
+    guid_target:        opt_5bcc1a73be9c4db4a01f5ef1e48c1077
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pluggable_transport_chosen_by_the_engine
+    guid_target:        opt_61fe9bcd8d53402dbb80ac55ccd32004
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
