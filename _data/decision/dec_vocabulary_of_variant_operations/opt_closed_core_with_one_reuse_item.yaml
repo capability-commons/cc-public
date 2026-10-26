@@ -8,21 +8,38 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Closed core with one item kind for reuse
+title:                  Closed core with the delta module as the one item for reuse
 brief:                  |
-                        A closed core of variant operations is fixed
-                        in the schema, and one item kind, a named
-                        ordered list of core operations, serves both
-                        as a composite operation within a variant's
-                        own list and as a delta module that a variant
-                        includes.
+                        A closed core of [[variant operations]] is
+                        fixed in the schema, and includes merge with
+                        its commands that join edges. One item kind,
+                        the [[delta module]], is the unit of reuse: a
+                        named subgraph of variant operations with
+                        declared inputs and parameters, such as the
+                        number of camera inputs or the type of logging
+                        sink, applied like any single variant
+                        operation to whatever is wired into it. A
+                        delta module reuses a transform, while a merge
+                        adds a piece of a model.
 description:            |
                         Proposed by the simplicity and maintainability
                         and the functional suitability and
                         compatibility advocates as one reuse mechanism
                         ruled once across this decision and
                         dec_shape_of_a_variant_family
-                        (_sources/four-decisions-argued.md line 794).
+                        (_sources/four-decisions-argued.md, the
+                        section on the operation vocabulary). Reworded
+                        when WTP upheld it: WTP wants the tooling to
+                        be as much like a generative graph-based
+                        editor such as Houdini as possible, a graph of
+                        transforms that can be edited and played with
+                        caching at each stage, except that what is
+                        transformed is itself a dataflow model, and
+                        wants parameters on delta modules (WTP,
+                        2026-10-26). The delta module is then the
+                        counterpart of a Houdini digital asset, a
+                        packaged subnetwork with its own inputs and
+                        exposed parameters.
 
 edge:
 
@@ -30,3 +47,13 @@ edge:
     guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
     id_target:          dec_vocabulary_of_variant_operations
     guid_target:        dec_423c265517734bdda571c380b3345343
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_delta_module
+    guid_target:        concept_3d0dd6755b224df0bb0cf1e98f017137
