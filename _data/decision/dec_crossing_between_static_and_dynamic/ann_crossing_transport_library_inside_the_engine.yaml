@@ -1,0 +1,73 @@
+id_self:                ann_crossing_transport_library_inside_the_engine
+guid_self:              ann_20e21ec451ba4c23a87ab42da287ed24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport library taken into the engine by fixed slots
+brief:                  |
+                        Between execution units a value crosses
+                        through a transport, and the candidates named
+                        so far are third-party code such as ZeroMQ. If
+                        a gateway node holds the transport, that
+                        library is a dependency of the gateway node
+                        kinds only, and a change to it or its
+                        withdrawal touches those nodes. If the
+                        engine's fixed slots must carry a value across
+                        units, the transport library becomes a
+                        dependency of the engine, in every build that
+                        has such a boundary. Within one unit the fixed
+                        slots hand over pointers and take nothing from
+                        third parties, so the point applies only to
+                        boundary edges that cross units.
+description:            |
+                        Sources:
+                        - A pointer handover is free only within one
+                          address space, and an edge whose ends are in
+                          different execution units needs a copy
+                          through a transport, which a gateway node
+                          can hold.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ann_crossing_gateway_holds_transport_between_units.yaml
+                          at brief)
+                        - Between processes or machines the transport
+                          is ZeroMQ or a shared-memory queue, still
+                          open.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ann_crossing_gateway_holds_transport_between_units.yaml
+                          at description)
+                        - A behavior moves into the engine only when a
+                          recorded decision shows that no inserted
+                          node can do it within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief)
+                        - Assumption: some boundary edges between the
+                          static and dynamic subgraphs will cross
+                          execution units. Strength: weak to moderate;
+                          under the engine ruling, a transport in the
+                          engine needs a recorded exception, which
+                          limits the risk.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
