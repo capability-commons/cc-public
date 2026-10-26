@@ -1,0 +1,43 @@
+id_self:                dec_default_values_on_feedback_edges
+guid_self:              dec_9f9339a2bf554dd08963c1a42265c0fe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Default values on feedback edges
+brief:                  |
+                        Where does the first value on a feedback edge
+                        come from, and how do the checks know that one
+                        will be there?
+description:            |
+                        A loop of data flow is closed by a feedback
+                        edge, whose value comes from the step before;
+                        at the first step, and after a rewire or a
+                        version swap, there is no step before, so
+                        something must supply a first value or the
+                        loop never starts. WTP stated a rule on
+                        2026-10-26: every feedback edge in a Kahn
+                        network needs a default value supplied by its
+                        source port or its destination port; each node
+                        declares, for each port it handles, whether it
+                        can supply a default; two ports that cannot
+                        are never joined by a feedback edge; slots
+                        between the static and dynamic subgraphs
+                        inherit the ability from the ports they join,
+                        as do edges between Kahn and actor nodes; and
+                        a transform that would break the rule is
+                        refused when it is validated in Python before
+                        it is applied. The ruling on crossing between
+                        static and dynamic already applies this rule
+                        to slots.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_model
+    guid_target:        lco_1beb844211c848e6b89d9cec5c6daa70
