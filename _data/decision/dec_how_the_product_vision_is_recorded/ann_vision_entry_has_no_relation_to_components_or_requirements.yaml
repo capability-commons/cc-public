@@ -1,0 +1,82 @@
+id_self:                ann_vision_entry_has_no_relation_to_components_or_requirements
+guid_self:              ann_c10b8bfa92d44d80be7c1caa2b49ebd6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Vision entry with no relation to components or requirements
+brief:                  |
+                        The option gives each entry edges to the
+                        logical components it bears on, and lets a
+                        requirement trace to the entry it serves, but
+                        no relation admits either edge today.
+                        relation_is_about admits only an annotation or
+                        a decision as its source, and no relation from
+                        a requirement says what the requirement
+                        serves. Both edges need a role granted to the
+                        new type and a new relation for requirements,
+                        which is the cost that
+                        ann_vision_requirements_add_no_type charges to
+                        capability items.
+description:            |
+                        Sources:
+                        - relation_is_about constrains its source with
+                          relcon_can_be_about_an_item, and its target not at all.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_is_about.edge)
+                        - rol_can_be_about_an_item is played by
+                          type_annotation and
+                          type_decision, and no other type entry names it.
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_annotation.edge and entries.type_decision.edge)
+                        - On a copy of the snapshot, cctool link
+                          refused an edge of
+                          relation_is_about from rule_claim_only_what_is_held to
+                          lco_item_graph, and one from rqt_rename_keeps_guid to that
+                          rule, each with constraint_violation at its source end.
+                          (src/cctool/check/check.lp within constraint_violation; tried
+                          2026-10-26)
+                        - The relations whose source must be a
+                          requirement are
+                          relation_has_subject, relation_has_actor and
+                          relation_has_process; they name the subject, the actor and the
+                          process word. (_data/register/reg_relation.yaml at
+                          entries.relation_has_subject.edge,
+                          entries.relation_has_actor.edge and
+                          entries.relation_has_process.edge)
+                        - The option gives entries edges to logical
+                          components and lets
+                          a requirement trace to an entry.
+                          (_data/decision/dec_how_the_product_vision_is_recorded/opt_vision_as_a_register_of_statements.yaml
+                          at brief)
+                        - Traceability asks whether each need can be
+                          traced to what meets
+                          it. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.1)
+                        - Assumption: one role edge on the new type is
+                          enough for the
+                          edge from an entry to a component, since the checks on
+                          relation_is_about look further only at annotations and
+                          decisions. Strength: strong as a statement of what must be
+                          added; it is a cost, not a bar.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_product_vision_is_recorded
+    guid_target:        dec_0452f5e55c3049038b01123aea59dae2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_vision_as_a_register_of_statements
+    guid_target:        opt_acc94c01e5434eb598db66e58bb644ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

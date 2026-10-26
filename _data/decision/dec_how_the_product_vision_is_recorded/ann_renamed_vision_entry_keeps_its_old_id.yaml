@@ -1,0 +1,73 @@
+id_self:                ann_renamed_vision_entry_keeps_its_old_id
+guid_self:              ann_539f2dc6c8b84c32ac7f1b9a51f4281f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Renamed vision entry that keeps its old id
+brief:                  |
+                        When cctool renames a register entry it keeps
+                        the old id in the entry's alias field, and a
+                        standalone item keeps no alias. A citation the
+                        rename does not rewrite, such as one in a peer
+                        that consumes a release, still resolves to the
+                        renamed entry, and the check names the current
+                        id. Under capability items or requirements the
+                        same citation would name nothing.
+description:            |
+                        Sources:
+                        - A renamed register entry keeps its old id as
+                          an alias;
+                          the rename rewrites the mentions in the documents of its own
+                          tree. (src/cctool/edit/edit.py within _rename_one;
+                          AGENTS.md#changing-data-items)
+                        - An alias is how a retired key keeps
+                          resolving.
+                          (_data/schema/sch_register_entry.yaml at properties.alias)
+                        - A mention of an old id is not dangling, and
+                          outdated_mention
+                          names the current id. (src/cctool/check/check.lp within
+                          dangling_mention and outdated_mention)
+                        - A segment that consumes a release is checked
+                          together with
+                          the consumed tree. (pym_cctool.check.segment at description)
+                        - cc-patrol is the first peer, and pins a
+                          release.
+                          (_data/release/release_cc_public_0_1_0.yaml at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to
+                          others; compatibility asks whether a partner can read and use
+                          what the design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1 and
+                          entries.concern_compatibility.question.0)
+                        - Assumption: entries will be renamed while
+                          the vision moves,
+                          and a peer will cite them. Strength: moderate while peers cite
+                          the vision; weak while only cc-public does, since there the
+                          rename rewrites every mention.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_product_vision_is_recorded
+    guid_target:        dec_0452f5e55c3049038b01123aea59dae2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_vision_as_a_register_of_statements
+    guid_target:        opt_acc94c01e5434eb598db66e58bb644ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

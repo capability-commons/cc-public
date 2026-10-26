@@ -1,0 +1,79 @@
+id_self:                ann_arguments_can_already_be_about_a_vision_entry
+guid_self:              ann_d922af1ebb74415a8ceea99e49a3faa5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Arguments that can already be about a vision entry
+brief:                  |
+                        An annotation can name a vision entry by an
+                        edge today, with no new relation:
+                        relation_is_about has no constraint on its
+                        target, and an annotation takes its decision
+                        only from the edge that points at a decision.
+                        An argument that rests on a statement of the
+                        vision can then be found from the entry by an
+                        edge, as arguments are found from the concerns
+                        they speak for. The same edge would reach a
+                        capability item or a requirement, so this
+                        favors the item options over the document, not
+                        the register over them.
+description:            |
+                        Sources:
+                        - relation_is_about constrains its source and
+                          not its target.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_is_about.edge)
+                        - An annotation belongs to the decision that
+                          its edge of
+                          relation_is_about names, and argues only through
+                          relation_supports and relation_challenges.
+                          (src/cctool/graph/derive.lp within decision_of;
+                          src/cctool/check/check.lp within argument_across_decisions and
+                          argues)
+                        - On a copy of the snapshot, an edge of
+                          relation_is_about from
+                          ann_vision_statement_has_no_verification_method to
+                          rule_claim_only_what_is_held, a register entry, was written by
+                          cctool link, and the check then gave 0 failures. (tried
+                          2026-10-26)
+                        - Concern entries, which are register entries,
+                          are already the
+                          targets of edges from annotations and logical components.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_speaks_for_concern.edge and
+                          entries.relation_is_driven_by.edge)
+                        - Traceability is, as far as possible, held as
+                          edges in the
+                          uniform relation scheme.
+                          (_data/decision/dec_requirement_provenance/ruling_requirement_provenance.yaml
+                          at brief)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        - Assumption: advocates add the edge when they
+                          cite an entry;
+                          nothing requires it. Strength: moderate; it grows with the
+                          number of arguments that cite the vision.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_product_vision_is_recorded
+    guid_target:        dec_0452f5e55c3049038b01123aea59dae2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_vision_as_a_register_of_statements
+    guid_target:        opt_acc94c01e5434eb598db66e58bb644ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

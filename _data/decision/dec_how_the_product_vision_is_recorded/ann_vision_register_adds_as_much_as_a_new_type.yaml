@@ -1,0 +1,78 @@
+id_self:                ann_vision_register_adds_as_much_as_a_new_type
+guid_self:              ann_cd47de7104b647eea1ccaffa5cfc2ce8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Vision register that adds as much as a new type
+brief:                  |
+                        The option adds no standalone type, but a
+                        register entry still has a type of its own: an
+                        entry in the type register with a prefix and a
+                        concept, the prefix written again in code that
+                        a test compares with the register, and a
+                        schema for its entries. The register also
+                        needs its own register schema and the register
+                        item itself, where a standalone type needs one
+                        schema and a folder. So the register saves no
+                        mechanism over capability items, and adds two
+                        parts more.
+description:            |
+                        Sources:
+                        - type_design_rule has a prefix, a regex_id
+                          and a concept, and
+                          edges to its register, to its entry schema and to its role.
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_design_rule)
+                        - A type entry must give prefix, regex_id,
+                          id_concept and
+                          guid_concept. (_data/schema/sch_regentry_type.yaml at
+                          required)
+                        - Code takes each prefix from MAP_PREFIX, and
+                          a test compares
+                          that map with the register.
+                          (src/cctool/graph/prefix.py within MAP_PREFIX;
+                          src/cctool/graph/_test/test_graph.py within
+                          test_the_prefix_of_each_type_is_the_one_its_register_entry_gives)
+                        - The design rule register names
+                          sch_reg_design_rule as its
+                          schema, which composes sch_register with
+                          sch_regentry_design_rule. (_data/register/reg_design_rule.yaml
+                          at edge.0; _data/schema/sch_reg_design_rule.yaml at allOf)
+                        - A standalone type such as type_requirement
+                          names one schema
+                          and its roles. (_data/register/reg_data_item_type.yaml at
+                          entries.type_requirement.edge)
+                        - The index of the web pages places each type
+                          in a group, in
+                          TUPLE_GROUP. (src/cctool/web/catalog.py within TUPLE_GROUP)
+                        - Simplicity counts the distinct mechanisms a
+                          design introduces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0)
+                        - Assumption: a capability type would need the
+                          same new
+                          relations as the register, so those cancel in the comparison.
+                          Strength: strong; the parts are counted from the files, and do
+                          not change as the graph grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_product_vision_is_recorded
+    guid_target:        dec_0452f5e55c3049038b01123aea59dae2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_vision_as_a_register_of_statements
+    guid_target:        opt_acc94c01e5434eb598db66e58bb644ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

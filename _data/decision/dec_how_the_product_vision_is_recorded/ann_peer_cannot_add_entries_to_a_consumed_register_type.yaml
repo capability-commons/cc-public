@@ -1,0 +1,71 @@
+id_self:                ann_peer_cannot_add_entries_to_a_consumed_register_type
+guid_self:              ann_74de45dffda5436396cf6becff202109
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer that cannot add entries of a consumed register type
+brief:                  |
+                        A peer that consumes a release reads the
+                        vision register and can cite its entries, but
+                        cannot hold vision entries of its own in a
+                        register of that type. A register holds only
+                        entries of a type whose type entry names it,
+                        and that edge sits in the consumed tree, which
+                        the peer cannot change. A peer that takes the
+                        vision to its own work, such as agent
+                        workflows, must define a type of its own or
+                        ask cc-public to hold its entries.
+description:            |
+                        Sources:
+                        - A register holds only entries of a type
+                          whose edge of
+                          relation_has_items_held_in_register names it.
+                          (src/cctool/check/check.lp within misplaced_register_entry)
+                        - That edge is written on the type entry, as
+                          for
+                          type_design_rule. (_data/register/reg_data_item_type.yaml at
+                          entries.type_design_rule.edge.0)
+                        - cctool finds the one register that holds the
+                          items of a type.
+                          (src/cctool/edit/edit.py within _register)
+                        - A consuming segment reads the consumed tree
+                          beside its own,
+                          and cannot change it. (pym_cctool.check.segment at
+                          description)
+                        - The vision is to be applied later to agent
+                          workflows.
+                          (_data/decision/dec_how_the_product_vision_is_recorded/dec_how_the_product_vision_is_recorded.yaml
+                          at description)
+                        - Compatibility asks what a partner must adopt
+                          in order to read
+                          or use what the design produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                        - Assumption: a peer can hold standalone items
+                          of a consumed
+                          type in its own tree, as misplaced_document reads; this was
+                          not tried. Assumption: a peer will want vision statements of
+                          its own. Strength: weak to moderate; it matters only once a
+                          peer extends the vision.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_product_vision_is_recorded
+    guid_target:        dec_0452f5e55c3049038b01123aea59dae2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_vision_as_a_register_of_statements
+    guid_target:        opt_acc94c01e5434eb598db66e58bb644ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
