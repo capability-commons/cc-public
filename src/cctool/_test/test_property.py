@@ -164,6 +164,7 @@ def _standalone() -> list[str]:
 
 # -----------------------------------------------------------------------------
 @hypothesis.example(document = {'brief': ''})
+@hypothesis.example(document = {'brief': '#', 'title': ''})
 @hypothesis.given(document = DOCUMENT)
 def test_a_layout_of_a_layout_is_the_same_and_keeps_the_data(document):
     text = '\n'.join(cctool.edit.layout.dump(document, 0)) + '\n'

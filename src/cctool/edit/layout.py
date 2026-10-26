@@ -71,6 +71,11 @@ WIDTH_WRAP        = 70
 MARK_ITEM         = '- '
 REGEX_COMMENT     = re.compile(r'^\s*#')
 
+# A line that opens a block scalar: a key or a sequence item whose value
+# is a literal or folded block, held on the more indented lines beneath.
+#
+REGEX_BLOCK       = re.compile(r'^(\s*)(?:[^#\s].*:|-)\s+[|>][-+0-9]*\s*$')
+
 # A line of prose that opens with a list marker, such as "- " or "2. ",
 # begins an item of a list, which is a paragraph of its own.
 #
@@ -486,18 +491,25 @@ def _lead(list_line: list[str]) -> dict[int, list[str]]:
     Return the comment lines that precede each line in the source,
     keyed by the line they precede.
 
-    Only those at lines where a key or item begins are used. A run
-    inside a block scalar lands on a prose line and is ignored. Blank
-    lines are not read from the source at all: where they go is a rule.
+    Only those at lines where a key or item begins are used. A line
+    of a block scalar is prose, not a comment, even where it opens
+    with a hash. Blank lines are not read from the source at all: where
+    they go is a rule.
 
     """
 
     lead          = {}
     list_comment  = []
+    indent_block  = None
 
     for (index, line) in enumerate(list_line):
         if not line.strip():
             continue
+        indent        = len(line) - len(line.lstrip(' '))
+        if indent_block is not None and indent > indent_block:
+            continue
+        match         = REGEX_BLOCK.match(line)
+        indent_block  = len(match.group(1)) if match else None
         if REGEX_COMMENT.match(line):
             list_comment.append(line.strip())
         else:
