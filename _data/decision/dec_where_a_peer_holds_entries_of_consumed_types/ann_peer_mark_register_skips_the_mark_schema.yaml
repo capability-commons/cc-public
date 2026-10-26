@@ -1,0 +1,90 @@
+id_self:                ann_peer_mark_register_skips_the_mark_schema
+guid_self:              ann_6d77627af2d548d2bf51b4fe9ce82a80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer marks held without the mark schema
+brief:                  |
+                        The schema that checks a register entry is the
+                        one its register names, not one its type
+                        names. If a peer register only has to name the
+                        types it holds, a peer can hold protective
+                        marks with no authority and no level, and they
+                        pass every check. A register that extends a
+                        consumed register takes that register's
+                        schema, so a peer mark must still name its
+                        authority and level.
+description:            |
+                        Sources:
+                        - A register document takes its schema from
+                          its own edge of
+                          relation_is_specified_by_schema, and its
+                          entries are checked as part of it
+                          (src/cctool/graph/derive.lp within
+                          document_schema).
+                        - The schema of the protective mark register
+                          checks each entry against the mark entry
+                          schema, which requires authority and level
+                          (_data/schema/sch_reg_protective_mark.yaml
+                          at allOf;
+                          _data/schema/sch_regentry_protective_mark.yaml
+                          at required).
+                        - Measured 2026-10-26 in a scratch copy: a
+                          peer register with no schema edge, holding
+                          one entry of type_protective_mark with no
+                          authority and no level, fails only
+                          misplaced_register_entry and
+                          unformatted_file under cctool check run on
+                          the peer.
+                        - Under the option where registers name their
+                          types, the placement check asks only that
+                          the register an entry sits in names its type
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_register_names_the_types_it_holds.yaml
+                          at brief).
+                        - Under the extending option, a peer register
+                          takes the schema of the consumed register it
+                          extends
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief).
+                        - A mark reference counts as resolved when any
+                          item holds its id or guid, whatever that
+                          item's type (src/cctool/check/advise.lp
+                          within unresolved_mark).
+                        - The protective mark register is a controlled
+                          list in which each mark names its authority
+                          and its level
+                          (_data/register/reg_protective_mark.yaml at
+                          description). Strength: strong for marks,
+                          and the same gap opens for every consumed
+                          type whose entries a schema constrains; it
+                          holds at ten times the size. It falls if the
+                          option where registers name their types also
+                          requires the consumed register's schema,
+                          which neither option text says today.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

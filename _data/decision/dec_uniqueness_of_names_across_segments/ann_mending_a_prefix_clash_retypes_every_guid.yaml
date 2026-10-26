@@ -1,0 +1,82 @@
+id_self:                ann_mending_a_prefix_clash_retypes_every_guid
+guid_self:              ann_9e92d1ea8845419d8bbbdbfad3797ae8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Late prefix clash mended by changing every guid of a type
+brief:                  |
+                        A clash of type prefixes found only when a
+                        third segment reads two peers is mended by
+                        renaming one prefix. Every id and guid of that
+                        type then changes prefix, which the commit
+                        check refuses and the rename maps cannot
+                        carry, since they key a rename by the guid. A
+                        clash of other entry ids is an ordinary
+                        rename, so the cost falls on prefixes.
+                        Preventing the clash when the prefix is chosen
+                        avoids the repair.
+description:            |
+                        Sources:
+                        - Under this option two peers may clash and
+                          the clash is mended in the segment that
+                          consumes both, by a rename in one of them
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_names_unique_across_what_a_segment_consumes.yaml
+                          at brief).
+                        - A prefix holds no underscore, and every id
+                          of a type starts with its prefix
+                          (src/cctool/graph/derive.lp within
+                          prefix_of; src/cctool/graph/prefix.py within
+                          stem).
+                        - Every guid is the prefix of its id and 32
+                          hex digits (src/cctool/check/check.lp within
+                          bad_guid).
+                        - Digits of a guid that reappear under another
+                          prefix after a commit are reported, with no
+                          exception for a renamed prefix
+                          (src/cctool/commit/change.lp within
+                          retyped_guid).
+                        - Rename maps hold an old id, a new id and the
+                          guid
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief).
+                        - ASSUMPTION: the segment that finds the clash
+                          is often not the one that holds the type, so
+                          the repair lands in a repository other than
+                          the one where the clash is seen. Strength:
+                          weak with one peer; strong at ten times the
+                          peers, since the pairs that can clash grow
+                          with the square of their number, as argued
+                          in
+                          ann_prefixes_of_sibling_peers_can_collide.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_prefixes_reserved_in_cc_public
+    guid_target:        opt_cff6aec9b1d9454d98cc1cb52d6b71c8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_names_unique_across_what_a_segment_consumes
+    guid_target:        opt_b33bab77a5b340e98833895bcbca158a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

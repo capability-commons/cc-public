@@ -1,0 +1,111 @@
+id_self:                ann_promoting_a_peer_typed_entry_changes_its_id_and_guid
+guid_self:              ann_c506a25d1b3c42228627d58eb4fdce06
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer entries that change identity when they move upstream
+brief:                  |
+                        The ruled path for an entry is to move into
+                        cc-public when a second segment needs it. If a
+                        peer holds its concepts and concerns under
+                        types of its own, that move changes the
+                        entry's type, and so the prefix of both its id
+                        and its guid. The commit check refuses a guid
+                        that keeps its digits under another prefix.
+                        Every edge that names the entry, in the peer
+                        and in any segment that reads it, must then be
+                        rewritten by hand, and the rename map cannot
+                        carry the change, since it follows a guid that
+                        no longer exists. Under the other options the
+                        entry keeps its id and guid when it moves, and
+                        only the register that holds it changes.
+description:            |
+                        Sources:
+                        - An entry moves into cc-public when a second
+                          segment needs it
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief).
+                        - Under the option of peer types, an entry
+                          moves into cc-public under the consumed
+                          type, after living under a type of the peer
+                          with its own prefix
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at brief).
+                        - Every id of a type starts with its prefix
+                          and an underscore
+                          (src/cctool/graph/prefix.py within stem).
+                        - The type of an id is the type whose prefix
+                          it has (src/cctool/graph/derive.lp within
+                          has_type).
+                        - Every guid is the prefix of its id and 32
+                          hex digits, and a guid whose prefix differs
+                          from its id's fails
+                          (src/cctool/check/check.lp within bad_guid).
+                        - A guid keeps its type: digits that carry
+                          another prefix after a commit are reported,
+                          and the fix is to remove the item and make a
+                          new one (src/cctool/commit/change.lp within
+                          retyped_guid).
+                        - An edge names its target by id and by guid
+                          (any edge in _data, for example
+                          _data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at edge).
+                        - A release ships each rename as an old id, a
+                          new id and the guid, and a command in the
+                          peer rewrites each reference to the id its
+                          guid names
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief).
+                        - Moving an entry to another register keeps
+                          its id and guid, as argued in
+                          ann_peer_type_checked_by_data_already_read
+                          (_data/decision/dec_how_peers_add_vocabulary/ann_peer_type_checked_by_data_already_read.yaml
+                          at description).
+                        - Each rename in a map carries one guid beside
+                          the old and new id, so a map cannot record a
+                          change of guid
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief).
+                        - ASSUMPTION: a reference to an entry whose
+                          guid changed is then rewritten by hand.
+                          Strength: strong for each entry that moves.
+                          It grows at ten times the size, since every
+                          segment that names a moved entry pays the
+                          rewrite once per entry.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

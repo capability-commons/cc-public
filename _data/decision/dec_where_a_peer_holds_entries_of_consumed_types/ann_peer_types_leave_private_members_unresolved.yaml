@@ -1,0 +1,94 @@
+id_self:                ann_peer_types_leave_private_members_unresolved
+guid_self:              ann_3056e3c58a7a4ec5a0f7ef73678ed7b0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Private team members outside the member type
+brief:                  |
+                        A person who must not be named in public
+                        belongs in the team member register of a
+                        private peer. If a peer may hold no entries of
+                        a consumed type, such a person becomes an
+                        entry of a peer type that no member lookup
+                        knows, and the only way to count as a team
+                        member is to be listed in public. The other
+                        options keep the person an entry of
+                        type_team_member in the peer, which a lookup
+                        can find by the type or by the register that
+                        names or extends it.
+description:            |
+                        Sources:
+                        - The team member register is public, and a
+                          member who should not be named in public is
+                          held in the team member register of a
+                          private repository instead
+                          (_data/register/reg_team_member.yaml at
+                          note).
+                        - The commit message check finds the members
+                          by the register id reg_team_member, and
+                          takes the first document with that id
+                          (src/cctool/commit/message.py within
+                          ID_MEMBERS and _members).
+                        - Measured 2026-10-26 in a scratch copy: a
+                          peer register of team members holding one
+                          member sits in the union beside cc-public's
+                          register, the member lookup over that union
+                          returns only the guid of cc-public's member,
+                          and cctool check fails the peer entry as
+                          misplaced_register_entry.
+                        - Under the option where a peer defines types
+                          of its own, a peer holds no entries of a
+                          consumed type
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at brief).
+                        - Under the register-naming and extending
+                          options, an entry of a consumed type sits in
+                          a peer register that names the type, or that
+                          names the consumed register it extends
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_register_names_the_types_it_holds.yaml
+                          at brief;
+                          _data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief).
+                        - Personal data lives only in private
+                          repositories, and some segments may hold
+                          personal data under the GDPR (owner's
+                          statement, 2026-10-22, quoted in
+                          _data/decision/dec_how_peers_add_vocabulary/ann_private_members_held_in_the_peer.yaml
+                          at description). Strength: moderate; every
+                          option needs a change to the member lookup,
+                          as measured, but only the option of peer
+                          types gives that lookup nothing to follow.
+                          It holds at ten times the size, since every
+                          peer with people of its own meets it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

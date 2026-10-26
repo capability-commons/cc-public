@@ -1,0 +1,81 @@
+id_self:                ann_free_register_names_collide_across_peers
+guid_self:              ann_18e69abde11b4b91ace5b2734aad1bab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Free register names that sibling peers can share
+brief:                  |
+                        A peer register named freely is likely to take
+                        a generic name, such as the register prefix
+                        with peer_concept after it, which the fixture
+                        peer built for the federation measurements
+                        already took. Two peers that do not consume
+                        each other may both take it, and their
+                        registers then cannot be read together without
+                        a rename. A register id that carries the
+                        segment's name cannot clash while segment
+                        names are distinct, and it follows the form
+                        already used for release ids.
+description:            |
+                        Sources:
+                        - Read 2026-10-26: the fixture peer built in
+                          the container for the federation
+                          measurements names its concept register with
+                          the register prefix and peer_concept after
+                          it. The fixture is not part of cc-public.
+                        - Under the free option the only rule is that
+                          every id is unique across the peer and what
+                          it consumes, and no check ties the id to the
+                          segment
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_unique_and_otherwise_free.yaml
+                          at brief).
+                        - Two items with one id and different guids
+                          fail the check when they are read together,
+                          as cited and measured in
+                          ann_duplicate_id_already_enforces_register_uniqueness.
+                        - Release ids are qualified by their segment,
+                          such as release_cc_public_0_1_0 (owner's
+                          statement, 2026-10-25).
+                        - More peers are expected, including partners'
+                          segments (owner's statement, 2026-10-24).
+                        - ASSUMPTION: segment ids are distinct across
+                          the federation, since each names one
+                          segment, such as segment_cc_public.
+                          Strength: weak with one peer; moderate at
+                          ten times the peers, since the pairs of
+                          peers that can clash grow with the square of
+                          their number. The one-register option is
+                          qualified by segment too, so it shares this
+                          point.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_a_peer_register
+    guid_target:        dec_cbd7d5dc7c3d49a9a3c4f0e2bb1b4c16
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_qualified_by_its_segment
+    guid_target:        opt_da53b57b9c3141c09101eeeb0068c266
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_register_per_peer_for_all_its_entries
+    guid_target:        opt_6560a03257754e34879ac72497276974
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_id_unique_and_otherwise_free
+    guid_target:        opt_4f761517782b46aca0212d384d01bd59
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,90 @@
+id_self:                ann_reserved_names_add_a_record_and_rule
+guid_self:              ann_9fb937be7bfc49c6a9908295d03d3d52
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reservation records and rules added for names
+brief:                  |
+                        Uniqueness across what a segment consumes adds
+                        nothing, since the duplicate prefix and
+                        duplicate id checks already run over the union
+                        read. Reserved prefixes add a reservation
+                        record in cc-public and a check against it,
+                        and state each prefix a further time. A stem
+                        adds a field, a reservation and a check on
+                        every name, and a prefix with a stem in it
+                        fails the existing prefix form rule.
+description:            |
+                        Sources:
+                        - The duplicate prefix and duplicate id checks
+                          run over every type and item read
+                          (src/cctool/check/check.lp within
+                          duplicate_prefix and duplicate_id).
+                        - The type register decides each prefix, and
+                          code that needs one before reading a tree
+                          keeps a copy that a test compares with the
+                          register (src/cctool/graph/prefix.py within
+                          MAP_PREFIX, and its module docstring at
+                          description).
+                        - The reservation option's own terms are cited
+                          in
+                          ann_prefix_reservation_ties_partners_to_releases.
+                        - Under stems, each segment item declares a
+                          stem reserved in cc-public, and every peer
+                          type prefix and every peer entry id carries
+                          it
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_segment_stem_in_every_peer_name.yaml
+                          at brief).
+                        - A prefix is three letters, one word of its
+                          term, or three letters of each of two or
+                          three words of it in a row, unless the type
+                          states a prefix_exception
+                          (src/cctool/check/check.lp within
+                          prefix_form).
+                        - Measured 2026-10-26: in a copy of cc-public
+                          with the prefix of type_option set to
+                          patrolopt, the check reported prefix_form
+                          and regex_without_prefix for type_option.
+                        - ASSUMPTION: under reserved prefixes, a peer
+                          cannot use a new prefix until the release or
+                          checkout of cc-public it reads holds the
+                          reservation, as the peer check reads only
+                          that tree (src/cctool/check/segment.py,
+                          module docstring at description). Strength:
+                          moderate. Under reserved prefixes the cost
+                          grows with each peer type at ten times the
+                          size; under stems it is paid once per
+                          segment, but each peer type then needs a
+                          prefix_exception or a change to the rule.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_names_unique_across_what_a_segment_consumes
+    guid_target:        opt_b33bab77a5b340e98833895bcbca158a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prefixes_reserved_in_cc_public
+    guid_target:        opt_cff6aec9b1d9454d98cc1cb52d6b71c8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

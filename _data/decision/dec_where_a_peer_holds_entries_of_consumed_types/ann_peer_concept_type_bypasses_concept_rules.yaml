@@ -1,0 +1,70 @@
+id_self:                ann_peer_concept_type_bypasses_concept_rules
+guid_self:              ann_3f18c33e4f5d438c86753fdb112a916e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A second concept type beside type_concept
+brief:                  |
+                        A peer type for its own concepts does the job
+                        type_concept already does, so the system holds
+                        two types for one kind of item. Several rules
+                        and tools name type_concept or its prefix
+                        directly, so they do not apply to the peer's
+                        type unless each is repeated for it. The same
+                        holds for any other consumed type a peer
+                        copies, such as concerns.
+description:            |
+                        Sources:
+                        - Under this option a peer that needs a
+                          concept defines a type of its own, with its
+                          own prefix and register
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at brief).
+                        - Rules that name type_concept by id: a
+                          concept uses every other concept
+                          (src/cctool/check/check.lp within
+                          uses_concept), the brief of a concept is a
+                          strict field (src/cctool/check/check.lp
+                          within strict_field), and every concept is
+                          named by some other item
+                          (src/cctool/check/check.lp within
+                          unused_concept).
+                        - The advice on a missing genus names
+                          type_concept by id
+                          (src/cctool/check/advise.lp within
+                          unrecorded_genus).
+                        - Code takes the concept prefix from the map
+                          of type_concept to widen a search and to
+                          list the concepts an item uses
+                          (src/cctool/graph/text.py within
+                          PREFIX_CONCEPT; src/cctool/web/argument.py
+                          within PREFIX_CONCEPT).
+                        - Code takes the concern prefix the same way
+                          (src/cctool/web/request.py within
+                          PREFIX_CONCERN). Strength: moderate for one
+                          peer type; strong at ten times the size,
+                          since each peer copy of a consumed type
+                          multiplies the rules that would need a
+                          second clause.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

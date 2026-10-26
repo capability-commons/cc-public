@@ -1,0 +1,69 @@
+id_self:                ann_stem_lets_a_check_tie_a_name_to_its_segment
+guid_self:              ann_1c6d5dfacf2147cab1b44c8cb268f80e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Names checkable against the segment that holds them
+brief:                  |
+                        The check already refuses an entry that
+                        repeats another's id, but it cannot refuse a
+                        new id that only looks as if another segment
+                        added it. With a stem in every name, a check
+                        can compare the stem with the segment the file
+                        was read from, so a peer cannot pass its
+                        entries off as another's. The two other
+                        options leave the origin of a name to the file
+                        path alone.
+description:            |
+                        Sources:
+                        - Measured 2026-10-26 in a scratch copy: a
+                          peer register that repeats
+                          member_william_payne with its id and guid
+                          fails repeated_item and
+                          misplaced_register_entry under cctool check
+                          run on the peer.
+                        - duplicate_id and duplicate_guid compare only
+                          ids and guids, not the segment that holds an
+                          item (src/cctool/check/check.lp within
+                          duplicate_id and duplicate_guid).
+                        - The union keys each consumed document under
+                          a folder named for its segment
+                          (src/cctool/graph/extract.py within
+                          DIR_CONSUMED; src/cctool/check/segment.py,
+                          module docstring at description).
+                        - The stem option's terms are cited in
+                          ann_reserved_names_add_a_record_and_rule.
+                        - The register naming option of qualified ids
+                          states a like check for register ids
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_qualified_by_its_segment.yaml
+                          at brief).
+                        - ASSUMPTION: the stem option comes with a
+                          check that a name's stem is that of the
+                          segment holding it; the option text does not
+                          say so. Strength: weak while every peer is
+                          WTP's own; moderate at ten times the size
+                          with partners. It weighs against the
+                          disclosure cost of reserving stems in
+                          public, unless stems are opaque.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

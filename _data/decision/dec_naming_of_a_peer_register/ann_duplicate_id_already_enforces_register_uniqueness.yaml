@@ -1,0 +1,81 @@
+id_self:                ann_duplicate_id_already_enforces_register_uniqueness
+guid_self:              ann_f54cd8c654c64cd88069a7f1ace5cd4b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register uniqueness enforced by the existing id check
+brief:                  |
+                        The ruled rule, that every id is unique across
+                        a peer and what it consumes, is already
+                        enforced for registers by the duplicate id
+                        check over the union the peer check reads.
+                        Free register ids add no mechanism. Qualified
+                        ids add a naming check tied to the segment,
+                        which release ids, the cited precedent, do not
+                        have: cctool release prepare writes the
+                        segment into a release id, but no check
+                        enforces it.
+description:            |
+                        Sources:
+                        - Every prefix and id is unique across the
+                          peer and what it consumes
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief).
+                        - No id names two items with different guids
+                          (src/cctool/check/check.lp within
+                          duplicate_id).
+                        - A peer check reads the peer tree beside each
+                          consumed tree and checks them together
+                          (src/cctool/check/segment.py, module
+                          docstring at description).
+                        - Measured 2026-10-26: in a copy of the peer
+                          fixture with its concept register renamed to
+                          reg_concept, the peer check reported
+                          duplicate_id twice for reg_concept, naming
+                          both guids.
+                        - The qualified option adds a check that fails
+                          a peer register whose id does not carry the
+                          segment's name
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_qualified_by_its_segment.yaml
+                          at brief).
+                        - The id pattern of a release does not require
+                          the segment's name, only a name and a
+                          version
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_release.regex_id).
+                        - cctool release prepare builds a release id
+                          from the segment item's id without its
+                          prefix, and the version
+                          (src/cctool/release/release.py within
+                          prepare). Strength: moderate. The count of
+                          mechanisms is fixed at ten times the size,
+                          but clashes between sibling peers are a
+                          separate question for
+                          dec_uniqueness_of_names_across_segments.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_a_peer_register
+    guid_target:        dec_cbd7d5dc7c3d49a9a3c4f0e2bb1b4c16
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_unique_and_otherwise_free
+    guid_target:        opt_4f761517782b46aca0212d384d01bd59
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_id_qualified_by_its_segment
+    guid_target:        opt_da53b57b9c3141c09101eeeb0068c266
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

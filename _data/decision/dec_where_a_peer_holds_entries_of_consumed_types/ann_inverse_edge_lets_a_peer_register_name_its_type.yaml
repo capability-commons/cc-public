@@ -1,0 +1,106 @@
+id_self:                ann_inverse_edge_lets_a_peer_register_name_its_type
+guid_self:              ann_280ca0281e8948b9894f0991df422e5c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer register named by an existing inverse edge
+brief:                  |
+                        Naming a peer register's type by an inverse
+                        edge needs no new mechanism. The graph already
+                        reads an edge recorded with an embedded
+                        inverse as the primary edge, and both the
+                        placement check and cctool new already follow
+                        it. One inverse added to the entry of
+                        relation_has_items_held_in_register in
+                        cc-public, and one edge in the peer register,
+                        clear the placement failure with no change to
+                        code, while an extending register adds a
+                        second relation and a second placement clause
+                        for the same job.
+description:            |
+                        Sources:
+                        - An edge recorded with an inverse is read as
+                          the primary edge in the opposite direction
+                          (src/cctool/graph/derive.lp within
+                          primary_edge).
+                        - The placement check asks only for a primary
+                          edge of relation_has_items_held_in_register
+                          from the type to the register
+                          (src/cctool/check/check.lp within
+                          misplaced_register_entry).
+                        - cctool new finds the register of a new entry
+                          from that relation in either direction,
+                          including through an inverse
+                          (src/cctool/edit/edit.py within _register).
+                        - The relation register says an inverse is
+                          minted when an item wants to record an edge
+                          that way, and that in a federation the
+                          direction decides who is able to record the
+                          fact at all
+                          (_data/register/reg_relation.yaml at note).
+                        - The entry of
+                          relation_has_items_held_in_register embeds
+                          no inverse today
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_has_items_held_in_register).
+                        - Measured 2026-10-26 on copies in a scratch
+                          folder: with an inverse reading added to
+                          that entry in a copy of cc-public, and an
+                          edge of that inverse from the fixture peer's
+                          concept register to type_concept in a copy
+                          of the peer fixture, the peer check went
+                          from 6 failures to 5 and
+                          misplaced_register_entry was gone; the type
+                          entry kept its edge, and the rest were the
+                          fixture's missing fields and layout.
+                        - Measured 2026-10-26: in that peer, cctool
+                          new with --dry-run for a new concept printed
+                          a diff that adds the entry to the peer's
+                          concept register (a dry run writes nothing);
+                          in the unchanged fixture it refused, because
+                          reg_concept is held by a consumed segment.
+                        - The extending option adds an edge naming the
+                          extended register, a placement rule that
+                          accepts it, and a rule for which register
+                          cctool new writes into
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief).
+                        - Under the inverse option, each type entry
+                          keeps naming its register in cc-public, and
+                          a peer register names the consumed type by
+                          the inverse edge
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_names_its_type_by_an_inverse_edge.yaml
+                          at brief). Strength: strong for the first
+                          peer, since it is measured. At ten times the
+                          size it weakens where one tree reads two
+                          registers that name the same type, because
+                          cctool new takes the first edge in sorted
+                          order and may pick a register of a consumed
+                          segment.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

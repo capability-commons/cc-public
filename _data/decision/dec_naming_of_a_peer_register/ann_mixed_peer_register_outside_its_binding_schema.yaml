@@ -1,0 +1,117 @@
+id_self:                ann_mixed_peer_register_outside_its_binding_schema
+guid_self:              ann_464770b1bb2947089b8f3755a847050f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mixed peer register outside the ruled binding schema
+brief:                  |
+                        A register with one binding schema can be
+                        checked in full by any standard JSON Schema
+                        validator, which is the reason that binding
+                        was ruled. One register that holds every entry
+                        a peer adds needs a way to choose each entry's
+                        schema from its type. It fails every existing
+                        register schema when it holds two types, so a
+                        partner without cctool cannot validate it. The
+                        peer can restore stock validation only by
+                        writing a schema of its own that picks the
+                        entry schema by id prefix. That adds a second
+                        way to bind entries to schemas, beside the
+                        per-register binding that was ruled, and a
+                        second placement rule.
+description:            |
+                        Sources:
+                        - Each register names its own schema, which
+                          composes the register shape with the shape
+                          of its entries, so that any standard JSON
+                          Schema validator can check a register in
+                          full
+                          (_data/decision/dec_register_binding_schemas/ruling_register_binding_schemas.yaml
+                          at brief).
+                        - Under the one-register option, each entry is
+                          checked against the schema of its type's
+                          entries, not against one schema for the
+                          register
+                          (_data/decision/dec_naming_of_a_peer_register/opt_one_register_per_peer_for_all_its_entries.yaml
+                          at brief).
+                        - The data format names YAML 1.2 and JSON
+                          Schema 2020-12
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          at brief).
+                        - A schema is found for an item with no
+                          holder, from its type or its own edge, so an
+                          entry inside a register gets none of its own
+                          (src/cctool/graph/derive.lp within
+                          document_schema; src/cctool/graph/extract.py
+                          within PREDICATE).
+                        - A register's binding schema composes
+                          sch_register with one entry schema
+                          (_data/schema/sch_reg_concept.yaml at
+                          allOf).
+                        - Measured 2026-10-26 with jsonschema 4.26.0
+                          and the Draft 2020-12 validator over
+                          cc-public's schemas: a register holding one
+                          concept and one concern fails
+                          sch_reg_concept with 2 errors and
+                          sch_reg_concern with 3; the same register
+                          with only the concept passes
+                          sch_reg_concept.
+                        - Measured the same day: a schema written for
+                          the test, which applies sch_regentry_concept
+                          to entries whose key starts with the concept
+                          prefix and sch_regentry_concern to those
+                          that start with the concern prefix, passes
+                          the mixed register with no errors.
+                        - JSON Schema can choose an entry schema from
+                          the data only if one schema lists every
+                          case, as argued in
+                          ann_json_schema_selects_entry_by_listed_cases
+                          (_data/decision/dec_register_binding_schemas/ann_json_schema_selects_entry_by_listed_cases.yaml
+                          at brief).
+                        - The placement check fails an entry whose
+                          type does not name the register it sits in
+                          (src/cctool/check/check.lp within
+                          misplaced_register_entry). Strength: strong.
+                          The loss is real for any reader without
+                          cctool, and a per-prefix schema mends it at
+                          the cost of one schema per peer that repeats
+                          the prefixes. It holds at ten times the
+                          size, and the list of cases grows with every
+                          type a peer mixes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_a_peer_register
+    guid_target:        dec_cbd7d5dc7c3d49a9a3c4f0e2bb1b4c16
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_qualified_by_its_segment
+    guid_target:        opt_da53b57b9c3141c09101eeeb0068c266
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_unique_and_otherwise_free
+    guid_target:        opt_4f761517782b46aca0212d384d01bd59
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_register_per_peer_for_all_its_entries
+    guid_target:        opt_6560a03257754e34879ac72497276974
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

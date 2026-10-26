@@ -1,0 +1,85 @@
+id_self:                ann_prefix_reservation_ties_partners_to_releases
+guid_self:              ann_0f93875acd8240c9beaae801366199d7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upstream reservation before each new peer type
+brief:                  |
+                        If every prefix must be reserved in cc-public
+                        before use, a partner cannot use a new type
+                        until cc-public has accepted the entry and the
+                        partner has taken up the release that carries
+                        it. That is one upstream round trip per type,
+                        for every peer in every environment. A stem is
+                        reserved once per segment, and unique names
+                        across what a segment consumes need no
+                        upstream step at all.
+description:            |
+                        Sources:
+                        - Under reserved prefixes, a peer reserves
+                          each prefix of a type of its own with an
+                          entry in a register of cc-public before it
+                          uses it
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_prefixes_reserved_in_cc_public.yaml
+                          at brief).
+                        - Peers bring in cc-public as a versioned
+                          package
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          at brief).
+                        - A segment item names the release it consumes
+                          by an edge, and the check compares that edge
+                          with the release the consumed tree holds
+                          (_data/decision/dec_how_a_segment_declares_itself/ruling_segment_item_records_the_release.yaml
+                          at brief).
+                        - A peer holds registers of its own for any
+                          types it needs, read beside those of the
+                          segments it consumes
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief).
+                        - The stem option and the owner's statements
+                          on private peers and partners are cited in
+                          ann_reserved_names_add_a_record_and_rule and
+                          ann_reserved_names_disclose_private_segments.
+                        - ASSUMPTION: a partner other than WTP cannot
+                          count on cc-public accepting a reservation,
+                          or on its timing. Strength: weak while every
+                          peer is WTP's own; moderate to strong at ten
+                          times the partners, since each new type of
+                          each partner waits on a cc-public release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_names_unique_across_what_a_segment_consumes
+    guid_target:        opt_b33bab77a5b340e98833895bcbca158a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prefixes_reserved_in_cc_public
+    guid_target:        opt_cff6aec9b1d9454d98cc1cb52d6b71c8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

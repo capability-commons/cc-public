@@ -1,0 +1,78 @@
+id_self:                ann_turned_edge_changes_public_type_entries
+guid_self:              ann_f6afd1c87aa54d32902d943eea92be9e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Public type entries changed by a turned edge
+brief:                  |
+                        Turning the edge round takes the register edge
+                        off each type entry of cc-public, which is
+                        part of the public data format, so a reader
+                        that finds a type's register from its type
+                        entry stops finding it. A register that
+                        extends a consumed register adds a new edge
+                        and leaves the type entries as they are. A
+                        measured variant shows that the register-side
+                        reading can also be added beside the type's
+                        edge, as an inverse, rather than in place of
+                        it.
+description:            |
+                        Sources:
+                        - The option of registers that name their
+                          types has each register name its types, and
+                          no type entry name a register
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_register_names_the_types_it_holds.yaml
+                          at brief).
+                        - The extending option keeps the type entry
+                          naming its one register and adds a new edge
+                          on the peer register
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief).
+                        - Measured 2026-10-26 by a search of
+                          _data/register/reg_data_item_type.yaml: 10
+                          type entries carry an edge of
+                          relation_has_items_held_in_register.
+                        - The data format is public; after 1.0 a
+                          schema change that can reject a document the
+                          previous release accepted is breaking
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          at brief).
+                        - 1.0 is likely 6 months or more away
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml
+                          at brief).
+                        - The inverse kept beside the type's edge is
+                          measured, and the tooling that reads it
+                          cited, in
+                          ann_inverse_edge_lets_a_peer_register_name_its_type.
+                          Strength: moderate; before 1.0 the change is
+                          not formally breaking, but a reader written
+                          against the type entry still loses its
+                          lookup. It holds at ten times the size,
+                          since more readers rely on the format.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

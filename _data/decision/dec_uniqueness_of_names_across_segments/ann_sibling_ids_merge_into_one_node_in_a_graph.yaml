@@ -1,0 +1,85 @@
+id_self:                ann_sibling_ids_merge_into_one_node_in_a_graph
+guid_self:              ann_413b98eb1d73468a8027e15c2ce9df2f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Sibling entry ids merged in a shared graph
+brief:                  |
+                        Reserved prefixes stop two peers choosing one
+                        type prefix, but not two peers adding one
+                        entry id, such as the concept prefix with
+                        patrol_route after it, to a consumed type. No
+                        check of cctool can see such a clash today,
+                        since a peer check reads only one consumed
+                        tree, and the graph view names each item by
+                        its id alone, so a store that loads both peers
+                        joins the two entries into one node. A segment
+                        stem in every added id removes the clash at
+                        its source.
+description:            |
+                        Sources:
+                        - Under reserved prefixes, the ids of other
+                          entries a peer adds stay unique only across
+                          the peer and what it consumes
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_prefixes_reserved_in_cc_public.yaml
+                          at brief).
+                        - Under the first option, a clash between two
+                          peers is found only when a third segment
+                          consumes both
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_names_unique_across_what_a_segment_consumes.yaml
+                          at brief).
+                        - The trees a segment may consume are the one
+                          cctool package that is running, either its
+                          installed release or its checkout
+                          (src/cctool/check/segment.py within trees).
+                        - The graph view names each item cc:ID under
+                          one namespace, with no part for its segment
+                          (src/cctool/graph/sparql.py within NS_ITEM
+                          and store).
+                        - Read 2026-10-26: the fixture peer built in
+                          the container for the federation
+                          measurements adds an entry of type_concept
+                          whose id is the concept prefix with
+                          patrol_route after it. The fixture is not
+                          part of cc-public.
+                        - A graph database segment is planned (owner's
+                          statement, 2026-10-24).
+                        - ASSUMPTION: a partner or a graph database
+                          will load two peers that do not consume each
+                          other into one store. Strength: weak with
+                          one peer; strong at ten times the peers,
+                          since entry ids are far more numerous than
+                          type prefixes and the clash surfaces in a
+                          partner's store rather than in a check.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_names_unique_across_what_a_segment_consumes
+    guid_target:        opt_b33bab77a5b340e98833895bcbca158a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prefixes_reserved_in_cc_public
+    guid_target:        opt_cff6aec9b1d9454d98cc1cb52d6b71c8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
