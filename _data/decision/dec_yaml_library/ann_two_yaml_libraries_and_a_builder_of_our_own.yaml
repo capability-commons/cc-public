@@ -1,0 +1,74 @@
+id_self:                ann_two_yaml_libraries_and_a_builder_of_our_own
+guid_self:              ann_e11e3179315542ad94180af56669fb87
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two YAML libraries and a node builder of our own
+brief:                  |
+                        The tool depends on PyYAML as well as
+                        ruamel.yaml, and keeps about 280 lines of its
+                        own that build ruamel.yaml types from libyaml
+                        nodes, and must follow both libraries. A
+                        change in how ruamel.yaml builds a scalar, or
+                        in the private node types it is given, could
+                        make the two readings differ.
+description:            |
+                        Sources:
+                        - pyproject.toml at project.dependencies names
+                          both pyyaml and ruamel.yaml.
+                        - src/cctool/graph/parse.py holds the builder;
+                          it builds scalars with the constructor of a
+                          ruamel.yaml round-trip loader and its
+                          ScalarNode type, and its resolver copies the
+                          implicit resolvers of ruamel.yaml for YAML
+                          1.2 [src/cctool/graph/parse.py within
+                          _scalar and _Resolver].
+                        - The check store keys verdicts by the
+                          versions of both libraries
+                          [src/cctool/check/store.py within
+                          TUPLE_DIST].
+                        - The property tests and the whole-tree
+                          comparison would show a divergence after an
+                          upgrade of either library
+                          [src/cctool/_test/test_property.py within
+                          test_the_fast_reading_of_a_document_is_that_of_ruamel].
+                        - PyYAML is widely used and has a C extension
+                          built for the platforms the lock covers;
+                          without libyaml the reader falls back to
+                          ruamel.yaml [src/cctool/graph/parse.py
+                          within IS_FAST and load]. ASSUMPTION:
+                          conda-forge builds pyyaml with libyaml on
+                          linux-64, osx-64 and osx-arm64; not yet
+                          checked in the lock.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_libyaml_parse_into_round_trip_types
+    guid_target:        opt_6e4cc8477d0b45f59bbaabfb8004a295
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

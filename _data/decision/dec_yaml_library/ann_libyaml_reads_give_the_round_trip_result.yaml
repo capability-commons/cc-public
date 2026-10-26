@@ -1,0 +1,70 @@
+id_self:                ann_libyaml_reads_give_the_round_trip_result
+guid_self:              ann_10bdd78f7ca8476cbd445bfb45e76e4c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same values, types and lines as a round-trip load
+brief:                  |
+                        On every YAML file of the tree, the libyaml
+                        reading gives the same values, types, and
+                        lines and columns of keys and items as a
+                        round-trip load, and the extractor finds the
+                        same facts. What it does not build, and every
+                        error, is left to ruamel.yaml, so a repeated
+                        key is still refused and YAML 1.2 still
+                        decides what a plain scalar is.
+description:            |
+                        Sources:
+                        - All 3,267 YAML files compared, values, types
+                          and .lc of every key and item: 0 differ;
+                          cctool.graph.extract.extract over the whole
+                          tree gives the same facts before and after
+                          [measured by Claude in the cloud container
+                          on 2026-10-26].
+                        - The plain scalar rules are those of
+                          ruamel.yaml for YAML 1.2, so yes, no, on and
+                          off stay text [src/cctool/graph/parse.py
+                          within _Resolver;
+                          src/cctool/graph/_test/test_graph.py within
+                          test_parse_reads_plain_scalars_by_the_rules_of_yaml_1_2].
+                        - A tag, an alias, a merge key, a repeated
+                          key, or a libyaml error sends the document
+                          to ruamel.yaml [src/cctool/graph/parse.py
+                          within load, _build and _mapping].
+                        - Two property tests compare the two on
+                          made-up documents and on any text
+                          ruamel.yaml reads; at 2,000 examples each
+                          they found a bare ! tag and a lone = that
+                          are now left to ruamel.yaml
+                          [src/cctool/_test/test_property.py within
+                          test_the_fast_reading_of_a_document_is_that_of_ruamel
+                          and
+                          test_the_fast_reading_of_any_text_that_ruamel_reads_is_the_same].
+                        - libyaml reads a few texts ruamel.yaml
+                          refuses, such as a tab after a scalar; the
+                          layout check reads every file with
+                          ruamel.yaml and reports such a file as not
+                          YAML [src/cctool/edit/layout.py within
+                          _violation].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_libyaml_parse_into_round_trip_types
+    guid_target:        opt_6e4cc8477d0b45f59bbaabfb8004a295
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

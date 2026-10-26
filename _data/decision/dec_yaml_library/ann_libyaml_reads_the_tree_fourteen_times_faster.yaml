@@ -1,0 +1,53 @@
+id_self:                ann_libyaml_reads_the_tree_fourteen_times_faster
+guid_self:              ann_3153a28b87bf437ba13777fc74ad972c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reading the tree fourteen times faster
+brief:                  |
+                        Parsing with libyaml and building the
+                        round-trip types reads every YAML file of the
+                        tree about fourteen times faster than a
+                        round-trip load, and a cold check runs about a
+                        fifth faster.
+description:            |
+                        Sources:
+                        - All 3,267 YAML files of the tree read in 9.3
+                          s by a round-trip load and in 0.7 s by
+                          src/cctool/graph/parse.py within load
+                          [measured by Claude in the cloud container
+                          on 2026-10-26, Python 3.14, ruamel.yaml
+                          0.19.1, PyYAML 6.0.3 with libyaml].
+                        - cctool check with no store took 49 s before
+                          the change and 39 s after, on the same tree
+                          and machine [measured by Claude in the cloud
+                          container on 2026-10-26].
+                        - Reading YAML was most of the time of a check
+                          before the read cache, and the parse still
+                          starts cold in each process
+                          [_data/decision/dec_yaml_library/ann_round_trip_parsing_is_slow.yaml
+                          at brief;
+                          _data/decision/dec_yaml_library/ann_read_cache_hides_parse_cost.yaml
+                          at description].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_yaml_library
+    guid_target:        dec_50bc054b36f247af9fe7a4b3e0e10cd5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_libyaml_parse_into_round_trip_types
+    guid_target:        opt_6e4cc8477d0b45f59bbaabfb8004a295
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
