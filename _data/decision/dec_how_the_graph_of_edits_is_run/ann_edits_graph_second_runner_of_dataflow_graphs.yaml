@@ -1,0 +1,99 @@
+id_self:                ann_edits_graph_second_runner_of_dataflow_graphs
+guid_self:              ann_16cf2392f5d14ad697207400ec607bd8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second runner of dataflow graphs with semantics of its own
+brief:                  |
+                        Nothing in cctool runs a [[dataflow graph]]
+                        today, and the [[dataflow engine]] ruled for
+                        systems is C++ with a static schedule fixed at
+                        build time. Run in the tooling, the graph of
+                        edits needs a second runner that fires each
+                        node once, on demand, upstream of the output
+                        asked for, which is a walk in topological
+                        order with the name of a dataflow run and
+                        semantics unlike the engine's. The resolver
+                        option names that walk for what it is.
+description:            |
+                        Sources:
+                        - No python module of cctool resolves a
+                          variant or runs a dataflow graph; the
+                          dataflow code draws a dataflow step, reads
+                          graphs into facts and checks them.
+                          (src/cctool, searched for resolve, variant
+                          and dataflow by the advocate and the
+                          verifier, 2026-10-26; src/cctool/web/step.py
+                          within figure)
+                        - The engine supports Kahn process networks
+                          and actors together.
+                          (_data/decision/dec_first_semantics/ruling_first_semantics.yaml
+                          at brief)
+                        - One engine runs a static subgraph, whose
+                          schedule is generated as plain C++17 calls
+                          fixed at build time, and a dynamic subgraph,
+                          whose nodes and edges may change at the
+                          start of a step.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          at brief)
+                        - The drafted Kahn option runs every node once
+                          in each step in a fixed order.
+                          (_data/decision/dec_first_semantics/opt_kpn_first.yaml
+                          at brief)
+                        - Resolving a dataflow variant is running the
+                          graph of edits up to its output.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief)
+                        - Simplicity counts jobs done by more than one
+                          mechanism; maintainability asks how readily
+                          a newcomer can understand the design.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1 and
+                          entries.concern_maintainability.question.0)
+                          Strength: moderate; it falls away if the
+                          engine itself runs the graph of edits, which
+                          needs a dataflow model as a token type and
+                          every operation in C++, a question for where
+                          variants are resolved.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_engine
+    guid_target:        concept_96848bd06b514560aea72ebcc2c9cdb5

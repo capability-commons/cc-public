@@ -1,0 +1,103 @@
+id_self:                ann_variant_resolver_operation_change_in_one_place
+guid_self:              ann_4e63d1db6a1445de959d1bb0f9780e43
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change to an operation reviewed in one place
+brief:                  |
+                        If each [[variant operation]] is a node of the
+                        graph of edits, a change to one is an
+                        [[interface control document]] and one
+                        implementation. With Python only, both are
+                        items cctool checks and one reviewer reads in
+                        one commit; one C++ resolver adds the binding
+                        and two interpreters add a second
+                        implementation. An interface per operation
+                        holds the two interpreters' ports and settings
+                        to one contract, but not what each operation
+                        does.
+description:            |
+                        Sources:
+                        - Under the proposed option each variant
+                          operation is a dataflow node, and a dataflow
+                          node presents exactly one interface control
+                          document.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief; src/cctool/check/check.lp within
+                          interface_count)
+                        - The unknown-port, unknown-setting and
+                          missing-setting checks hold each node to the
+                          ports and settings of its interface.
+                          (src/cctool/check/check.lp within
+                          unknown_port, unknown_setting and
+                          missing_setting)
+                        - Under the two-interpreter option every
+                          operation is written, fixed, reviewed and
+                          tested twice.
+                          (_data/decision/dec_where_variants_are_resolved/ann_variant_resolver_two_interpreters_drift.yaml
+                          at brief)
+                        - A C++ resolver bound into cctool has a
+                          binding layer that each signature change
+                          touches.
+                          (_data/decision/dec_where_variants_are_resolved/ann_variant_resolver_cpp_build_on_check_path.yaml
+                          at brief)
+                        - Reviewability asks whether a person can read
+                          a change in full and judge it, and measures
+                          the size of a change in lines;
+                          maintainability counts parts touched by a
+                          representative change.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reviewability.question.0,
+                          entries.concern_reviewability.measure.0 and
+                          entries.concern_maintainability.measure.1)
+                          Strength: moderate; it adds to the earlier
+                          annotations the interface as a shared
+                          contract, which narrows the drift of two
+                          interpreters to semantics.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_python_and_cpp_operation_interpreter
+    guid_target:        opt_cc96962767d04ad28b59e46022603638
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_interface_control_document
+    guid_target:        concept_3f8513f2edef4a7c838f5c7f2de04aed

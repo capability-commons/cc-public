@@ -1,0 +1,98 @@
+id_self:                ann_edits_graph_houdini_pull_cook_and_dirty_flags
+guid_self:              ann_1573130ce2354e4e80e73aa848203359
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Houdini network of nodes cooked on demand and dirtied by a change
+brief:                  |
+                        In Houdini a node is cooked only when asked
+                        for its data, a parameter change dirties
+                        everything that depends on it, and the graph
+                        is then traversed cooking only the dirty
+                        nodes, so one network of nodes is both what
+                        the user edits and what is played. A graph of
+                        edits held as a [[dataflow graph]], with
+                        caches as nodes on its edges, has that shape;
+                        a resolver beside the [[dataflow variants]]
+                        keeps the edited form and the played form
+                        apart.
+description:            |
+                        Sources:
+                        - "Nodes are never cooked unless they are
+                          asked for their data", and "If Houdini at
+                          any point encounters a node that is up to
+                          date, then no further cooking will be done."
+                          (https://www.sidefx.com/docs/hdk/_h_d_k__op_basics__overview__cooking.html)
+                        - "When a parameter changes, everything in the
+                          graph that depends on the parameter's data
+                          is dirtied accordingly", and the graph is
+                          then traversed, "cooking the nodes which are
+                          dirty".
+                          (https://www.sidefx.com/docs/hdk/_h_d_k__op_basics__overview__dependencies.html)
+                        - "Whenever you wire in a new node or change a
+                          parameter, Houdini re-evaluates the networks
+                          to compute the new outputs."
+                          (https://www.sidefx.com/docs/houdini/basics/cooking.html)
+                        - WTP wants the whole to work like Houdini, a
+                          graph of transforms that can be edited and
+                          played with caching at each stage (WTP,
+                          2026-10-26).
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/dec_how_the_graph_of_edits_is_run.yaml
+                          at description)
+                        - Functional suitability asks whether the
+                          functions help users complete their tasks;
+                          maintainability asks how readily a newcomer
+                          can understand the design.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.2
+                          and
+                          entries.concern_maintainability.question.0)
+                          Strength: moderate; it is an alignment with
+                          the model WTP named. Houdini's own disk
+                          cache is not keyed by its inputs and does
+                          not see an upstream change, so the keyed
+                          cache of the option is closer to Bazel than
+                          to Houdini, and dirty propagation is not in
+                          the option's text.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

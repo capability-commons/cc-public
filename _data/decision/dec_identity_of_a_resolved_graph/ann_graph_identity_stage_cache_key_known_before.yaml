@@ -1,0 +1,94 @@
+id_self:                ann_graph_identity_stage_cache_key_known_before
+guid_self:              ann_fbf7c24eba3942978702e29286b26dcc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stage cache key known before the stage is computed
+brief:                  |
+                        A cache at each stage is looked up before the
+                        stage runs, so its key must be known from what
+                        goes in. An input digest is; a content digest
+                        is known only once the stage has run; a
+                        variant id stays the same when what is
+                        upstream changes, so a cache named by it
+                        returns a stale model, as the Houdini disk
+                        cache does; and a variant and commit misses at
+                        every commit and cannot key an edit not yet
+                        committed.
+description:            |
+                        Sources:
+                        - A cache at each stage needs a key that is
+                          known before the stage is computed (WTP,
+                          2026-10-26).
+                          (_data/decision/dec_identity_of_a_resolved_graph/dec_identity_of_a_resolved_graph.yaml
+                          at description)
+                        - The input digest covers the chain of bases,
+                          the variant operations and the versions they
+                          refer to; the content digest is of the
+                          canonical form of the resolved dataflow
+                          graph.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_digest.yaml
+                          at brief;
+                          _data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_content_digest.yaml
+                          at brief)
+                        - The File Cache SOP names its files by base
+                          name, version and frame, and when its input
+                          changes the user must turn off Load from
+                          Disk to see the result.
+                          (https://www.sidefx.com/docs/houdini/nodes/sop/filecache.html)
+                        - A variant id with a commit gives one
+                          unchanged graph a new name at every commit
+                          and cannot name a graph resolved from an
+                          uncommitted tree.
+                          (_data/decision/dec_identity_of_a_resolved_graph/ann_graph_identity_commit_splits_one_graph.yaml
+                          at brief)
+                        - Functional suitability asks whether each
+                          function gives the right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                          Strength: strong for a cache key; it says
+                          nothing about the name a run cites, which
+                          may differ from the cache key, as the paired
+                          digests allow.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_digest
+    guid_target:        opt_c6c75348477e41fdb9b5a4aca7f9b055
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_id
+    guid_target:        opt_c258428912f8424ca972414f303f64f3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_and_commit
+    guid_target:        opt_f885c033335c474086f75873040bb9a6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

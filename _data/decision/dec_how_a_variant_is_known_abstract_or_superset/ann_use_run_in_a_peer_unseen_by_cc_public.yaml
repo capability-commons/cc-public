@@ -1,0 +1,80 @@
+id_self:                ann_use_run_in_a_peer_unseen_by_cc_public
+guid_self:              ann_27b812ae21514f5186ad9f27cb61189e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run in a peer that cc-public cannot see
+brief:                  |
+                        A [[dataflow variant]] of cc-public that
+                        cc-public builds on and that only a peer runs
+                        is cited by a [[dataflow run]] in the peer,
+                        which cc-public does not consume, so cc-public
+                        holds it to the built-on checks while the peer
+                        holds it complete. One dataflow variant then
+                        has two states in two repositories, while a
+                        declared state travels with the item.
+description:            |
+                        Sources:
+                        - A dataflow variant that a dataflow run cites
+                          is meant to run and must be complete.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - References across federated repositories use
+                          segments with directional consumption.
+                          (_data/decision/dec_references_across_instances/ruling_references_across_instances.yaml
+                          at brief)
+                        - Peers take cc-public as a versioned package.
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          at brief)
+                        - A dataflow variant declares its state under
+                          the declared option.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - Compatibility asks whether a partner can
+                          read and use what the design produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                        - ASSUMPTION: a run in a peer may cite a
+                          dataflow variant of cc-public; no run type
+                          and no shared variant exist. Strength: weak
+                          now, moderate with several peers; it is the
+                          run-side counterpart of the annotation on a
+                          leaf rule blind to peers that build on a
+                          shared variant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_run
+    guid_target:        concept_d068df3fbf2240d19a060fde90d4405b

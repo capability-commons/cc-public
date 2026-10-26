@@ -1,0 +1,92 @@
+id_self:                ann_edits_graph_merge_of_n_against_fixed_inputs
+guid_self:              ann_f294585b9f8f457da1f0208d3e53d6c8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge of any number of variants against a fixed set of inputs
+brief:                  |
+                        A merge selects two or more
+                        [[dataflow variants]], but a dataflow step
+                        reads a fixed set of named inputs and its
+                        ports cannot be variadic, so n edges into one
+                        input fail the input-fed-twice check and n
+                        named inputs fix the count in each interface.
+                        Every port of the graph of edits also carries
+                        one type, a dataflow model, so the port-type
+                        check can never fail there. The resolver takes
+                        a list of any length and needs neither.
+description:            |
+                        Sources:
+                        - A merge selects two or more dataflow
+                          variants to combine.
+                          (_data/decision/dec_shape_of_a_variant_family/opt_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - A dataflow step reads a fixed set of inputs,
+                          and a port has a type and may be optional,
+                          but has no variadic field, which parameters
+                          of a callable and of a command have.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.surface_dataflow_step.description,
+                          $defs.port and $defs.parameter)
+                        - An input takes its value from at most one
+                          edge. (src/cctool/check/check.lp within
+                          input_fed_twice)
+                        - The port-type check compares the types the
+                          two ends state. (src/cctool/check/check.lp
+                          within port_type_mismatch)
+                        - In the option a dataflow model is the token
+                          on each edge.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present;
+                          simplicity counts distinct mechanisms
+                          introduced. (_data/register/reg_concern.yaml
+                          at
+                          entries.concern_functional_suitability.question.1
+                          and entries.concern_simplicity.measure.0)
+                        - ASSUMPTION: a finer port type, such as a
+                          model that presents a named interface, is
+                          not drafted. Strength: moderate; a variadic
+                          input on dataflow steps, with a check that
+                          counts its edges, would answer it, at the
+                          cost of a new construct in the schema and
+                          the checks, and a merge of two, the common
+                          case, fits fixed inputs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

@@ -1,0 +1,110 @@
+id_self:                ann_edits_graph_read_as_any_dataflow_graph
+guid_self:              ann_9f136431b4bd4caea45f8e903a8e3fd6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph of edits read as any dataflow graph is read
+brief:                  |
+                        Held as a [[dataflow graph]] item, the graph
+                        of edits is read by the schema, the fact
+                        extraction, the checks and the queries that
+                        already read dataflow graphs, and by a partner
+                        tool that reads that schema, and each
+                        [[variant operation]] is a node with an id and
+                        a guid, so the origin of each part of a
+                        [[resolved dataflow graph]] is a path through
+                        one graph. Walked by a resolver, the family
+                        exists only as the bases named across many
+                        [[dataflow variant]] items, and a partner must
+                        rebuild it.
+description:            |
+                        Sources:
+                        - A dataflow graph holds dataflow nodes keyed
+                          by a short local name and the dataflow edges
+                          between their ports; hosts and OS processes
+                          are optional.
+                          (_data/schema/sch_dataflow_graph.yaml at
+                          allOf)
+                        - A variant operation is named by an id with a
+                          guid, and a dataflow edge is identified by
+                          its two ends.
+                          (_data/decision/dec_identity_of_a_variant_operation/ruling_operation_named_by_id_with_guid.yaml
+                          at brief;
+                          _data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - Under the resolver option the graph of edits
+                          is held as dataflow variants and their
+                          operation lists.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_walked_by_a_separate_resolver.yaml
+                          at brief)
+                        - A variant draft names its base in a field.
+                          (_sources/cc-patrol-notes/draft/dfv_patrol_orin.yaml
+                          at base)
+                        - Compatibility asks whether a partner can
+                          read and use what the design produces;
+                          traceability asks whether each element can
+                          be traced to the reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0 and
+                          entries.concern_traceability.question.0)
+                        - ASSUMPTION: the graph of edits is written as
+                          an item; if it is derived from the dataflow
+                          variants, a partner must still derive it,
+                          see the annotation on a base held twice or
+                          derived. Strength: moderate; the review
+                          pages draw no dataflow graph today, only the
+                          dataflow step of an interface, so the gain
+                          is in what reads the graph, not yet in what
+                          shows it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

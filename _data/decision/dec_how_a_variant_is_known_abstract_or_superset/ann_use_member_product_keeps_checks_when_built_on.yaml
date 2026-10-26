@@ -1,0 +1,83 @@
+id_self:                ann_use_member_product_keeps_checks_when_built_on
+guid_self:              ann_5b20d3507368465c8d07d8b2c138c653
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Member product that keeps its checks when built on
+brief:                  |
+                        As reworded, a [[dataflow variant]] meant to
+                        run stays held to every check when a child is
+                        built on it, so a lab variant on Legion no
+                        longer relaxes the checks on Legion, and the
+                        option now names the unknown-port, port-type
+                        and foreign-node checks as holding on a
+                        built-on dataflow variant, so a broken edge in
+                        a [[base]] fails at the base itself, as well
+                        as at each leaf below it.
+description:            |
+                        Sources:
+                        - A dataflow variant meant to run stays so
+                          when other dataflow variants are built on
+                          it, and the checks that what a descendant
+                          adds cannot mend, such as an unknown port, a
+                          port type mismatch or a foreign node, hold
+                          on a built-on dataflow variant.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - The earlier wording let the first descendant
+                          of a leaf relax its checks.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/ann_first_descendant_relaxes_checks_on_its_base.yaml
+                          at brief)
+                        - Three Patrol leaves are built on the Orin
+                          variant, so a fault in it would otherwise
+                          show at each of the three.
+                          (_sources/cc-patrol-notes/draft/README.md#files)
+                        - Functional suitability asks whether the
+                          design does anything it should not;
+                          maintainability asks how readily a change
+                          can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.3
+                          and
+                          entries.concern_maintainability.question.2)
+                          Strength: moderate to strong for the run and
+                          option uses; for a leaf that only nothing
+                          builds on, see the annotation on a use
+                          remembered after a child.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89

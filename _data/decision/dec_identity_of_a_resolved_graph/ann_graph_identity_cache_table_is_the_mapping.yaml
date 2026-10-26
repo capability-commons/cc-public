@@ -1,0 +1,76 @@
+id_self:                ann_graph_identity_cache_table_is_the_mapping
+guid_self:              ann_eaab8c54353547b6ae7e1c10dbfd0d64
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cache table that is the recorded mapping
+brief:                  |
+                        A cache keyed by input digest that holds each
+                        stage's output already maps each input digest
+                        to the model, and so to its content digest,
+                        which is the mapping the two-digest option
+                        records. Once caching at each stage is wanted,
+                        the stored record counted against that option
+                        is the cache itself, while a content digest
+                        alone still needs an input key for the cache,
+                        a second mechanism beside it.
+description:            |
+                        Sources:
+                        - The two-digest option records the mapping
+                          from each input digest to the content digest
+                          it gave, and caching and staleness use the
+                          input digest.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          at brief)
+                        - An earlier annotation counts the input list
+                          and the stored record against that option,
+                          adding that no instance yet needs caching.
+                          (_data/decision/dec_identity_of_a_resolved_graph/ann_graph_identity_digest_cctool_already_makes.yaml
+                          at brief)
+                        - WTP wants caching at each stage (WTP,
+                          2026-10-26).
+                          (_data/decision/dec_identity_of_a_resolved_graph/dec_identity_of_a_resolved_graph.yaml
+                          at description)
+                        - The verdict store already keeps results
+                          under a key of input digests, in a directory
+                          that can be absent.
+                          (src/cctool/check/store.py within key and
+                          load)
+                        - Simplicity counts distinct mechanisms
+                          introduced and jobs done by more than one
+                          mechanism. (_data/register/reg_concern.yaml
+                          at entries.concern_simplicity.measure.0 and
+                          entries.concern_simplicity.measure.1)
+                          Strength: moderate; it rests on caching
+                          being built, and a cache of resolved models
+                          sits uneasily with the ruling that the
+                          resolved graph is derived and never stored,
+                          unless a cache that may be dropped does not
+                          count as storing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

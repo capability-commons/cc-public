@@ -1,0 +1,100 @@
+id_self:                ann_variant_parameters_wedge_work_items_unstored
+guid_self:              ann_c0110beb9c8b4d5f82981920f68404fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Wedge of work items that are never saved as nodes
+brief:                  |
+                        Houdini's Wedge node makes one work item for
+                        each variant, with the varied values as
+                        attributes taken from a range or a list of
+                        values, which may be sampled at random, and
+                        pushes them into node parameters or lets
+                        parameters pull them, so the points are never
+                        written into the network and each carries the
+                        values that made it. A sweep item that
+                        generates unstored [[dataflow variants]] does
+                        the same; a child per point stores each one,
+                        and no parameters means a written leaf for
+                        each point.
+description:            |
+                        Sources:
+                        - The Wedge TOP creates "separate work items
+                          for each separate variant, with the varied
+                          settings stored as attributes", by wedge
+                          types such as Range and Value List with an
+                          option of random samples, and values are
+                          pulled by attribute references in parameter
+                          expressions or pushed into a target
+                          parameter.
+                          (https://www.sidefx.com/docs/houdini/nodes/top/wedge.html)
+                        - The decision names Houdini's wedging for
+                          running one variant many times with varied
+                          values.
+                          (_data/decision/dec_parameters_of_a_variant/dec_parameters_of_a_variant.yaml
+                          at description)
+                        - The sweep option generates one resolved
+                          dataflow graph per point without storing the
+                          generated variants; the declared option has
+                          a child bind the values; with no parameters
+                          every leaf is written out.
+                          (_data/decision/dec_parameters_of_a_variant/opt_sweep_items_generate_unstored_variants.yaml
+                          at brief;
+                          _data/decision/dec_parameters_of_a_variant/opt_declared_parameters_bound_by_child.yaml
+                          at brief;
+                          _data/decision/dec_parameters_of_a_variant/opt_no_variant_parameters.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present;
+                          traceability asks whether each element can
+                          be traced to the reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1
+                          and entries.concern_traceability.question.0)
+                          Strength: moderate; in Houdini the wedged
+                          values land in parameters of nodes, which
+                          here are delta modules and settings, so it
+                          supports a sweep but not, by itself,
+                          parameters on the dataflow variant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declared_parameters_bound_by_child
+    guid_target:        opt_002959d3a1504cc28f6415eb0e037871
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

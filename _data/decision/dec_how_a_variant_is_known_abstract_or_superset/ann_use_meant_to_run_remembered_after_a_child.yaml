@@ -1,0 +1,103 @@
+id_self:                ann_use_meant_to_run_remembered_after_a_child
+guid_self:              ann_8d013bf907814fd2b798cc5264747690
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Use as a leaf that must be remembered after a child is added
+brief:                  |
+                        A [[dataflow variant]] that is meant to run
+                        only because nothing builds on it loses that
+                        reason when a child is built on it, so to stay
+                        held complete the tooling must remember that
+                        it was a leaf, which the tree does not say and
+                        a commit check sees only for the one commit
+                        that adds the child. The rule then needs a
+                        stored mark, which the option says is not
+                        declared, a read of history, or a
+                        [[dataflow run]] or option edge on every
+                        member product; a declared state says it on
+                        the item.
+description:            |
+                        Sources:
+                        - Nothing is declared; a dataflow variant that
+                          nothing builds on, that a dataflow run
+                          cites, or that takes an option is meant to
+                          run, and stays so when other dataflow
+                          variants are built on it.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - Each commit is checked against the graph
+                          before and after it, the graph before read
+                          from HEAD.
+                          (_data/decision/dec_check_commit_against_graph/ruling_check_commit_against_graph.yaml
+                          at brief; src/cctool/commit/change.py within
+                          check)
+                        - No dataflow run item exists yet, and
+                          relation_takes_option is optional.
+                          (_data/register/reg_data_item_type.yaml at
+                          entries; _data/register/reg_relation.yaml at
+                          entries.relation_takes_option.description)
+                        - A dataflow variant declares its state under
+                          the declared option.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_declared_and_checked.yaml
+                          at brief)
+                        - Functional suitability asks whether each
+                          function gives the right result; simplicity
+                          asks whether a design follows from decisions
+                          already made; traceability asks whether each
+                          element can be traced to the reason it
+                          exists. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0,
+                          entries.concern_simplicity.question.2 and
+                          entries.concern_traceability.question.0)
+                          Strength: moderate; it falls away once each
+                          member product takes an option or is cited
+                          by a run, which would make the leaf use a
+                          default for drafts only.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_state_declared_and_checked
+    guid_target:        opt_11f2edea3c994d8b827fa5d075216572
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_run
+    guid_target:        concept_d068df3fbf2240d19a060fde90d4405b

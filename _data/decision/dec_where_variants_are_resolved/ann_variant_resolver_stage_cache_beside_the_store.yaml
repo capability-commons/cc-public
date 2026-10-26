@@ -1,0 +1,83 @@
+id_self:                ann_variant_resolver_stage_cache_beside_the_store
+guid_self:              ann_9f2cf1749f154a5c83fc4d6d56622297
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stage cache kept beside the verdict store
+brief:                  |
+                        cctool already keeps verdicts in a store keyed
+                        by input digests, which the gate of a commit
+                        uses and the gate of a push leaves out so the
+                        check of record finds everything afresh. A
+                        Python resolver can keep the cache of each
+                        stage the same way, so a stale or corrupt
+                        entry can never pass a push; a C++ resolver
+                        behind bindings keeps its cache across the
+                        binding or in a second store.
+description:            |
+                        Sources:
+                        - The store keeps verdicts under the digest of
+                          the text and a digest of the code; the gate
+                          of a commit sets it, and the gate of a push
+                          sets no store, so the check of record finds
+                          every verdict afresh.
+                          (src/cctool/check/store.py within directory,
+                          code and key)
+                        - WTP wants caching at each stage (WTP,
+                          2026-10-26).
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/dec_how_the_graph_of_edits_is_run.yaml
+                          at description)
+                        - The C++ resolver option has cctool call one
+                          C++ library through Python bindings.
+                          (_data/decision/dec_where_variants_are_resolved/opt_one_cpp_resolver_with_python_bindings.yaml
+                          at brief)
+                        - Reliability asks whether the design can
+                          recover without losing or corrupting data;
+                          maintainability asks how far a change in one
+                          part spreads to others; simplicity counts
+                          distinct mechanisms introduced.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question.2,
+                          entries.concern_maintainability.question.1
+                          and entries.concern_simplicity.measure.0)
+                          Strength: moderate; a C++ resolver could
+                          also take its cache from the Python side, at
+                          the cost of passing models across the
+                          binding.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

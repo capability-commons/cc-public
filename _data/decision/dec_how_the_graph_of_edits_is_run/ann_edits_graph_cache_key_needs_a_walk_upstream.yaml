@@ -1,0 +1,94 @@
+id_self:                ann_edits_graph_cache_key_needs_a_walk_upstream
+guid_self:              ann_76470f76706e4b99b85241977ef6b3da
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cache key that needs a walk upstream of the edge
+brief:                  |
+                        A cache on an edge sees only the model that
+                        comes along it, which exists only once the
+                        stage before it has run, but to save that run
+                        its key, the input digest of the stage, must
+                        be known first, and it covers the code, the
+                        settings and the keys of every stage upstream.
+                        So the option needs either a first pass over
+                        the graph of edits that computes every key, or
+                        tokens that carry their key beside the model;
+                        a resolver that walks from each output back to
+                        its roots computes the keys on the way.
+description:            |
+                        Sources:
+                        - The option inserts a cache node on each edge
+                          that needs one, keyed by the input digest of
+                          its stage; the alternative walks from each
+                          output back to its roots with its own cache
+                          keyed the same way.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief;
+                          _data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_walked_by_a_separate_resolver.yaml
+                          at brief)
+                        - A cache at each stage needs a key that is
+                          known before the stage is computed.
+                          (_data/decision/dec_identity_of_a_resolved_graph/dec_identity_of_a_resolved_graph.yaml
+                          at description)
+                        - The verdict store of cctool keys each
+                          verdict by a digest of the text and a digest
+                          of the code of cctool and the versions of
+                          what it runs with.
+                          (src/cctool/check/store.py within code and
+                          key)
+                        - The File Cache SOP of Houdini reads its
+                          output from files on disk instead of cooking
+                          its input, and the files are named by a base
+                          name, a version and the frame, not by the
+                          inputs.
+                          (https://www.sidefx.com/docs/houdini/nodes/sop/filecache.html)
+                        - Bazel's action cache keys a result by the
+                          digest of the action and its inputs.
+                          (https://blog.engflow.com/2024/05/13/the-many-caches-of-bazel/,
+                          as summarized in
+                          _sources/survey/generative-and-transforms.md#2-sources)
+                        - Simplicity counts distinct mechanisms
+                          introduced; functional suitability asks
+                          whether each function gives the right
+                          result. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0 and
+                          entries.concern_functional_suitability.question.0)
+                          Strength: moderate; computing keys is a
+                          cheap pass, since it reads definitions and
+                          not models, but it is a walk over the graph
+                          of edits that is not a dataflow run, so the
+                          option keeps one piece of the resolver it
+                          replaces.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

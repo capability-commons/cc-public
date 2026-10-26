@@ -1,0 +1,82 @@
+id_self:                ann_edits_graph_cache_sound_only_without_state
+guid_self:              ann_115297550a8f4fbebe836da6b0b869b3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stage cache sound only for nodes without state
+brief:                  |
+                        A [[dataflow node]] retains state between
+                        invocations, and a dataflow step may declare
+                        state, while a cache keyed by the input digest
+                        of a stage returns the right model only if the
+                        stage is a pure function of its inputs,
+                        settings and code. Held as a
+                        [[dataflow graph]], the graph of edits then
+                        needs a rule that its nodes declare no state,
+                        which no check holds today.
+description:            |
+                        Sources:
+                        - A dataflow node reads its inputs, writes its
+                          outputs and retains state between
+                          invocations.
+                          (_data/register/reg_concept.yaml at
+                          entries.concept_dataflow_node.brief)
+                        - A dataflow step may declare what it reads
+                          and writes between invocations.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at
+                          $defs.surface_dataflow_step.properties.state)
+                        - The option keys each cache node by the input
+                          digest of its stage.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief)
+                        - The Patrol sketch resolver applies each
+                          operation as a function of the graph it is
+                          given and the arguments of the operation.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          within resolve)
+                        - Functional suitability asks whether each
+                          function gives the right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                        - ASSUMPTION: no check over a dataflow graph
+                          looks at the state of a dataflow step; none
+                          of the dataflow checks in check.lp names
+                          state (read by the advocate). Strength: weak
+                          to moderate; the rule is one check, and
+                          variant operations have no reason to keep
+                          state, but without it the cache is unsound
+                          in exactly the case the dataflow form allows
+                          and the resolver form does not.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

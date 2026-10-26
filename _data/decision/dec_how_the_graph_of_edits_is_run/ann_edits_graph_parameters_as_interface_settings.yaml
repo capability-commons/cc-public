@@ -1,0 +1,109 @@
+id_self:                ann_edits_graph_parameters_as_interface_settings
+guid_self:              ann_685e97092be546caa1f98dceb4808773
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Delta module parameters as the settings of an interface
+brief:                  |
+                        A [[delta module]] with declared inputs and
+                        parameters has the shape of a dataflow step:
+                        named input ports, and settings with a type, a
+                        default and whether they are optional. As a
+                        node of a graph of edits held as a
+                        [[dataflow graph]], its parameters are
+                        settings, and the unknown-setting and
+                        missing-setting checks hold each binding with
+                        no new rule; under a resolver, delta module
+                        parameters need a declaration form and binding
+                        checks of their own.
+description:            |
+                        Sources:
+                        - A delta module is a named subgraph of
+                          variant operations with declared inputs and
+                          parameters, such as the number of camera
+                          inputs or the type of logging sink, applied
+                          like a single variant operation.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ruling_closed_core_with_one_reuse_item.yaml
+                          at brief;
+                          _data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_one_reuse_item.yaml
+                          at brief)
+                        - A dataflow step has input ports and
+                          settings, and a setting has a type, may be
+                          optional and may give a default.
+                          (_data/schema/sch_interface_control_document.yaml
+                          at $defs.surface_dataflow_step and
+                          $defs.setting)
+                        - A node may be configured only with settings
+                          its interface declares, and must give a
+                          value for each setting that is neither
+                          optional nor defaulted.
+                          (src/cctool/check/check.lp within
+                          unknown_setting and missing_setting)
+                        - The delta module is the counterpart of a
+                          Houdini digital asset, and a digital asset
+                          gets its interface by "promoting parameters
+                          on the contained nodes up onto the asset
+                          node".
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_one_reuse_item.yaml
+                          at description;
+                          https://www.sidefx.com/docs/houdini/assets/intro.html)
+                        - Simplicity asks whether a design does
+                          anything another mechanism already does;
+                          functional suitability asks whether each
+                          function gives the right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.1 and
+                          entries.concern_functional_suitability.question.0)
+                        - The proposed core has about ten operations.
+                          (_data/decision/dec_where_variants_are_resolved/ann_variant_resolver_two_interpreters_drift.yaml
+                          at description)
+                        - ASSUMPTION: each kind of variant operation
+                          and each delta module presents an interface
+                          control document; none is drafted, and the
+                          arguments of a filter, such as lists of
+                          dataflow tags, have no port type yet.
+                          Strength: moderate; it rests on writing an
+                          interface for each operation kind, which is
+                          about ten interfaces for the proposed core.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_delta_module
+    guid_target:        concept_3d0dd6755b224df0bb0cf1e98f017137
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

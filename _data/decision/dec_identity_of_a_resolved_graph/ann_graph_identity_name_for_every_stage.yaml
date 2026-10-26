@@ -1,0 +1,95 @@
+id_self:                ann_graph_identity_name_for_every_stage
+guid_self:              ann_0150c8f586e64c95a94d0bb8d334d74c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Name for every stage of the graph of edits
+brief:                  |
+                        With caching at each stage, the models that
+                        pass between stages, a built-on
+                        [[dataflow variant]] or the output of a
+                        [[delta module]] applied inside one, are
+                        things a cache holds and a trace must name. A
+                        pair of digests names each stage both by what
+                        went in and by what came out; a variant id,
+                        alone or with a commit, names only the
+                        dataflow variants, not a stage inside an
+                        [[operation list]].
+description:            |
+                        Sources:
+                        - WTP wants caching at each stage of the graph
+                          of transforms (WTP, 2026-10-26).
+                          (_data/decision/dec_identity_of_a_resolved_graph/dec_identity_of_a_resolved_graph.yaml
+                          at description)
+                        - A delta module is a named subgraph of
+                          variant operations applied like a single
+                          variant operation.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ruling_closed_core_with_one_reuse_item.yaml
+                          at brief)
+                        - The two-digest option gives a resolved
+                          dataflow graph an input digest and a content
+                          digest and records the mapping; the variant
+                          options name it by the id of its dataflow
+                          variant, with or without the commit.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          at brief;
+                          _data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_named_by_variant_id.yaml
+                          at brief;
+                          _data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_named_by_variant_and_commit.yaml
+                          at brief)
+                        - Traceability means each element can be
+                          followed to the need that called for it and
+                          back again. (_data/register/reg_concern.yaml
+                          at entries.concern_traceability.description)
+                          Strength: moderate; it matters once a stage
+                          inside a delta module is cached or cited,
+                          and the options are worded for a whole
+                          resolved dataflow graph, so each would have
+                          to be read as applying per stage.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_id
+    guid_target:        opt_c258428912f8424ca972414f303f64f3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_named_by_variant_and_commit
+    guid_target:        opt_f885c033335c474086f75873040bb9a6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_delta_module
+    guid_target:        concept_3d0dd6755b224df0bb0cf1e98f017137
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_operation_list
+    guid_target:        concept_3c1495849d7646259842a9be105d1660

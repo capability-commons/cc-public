@@ -1,0 +1,83 @@
+id_self:                ann_graph_identity_stage_cache_shared_with_a_peer
+guid_self:              ann_3985d14d8e994cfdb24e3563a1f4eece
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stage cache shared with a peer
+brief:                  |
+                        A peer that builds on a [[dataflow variant]]
+                        of cc-public could reuse the cached models of
+                        its shared stages only if both compute the
+                        same key. An input digest that covers the code
+                        of the resolver differs whenever the two run
+                        different releases of cctool, as the verdict
+                        store's code digest does at every change to
+                        cctool, while a content digest of a shared
+                        stage compares equal across releases that
+                        resolve it alike.
+description:            |
+                        Sources:
+                        - The code digest of the verdict store covers
+                          every python module and logic program of
+                          cctool and the versions of python and its
+                          libraries. (src/cctool/check/store.py within
+                          code)
+                        - The two-digest option's input digest covers
+                          the resolver version, and runs and
+                          deployments cite the content digest.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          at brief)
+                        - Peers take cc-public as a versioned package.
+                          (_data/decision/dec_how_peers_get_cc_public/ruling_peers_take_a_versioned_package.yaml
+                          at brief)
+                        - Constructive traces keep the result as well
+                          as its hash, which lets results be shared
+                          through a cloud cache. (Mokhov, Mitchell and
+                          Peyton Jones, Build systems a la carte, JFP
+                          2020, section 5.3,
+                          https://www.microsoft.com/en-us/research/uploads/prod/2020/04/build-systems-jfp.pdf)
+                        - Compatibility asks whether a partner can
+                          read and use what the design produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                        - ASSUMPTION: a peer would share a cache with
+                          cc-public; none does, and a peer one release
+                          behind may differ in renames too, as the
+                          annotation on digests that change on a
+                          rename argues. Strength: weak now, with one
+                          peer and no cache; it falls away for the
+                          input digest of the input-digest option,
+                          which leaves the resolver out, at the cost
+                          the annotation on a resolver change argues.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_identity_of_a_resolved_graph
+    guid_target:        dec_8a4cdfa4d6bb40c6a890e0d67bf14d45
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_resolved_graph_content_digest
+    guid_target:        opt_e11481257d244824ab1e7e82eef42db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_resolved_graph_input_and_content_digests
+    guid_target:        opt_4413f943f446407b995e29ffb183e54c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

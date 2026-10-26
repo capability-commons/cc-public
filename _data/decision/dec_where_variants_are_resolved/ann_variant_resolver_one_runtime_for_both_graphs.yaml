@@ -1,0 +1,95 @@
+id_self:                ann_variant_resolver_one_runtime_for_both_graphs
+guid_self:              ann_0f77b48646944f0f930d4d0e02688c7c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One dataflow runtime for systems and for the graph of edits
+brief:                  |
+                        If the graph of edits is a [[dataflow graph]],
+                        the [[dataflow engine]] that runs dataflow
+                        graphs could also run resolution, with each
+                        [[variant operation]] as a node, so the
+                        tooling and a target would share one runtime
+                        and one implementation of the operations.
+                        Resolving in Python then means a second runner
+                        of dataflow graphs beside the engine; one C++
+                        resolver is the same code the engine would
+                        run.
+description:            |
+                        Sources:
+                        - The proposed option holds the graph of edits
+                          as a dataflow graph whose nodes are variant
+                          operations, merges and delta modules, and
+                          resolving a dataflow variant is running it
+                          up to its output.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief)
+                        - The C++ resolver option shares one
+                          implementation between the tooling and the
+                          target.
+                          (_data/decision/dec_where_variants_are_resolved/opt_one_cpp_resolver_with_python_bindings.yaml
+                          at brief)
+                        - The engine's C++ lives in cc-public.
+                          (_data/decision/dec_home_of_the_engine_code/ruling_engine_code_in_cc_public.yaml
+                          at brief)
+                        - Simplicity counts jobs done by more than one
+                          mechanism; functional suitability asks
+                          whether every function that is needed is
+                          present. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1 and
+                          entries.concern_functional_suitability.question.1)
+                        - ASSUMPTION: the engine can carry a whole
+                          dataflow model as a token; its ports are
+                          typed by data dictionary entries, and no
+                          entry for a model exists. Strength: weak
+                          now; the graph of edits is not ruled a
+                          dataflow graph, and the engine has no code
+                          in the tree, but it grows if a target must
+                          resolve or apply change sets itself.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_variants_are_resolved
+    guid_target:        dec_ebd93cb1c4b14ed58074e3e5bfe1de3d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_engine
+    guid_target:        concept_96848bd06b514560aea72ebcc2c9cdb5
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e

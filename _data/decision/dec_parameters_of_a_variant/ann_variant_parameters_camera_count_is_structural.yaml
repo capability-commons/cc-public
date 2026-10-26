@@ -1,0 +1,76 @@
+id_self:                ann_variant_parameters_camera_count_is_structural
+guid_self:              ann_3a86c3ca95aa4b8385c32d070907f7fe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Camera count that changes the structure, not a value
+brief:                  |
+                        The number of camera inputs WTP named changes
+                        how many source nodes and edges a graph holds,
+                        and the type of logging sink picks between
+                        blocks, so a parameter must drive structure,
+                        which a write to an existing address cannot
+                        do. A sweep over such a parameter generates
+                        [[dataflow variants]] that differ in structure
+                        from one definition; with no parameters each
+                        count is a leaf written out by hand.
+description:            |
+                        Sources:
+                        - WTP wants parameters on delta modules, such
+                          as the number of camera inputs or the type
+                          of logging sink (WTP, 2026-10-26).
+                          (_data/decision/dec_parameters_of_a_variant/dec_parameters_of_a_variant.yaml
+                          at description)
+                        - A write sets a value at an address that must
+                          already exist.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          within resolve)
+                        - The earlier annotations held that the first
+                          experiment is structural and so needs no
+                          parameters, and that a child's write already
+                          binds a value.
+                          (_data/decision/dec_parameters_of_a_variant/ann_variant_parameters_first_experiment_is_structural.yaml
+                          at brief;
+                          _data/decision/dec_parameters_of_a_variant/ann_variant_parameters_write_already_binds.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                          Strength: moderate; the structural
+                          parameters WTP named are on delta modules,
+                          so the sweep option helps here only if it
+                          may bind a delta module's parameters, which
+                          its wording does not say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_parameters_of_a_variant
+    guid_target:        dec_9e89191bc80d407eb605614eb17219b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_sweep_items_generate_unstored_variants
+    guid_target:        opt_84fc9e579d8640f1abca277edadf713c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_variant_parameters
+    guid_target:        opt_9eda6e94b5874c3791f23d709d42c31b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1

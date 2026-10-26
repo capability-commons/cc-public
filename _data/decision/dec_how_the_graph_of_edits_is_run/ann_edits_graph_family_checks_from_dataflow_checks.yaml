@@ -1,0 +1,113 @@
+id_self:                ann_edits_graph_family_checks_from_dataflow_checks
+guid_self:              ann_9eaa2e934eb34289bb1737a710abf491
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Family checks given by the dataflow checks
+brief:                  |
+                        Held as a [[dataflow graph]], the graph of
+                        edits gets the checks a [[variant family]]
+                        needs from checks that already exist: the
+                        feedforward-loop check fails a family that is
+                        not acyclic, the unfed-input check fails a
+                        [[variant operation]] with no [[base]] wired
+                        in, and the foreign-node and unknown-port
+                        checks fail an edge to an operation or port
+                        that does not exist. A separate resolver needs
+                        its own check for each of these.
+description:            |
+                        Sources:
+                        - The feedforward-loop check fails a loop
+                          closed by feedforward edges only; the
+                          unfed-input check fails an input that is not
+                          optional and that no edge feeds; the
+                          foreign-node and unknown-port checks fail an
+                          edge end that names no node of the graph or
+                          no port of the interface.
+                          (src/cctool/check/check.lp within
+                          feedforward_loop, unfed_input, foreign_node
+                          and unknown_port)
+                        - A variant family is a directed acyclic graph
+                          of edits.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Under the option the dataflow checks apply
+                          to the graph of edits as to any other
+                          dataflow graph; under the alternative they
+                          do not apply to it.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief;
+                          _data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_walked_by_a_separate_resolver.yaml
+                          at brief)
+                        - The Patrol sketch resolver recurses from a
+                          variant to its base and checks neither for a
+                          cycle nor for a missing base, beyond failing
+                          to load the file.
+                          (_sources/cc-patrol-notes/draft/resolve_sketch.py
+                          within resolve)
+                        - Simplicity asks whether a design does
+                          anything another mechanism already does, and
+                          whether it follows from decisions already
+                          made. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.1 and
+                          entries.concern_simplicity.question.2)
+                        - Functional suitability asks whether every
+                          function that is needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                          Strength: moderate; the checks a family
+                          needs are few and each is small to write in
+                          a resolver, but each is then a second rule
+                          for a job the dataflow checks already do.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_family
+    guid_target:        concept_a2022a4dcea94c2bab6df623a8772c90
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89

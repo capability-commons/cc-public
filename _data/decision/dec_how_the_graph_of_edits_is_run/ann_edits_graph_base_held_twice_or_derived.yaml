@@ -1,0 +1,113 @@
+id_self:                ann_edits_graph_base_held_twice_or_derived
+guid_self:              ann_31b9ba4c08034f589168cc05d20bd822
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Base reference held twice or derived by a walk
+brief:                  |
+                        A [[dataflow variant]] already holds its
+                        [[base]] and its [[operation list]], so a
+                        graph of edits written as a [[dataflow graph]]
+                        item states each base a second time, and the
+                        two can disagree, leaving the reason for a
+                        part of the family in two places. Derived
+                        instead, it is built by reading every dataflow
+                        variant and following its base, a walk of the
+                        kind the resolver option makes, and the
+                        recursion ends because nothing derives
+                        variants of a derived graph.
+description:            |
+                        Sources:
+                        - A variant type holds a base, a dataflow
+                          graph or another variant, and an ordered
+                          list of operations, and the resolved graph
+                          is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          at brief)
+                        - The graph of edits has no variants of its
+                          own, so the recursion ends there.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief)
+                        - The resolver option holds the graph of edits
+                          as dataflow variants and their operation
+                          lists.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/opt_graph_of_edits_walked_by_a_separate_resolver.yaml
+                          at brief)
+                        - The type register has no type for a dataflow
+                          variant yet, so no rule says what a base may
+                          be. (_data/register/reg_data_item_type.yaml
+                          at entries)
+                        - Simplicity asks whether a design does
+                          anything another mechanism already does;
+                          maintainability asks how far a change in one
+                          part spreads to others; traceability asks
+                          whether each element can be traced to the
+                          reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.1,
+                          entries.concern_maintainability.question.1
+                          and entries.concern_traceability.question.0)
+                          Strength: moderate to strong; the option
+                          does not say which form the graph of edits
+                          takes. Derived, it keeps one source and the
+                          base case holds by construction, but it
+                          gives up the item a partner reads; written,
+                          the base case needs a check that no variant
+                          is built on the graph of edits.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_operation_list
+    guid_target:        concept_3c1495849d7646259842a9be105d1660
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

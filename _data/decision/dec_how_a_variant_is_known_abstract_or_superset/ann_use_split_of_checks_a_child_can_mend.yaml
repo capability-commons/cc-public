@@ -1,0 +1,99 @@
+id_self:                ann_use_split_of_checks_a_child_can_mend
+guid_self:              ann_2dacadd168bb4a1da89897f1fe02c2b9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Split of the checks by what a descendant can mend
+brief:                  |
+                        The reworded rule holds unknown port, port
+                        type mismatch and foreign node on a built-on
+                        [[dataflow variant]] as faults a descendant
+                        cannot mend, but a descendant that removes or
+                        filters the edge mends each of them, so the
+                        split is a choice of which faults a [[base]]
+                        may carry, not a property of the checks. The
+                        option does not say on which side the
+                        missing-setting, unknown-setting,
+                        feedforward-loop, interface-count and unplaced
+                        checks fall, so the list must still be written
+                        check by check.
+description:            |
+                        Sources:
+                        - The checks that what a descendant adds
+                          cannot mend, such as an unknown port, a port
+                          type mismatch or a foreign node, hold on a
+                          built-on dataflow variant, and unfed input
+                          and input fed twice do not.
+                          (_data/decision/dec_how_a_variant_is_known_abstract_or_superset/opt_state_known_from_use.yaml
+                          at brief)
+                        - The Fluent operations remove nodes by filter
+                          with every edge touching them, and the
+                          builder removes one node or edge by id.
+                          (_sources/cc-patrol-notes/variants.md#1-what-design-factory-already-has;
+                          _sources/cc-patrol-notes/variants.md#2-proposal-for-cc-public)
+                        - A dataflow edge is identified by its two
+                          ends, so an edge can be named for removal.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - The dataflow checks are interface_count,
+                          foreign_node, unknown_port, input_fed_twice,
+                          unfed_input, port_type_mismatch,
+                          feedforward_loop, unknown_setting,
+                          missing_setting and unplaced.
+                          (src/cctool/check/check.lp within
+                          interface_count, foreign_node, unknown_port,
+                          input_fed_twice, unfed_input,
+                          port_type_mismatch, feedforward_loop,
+                          unknown_setting, missing_setting and
+                          unplaced)
+                        - Functional suitability asks whether each
+                          function gives the right result;
+                          maintainability asks how readily a newcomer
+                          can understand the design.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0
+                          and
+                          entries.concern_maintainability.question.0)
+                          Strength: moderate; failing a base that
+                          names a missing port is arguably right
+                          whatever a child does, so the choice is
+                          defensible, but the option words it as a
+                          fact, and half the dataflow checks are not
+                          placed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_variant_is_known_abstract_or_superset
+    guid_target:        dec_9daf437823ba4e8591f3bbb1ae3b3692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_state_known_from_use
+    guid_target:        opt_ef4a71a6650b4530868cb97ed49a5b73
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_base
+    guid_target:        concept_40c6780590f446cfbee05359090e1b89
