@@ -26,6 +26,7 @@ edge:                   []
 
 
 import click.testing
+import pytest
 
 import cctool.cli.command
 import cctool.conftest
@@ -57,6 +58,7 @@ def test_draft_of_a_message_that_is_not_utf_8_is_reported_and_left(tmp_path):
     assert path.read_bytes() == b'Merge \xff\n'
 
 
+@pytest.mark.reads_data
 def test_new_with_a_title_that_fits_no_template_lists_the_templates():
     result = _run('new', 'Added a thing', '--brief', 'A thing.',
                   '--root', str(cctool.conftest.DIR_REPO))

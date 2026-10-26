@@ -152,12 +152,22 @@ def test_the_command_prints_a_failure_before_its_verdict(repo, monkeypatch):
     assert result.stdout.endswith('\nfail: failed\n')
 
 
-def test_a_commit_that_stages_only_data_leaves_out_the_tests(repo):
+def test_a_commit_that_stages_only_data_runs_the_tests_that_read_data(repo):
     _commit(repo)
     (repo / '_data').mkdir()
     (repo / '_data/item.yaml').write_text('title: Data\n')
     _git(repo, 'add', '_data/item.yaml')
     assert not cctool.gate.gate.is_code_staged(repo)
+    map_stage = dict(cctool.gate.gate.stages(repo))
+    assert list(map_stage) == ['check', 'lint', 'test']
+    assert cctool.gate.gate.MARK_DATA in map_stage['test']
+
+
+def test_a_commit_that_stages_only_decisions_leaves_out_the_tests(repo):
+    _commit(repo)
+    (repo / '_data/decision/dec_x').mkdir(parents = True)
+    (repo / '_data/decision/dec_x/dec_x.yaml').write_text('title: X\n')
+    _git(repo, 'add', '_data/decision/dec_x/dec_x.yaml')
     assert [name for (name, _) in cctool.gate.gate.stages(repo)] == ['check', 'lint']
 
 
@@ -184,14 +194,16 @@ def test_the_first_commit_runs_the_tests(repo):
 
 def test_the_command_says_when_it_leaves_out_the_tests(repo, monkeypatch):
     _commit(repo)
-    _git(repo, 'add', 'untracked.txt')
+    (repo / '_data/decision').mkdir(parents = True)
+    (repo / '_data/decision/dec_x.yaml').write_text('title: X\n')
+    _git(repo, 'add', '_data/decision/dec_x.yaml')
     monkeypatch.setattr(cctool.gate.gate, 'TUPLE_STAGE',
                         (_stage('check', 'pass'),
                          _stage('test', 'import sys; sys.exit(1)')))
     result = click.testing.CliRunner().invoke(cctool.cli.command.main,
                                               ['gate', '--root', str(repo)])
     assert result.exit_code == 0
-    assert result.stdout == 'check: passed\ntest: skipped, as no code is staged\n'
+    assert result.stdout == 'check: passed\ntest: skipped, as only decisions are staged\n'
 
 
 def test_the_gate_of_a_commit_keeps_a_store_in_the_git_directory(repo):

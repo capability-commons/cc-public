@@ -54,10 +54,12 @@ def gate(root: pathlib.Path) -> None:
 
     The staged content is copied out, and each stage runs in the copy.
     The output of a stage that fails is printed before its verdict.
-    The tests run only when code is staged: something under src/ or
-    .githooks/, or a change to pyproject.toml or pixi.lock. They leave
-    out the tests marked slow, which pixi run test runs, and those
-    marked prepush, which the gate of a push runs.
+    All the tests run when code is staged: something under src/ or
+    .githooks/, or a change to pyproject.toml or pixi.lock. When only
+    data is staged, only the tests marked reads_data run, and none run
+    when only decisions are staged. They leave out the tests marked
+    slow, which pixi run test runs, and those marked prepush, which the
+    gate of a push runs.
     The check keeps the layout and schema verdicts of
     each file in a store in the git directory, which every worktree
     shares. The exit status is 1 when any stage fails, and 2 when the
@@ -80,7 +82,7 @@ def gate(root: pathlib.Path) -> None:
                                               verdict = 'passed' if is_passed else 'failed'))
 
     if len(tuple_stage) < len(cctool.gate.gate.TUPLE_STAGE):
-        click.echo('{name}: skipped, as no code is staged'.format(
+        click.echo('{name}: skipped, as only decisions are staged'.format(
                        name = cctool.gate.gate.NAME_TEST))
 
     sys.exit(cctool.cli.group.EXIT_OK if all(row[1] for row in list_result)

@@ -927,6 +927,7 @@ def _params_document() -> list:
     return list_param
 
 
+@pytest.mark.reads_data
 @pytest.mark.parametrize('relative', _params_document())
 def test_layout_keeps_the_data_and_is_a_fixpoint(relative):
     text     = (DIR_REPO / relative).read_text()

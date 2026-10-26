@@ -45,6 +45,8 @@ import cctool.graph.logic
 import cctool.graph.extract
 
 
+pytestmark        = pytest.mark.reads_data
+
 DIR_REPO          = cctool.conftest.DIR_REPO
 TUPLE_GUIDE       = ('AGENTS.md', '.agents/skills/*/SKILL.md')
 

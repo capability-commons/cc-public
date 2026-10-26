@@ -36,12 +36,15 @@ description:            |
                         makes a repository of its own cannot touch the
                         index of the commit.
 
-                        A commit that stages no code, only data, is
-                        not tested: the tests test the code. The gate
-                        of a push runs them on what is pushed. The
-                        tests marked prepush, which test the commit
-                        and history machinery, are left to the gate of
-                        a push too.
+                        A commit that stages no code, only data, runs
+                        only the tests that read the data of the
+                        repository or a copy of it, and a commit that
+                        stages only decisions, which the tests do not
+                        need to see, runs none. The gate of a push
+                        runs every test on what is pushed. The tests
+                        marked prepush, which test the commit and
+                        history machinery, are left to the gate of a
+                        push too.
 
                         The stages run side by side, and pytest-xdist
                         hands the tests out to one worker for each
@@ -83,12 +86,16 @@ import cctool.check.store
 import cctool.gate.timing
 
 
-# The tests that the gate of a push runs, and those that the gate of a
-# commit runs. The tests marked prepush test the commit and history
-# machinery, and are left to the gate of a push.
+# The tests that the gate of a push runs, those that the gate of a
+# commit runs, and those that it runs when the commit stages data but no
+# code. The tests marked prepush test the commit and history machinery,
+# and are left to the gate of a push. The tests marked reads_data read
+# the data of the repository, or a copy of it, so a change to the data
+# alone can break them.
 #
 MARK_PUSH     = 'not slow'
 MARK_COMMIT   = 'not slow and not prepush'
+MARK_DATA     = 'reads_data and not slow and not prepush'
 
 # Each stage: its name, and the command that runs it in the root of the
 # copy. {python} is the interpreter that runs the gate. The tests run on
@@ -116,6 +123,16 @@ NAME_TEST     = 'test'
 #
 TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/', '.agents/skills/',
                  'AGENTS.md')
+
+# The paths whose change no test needs to see: the decisions. A copy
+# made for a test holds the frozen decisions of the fixture in place of
+# those of the repository, and the one test that reads the decisions of
+# the repository repeats the check of their layout, which the check
+# stage makes anyway. A commit that stages only these leaves out the
+# tests.
+#
+TUPLE_UNREAD  = ('_data/decision/',)
+
 PREFIX_GIT    = 'GIT_'
 PREFIX_COPY   = 'cc_gate_'
 PREFIX_REPORT = 'cc_gate_report_'
@@ -276,15 +293,21 @@ def _git(root: pathlib.Path, rev: str) -> str | None:
 def stages(root: pathlib.Path) -> tuple:
     """
     Return the stages that gate the staged content of the repository at
-    root: TUPLE_STAGE, with the tests marked prepush left out, and with
-    no tests at all if no code is staged.
+    root: TUPLE_STAGE, with the tests marked prepush left out. If no
+    code is staged, only the tests marked reads_data run, and none at
+    all if only paths of TUPLE_UNREAD are staged.
 
     """
 
-    if not is_code_staged(root):
+    list_path = staged(root)
+    if list_path is None or any(path.startswith(TUPLE_CODE) for path in list_path):
+        mark = MARK_COMMIT
+    elif any(not path.startswith(TUPLE_UNREAD) for path in list_path):
+        mark = MARK_DATA
+    else:
         return tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
 
-    return tuple((name, tuple(MARK_COMMIT if arg == MARK_PUSH else arg for arg in tuple_arg))
+    return tuple((name, tuple(mark if arg == MARK_PUSH else arg for arg in tuple_arg))
                  for (name, tuple_arg) in TUPLE_STAGE)
 
 
@@ -297,6 +320,19 @@ def is_code_staged(root: pathlib.Path) -> bool:
 
     """
 
+    list_path = staged(root)
+    return list_path is None or any(path.startswith(TUPLE_CODE) for path in list_path)
+
+
+# -----------------------------------------------------------------------------
+def staged(root: pathlib.Path) -> list[str] | None:
+    """
+    Return the paths that the staged content of the repository at root
+    adds, changes or removes, or None before the first commit, when
+    everything staged is new.
+
+    """
+
     try:
         text = subprocess.run(['git', 'diff', '--cached', '--name-only', '--no-renames',
                                'HEAD'],
@@ -305,9 +341,9 @@ def is_code_staged(root: pathlib.Path) -> bool:
                               text           = True,
                               check          = True).stdout
     except subprocess.CalledProcessError:
-        return True
+        return None
 
-    return any(path.startswith(TUPLE_CODE) for path in text.splitlines())
+    return text.splitlines()
 
 
 # -----------------------------------------------------------------------------

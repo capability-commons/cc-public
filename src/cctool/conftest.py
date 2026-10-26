@@ -182,6 +182,19 @@ def _module_of(word: str, map_module: dict[str, pathlib.Path]) -> pathlib.Path |
 
 
 # -----------------------------------------------------------------------------
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
+    """
+    Mark reads_data each test that copies the repository, so that the
+    gate of a commit that stages data but no code runs it.
+
+    """
+
+    for item in items:
+        if 'tree' in getattr(item, 'fixturenames', ()):
+            item.add_marker(pytest.mark.reads_data)
+
+
+# -----------------------------------------------------------------------------
 @pytest.fixture
 def tree(tmp_path):
     """

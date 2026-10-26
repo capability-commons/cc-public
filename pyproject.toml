@@ -170,7 +170,10 @@ py314                   = ["py314", "tool"]
 # grows with the data or repeats a stage of the gate, so the gate leaves
 # it out; pixi run test and pixi run slow run it. A test marked prepush
 # tests the commit and history machinery, so the pre-commit gate leaves
-# it out and the pre-push gate runs it.
+# it out and the pre-push gate runs it. A test marked reads_data reads
+# the data of the repository or a copy of it, so the pre-commit gate
+# runs it when data is staged with no code; a test that copies the
+# repository is marked so when it is collected.
 #
 [tool.pytest.ini_options]
 minversion              = "9.1"
@@ -181,7 +184,8 @@ strict_config           = true
 strict_markers          = true
 xfail_strict            = true
 markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage",
-                           "prepush: left out of the pre-commit gate, which the pre-push gate is not; it tests the commit and history machinery"]
+                           "prepush: left out of the pre-commit gate, which the pre-push gate is not; it tests the commit and history machinery",
+                           "reads_data: run by the pre-commit gate when data is staged with no code; it reads the data of the repository or a copy of it"]
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it
