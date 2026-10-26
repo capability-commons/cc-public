@@ -1,0 +1,90 @@
+id_self:                ann_pool_handle_dereferenced_at_every_unit_crossing
+guid_self:              ann_c8699022461e433e9f34eb6bc35bc514
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pool handle dereferenced at every crossing between units
+brief:                  |
+                        A handle names a block in a pool in one
+                        address space. When placement puts the ends of
+                        an edge in different units, the inserted
+                        sender must look up the handle and send the
+                        bytes, and the receiver must take a block from
+                        a pool of its own, which may be empty, so each
+                        crossing adds a second place where the pool's
+                        policy applies. A handle crosses without a
+                        copy only where both units map the same pool,
+                        which ties their memory together; iceoryx
+                        relies on its daemon to clean up the shared
+                        memory of an application that crashed. A
+                        bounded array crosses as its count and its
+                        elements, both plain data, so sender and
+                        receiver need no pool, and Python can view it
+                        through a NumPy type. Middleware that lends
+                        messages without a copy does so for plain,
+                        fixed-layout types, which a count and an array
+                        are.
+description:            |
+                        Sources:
+                        - The pool option carries a handle to a block
+                          in a memory pool on the edge.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_payload_in_a_pool_with_a_handle_on_the_edge.yaml
+                          at brief)
+                        - A transform splits an edge between units
+                          into a sender node and a receiver node.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - Everything that crosses an edge is plain
+                          data, and a bounded sequence maps to a NumPy
+                          structured type.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#4-types-a-numpy-compatible-description)
+                        - "If an application crashes, RouDi cleans up
+                          its shared memory resources to prevent
+                          leaks", when process monitoring is on.
+                          (https://deepwiki.com/eclipse-iceoryx/iceoryx/4.2-runtime-configuration-(roudi))
+                        - ROS 2 lends messages for plain old data
+                          types, which need no heap allocation or
+                          resizing; most middlewares cannot lend other
+                          types.
+                          (https://repo.test.ros2.org/en/jazzy/How-To-Guides/Configure-ZeroCopy-loaned-messages.html)
+                        - For messages whose size is not fixed at
+                          compile time, the usual answer to zero copy
+                          is not to use it, or to make the types fixed
+                          size.
+                          (https://discourse.openrobotics.org/t/questions-on-zero-copy-for-variable-size-messages-pointcloud2-with-iceoryx-in-ros-2/53585/2)
+                        - Flexibility asks on which platforms and
+                          environments the design runs.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question.0)
+                        - Assumption: the leading transport option,
+                          nodes inserted by a transform, is ruled.
+                          Strength: strong; it applies to every edge
+                          that crosses units and grows with the number
+                          of units a placement uses.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

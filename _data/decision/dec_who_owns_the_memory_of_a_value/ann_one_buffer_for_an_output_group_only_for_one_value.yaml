@@ -1,0 +1,67 @@
+id_self:                ann_one_buffer_for_an_output_group_only_for_one_value
+guid_self:              ann_02131086d61246b4be33eb890ba66014
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One buffer for an output group only where every member carries one value
+brief:                  |
+                        The declared-end option has a node whose
+                        output group sends one value to many edges own
+                        one buffer and hand each edge a read-only
+                        token. A port group, as drafted, lets the node
+                        see each member and write it separately, and a
+                        router or a splitter by camera writes a
+                        different value to each. Aliasing all members
+                        to one buffer would make the last write win
+                        for every member. The option needs the group
+                        to declare that it sends one value, which the
+                        port group decision does not provide, or it
+                        must give each member its own buffer.
+description:            |
+                        Sources:
+                        - The declared-end option: a node with an
+                          output group that sends one value to many
+                          edges owns one buffer and hands each edge a
+                          read-only token.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_owning_end_declared_engine_allocates.yaml
+                          at brief)
+                        - Under port groups the node implementation
+                          sees how many ports each group has, and the
+                          engine sees one output port and one edge for
+                          every connection.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/opt_port_groups_sharing_a_type.yaml
+                          at brief)
+                        - Each output slot points at its own buffer,
+                          which the component writes in place.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - Functional suitability asks whether each
+                          function gives the right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                        - Assumption: nodes whose output groups write
+                          a different value to each member will exist,
+                          such as a router of tracks by camera.
+                          Strength: moderate; it falls away with a
+                          declared broadcast group.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

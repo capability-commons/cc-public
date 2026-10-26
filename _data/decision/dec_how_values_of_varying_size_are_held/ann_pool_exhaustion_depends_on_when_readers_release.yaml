@@ -1,0 +1,96 @@
+id_self:                ann_pool_exhaustion_depends_on_when_readers_release
+guid_self:              ann_15c4011dfbf94ae0a5c0919f9d15d73c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pool exhaustion that depends on when readers release
+brief:                  |
+                        A pool shared by several edges runs out
+                        according to how many blocks are held at once,
+                        and across execution units that depends on
+                        when readers in other units release theirs. A
+                        drop policy then drops a message that another
+                        run would keep, so the tokens on an edge, and
+                        a replay, depend on timing, against the Kahn
+                        property. A wait policy keeps the tokens but
+                        can stall a producer behind a slow reader
+                        without limit, as iceoryx warns for a
+                        publisher that waits for its subscriber, or
+                        deadlock where a cycle waits on itself. A
+                        capacity overflow under the bounded array
+                        option fails one message, the same way in
+                        every run, and cannot starve other edges.
+                        Within one unit on a fixed schedule, the
+                        blocks held at each point are the same in
+                        every run, so a pool there is deterministic
+                        and a check could size it.
+description:            |
+                        Sources:
+                        - A producer that finds no free block meets a
+                          declared policy, such as dropping the
+                          message or waiting.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_payload_in_a_pool_with_a_handle_on_the_edge.yaml
+                          at brief)
+                        - Units run in parallel and exchange values at
+                          the boundaries of a step.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - In a Kahn process network "Timing or
+                          execution order of processes must not affect
+                          the result"; capping FIFOs by blocking
+                          writes "may unfortunately lead to an
+                          artificial deadlock".
+                          (https://en.wikipedia.org/wiki/Kahn_process_networks)
+                        - iceoryx: with a publisher set to wait for
+                          its consumer, "it is possible that a slow
+                          subscriber blocks a publisher indefinitely".
+                          (https://github.com/eclipse-iceoryx/iceoryx/blob/main/iceoryx_examples/iceoptions)
+                        - GStreamer's acquire blocks until a buffer is
+                          released, unless a flag makes it return at
+                          once.
+                          (https://developer-old.gnome.org/gstreamer/stable/gstreamer-GstBufferPool.html)
+                        - Under the bounded array option, a message
+                          longer than the capacity is an error the
+                          producer must handle.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - Reliability asks what happens when a part or
+                          an input is faulty.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question.1)
+                        - Assumption: pools would be shared between
+                          units placed on one host, as a pool in
+                          shared memory is. Strength: strong across
+                          units; weak within one unit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_size_values_only
+    guid_target:        opt_ecf5dd2a01ac4a16856aec8cf9832b99
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

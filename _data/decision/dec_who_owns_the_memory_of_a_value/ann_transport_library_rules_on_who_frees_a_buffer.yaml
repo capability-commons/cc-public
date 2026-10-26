@@ -1,0 +1,86 @@
+id_self:                ann_transport_library_rules_on_who_frees_a_buffer
+guid_self:              ann_7d8d550b07a841228e07e846c5ee5c01
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport libraries with their own rules on who frees a buffer
+brief:                  |
+                        ZeroMQ sends a buffer without copying it only
+                        by taking ownership and calling a free
+                        function later, from any thread, and GStreamer
+                        returns a pooled buffer to its pool when its
+                        last reference goes. A transport node that is
+                        to send an edge's buffer without a copy must
+                        be able to give that buffer away and accept
+                        its release from a thread of the library.
+                        Under the engine option every buffer belongs
+                        to its edge for the life of the edge, so the
+                        transport node must copy. Under the producer
+                        or consumer option the release returns to a
+                        node that may already be running its next
+                        step. None of the four options says how a
+                        buffer is lent to a library, so the library's
+                        ownership model becomes a constraint the
+                        engine meets later.
+description:            |
+                        Sources:
+                        - "0MQ shall take ownership of the supplied
+                          buffer"; the deallocation function "will be
+                          called from an arbitrary thread".
+                          (https://libzmq.readthedocs.io/en/latest/zmq_msg_init_data.html)
+                        - "Buffer allocated from a bufferpool will
+                          automatically be returned to the pool with
+                          gst_buffer_pool_release_buffer() when their
+                          refcount drops to 0."
+                          (https://developer-old.gnome.org/gstreamer/stable/gstreamer-GstBufferPool.html)
+                        - Under the leading transport option,
+                          transport libraries are dependencies of the
+                          sender and receiver node kinds only.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - The engine option allocates one buffer set
+                          for each edge and frees it when the edge is
+                          removed.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_engine_owns_every_buffer.yaml
+                          at brief)
+                        - Dependency risk asks what the design takes
+                          from third parties.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question.0)
+                        - Assumption: a send without a copy through
+                          such a library will be worth having; no copy
+                          has been measured yet. Strength: weak to
+                          moderate; it matters for large values such
+                          as pictures.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumer_always_owns
+    guid_target:        opt_d9549c82ab1a40d7a5acc7c88e86c237
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

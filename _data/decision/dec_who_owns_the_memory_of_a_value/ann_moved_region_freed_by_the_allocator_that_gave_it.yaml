@@ -1,0 +1,97 @@
+id_self:                ann_moved_region_freed_by_the_allocator_that_gave_it
+guid_self:              ann_3e1fa5e106184a649f024181b6b7c3ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Moved or orphaned regions freed by the allocator that gave them
+brief:                  |
+                        A moved memory token passes a region from the
+                        node that wrote it to the node that reads it,
+                        and a change set may remove that reader at a
+                        step while it still holds the region. If the
+                        producer allocated the region, the reader, or
+                        the engine acting for a removed reader, must
+                        free memory that another node's allocator
+                        gave, and a region held by a removed node
+                        leaks unless something tracks it. When the
+                        engine allocates every region, it can reclaim
+                        what a removed node held when it applies the
+                        change set between steps. That holds only if
+                        no node keeps a token in its state past the
+                        end of a step, since typed state is upgraded
+                        and saved field by field and a token in it
+                        would have to be found and released.
+description:            |
+                        Sources:
+                        - Under the leading option on carrying values,
+                          a moved region is given up by the sender and
+                          owned by one reader.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/opt_memory_token_read_only_or_moved.yaml
+                          at brief)
+                        - Start, stop, restart and rewire happen only
+                          between steps.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#3-dynamic-subgraphs-a-runtime-host)
+                        - A deployment may apply any change set that
+                          checks against the graph it runs.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml
+                          at brief)
+                        - A node's state is typed data, and a swap
+                          upgrades it by the dictionary's mapping.
+                          (_data/decision/dec_form_of_node_state/ruling_state_as_typed_data.yaml
+                          at brief;
+                          _data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - Libraries that hand buffers between owners
+                          name the freeing party: ZeroMQ takes
+                          ownership of a supplied buffer and calls its
+                          deallocation function "from an arbitrary
+                          thread".
+                          (https://libzmq.readthedocs.io/en/latest/zmq_msg_init_data.html)
+                        - Reliability asks whether the system can
+                          recover without losing or corrupting data.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question.2)
+                        - Assumption: moved tokens are ruled in on
+                          dec_how_a_value_is_carried_along_an_edge;
+                          with plain copies only, nothing is moved and
+                          the point is moot. Strength: moderate; it
+                          grows with the rate of change sets and with
+                          the number of nodes that receive moved
+                          regions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumer_always_owns
+    guid_target:        opt_d9549c82ab1a40d7a5acc7c88e86c237
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,83 @@
+id_self:                ann_bounded_array_needs_no_third_party_allocator
+guid_self:              ann_eddf97ae640b4a3db9a8c493d090874d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bounded array with no third-party allocator
+brief:                  |
+                        A bounded array is a count beside a fixed
+                        array, which the drafted engine writes as a
+                        template of one line, and which matches
+                        AUTOSAR's arrays of variable size with an
+                        upper bound. A pool shared between OS
+                        processes needs a shared-memory allocator,
+                        written in house or taken from a library such
+                        as iceoryx, whose successor iceoryx2 lists
+                        bare metal only as a proof of concept.
+                        Allocation at run time on a bare core needs an
+                        allocator library, such as o1heap, or one
+                        written in house. The bounded array adds no
+                        dependency on any target.
+description:            |
+                        Sources:
+                        - template <class T, size_t N> struct
+                          BoundedSeq { uint32_t count; T item[N]; };
+                          replaces list.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - In AUTOSAR, an array of VARIABLE-SIZE
+                          semantics may vary at run time, and its
+                          arraySize sets the upper bound.
+                          (https://autosar.readthedocs.io/en/latest/autosar4_api/datatype/application_array_element.html)
+                        - iceoryx2 lists bare metal as
+                          "proof-of-concept": "A proof-of-concept with
+                          no_std bare-metal support is available."
+                          (https://docs.rs/crate/iceoryx2/latest)
+                        - o1heap is a constant-time allocator for hard
+                          real-time embedded systems under the MIT
+                          License.
+                          (https://github.com/pavel-kirienko/o1heap)
+                        - The pool option's blocks are declared and
+                          allocated ahead of time.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_payload_in_a_pool_with_a_handle_on_the_edge.yaml
+                          at brief)
+                        - Dependency risk counts direct and indirect
+                          dependencies.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.measure.0)
+                        - Assumption: a pool within one OS process can
+                          be written in house with little code; the
+                          dependency arises between processes.
+                          Strength: moderate; it holds at any graph
+                          size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_allocation_through_the_engine
+    guid_target:        opt_8a2cdaba7e544850a0c6bb685c176fe6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

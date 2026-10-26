@@ -1,0 +1,105 @@
+id_self:                ann_buffer_read_by_static_side_outlives_its_dynamic_writer
+guid_self:              ann_c583799aef924812a45eb30d7a333f05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Buffer read by the static side that outlives its dynamic writer
+brief:                  |
+                        Under same-step slots a static node reads,
+                        through a pointer, a buffer that a dynamic
+                        node writes. If the producer's end holds that
+                        memory and a change set removes or swaps the
+                        producer, the static reader holds a pointer to
+                        freed memory, which is a use after free,
+                        unless the engine updates every pointer first.
+                        A buffer tied to the slot, or to an owning end
+                        on the static side, lives as long as its
+                        reader and keeps the slot's default in place
+                        when the dynamic side does not run. Producer
+                        ownership fails here. The declared-end option
+                        can put the owner on the static side; the
+                        engine option can tie the buffer to the slot.
+description:            |
+                        Sources:
+                        - Values cross between the static and dynamic
+                          subgraphs in the same step through fixed
+                          slots, each with an optional default.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ruling_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - The fixed-slot option crosses values by
+                          handing over buffer pointers.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - A static node reading buffers placed by a
+                          change set is safe only if the runtime
+                          proves at each change that every pointer
+                          names a buffer of the right type and size.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ann_crossing_static_reads_buffers_placed_by_change_set.yaml
+                          at brief)
+                        - Under the producer option readers point at
+                          the producer's buffer.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_producer_always_owns.yaml
+                          at brief)
+                        - A deployment may apply any change set that
+                          checks against the graph it runs.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml
+                          at brief)
+                        - CWE-416: "The product reuses or references
+                          memory after it has been freed";
+                          consequences include crashes and execution
+                          of unauthorized code.
+                          (https://cwe.mitre.org/data/definitions/416.html)
+                        - Safety asks what state the design falls back
+                          to when it fails; security asks what an
+                          attacker can reach.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question.2 and
+                          entries.concern_security.question.2)
+                        - Assumption: the static subgraph holds the
+                          functions a system most needs to keep
+                          running, as a safety function would be.
+                          Strength: strong for every edge that enters
+                          a slot; it grows with the number of dynamic
+                          regions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

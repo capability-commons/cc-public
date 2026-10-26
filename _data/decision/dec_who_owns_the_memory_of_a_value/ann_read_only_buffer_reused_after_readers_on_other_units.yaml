@@ -1,0 +1,92 @@
+id_self:                ann_read_only_buffer_reused_after_readers_on_other_units
+guid_self:              ann_37b3a48b5633470f81aa4eae37353c23
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reuse of a read-only buffer read on other execution units
+brief:                  |
+                        Within one execution unit, readers of a shared
+                        buffer read it during the step and it is
+                        rewritten at the next, so nothing counts
+                        readers. When readers sit in other units,
+                        which run in parallel and exchange values at
+                        step boundaries, the buffer can be rewritten
+                        only after all have read it, which needs a
+                        second buffer for the edge or a count of
+                        readers. A count shared between cores needs
+                        atomic operations, and a core of the ARMv6-M
+                        class has no exclusive load and store, so it
+                        gets atomicity by disabling interrupts, which
+                        does not hold off another core. A generator
+                        that knows the static schedule can work out
+                        when the last reader is done and needs no
+                        count. This favors the engine or generator
+                        holding the buffer, over a node holding it.
+description:            |
+                        Sources:
+                        - An execution unit may be an OS process, a
+                          thread or a core with no operating system;
+                          work runs in parallel between units, and
+                          values cross at the boundaries of a step.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Placement on hosts and execution units is
+                          ruled.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - The declared-end option hands each edge of
+                          an output group a read-only token over one
+                          buffer; under the producer option readers
+                          point at the producer's buffer.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_owning_end_declared_engine_allocates.yaml
+                          at brief;
+                          _data/decision/dec_who_owns_the_memory_of_a_value/opt_producer_always_owns.yaml
+                          at brief)
+                        - "There is no load/store exclusive on
+                          ARMv6-M, just disable interrupts."
+                          (https://chromium.googlesource.com/chromiumos/platform/ec/+/master/core/cortex-m0/atomic.h)
+                        - Synchronous dataflow graphs "can be
+                          scheduled statically (at compile time) onto
+                          single or parallel programmable processors".
+                          (https://ptolemy.berkeley.edu/publications/papers/87/synchdataflow)
+                        - Flexibility asks on which platforms and
+                          environments the design runs.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question.0)
+                        - Assumption: some bare-core targets lack
+                          atomic operations between cores; WTP has
+                          named bare cores as a target but no part.
+                          Strength: moderate; it applies only to edges
+                          between units.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

@@ -1,0 +1,102 @@
+id_self:                ann_owning_end_fixed_per_port_not_chosen_per_edge
+guid_self:              ann_9c5b14dc872546baa11add3572e2790f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Owning end fixed per port, not chosen per edge
+brief:                  |
+                        In Stableflow the owning end was chosen for
+                        each edge, because the best owner differed
+                        with fan-in and fan-out. The declared-end
+                        option moves the choice to each port of a
+                        node, so a node owns on that port in every
+                        graph, and a check fails any edge whose ports
+                        both declare ownership or neither does. Two
+                        node implementations written apart may then
+                        not join, and a transform that inserts
+                        transport nodes needs ports that fit both
+                        cases, a second restriction on wiring beside
+                        the rule for feedback defaults. The drafted
+                        engine already places the buffer by the kind
+                        of edge, at the producer within a process and
+                        at the reader for feedback and cross-process
+                        edges, with no declaration. A choice per edge,
+                        or one the generator derives from edge kind
+                        and placement, keeps the Stableflow freedom
+                        without a field on every port.
+description:            |
+                        Sources:
+                        - In Stableflow either the source or the
+                          destination end of each edge could be
+                          declared the owner, because the most fitting
+                          owner differed with the topology of fan-in
+                          and fan-out.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/dec_who_owns_the_memory_of_a_value.yaml
+                          at description)
+                        - The declared-end option has the port declare
+                          the owning end, and a check fails an edge
+                          with none or with two.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_owning_end_declared_engine_allocates.yaml
+                          at brief)
+                        - Within a process an input points at the
+                          upstream node's output buffer; cross-process
+                          and feedback edges point at a buffer the
+                          framework fills.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - A transform splits an edge whose ends are in
+                          different units into a sender node and a
+                          receiver node.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - The rule on feedback defaults restricts how
+                          graphs are wired.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ruling_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - Variants for a number of cores are generated
+                          by rewriting the graph.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others; flexibility asks
+                          whether the design can be scaled up or down.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1
+                          and entries.concern_flexibility.question.2)
+                        - Assumption: a port could also declare that
+                          either end will do, leaving the choice to
+                          the generator, which answers most of this at
+                          the cost of a third value. Strength: strong;
+                          it grows with the number of node
+                          implementations and transforms.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

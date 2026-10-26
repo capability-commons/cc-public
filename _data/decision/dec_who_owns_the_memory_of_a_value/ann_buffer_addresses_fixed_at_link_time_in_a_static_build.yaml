@@ -1,0 +1,84 @@
+id_self:                ann_buffer_addresses_fixed_at_link_time_in_a_static_build
+guid_self:              ann_28e2d8927edd4baba17d155843e7ed99
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Buffer addresses fixed at link time in a static build
+brief:                  |
+                        In a frozen build every slot is a link-time
+                        constant address of static storage, so the
+                        optimizer folds the casts in each node and may
+                        inline small nodes into the schedule. Any
+                        option where the generator lays out buffers
+                        from declarations keeps this, whichever end is
+                        named the owner. Allocation by node code gives
+                        addresses known only at run time. Moved
+                        tokens, which pass a region from one edge to
+                        another, also make the address on an edge
+                        change from step to step, so a static build
+                        that uses them gives up constant addresses on
+                        those edges.
+description:            |
+                        Sources:
+                        - The generated file holds static storage for
+                          every node's buffers and static const slot
+                          arrays, so each inputs[i] is a link-time
+                          constant address; with LTO the casts fold to
+                          direct references to static buffers and
+                          small components inline.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#2-frozen-subgraphs-a-generated-schedule)
+                        - The producer and consumer options have a
+                          node allocate its buffer.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_producer_always_owns.yaml
+                          at brief;
+                          _data/decision/dec_who_owns_the_memory_of_a_value/opt_consumer_always_owns.yaml
+                          at brief)
+                        - A moved region is given up by the sender and
+                          owned by one reader.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/opt_memory_token_read_only_or_moved.yaml
+                          at brief)
+                        - Performance efficiency asks how quickly the
+                          design responds under expected load.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.question.0)
+                        - Assumption: the gain from constant addresses
+                          matters most for small nodes called at a
+                          high rate; no measurement in the tree shows
+                          its size. Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_consumer_always_owns
+    guid_target:        opt_d9549c82ab1a40d7a5acc7c88e86c237
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

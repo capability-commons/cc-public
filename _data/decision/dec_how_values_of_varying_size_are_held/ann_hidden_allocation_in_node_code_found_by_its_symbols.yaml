@@ -1,0 +1,81 @@
+id_self:                ann_hidden_allocation_in_node_code_found_by_its_symbols
+guid_self:              ann_933b55578ca540c5875d7b4ade7f1066
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Allocation hidden in node code, found by its symbols
+brief:                  |
+                        Much ordinary C++ breaks the rule that a node
+                        allocates nothing: standard containers and
+                        strings, and throwing an exception, since
+                        libstdc++ allocates each exception with malloc
+                        and falls back to an emergency pool, while the
+                        drafted wrapper catches whatever a node
+                        throws. When every value has a declared bound,
+                        a node never needs to grow a buffer, and a
+                        build can enforce the rule by refusing a node
+                        object that refers to malloc, operator new or
+                        __cxa_allocate_exception. Allocation through
+                        the engine at run time makes some allocation
+                        legal, so the rule can no longer be checked so
+                        simply, and a node that grows a container in a
+                        dynamic region may fail mid-step when memory
+                        runs out.
+description:            |
+                        Sources:
+                        - The component holds no globals and allocates
+                          nothing.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers)
+                        - The framework's wrapper catches anything
+                          thrown and maps it to a signal.
+                          (_sources/axair-orchestrator/docs/component_interface.md#why-this-shape)
+                        - In libstdc++, __cxa_allocate_exception calls
+                          malloc and, if that fails, an emergency
+                          pool.
+                          (https://gnu.googlesource.com/gcc/+/refs/tags/releases/gcc-8.2.0/libstdc++-v3/libsupc++/eh_alloc.cc)
+                        - The run-time option lets a node ask the
+                          engine for memory of any size while it runs.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_runtime_allocation_through_the_engine.yaml
+                          at brief)
+                        - Safety asks how the design avoids or limits
+                          each hazard.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question.1)
+                        - Assumption: a check of undefined symbols in
+                          each node's object is this argument's
+                          proposal, not something in the tree; it
+                          misses allocation through a library the node
+                          calls. Strength: moderate; it holds for
+                          every node kind written in C++.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_size_values_only
+    guid_target:        opt_ecf5dd2a01ac4a16856aec8cf9832b99
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_allocation_through_the_engine
+    guid_target:        opt_8a2cdaba7e544850a0c6bb685c176fe6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

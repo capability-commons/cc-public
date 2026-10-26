@@ -1,0 +1,95 @@
+id_self:                ann_bounded_array_reserves_what_padding_would
+guid_self:              ann_db1da69be9204a37802cac4939412ff4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bounded array that reserves what padding to the maximum would
+brief:                  |
+                        Under the bounded array option memory for the
+                        full capacity is allocated from the
+                        declaration, so each buffer reserves as much
+                        as a value padded to its maximum would. What
+                        the option changes is what moves, not what is
+                        reserved: a copy, a transport or a log can
+                        carry only the elements in use, and the count
+                        is part of the type that tools can read. The
+                        limitation WTP named, memory sized for the
+                        largest value on every edge, therefore stays
+                        under both the bounded array and the
+                        fixed-size option. Only sharing memory between
+                        edges, as a pool does, reserves for the values
+                        held at once rather than for the largest on
+                        each edge. Patrol's encoded video, whose
+                        access units vary widely in size, is where the
+                        difference is largest.
+description:            |
+                        Sources:
+                        - WTP noted that allocating per edge from
+                          declared types limits edges to data of a
+                          fixed size, a big limitation.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/dec_how_values_of_varying_size_are_held.yaml
+                          at description)
+                        - The bounded array option allocates memory
+                          for the full capacity from the declaration.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - The fixed-size option pads a varying value
+                          to a fixed maximum.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_fixed_size_values_only.yaml
+                          at brief)
+                        - The drafted bounded sequence is a count and
+                          an array of the full capacity, and its NumPy
+                          type is a count and items of the full shape.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity;
+                          _sources/axair-orchestrator/docs/execution_levels.md#4-types-a-numpy-compatible-description)
+                        - The pool option declares block sizes and
+                          counts ahead of time and carries a handle on
+                          the edge.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_payload_in_a_pool_with_a_handle_on_the_edge.yaml
+                          at brief)
+                        - Patrol's recorder takes encoded units, each
+                          an H.264 or H.265 access unit with a
+                          keyframe flag.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_recorder.yaml
+                          at declaration.encoded_unit.shape)
+                        - Performance efficiency measures peak memory.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure.2)
+                        - Assumption: a keyframe is many times the
+                          size of the frames between keyframes, so
+                          capacity set for keyframes is mostly unused.
+                          Strength: strong in memory on edges with a
+                          wide spread of sizes; weak where values sit
+                          near their capacity.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fixed_size_values_only
+    guid_target:        opt_ecf5dd2a01ac4a16856aec8cf9832b99
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

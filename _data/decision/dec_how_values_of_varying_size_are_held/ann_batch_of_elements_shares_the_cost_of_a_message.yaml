@@ -1,0 +1,71 @@
+id_self:                ann_batch_of_elements_shares_the_cost_of_a_message
+guid_self:              ann_bb4eb3aaae61432fbc504dbd71dcf44d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Batch of elements that shares the cost of a message
+brief:                  |
+                        WTP likens the convention to scaled data flow,
+                        in which a batch of values per message let
+                        each fine-grained node run as a sequence of
+                        SIMD steps and use the cache better. A bounded
+                        array of fixed-size elements, packed in one
+                        block, gives a node the same: one call for
+                        many elements, a loop over packed data that a
+                        compiler can vectorize, and the cost of each
+                        message, its call, its header and any
+                        transport frame, shared by all its elements. A
+                        pool handle gives the same layout only after a
+                        lookup, and padding to a fixed size gives it
+                        with no count to stop the loop.
+description:            |
+                        Sources:
+                        - WTP suggested that each message on an edge
+                          be a variable-length array of fixed-size
+                          elements.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/dec_how_values_of_varying_size_are_held.yaml
+                          at description)
+                        - WTP's "scaled data flow" is an old paper on
+                          fine-grained dataflow graphs whose nodes
+                          each do one elementary operation; it
+                          improved cache efficiency by sending batches
+                          of values, so that each node runs as a
+                          sequence of SIMD steps (owner's statement,
+                          2026-10-26).
+                        - The drafted bounded sequence holds its items
+                          in one array with a count.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - A packet may carry a header with a type id,
+                          size and sequence number.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#4-types-a-numpy-compatible-description)
+                        - Performance efficiency asks about
+                          throughput, in operations per second.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure.1)
+                        - Assumption: the elements of a message are
+                          processed alike, as detections or samples
+                          are; a value made of unlike parts gains
+                          less. Strength: moderate; it grows with the
+                          number of elements per message.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,94 @@
+id_self:                ann_default_needs_no_memory_of_its_own_when_the_engine_allocates
+guid_self:              ann_736bbb4c0e704e5299d4435044695e5b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Default value with no memory of its own when the engine allocates
+brief:                  |
+                        WTP's point that a default value is memory
+                        someone must allocate holds when nodes
+                        allocate. When the engine allocates the buffer
+                        of an edge, the default is only the first
+                        content written into that buffer when the edge
+                        is primed, and in a static build it can be a
+                        constant in the image. Which end supplies the
+                        default then need not be the end that owns the
+                        memory. The declared-end option ties them
+                        anyway: a feedback edge needs an owning end
+                        that declares a default. That is narrower than
+                        the ruled rule, under which either port, or a
+                        slot that inherits from either, may supply it.
+                        The producer option keeps WTP's problem, since
+                        a destination default needs a buffer of the
+                        consumer's own.
+description:            |
+                        Sources:
+                        - WTP pointed out that a default value is also
+                          memory that someone must allocate and free.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/dec_who_owns_the_memory_of_a_value.yaml
+                          at description)
+                        - The declared-end option has the owning end
+                          declare the type, size and default, and
+                          requires a feedback edge to have an owning
+                          end that declares a default.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_owning_end_declared_engine_allocates.yaml
+                          at brief)
+                        - The ruling: every feedback edge needs a
+                          default supplied by its source port or its
+                          destination port, and a slot inherits that
+                          ability from the ports it joins.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ruling_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - Feedback edges point at a buffer the
+                          framework fills and primes on reset; a
+                          frozen build holds static storage for every
+                          feedback buffer.
+                          (_sources/axair-orchestrator/docs/component_interface.md#2-component-interface-decided-2026-10-11-untyped-pointers;
+                          _sources/axair-orchestrator/docs/execution_levels.md#2-frozen-subgraphs-a-generated-schedule)
+                        - Under the producer option a destination
+                          default needs a buffer of the consumer's own
+                          until the first token arrives.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_producer_always_owns.yaml
+                          at brief)
+                        - Functional suitability asks whether the
+                          design does anything it should not.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.3)
+                        - Assumption: the declared-end option could
+                          let the non-owning end give the value, which
+                          the engine writes into the owner's buffer;
+                          then the conflict with the slot ruling goes
+                          away. Strength: strong while the slot ruling
+                          stands; it does not grow with graph size.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_producer_always_owns
+    guid_target:        opt_bbc821cb920846beb50b8b860ea5b2b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

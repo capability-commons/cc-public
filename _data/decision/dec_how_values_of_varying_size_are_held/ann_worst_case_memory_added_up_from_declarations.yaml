@@ -1,0 +1,106 @@
+id_self:                ann_worst_case_memory_added_up_from_declarations
+guid_self:              ann_21b5d1528f6f4a2e82afab69430f435b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Worst-case memory added up from declarations before a change is applied
+brief:                  |
+                        With fixed sizes or declared capacities, a
+                        check can add up the memory of a resolved
+                        graph before it is sent: for each edge, its
+                        capacity times its element size times the
+                        buffers the edge needs, one within a unit and
+                        more across units or behind a queue, plus
+                        state, slots, and the room a swap reserves for
+                        a second copy of state. Since a deployment may
+                        apply any change set that checks, the target
+                        can compare what a change set adds with what
+                        it has left, and refuse it before applying it.
+                        A pool's total is declared too, but whether it
+                        suffices depends on how long each holder keeps
+                        a block, such as a frame history node that
+                        keeps the last frames, which a check can bound
+                        only if each port declares how many tokens it
+                        may keep. Allocation at run time gives a check
+                        nothing to add.
+description:            |
+                        Sources:
+                        - A deployment may apply any change set that
+                          checks against the graph it runs; a change
+                          set is checked by cctool before it is sent
+                          and by the runtime before it is applied.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml
+                          at brief;
+                          _data/decision/dec_change_set_at_a_step/ruling_change_set_checked_by_both.yaml
+                          at brief)
+                        - Every buffer the framework allocates has a
+                          size known before the system starts.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - Keeping the old state through a swap doubles
+                          the swapped node's state memory for a step,
+                          and room for it must be reserved.
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_in_place_doubles_state_memory_for_a_step.yaml
+                          at brief)
+                        - Patrol's frame history keeps the last
+                          analysis frames.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_frame_history.yaml
+                          at brief)
+                        - The run-time option gives values no declared
+                          bound.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_runtime_allocation_through_the_engine.yaml
+                          at brief)
+                        - Maintainability asks how readily a change
+                          can be checked before it ships; safety
+                          counts identified hazards without a
+                          mitigation. (_data/register/reg_concern.yaml
+                          at
+                          entries.concern_maintainability.question.2
+                          and entries.concern_safety.measure.0)
+                        - Assumption: the target knows its free memory
+                          and the check is cheap enough to run before
+                          each change set. Strength: strong; the sum
+                          grows linearly with the graph, and it is the
+                          only option set that lets running out of
+                          memory be refused rather than met.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_size_values_only
+    guid_target:        opt_ecf5dd2a01ac4a16856aec8cf9832b99
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_allocation_through_the_engine
+    guid_target:        opt_8a2cdaba7e544850a0c6bb685c176fe6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

@@ -1,0 +1,80 @@
+id_self:                ann_one_element_type_per_message_against_composite_results
+guid_self:              ann_936681da79de4db59ad7b2492607c49b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One element type per message, against results with several sequences
+brief:                  |
+                        The option makes each message one array of one
+                        element type, and writes a nested value as
+                        such an array. Patrol's analysis result holds
+                        tracks, appearance boxes and outlines, each a
+                        sequence of varying length, and each outline a
+                        polygon with a varying number of corners. One
+                        array of one element type carries this only by
+                        splitting it over several ports, which must
+                        then be kept in step, or by flattening it into
+                        tagged elements with offsets that every reader
+                        decodes. The drafted engine allows a
+                        fixed-size struct with bounded sequences
+                        inside it, which keeps the result one value.
+                        The option should say whether a message may be
+                        such a struct.
+description:            |
+                        Sources:
+                        - Each message is an array of elements of one
+                          fixed-size type, and a nested or text value
+                          is written as such an array.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - Patrol's analysis result holds tracks,
+                          appearance boxes and outlines, the outlines
+                          closed polygons.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_analysis.yaml
+                          at declaration.analysis_result.shape)
+                        - In the drafted engine every sequence or
+                          string has a fixed capacity declared in the
+                          component's spec or its data dictionary
+                          type, held as a bounded sequence.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - Functional suitability asks whether every
+                          function that is needed is present;
+                          maintainability asks how readily a newcomer
+                          understands the design.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1
+                          and
+                          entries.concern_maintainability.question.0)
+                        - Assumption: "an array of elements of one
+                          fixed-size type" is read strictly; if a
+                          message may be a struct of bounded arrays,
+                          the point falls away and the option matches
+                          the draft. Strength: moderate; it holds for
+                          every type with more than one varying part.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

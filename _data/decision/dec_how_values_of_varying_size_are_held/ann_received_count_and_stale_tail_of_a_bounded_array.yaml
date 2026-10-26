@@ -1,0 +1,83 @@
+id_self:                ann_received_count_and_stale_tail_of_a_bounded_array
+guid_self:              ann_06b530c8430b4e81918ccaa3c5efb6bd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Received count and stale tail of a bounded array
+brief:                  |
+                        A bounded array carries its length as a count
+                        beside its storage. A count larger than the
+                        capacity, written by a faulty or hostile
+                        sender or corrupted on a link, makes every
+                        reader that trusts it read past the array, so
+                        the receiver of a crossing must check the
+                        count against the capacity before passing the
+                        value on. A buffer reused from step to step
+                        also keeps the elements of an earlier, longer
+                        message beyond the current count, so a copy,
+                        log or transport that moves the whole capacity
+                        sends stale data, which in Patrol may be
+                        pictures of people from an earlier frame.
+                        Copying only the counted elements, or clearing
+                        the tail, closes both. A pool handle received
+                        from another unit is worse, since it is an
+                        index into memory that the sender chose.
+description:            |
+                        Sources:
+                        - The bounded sequence holds a count and items
+                          up to its capacity.
+                          (_sources/axair-orchestrator/docs/component_interface.md#5-variable-length-data-decided-2026-10-11-fixed-capacity)
+                        - Everything that crosses an edge is fixed
+                          size and trivially copyable, so it can be
+                          copied whole.
+                          (_sources/axair-orchestrator/docs/execution_levels.md#4-types-a-numpy-compatible-description)
+                        - A frame step holds the Y plane of a camera
+                          picture.
+                          (_sources/cc-patrol-notes/draft/icd/icd_patrol_frame_history.yaml
+                          at declaration.frame_step.shape)
+                        - A log of every value entering the graph
+                          holds all the data the system took in,
+                          including personal data.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ann_replay_log_holds_all_personal_data_seen.yaml
+                          at brief)
+                        - The pool option carries a handle to a block
+                          on the edge.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_payload_in_a_pool_with_a_handle_on_the_edge.yaml
+                          at brief)
+                        - Security asks what an attacker can reach,
+                          and who can read what.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question.2 and
+                          entries.concern_security.question.0)
+                        - Assumption: a crossing between units may
+                          face a link or a process that is not
+                          trusted. Strength: moderate; it is fixed
+                          once, in the transport nodes and in the copy
+                          routine, and does not grow with the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_values_of_varying_size_are_held
+    guid_target:        dec_82e6d8a3e70241a781adf8b45c09729f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bounded_array_of_fixed_size_elements
+    guid_target:        opt_50c86e09193647d1b12a23c893054408
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_payload_in_a_pool_with_a_handle_on_the_edge
+    guid_target:        opt_0333efef48a043dfa07b8b02b83839cc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
