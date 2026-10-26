@@ -1,0 +1,56 @@
+id_self:                opt_graph_of_edits_as_a_dataflow_graph_with_caches
+guid_self:              opt_9d6a1b69b7914381839d4b71fa51040f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph of edits as a dataflow graph with caches on its edges
+brief:                  |
+                        The graph of edits is itself a
+                        [[dataflow graph]]: each
+                        [[variant operation]], each merge and each
+                        [[delta module]] is a dataflow node, a
+                        dataflow model is the token on each edge, and
+                        each named [[dataflow variant]] is a named
+                        output. A transform inserts a cache node on
+                        each edge that needs one, keyed by the input
+                        digest of its stage, as other transforms
+                        insert nodes on edges. Resolving a dataflow
+                        variant is running the graph of edits up to
+                        its output, and the dataflow checks apply to
+                        the graph of edits as to any other. The graph
+                        of edits has no variants of its own, so the
+                        recursion ends there.
+description:            |
+                        WTP's proposal (WTP, 2026-10-26).
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_the_graph_of_edits_is_run
+    guid_target:        dec_e21f00ea4fdc4e459de5b75291c02226
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_delta_module
+    guid_target:        concept_3d0dd6755b224df0bb0cf1e98f017137
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
