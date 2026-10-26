@@ -1,0 +1,65 @@
+id_self:                ann_stands_in_for_relation_becomes_public_data_format
+guid_self:              ann_71eac7b0ba654345b38f5ab47ed21b9b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A relation added now as a member of the public data format
+brief:                  |
+                        The data format is public, so a stands-in-for
+                        relation added now is a member that peers may
+                        write against. After 1.0, narrowing what it
+                        means or removing it would be a breaking
+                        change that waits for a major release.
+                        Deferring the relation until a second decision
+                        reuses a simulation variant lets its meaning
+                        be settled on a real case before peers depend
+                        on it. Before 1.0 the cost of changing it is
+                        low, so the gain from deferring is modest.
+description:            |
+                        Sources:
+                        - The data format is public, and after 1.0 a
+                          schema change that can reject a document the
+                          previous release accepted is breaking.
+                          (_data/decision/dec_declared_public_api/ruling_public_api_split_by_kind.yaml
+                          at brief)
+                        - After 1.0, breaking work collects until a
+                          major release, and 1.0 is likely to be six
+                          months or more away.
+                          (_data/decision/dec_breaking_work_after_version_one/ruling_breaking_work_after_version_one.yaml
+                          at brief)
+                        - The relation option adds a relation saying
+                          that a simulation variant stands in for a
+                          deployment variant, with validation pairs.
+                          (_data/decision/dec_stands_in_for_and_validation_pairs/opt_stands_in_for_relation_with_validation_pairs.yaml
+                          at brief)
+                        - Assumption: a relation entry in the register
+                          is part of the data format that peers use.
+                          Strength: weak before 1.0, moderate after
+                          it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_stands_in_for_and_validation_pairs
+    guid_target:        dec_ac10ada5fb5a4879974457ef919a3936
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_link_deferred_until_reuse
+    guid_target:        opt_1d4f81349f4346798d4852538b9d128a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stands_in_for_relation_with_validation_pairs
+    guid_target:        opt_05e6a143d5a741a9a6fa0825432b614c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
