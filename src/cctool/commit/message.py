@@ -288,7 +288,10 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
 
     list_found = [_sentence(error) for error in cctool.check.schema.errors(validator, item)]
 
-    if item.get(KEY_TITLE) != subject:
+    if not str(item.get(KEY_TITLE, '')).isprintable():
+        list_found.append('The title holds a line break, a tab or another character that '
+                          'is not printed.')
+    elif item.get(KEY_TITLE) != subject:
         list_found.append('The subject line is not the title of the commit item.')
 
     id_self   = str(item.get(KEY_ID_SELF, ''))
