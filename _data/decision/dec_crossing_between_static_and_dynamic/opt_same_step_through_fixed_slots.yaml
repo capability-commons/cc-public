@@ -14,10 +14,20 @@ brief:                  |
                         buffer pointers. The static schedule holds a
                         fixed call slot for each dynamic region it
                         exchanges values with, placed by the static
-                        edges at the boundary. A change set that would
+                        edges at the boundary. A slot may declare a
+                        default value, and is able to supply one if it
+                        declares one or if either port it joins can
+                        supply one; a feedback edge through a slot
+                        needs a slot that can. A change set that would
                         need a region to run at another point in the
                         static order, or would close a loop through
                         the static subgraph within a step, is refused.
+description:            |
+                        Reworded at WTP's request on 2026-10-26: the
+                        default value of a slot is optional, and a
+                        slot inherits the ability to supply a default
+                        from the ports it joins, as for any feedback
+                        edge.
 
 edge:
 
