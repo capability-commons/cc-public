@@ -1,0 +1,42 @@
+id_self:                dec_who_owns_the_memory_of_a_value
+guid_self:              dec_f2cdc1e8ef0b44e98d936055753c98d5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Who owns the memory of a value
+brief:                  |
+                        Which end of a dataflow edge, or which part of
+                        the system, is responsible for allocating and
+                        freeing the memory a value is held in, and for
+                        its default value?
+description:            |
+                        WTP pointed out that a default value is not
+                        only a value but also memory that someone must
+                        allocate and free, and had thought of the node
+                        that provides a value as responsible for its
+                        memory (WTP, 2026-10-26). In Stableflow either
+                        the source or the destination end of each edge
+                        could be declared the owner, responsible for
+                        allocation and default values, because the
+                        most fitting owner differed with the topology
+                        of fan-in and fan-out; producer ownership was
+                        the usual convention (WTP, 2026-10-26). The
+                        drafted node contract says a node holds no
+                        globals and allocates nothing. With one edge
+                        per port and port groups, fan-in and fan-out
+                        are done by nodes with port groups rather than
+                        by edges. The answer bears on version swaps,
+                        re-priming after a rewire, memory tokens and
+                        feedback defaults.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
