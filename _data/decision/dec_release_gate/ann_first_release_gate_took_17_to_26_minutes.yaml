@@ -1,0 +1,66 @@
+id_self:                ann_first_release_gate_took_17_to_26_minutes
+guid_self:              ann_c3f461bdbcab422b83d36416c20a006b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Time of the full gate at the first release
+brief:                  |
+                        The full gate for v0.1.0 took about 26 minutes
+                        on 4 cores, and its tests on the three Pythons
+                        took about 17 minutes on WTP's 8-core machine.
+                        Most of that time is in tests marked slow,
+                        which grow with the data, and the test
+                        processes are busy for much less of it than
+                        the cores allow. That is the time any shorter
+                        path for patch releases is to be weighed
+                        against.
+description:            |
+                        Sources:
+                        - Measured 2026-10-26 in the cloud container,
+                          with 4 cores, on f7f0a54e, the commit tagged
+                          v0.1.0: building the wheel took 14 s. Then,
+                          for each Python in turn, a fresh
+                          environment, a smoke run of cctool
+                          --version, a check of a fixture peer against
+                          the installed package, and the full suite
+                          with pytest -n 4 and no cache took 529 s on
+                          3.12, 571 s on 3.13 and 470 s on 3.14. 3,760
+                          tests passed and 11 browser tests were
+                          skipped each time, for about 26 minutes in
+                          all.
+                        - Measured by WTP on 2026-10-26 on his
+                          machine, one Intel i7-9700K with 8 cores:
+                          time pixi run slow gave 17m8s real, 73m48s
+                          user and 1m53s sys. That is the test task
+                          with pytest -n auto --dist worksteal in the
+                          py312, py313 and py314 environments, one
+                          after another, in the locked environments,
+                          with no build or fresh install
+                          (pyproject.toml at tool.pixi.tasks.slow and
+                          tool.pixi.tasks.test).
+                        - User time over real time there is about 4.3,
+                          so the 8 cores are on average a little over
+                          half busy.
+                        - In the container run, 3,058 of the 3,760
+                          tests are marked slow, test_edit alone holds
+                          3,235 tests, and the durations pytest
+                          reports for all tests sum to 798 s against
+                          1,788 s of worker time at -n 4 on Python
+                          3.14 (measured 2026-10-26).
+                        - The ruling asks that the full gate be timed
+                          at the first release before any shorter path
+                          for patches is added
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          at brief).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_release_gate
+    guid_target:        dec_323c9c0230454f9e8317f97c55c58ef5
