@@ -1,0 +1,44 @@
+id_self:                ruling_same_step_through_fixed_slots
+guid_self:              ruling_f1cf83cc2af8481abbff6bb88bd8a388
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same step through fixed slots
+brief:                  |
+                        Values cross between the static and dynamic
+                        subgraphs in the same step through fixed
+                        slots, each with an optional default value.
+                        Ruled by WTP on 2026-10-26. WTP's reason:
+                        every feedback edge in a Kahn network needs a
+                        default value, supplied by its source port or
+                        its destination port, so each node declares,
+                        for each port, whether it can supply a
+                        default; two ports that cannot are never
+                        joined by a feedback edge. A slot inherits
+                        that ability from the ports it joins, which
+                        restricts how graphs are wired, and a
+                        transform that would break the rule is refused
+                        when it is validated in Python before it is
+                        applied.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_gateway_nodes_at_the_boundary
+    guid_target:        opt_7606af78cce24341ac008ee185de4c44
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
