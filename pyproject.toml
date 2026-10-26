@@ -119,6 +119,12 @@ gate                    = "cctool gate"
 hooks                   = "git config core.hooksPath .githooks"
 browsers                = "playwright install chromium"
 
+# The overnight property tests: many examples of each, with those that
+# failed kept in the git directory so that the next run tries them
+# first. The slow run is the one that makes few.
+#
+fuzz                    = { cmd = "pytest -m fuzz", env = { CCTOOL_FUZZ = "overnight" } }
+
 # The slow run: the tests on every Python that requires-python admits,
 # each in an environment of its own. It is too slow for the gate, so it
 # is run on its own, such as overnight: pixi run slow.
@@ -170,7 +176,9 @@ py314                   = ["py314", "tool"]
 # grows with the data or repeats a stage of the gate, so the gate leaves
 # it out; pixi run test and pixi run slow run it. A test marked prepush
 # tests the commit and history machinery, so the pre-commit gate leaves
-# it out and the pre-push gate runs it. A test marked reads_data reads
+# it out and the pre-push gate runs it, as it does a test marked fuzz,
+# a property test, with few examples; pixi run fuzz runs those with
+# many. A test marked reads_data reads
 # the data of the repository or a copy of it, so the pre-commit gate
 # runs it when data is staged with no code; a test that copies the
 # repository is marked so when it is collected.
@@ -185,7 +193,8 @@ strict_markers          = true
 xfail_strict            = true
 markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage",
                            "prepush: left out of the pre-commit gate, which the pre-push gate is not; it tests the commit and history machinery",
-                           "reads_data: run by the pre-commit gate when data is staged with no code; it reads the data of the repository or a copy of it"]
+                           "reads_data: run by the pre-commit gate when data is staged with no code; it reads the data of the repository or a copy of it",
+                           "fuzz: left out of the pre-commit gate; a property test, run with few examples, or many overnight"]
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it

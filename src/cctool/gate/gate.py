@@ -89,13 +89,13 @@ import cctool.gate.timing
 # The tests that the gate of a push runs, those that the gate of a
 # commit runs, and those that it runs when the commit stages data but no
 # code. The tests marked prepush test the commit and history machinery,
-# and are left to the gate of a push. The tests marked reads_data read
-# the data of the repository, or a copy of it, so a change to the data
-# alone can break them.
+# and are left to the gate of a push, as are the property tests, marked
+# fuzz. The tests marked reads_data read the data of the repository, or
+# a copy of it, so a change to the data alone can break them.
 #
 MARK_PUSH     = 'not slow'
-MARK_COMMIT   = 'not slow and not prepush'
-MARK_DATA     = 'reads_data and not slow and not prepush'
+MARK_COMMIT   = 'not slow and not prepush and not fuzz'
+MARK_DATA     = 'reads_data and not slow and not prepush and not fuzz'
 
 # Each stage: its name, and the command that runs it in the root of the
 # copy. {python} is the interpreter that runs the gate. The tests run on
