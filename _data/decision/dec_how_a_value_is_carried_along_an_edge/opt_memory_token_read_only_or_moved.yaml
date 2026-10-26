@@ -1,0 +1,35 @@
+id_self:                opt_memory_token_read_only_or_moved
+guid_self:              opt_6a14dbf3c42a4f689ef5e47f05859efe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Memory token, read-only once sent or moved
+brief:                  |
+                        The graph always means a value on each edge,
+                        and the engine may carry it as a memory token
+                        over a region of shared memory where a
+                        recorded exception shows the copy costs more
+                        than its budget. A region follows one of two
+                        rules: read-only once sent, so several readers
+                        may share it, or moved, so the sender gives it
+                        up and one reader owns it. A node that would
+                        write into a region it received must own it,
+                        or is given a copy. Checks, replay and caching
+                        see values only.
+description:            |
+                        Proposed to WTP on 2026-10-26; the same
+                        approach as loaned samples in iceoryx, loaned
+                        messages in ROS 2 and reference-counted
+                        buffers in GStreamer.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_a_value_is_carried_along_an_edge
+    guid_target:        dec_863422c027f24eaa9c1240e60002b06c
