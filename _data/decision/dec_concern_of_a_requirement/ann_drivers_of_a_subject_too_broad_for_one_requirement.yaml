@@ -1,0 +1,75 @@
+id_self:                ann_drivers_of_a_subject_too_broad_for_one_requirement
+guid_self:              ann_7cb7a44f197847d6825690c25f83a516
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Drivers of a subject too broad for one requirement
+brief:                  |
+                        lco_tooling has seven drivers and three
+                        requirements, so reading the concern from the
+                        subject says that each of them serves all
+                        seven. When a driver is dropped or a
+                        requirement is changed, nothing then tells
+                        which requirements lose their reason, while an
+                        edge names exactly those.
+description:            |
+                        Sources:
+                        - lco_tooling has seven edges of
+                          relation_is_driven_by.
+                          (_data/logical_component/lco_tooling.yaml at
+                          edge)
+                        - rqt_edit_refuses_new_failure,
+                          rqt_format_keeps_formatted_file and
+                          rqt_rename_keeps_guid have lco_tooling as
+                          subject.
+                          (_data/requirement/rqt_edit_refuses_new_failure.yaml
+                          at edge.0;
+                          _data/requirement/rqt_format_keeps_formatted_file.yaml
+                          at edge.0;
+                          _data/requirement/rqt_rename_keeps_guid.yaml
+                          at edge.0)
+                        - The rationale of
+                          rqt_format_keeps_formatted_file is one
+                          reason, that the layout check means nothing
+                          unless a second pass changes nothing.
+                          (_data/requirement/rqt_format_keeps_formatted_file.yaml
+                          at rationale)
+                        - Under the option not recorded, concerns are
+                          read from the drivers of the subject.
+                          (_data/decision/dec_concern_of_a_requirement/opt_concern_of_a_requirement_not_recorded.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                        - Assumption: drivers of a component change
+                          over its life. Strength: moderate; it grows
+                          with the number of requirements on one
+                          subject.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_concern_of_a_requirement
+    guid_target:        dec_fcb02857e99a463b8f020984ab0e6f78
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_requirement_names_the_concerns_it_serves
+    guid_target:        opt_5f2f4230d7674c71a3f76e76d76e8d6f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_concern_of_a_requirement_not_recorded
+    guid_target:        opt_21961593465f42878095960bd5f1b248
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

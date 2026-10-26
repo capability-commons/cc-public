@@ -1,0 +1,69 @@
+id_self:                ann_coverage_check_starts_with_most_drivers_unserved
+guid_self:              ann_20e22e2947474bf4bac9aed527498174
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Coverage check that starts with most drivers unserved
+brief:                  |
+                        The thirteen logical components have 75 driver
+                        edges between them, and requirements exist on
+                        only two of them, so a check that each driver
+                        has a requirement serving it would report at
+                        least 61 gaps the day it lands. A check with
+                        that many standing reports cannot be a
+                        failure, and as advice it says little about
+                        any one change.
+description:            |
+                        Sources:
+                        - The thirteen logical components have 5, 5,
+                          7, 6, 5, 8, 5, 6, 5, 5, 6, 7 and 5 edges of
+                          relation_is_driven_by, 75 in all;
+                          lco_tooling has 7 and lco_chat 7.
+                          (_data/logical_component/*.yaml, counted
+                          with grep -c on 2026-10-26)
+                        - The four requirements have the subjects
+                          lco_tooling and lco_chat only.
+                          (_data/requirement/rqt_chat_deployment_stays_with_data_owner.yaml
+                          at edge.0;
+                          _data/requirement/rqt_edit_refuses_new_failure.yaml
+                          at edge.0;
+                          _data/requirement/rqt_format_keeps_formatted_file.yaml
+                          at edge.0;
+                          _data/requirement/rqt_rename_keeps_guid.yaml
+                          at edge.0)
+                        - Under the option a check can ask whether
+                          each driver of a logical component has at
+                          least one requirement that serves it.
+                          (_data/decision/dec_concern_of_a_requirement/opt_requirement_names_the_concerns_it_serves.yaml
+                          at brief)
+                        - Maintainability asks how readily a change
+                          can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                        - Assumption: the check is held for every
+                          logical component, not only those with
+                          requirements. Strength: moderate; it bears
+                          on the check, not on the edge, which stands
+                          without it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_concern_of_a_requirement
+    guid_target:        dec_fcb02857e99a463b8f020984ab0e6f78
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_requirement_names_the_concerns_it_serves
+    guid_target:        opt_5f2f4230d7674c71a3f76e76d76e8d6f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

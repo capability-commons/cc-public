@@ -1,0 +1,86 @@
+id_self:                ann_second_form_spreads_across_five_mechanisms
+guid_self:              ann_84c3cfe26ef348f3b47fe3cee0dfb143
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second form that spreads across five mechanisms
+brief:                  |
+                        A form field reaches the schema, the composer,
+                        the review questions, the strict field rule
+                        and the agent guidance, since each of them
+                        assumes one form with a process word and an
+                        object. Each further form repeats those
+                        changes, so adding three forms at once
+                        multiplies the spread for forms that no
+                        requirement uses yet.
+description:            |
+                        Sources:
+                        - The schema requires modal_verb, activity,
+                          object, rationale and verification_method of
+                          every requirement, and exactly one edge of
+                          relation_has_process.
+                          (_data/schema/sch_requirement.yaml at
+                          allOf.2.required and
+                          allOf.2.properties.edge.allOf.1)
+                        - The composer builds one sentence order, with
+                          a process word and an object.
+                          (src/cctool/requirement/compose.py within
+                          parts)
+                        - The review questions read only the
+                          condition, object and qualifier, and say of
+                          every requirement that it is composed from
+                          one process word and one object.
+                          (src/cctool/requirement/review.py within
+                          questions and characteristics)
+                        - The strict text slots of a requirement are
+                          condition, object and qualifier, in the
+                          check and in the guidance.
+                          (src/cctool/check/check.lp within
+                          strict_field; AGENTS.md#changing-data-items)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                        - Assumption: each new form needs its own
+                          branch in each of these places, rather than
+                          one shared table. Strength: strong against
+                          all four forms now; moderate against one
+                          property form, which is a bounded change
+                          made once.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_property_form_of_a_requirement
+    guid_target:        dec_dd1c729ff7b1424f884a202c5149646e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_properties_written_in_the_one_form
+    guid_target:        opt_4eafc6a15aaf4ecaa0390cd4d7513a4d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_four_sophist_forms_now
+    guid_target:        opt_fcad684ff0dd468e9c3fbb177b528363
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_requirement_form_field_with_a_property_form
+    guid_target:        opt_3bf3da3a60fc46989ba71f28b7ad8291
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

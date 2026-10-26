@@ -1,0 +1,85 @@
+id_self:                ann_process_form_obliges_a_person_not_a_design_entity
+guid_self:              ann_8ab0104b56664abf90a6ed00e5f47184
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Process form that obliges a person rather than a design entity
+brief:                  |
+                        The SOPHIST process template obliges an actor,
+                        a person or role such as a contractor, rather
+                        than the system, while the subject of a
+                        requirement must be a design entity by ruling.
+                        Adding the process form now therefore reopens
+                        a settled decision and breaks the trace from
+                        each requirement to the element it obliges;
+                        adding forms only when needed leaves that
+                        question until a requirement raises it.
+description:            |
+                        Sources:
+                        - In the SOPHIST process template the first
+                          slot is an actor, a person or role and not
+                          the system, as in "the contractor must write
+                          an operating manual". (Rupp and the
+                          SOPHISTs, "Schablonen fuer alle Faelle",
+                          chapter 3.5, figure 14, pages 35-36,
+                          https://silo.tips/download/die-sophistenschablonen-fr-alle-flle-2)
+                        - The subject of a requirement must be a
+                          design element.
+                          (_data/decision/dec_requirement_subject/ruling_requirement_subject.yaml
+                          at brief)
+                        - The target of relation_has_subject must be a
+                          design entity, the system or system element
+                          the requirement is an obligation on.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_has_subject.description and
+                          entries.relation_has_subject.note)
+                        - The option with a form field adds the
+                          environment and process forms only when a
+                          requirement needs one.
+                          (_data/decision/dec_property_form_of_a_requirement/opt_requirement_form_field_with_a_property_form.yaml
+                          at brief)
+                        - Simplicity asks whether a design follows
+                          from decisions already made; traceability
+                          asks whether each element can be traced to
+                          the reason it exists.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.2 and
+                          entries.concern_traceability.question.0)
+                        - Assumption: the process form would be added
+                          with the actor in the subject place, as
+                          SOPHIST writes it. Strength: strong against
+                          the process form now; it says nothing
+                          against the environment form, whose subject
+                          is the thing considered.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_property_form_of_a_requirement
+    guid_target:        dec_dd1c729ff7b1424f884a202c5149646e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_all_four_sophist_forms_now
+    guid_target:        opt_fcad684ff0dd468e9c3fbb177b528363
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_requirement_form_field_with_a_property_form
+    guid_target:        opt_3bf3da3a60fc46989ba71f28b7ad8291
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

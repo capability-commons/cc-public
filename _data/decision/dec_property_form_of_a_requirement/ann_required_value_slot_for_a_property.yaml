@@ -1,0 +1,78 @@
+id_self:                ann_required_value_slot_for_a_property
+guid_self:              ann_28103c66f6344d4898eb28cc5e0830aa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Required value slot for the measure of a property
+brief:                  |
+                        In the one form the measure of a property sits
+                        in the qualifier, which is optional, so a
+                        property with no measure passes the schema and
+                        the review only asks whether one is needed. A
+                        property form whose value slot is required
+                        refuses a property with no value at the
+                        schema, before anyone reviews it.
+description:            |
+                        Sources:
+                        - The qualifier is optional; it is not in the
+                          required list.
+                          (_data/schema/sch_requirement.yaml at
+                          allOf.2.required and
+                          allOf.2.properties.qualifier)
+                        - With no qualifier, the review raises a
+                          question, and its questions are prompts for
+                          a reviewer, not failures.
+                          (src/cctool/requirement/review.py within
+                          questions, and the description in its module
+                          docstring)
+                        - Under the option the property form has the
+                          characteristic and the value or comparison
+                          it must meet, and the schema requires each
+                          form's slots.
+                          (_data/decision/dec_property_form_of_a_requirement/opt_requirement_form_field_with_a_property_form.yaml
+                          at brief)
+                        - rqt_chat_deployment_stays_with_data_owner
+                          has no qualifier.
+                          (_data/requirement/rqt_chat_deployment_stays_with_data_owner.yaml)
+                        - Maintainability asks how readily a change
+                          can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                        - Assumption: a property worth stating has a
+                          value that can be written in a slot.
+                          Strength: moderate; a value such as "from
+                          its recorded edits" is still text, so the
+                          schema checks that a value is given, not
+                          that it can be measured.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_property_form_of_a_requirement
+    guid_target:        dec_dd1c729ff7b1424f884a202c5149646e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_requirement_form_field_with_a_property_form
+    guid_target:        opt_3bf3da3a60fc46989ba71f28b7ad8291
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_all_four_sophist_forms_now
+    guid_target:        opt_fcad684ff0dd468e9c3fbb177b528363
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_properties_written_in_the_one_form
+    guid_target:        opt_4eafc6a15aaf4ecaa0390cd4d7513a4d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
