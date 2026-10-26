@@ -1,0 +1,40 @@
+id_self:                ruling_variants_resolved_in_python_only
+guid_self:              ruling_135eee803f3a43a1825dc20b57cfddc4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Variants resolved in Python only
+brief:                  |
+                        Only cctool, in Python, interprets variant
+                        operations, and a target receives resolved
+                        graphs or the difference between two of them.
+                        Ruled by WTP on 2026-10-26, on the basis that
+                        a Python orchestrator can act as an adapter
+                        between whatever canonical form the variant
+                        operations are held in and a materialized form
+                        that is most convenient for the C++ runtime.
+                        The graph of edits may be shaped as a dataflow
+                        graph, but cctool runs it, and the engine
+                        never sees operations.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_variants_resolved_in_python_only
+    guid_target:        opt_03cc1684f2a345c3a6249641778787ad
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_one_cpp_resolver_with_python_bindings
+    guid_target:        opt_098f736fc8c14824888b773ff9119493
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_python_and_cpp_operation_interpreter
+    guid_target:        opt_cc96962767d04ad28b59e46022603638
