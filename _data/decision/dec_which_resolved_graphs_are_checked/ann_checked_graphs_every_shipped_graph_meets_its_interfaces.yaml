@@ -1,0 +1,75 @@
+id_self:                ann_checked_graphs_every_shipped_graph_meets_its_interfaces
+guid_self:              ann_9d2c0105576d4fe2a76e0ffddc0e5c4c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every graph a target receives checked against its interfaces
+brief:                  |
+                        A target receives resolved graphs, never
+                        operations, so the graph a target or a partner
+                        runs is exactly one complete dataflow variant.
+                        If every complete variant is checked, each
+                        such graph has passed the interface checks
+                        (unknown port, port type mismatch, foreign
+                        node) before it leaves cctool, and a partner
+                        whose product is a variant of a shared base
+                        gets a graph that fits the interface control
+                        documents it was built against. If only the
+                        base or a sample is checked, a variant that no
+                        check resolved can reach a target with a port
+                        that no longer matches its interface, and the
+                        fault shows only when the two sides are
+                        joined.
+description:            |
+                        Sources:
+                        - A target receives resolved graphs or the
+                          difference between two of them, never
+                          operations.
+                          (_data/decision/dec_where_variants_are_resolved/opt_variants_resolved_in_python_only.yaml
+                          at brief)
+                        - The interface checks on a dataflow graph.
+                          (src/cctool/check/check.lp within
+                          unknown_port, port_type_mismatch and
+                          foreign_node)
+                        - The family is checked on its base, or on a
+                          sample of leaves, under the other options.
+                          (_data/decision/dec_which_resolved_graphs_are_checked/opt_family_checked_on_the_base.yaml
+                          at brief;
+                          _data/decision/dec_which_resolved_graphs_are_checked/opt_sampled_leaves_checked.yaml
+                          at brief)
+                        - Assumption: partners build their products as
+                          variants of shared bases, as the Patrol
+                          drafts do. Strength: moderate; it grows with
+                          the number of variants a partner ships.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_resolved_graphs_are_checked
+    guid_target:        dec_b6173dcb66244ff7a1479f98309b4f9c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_complete_variant_checked
+    guid_target:        opt_5a425fec9609463aba61d10e5ac35bfb
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_family_checked_on_the_base
+    guid_target:        opt_272043e7349d4559b932771615a19c54
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_sampled_leaves_checked
+    guid_target:        opt_5e328ef9f14c475e9378c1fc140bd480
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
