@@ -78,10 +78,11 @@ COUNT_OVERNIGHT   = 2000
 
 # A test that reads the whole tree for each example makes fewer: a
 # rename, or a check of a commit message against the schemas. A rename
-# checks the tree twice, so it is marked slow, and the gate of a push
-# leaves it out.
+# checks the tree twice, about 50 s an example, so it makes fewer still
+# and is marked slow, and the gate of a push leaves it out.
 #
 COUNT_HEAVY       = {NAME_RUN: 3, NAME_OVERNIGHT: 200}
+COUNT_RENAME      = {NAME_RUN: 3, NAME_OVERNIGHT: 20}
 
 # A few examples on each run, with no database; many overnight, with the
 # examples that failed kept in the git directory.
@@ -102,6 +103,7 @@ hypothesis.settings.register_profile(
 hypothesis.settings.load_profile(NAME_PROFILE)
 
 HEAVY             = hypothesis.settings(max_examples = COUNT_HEAVY[NAME_PROFILE])
+RENAME            = hypothesis.settings(max_examples = COUNT_RENAME[NAME_PROFILE])
 
 
 # Text as people and agents write it in a data item: printable, with
@@ -175,7 +177,7 @@ def test_a_layout_of_a_layout_is_the_same_and_keeps_the_data(document):
 
 # -----------------------------------------------------------------------------
 @pytest.mark.slow
-@HEAVY
+@RENAME
 @hypothesis.given(data = strategies.data())
 def test_a_rename_undone_gives_back_the_tree(tree, data):
     list_id = _standalone()
