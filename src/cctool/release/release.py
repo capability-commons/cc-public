@@ -62,6 +62,7 @@ import cctool.edit.edit
 import cctool.gate.gate
 import cctool.graph.extract
 import cctool.graph.logic
+import cctool.graph.parse
 import cctool.release.record
 
 
@@ -397,7 +398,7 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
                     short = short, count = len(list_match), version = version)]
 
     file       = list_match[0]
-    item       = cctool.graph.extract.YAML.load(_shown(root, rev, file))
+    item       = cctool.graph.parse.load(_shown(root, rev, file))
     module     = cctool.release.record.module_version(
                      _shown(root, rev, str(cctool.release.record.PATH_MODULE)))
     list_found = []
@@ -435,7 +436,7 @@ def _version_of(text: str) -> str | None:
 
     """
 
-    item = cctool.graph.extract.YAML.load(text) if text else None
+    item = cctool.graph.parse.load(text) if text else None
 
     if not isinstance(item, dict) or cctool.release.record.KEY_VERSION not in item:
         return None

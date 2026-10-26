@@ -60,6 +60,7 @@ import cctool.edit.edit
 import cctool.edit.layout
 import cctool.gate.gate
 import cctool.graph.extract
+import cctool.graph.parse
 
 
 hypothesis = pytest.importorskip('hypothesis')
@@ -260,3 +261,42 @@ def test_a_citation_of_a_file_in_a_commit_is_not_read(revision, number):
     document = {'id_self': 'item_x', 'brief': text, 'edge': []}
     assert cctool.check.citation.violations(DIR_REPO, {'_data/item.yaml': (document, 1)}) \
         == ([], [])
+
+
+# -----------------------------------------------------------------------------
+@hypothesis.given(document = DOCUMENT)
+def test_the_fast_reading_of_a_document_is_that_of_ruamel(document):
+    text = '\n'.join(cctool.edit.layout.dump(document, 0)) + '\n'
+    assert _lines(cctool.graph.parse.load(text)) == _lines(ruamel.yaml.YAML(typ = 'rt').load(text))
+
+
+# -----------------------------------------------------------------------------
+@hypothesis.example(text = '0\t')
+@hypothesis.example(text = '!')
+@hypothesis.example(text = '=')
+@hypothesis.given(text = strategies.text(max_size = 200))
+def test_the_fast_reading_of_any_text_that_ruamel_reads_is_the_same(text):
+    try:
+        expected = _lines(ruamel.yaml.YAML(typ = 'rt').load(text))
+    except ruamel.yaml.YAMLError:
+        hypothesis.reject()
+    assert _lines(cctool.graph.parse.load(text)) == expected
+
+
+# -----------------------------------------------------------------------------
+def _lines(value):
+    """
+    Return value with the type, line and column of each part, so that
+    two loads compare by all that the extractor reads. A value of
+    another type, such as a tagged scalar, compares by its repr.
+
+    """
+
+    if isinstance(value, dict):
+        return ('map', [(key, value.lc.key(key), value.lc.value(key), _lines(each))
+                        for (key, each) in value.items()])
+    if isinstance(value, list):
+        return ('seq', [(value.lc.item(index), _lines(each)) for (index, each) in enumerate(value)])
+    if isinstance(value, (str, int, float)) or value is None:
+        return (type(value).__name__, value)
+    return (type(value).__name__, repr(value))

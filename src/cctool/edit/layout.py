@@ -62,6 +62,7 @@ import ruamel.yaml.tokens
 
 import cctool.check.store
 import cctool.graph.extract
+import cctool.graph.parse
 
 
 COLUMN_VALUE      = 24
@@ -117,7 +118,7 @@ KIND_STORE        = 'layout'
 
 # A scalar is never folded across lines.
 #
-YAML              = cctool.graph.extract.Yaml('rt', width = 10 ** 9, preserve_quotes = True)
+YAML              = cctool.graph.parse.Yaml('rt', width = 10 ** 9, preserve_quotes = True)
 
 Map               = ruamel.yaml.comments.CommentedMap
 Seq               = ruamel.yaml.comments.CommentedSeq

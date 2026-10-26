@@ -45,9 +45,9 @@ description:            |
                           4.26.0 the stock validator accepts a value ending in a newline against a pattern that forbids
                           newlines, and accepts "not a uri" against format uri (advocate's test). That pattern appears 18
                           times in _data/schema (advocate's grep).
-                        - cctool reads every document with
-                          ruamel.yaml's round-trip loader
-                          (src/cctool/graph/extract.py within YAML). "PyYAML supports the YAML 1.1 standard", while
+                        - cctool reads every document into
+                          ruamel.yaml's round-trip types by the YAML 1.2 rules of ruamel.yaml
+                          (src/cctool/graph/parse.py within load). "PyYAML supports the YAML 1.1 standard", while
                           ruamel.yaml reads YAML 1.2 unless told otherwise, which drops unquoted Yes, No, On and Off as
                           booleans, octal without the 0o prefix, and sexagesimal numbers
                           (https://dokk.org/documentation/ruamel.yaml/0.17.40/pyyaml, a copy of the ruamel.yaml

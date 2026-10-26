@@ -65,13 +65,13 @@ import subprocess
 import uuid
 
 import jsonschema
-import ruamel.yaml
 
 import cctool.check.schema
 import cctool.check.segment
 import cctool.commit.change
 import cctool.edit.layout
 import cctool.graph.extract
+import cctool.graph.parse
 import cctool.graph.prefix
 
 
@@ -247,8 +247,8 @@ def parse(text: str) -> tuple[str, dict]:
     end = list_line.index(LINE_CLOSE)
 
     try:
-        item = cctool.graph.extract.YAML.load('\n'.join(list_line[2:end + 1]))
-    except ruamel.yaml.YAMLError as error:
+        item = cctool.graph.parse.load('\n'.join(list_line[2:end + 1]))
+    except cctool.graph.parse.ERROR as error:
         raise ErrorMessage('The commit item is not YAML: {error}'.format(
                                             error = ' '.join(str(error).split()))) from error
 

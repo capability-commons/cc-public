@@ -17,20 +17,26 @@ brief:                  |
                         them.
 description:            |
                         Imports in edit/edit.py, edit/layout.py,
-                        graph/extract.py, commit/message.py and
-                        cli/editing.py; check/schema.py reads .lc
-                        (schema.py within _line). Three loaders built
-                        separately: edit.py within YAML, layout.py
-                        within YAML, extract.py within YAML;
-                        message.py and editing.py use those of extract
-                        and edit. Only layout sets width and
-                        preserve_quotes, on its loader (layout.py
-                        within YAML). .lc.key and .lc.item on 8 lines;
-                        CommentedMap and CommentedSeq at layout.py
-                        within Unsupported; YAMLError at layout.py
-                        within format, extract.py within _load,
-                        message.py within parse, and editing.py within
-                        set_field and batch. check/store.py names the
+                        graph/extract.py, graph/parse.py,
+                        release/release.py, cli/editing.py and
+                        check/citation.py; check/schema.py reads .lc
+                        (schema.py within _line). Round-trip loaders
+                        are made, one per thread, by one class
+                        (parse.py within Yaml) for edits (edit.py
+                        within YAML), layout (layout.py within YAML)
+                        and what libyaml leaves to ruamel.yaml
+                        (parse.py within ROUND_TRIP). The extractor,
+                        message.py and release.py read through
+                        parse.py within load, which builds
+                        ruamel.yaml's types from libyaml's nodes. Only
+                        layout sets width and preserve_quotes
+                        (layout.py within YAML). .lc.key and .lc.item
+                        on 5 lines; CommentedMap and CommentedSeq at
+                        layout.py within Unsupported and parse.py
+                        within _mapping and _sequence; YAMLError at
+                        layout.py within format, parse.py within
+                        ERROR, editing.py within set_field and batch,
+                        and citation.py. check/store.py names the
                         library so that a stored verdict is not reused
                         across its versions (store.py within
                         TUPLE_DIST). Pinned to

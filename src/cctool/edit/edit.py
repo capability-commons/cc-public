@@ -58,6 +58,7 @@ import cctool.check.check
 import cctool.check.segment
 import cctool.edit.layout
 import cctool.graph.extract
+import cctool.graph.parse
 import cctool.graph.prefix
 
 
@@ -179,7 +180,7 @@ REGEX_SPELLING    = re.compile(r'^(\s*(?:- )?spelling:\s+)(.*)$', re.MULTILINE)
 # that a move carries along. None removes the file.
 #
 Edit              = dict[str, str | bytes | None]
-YAML              = cctool.graph.extract.Yaml('rt')
+YAML              = cctool.graph.parse.Yaml('rt')
 
 
 # -----------------------------------------------------------------------------

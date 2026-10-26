@@ -41,13 +41,13 @@ import hashlib
 import os
 import pathlib
 import re
-import threading
 import typing
 import weakref
 
 import ruamel.yaml
 import ruamel.yaml.scalarstring
 
+import cctool.graph.parse
 import cctool.graph.prefix
 import cctool.graph.tool
 
@@ -484,68 +484,6 @@ Documents         = dict[str, tuple[typing.Any, int]]
 # the first word of each term of more than one word.
 #
 Terms             = tuple[dict[str, str], set[str]]
-
-
-# -----------------------------------------------------------------------------
-class Yaml:
-    """
-    A YAML loader and dumper that threads may use at the same time. A
-    ruamel YAML object keeps the state of the stream it is reading, so
-    two threads that share one, such as the review tool warming its
-    cache beside a request, corrupt each other's reads. Each thread
-    gets one of its own, made with the same settings.
-
-    """
-
-    # -------------------------------------------------------------------------
-    def __init__(self, typ: str, **map_setting: typing.Any) -> None:
-        """
-        Keep the type of loader and the settings to make each with.
-
-        """
-
-        self.typ         = typ
-        self.map_setting = map_setting
-        self.local       = threading.local()
-
-    # -------------------------------------------------------------------------
-    def instance(self) -> ruamel.yaml.YAML:
-        """
-        Return the YAML object of the calling thread.
-
-        """
-
-        yaml = getattr(self.local, 'yaml', None)
-        if yaml is None:
-            yaml = ruamel.yaml.YAML(typ = self.typ)
-            for (name, value) in self.map_setting.items():
-                setattr(yaml, name, value)
-            self.local.yaml = yaml
-        return yaml
-
-    # -------------------------------------------------------------------------
-    def load(self, stream: typing.Any) -> typing.Any:
-        """
-        Return the document that stream holds.
-
-        """
-
-        return self.instance().load(stream)
-
-    # -------------------------------------------------------------------------
-    def dump(self, data: typing.Any, stream: typing.Any) -> None:
-        """
-        Write data to stream.
-
-        """
-
-        self.instance().dump(data, stream)
-
-
-# Round trip loading keeps the line and column of every key and value,
-# so that a fact can later be traced to where it is written.
-#
-YAML              = Yaml('rt')
 
 
 # -----------------------------------------------------------------------------
@@ -1394,8 +1332,8 @@ def _load(text: str, base: int) -> typing.Any:
     """
 
     try:
-        return YAML.load(text)
-    except ruamel.yaml.YAMLError as error:
+        return cctool.graph.parse.load(text)
+    except cctool.graph.parse.ERROR as error:
         mark = getattr(error, 'problem_mark', None)
         raise ErrorRead('The document is not YAML: {error}'.format(error = error),
                         base + (mark.line if mark is not None else 0)) from error

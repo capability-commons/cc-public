@@ -29,9 +29,11 @@ import sqlite3
 import threading
 
 import pytest
+import ruamel.yaml.scalarstring
 
 import cctool.graph.item
 import cctool.graph.logic
+import cctool.graph.parse
 import cctool.graph.extract
 import cctool.graph.prefix
 import cctool.graph.sql
@@ -269,7 +271,7 @@ def test_a_cited_part_is_not_read_as_a_mention_of_an_item():
 
 # -----------------------------------------------------------------------------
 def test_each_thread_reads_yaml_with_a_loader_of_its_own():
-    yaml        = cctool.graph.extract.Yaml('rt', width = 7)
+    yaml        = cctool.graph.parse.Yaml('rt', width = 7)
     list_yaml   = []
     thread      = threading.Thread(target = lambda: list_yaml.append(yaml.instance()))
     thread.start()
@@ -277,3 +279,30 @@ def test_each_thread_reads_yaml_with_a_loader_of_its_own():
     assert list_yaml[0] is not yaml.instance()
     assert list_yaml[0].width == yaml.instance().width == 7
     assert yaml.load('key: value') == {'key': 'value'}
+
+
+# -----------------------------------------------------------------------------
+def test_parse_reads_plain_scalars_by_the_rules_of_yaml_1_2():
+    document = cctool.graph.parse.load('a: yes\nb: no\nc: true\nd: 010\ne: 1.5\nf: ~\n')
+    assert document == {'a': 'yes', 'b': 'no', 'c': True, 'd': 10, 'e': 1.5, 'f': None}
+
+
+# -----------------------------------------------------------------------------
+def test_parse_keeps_the_line_of_each_key_and_item_and_the_style_of_a_block():
+    document = cctool.graph.parse.load('a: 1\nb: |\n  text\nc:\n  - x\n  - y\n')
+    assert document.lc.key('c') == (3, 0)
+    assert document['c'].lc.item(1) == (5, 4)
+    assert isinstance(document['b'], ruamel.yaml.scalarstring.LiteralScalarString)
+
+
+# -----------------------------------------------------------------------------
+def test_parse_refuses_a_repeated_key_and_says_where():
+    with pytest.raises(cctool.graph.parse.ERROR) as info:
+        cctool.graph.parse.load('a: 1\nb: 2\na: 3\n')
+    assert info.value.problem_mark.line == 2
+
+
+# -----------------------------------------------------------------------------
+def test_parse_leaves_an_alias_or_a_tag_to_ruamel():
+    assert cctool.graph.parse.load('a: &x [1]\nb: *x\n') == {'a': [1], 'b': [1]}
+    assert cctool.graph.parse.load('a: !thing x\n')['a'].tag.value == '!thing'
