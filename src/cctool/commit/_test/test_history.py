@@ -37,6 +37,12 @@ import cctool.commit.message
 pytestmark = pytest.mark.prepush
 
 
+# The identity of the maintainer, as git takes it, which the team member
+# register gives as his git_author.
+#
+IDENT_MAINTAINER = ('-c', 'user.name=William Payne', '-c', 'user.email=wtpayne@gmail.com')
+
+
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def repo(tree, monkeypatch):
@@ -61,7 +67,7 @@ def _git(root, *list_arg):
 
     """
 
-    return subprocess.run(['git', '-c', 'user.name=x', '-c', 'user.email=x', *list_arg],
+    return subprocess.run(['git', *IDENT_MAINTAINER, *list_arg],
                           cwd = root, check = True, capture_output = True, text = True).stdout
 
 
@@ -95,13 +101,25 @@ def test_a_commit_made_without_the_hooks_is_reported(repo):
     assert found.endswith(cctool.commit.history.HINT_CUT)
 
 
+def test_a_commit_authored_by_no_team_member_is_reported(repo):
+    (repo / 'README.md').write_text('Changed.\n')
+    _git(repo, 'add', '--all')
+    _git(repo, 'commit', '--quiet', '--no-verify',
+         '--author', 'Claude <noreply@anthropic.com>',
+         '--message', cctool.commit.message.compose('Change README.md so that it is short',
+                                                    'It is short.'))
+    [found] = cctool.commit.history.check(repo, 'HEAD')
+    assert found.startswith('The commit is authored by Claude <noreply@anthropic.com>, who '
+                            'is not the git_author of a team member')
+
+
 def test_a_commit_copied_with_git_am_is_reported_with_the_cause(repo):
     (repo / 'README.md').write_text('Changed.\n')
     _commit(repo, cctool.commit.message.compose('Change README.md so that it is short',
                                                 'It is short.'))
     patch = _git(repo, 'format-patch', '-1', '--stdout', 'HEAD')
     _git(repo, 'reset', '--quiet', '--hard', 'HEAD~1')
-    subprocess.run(['git', '-c', 'user.name=x', '-c', 'user.email=x', 'am', '--quiet'],
+    subprocess.run(['git', *IDENT_MAINTAINER, 'am', '--quiet'],
                    cwd = repo, check = True, input = patch, text = True)
     assert _git(repo, 'log', '-1', '--format=%B').strip() == 'Change README.md so that it is short'
     [found] = cctool.commit.history.check(repo, 'HEAD')

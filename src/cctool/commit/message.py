@@ -33,6 +33,16 @@ description:            |
                         check fails a guid that the register in the
                         tree does not hold.
 
+                        The author of a commit is the person
+                        responsible for its being correct, so it must
+                        be a team member whose entry in
+                        reg_team_member gives that author as its
+                        git_author, name and email as git records
+                        them. An agent that helped says so in a
+                        trailer, and is never the author. A tree whose
+                        register gives no git_author predates the
+                        rule, and its commits are not checked for it.
+
                         git drafts the message of a merge or a revert
                         itself, with no item. draft turns such a draft
                         into a message that conforms: it keeps the
@@ -90,11 +100,17 @@ KEY_DESCRIPTION = 'description'
 KEY_EDGE        = 'edge'
 KEY_ENTRIES     = 'entries'
 ID_MEMBERS      = 'reg_team_member'
+KEY_GIT_AUTHOR  = 'git_author'
 
 # A trailer that names the team member who supplied the content of the
 # commit, by the guid of their register entry.
 #
 REGEX_CONTRIBUTOR = re.compile(r'^Contributor:\s*(.*?)\s*$')
+
+# The name and email at the head of an identity as git var
+# GIT_AUTHOR_IDENT gives it, before the time and the zone.
+#
+REGEX_IDENT     = re.compile(r'^(.*?<[^>]*>)')
 
 # The subject lines that git drafts for a merge and for a revert. A
 # merge into the main branch is drafted without the branch it is into.
@@ -311,6 +327,29 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
+def author_violations(root: pathlib.Path, ident: str) -> list[str]:
+    """
+    Return a sentence if ident, the author of a commit as git gives it,
+    such as 'Name <email> 1767225600 +0000', is not the git_author of
+    a team member that the register in the tree at root holds. A
+    register that gives no git_author checks nothing.
+
+    """
+
+    set_author = _authors(cctool.check.segment.union(root))
+    match      = REGEX_IDENT.match(ident.strip())
+    author     = match.group(1) if match else ident.strip()
+
+    if not set_author or author in set_author:
+        return []
+
+    return ['The commit is authored by {author}, who is not the git_author of a team member '
+            'that {id} holds. Commit as the member responsible for the change, and name an '
+            'agent that helped in a Co-Authored-By trailer.'.format(author = author or 'no one',
+                                                                   id     = ID_MEMBERS)]
+
+
+# -----------------------------------------------------------------------------
 def contributors(text: str) -> list[str]:
     """
     Return the guid that each Contributor trailer of the commit message
@@ -342,6 +381,23 @@ def _members(map_document: dict) -> set[str]:
             return {str(entry.get(KEY_GUID_SELF))
                     for entry in (document.get(KEY_ENTRIES) or {}).values()
                     if isinstance(entry, dict)}
+
+    return set()
+
+
+# -----------------------------------------------------------------------------
+def _authors(map_document: dict) -> set[str]:
+    """
+    Return the git_author of each team member that the team member
+    register in map_document holds.
+
+    """
+
+    for (document, _) in map_document.values():
+        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
+            return {str(entry[KEY_GIT_AUTHOR])
+                    for entry in (document.get(KEY_ENTRIES) or {}).values()
+                    if isinstance(entry, dict) and entry.get(KEY_GIT_AUTHOR)}
 
     return set()
 

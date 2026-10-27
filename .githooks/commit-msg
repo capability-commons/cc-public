@@ -14,16 +14,18 @@
 # title:                  Commit-msg hook
 # brief:                  |
 #                         Refuse a commit whose message does not hold a
-#                         commit item that conforms to sch_commit.
+#                         commit item that conforms to sch_commit, or
+#                         whose author is not a team member.
 # description:            |
 #                         git runs this hook with the file that holds
 #                         the message, once core.hooksPath names
 #                         .githooks. It runs cctool message check on
-#                         that file in the pixi environment, and a
-#                         failure stops the commit. cctool message new
-#                         writes a message that passes.
+#                         that file in the pixi environment, with the
+#                         author git will record, and a failure stops
+#                         the commit. cctool message new writes a
+#                         message that passes.
 # edge:                   []
 #
 # ...
 
-exec pixi run --locked cctool message check "$1"
+exec pixi run --locked cctool message check "$1" --author "$(git var GIT_AUTHOR_IDENT)"

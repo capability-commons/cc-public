@@ -106,12 +106,14 @@ def pushed(root: pathlib.Path, remote: str, text: str) -> tuple[list[str], list[
 def check(root: pathlib.Path, commit: str) -> list[str]:
     """
     Return a sentence for each way the commit fails: its message,
-    checked against sch_commit as its own tree holds it, and its
-    change, checked against its first parent.
+    checked against sch_commit as its own tree holds it, its author,
+    checked against the team members that tree holds, and its change,
+    checked against its first parent.
 
     """
 
-    text = _git(root, 'log', '-1', '--format=%B', commit)
+    text   = _git(root, 'log', '-1', '--format=%B', commit)
+    author = _git(root, 'log', '-1', '--format=%an <%ae>', commit)
 
     with tempfile.TemporaryDirectory() as name:
         dir_before = pathlib.Path(name, 'before')
@@ -122,7 +124,8 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
         if cctool.commit.change.is_commit(root, commit + '^'):
             cctool.gate.gate.copy_commit(root, commit + '^', dir_before)
 
-        list_found = cctool.commit.message.violations(dir_after, text)
+        list_found = (cctool.commit.message.violations(dir_after, text)
+                      + cctool.commit.message.author_violations(dir_after, author))
         if list_found and cctool.commit.message.LINE_OPEN not in text.split('\n'):
             return ['{found} {hint}'.format(found = list_found[0], hint = HINT_CUT),
                     *list_found[1:]]

@@ -157,6 +157,35 @@ def test_a_contributor_line_inside_the_item_is_not_a_trailer():
     assert _found(text) == []
 
 
+def test_the_git_author_of_a_team_member_passes():
+    assert cctool.commit.message.author_violations(
+               DIR_REPO, 'William Payne <wtpayne@gmail.com> 1793091600 +0000') == []
+
+
+@pytest.mark.parametrize('ident', ['Claude <noreply@anthropic.com> 1793091600 +0000',
+                                   'William Payne <noreply@anthropic.com>',
+                                   'WTP <wtpayne@gmail.com>'])
+def test_an_author_who_is_no_team_member_is_reported(ident):
+    [found] = cctool.commit.message.author_violations(DIR_REPO, ident)
+    assert found.startswith('The commit is authored by {author}, who is not the git_author '
+                            'of a team member that reg_team_member holds.'.format(
+                                author = ident.rpartition('>')[0] + '>'))
+
+
+def test_a_register_with_no_git_author_checks_no_author(tmp_path):
+    assert cctool.commit.message.author_violations(tmp_path, 'Claude <noreply@anthropic.com>') == []
+
+
+def test_check_refuses_an_author_who_is_no_team_member():
+    result = click.testing.CliRunner().invoke(
+                    cctool.cli.command.main,
+                    ['message', 'check', '-', '--root', str(DIR_REPO),
+                     '--author', 'Claude <noreply@anthropic.com> 1793091600 +0000'],
+                    input = _message())
+    assert result.exit_code == 1
+    assert result.stderr.startswith('The commit is authored by Claude')
+
+
 def test_lines_that_git_treats_as_comments_are_left_out():
     assert _found(_message() + '# Please enter the commit message.\n') == []
 

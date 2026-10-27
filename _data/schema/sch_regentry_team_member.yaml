@@ -15,9 +15,10 @@ brief:                  |
                         What a team member register entry carries
                         beyond the general register entry.
 description:            |
-                        A team member entry carries nothing beyond the
-                        general register entry. Its title is the name
-                        the member chooses to be known by in this
+                        A team member entry carries, beyond the
+                        general register entry, the identity the
+                        member authors commits under. Its title is the
+                        name the member chooses to be known by in this
                         register, which may be a pseudonym, and its
                         guid is what a Contributor trailer names.
 usage:                  |
@@ -28,5 +29,19 @@ type:                   object
 
 allOf:
   - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml
+
+properties:
+
+  git_author:
+    type:               string
+    pattern:            '^[^<>]+ <[^<>]+>$'
+    description:        |
+                        Optional. The name and email that git records
+                        as the author of a commit this member is
+                        responsible for, as in Name <email>. A commit
+                        whose author is no member's git_author is
+                        refused by the commit-msg hook and reported by
+                        cctool history check. A member who authors no
+                        commits has none.
 
 edge:                   []

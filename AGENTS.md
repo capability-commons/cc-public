@@ -81,10 +81,13 @@ unfinished edits of another.
   `git config user.name "William Payne"` and
   `git config user.email wtpayne@gmail.com` in a new clone or
   session; an agent says it helped in a `Co-Authored-By` trailer.
+  The commit-msg hook refuses an author who is not the `git_author`
+  of an entry in reg_team_member, and `cctool history check` reports
+  one.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
-  tests the staged content. The tests run only when code is staged,
-  and leave out the tests marked slow and prepush; a commit of data
-  alone is checked and linted, but not tested. Never bypass it with
+  tests the staged content. The tests leave out those marked slow,
+  prepush and fuzz; a commit of data with no code runs only the tests
+  marked reads_data, and a commit of decisions alone runs none. Never bypass it with
   `--no-verify`. If it fails, fix the cause, or report it.
 - Write each commit message with `cctool message new TITLE --brief
   TEXT`, then add the trailers. The title is an imperative sentence

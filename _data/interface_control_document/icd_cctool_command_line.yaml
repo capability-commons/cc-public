@@ -871,8 +871,9 @@ surface:
               guid_self:  icm_e5e7596d7f7541ecb8e439e35fdf4bc8
               name:     check
               brief:    |
-                        Check the commit message in file, and the
-                        commit of the staged content that it records.
+                        Check the commit message in file, its author
+                        if given, and the commit of the staged content
+                        that it records.
 
               parameter:
 
@@ -888,6 +889,22 @@ surface:
                     spelling:  filename
 
                   optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.message.check.author
+                  guid_self:  icm_ba1d662d0c784408a41cabc9b42c0446
+                  name:  --author
+                  brief:  |
+                        The author of the commit, as git var
+                        GIT_AUTHOR_IDENT gives it. If given, it must
+                        be the git_author of a team member.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
                   variadic:  false
                   flag:  false
 

@@ -129,21 +129,30 @@ def _templates(root: pathlib.Path) -> str | None:
 # -----------------------------------------------------------------------------
 @message.command()
 @click.argument('file', metavar = 'FILEPATH', type = click.File('r', encoding = 'utf-8'))
+@click.option('--author',
+              metavar = 'IDENT',
+              default = None,
+              help    = 'The author of the commit, as git var GIT_AUTHOR_IDENT gives it. '
+                        'If given, it must be the git_author of a team member.')
 @OPTION_ROOT
-def check(file, root: pathlib.Path) -> None:
+def check(file, author: str | None, root: pathlib.Path) -> None:
     """
     Check the commit message in FILEPATH, or - for stdin, and the commit of
     the staged content that it records.
 
-    The message is checked against sch_commit. If it passes, the commit
-    is checked against the graph before and after it: nothing
-    disappears or changes type unannounced, and the verb of the title
-    is true of the change. The exit status is 1 when either fails.
+    The message is checked against sch_commit, and the author, if
+    given, against the git_author of each member of reg_team_member.
+    If they pass, the commit is checked against the graph before and
+    after it: nothing disappears or changes type unannounced, and the
+    verb of the title is true of the change. The exit status is 1 when
+    any fails.
 
     """
 
     text = file.read()
-    _report(cctool.commit.message.violations(root.resolve(), text))
+    _report(cctool.commit.message.violations(root.resolve(), text)
+            + ([] if author is None
+               else cctool.commit.message.author_violations(root.resolve(), author)))
 
     (_, item) = cctool.commit.message.parse(text)
     try:
