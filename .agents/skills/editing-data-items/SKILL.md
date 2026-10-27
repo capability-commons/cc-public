@@ -124,6 +124,16 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   or drop the claim that no longer holds, before it goes in. The
   verifier of a run of advocates is not enough on its own: the tree
   moves between the draft and the write.
+- **Re-read the cited code after a change to it, before you commit
+  the arguments.** When one piece of work changes code and drafts
+  arguments together, as when an argument prompts a fix, the arguments
+  are often written against the code before the change. After the
+  code commits, read again each part the arguments cite (`cctool query
+  text`, or a grep of `_data/decision` for its path) and correct what
+  the change made untrue. If the change undoes what an argument argued,
+  add an annotation that challenges it rather than rewording it. The
+  daily review of 2026-10-27 found an argument on test evidence that
+  was committed after the gate change it described as not yet made.
 - **A citation of a file of the tree by line number is refused**
   (`line_citation`), since the lines move as the file changes. Name the
   part that holds the line: `PATH within NAME` for a
