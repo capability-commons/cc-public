@@ -17,10 +17,13 @@ brief:                  |
                         a port on such a loader loses a duplicate
                         entry without notice.
 description:            |
-                        cc-public loads with ruamel.yaml in round-trip
-                        mode (src/cctool/graph/extract.py), pinned
+                        cc-public parses with libyaml into ruamel.yaml
+                        round-trip types, and hands a document with a
+                        repeated key to ruamel.yaml, which refuses it
+                        (src/cctool/graph/parse.py within load and
+                        _mapping); ruamel.yaml is pinned
                         >=0.19.1,<0.20 (pyproject.toml at
-                        project.requires-python). Tested 2026-10-15:
+                        project.dependencies). Tested 2026-10-15:
                         ruamel.yaml 0.19.1 raises DuplicateKeyError on
                         "a: 1\na: 2"; PyYAML 6.0.1 safe_load and
                         json.loads return the last value. RFC 8259
