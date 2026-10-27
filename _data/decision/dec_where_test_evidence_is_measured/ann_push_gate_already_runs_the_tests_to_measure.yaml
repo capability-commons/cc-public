@@ -18,17 +18,18 @@ brief:                  |
 description:            |
                         Sources:
                         - The pre-push gate runs every test not marked
-                          slow on each pushed tip, and the commit gate
-                          runs the tests not marked slow or prepush
+                          slow on each pushed tip, and the commit gate runs the tests not marked slow, prepush or fuzz
                           [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
-                          at description, src/cctool/gate/gate.py at
-                          MARK_PUSH and MARK_COMMIT].
-                        - The commit gate leaves out the tests when no
-                          code is staged, so a data-only commit
-                          records no test observation at commit
-                          [owner's statement, 2026-10-25;
-                          src/cctool/gate/gate.py at function
-                          is_code_staged and TUPLE_CODE].
+                          at description, src/cctool/gate/gate.py at MARK_PUSH and MARK_COMMIT].
+                        - The commit gate left out the tests when no
+                          code was staged [owner's statement,
+                          2026-10-25]. Since 52d20906 a commit that
+                          stages data but no code runs only the tests
+                          marked reads_data, and one that stages only
+                          decisions runs none, so such a commit
+                          records few or no test observations at
+                          commit [src/cctool/gate/gate.py at function
+                          stages, MARK_DATA and TUPLE_UNREAD].
                         - There is a GitHub remote and no CI runs on
                           it
                           [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
@@ -43,8 +44,7 @@ description:            |
                           TUPLE_STAGE]. Strength: Moderate. Measuring
                           at push and overnight keeps one definition
                           of the stages. Measuring at every commit
-                          also keeps one definition, but its evidence
-                          still misses data-only commits. Hosted CI
+                          also keeps one definition, but its evidence on a data-only commit covers only the tests marked reads_data. Hosted CI
                           needs a workflow file and a fetch step that
                           must change whenever the gate does. At ten
                           times the tests the argument is unchanged.

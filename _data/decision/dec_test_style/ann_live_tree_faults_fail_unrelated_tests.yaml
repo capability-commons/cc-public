@@ -37,8 +37,11 @@ description:            |
                         test_check.py within
                         test_the_repository_passes_every_check is
                         marked slow and left out of the gate. A commit
-                        that stages only data runs no tests (gate.py
-                        within TUPLE_CODE).
+                        that stages data but no code runs only the
+                        tests marked reads_data, which every test that
+                        takes the tree fixture is (gate.py within
+                        stages; src/cctool/conftest.py within
+                        pytest_collection_modifyitems).
 
 edge:
 

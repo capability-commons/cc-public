@@ -14,9 +14,9 @@ brief:                  |
                         beside a gate of over a minute, so a
                         syntax-only check would save little time
                         there. It holds only while the gate dominates:
-                        on a commit of data alone, whose gate takes
-                        about 10 s, the graph check is now most of the
-                        hook time.
+                        on a commit of decisions alone, whose gate
+                        runs no tests and took about 10 s, the graph
+                        check is most of the hook time.
 description:            |
                         Measured 2026-10-15 in a 4-CPU session
                         container at 89c74d8: message check end to end
@@ -28,18 +28,21 @@ description:            |
                         (.githooks/pre-commit). On WTP's 2-CPU VM it
                         takes about 78 s for a commit of code and
                         about 10 s with a warm store for a commit of
-                        data alone, which skips the tests (notes of
-                        2026-10-22 on gate speed;
-                        src/cctool/gate/gate.py within gate). f33413ad
-                        cut the history check from about 52 s to about
-                        5 s a commit, and the commit-msg check the
-                        same way (same notes). Tried 2026-10-23 on
-                        copies of the snapshot (2244 files), 4-CPU
-                        container under load: check_trees took 25 to
-                        41 s in a fresh process, as each hook run is.
-                        A device tool call dies at 180 s
-                        (memory/MEMORY.md line 45). A merge is gated
-                        by the pre-merge-commit hook
+                        data alone, which then skipped the tests
+                        (notes of 2026-10-22 on gate speed). Since
+                        52d20906 a commit of data runs the tests
+                        marked reads_data, and only a commit of
+                        decisions alone runs none
+                        (src/cctool/gate/gate.py within stages).
+                        f33413ad cut the history check from about 52 s
+                        to about 5 s a commit, and the commit-msg
+                        check the same way (same notes). Tried
+                        2026-10-23 on copies of the snapshot (2244
+                        files), 4-CPU container under load:
+                        check_trees took 25 to 41 s in a fresh
+                        process, as each hook run is. A device tool
+                        call dies at 180 s (memory/MEMORY.md line 45).
+                        A merge is gated by the pre-merge-commit hook
                         (.githooks/pre-merge-commit). A revert runs
                         neither the gate nor the commit-msg hook, so
                         it is first checked at push
