@@ -22,6 +22,21 @@ brief:                  |
                         simulation-backed decisions, is worth decent
                         thought to get right before it is built.
 
+                        Clarified by WTP on 2026-10-27: "never stored"
+                        means that a resolved graph is never kept in
+                        the item graph as a second, persistent copy of
+                        a variant that can be regenerated, since that
+                        would make duplicates and confusion in design
+                        space exploration and development. It does not
+                        forbid storing a variant elsewhere. A cache
+                        that can be dropped and rebuilt, such as a
+                        stage cache of the graph of edits, is not
+                        persistent storage. A variant may also be
+                        realized persistently outside the graph, for
+                        example as a configuration written to storage
+                        media to flash a Jetson or another embedded
+                        system, or as a product that is distributed.
+
 edge:
 
   - id_relation:        relation_upholds
