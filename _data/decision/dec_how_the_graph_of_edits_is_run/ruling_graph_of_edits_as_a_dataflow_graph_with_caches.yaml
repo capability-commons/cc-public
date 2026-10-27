@@ -1,0 +1,41 @@
+id_self:                ruling_graph_of_edits_as_a_dataflow_graph_with_caches
+guid_self:              ruling_89a9041d93814d0d9508f57c234b7adf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph of edits as a dataflow graph with caches
+brief:                  |
+                        The graph of edits is itself a dataflow graph,
+                        with a cache on each edge that needs one,
+                        keyed by the input digest of its stage. Ruled
+                        by WTP on 2026-10-27, as recommended. WTP's
+                        condition: it must be possible to specify that
+                        particular dataflow nodes shall have no state,
+                        as a cache keyed by the input digest needs.
+                        Claude proposed doing this as the interface
+                        limit on mutability does, with an interface or
+                        a graph requiring that its nodes declare no
+                        state and a check failing a node that declares
+                        state where that is required. The ruling on
+                        port groups answers the challenge that a merge
+                        of any number of variants did not fit fixed
+                        inputs, and cctool, not the engine, runs this
+                        graph, as the ruling on where variants are
+                        resolved says.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_graph_of_edits_as_a_dataflow_graph_with_caches
+    guid_target:        opt_9d6a1b69b7914381839d4b71fa51040f
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_graph_of_edits_walked_by_a_separate_resolver
+    guid_target:        opt_f4e8b047826b40ed982b08b8af1ff524
