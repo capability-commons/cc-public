@@ -15,6 +15,34 @@ brief:                  |
                         recorders, written in the same vocabulary as
                         the variant operations people author?
 description:            |
+                        Lowering is a term from compilers: translating
+                        a program step by step from a form that says
+                        what is wanted into a form closer to what the
+                        machine runs, as MLIR lowers one dialect into
+                        another. Here it means the rewrites cctool
+                        applies to a resolved dataflow graph, after
+                        the authored variant operations, to turn what
+                        the author declared into what the engine
+                        receives. Examples: an edge that declares a
+                        delivery policy gets the adapter node or
+                        buffer setting that carries it out, an edge
+                        whose ends are placed in different execution
+                        units gets sender and receiver nodes
+                        (ruling_transport_nodes_inserted_by_a_transform),
+                        and a node that is to be recorded gets a
+                        recorder tap. The author does not write these
+                        rewrites per variant; they are generated from
+                        declarations.
+
+                        The question is the form of those generated
+                        rewrites. They can be variant operations like
+                        the authored ones, run by the same
+                        interpreter, with the graph checked before and
+                        after; separate code passes in cctool or the
+                        generator; or named stages, each checked and
+                        given a digest, with the mapping onto hosts
+                        and processes as a stage of its own.
+
                         The model transforms proposed for edge policy
                         and for engine behavior do to a resolved
                         dataflow graph the same kind of thing that
@@ -23,6 +51,13 @@ description:            |
                         one interpreter and one form
                         (_sources/variants-framing.md, sections 2 and
                         4, Q9).
+
+                        If the term is adopted, it gets an entry in
+                        the concept register; model refinement and
+                        model-to-model transformation are the nearest
+                        terms in model-driven engineering. WTP asked
+                        for this explanation on 2026-10-27, and the
+                        decision stays open.
 
 edge:
 
