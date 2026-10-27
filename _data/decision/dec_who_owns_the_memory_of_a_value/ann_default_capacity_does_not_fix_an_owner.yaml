@@ -1,0 +1,75 @@
+id_self:                ann_default_capacity_does_not_fix_an_owner
+guid_self:              ann_0b3b306e72f24a128844043dbdf886b2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Capacity to supply a default that does not fix an owner
+brief:                  |
+                        Under the ruled rule, either end of a feedback
+                        edge may supply its first value, and a port, a
+                        port group or a slot declares only a capacity
+                        to supply one; having the capacity does not
+                        oblige the end to use it. So which end
+                        supplies the default cannot be fixed in
+                        advance, and an owning end that must declare
+                        the default, as the declared-end option has
+                        it, cannot be fixed either. With the engine
+                        owning every buffer, the default is whichever
+                        capable end supplies it, written by the engine
+                        into the buffer of the edge, and nothing about
+                        ownership is declared.
+description:            |
+                        Sources:
+                        - Either end of a feedback edge needs to be
+                          able to supply a default value, so the
+                          supplier of default values cannot be
+                          uniquely fixed; ends of edges (ports, port
+                          groups or slots) have a capacity for
+                          supplying default values or not, and the
+                          capacity does not mean that they have to
+                          supply them (WTP, 2026-10-27).
+                        - Each node kind declares, for each of its
+                          ports, whether it can supply a default
+                          value, and a feedback edge needs at least
+                          one end that can.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The declared-end option has the owning end
+                          declare the type, size and default, and
+                          requires a feedback edge to have an owning
+                          end that declares a default.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_owning_end_declared_engine_allocates.yaml
+                          at brief)
+                        - Under the engine option, ports declare
+                          nothing about ownership, and a default
+                          value, where one is needed, is declared by
+                          the port that supplies it.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_engine_owns_every_buffer.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

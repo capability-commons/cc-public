@@ -1,0 +1,70 @@
+id_self:                ann_reallocation_at_an_owning_end_against_controlled_allocation
+guid_self:              ann_2605d5070ae44825a0e883ddae423306
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reallocation at an owning end against tightly controlled allocation
+brief:                  |
+                        The first plan for Stableflow let the owning
+                        end of an edge reallocate its memory when
+                        needed. That does not fit high-integrity
+                        systems, or coding standards such as MISRA C,
+                        under which allocation is tightly controlled
+                        and the allocation functions of the C library
+                        are not used at all. An owner at one end of
+                        each edge invites that reallocation. With the
+                        engine, or the generator in a static build,
+                        allocating every buffer from the port types,
+                        all memory is reserved before the graph runs
+                        and changes only when a checked change set
+                        adds or removes an edge, so no node and no
+                        edge end allocates while running.
+description:            |
+                        Sources:
+                        - The initial plan for Stableflow was for the
+                          owning end of an edge to be able to
+                          reallocate memory if needed, which does not
+                          fit well with high-integrity systems and
+                          standards like MISRA C, where allocations
+                          are tightly controlled (WTP, 2026-10-27).
+                        - MISRA C:2012 Rule 21.3 says that the memory
+                          allocation and deallocation functions of
+                          stdlib.h shall not be used.
+                        - The engine, or the generator in a static
+                          build, allocates one buffer set for each
+                          edge from the port types, and frees it when
+                          the edge is removed.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/opt_engine_owns_every_buffer.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_who_owns_the_memory_of_a_value
+    guid_target:        dec_f2cdc1e8ef0b44e98d936055753c98d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_owns_every_buffer
+    guid_target:        opt_babf4a22a1584b9085b198334fd3ee68
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_owning_end_declared_engine_allocates
+    guid_target:        opt_8a96d36074e14badbf3cbfba1c18627d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
