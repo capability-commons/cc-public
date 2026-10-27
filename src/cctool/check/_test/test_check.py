@@ -1690,7 +1690,22 @@ def test_a_term_of_a_declared_concept_written_without_a_link_is_advice(tree):
                ['concept_identifiable_data_item'])
     (failures, advice, _) = cctool.check.check.review(tree)
     assert 'unlinked_term' not in failures
-    assert ('lco_y', 'description', 'item') in [row[:3] for row in advice['term_to_link']]
+    assert ('lco_y', 'item') in [(row[0], row[2]) for row in advice['term_to_link']]
+
+
+def test_only_the_first_unlinked_use_of_a_term_is_advice(tree):
+    _text_item(tree, 'lco_y', 'Each item has a guid.\n\nAn item has a title, and an item '
+               'has a brief.', ['concept_identifiable_data_item'])
+    (_, advice, _) = cctool.check.check.review(tree)
+    list_row = [row for row in advice['term_to_link'] if row[0] == 'lco_y' and row[2] == 'item']
+    assert len(list_row) == 1
+
+
+def test_a_term_is_not_advice_once_the_item_links_its_concept(tree):
+    _text_item(tree, 'lco_y', 'Each [[item]] has a guid, and an item has a title.',
+               ['concept_identifiable_data_item'])
+    (_, advice, _) = cctool.check.check.review(tree)
+    assert [row for row in advice.get('term_to_link', []) if row[0] == 'lco_y'] == []
 
 
 def test_a_relation_that_reads_through_an_unconstrained_end_is_reported(tree):

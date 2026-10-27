@@ -198,7 +198,11 @@ links_to(Holder, Concept) :-
 %                         outside the strict fields may use the word in
 %                         its everyday sense, so this is advice, not a
 %                         failure. Titles are left to the checks of
-%                         titles.
+%                         titles. As in a wiki, the first use is the one
+%                         to link: the advice names only the first
+%                         unlinked use of each term in an item, and none
+%                         once the item, or an item it holds, links the
+%                         concept anywhere.
 % did:                    |
 %                         The {field} of {holder} uses "{term}", a term
 %                         of a concept it declares, without a wiki link.
@@ -218,13 +222,31 @@ links_to(Holder, Concept) :-
 #show term_to_link/5.
 
 term_to_link(Holder, Field, Term, File, Line) :-
+    unlinked_use(Holder, Field, Term, File, Line),
+    Line  = #min { L : unlinked_use(Holder, _, Term, _, L) },
+    Field = #min { F : unlinked_use(Holder, F, Term, _, Line) },
+    File  = #min { P : unlinked_use(Holder, Field, Term, P, Line) }.
+
+
+% -----------------------------------------------------------------------------
+% A use of a term of a concept that the item declares, outside the strict
+% fields and the title, where the item links the concept nowhere.
+%
+% decl unlinked_use(holder: symbol,
+%                   field:  symbol,
+%                   term:   symbol,
+%                   file:   symbol,
+%                   line:   number)
+
+unlinked_use(Holder, Field, Term, File, Line) :-
     term_word(Holder, Field, Term, File, Line),
     not strict_field(Holder, Field),
     Field != "title",
     declares_concept(Holder, Concept),
     designation(Concept, Term, Rating),
     Rating != "deprecated",
-    not designation(Holder, Term, _).
+    not designation(Holder, Term, _),
+    not links_to(Holder, Concept).
 
 
 % -----------------------------------------------------------------------------
