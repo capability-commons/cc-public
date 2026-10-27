@@ -172,12 +172,13 @@ def check(tag: str, rev: str, root: pathlib.Path) -> None:
     """
     Check that the commit REV may be tagged TAG, such as v1.2.3.
 
-    REV must add exactly one release item, whose version is that of
-    TAG and of the version module, and which records the runtime
-    packages of pixi.lock at REV and the renames since the last release
-    tag before REV. REV is HEAD if left out. Nothing is
-    tagged. The exit status is 1 when REV may not be tagged TAG, and 2
-    when it cannot be checked.
+    The tree at REV must hold exactly one release item whose version
+    is that of TAG, the version module must hold that version too, and
+    the item must record the runtime packages of pixi.lock at REV and
+    the renames since the last release tag before REV. The item may
+    have been added by an earlier commit. REV is HEAD if left out.
+    Nothing is tagged. The exit status is 1 when REV may not be tagged
+    TAG, and 2 when it cannot be checked.
 
     """
 
