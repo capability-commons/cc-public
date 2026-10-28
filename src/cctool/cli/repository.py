@@ -24,8 +24,9 @@ description:            |
                         exit status 2, and leaves the branch where it
                         was.
 usage:                  |
-                        cctool repo land BUNDLE [--branch NAME] cctool
-                        repo sign [--since REF] cctool repo push
+                        cctool repo land BUNDLE [--branch NAME]
+                        [--reset-author] cctool repo sign [--since
+                        REF] [--reset-author] cctool repo push
                         [--remote NAME] cctool repo bundle BRANCH
                         [--base REF] [--output FILEPATH]
 edge:                   []
@@ -53,6 +54,12 @@ OPTION_ROOT = click.option('--root',
                                                 path_type = pathlib.Path),
                            help    = 'The repository. Defaults to the working directory.')
 
+OPTION_RESET_AUTHOR = click.option('--reset-author',
+                                   is_flag = True,
+                                   help    = 'Make whoever runs this the author of each commit '
+                                             'too, as when an agent committed under its own '
+                                             'name.')
+
 
 # -----------------------------------------------------------------------------
 @cctool.cli.group.main.group()
@@ -72,8 +79,9 @@ def repo() -> None:
               metavar = 'NAME',
               default = None,
               help    = 'The branch of the bundle to land, if it holds more than one.')
+@OPTION_RESET_AUTHOR
 @OPTION_ROOT
-def land(path: pathlib.Path, branch: str | None, root: pathlib.Path) -> None:
+def land(path: pathlib.Path, branch: str | None, reset_author: bool, root: pathlib.Path) -> None:
     """
     Land the commits of the branch that BUNDLE holds on the current
     branch.
@@ -81,11 +89,13 @@ def land(path: pathlib.Path, branch: str | None, root: pathlib.Path) -> None:
     The commits are replayed onto the current branch, each signed as it
     is replayed, and checked as cctool history check checks them. Only
     if all of that succeeds is the current branch moved forward to
-    them. Push them with cctool repo push.
+    them. With --reset-author, whoever lands them also becomes their
+    author. Push them with cctool repo push.
 
     """
 
-    _report('Landed', lambda: cctool.commit.repo.land(root.resolve(), path.resolve(), branch))
+    _report('Landed', lambda: cctool.commit.repo.land(root.resolve(), path.resolve(), branch,
+                                                             reset_author))
 
 
 # -----------------------------------------------------------------------------
@@ -95,21 +105,24 @@ def land(path: pathlib.Path, branch: str | None, root: pathlib.Path) -> None:
               default = None,
               help    = 'Sign the commits after REF. Defaults to the branch of the same name '
                         'on origin, so that the commits not yet pushed are signed.')
+@OPTION_RESET_AUTHOR
 @OPTION_ROOT
-def sign(since: str | None, root: pathlib.Path) -> None:
+def sign(since: str | None, reset_author: bool, root: pathlib.Path) -> None:
     """
     Sign each commit of the current branch that is not yet pushed.
 
     Each is replayed in place with a signature, so each gets a new
     hash. Another branch that ended at one of them would be left naming
-    the unsigned copy, so it is removed.
+    the unsigned copy, so it is removed. With --reset-author, whoever
+    signs them also becomes their author.
 
     """
 
     list_branch = []
 
     def step() -> list[str]:
-        (list_commit, list_removed) = cctool.commit.repo.sign(root.resolve(), since)
+        (list_commit, list_removed) = cctool.commit.repo.sign(root.resolve(), since,
+                                                               reset_author)
         list_branch.extend(list_removed)
         return list_commit
 

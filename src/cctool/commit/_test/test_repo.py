@@ -89,6 +89,25 @@ def test_land_of_commits_that_fail_their_checks_leaves_the_branch(topic):
     assert _git(topic, 'branch', '--show-current').strip() == 'main'
 
 
+def test_land_with_reset_author_makes_the_maintainer_the_author(topic):
+    _git(topic, 'checkout', '--quiet', 'topic')
+    (topic / 'AGENTS.md').write_text((topic / 'AGENTS.md').read_text() + 'By an agent.\n')
+    _git(topic, 'add', '--all')
+    _git(topic, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--no-verify',
+         '--author', 'Claude <noreply@anthropic.com>', '--message',
+         cctool.commit.message.compose('Change AGENTS.md so that an agent wrote to it',
+                                       'An agent wrote to it.'))
+    _git(topic, 'checkout', '--quiet', 'main')
+    path = topic.parent / 'topic.bundle'
+    cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
+
+    with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'fail their checks'):
+        cctool.commit.repo.land(topic, path)
+    assert len(cctool.commit.repo.land(topic, path, reset_author = True)) == 2
+    assert _git(topic, 'log', '-2', '--format=%an <%ae> %G?', 'main').splitlines() == [
+        'William Payne <wtpayne@gmail.com> G', 'William Payne <wtpayne@gmail.com> G']
+
+
 def test_land_of_commits_that_conflict_leaves_the_branch(topic):
     _git(topic, 'checkout', '--quiet', 'topic')
     (topic / 'README.md').write_text('Otherwise.\n')

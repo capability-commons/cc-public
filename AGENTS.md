@@ -58,7 +58,9 @@ unfinished edits of another.
   `cctool history check` on them and only then moves `dev` forward.
   Every commit pushed must be signed by a team member's key, which a
   remote session does not hold, so its commits are signed when they
-  land. `cctool repo sign` signs the commits not yet pushed, and
+  land. If a session committed under its own name, `--reset-author`
+  on `cctool repo land` or `cctool repo sign` makes whoever runs it
+  the author too. `cctool repo sign` signs the commits not yet pushed, and
   `cctool repo push` pushes once they are. Never use
   `git format-patch` and `git am`: `am` ends a commit message at its
   first `---` line, which opens the commit item, so every copied

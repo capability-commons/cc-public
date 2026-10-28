@@ -60,6 +60,12 @@ PREFIX_HEAD = 'refs/heads/'
 #
 PREFIX_HINT = 'hint:'
 
+# The command a replay runs after each commit it makes when the author
+# is reset, so that whoever replays the commits becomes their author,
+# as when an agent's commits are landed by the maintainer.
+#
+COMMAND_RESET_AUTHOR = 'git commit --quiet --amend --no-edit --reset-author -S'
+
 
 # -----------------------------------------------------------------------------
 class ErrorRepo(Exception):
@@ -70,7 +76,10 @@ class ErrorRepo(Exception):
 
 
 # -----------------------------------------------------------------------------
-def land(root: pathlib.Path, path: pathlib.Path, branch: str | None = None) -> list[str]:
+def land(root:         pathlib.Path,
+         path:         pathlib.Path,
+         branch:       str | None = None,
+         reset_author: bool       = False) -> list[str]:
     """
     Return the commits, as short hashes and subjects, that the bundle at
     path holds beyond the current branch, once they are signed and the
@@ -79,9 +88,10 @@ def land(root: pathlib.Path, path: pathlib.Path, branch: str | None = None) -> l
     The bundle's branch is the one it holds, or branch if it holds
     more. Its commits are replayed onto the current branch, so that a
     branch made on an older base lands as if made on this one, and each
-    is signed as it is replayed. They are then checked as cctool
-    history check checks them. A replay that conflicts, or a check
-    that fails, leaves the current branch where it was.
+    is signed as it is replayed. If reset_author is true, whoever
+    replays them also becomes their author. They are then checked as
+    cctool history check checks them. A replay that conflicts, or a
+    check that fails, leaves the current branch where it was.
 
     """
 
@@ -106,7 +116,7 @@ def land(root: pathlib.Path, path: pathlib.Path, branch: str | None = None) -> l
                                                                 branch = branch, base = base))
 
     try:
-        _git(root, 'rebase', '--quiet', '--force-rebase', '-S', base, tip)
+        _git(root, *_replay(reset_author), base, tip)
     except ErrorRepo as error:
         _run(root, 'rebase', '--abort')
         _run(root, 'checkout', '--quiet', base)
@@ -130,14 +140,17 @@ def land(root: pathlib.Path, path: pathlib.Path, branch: str | None = None) -> l
 
 
 # -----------------------------------------------------------------------------
-def sign(root: pathlib.Path, since: str | None = None) -> tuple[list[str], list[str]]:
+def sign(root:         pathlib.Path,
+         since:        str | None = None,
+         reset_author: bool       = False) -> tuple[list[str], list[str]]:
     """
     Return the commits, as short hashes and subjects, that the current
     branch holds beyond since, once each is signed again, and the other
     branches removed because they ended at a commit that was replaced.
     since is the branch of the same name on origin if not given, so the
     commits signed are those not yet pushed. They are replayed onto
-    since in a line, as dev keeps them.
+    since in a line, as dev keeps them. If reset_author is true,
+    whoever signs them also becomes their author.
 
     A branch that ends at one of the commits replaced holds nothing the
     current branch does not now hold, signed, so it would be left
@@ -153,7 +166,7 @@ def sign(root: pathlib.Path, since: str | None = None) -> tuple[list[str], list[
     if not set_old:
         return ([], [])
     try:
-        _git(root, 'rebase', '--quiet', '--force-rebase', '-S', since)
+        _git(root, *_replay(reset_author), since)
     except ErrorRepo as error:
         _run(root, 'rebase', '--abort')
         raise ErrorRepo('The commits after {since} cannot be signed, so none are. '
@@ -223,6 +236,20 @@ def bundle(root: pathlib.Path, branch: str, base: str, path: pathlib.Path) -> li
     _git(root, 'bundle', 'create', '--quiet', str(path), base + '..' + branch)
 
     return [cctool.commit.history.short(root, commit) for commit in list_commit]
+
+
+# -----------------------------------------------------------------------------
+def _replay(reset_author: bool) -> list[str]:
+    """
+    Return the arguments of git that replay commits, each signed, and
+    each with whoever replays it as its author if reset_author is true.
+
+    """
+
+    list_arg = ['rebase', '--quiet', '--force-rebase', '-S']
+    if reset_author:
+        list_arg.extend(['--exec', COMMAND_RESET_AUTHOR])
+    return list_arg
 
 
 # -----------------------------------------------------------------------------
