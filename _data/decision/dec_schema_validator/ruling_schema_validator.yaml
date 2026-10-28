@@ -1,0 +1,36 @@
+id_self:                ruling_schema_validator
+guid_self:              ruling_51df2f416895458599b39beed7d882b6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A jsonschema-rs check first, then jsonschema for a document that fails it
+brief:                  |
+                        Each YAML document is checked with
+                        jsonschema-rs first, and only one that fails,
+                        or that plain JSON cannot hold, is validated
+                        again with jsonschema, whose errors give every
+                        row. The overnight run validates with
+                        jsonschema alone, through pixi run check-full,
+                        so that a document jsonschema-rs passes in
+                        error is reported within a day rather than at
+                        once; that delay is the accepted cost of the
+                        speed. jsonschema alone is rejected. Ruled by
+                        WTP on 2026-10-28 at 14:35 UTC, by writing
+                        "Uphold the jsonschema-rs check".
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_jsonschema_rs_then_jsonschema
+    guid_target:        opt_5dc959b0c16444e2b6696ceaca779319
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_jsonschema_only
+    guid_target:        opt_7c9660781e47490bb76b42e5608dadcc

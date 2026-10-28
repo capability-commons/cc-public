@@ -1,0 +1,48 @@
+id_self:                ruling_where_test_evidence_is_measured
+guid_self:              ruling_0b27e58d84684bc08f1bfbb08b022b23
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Measure overnight only
+brief:                  |
+                        Only the overnight run measures coverage,
+                        profiles and budgets; the gates run tests
+                        without coverage and record only results. This
+                        holds on two conditions. A nightly stage
+                        guards what is released, so that nothing
+                        unmeasured is released; its shape is still to
+                        be decided. And a recurring review moves a
+                        category of test upstream when its failures
+                        are first found late and it can be run earlier
+                        at low cost. Measuring at every commit, at
+                        push and overnight, and in hosted CI are
+                        rejected. Ruled by WTP on 2026-10-28 at 14:35
+                        UTC, by writing "Uphold
+                        opt_measure_overnight_only".
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_measure_overnight_only
+    guid_target:        opt_a004ff0c71e648dd8722ea07165f272b
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_measure_at_every_commit
+    guid_target:        opt_2ceba64902c34addbb7727c43d7c5c3c
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_measure_at_push_and_overnight
+    guid_target:        opt_e69137db92e14f66b1cc4819bc48abe9
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_measure_in_hosted_ci
+    guid_target:        opt_e24bad2cdbed435a918c9b57376cb083
