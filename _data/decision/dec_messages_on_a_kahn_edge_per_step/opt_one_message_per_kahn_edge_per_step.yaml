@@ -1,0 +1,43 @@
+id_self:                opt_one_message_per_kahn_edge_per_step
+guid_self:              opt_e3ecc23bab924902838eb2ba6104dd91
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One message per Kahn edge per step
+brief:                  |
+                        Every Kahn edge carries exactly one message
+                        per step, and that message is a bounded array
+                        whose length varies up to its capacity, with a
+                        length of 0 when nothing arrived. Varying data
+                        rates become varying array lengths. The engine
+                        reserves one message per edge, or two where
+                        the writer and reader of a step overlap, as
+                        across execution units. A deeper queue is a
+                        recorded exception under the minimal engine.
+description:            |
+                        WTP's convention: run everything at a single
+                        rate with each message being a list of data
+                        items, the scaled data flow solution (WTP,
+                        2026-10-28). Scalable synchronous dataflow
+                        (Ritz, Pankert and Meyr 1993) shares the
+                        overhead of a firing over a block of values,
+                        at a cost in memory and latency, which is the
+                        known cost here: each edge reserves a full
+                        message, and a slow consumer sees data in
+                        batches. The only deadlock left is a cycle
+                        with no first value, which the ruled rule on
+                        default values on feedback edges already
+                        forbids. Recommended as the default for Kahn
+                        edges.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7

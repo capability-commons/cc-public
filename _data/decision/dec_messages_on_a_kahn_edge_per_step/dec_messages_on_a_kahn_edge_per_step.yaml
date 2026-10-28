@@ -1,0 +1,39 @@
+id_self:                dec_messages_on_a_kahn_edge_per_step
+guid_self:              dec_561681bcb4d743e8bc156ad1cda171c7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Messages on a Kahn edge per step
+brief:                  |
+                        How many messages may a Kahn edge carry in one
+                        step, and so how deep is the queue the engine
+                        reserves for it?
+description:            |
+                        WTP has always run everything at a single step
+                        rate, with each message a list of data items,
+                        so that the step rate is decoupled from the
+                        data rate (WTP, 2026-10-28). Under that
+                        convention a Kahn graph is homogeneous
+                        synchronous dataflow (Lee and Messerschmitt
+                        1987), every buffer size is known before the
+                        graph runs, and the undecidability of bounded
+                        memory for dynamic dataflow (Buck 1993) does
+                        not arise, because no rate depends on data.
+                        Where queues deeper than one message are
+                        allowed, fixed capacities can deadlock a
+                        general Kahn network (Parks 1995; Geilen and
+                        Basten 2003), and the ruling that the engine
+                        owns every buffer forbids growing one. Bears
+                        on dec_how_values_of_varying_size_are_held.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

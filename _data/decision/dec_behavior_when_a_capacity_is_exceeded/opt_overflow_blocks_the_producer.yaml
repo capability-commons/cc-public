@@ -1,0 +1,29 @@
+id_self:                opt_overflow_blocks_the_producer
+guid_self:              opt_198c75629cc9474988160ec4254b845c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow blocks the producer
+brief:                  |
+                        A producer that would overflow a port waits
+                        until the reader has taken the message, so
+                        nothing is dropped and the delay propagates
+                        upstream.
+description:            |
+                        The rule for Kahn networks with bounded
+                        channels (Parks 1995). Under one message per
+                        edge per step it turns an overflow into a
+                        missed step deadline upstream, and a sensor
+                        cannot be made to wait.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10

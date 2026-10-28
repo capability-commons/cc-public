@@ -1,0 +1,42 @@
+id_self:                opt_queues_of_configured_depth_with_deadlock_detection
+guid_self:              opt_1045ed396aeb49499ba5a4ce4a6038de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Queues of configured depth with deadlock detection
+brief:                  |
+                        Each Kahn edge has a queue whose depth is set
+                        in configuration, and a node fires only when
+                        each of its outputs has room for the most
+                        messages a step may write. Where rates are
+                        static or periodic, cctool computes the
+                        smallest depths that cannot deadlock and
+                        checks the configured depths against them.
+                        Where rates are dynamic, each blocked node
+                        names the node it waits on, and a cycle in
+                        that relation is reported as a fault; the
+                        engine never grows a queue.
+description:            |
+                        The three parts follow the literature for
+                        fixed buffers: computed minimum capacities
+                        (Stuijk, Geilen and Basten 2006; Cohen et al.
+                        2006 on N-synchronous Kahn networks), firing
+                        only when outputs have room (Parks 1995), and
+                        local deadlock detection (Geilen and Basten
+                        2003, who show that a global check misses a
+                        deadlock in one part of a system while the
+                        rest runs). Buck (1993) adds graph assertions,
+                        such as at most N in a row, that can make an
+                        unbounded graph provably bounded.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7

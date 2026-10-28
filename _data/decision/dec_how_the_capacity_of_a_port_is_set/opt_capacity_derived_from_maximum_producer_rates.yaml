@@ -1,0 +1,43 @@
+id_self:                opt_capacity_derived_from_maximum_producer_rates
+guid_self:              opt_fbadbd9662fd49dc9da5ea398a1fd13e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Capacity derived from maximum producer rates
+brief:                  |
+                        Every data producer states a maximum data
+                        rate. A transform in variant generation sets
+                        each capacity from the producer's maximum rate
+                        times the step period, plus a margin for
+                        jitter, so the capacity is part of the variant
+                        generated for the configuration that uses that
+                        producer. A port of a node that is not a
+                        source, such as a detector whose detections
+                        vary, declares its maximum items per step
+                        either as a number or as a function of its
+                        inputs' maxima, and the transform propagates
+                        the maxima downstream.
+description:            |
+                        WTP's proposal: all data producers have a
+                        maximum data rate, which in practice is always
+                        known, since sensors are fixed rate or nearly
+                        so, and the buffer size can then be part of
+                        the variant generated for the configuration
+                        using that particular sensor (WTP,
+                        2026-10-28). Propagating maxima is the rate
+                        analysis of synchronous dataflow applied to
+                        array lengths. An occasional overrun is
+                        absorbed by the margin: items that arrive
+                        during a long step join the next step's list.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48

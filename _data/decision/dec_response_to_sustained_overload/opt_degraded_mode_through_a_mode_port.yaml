@@ -1,0 +1,49 @@
+id_self:                opt_degraded_mode_through_a_mode_port
+guid_self:              opt_5bfcb568a9a44f80b4a78eaa886e05f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Degraded mode switched through a mode port
+brief:                  |
+                        A node may have a cheaper mode of operation,
+                        selected by an optional input port fed by a
+                        mode edge, and the flag changes only at a
+                        step. A control node raises the flag when a
+                        step consistently overruns its period, judged
+                        from queue occupancy, processor temperature or
+                        similar inputs, and switches with hysteresis
+                        so the mode does not flap. The engine exposes
+                        queue occupancy, and the platform exposes
+                        temperature, as source ports, which is a
+                        recorded exception under the minimal engine.
+                        That queues empty faster than they fill in
+                        degraded mode is a requirement in the property
+                        form, with tests as its evidence; the engine
+                        guarantees nothing about it.
+description:            |
+                        WTP's proposal: nodes switch to a cheaper mode
+                        so that queues empty faster than they fill,
+                        guaranteed by specification and testing;
+                        degraded mode is specifically for when a step
+                        consistently takes longer than its period, and
+                        can be triggered by a control node that
+                        monitors queue sizes or CPU temperature (WTP,
+                        2026-10-28). Keeping the flag on a port rather
+                        than in a global makes whatever raised it
+                        visible in the graph and the trace, so a run
+                        stays deterministic and can be replayed. A
+                        node with no mode port never degrades, so the
+                        burden on authors is one optional port and one
+                        cheaper code path.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
