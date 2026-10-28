@@ -545,6 +545,39 @@ def test_an_edit_in_a_peer_may_not_change_a_consumed_item(tree, tmp_path_factory
 
 
 # -----------------------------------------------------------------------------
+def test_a_rename_in_a_peer_changes_only_the_peer(tree, tmp_path_factory, monkeypatch):
+    """
+    A rename of an item of the peer reads the consumed tree, and changes
+    only the files of the peer, which adds no failure.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root = _peer(tmp_path_factory, held = TEXT_HELD)
+    edit = cctool.edit.edit.Tree(root)
+
+    edit.update(cctool.edit.edit.rename(edit, 'concept_peer_widget', 'concept_peer_sprocket'))
+
+    assert sorted(edit.edit) == [FILE_PEER, FILE_PEER_CONCEPT]
+    assert cctool.edit.edit.apply(edit) == {}
+    assert 'concept_peer_sprocket' in (root / FILE_PEER).read_text(encoding = 'utf-8')
+
+
+# -----------------------------------------------------------------------------
+def test_a_rename_in_a_peer_of_a_consumed_item_is_refused(tree, tmp_path_factory, monkeypatch):
+    """
+    An item of a consumed tree is renamed only in that tree.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    edit = cctool.edit.edit.Tree(_peer(tmp_path_factory))
+
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'held by segment_cc_public'):
+        cctool.edit.edit.rename(edit, 'concept_federated_segment', 'concept_peer_segment')
+
+
+# -----------------------------------------------------------------------------
 def test_a_peer_checks_a_commit_message_against_the_consumed_schema(tree, tmp_path_factory,
                                                                     monkeypatch):
     """

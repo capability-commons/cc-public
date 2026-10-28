@@ -972,6 +972,7 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
 
     _refuse_source(tree, id_old)
     _Item(tree, id_old)
+    _refuse_consumed(tree.map_item[id_old][3])
 
     if id_new.partition(DELIM_PREFIX)[0] != id_old.partition(DELIM_PREFIX)[0]:
         raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
@@ -1104,7 +1105,7 @@ def _renamed_documents(tree: Tree, map_id: dict[str, str]) -> Edit:
     regex_rule  = re.compile('"(' + alternation + ')"')
     edit        = {}
 
-    for file in cctool.graph.extract.files(tree.map_document):
+    for file in _own_files(tree):
         text      = tree.text(file)
         list_line = text.split('\n')
         for (first, last) in cctool.check.layout.spans(text, pathlib.Path(file)):
@@ -1117,12 +1118,28 @@ def _renamed_documents(tree: Tree, map_id: dict[str, str]) -> Edit:
     for file in tree.map_document:
         if pathlib.Path(file).suffix != cctool.graph.extract.SUFFIX_PROGRAM:
             continue
+        if cctool.graph.extract.consumer(file) is not None:
+            continue
         text    = edit.get(file) or tree.text(file)
         renamed = regex_rule.sub(lambda match: '"' + map_id[match.group(1)] + '"', text)
         if renamed != text:
             edit[file] = renamed
 
     return edit
+
+
+# -----------------------------------------------------------------------------
+def _own_files(tree: Tree) -> list[str]:
+    """
+    Return the path of each file of the tree being edited that holds a
+    YAML document, in order. The files of a consumed tree are left out,
+    since an edit never changes them, and they cannot name an item of
+    the tree that consumes them.
+
+    """
+
+    return [file for file in cctool.graph.extract.files(tree.map_document)
+            if cctool.graph.extract.consumer(file) is None]
 
 
 # -----------------------------------------------------------------------------
@@ -1377,7 +1394,7 @@ def _renamed_ids(tree: Tree, map_id: dict[str, str]) -> Edit:
     regex_rule  = re.compile('"(' + alternation + ')"')
     edit        = {}
 
-    for file in cctool.graph.extract.files(tree.map_document):
+    for file in _own_files(tree):
         text      = tree.text(file)
         list_line = text.split('\n')
         list_span = cctool.check.layout.spans(text, pathlib.Path(file))
