@@ -1669,20 +1669,39 @@ def _added(before: cctool.check.check.Failures,
 def _register(tree: Tree, id_type: str) -> str | None:
     """
     Return the id of the register that holds the items of id_type, or
-    None if they are standalone.
+    None if they are standalone. Where several registers hold them, as
+    a register in a peer holds items of a type that a consumed tree
+    defines, the one in the tree being edited is chosen, since it is
+    the only one an edit may write.
 
     """
 
-    set_inverse = {row[0] for row in tree.facts['inverse_relation']
-                   if row[1] == RELATION_HAS_ITEMS_HELD_IN_REGISTER}
+    set_inverse  = {row[0] for row in tree.facts['inverse_relation']
+                    if row[1] == RELATION_HAS_ITEMS_HELD_IN_REGISTER}
+    set_register = set()
 
-    for (source, relation, target) in sorted(tree.facts['edge']):
+    for (source, relation, target) in tree.facts['edge']:
         if source == id_type and relation == RELATION_HAS_ITEMS_HELD_IN_REGISTER:
-            return target
+            set_register.add(target)
         if target == id_type and relation in set_inverse:
-            return source
+            set_register.add(source)
 
-    return None
+    if not set_register:
+        return None
+
+    list_own = sorted(id_register for id_register in set_register
+                      if id_register in tree.map_item
+                      and cctool.graph.extract.consumer(tree.map_item[id_register][3]) is None)
+
+    if len(list_own) > 1:
+        raise ErrorEdit('The items of {type} are held in {count} registers of this tree, {list}, '
+                        'so none is chosen for a new one.'.format(
+                            type  = id_type,
+                            count = len(list_own),
+                            list  = ', '.join(list_own)))
+    if list_own:
+        return list_own[0]
+    return min(set_register)
 
 
 # -----------------------------------------------------------------------------

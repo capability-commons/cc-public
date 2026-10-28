@@ -432,6 +432,51 @@ def test_an_edit_in_a_peer_may_name_consumed_items(tree, tmp_path_factory, monke
 
 
 # -----------------------------------------------------------------------------
+def test_a_new_entry_in_a_peer_goes_in_the_register_of_the_peer(tree, tmp_path_factory,
+                                                                monkeypatch):
+    """
+    A new item of a consumed type that a register of the peer names is
+    an entry of that register, and not of the register of the consumed
+    tree.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    edit = cctool.edit.edit.Tree(_peer(tmp_path_factory, held = TEXT_HELD))
+    text = cctool.edit.edit.new(edit, 'concept_peer_gadget',
+                                [('title', 'Peer gadget'),
+                                 ('brief', 'A gadget that the peer makes.'),
+                                 ('description', 'It is made for a test.'),
+                                 ('term_preferred', 'peer gadget')],
+                                [])
+
+    assert list(text) == [FILE_PEER_CONCEPT]
+    assert 'concept_peer_gadget:' in text[FILE_PEER_CONCEPT]
+
+
+# -----------------------------------------------------------------------------
+def test_a_new_entry_in_a_peer_with_no_register_of_its_type_is_refused(tree, tmp_path_factory,
+                                                                       monkeypatch):
+    """
+    A new item of a consumed type that no register of the peer names
+    would be an entry of the register of the consumed tree, which an
+    edit in the peer cannot change.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    edit = cctool.edit.edit.Tree(_peer(tmp_path_factory))
+
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'held by segment_cc_public'):
+        cctool.edit.edit.new(edit, 'concept_peer_gadget',
+                             [('title', 'Peer gadget'),
+                              ('brief', 'A gadget that the peer makes.'),
+                              ('description', 'It is made for a test.'),
+                              ('term_preferred', 'peer gadget')],
+                             [])
+
+
+# -----------------------------------------------------------------------------
 def test_an_edit_in_a_peer_may_not_change_a_consumed_item(tree, tmp_path_factory, monkeypatch):
     """
     The files of a consumed tree are read for an edit, but never
