@@ -1,0 +1,44 @@
+id_self:                ruling_maturity_of_code
+guid_self:              ruling_21f32b12355947528e389171417cc777
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity declared on each source file, with two conditions
+brief:                  |
+                        Each source file declares a maturity in its
+                        own item, in any supported language, and a
+                        file may not declare a higher maturity than
+                        any file it imports, directly or through
+                        another. Two conditions: a logical component's
+                        maturity is computed from the most mature file
+                        that implements it, never stored, so
+                        requirements that trace to a component still
+                        reach a maturity; and a file that declares
+                        none takes the lowest level, so declarations
+                        arrive only as files mature. A maturity on
+                        each logical component, and no maturity, are
+                        rejected. Ruled by WTP on 2026-10-28 at 16:54
+                        UTC, by choosing "Uphold source files, with
+                        conditions".
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_no_maturity
+    guid_target:        opt_ef2ce2b10ac14727858470010b1f2a8b
