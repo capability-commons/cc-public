@@ -308,6 +308,16 @@ def test_the_fast_check_of_a_schema_reads_a_pattern_as_jsonschema_does():
     assert not fast.is_valid('sch_y', {})
 
 
+def test_with_the_full_switch_jsonschema_alone_validates(tree, monkeypatch):
+    _option(tree, 'opt_x')
+    _replace(tree, DIR_DECISION + 'opt_x.yaml', 'title: Test item', 'title: "Test item\\n"')
+    monkeypatch.setattr(cctool.check.schema._Fast, 'is_valid', lambda *_: True)
+    assert _check(tree) == {}
+    cctool.check.check.CACHE_REVIEW.clear()
+    monkeypatch.setenv(cctool.check.schema.ENV_FULL, '1')
+    assert list(_check(tree)) == ['schema_violation']
+
+
 def test_a_title_that_ends_in_a_newline_is_reported(tree):
     _option(tree, 'opt_x')
     _replace(tree, DIR_DECISION + 'opt_x.yaml', 'title: Test item', 'title: "Test item\\n"')

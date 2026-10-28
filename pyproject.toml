@@ -128,6 +128,12 @@ browsers                = "playwright install chromium"
 #
 fuzz                    = { cmd = "pytest -m fuzz", env = { CCTOOL_FUZZ = "overnight" } }
 
+# The overnight check of the tree: every YAML document validated with
+# jsonschema alone, with no verdict kept before reused, so that one the
+# jsonschema-rs check passes in error is reported within a day.
+#
+check-full              = { cmd = "cctool check", env = { CCTOOL_SCHEMA_FULL = "1" } }
+
 # The slow run: the tests on every Python that requires-python admits,
 # each in an environment of its own. It is too slow for the gate, so it
 # is run on its own, such as overnight: pixi run slow.

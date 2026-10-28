@@ -50,6 +50,7 @@ edge:                   []
 import functools
 import json
 import math
+import os
 import re
 import typing
 import urllib.parse
@@ -102,6 +103,13 @@ END_PYTHON        = '\\Z'
 TUPLE_ERROR_USE   = (jsonschema.exceptions.SchemaError,
                      jsonschema.exceptions.UnknownType,
                      referencing.exceptions.Unresolvable)
+
+# Set to any value, every YAML document is validated with jsonschema
+# alone, and no verdict kept before is reused, since it may have been
+# found by jsonschema-rs. The overnight run sets it, so that a document
+# jsonschema-rs passes in error is still reported within a day.
+#
+ENV_FULL          = 'CCTOOL_SCHEMA_FULL'
 
 # What jsonschema-rs raises for a schema it cannot use, such as one with
 # a $ref that names no schema. Its ValidationError is a ValueError.
@@ -210,8 +218,9 @@ def violations(map_document: cctool.graph.extract.Documents,
                                  if id_schema not in set_invalid])
     map_validator = {}
     set_row       = set()
-    kept          = _Kept(cache, map_schema)
-    fast          = _Fast(map_schema, set_invalid)
+    is_full       = bool(os.environ.get(ENV_FULL))
+    kept          = _Kept(None if is_full else cache, map_schema, is_full)
+    fast          = None if is_full else _Fast(map_schema, set_invalid)
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:
@@ -435,12 +444,13 @@ def plain(node: typing.Any) -> typing.Any:
 def _errors_of(id_schema, document, map_schema, registry, map_validator, fast):
     """
     Return the errors of document under the schema id_schema: none if
-    the fast check finds it to conform, or else those that jsonschema
-    finds, with a validator kept in map_validator.
+    fast, the fast check, finds it to conform, or else those that
+    jsonschema finds, with a validator kept in map_validator. fast is
+    None when jsonschema alone validates.
 
     """
 
-    if fast.is_valid(id_schema, document):
+    if fast is not None and fast.is_valid(id_schema, document):
         return []
     if id_schema not in map_validator:
         map_validator[id_schema] = Validator(map_schema[id_schema], registry = registry)
@@ -483,9 +493,11 @@ class _Kept:
     """
 
     # -------------------------------------------------------------------------
-    def __init__(self, cache: dict | None, map_schema: dict[str, dict]):
+    def __init__(self, cache: dict | None, map_schema: dict[str, dict], is_full: bool = False):
         """
         Gather what validations with the schemas of map_schema found.
+        If is_full, nothing found before is reused, though what is
+        found now is still stored.
 
         """
 
@@ -494,7 +506,8 @@ class _Kept:
                            for (id_schema, schema) in map_schema.items()}
         self.map_found  = {} if cache is None else cache.setdefault('found', {})
         self.is_stored  = cctool.check.store.directory() is not None
-        self.map_stored = cctool.check.store.load(KIND_STORE) if self.is_stored else {}
+        self.map_stored = (cctool.check.store.load(KIND_STORE)
+                           if self.is_stored and not is_full else {})
         self.map_used   = {}
         self.map_reach  = {}
 
