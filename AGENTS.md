@@ -50,14 +50,19 @@ unfinished edits of another.
   the machine that holds the worktree, use `git bundle`:
 
   ```bash
-  git bundle create topic.bundle dev..TOPIC   # where the commits are
-  git fetch topic.bundle TOPIC:TOPIC          # where they go
+  cctool repo bundle TOPIC                    # where the commits are
+  cctool repo land ../TOPIC.bundle            # on dev, where they go
   ```
 
-  Never use `git format-patch` and `git am`: `am` ends a commit
-  message at its first `---` line, which opens the commit item, so
-  every copied commit loses its item. Run `cctool history check` on
-  the commits as soon as they arrive.
+  `cctool repo land` replays the commits onto `dev`, signs each, runs
+  `cctool history check` on them and only then moves `dev` forward.
+  Every commit pushed must be signed by a team member's key, which a
+  remote session does not hold, so its commits are signed when they
+  land. `cctool repo sign` signs the commits not yet pushed, and
+  `cctool repo push` pushes once they are. Never use
+  `git format-patch` and `git am`: `am` ends a commit message at its
+  first `---` line, which opens the commit item, so every copied
+  commit loses its item.
 - Once the branch is on `dev` and `git status` in the worktree is
   clean, remove the worktree from the main checkout:
 

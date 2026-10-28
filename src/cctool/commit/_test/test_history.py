@@ -25,15 +25,13 @@ edge:                   []
 """
 
 
-import os
-import shutil
 import subprocess
-import tempfile
 
 import pytest
 
 import cctool.commit.history
 import cctool.commit.message
+import cctool.conftest
 
 
 pytestmark = pytest.mark.prepush
@@ -45,69 +43,16 @@ pytestmark = pytest.mark.prepush
 IDENT_MAINTAINER = ('-c', 'user.name=William Payne', '-c', 'user.email=wtpayne@gmail.com')
 
 
-REGISTER = '_data/register/reg_team_member.yaml'
-
-# The signing key that the team member register gives for the
-# maintainer, which each copy gives the key of a keyring made for the
-# tests in its place.
-#
-LINE_KEY = 'git_signing_key:    9C4FB30F113CAB6A\n'
-
-
-# -----------------------------------------------------------------------------
-@pytest.fixture(scope = 'module')
-def keyring():
-    """
-    Return a keyring made for the tests, with one signing key and no
-    passphrase, as the folder that holds it and the long id of the key.
-    gpg runs an agent for a keyring, and the path of the agent's socket
-    must be short, so the folder is made directly in the temporary
-    folder of the system.
-
-    """
-
-    if shutil.which('gpg') is None:
-        pytest.skip('gpg is not installed, so no commit can be signed.')
-    home = tempfile.mkdtemp(prefix = 'gpg')
-    env  = {**os.environ, 'GNUPGHOME': home}
-    subprocess.run(['gpg', '--batch', '--pinentry-mode', 'loopback', '--passphrase', '',
-                    '--quick-generate-key', 'Test key <test@example.invalid>', 'ed25519',
-                    'sign', 'never'],
-                   env = env, check = True, capture_output = True)
-    listing = subprocess.run(['gpg', '--list-keys', '--with-colons'],
-                             env = env, check = True, capture_output = True, text = True).stdout
-    key = next(line.split(':')[4] for line in listing.splitlines() if line.startswith('pub:'))
-    yield (home, key.upper())
-    subprocess.run(['gpgconf', '--kill', 'gpg-agent'], env = env, check = False,
-                   capture_output = True)
-    shutil.rmtree(home, ignore_errors = True)
-
-
 # -----------------------------------------------------------------------------
 @pytest.fixture
-def repo(tree, keyring, monkeypatch):
+def repo(signed_repo):
     """
-    Return the root of a copy of the repository, committed on main
-    under a message that conforms. Each commit is signed with the key
-    of keyring, which the copy's register gives as the maintainer's.
+    Return the root of a copy of the repository, committed and signed on
+    main, as signed_repo gives it.
 
     """
 
-    (home, key) = keyring
-    for key_env in [key_env for key_env in os.environ if key_env.startswith('GIT_')]:
-        monkeypatch.delenv(key_env)
-    monkeypatch.setenv('GNUPGHOME', home)
-    for (index, (name, value)) in enumerate([('commit.gpgsign', 'true'),
-                                              ('user.signingkey', key),
-                                              ('gpg.format', 'openpgp')]):
-        monkeypatch.setenv('GIT_CONFIG_KEY_{index}'.format(index = index), name)
-        monkeypatch.setenv('GIT_CONFIG_VALUE_{index}'.format(index = index), value)
-    monkeypatch.setenv('GIT_CONFIG_COUNT', '3')
-    _replace(tree, REGISTER, LINE_KEY, LINE_KEY.replace('9C4FB30F113CAB6A', key))
-    _git(tree, 'init', '--quiet', '--initial-branch', 'main')
-    _commit(tree, cctool.commit.message.compose('Add the first version of cc-public',
-                                                'The first version.'))
-    return tree
+    return signed_repo
 
 
 # -----------------------------------------------------------------------------
@@ -186,7 +131,7 @@ def test_a_commit_that_is_not_signed_is_reported(repo):
 
 
 def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyring):
-    _replace(repo, REGISTER, keyring[1], 'ABCDEF0123456789')
+    _replace(repo, cctool.conftest.FILE_MEMBERS, keyring[1], 'ABCDEF0123456789')
     _commit(repo, cctool.commit.message.compose('Change the team member register so that it is '
                                                 'wrong', 'It is wrong.'))
     [found] = cctool.commit.history.check(repo, 'HEAD')
@@ -195,7 +140,7 @@ def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyrin
 
 
 def test_a_tree_that_gives_no_signing_key_checks_no_signature(repo, keyring):
-    _replace(repo, REGISTER, '    ' + LINE_KEY.replace('9C4FB30F113CAB6A', keyring[1]), '')
+    _replace(repo, cctool.conftest.FILE_MEMBERS, '    ' + cctool.conftest.LINE_KEY.replace(cctool.conftest.KEY_MAINTAINER, keyring[1]), '')
     _git(repo, 'add', '--all')
     _git(repo, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--no-verify', '--message',
          cctool.commit.message.compose('Change the team member register so that it gives no '

@@ -2077,6 +2077,227 @@ surface:
               variadic:  false
               flag:     true
 
+        repo:
+          id_self:      icm_cctool_command_line.repo
+          guid_self:    icm_dcde4c06518c4b6e9aad2a4610dfbcbe
+          name:         repo
+          brief:        |
+                        Land, sign, push and bundle commits.
+
+          command:
+
+            bundle:
+              id_self:  icm_cctool_command_line.repo.bundle
+              guid_self:  icm_769c4164f5e44f6cb681ddb982ac2782
+              name:     bundle
+              brief:    |
+                        Write a bundle of the commits that branch
+                        holds beyond the base, for cctool repo land to
+                        land elsewhere.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.repo.bundle.branch
+                  guid_self:  icm_e1f6b64ec78e4e65a066314bb1b81608
+                  name:  branch
+                  brief:  |
+                        The branch whose commits are bundled.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.bundle.base
+                  guid_self:  icm_8c0a7842585240a4a63f8d5463375c9f
+                  name:  --base
+                  brief:  |
+                        The commit the bundle starts after, which
+                        whoever lands it must have.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  default:  dev
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.bundle.path
+                  guid_self:  icm_d5191b671d2f45a1957f538cf9029110
+                  name:  --output
+                  brief:  |
+                        The bundle to write. Defaults to the name of
+                        the branch with .bundle, beside the
+                        repository.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.bundle.root
+                  guid_self:  icm_618968ba0d7e43a9867068a2c68ecc8a
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            land:
+              id_self:  icm_cctool_command_line.repo.land
+              guid_self:  icm_dd6d49ffb3b5492f91965a2e6b4a4ba1
+              name:     land
+              brief:    |
+                        Land the commits of the branch that the bundle
+                        at path holds on the current branch, replayed,
+                        signed and checked.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.repo.land.path
+                  guid_self:  icm_3ad17b1583734f48979d216d626b4ca9
+                  name:  path
+                  brief:  |
+                        The bundle to land.
+                  kind:  argument
+
+                  type:
+                    spelling:  file
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.land.branch
+                  guid_self:  icm_91190cc284ee44d798e444498ab5fe3f
+                  name:  --branch
+                  brief:  |
+                        The branch of the bundle to land, if it holds
+                        more than one.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.land.root
+                  guid_self:  icm_a342994444df4a069df042d43454ff31
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            push:
+              id_self:  icm_cctool_command_line.repo.push
+              guid_self:  icm_a0a4a29af510442392773ebf0ad50668
+              name:     push
+              brief:    |
+                        Push the current branch to the branch of the
+                        same name on the remote, once each commit not
+                        yet pushed is signed.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.repo.push.remote
+                  guid_self:  icm_1a4380dccf2a49328a91ba01b0f60acb
+                  name:  --remote
+                  brief:  |
+                        The remote to push to.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  default:  origin
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.push.root
+                  guid_self:  icm_487dff3d986d404a8b249ab36586a6ea
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            sign:
+              id_self:  icm_cctool_command_line.repo.sign
+              guid_self:  icm_9020ccbaa9b2449eaf53df6073da9f77
+              name:     sign
+              brief:    |
+                        Sign each commit of the current branch that is
+                        not yet pushed.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.repo.sign.since
+                  guid_self:  icm_2d0e902e95f24f33b03cc12596cb5921
+                  name:  --since
+                  brief:  |
+                        Sign the commits after this ref. Defaults to
+                        the branch of the same name on origin.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.repo.sign.root
+                  guid_self:  icm_0f88d2941d334f258b7b7c0c1ffd5c5b
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
         serve:
           id_self:      icm_cctool_command_line.serve
           guid_self:    icm_ab429f74c44a4059a1e866d97d9de5a3

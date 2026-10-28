@@ -37,9 +37,12 @@ import functools
 import os
 import pathlib
 import shutil
+import subprocess
+import tempfile
 
 import pytest
 
+import cctool.commit.message
 import cctool.graph.extract
 
 
@@ -74,6 +77,23 @@ TUPLE_SOURCE_KEPT   = ('src/cctool/cli/__init__.py',
                        'src/cctool/edit/edit.py',
                        'src/cctool/check/layout.py',
                        'src/cctool/graph/jq.py')
+
+
+# The team member register, and the line of it that gives the key the
+# maintainer signs with, which a signed copy gives the key of a keyring
+# made for the tests in its place.
+#
+FILE_MEMBERS   = '_data/register/reg_team_member.yaml'
+KEY_MAINTAINER = '9C4FB30F113CAB6A'
+LINE_KEY       = 'git_signing_key:    {key}\n'.format(key = KEY_MAINTAINER)
+
+# The configuration a signed copy commits under: as the maintainer, whom
+# the register gives as git_author, signing each commit.
+#
+TUPLE_CONFIG   = (('user.name',      'William Payne'),
+                  ('user.email',     'wtpayne@gmail.com'),
+                  ('commit.gpgsign', 'true'),
+                  ('gpg.format',     'openpgp'))
 
 
 # -----------------------------------------------------------------------------
@@ -218,3 +238,63 @@ def tree(tmp_path):
                     dirs_exist_ok = True)
     yield tmp_path
     shutil.rmtree(tmp_path, ignore_errors = True)
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture(scope = 'session')
+def keyring():
+    """
+    Yield a keyring made for the tests, with one signing key and no
+    passphrase, as the folder that holds it and the long id of the key.
+    gpg runs an agent for a keyring, and the path of the agent's socket
+    must be short, so the folder is made directly in the temporary
+    folder of the system.
+
+    """
+
+    if shutil.which('gpg') is None:
+        pytest.skip('gpg is not installed, so no commit can be signed.')
+    home = tempfile.mkdtemp(prefix = 'gpg')
+    env  = {**os.environ, 'GNUPGHOME': home}
+    subprocess.run(['gpg', '--batch', '--pinentry-mode', 'loopback', '--passphrase', '',
+                    '--quick-generate-key', 'Test key <test@example.invalid>', 'ed25519',
+                    'sign', 'never'],
+                   env = env, check = True, capture_output = True)
+    listing = subprocess.run(['gpg', '--list-keys', '--with-colons'],
+                             env = env, check = True, capture_output = True, text = True).stdout
+    key = next(line.split(':')[4] for line in listing.splitlines() if line.startswith('pub:'))
+    yield (home, key.upper())
+    subprocess.run(['gpgconf', '--kill', 'gpg-agent'], env = env, check = False,
+                   capture_output = True)
+    shutil.rmtree(home, ignore_errors = True)
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def signed_repo(tree, keyring, monkeypatch):
+    """
+    Return the root of a copy of the repository, committed on main as
+    the maintainer under a message that conforms. git signs each commit
+    made in it with the key of keyring, which the copy's register gives
+    as the maintainer's.
+
+    """
+
+    (home, key) = keyring
+    for key_env in [key_env for key_env in os.environ if key_env.startswith('GIT_')]:
+        monkeypatch.delenv(key_env)
+    monkeypatch.setenv('GNUPGHOME', home)
+    for (index, (name, value)) in enumerate([*TUPLE_CONFIG, ('user.signingkey', key)]):
+        monkeypatch.setenv('GIT_CONFIG_KEY_{index}'.format(index = index), name)
+        monkeypatch.setenv('GIT_CONFIG_VALUE_{index}'.format(index = index), value)
+    monkeypatch.setenv('GIT_CONFIG_COUNT', str(len(TUPLE_CONFIG) + 1))
+
+    path = tree / FILE_MEMBERS
+    path.write_text(path.read_text().replace(LINE_KEY, LINE_KEY.replace(KEY_MAINTAINER, key)))
+    message = cctool.commit.message.compose('Add the first version of cc-public',
+                                            'The first version.')
+    for list_arg in (['init', '--quiet', '--initial-branch', 'main'],
+                     ['add', '--all'],
+                     ['commit', '--quiet', '--no-verify', '--message', message]):
+        subprocess.run(['git', *list_arg], cwd = tree, check = True, capture_output = True)
+    return tree

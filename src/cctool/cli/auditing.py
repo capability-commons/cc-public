@@ -94,7 +94,7 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
         else:
             list_commit = cctool.commit.history.commits(root, list(list_arg) or ['HEAD'])
             list_tip    = list_commit[-1:]
-        list_found = _found(root, list_commit)
+        list_found = cctool.commit.history.failures(root, list_commit)
         if is_gate:
             list_found += _gated(root, list_tip)
     except (cctool.gate.gate.ErrorGate, cctool.graph.logic.ErrorLogic) as error:
@@ -110,29 +110,6 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
 
     sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if list_found
              else cctool.cli.group.EXIT_OK)
-
-
-# -----------------------------------------------------------------------------
-def _found(root: pathlib.Path, list_commit: list[str]) -> list[str]:
-    """
-    Return a line for each failure of each commit of list_commit, and
-    for each commit id held by more than one commit.
-
-    """
-
-    list_found = []
-
-    for commit in list_commit:
-        head = cctool.commit.history.short(root, commit)
-        list_found += ['{head}: {found}'.format(head = head, found = found)
-                       for found in cctool.commit.history.check(root, commit)]
-
-    for (id_item, list_holder) in cctool.commit.history.duplicates(root, list_commit):
-        list_found.append('{id} is the id of the items of more than one commit: {list}'.format(
-            id = id_item, list = ', '.join(holder[:cctool.commit.history.LENGTH_SHORT]
-                                           for holder in list_holder)))
-
-    return list_found
 
 
 # -----------------------------------------------------------------------------

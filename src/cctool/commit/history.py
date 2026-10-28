@@ -144,6 +144,29 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
+def failures(root: pathlib.Path, list_commit: list[str]) -> list[str]:
+    """
+    Return a line for each failure of each commit of list_commit, and
+    for each commit id held by more than one commit.
+
+    """
+
+    list_found = []
+
+    for commit in list_commit:
+        head = short(root, commit)
+        list_found += ['{head}: {found}'.format(head = head, found = found)
+                       for found in check(root, commit)]
+
+    for (id_item, list_holder) in duplicates(root, list_commit):
+        list_found.append('{id} is the id of the items of more than one commit: {list}'.format(
+            id = id_item, list = ', '.join(holder[:LENGTH_SHORT]
+                                           for holder in list_holder)))
+
+    return list_found
+
+
+# -----------------------------------------------------------------------------
 def duplicates(root: pathlib.Path, list_commit: list[str]) -> list[tuple[str, list[str]]]:
     """
     Return each commit id that the item of one of list_commit shares
