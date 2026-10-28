@@ -1,0 +1,44 @@
+id_self:                ann_commits_are_not_read_into_the_graph
+guid_self:              ann_ab3e55e76998417a8f9688727c483ede
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commits are not read into the graph
+brief:                  |
+                        A commit item lives in its git message, and
+                        the graph holds only the items in the files of
+                        the tree. A review recorded in a commit is
+                        invisible to cctool query and to the logic
+                        rules until commits are read from git log into
+                        the graph, which is not built.
+description:            |
+                        Sources:
+                        - The commit item sits in the message between
+                          the subject and the trailers
+                          [_data/schema/sch_commit.yaml at
+                          description].
+                        - The extractor reads the files of the tree
+                          [src/cctool/graph/extract.py within
+                          documents].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_review_is_recorded
+    guid_target:        dec_cc1c1c85b9374d6c897fb24a27d0161f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_review_in_the_commit_item
+    guid_target:        opt_d5a31c85346c4847afe8078a5929fd1f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

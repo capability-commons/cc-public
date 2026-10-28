@@ -1,0 +1,67 @@
+id_self:                ann_a_recorded_digest_keeps_freshness_a_tree_check
+guid_self:              ann_b7b3c12e5c2245adafe11a5ca12be99a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A recorded digest keeps the freshness check within the tree
+brief:                  |
+                        A review that records the digest of what it
+                        saw is fresh exactly while that digest matches
+                        the file now, which a check can compare from
+                        the tree alone, as it already digests each
+                        file it reads. Neither the graph extractor nor
+                        cctool check runs git, so a freshness check
+                        that orders reviews and changes by commit
+                        would add a walk of git history to every
+                        check, and would not work on a tree without
+                        its history, such as the copy the gate checks.
+description:            |
+                        Sources:
+                        - extract digests each file as it reads it
+                          [src/cctool/graph/extract.py within
+                          digest_of].
+                        - Commits are read from git only by the
+                          history check [src/cctool/commit/history.py
+                          within commits], by release and by the
+                          repository steps; the graph and check
+                          packages do not run git.
+                        - The gate checks a copy of the staged files,
+                          not a clone [src/cctool/gate/gate.py within
+                          gate].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_review_is_recorded
+    guid_target:        dec_cc1c1c85b9374d6c897fb24a27d0161f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_review_as_its_own_type
+    guid_target:        opt_6f0ac184983a40ccba0cd0f276960a30
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_review_as_an_annotation
+    guid_target:        opt_e976e743330a44a98deb22787ac68134
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_review_in_the_commit_item
+    guid_target:        opt_d5a31c85346c4847afe8078a5929fd1f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
