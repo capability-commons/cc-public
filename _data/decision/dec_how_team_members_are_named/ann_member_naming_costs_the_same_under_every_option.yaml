@@ -1,0 +1,62 @@
+id_self:                ann_member_naming_costs_the_same_under_every_option
+guid_self:              ann_65c1835de5a8461b89bc790902b8f612
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Equal check cost under every naming option
+brief:                  |
+                        The full check and the read the commit checks
+                        rely on take the same time under all three
+                        options. A member lookup scans one small
+                        register by guid, git_author and signing key,
+                        and the form of those values does not change
+                        the work. Full names win only because they
+                        need no change at all to what was measured.
+description:            |
+                        Sources:
+                        - Measured 2026-10-28 in scratch copies of the
+                          snapshot, one per option, with python3 -m
+                          cctool.cli.command check --root . run with
+                          PYTHONPATH=src: the full check took 14.9 s
+                          with full names, 14.4 s with names held
+                          privately and 14.8 s with pseudonymous git
+                          identities.
+                        - Measured 2026-10-28 in the same copies,
+                          timing cctool.check.segment.union over five
+                          calls: 131 ms, 128 ms and 128 ms per call.
+                        - The commit checks find members by a scan of
+                          the one register whose id is
+                          reg_team_member, reading guid, git_author
+                          and git_signing_key
+                          (src/cctool/commit/message.py within
+                          _members, _authors and _signing_keys).
+                        - The register holds one entry today
+                          (_data/register/reg_team_member.yaml at
+                          entries). Strength: weak; the costs are
+                          equal. The spread between runs is within
+                          run-to-run noise, and at ten times the size
+                          the lookup still scans a register of a few
+                          dozen entries, which is small next to the
+                          union read.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

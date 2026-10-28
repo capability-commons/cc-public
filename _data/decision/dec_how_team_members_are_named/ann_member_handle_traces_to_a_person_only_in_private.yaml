@@ -1,0 +1,87 @@
+id_self:                ann_member_handle_traces_to_a_person_only_in_private
+guid_self:              ann_c8e65b5ff8f24bb2b6c4ea38f1109ba3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Public trace from member entry to person
+brief:                  |
+                        A member entry exists because a person
+                        contributes. Under the full name option the
+                        public graph traces each entry to that person.
+                        Under both pseudonymous options the public
+                        trace stops at a handle, and only a private
+                        segment, which cc-public cannot reach, holds
+                        the rest.
+description:            |
+                        Sources:
+                        - Each team member data item stands for one
+                          person who contributes
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_team_member.description).
+                        - Both pseudonymous options hold the mapping
+                          from handle to person only in a private
+                          segment
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_with_names_held_privately.yaml
+                          at brief;
+                          _data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_and_git_identities.yaml
+                          at brief).
+                        - A reference may run within a segment or into
+                          one it consumes, never upward or sideways
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          at brief), the option WTP upheld
+                          (_data/decision/dec_references_across_instances/ruling_references_across_instances.yaml
+                          at brief).
+                        - A check reads the tree under its root and
+                          what its segment consumes
+                          (src/cctool/check/segment.py within union),
+                          and cc-public consumes nothing
+                          (_data/federated_segment/segment_cc_public.yaml
+                          at brief), so a check of cc-public sees no
+                          private register.
+                        - A guid gives a stable pointer from a public
+                          commit to a person for a reader with private
+                          access
+                          (_data/decision/dec_chat_contributor_attribution/ann_private_guid_gives_stable_trace_to_contributor.yaml
+                          at brief).
+                        - The concern asks whether each element can be
+                          traced to the reason it exists
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question).
+                          Strength: weak; WTP holds the private
+                          segment, so the trace is whole for the one
+                          person who rules, and the trace from commit
+                          to entry is untouched. It holds at ten times
+                          the size only for readers outside the
+                          private segment, such as partners.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

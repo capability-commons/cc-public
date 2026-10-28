@@ -1,0 +1,82 @@
+id_self:                ann_switch_of_git_identity_blocks_commits_until_reset
+guid_self:              ann_1ea71c143e4d44fdbb4b2b356a047b3b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Switch of git identity that blocks commits until reset
+brief:                  |
+                        Under pseudonymous git identities, the change
+                        that sets the new git_author makes the hooks
+                        refuse the identity each person commits under
+                        today. Every machine and agent session must be
+                        set to the new identity and key before it can
+                        commit or push again. The failure is loud and
+                        recoverable, so the cost is a one time stop
+                        rather than a lasting fault.
+description:            |
+                        Sources:
+                        - Each person commits under a pseudonymous git
+                          identity signed with a key that names no
+                          person
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_and_git_identities.yaml
+                          at brief).
+                        - A commit is checked against the team members
+                          that its own tree holds
+                          (src/cctool/commit/history.py within check),
+                          so the commit that changes a git_author is
+                          itself checked against the new value.
+                        - A team member entry holds one git_author
+                          string
+                          (_data/schema/sch_regentry_team_member.yaml
+                          at properties.git_author).
+                        - Measured 2026-10-28 in a scratch copy with
+                          git_author set to a noreply identity:
+                          author_violations from
+                          src/cctool/commit/message.py refuses William
+                          Payne <wtpayne@gmail.com>.
+                        - Under full names and under names held
+                          privately, people keep the git author they
+                          use today
+                          (_data/decision/dec_how_team_members_are_named/opt_members_named_by_full_name.yaml
+                          at brief;
+                          _data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_with_names_held_privately.yaml
+                          at brief).
+                        - ASSUMPTION: a new signing key that names no
+                          person also has to be made and set on each
+                          machine. Strength: weak, since the failure
+                          is caught by the hooks and mended by setting
+                          git config. It grows at ten times the size
+                          with more people and machines, but stays a
+                          one time cost per person.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

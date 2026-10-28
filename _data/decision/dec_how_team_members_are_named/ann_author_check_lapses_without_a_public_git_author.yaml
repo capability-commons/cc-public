@@ -1,0 +1,148 @@
+id_self:                ann_author_check_lapses_without_a_public_git_author
+guid_self:              ann_13d25d554f764a6c90d79b25b791bde1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Author check that lapses without a public git author
+brief:                  |
+                        Under names held privately, the public team
+                        member entry cannot carry a git_author,
+                        because a git_author is the name and email the
+                        person already commits under. The author check
+                        then accepts any author at all, and nothing
+                        reports that it has stopped checking. A public
+                        clone then ties a commit to the member who
+                        answers for it only by the signing key, and a
+                        reviewer without the private segment cannot
+                        tell a member from a stranger. Full names and
+                        pseudonymous git identities both keep a
+                        git_author in public, so the check keeps
+                        refusing an author who is not a member.
+description:            |
+                        Sources:
+                        - A commit is authored by a member whose entry
+                          gives that author as its git_author, and
+                          signed with a member's git_signing_key; the
+                          commit-msg hook refuses any other author,
+                          and cctool history check reports one
+                          (_data/register/reg_team_member.yaml at
+                          description).
+                        - The author of a commit is the person
+                          responsible for its being correct, so it
+                          must be a member whose entry gives that
+                          author as its git_author
+                          (src/cctool/commit/message.py at description).
+                        - A git_author is the name and email that git
+                          records, as in Name <email>, and it is
+                          optional
+                          (_data/schema/sch_regentry_team_member.yaml
+                          at properties.git_author.description).
+                        - A register that gives no git_author checks
+                          nothing (src/cctool/commit/message.py within
+                          author_violations).
+                        - Under names held privately, the entry in a
+                          public register gives no name, and commits
+                          keep the git author the person already uses
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_with_names_held_privately.yaml
+                          at brief).
+                        - Under pseudonymous git identities, each
+                          person commits under a chosen name and a
+                          noreply address, which the public entry can
+                          carry as its git_author
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_and_git_identities.yaml
+                          at brief and
+                          _data/schema/sch_regentry_team_member.yaml
+                          at description).
+                        - cc-public is public on GitHub (WTP,
+                          2026-10-21), and cc-public consumes nothing,
+                          so its checks never read a register of a
+                          private segment
+                          (_data/federated_segment/segment_cc_public.yaml
+                          at brief).
+                        - cctool history check checks each commit
+                          against its own tree
+                          (src/cctool/commit/history.py within check).
+                        - Measured 2026-10-28 in a scratch copy of the
+                          snapshot with git_author taken out of
+                          entries.member_william_payne, calling
+                          author_violations from
+                          src/cctool/commit/message.py with
+                          PYTHONPATH=src: the authors William Payne,
+                          Mallory <mallory@example.com> and a noreply
+                          identity are all accepted. In an unchanged
+                          copy the last two are refused.
+                        - Measured 2026-10-28 in the same copy:
+                          python3 -m cctool.cli.command check reports
+                          0 failures, so no check notices the lapse.
+                        - Measured 2026-10-28 in the same copy:
+                          signature_violations still refuses an
+                          unsigned commit or an unknown key while
+                          git_signing_key stays in public, so the
+                          signature check survives if the key does.
+                        - Measured 2026-10-28 in a scratch copy with
+                          git_author set to a chosen name and a GitHub
+                          noreply address, and a new key:
+                          author_violations accepts only that identity
+                          and refuses William Payne
+                          <wtpayne@gmail.com> and Mallory, and
+                          signature_violations accepts only that key.
+                        - Measured 2026-10-28: a Contributor trailer
+                          with the member guid resolves under all
+                          three variants, since the guid does not
+                          change (violations in
+                          cctool.commit.message). Strength: strong for
+                          the author check, since it is measured and
+                          follows from the shape of the option.
+                          Moderate for the trace and for review: the
+                          signing key still ties a commit to an entry
+                          when the author check falls away, so that
+                          loss is partial, and today one person
+                          authors every commit and a reviewer knows
+                          him. It holds and grows at ten times the
+                          size, since each new member and each new
+                          clone without the private segment meets the
+                          same silent gap, and reviewers outside the
+                          private segment read commits by many
+                          authors.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

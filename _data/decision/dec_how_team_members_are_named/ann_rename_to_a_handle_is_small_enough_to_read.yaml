@@ -1,0 +1,82 @@
+id_self:                ann_rename_to_a_handle_is_small_enough_to_read
+guid_self:              ann_f04167a54e2444c881f5aee21b5e4ef1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rename to a handle small enough to read
+brief:                  |
+                        The public change that gives the one member a
+                        handle is small enough for a person to read in
+                        full. A dry run of cctool rename changes 17
+                        lines in five files. The rename leaves the
+                        title and description, which still name the
+                        person, so they take a few more lines by hand,
+                        and cctool check names the three citations
+                        that the rename breaks. The reviewer has one
+                        thing to catch that no check reports: the
+                        rename keeps the old id, which is the full
+                        name, as an alias in the public register.
+description:            |
+                        Sources:
+                        - Measured 2026-10-28 in a scratch copy of the
+                          snapshot: python3 -m cctool.cli.command
+                          rename with --dry-run and PYTHONPATH=src,
+                          from member_william_payne to a member id
+                          made of the prefix and a short opaque
+                          handle, prints a diff of 17 changed lines
+                          across _data/register/reg_team_member.yaml
+                          and four annotation files, and adds
+                          member_william_payne under alias.
+                        - Other text outside YAML documents, such as
+                          python code, is not changed by a rename
+                          (cctool rename --help, read 2026-10-28).
+                        - The same dry run, rerun 2026-10-28 by the
+                          verifier, leaves the title William Payne and
+                          the description of the entry unchanged;
+                          after the rename itself, cctool check
+                          reports three unresolved_citation failures
+                          and no other.
+                        - A Contributor trailer names a member by
+                          guid, not by id
+                          (_data/register/reg_team_member.yaml at
+                          description), so past trailers need no
+                          change.
+                        - Full names need no change today
+                          (_data/decision/dec_how_team_members_are_named/opt_members_named_by_full_name.yaml
+                          at brief).
+                        - ASSUMPTION: the private register that maps
+                          handles to names, and the change that lets
+                          commit checks read it, come as further
+                          changes of similar size. Strength: weak in
+                          favor; it removes an objection rather than
+                          giving a reason. At ten times the size each
+                          new member is one small entry, but a later
+                          rename of many named members grows with the
+                          number of annotations that name them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

@@ -1,0 +1,64 @@
+id_self:                ann_pseudonymous_git_identity_keeps_checks_unchanged
+guid_self:              ann_b562784fda0148efb82619f51efcd28f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pseudonymous git identities that fit the checks as they are
+brief:                  |
+                        Of the two pseudonymous options, only
+                        pseudonymous git identities keep one place
+                        that maps a member to the identity git
+                        records. The public entry gives the
+                        pseudonymous git_author and key, and the
+                        commit checks work unchanged. The name lives
+                        only in the private mapping, so no job is done
+                        twice in the public tree.
+description:            |
+                        Sources:
+                        - Under this option each person commits under
+                          a pseudonymous git identity, signed with a
+                          key that names no person, and the mapping
+                          from handle to person is held only in a
+                          private segment
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_and_git_identities.yaml
+                          at brief).
+                        - The signing check matches the key id or
+                          fingerprint only, not a name on the key
+                          (src/cctool/commit/message.py within
+                          signature_violations).
+                        - The git_author pattern accepts any name and
+                          email in the form Name <email>
+                          (_data/schema/sch_regentry_team_member.yaml
+                          at properties.git_author). Strength:
+                          moderate. It is a comparison with names held
+                          privately, not with full names, which need
+                          no mapping at all. It holds at ten times the
+                          size, since each member is still one public
+                          entry.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

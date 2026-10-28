@@ -1,0 +1,90 @@
+id_self:                ann_named_member_cannot_later_be_unnamed_in_public
+guid_self:              ann_c38cf351d35948baae4e4c190e29e539
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Removal of a name once it is public
+brief:                  |
+                        A member named in public under the full name
+                        option cannot later be fully unnamed. A rename
+                        keeps the old id, the full name, as an alias
+                        in the entry, it breaks the citations of the
+                        entry by its old id whether or not the alias
+                        stays, and released copies and git history
+                        keep the old entry. Under either pseudonymous
+                        option a request from a member who authors no
+                        commits to remove their name is met by
+                        deleting the private mapping.
+description:            |
+                        Sources:
+                        - cctool rename keeps the old id of a register
+                          entry as an alias (cctool rename --help, run
+                          2026-10-28 in a scratch copy of the
+                          snapshot).
+                        - Measured 2026-10-28 in a scratch copy:
+                          cctool rename of member_william_payne to an
+                          opaque handle id leaves alias
+                          member_william_payne in the entry, and with
+                          or without that alias cctool check reports
+                          three unresolved_citation failures, whose
+                          fix offers to cite the commit that held the
+                          part as REV:PATH.
+                        - A release ships the whole of _data
+                          (_data/decision/dec_what_data_a_release_ships/ruling_what_data_a_release_ships.yaml
+                          at brief), and every peer and the package
+                          host keep a copy of a published package that
+                          the maintainer cannot withdraw
+                          (_data/decision/dec_how_peers_get_cc_public/ann_published_package_cannot_be_recalled.yaml
+                          at brief).
+                        - A name in public history can be erased only
+                          by rewriting history in every clone
+                          (_data/decision/dec_chat_contributor_attribution/ann_public_guid_stays_personal_data_while_key_exists.yaml
+                          at brief;
+                          _data/decision/dec_chat_contributor_attribution/ann_name_in_public_commit_cannot_be_removed.yaml
+                          at brief).
+                        - Erasure of pseudonymized data means deleting
+                          the private mapping
+                          (_data/decision/dec_chat_contributor_attribution/ann_public_guid_stays_personal_data_while_key_exists.yaml
+                          at brief).
+                        - The concern measures the time to fulfill a
+                          request to remove data, in days
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_privacy.measure). Strength:
+                          moderate; it does not help WTP, whose name
+                          is already public under every option, but
+                          for a later member the time to remove falls
+                          from never to one private edit. It holds at
+                          ten times the size, with more releases and
+                          clones holding each named entry.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

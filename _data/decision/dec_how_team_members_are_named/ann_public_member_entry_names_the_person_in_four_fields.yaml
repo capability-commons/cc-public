@@ -1,0 +1,80 @@
+id_self:                ann_public_member_entry_names_the_person_in_four_fields
+guid_self:              ann_d86c443455bb4b97be8fbd76e6e69c35
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full name in four fields of a public member entry
+brief:                  |
+                        Under the full name option a public member
+                        entry holds the person's name in its id,
+                        title, description and git_author, and their
+                        email in git_author. No check reads the id,
+                        title or description for anything a handle
+                        could not give. Both pseudonymous options hold
+                        the same entry with fewer personal data
+                        fields, so they meet data minimization better.
+description:            |
+                        Sources:
+                        - The entry member_william_payne holds the
+                          name in its id, its title and its
+                          description, and holds a name and an email
+                          in its git_author
+                          (_data/register/reg_team_member.yaml at
+                          entries.member_william_payne).
+                        - Every entry in the public register is public
+                          (_data/register/reg_team_member.yaml at
+                          note).
+                        - The commit checks read only the guid,
+                          git_author and git_signing_key of an entry
+                          (src/cctool/commit/message.py within
+                          _members, _authors and _signing_keys).
+                        - Measured 2026-10-28 in a scratch copy of the
+                          snapshot: after cctool rename of
+                          member_william_payne to an opaque handle id
+                          and a title and description that name no
+                          one, the author William Payne and the key
+                          9C4FB30F113CAB6A are still accepted by
+                          author_violations and signature_violations
+                          in cctool.commit.message.
+                        - The concern draws on ISO/IEC 29100, whose
+                          principles include data minimization, and
+                          counts personal data fields held
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_privacy.note and
+                          entries.concern_privacy.measure). Strength:
+                          strong as a count, since it is measured; it
+                          grows at ten times the size, as each
+                          publicly named member adds four name fields
+                          to a register that ships with every release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_pseudonymous_ids_and_git_identities
+    guid_target:        opt_53976d97107543d490a1f6be47ea0c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_members_named_by_full_name
+    guid_target:        opt_1220e22e337144f8a28ec0ad5c32b98d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

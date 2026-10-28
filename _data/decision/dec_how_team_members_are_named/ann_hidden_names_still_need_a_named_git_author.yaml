@@ -1,0 +1,69 @@
+id_self:                ann_hidden_names_still_need_a_named_git_author
+guid_self:              ann_d2ae35f664c04e41b6f0b373662a99e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A name held privately and in git_author at once
+brief:                  |
+                        Under names held privately, the public entry
+                        must still give the git_author the person
+                        commits under, which is their name and email.
+                        So the private register maps the handle to the
+                        name, and the public git_author maps it again,
+                        and one job is done by two mechanisms.
+                        Dropping git_author from the public entry to
+                        avoid this turns the author check off for the
+                        whole tree.
+description:            |
+                        Sources:
+                        - Under this option commits keep the git
+                          author the person already uses
+                          (_data/decision/dec_how_team_members_are_named/opt_pseudonymous_ids_with_names_held_privately.yaml
+                          at brief).
+                        - The author check reads only the register
+                          whose id is reg_team_member, in the tree
+                          being checked and what it consumes
+                          (src/cctool/commit/message.py within
+                          author_violations and _authors;
+                          src/cctool/check/segment.py within union).
+                        - An entry is closed to any field that the
+                          register entry and team member shapes do not
+                          declare
+                          (_data/schema/sch_reg_team_member.yaml at
+                          description), and the team member shape adds
+                          only git_author and git_signing_key
+                          (_data/schema/sch_regentry_team_member.yaml
+                          at properties), so a private mapping from
+                          handle to name has no field of its own and
+                          needs a new field, relation or second entry.
+                        - A register that gives no git_author checks
+                          nothing (src/cctool/commit/message.py within
+                          author_violations); today the register holds
+                          one entry, so dropping its git_author turns
+                          the author check off for the whole tree.
+                          Strength: strong, since it follows from the
+                          check code as it stands. It holds at ten
+                          times the size, as each member adds one more
+                          name held in two places.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_team_members_are_named
+    guid_target:        dec_a7a9d58a7fc948008913bfa2457073e4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_pseudonymous_ids_with_names_held_privately
+    guid_target:        opt_ddc561a0b2434e1cafcedee97f89851c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
