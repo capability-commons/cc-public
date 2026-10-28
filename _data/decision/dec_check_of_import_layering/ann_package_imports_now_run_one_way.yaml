@@ -1,0 +1,50 @@
+id_self:                ann_package_imports_now_run_one_way
+guid_self:              ann_a2df0e14ce1944c3bda9a835554709b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Package imports that now run one way
+brief:                  |
+                        ann_unchecked_imports_already_run_both_ways
+                        says that two pairs of packages import each
+                        other. That is no longer so. The layout
+                        printer and the release record, the two
+                        modules the checker imported from the editor
+                        and the release package, now live in the
+                        checker, and the packages of cctool import one
+                        another in one direction only, so the import
+                        rule over the graph need not start by excusing
+                        any pair.
+description:            |
+                        The layout printer is now
+                        src/cctool/check/layout.py and the release
+                        record is src/cctool/check/release_record.py.
+                        The checker imports only the graph package
+                        [src/cctool/check/check.py at its imports].
+                        Read with ast over src, leaving out tests and
+                        fixtures, the imports between packages are:
+                        check on graph; edit and gate on check; commit
+                        on check and gate; release on check, commit,
+                        edit and gate; web on check, edit and
+                        requirement; cli on the rest. No package
+                        reaches itself through them, and there was
+                        already no cycle between modules [measured by
+                        Claude in the cloud container, 2026-10-28].
+                        Nothing yet checks that it stays so.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_check_of_import_layering
+    guid_target:        dec_7c72fd5d492f46fab53d8716310d2344
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_unchecked_imports_already_run_both_ways
+    guid_target:        ann_368116eca6fa4680a4a840eb1a522af0
