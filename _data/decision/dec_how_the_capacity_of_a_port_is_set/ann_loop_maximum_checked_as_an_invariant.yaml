@@ -1,0 +1,74 @@
+id_self:                ann_loop_maximum_checked_as_an_invariant
+guid_self:              ann_e96014def4f242b2a2dd07f663c31bb9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loop maximum checked as an invariant
+brief:                  |
+                        Propagating maxima around a loop until they
+                        stop changing need not stop: a loop that adds
+                        items on every step grows without limit, and a
+                        delay on the loop does not change that. The
+                        declared maximum B of a feedback edge is a
+                        bound only if the check proves that the first
+                        value is at most B and that one pass round the
+                        loop from at most B gives at most B. A loop
+                        that would grow must truncate. Where the check
+                        cannot prove this, it reports the bound as
+                        unknown, not as met. Peak storage further
+                        depends on the schedule, so it is checked on
+                        the placed graph.
+description:            |
+                        Sources:
+                        - Deciding whether a general Kahn process
+                          network can be scheduled in bounded memory
+                          is undecidable (Parks 1995, Bounded
+                          scheduling of process networks, section
+                          3.1.2).
+                        - The stream semantics of dataflow is the
+                          least upper bound of finite iterations,
+                          which does not establish that a finite
+                          calculation over item counts converges (Lee
+                          and Matsikoudis 2008, The semantics of
+                          dataflow with firing).
+                        - Maximum buffer occupancy depends on the
+                          order of scheduling (Theelen et al. 2006, A
+                          scenario-aware data flow model for combined
+                          long-run average and worst-case performance
+                          analysis, section 5).
+                        - A candidate bound must satisfy initial
+                          content at most B and F(B) at most B; for a
+                          loop that adds a positive amount each step
+                          no finite invariant follows without
+                          truncation (ChatGPT corpus analysis,
+                          B-memory-and-rates.md section B1,
+                          2026-10-28).
+                        - Each feedback edge declares its own maximum,
+                          so that the propagation reaches a fixed
+                          point around every loop.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief) Strength: moderate; a fix to the
+                          option's wording rather than a case against
+                          it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

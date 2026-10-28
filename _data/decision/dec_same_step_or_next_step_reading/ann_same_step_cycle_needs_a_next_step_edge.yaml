@@ -1,0 +1,65 @@
+id_self:                ann_same_step_cycle_needs_a_next_step_edge
+guid_self:              ann_5cd0cf9da4b041ea95c337f82b8806e8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same-step cycle that needs a next-step edge
+brief:                  |
+                        Edges read in the same step order the nodes
+                        within a step, so a cycle made only of
+                        same-step edges has no order in which its
+                        nodes can run. Whichever option is chosen, a
+                        check must find every such cycle and require
+                        at least one next-step edge in it, and where
+                        placement decides the reading, the check runs
+                        on the placed graph. A feedback edge with a
+                        default value does not settle this by itself,
+                        since the default covers only the first step.
+description:            |
+                        Sources:
+                        - LUSTRE requires that any cycle in the
+                          network contain at least one pre operator,
+                          and orders the code of a node by the
+                          dependencies between variables (Halbwachs et
+                          al. 1991, The synchronous data flow
+                          programming language LUSTRE, sections A and
+                          C of the compilation part).
+                        - Mixed graphs need a causality check on the
+                          same-step dependency graph; a feedback end
+                          being able to supply a default does not by
+                          itself prove every same-step cycle has a
+                          defined evaluation (ChatGPT corpus analysis,
+                          B-memory-and-rates.md section B3,
+                          2026-10-28).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

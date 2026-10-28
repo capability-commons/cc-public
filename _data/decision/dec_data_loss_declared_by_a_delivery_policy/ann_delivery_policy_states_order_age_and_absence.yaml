@@ -1,0 +1,62 @@
+id_self:                ann_delivery_policy_states_order_age_and_absence
+guid_self:              ann_46274a6890e94be880fa9d45510c08e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Delivery policy that states order, age and absence
+brief:                  |
+                        Whether a policy can lose data is one of four
+                        things a consumer needs to know about it. The
+                        others are whether order is kept, how old a
+                        value may be, and how no new value is shown. A
+                        queue keeps order and every item, latest value
+                        drops the values between, sample at step maps
+                        what arrived to the step's list, and hold
+                        repeats an old value, which a consumer must be
+                        able to tell from a new one. A check for lost
+                        data can then also find a consumer that reads
+                        a held value as fresh.
+description:            |
+                        Sources:
+                        - Heterogeneous composition has no golden rule
+                          for combining actors with different tag
+                          sets, and needs explicit conversion such as
+                          forgetting tags, timestamping by a clock or
+                          holding values (Lee and Matsikoudis 2008,
+                          Actors without directors: a Kahnian view of
+                          heterogeneous systems, section 4.1).
+                        - Each event is a value and a tag (Lee and
+                          Sangiovanni-Vincentelli 1998, A framework
+                          for comparing models of computation).
+                        - A plain bounded list does not by itself
+                          distinguish simultaneous events, ordering,
+                          age or absence; those meanings need an
+                          interface contract (ChatGPT corpus analysis,
+                          A-actors.md section A5, 2026-10-28).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,63 @@
+id_self:                ann_admission_at_the_gap_start_adds_a_step_per_hop
+guid_self:              ann_9e31acad2e90486091e8c66f55735689
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A step per hop when admission is fixed at the gap start
+brief:                  |
+                        When a gap handles only the messages waiting
+                        as it opens, a message one actor sends to
+                        another waits for the next gap, so a chain of
+                        k actors takes k steps to pass a message
+                        along, and a request and its reply between two
+                        actors take two. Draining until empty passes
+                        the message along the whole chain in one gap.
+                        At Patrol's camera rate of 30 Hz, a step is
+                        about 33 ms, so a chain of three actors adds
+                        about 100 ms.
+description:            |
+                        Sources:
+                        - Messages that actors send during the gap
+                          wait for the next gap.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/opt_messages_waiting_when_the_gap_opens.yaml
+                          at brief)
+                        - Patrol's Orin configuration holds a 30 Hz
+                          camera rate, so one step is about 33 ms.
+                          (_data/decision/dec_how_actors_are_run/ann_actor_work_lengthens_every_kahn_step.yaml
+                          at description) ASSUMPTION: chains of actors
+                          that must answer within one step are rare in
+                          the graphs the engine serves; where one is
+                          needed, a bounded number of rounds per gap
+                          is a middle course.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_drain_until_every_mailbox_is_empty
+    guid_target:        opt_5e2092eb1ee2491ca8095b05589d15ca
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

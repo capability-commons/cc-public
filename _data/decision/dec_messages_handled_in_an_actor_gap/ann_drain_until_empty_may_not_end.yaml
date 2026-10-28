@@ -1,0 +1,69 @@
+id_self:                ann_drain_until_empty_may_not_end
+guid_self:              ann_2e2fadc70f8543c5b2e43b2e6895c8eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Drain until empty that may not end
+brief:                  |
+                        When actors can send each other messages, a
+                        gap that drains until every mailbox is empty
+                        can go on without limit, as two actors that
+                        answer each other never leave both mailboxes
+                        empty. The next Kahn step cannot start until
+                        the gap ends, so the length of the gap bounds
+                        the timing of every node, the safety functions
+                        included. Admitting only the messages waiting
+                        when the gap opens, or a time budget, gives
+                        each gap an end.
+description:            |
+                        Sources:
+                        - Draining until a mailbox is empty needs a
+                          termination or work bound when actors can
+                          send more messages (ChatGPT corpus analysis,
+                          A-actors.md section A1, 2026-10-28).
+                        - Lee and Matsikoudis note that a fair
+                          execution which produces complete streams
+                          may need unbounded memory when outputs are
+                          never consumed (Lee and Matsikoudis 2008,
+                          The semantics of dataflow with firing).
+                        - Actors that run in the gaps between steps
+                          add their work to every step's period.
+                          (_data/decision/dec_how_actors_are_run/ann_actor_work_lengthens_every_kahn_step.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_until_every_mailbox_is_empty
+    guid_target:        opt_5e2092eb1ee2491ca8095b05589d15ca
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

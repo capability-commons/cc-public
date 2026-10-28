@@ -1,0 +1,51 @@
+id_self:                ann_probes_change_what_a_run_measured
+guid_self:              ann_8276f933847e41568fd63e7d1a3bb027
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Probes that change what a run measured
+brief:                  |
+                        A probe inserted to observe a run takes time,
+                        holds buffers longer and can change the
+                        schedule, so timing measured with probes holds
+                        for the graph with probes, not the graph
+                        without. The digest of what a run ran should
+                        cover its probe configuration, so that a
+                        timing result goes stale when probes are added
+                        or removed, while a result about values alone
+                        need not.
+description:            |
+                        Sources:
+                        - Maximum buffer occupancy depends on the
+                          order of scheduling (Theelen et al. 2006, A
+                          scenario-aware data flow model, section 5).
+                        - A supposedly read-only tap may still alter
+                          scheduling and buffer lifetimes; record the
+                          probe configuration in run identity and keep
+                          logical-value evidence separate from timing
+                          evidence collected with instrumentation
+                          (ChatGPT corpus analysis,
+                          F-replay-evidence-debugging.md section F3,
+                          2026-10-28).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_staleness_of_run_evidence
+    guid_target:        dec_c1052d261da94771b76cacb8be37becd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stale_on_any_digest_change
+    guid_target:        opt_46889e035b754c40a942ff888e9354de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

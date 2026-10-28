@@ -1,0 +1,65 @@
+id_self:                ann_overflow_response_stated_and_replayed
+guid_self:              ann_7c077aa857a8470c9265600fe55e2104
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow response stated and replayed
+brief:                  |
+                        A fail-safe per port is a requirement only if
+                        it states the arrivals the port is built for,
+                        how an overflow is detected, the fault it
+                        raises, the response and how soon it follows,
+                        and what must hold before normal running
+                        resumes. Dropping items changes what the rest
+                        of the graph sees, so a replay must reproduce
+                        the same drops: which items were dropped must
+                        follow from the recorded inputs or be logged.
+description:            |
+                        Sources:
+                        - For every bounded edge, define the admitted
+                          arrival envelope, capacity, overflow
+                          detector, fault event, immediate response,
+                          maximum response delay and recovery
+                          preconditions; arbitrary drops or overwrites
+                          change event history and must be represented
+                          in replay input (ChatGPT corpus analysis,
+                          B-memory-and-rates.md section B2,
+                          2026-10-28).
+                        - The time of an outside event is treated as
+                          an input, so test vectors that include it
+                          give one correct response (Lohstroh et al.
+                          2021, Toward a Lingua Franca for
+                          deterministic concurrent systems, section
+                          3.6).
+                        - Each port declares its fail-safe from a
+                          fixed list, and every overflow raises a
+                          fault that the trace records.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

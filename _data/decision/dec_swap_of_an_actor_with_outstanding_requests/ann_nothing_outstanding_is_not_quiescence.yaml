@@ -1,0 +1,67 @@
+id_self:                ann_nothing_outstanding_is_not_quiescence
+guid_self:              ann_dc6c26af25894ec7af05c4382fe76ff6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Nothing outstanding that is not yet quiescence
+brief:                  |
+                        An actor with no request outstanding may still
+                        be part way through an exchange of several
+                        messages, having answered one and waiting to
+                        be asked the next. Swapping it there hands the
+                        new version an exchange it did not start.
+                        Tranquility, the condition for safe dynamic
+                        update, requires besides no outstanding
+                        request that the node is not processing one
+                        and that no neighbor is in a transaction it
+                        has joined and may join again. Waiting for no
+                        outstanding requests is safe only for actors
+                        whose exchanges are single request and reply.
+description:            |
+                        Sources:
+                        - Tranquility adds to quiescence the condition
+                          that none of the node's adjacent nodes are
+                          engaged in a transaction in which it has
+                          already participated and might still
+                          participate (Vandewoude et al. 2007,
+                          Tranquility: a low disruptive alternative to
+                          quiescence for ensuring safe dynamic
+                          updates, section 3).
+                        - An idle receiver may still straddle a
+                          transaction; isolated-turn guarantees of
+                          actors do not extend automatically across
+                          several messages (ChatGPT corpus analysis,
+                          A-actors.md section A2, 2026-10-28, after De
+                          Koster et al. 2016, 43 years of actors).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_swap_only_actors_with_nothing_outstanding
+    guid_target:        opt_6dd27e11f9ef4af9bff084df1e5b348d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
