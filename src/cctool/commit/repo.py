@@ -130,13 +130,18 @@ def land(root: pathlib.Path, path: pathlib.Path, branch: str | None = None) -> l
 
 
 # -----------------------------------------------------------------------------
-def sign(root: pathlib.Path, since: str | None = None) -> list[str]:
+def sign(root: pathlib.Path, since: str | None = None) -> tuple[list[str], list[str]]:
     """
     Return the commits, as short hashes and subjects, that the current
-    branch holds beyond since, once each is signed again. since is the
-    branch of the same name on origin if not given, so the commits
-    signed are those not yet pushed. They are replayed onto since in
-    a line, as dev keeps them.
+    branch holds beyond since, once each is signed again, and the other
+    branches removed because they ended at a commit that was replaced.
+    since is the branch of the same name on origin if not given, so the
+    commits signed are those not yet pushed. They are replayed onto
+    since in a line, as dev keeps them.
+
+    A branch that ends at one of the commits replaced holds nothing the
+    current branch does not now hold, signed, so it would be left
+    behind, naming the unsigned copy. It is removed.
 
     """
 
@@ -144,8 +149,9 @@ def sign(root: pathlib.Path, since: str | None = None) -> list[str]:
     since = since or 'origin/' + base
     _refuse_changes(root)
 
-    if not cctool.commit.history.commits(root, [since + '..HEAD']):
-        return []
+    set_old = set(cctool.commit.history.commits(root, [since + '..HEAD']))
+    if not set_old:
+        return ([], [])
     try:
         _git(root, 'rebase', '--quiet', '--force-rebase', '-S', since)
     except ErrorRepo as error:
@@ -153,8 +159,17 @@ def sign(root: pathlib.Path, since: str | None = None) -> list[str]:
         raise ErrorRepo('The commits after {since} cannot be signed, so none are. '
                         '{error}'.format(since = since, error = error)) from error
 
-    return [cctool.commit.history.short(root, commit)
-            for commit in cctool.commit.history.commits(root, [since + '..HEAD'])]
+    list_branch = []
+    for line in _git(root, 'for-each-ref', '--format=%(refname:short) %(objectname)',
+                     PREFIX_HEAD).splitlines():
+        (name, commit) = line.split()
+        if name != base and commit in set_old:
+            _git(root, 'branch', '--quiet', '-D', name)
+            list_branch.append(name)
+
+    return ([cctool.commit.history.short(root, commit)
+             for commit in cctool.commit.history.commits(root, [since + '..HEAD'])],
+            list_branch)
 
 
 # -----------------------------------------------------------------------------

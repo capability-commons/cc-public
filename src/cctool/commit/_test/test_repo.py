@@ -123,8 +123,11 @@ def test_push_refuses_a_commit_that_is_not_signed_until_it_is_signed(topic, tmp_
 
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'not signed'):
         cctool.commit.repo.push(topic, 'origin')
-    [signed] = cctool.commit.repo.sign(topic)
+    _git(topic, 'branch', 'copy')
+    ([signed], list_branch) = cctool.commit.repo.sign(topic)
     assert signed.endswith(' Change README.md so that it is shorter')
+    assert list_branch == ['copy']
+    assert 'copy' not in _git(topic, 'branch', '--format=%(refname:short)').split()
     assert cctool.commit.repo.unsigned(topic, 'origin') == []
     assert cctool.commit.repo.push(topic, 'origin') == 0
 

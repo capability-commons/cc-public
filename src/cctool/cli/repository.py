@@ -101,11 +101,22 @@ def sign(since: str | None, root: pathlib.Path) -> None:
     Sign each commit of the current branch that is not yet pushed.
 
     Each is replayed in place with a signature, so each gets a new
-    hash.
+    hash. Another branch that ended at one of them would be left naming
+    the unsigned copy, so it is removed.
 
     """
 
-    _report('Signed', lambda: cctool.commit.repo.sign(root.resolve(), since))
+    list_branch = []
+
+    def step() -> list[str]:
+        (list_commit, list_removed) = cctool.commit.repo.sign(root.resolve(), since)
+        list_branch.extend(list_removed)
+        return list_commit
+
+    _report('Signed', step)
+    for name in list_branch:
+        click.echo('Removed the branch {name}, which ended at a commit now signed.'.format(
+                                                                                name = name))
 
 
 # -----------------------------------------------------------------------------
