@@ -42,8 +42,8 @@ edge:                   []
 import pathlib
 
 import cctool
+import cctool.check.release_record
 import cctool.graph.extract
-import cctool.release.record
 
 
 # Where a consumed tree is read from: an installed release of a package,
@@ -276,7 +276,7 @@ def _disagreements(list_consumes: list[tuple[str, int, str, str]],
 
     """
 
-    found = cctool.release.record.newest(map_tree)
+    found = cctool.check.release_record.newest(map_tree)
     if found is None:
         return []
 

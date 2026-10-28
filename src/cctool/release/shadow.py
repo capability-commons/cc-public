@@ -43,7 +43,7 @@ import pathlib
 import tomllib
 
 import cctool.check.comment
-import cctool.edit.layout
+import cctool.check.layout
 import cctool.graph.extract
 
 
@@ -250,7 +250,7 @@ def text(segment: tuple[str, str], list_shadow: list[tuple[str, str]]) -> str:
                       _line('  - ' + cctool.graph.extract.KEY_ID_SELF, id_self),
                       _line('    guid_self', guid)]
 
-    return cctool.edit.layout.format('\n'.join(list_line) + '\n')
+    return cctool.check.layout.format('\n'.join(list_line) + '\n')
 
 
 # -----------------------------------------------------------------------------

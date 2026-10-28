@@ -38,7 +38,7 @@ import cctool.cli.command
 import cctool.commit.message
 import cctool.conftest
 import cctool.edit.edit
-import cctool.release.record
+import cctool.check.release_record
 import cctool.release.release
 
 
@@ -203,8 +203,8 @@ def test_a_rename_of_a_public_item_bumps_the_minor_part_before_one(repo):
     assert result['renamed'] == [('concern_simplicity', 'concern_plainness')]
     assert result['commit']['concern_simplicity'] == [_short(repo)]
     assert result['notes'] == [(_short(repo), 'Rename concern_simplicity to concern_plainness')]
-    assert cctool.release.record.module_version(
-               (repo / cctool.release.record.PATH_MODULE).read_text()) == '0.2.0'
+    assert cctool.check.release_record.module_version(
+               (repo / cctool.check.release_record.PATH_MODULE).read_text()) == '0.2.0'
 
 
 # -----------------------------------------------------------------------------
@@ -260,9 +260,9 @@ def _module(root):
 
     """
 
-    path = root / cctool.release.record.PATH_MODULE
+    path = root / cctool.check.release_record.PATH_MODULE
     path.parent.mkdir(parents = True, exist_ok = True)
-    shutil.copy(cctool.conftest.DIR_REPO / cctool.release.record.PATH_MODULE, path)
+    shutil.copy(cctool.conftest.DIR_REPO / cctool.check.release_record.PATH_MODULE, path)
 
 
 # -----------------------------------------------------------------------------

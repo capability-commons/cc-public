@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cctool.edit.layout
+id_self:                pym_cctool.check.layout
 guid_self:              pym_8b6ad4857bcd47d89fe4caf91581254b
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0

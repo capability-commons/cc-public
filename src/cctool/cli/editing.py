@@ -65,12 +65,12 @@ import click
 import ruamel.yaml
 
 import cctool.check.check
+import cctool.check.layout
 import cctool.cli.group
 import cctool.edit.edit
-import cctool.edit.layout
 import cctool.edit.ontology
-import cctool.graph.logic
 import cctool.graph.extract
+import cctool.graph.logic
 
 
 # -----------------------------------------------------------------------------
@@ -499,8 +499,8 @@ def format_(root, is_check):
         path = root / relative
         text = path.read_text(encoding = 'utf-8')
         try:
-            laid_out = cctool.edit.layout.format_file(text, pathlib.Path(relative))
-        except cctool.edit.layout.Unsupported as error:
+            laid_out = cctool.check.layout.format_file(text, pathlib.Path(relative))
+        except cctool.check.layout.Unsupported as error:
             click.echo('{file}: {error}'.format(file = relative, error = error), err = True)
             continue
         if laid_out != text:

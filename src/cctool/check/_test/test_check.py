@@ -225,7 +225,7 @@ def _check(root):
     """
     Return the failures of the tree under root, less those of layout.
     The items these tests write are not laid out, and the tests of
-    pym_cctool.edit.layout cover layout.
+    pym_cctool.check.layout cover layout.
 
     """
 

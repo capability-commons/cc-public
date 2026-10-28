@@ -72,7 +72,7 @@ DIR_SOURCE          = DIR_REPO / 'src'
 TUPLE_SOURCE_KEPT   = ('src/cctool/cli/__init__.py',
                        'src/cctool/edit/_test/test_edit.py',
                        'src/cctool/edit/edit.py',
-                       'src/cctool/edit/layout.py',
+                       'src/cctool/check/layout.py',
                        'src/cctool/graph/jq.py')
 
 

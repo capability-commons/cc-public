@@ -34,7 +34,7 @@ import ruamel.yaml.scalarstring
 
 import cctool.check.check
 import cctool.edit.edit
-import cctool.edit.layout
+import cctool.check.layout
 import cctool.graph.extract
 import cctool.graph.logic
 from cctool.conftest import DIR_REPO
@@ -473,18 +473,18 @@ def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, messa
 
 
 def test_move_of_a_module_gives_its_items_the_ids_of_its_new_place(tree):
-    guid = 'pym_' + (tree / 'src/cctool/edit/layout.py').read_text().split(
+    guid = 'pym_' + (tree / 'src/cctool/check/layout.py').read_text().split(
                                                 'guid_self:              pym_')[1][:32]
-    assert _edit(tree, {'move': ['src/cctool/edit/layout.py',
+    assert _edit(tree, {'move': ['src/cctool/check/layout.py',
                                  'src/cctool/edit/printer.py']}) == {}
-    assert not (tree / 'src/cctool/edit/layout.py').exists()
+    assert not (tree / 'src/cctool/check/layout.py').exists()
     text = (tree / 'src/cctool/edit/printer.py').read_text()
     assert ('id_self:                pym_cctool.edit.printer\n'
             'guid_self:              ' + guid + '\n') in text
     text = (tree / 'src/cctool/check/check.py').read_text()
     assert 'import cctool.edit.printer\n' in text
-    assert 'cctool.edit.layout' not in text
-    assert 'pym_cctool.edit.layout' not in (tree / 'src/cctool/edit/edit.py').read_text()
+    assert 'cctool.check.layout' not in text
+    assert 'pym_cctool.check.layout' not in (tree / 'src/cctool/edit/edit.py').read_text()
 
 
 def test_move_of_a_package_moves_its_files_and_renames_what_they_hold(tree):
@@ -536,7 +536,7 @@ def test_a_moved_name_keeps_the_lines_aligned_inside_its_brackets():
 @pytest.mark.parametrize(('operation', 'message'), [
     ({'move': ['src/cctool/none.py', 'src/cctool/some.py']},
      'No file of the tree is at src/cctool/none.py.'),
-    ({'move': ['src/cctool/edit/layout.py', 'src/cctool/edit/edit.py']},
+    ({'move': ['src/cctool/check/layout.py', 'src/cctool/edit/edit.py']},
      'A file is at src/cctool/edit/edit.py already.'),
 ])
 def test_a_move_that_cannot_be_made_says_why(tree, operation, message):
@@ -763,7 +763,7 @@ def test_the_document_of_a_function_is_laid_out_at_its_indentation():
             '      Run it.\n'
             '    ...\n'
             '    """\n')
-    assert cctool.edit.layout.format_file(text, pathlib.Path('src/x.py')) == (
+    assert cctool.check.layout.format_file(text, pathlib.Path('src/x.py')) == (
         'def run():\n'
         '    """\n'
         '    ---\n'
@@ -854,8 +854,8 @@ def test_set_by_path_keeps_prose_as_a_block(tree):
 
 
 def test_a_field_that_names_an_item_keeps_its_guid_beside_it(tree):
-    path   = 'src/cctool/edit/layout.py'
-    id_pym = 'pym_cctool.edit.layout'
+    path   = 'src/cctool/check/layout.py'
+    id_pym = 'pym_cctool.check.layout'
     edited = cctool.edit.edit.Tree(tree)
     cctool.edit.edit.batch(edited, [{'unset': [id_pym, 'protective_mark.0.id_mark']}])
     assert 'protective_mark:\n  - {}\n' in edited.edit[path]
@@ -931,8 +931,8 @@ def _params_document() -> list:
 @pytest.mark.parametrize('relative', _params_document())
 def test_layout_keeps_the_data_and_is_a_fixpoint(relative):
     text     = (DIR_REPO / relative).read_text()
-    laid_out = cctool.edit.layout.format_file(text, pathlib.Path(relative))
-    assert cctool.edit.layout.format_file(laid_out, pathlib.Path(relative)) == laid_out
+    laid_out = cctool.check.layout.format_file(text, pathlib.Path(relative))
+    assert cctool.check.layout.format_file(laid_out, pathlib.Path(relative)) == laid_out
     assert _shapes(laid_out, relative) == _shapes(text, relative)
 
 
@@ -943,7 +943,7 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
             '\n'
             '                        Three.\n'
             'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
-    assert cctool.edit.layout.format(text) == (
+    assert cctool.check.layout.format(text) == (
             'note:                   |\n'
             '                        One two.\n'
             '\n'
@@ -959,14 +959,14 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
     ('a: !t {k: 1}\n',               'The document has a tag, !t.'),
 ])
 def test_what_the_printer_would_drop_or_expand_is_refused(text, message):
-    with pytest.raises(cctool.edit.layout.Unsupported) as info:
-        cctool.edit.layout.format(text)
+    with pytest.raises(cctool.check.layout.Unsupported) as info:
+        cctool.check.layout.format(text)
     assert str(info.value) == message
 
 
 def test_a_comment_on_a_line_of_its_own_is_kept():
     text = 'a:                      1\n\n# Why b.\nb:                      2\n'
-    assert cctool.edit.layout.format(text) == text
+    assert cctool.check.layout.format(text) == text
 
 
 def test_set_keeps_a_field_written_as_a_block_as_a_block(tree):
@@ -978,18 +978,18 @@ def test_set_keeps_a_field_written_as_a_block_as_a_block(tree):
 def test_a_filled_line_never_opens_with_a_list_marker():
     text = ('note:                   |\n'
             '                        wordy ' + 'word ' * 7 + 'and 2. more words to fill the line up.\n')
-    laid_out = cctool.edit.layout.format(text)
+    laid_out = cctool.check.layout.format(text)
     assert [line.split()[0] for line in laid_out.split('\n')[1:] if line] == ['wordy', 'and']
-    assert cctool.edit.layout.format(laid_out) == laid_out
+    assert cctool.check.layout.format(laid_out) == laid_out
 
 
 def test_a_link_to_a_concept_is_never_broken_across_lines():
     text = ('note:                   |\n'
             '                        A function or method defined in a [[python module]],\n'
             '                        at the top.\n')
-    laid_out = cctool.edit.layout.format(text)
+    laid_out = cctool.check.layout.format(text)
     assert '[[python module]],' in laid_out
-    assert cctool.edit.layout.format(laid_out) == laid_out
+    assert cctool.check.layout.format(laid_out) == laid_out
 
 
 def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
@@ -998,7 +998,7 @@ def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
             '                        - one\n'
             '                        - two, which goes on ' + 'and on ' * 6 + 'to the end.\n'
             '                        1. three\n')
-    laid_out = cctool.edit.layout.format(text)
+    laid_out = cctool.check.layout.format(text)
     assert laid_out == (
             'note:                   |\n'
             '                        A list:\n'
@@ -1006,42 +1006,42 @@ def test_each_item_of_a_list_in_prose_is_filled_on_its_own():
             '                        - two, which goes on and on and on and on and\n'
             '                          on and on and on to the end.\n'
             '                        1. three\n')
-    assert cctool.edit.layout.format(laid_out) == laid_out
+    assert cctool.check.layout.format(laid_out) == laid_out
 
 
 def test_blank_lines_set_apart_lists_and_comments():
     text = ('a: 1\nlist: [x, y]\nb: 2\n# A comment.\nc: 3\n')
-    assert cctool.edit.layout.format(text) == ('a:                      1\n'
-                                               '\n'
-                                               'list:\n'
-                                               '  - x\n'
-                                               '  - y\n'
-                                               '\n'
-                                               'b:                      2\n'
-                                               '\n'
-                                               '# A comment.\n'
-                                               'c:                      3\n')
+    assert cctool.check.layout.format(text) == ('a:                      1\n'
+                                                '\n'
+                                                'list:\n'
+                                                '  - x\n'
+                                                '  - y\n'
+                                                '\n'
+                                                'b:                      2\n'
+                                                '\n'
+                                                '# A comment.\n'
+                                                'c:                      3\n')
 
 
 def test_a_comment_header_is_laid_out_inside_its_markers():
     text = '% ---\n% id_self: lpf_x\n% ...\n\n% decl x(id)\n'
-    assert cctool.edit.layout.format_file(text, pathlib.Path('src/x.lp')) == (
+    assert cctool.check.layout.format_file(text, pathlib.Path('src/x.lp')) == (
         '% ---\n%\n% id_self:                lpf_x\n%\n% ...\n\n% decl x(id)\n')
 
 
 def test_a_comment_header_after_an_interpreter_line_is_laid_out():
     text = '#!/bin/sh\n# ---\n# id_self: file_x\n# ...\n\nexit 0\n'
-    assert cctool.edit.layout.format_file(text, pathlib.Path('x')) == (
+    assert cctool.check.layout.format_file(text, pathlib.Path('x')) == (
         '#!/bin/sh\n# ---\n#\n# id_self:                file_x\n#\n# ...\n\nexit 0\n')
 
 
 def test_an_empty_mapping_in_a_list_is_kept():
-    assert cctool.edit.layout.format('a:\n  - {}\n') == 'a:\n  - {}\n'
+    assert cctool.check.layout.format('a:\n  - {}\n') == 'a:\n  - {}\n'
 
 
 def test_a_document_outside_the_subset_is_refused():
-    with pytest.raises(cctool.edit.layout.Unsupported):
-        cctool.edit.layout.format('- a\n- b\n')
+    with pytest.raises(cctool.check.layout.Unsupported):
+        cctool.check.layout.format('- a\n- b\n')
 
 
 # -----------------------------------------------------------------------------

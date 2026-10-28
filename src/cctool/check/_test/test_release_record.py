@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cctool.release._test.test_record
+id_self:                pym_cctool.check._test.test_release_record
 guid_self:              pym_a5e6c55a549d4b279bf9576a52a985bb
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
@@ -31,19 +31,19 @@ import shutil
 import cctool.check.check
 import cctool.conftest
 import cctool.edit.edit
-import cctool.release.record
+import cctool.check.release_record
 
 
 # -----------------------------------------------------------------------------
 def test_the_version_module_and_the_newest_release_disagree(tree):
     _release(tree, '0.2.0')
     _release(tree, '0.10.0')
-    (tree / cctool.release.record.PATH_MODULE).write_text("VERSION = '0.9.0'\n")
+    (tree / cctool.check.release_record.PATH_MODULE).write_text("VERSION = '0.9.0'\n")
     map_document = cctool.edit.edit.Tree(tree).map_document
-    assert cctool.release.record.disagreements(tree, map_document) == [
+    assert cctool.check.release_record.disagreements(tree, map_document) == [
         ('_data/release/release_cc_public_0_10_0.yaml', '1', 'release_cc_public_0_10_0', '0.10.0', '0.9.0')]
-    (tree / cctool.release.record.PATH_MODULE).write_text("VERSION = '0.10.0'\n")
-    assert cctool.release.record.disagreements(tree, map_document) == []
+    (tree / cctool.check.release_record.PATH_MODULE).write_text("VERSION = '0.10.0'\n")
+    assert cctool.check.release_record.disagreements(tree, map_document) == []
 
 
 # -----------------------------------------------------------------------------
@@ -62,9 +62,9 @@ def _module(root):
 
     """
 
-    path = root / cctool.release.record.PATH_MODULE
+    path = root / cctool.check.release_record.PATH_MODULE
     path.parent.mkdir(parents = True, exist_ok = True)
-    shutil.copy(cctool.conftest.DIR_REPO / cctool.release.record.PATH_MODULE, path)
+    shutil.copy(cctool.conftest.DIR_REPO / cctool.check.release_record.PATH_MODULE, path)
 
 
 # -----------------------------------------------------------------------------

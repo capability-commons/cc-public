@@ -66,10 +66,10 @@ import uuid
 
 import jsonschema
 
+import cctool.check.layout
 import cctool.check.schema
 import cctool.check.segment
 import cctool.commit.change
-import cctool.edit.layout
 import cctool.graph.extract
 import cctool.graph.parse
 import cctool.graph.prefix
@@ -142,8 +142,8 @@ def compose(title:       str,
         item[KEY_DESCRIPTION] = description
     item[KEY_EDGE] = []
 
-    body = cctool.edit.layout.format(
-                '\n'.join(cctool.edit.layout.dump(item, 0)) + '\n')
+    body = cctool.check.layout.format(
+                '\n'.join(cctool.check.layout.dump(item, 0)) + '\n')
 
     return '{title}\n\n{open}\n\n{body}\n{close}\n'.format(title = title,
                                                            open  = LINE_OPEN,

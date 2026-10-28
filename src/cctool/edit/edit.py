@@ -21,7 +21,7 @@ description:            |
                         unlink, set_field, unset_field, remove and
                         rename each return one, written as small
                         changes to the text, after which the file is
-                        laid out by pym_cctool.edit.layout. A tree
+                        laid out by pym_cctool.check.layout. A tree
                         holds the edits made so far, and each edit is
                         made on top of them. apply checks the tree
                         with the edits in place, and writes them only
@@ -55,8 +55,8 @@ import ruamel.yaml
 import ruamel.yaml.scalarstring
 
 import cctool.check.check
+import cctool.check.layout
 import cctool.check.segment
-import cctool.edit.layout
 import cctool.graph.extract
 import cctool.graph.parse
 import cctool.graph.prefix
@@ -329,7 +329,7 @@ def new(tree:       Tree,
                                     suffix = SUFFIX_YAML)
         if relative in tree.map_document:
             raise ErrorEdit('The file {file} exists.'.format(file = relative))
-        text = '\n'.join(cctool.edit.layout.dump(map_field, 0)) + '\n'
+        text = '\n'.join(cctool.check.layout.dump(map_field, 0)) + '\n'
         return {relative: _format(text, relative)}
 
     return _append_entry(tree, register, map_field)
@@ -378,7 +378,7 @@ def header(tree:       Tree,
 
     map_field = _fields(tree, id_self, list_field, list_link, None)
     list_doc  = [cctool.graph.extract.LINE_OPEN, '',
-                 *cctool.edit.layout.dump(map_field, 0),
+                 *cctool.check.layout.dump(map_field, 0),
                  '', cctool.graph.extract.LINE_CLOSE]
     text      = tree.text(relative) if relative in tree.map_document else ''
 
@@ -475,7 +475,7 @@ def header_definition(tree:       Tree,
     first     = node.body[0]
     indent    = ' ' * first.col_offset
     list_doc  = [QUOTE_DOCSTRING, cctool.graph.extract.LINE_OPEN, '',
-                 *cctool.edit.layout.dump(map_field, 0),
+                 *cctool.check.layout.dump(map_field, 0),
                  '', cctool.graph.extract.LINE_CLOSE, QUOTE_DOCSTRING]
     list_new  = [indent + line if line else '' for line in list_doc]
     list_line = text.split('\n')
@@ -547,7 +547,7 @@ def header_predicate(tree:       Tree,
 
     map_field = _fields(tree, expected, list_field, list_link, None)
     list_doc  = [cctool.graph.extract.LINE_OPEN, '',
-                 *cctool.edit.layout.dump(map_field, 0),
+                 *cctool.check.layout.dump(map_field, 0),
                  '', cctool.graph.extract.LINE_CLOSE, '']
     list_new  = [mark + (' ' + line if line else '') for line in list_doc]
 
@@ -676,9 +676,9 @@ def link(tree: Tree, id_source: str, id_relation: str, id_target: str) -> Edit:
     column       = item.column(KEY_EDGE)
 
     if list_edge:
-        return item.replace(end, end, cctool.edit.layout.dump([edge], column + 2))
+        return item.replace(end, end, cctool.check.layout.dump([edge], column + 2))
 
-    return item.replace(start, end, cctool.edit.layout.dump({KEY_EDGE: [edge]}, column))
+    return item.replace(start, end, cctool.check.layout.dump({KEY_EDGE: [edge]}, column))
 
 
 # -----------------------------------------------------------------------------
@@ -791,12 +791,12 @@ def _put_field(item: '_Item', key: str, value: typing.Any) -> Edit:
 
     if key in item.node:
         (start, end) = item.extent(key)
-        return item.replace(start, end, cctool.edit.layout.dump({key: value}, item.column(key)))
+        return item.replace(start, end, cctool.check.layout.dump({key: value}, item.column(key)))
 
     after    = _after(list(item.node.keys()), key)
     (_, end) = item.extent(after)
 
-    return item.replace(end, end, cctool.edit.layout.dump({key: value}, item.column(after)))
+    return item.replace(end, end, cctool.check.layout.dump({key: value}, item.column(after)))
 
 
 # -----------------------------------------------------------------------------
@@ -849,7 +849,7 @@ def _styled(key: str, value: typing.Any, old: typing.Any) -> typing.Any:
 
     """
 
-    is_prose = (key in cctool.edit.layout.SET_KEY_PROSE
+    is_prose = (key in cctool.check.layout.SET_KEY_PROSE
                 or isinstance(old, ruamel.yaml.scalarstring.LiteralScalarString))
 
     if is_prose and isinstance(value, str):
@@ -1068,7 +1068,7 @@ def _rename_one(tree: Tree, id_old: str, id_new: str) -> Edit:
         item          = _Item(tree, id_new)
         (start, end)  = item.extent(KEY_ALIAS)
         list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []]
-        edit.update(item.replace(start, end, cctool.edit.layout.dump(
+        edit.update(item.replace(start, end, cctool.check.layout.dump(
                                     {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS))))
 
     key_new = id_new.rpartition(DELIM_NAME)[2]
@@ -1098,7 +1098,7 @@ def _renamed_documents(tree: Tree, id_old: str, id_new: str) -> Edit:
     for file in cctool.graph.extract.files(tree.map_document):
         text      = tree.text(file)
         list_line = text.split('\n')
-        for (first, last) in cctool.edit.layout.spans(text, pathlib.Path(file)):
+        for (first, last) in cctool.check.layout.spans(text, pathlib.Path(file)):
             list_line[first:last + 1] = [regex.sub(id_new, line)
                                          for line in list_line[first:last + 1]]
         renamed = '\n'.join(list_line)
@@ -1363,7 +1363,7 @@ def _renamed_ids(tree: Tree, map_id: dict[str, str]) -> Edit:
     for file in cctool.graph.extract.files(tree.map_document):
         text      = tree.text(file)
         list_line = text.split('\n')
-        list_span = cctool.edit.layout.spans(text, pathlib.Path(file))
+        list_span = cctool.check.layout.spans(text, pathlib.Path(file))
         if pathlib.Path(file).suffix == cctool.graph.extract.SUFFIX_PYTHON:
             list_span = [(0, len(list_line) - 1)]
         for (first, last) in list_span:
@@ -1858,8 +1858,8 @@ def _format(text: str, relative: str) -> str:
     """
 
     try:
-        return cctool.edit.layout.format_file(text, pathlib.Path(relative))
-    except cctool.edit.layout.Unsupported as error:
+        return cctool.check.layout.format_file(text, pathlib.Path(relative))
+    except cctool.check.layout.Unsupported as error:
         raise ErrorEdit('The edit leaves {file} unlaid: {error}'.format(
                                                 file = relative, error = error)) from error
 
@@ -1898,7 +1898,7 @@ def _append_entry(tree: Tree, id_register: str, map_field: dict) -> Edit:
                    head.rstrip(),
                    ' ' * column + id_self + ':']
 
-    list_line += cctool.edit.layout.dump(map_field, column + 2)
+    list_line += cctool.check.layout.dump(map_field, column + 2)
 
     return item.replace(start, end, list_line)
 

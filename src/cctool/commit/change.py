@@ -42,10 +42,10 @@ import pathlib
 import subprocess
 import tempfile
 
-import cctool.edit.layout
+import cctool.check.layout
 import cctool.gate.gate
-import cctool.graph.logic
 import cctool.graph.extract
+import cctool.graph.logic
 
 
 RULES           = pathlib.Path(__file__).with_name('change.lp')
@@ -189,6 +189,6 @@ def _laid_out(root: pathlib.Path, file: str) -> str | bytes | None:
 
     data = path.read_bytes()
     try:
-        return cctool.edit.layout.format_file(data.decode('utf-8'), pathlib.Path(file))
-    except (UnicodeDecodeError, cctool.edit.layout.Unsupported):
+        return cctool.check.layout.format_file(data.decode('utf-8'), pathlib.Path(file))
+    except (UnicodeDecodeError, cctool.check.layout.Unsupported):
         return data

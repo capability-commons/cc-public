@@ -53,6 +53,7 @@ import tempfile
 import ruamel.yaml
 
 import cctool.check.check
+import cctool.check.release_record
 import cctool.check.segment
 import cctool.commit.change
 import cctool.commit.history
@@ -63,7 +64,6 @@ import cctool.gate.gate
 import cctool.graph.extract
 import cctool.graph.logic
 import cctool.graph.parse
-import cctool.release.record
 
 
 # A release tag is v and the version, and git describe finds the last
@@ -206,7 +206,7 @@ def bumped(version: str, name_level: str) -> str:
 
     """
 
-    tuple_number = cctool.release.record.numbers(version)
+    tuple_number = cctool.check.release_record.numbers(version)
     if tuple_number is None:
         raise ErrorRelease('{version} is not a release version, such as 1.2.3.'.format(
                                version = version))
@@ -291,10 +291,10 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
         raise ErrorRelease('The working tree has changes that are not committed. Commit or '
                            'stash them first, so that the release records HEAD.')
 
-    path_module = root / cctool.release.record.PATH_MODULE
+    path_module = root / cctool.check.release_record.PATH_MODULE
     if not path_module.is_file():
         raise ErrorRelease('There is no version module at {path}.'.format(
-                               path = cctool.release.record.PATH_MODULE))
+                               path = cctool.check.release_record.PATH_MODULE))
 
     text_module  = path_module.read_text(encoding = 'utf-8')
     base         = last_tag(root, 'HEAD')
@@ -304,7 +304,7 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
     name_level   = None
     list_reason  = []
     before       = None
-    version      = cctool.release.record.module_version(text_module)
+    version      = cctool.check.release_record.module_version(text_module)
 
     if base is not None:
         if _git(root, 'rev-parse', base + '^{commit}') == _git(root, 'rev-parse', 'HEAD'):
@@ -316,7 +316,7 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
         before                      = base.removeprefix(PREFIX_TAG)
         version                     = bumped(before, name_level)
 
-    if version is None or cctool.release.record.numbers(version) is None:
+    if version is None or cctool.check.release_record.numbers(version) is None:
         raise ErrorRelease('The version module holds {version}, which is not a release '
                            'version, such as 1.2.3.'.format(version = version))
 
@@ -327,7 +327,7 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
                            'cannot be named for its federated segment.')
 
     id_release = '{prefix}{segment}_{version}'.format(
-                     prefix  = cctool.release.record.PREFIX,
+                     prefix  = cctool.check.release_record.PREFIX,
                      segment = segment.removeprefix(cctool.graph.extract.PREFIX_SEGMENT),
                      version = version.replace('.', '_'))
     path_lock  = root / PATH_LOCK
@@ -341,8 +341,8 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
         list_field.append((KEY_RENAME, list_rename))
 
     tree.update(cctool.edit.edit.new(tree, id_release, list_field, []))
-    tree.update({str(cctool.release.record.PATH_MODULE):
-                 cctool.release.record.REGEX_VERSION.sub(
+    tree.update({str(cctool.check.release_record.PATH_MODULE):
+                 cctool.check.release_record.REGEX_VERSION.sub(
                      lambda match: match.group(1) + version + match.group(3), text_module)})
 
     added = cctool.edit.edit.apply(tree)
@@ -380,7 +380,7 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
     """
 
     version = tag.removeprefix(PREFIX_TAG)
-    if not tag.startswith(PREFIX_TAG) or cctool.release.record.numbers(version) is None:
+    if not tag.startswith(PREFIX_TAG) or cctool.check.release_record.numbers(version) is None:
         return ['The tag {tag} is not v and a release version, such as v1.2.3.'.format(
                     tag = tag)]
 
@@ -399,8 +399,8 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
 
     file       = list_match[0]
     item       = cctool.graph.parse.load(_shown(root, rev, file))
-    module     = cctool.release.record.module_version(
-                     _shown(root, rev, str(cctool.release.record.PATH_MODULE)))
+    module     = cctool.check.release_record.module_version(
+                     _shown(root, rev, str(cctool.check.release_record.PATH_MODULE)))
     list_found = []
 
     if module != version:
@@ -438,9 +438,9 @@ def _version_of(text: str) -> str | None:
 
     item = cctool.graph.parse.load(text) if text else None
 
-    if not isinstance(item, dict) or cctool.release.record.KEY_VERSION not in item:
+    if not isinstance(item, dict) or cctool.check.release_record.KEY_VERSION not in item:
         return None
-    return str(item[cctool.release.record.KEY_VERSION])
+    return str(item[cctool.check.release_record.KEY_VERSION])
 
 
 # -----------------------------------------------------------------------------

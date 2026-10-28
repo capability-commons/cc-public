@@ -49,12 +49,12 @@ import pathlib
 
 import cctool.check.citation
 import cctool.check.comment
+import cctool.check.layout
+import cctool.check.release_record
 import cctool.check.schema
 import cctool.check.segment
-import cctool.edit.layout
-import cctool.graph.logic
 import cctool.graph.extract
-import cctool.release.record
+import cctool.graph.logic
 
 
 RULES             = pathlib.Path(__file__).with_name('check.lp')
@@ -243,10 +243,10 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
     for (name, list_row, found) in ((NAME_LINE_CITE, list_line, failures),
                                     (NAME_NAME_CITE, list_name, failures),
                                     (NAME_LAYOUT,
-                                     cctool.edit.layout.violations(root, map_own),
+                                     cctool.check.layout.violations(root, map_own),
                                      failures),
                                     (NAME_VERSION,
-                                     cctool.release.record.disagreements(root, map_own),
+                                     cctool.check.release_record.disagreements(root, map_own),
                                      failures),
                                     (NAME_CONSUMED, failing, failures),
                                     (NAME_CONSUMED, noticed, notices)):
@@ -418,8 +418,8 @@ def columns() -> dict[str, tuple[str, ...]]:
                   in cctool.graph.logic.declared(text).items()}
 
     map_column[NAME_SCHEMA]    = cctool.check.schema.COLUMNS
-    map_column[NAME_LAYOUT]    = cctool.edit.layout.COLUMNS
-    map_column[NAME_VERSION]   = cctool.release.record.COLUMNS
+    map_column[NAME_LAYOUT]    = cctool.check.layout.COLUMNS
+    map_column[NAME_VERSION]   = cctool.check.release_record.COLUMNS
     map_column[NAME_CONSUMED]  = cctool.check.segment.COLUMNS
     map_column[NAME_LINE_CITE] = cctool.check.citation.COLUMNS_LINE
     map_column[NAME_NAME_CITE] = cctool.check.citation.COLUMNS_NAME

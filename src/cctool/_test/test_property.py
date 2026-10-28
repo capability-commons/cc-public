@@ -65,7 +65,7 @@ import cctool.cli.command
 import cctool.commit.message
 import cctool.conftest
 import cctool.edit.edit
-import cctool.edit.layout
+import cctool.check.layout
 import cctool.gate.gate
 import cctool.graph.extract
 import cctool.graph.logic
@@ -162,7 +162,7 @@ def _words(text: str) -> dict:
     """
 
     document = ruamel.yaml.YAML(typ = 'safe').load(text)
-    return {key: (' '.join(value.split()) if key in cctool.edit.layout.SET_KEY_PROSE
+    return {key: (' '.join(value.split()) if key in cctool.check.layout.SET_KEY_PROSE
                   and isinstance(value, str) else value)
             for (key, value) in document.items()}
 
@@ -188,12 +188,12 @@ def _standalone() -> list[str]:
 @hypothesis.example(document = {'title': '', 'brief': ' 0'})
 @hypothesis.given(document = DOCUMENT)
 def test_a_layout_of_a_layout_is_the_same_and_keeps_the_data(document):
-    text = '\n'.join(cctool.edit.layout.dump(document, 0)) + '\n'
+    text = '\n'.join(cctool.check.layout.dump(document, 0)) + '\n'
     try:
-        laid_out = cctool.edit.layout.format(text)
-    except cctool.edit.layout.Unsupported:
+        laid_out = cctool.check.layout.format(text)
+    except cctool.check.layout.Unsupported:
         hypothesis.reject()
-    assert cctool.edit.layout.format(laid_out) == laid_out
+    assert cctool.check.layout.format(laid_out) == laid_out
     assert _words(laid_out) == _words(text)
 
 
@@ -285,7 +285,7 @@ def test_a_citation_of_a_file_in_a_commit_is_not_read(revision, number):
 # -----------------------------------------------------------------------------
 @hypothesis.given(document = DOCUMENT)
 def test_the_fast_reading_of_a_document_is_that_of_ruamel(document):
-    text = '\n'.join(cctool.edit.layout.dump(document, 0)) + '\n'
+    text = '\n'.join(cctool.check.layout.dump(document, 0)) + '\n'
     assert _lines(cctool.graph.parse.load(text)) == _lines(ruamel.yaml.YAML(typ = 'rt').load(text))
 
 
@@ -404,12 +404,12 @@ def _change(document, path, data):
 @hypothesis.given(text = strategies.one_of(
                              strategies.text(max_size = 200),
                              DOCUMENT.map(lambda document: '\n'.join(
-                                              cctool.edit.layout.dump(document, 0)) + '\n')))
+                                              cctool.check.layout.dump(document, 0)) + '\n')))
 def test_the_layout_check_of_a_text_read_fast_is_that_of_a_ruamel_read(text):
     with pytest.MonkeyPatch.context() as patch:
-        patch.setattr(cctool.edit.layout, '_load', cctool.edit.layout.YAML.load)
-        expected = cctool.edit.layout._violation('_data/x.yaml', text)
-    assert cctool.edit.layout._violation('_data/x.yaml', text) == expected
+        patch.setattr(cctool.check.layout, '_load', cctool.check.layout.YAML.load)
+        expected = cctool.check.layout._violation('_data/x.yaml', text)
+    assert cctool.check.layout._violation('_data/x.yaml', text) == expected
 
 
 # -----------------------------------------------------------------------------

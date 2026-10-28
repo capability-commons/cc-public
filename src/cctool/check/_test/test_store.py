@@ -34,7 +34,7 @@ import pytest
 import cctool.check.check
 import cctool.check.schema
 import cctool.check.store
-import cctool.edit.layout
+import cctool.check.layout
 import cctool.graph.extract
 
 
@@ -61,7 +61,7 @@ def _forget(monkeypatch):
 
     """
 
-    monkeypatch.setattr(cctool.edit.layout, 'MAP_VIOLATION', {})
+    monkeypatch.setattr(cctool.check.layout, 'MAP_VIOLATION', {})
     monkeypatch.setattr(cctool.check.check, 'CACHE_SCHEMA', {})
     monkeypatch.setattr(cctool.check.check, 'CACHE_REVIEW', {})
 
@@ -100,7 +100,7 @@ def test_with_no_store_nothing_is_kept(tmp_path, monkeypatch):
 
 def test_the_layout_check_reuses_the_verdict_the_store_keeps(tree, dir_store, monkeypatch):
     map_document = cctool.graph.extract.documents(tree)
-    assert cctool.edit.layout.violations(tree, map_document) == []
+    assert cctool.check.layout.violations(tree, map_document) == []
 
     def change(map_verdict):
         key              = min(map_verdict)
@@ -108,21 +108,21 @@ def test_the_layout_check_reuses_the_verdict_the_store_keeps(tree, dir_store, mo
         map_verdict[key] = [relative, '1', 'Kept.']
         return relative
 
-    relative = _rewrite(dir_store, cctool.edit.layout.KIND_STORE, change)
+    relative = _rewrite(dir_store, cctool.check.layout.KIND_STORE, change)
     _forget(monkeypatch)
-    assert cctool.edit.layout.violations(tree, map_document) == [(relative, '1', 'Kept.')]
+    assert cctool.check.layout.violations(tree, map_document) == [(relative, '1', 'Kept.')]
 
 
 def test_the_layout_check_lays_out_a_file_changed_since(tree, dir_store, monkeypatch):
     map_document = cctool.graph.extract.documents(tree)
-    cctool.edit.layout.violations(tree, map_document)
+    cctool.check.layout.violations(tree, map_document)
     relative = next(file for file in cctool.graph.extract.files(map_document)
                     if file.endswith(cctool.graph.extract.SUFFIX_YAML))
     path     = tree / relative
     path.write_text(path.read_text() + '\n')
     _forget(monkeypatch)
-    [(file, _, _)] = cctool.edit.layout.violations(tree,
-                                                   cctool.graph.extract.documents(tree))
+    [(file, _, _)] = cctool.check.layout.violations(tree,
+                                                    cctool.graph.extract.documents(tree))
     assert file == relative
 
 

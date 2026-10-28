@@ -1,7 +1,7 @@
 """
 ---
 
-id_self:                pym_cctool.release.record
+id_self:                pym_cctool.check.release_record
 guid_self:              pym_6ff6b471ba934615b8eb0cf80bf31479
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
