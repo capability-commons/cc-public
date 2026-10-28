@@ -1,0 +1,53 @@
+id_self:                ann_received_graph_parsed_not_executed
+guid_self:              ann_9a7a42fd24174f858ef5f8da6f67f141
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Received graph that is parsed, not executed
+brief:                  |
+                        A graph or change set received from a partner,
+                        or sent to a target, is untrusted input. As
+                        data it is parsed by a safe loader and checked
+                        against a schema, and nothing in it runs. A
+                        graph built by a host-language library is a
+                        program, so loading a received graph means
+                        running received code. A coordination language
+                        is parsed too, by its own parser, which is new
+                        code to harden.
+description:            |
+                        Sources:
+                        - A change set is applied at the start of a
+                          step, and change sets arrive while the
+                          system runs.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief) ASSUMPTION: graphs and change sets
+                          will cross between federated segments and to
+                          targets over a network. Strength: strong
+                          wherever graphs cross a trust boundary.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_dataflow_graph_is_written
+    guid_target:        dec_ced448cd4dd0422ba020634c46950a39
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_as_configuration_data
+    guid_target:        opt_b6fe7c84fe8a4797b659a45873550a26
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_built_by_a_host_language_library
+    guid_target:        opt_a7bae21758bc4b458d0298e86cee21f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

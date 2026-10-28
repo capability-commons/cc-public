@@ -1,0 +1,67 @@
+id_self:                ann_graph_checked_before_it_runs
+guid_self:              ann_9017d57bb3434b71a566e8b81564c459
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph checked before it runs
+brief:                  |
+                        A graph held as data is checked at each
+                        commit, and a change set is checked before it
+                        is sent, so a graph with an unfed input or a
+                        loop without a first value never reaches a
+                        target. A coordination language's compiler can
+                        check as much. A graph built by a program is
+                        known only when the program runs, possibly on
+                        the target, so its faults show there, and a
+                        safety case cannot rest on a check made before
+                        deployment.
+description:            |
+                        Sources:
+                        - cctool check already finds unfed inputs,
+                          inputs fed twice and port type mismatches in
+                          dataflow graph items, by the rules
+                          lpp_cctool.check.check.unfed_input,
+                          lpp_cctool.check.check.input_fed_twice and
+                          lpp_cctool.check.check.port_type_mismatch.
+                        - A swap whose state cannot be upgraded is
+                          refused by a check before it is sent.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief) Strength: strong for
+                          safety-related graphs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_dataflow_graph_is_written
+    guid_target:        dec_ced448cd4dd0422ba020634c46950a39
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_graph_as_configuration_data
+    guid_target:        opt_b6fe7c84fe8a4797b659a45873550a26
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_coordination_language_of_its_own
+    guid_target:        opt_c680d6234c234d87800c5b67bf6d568a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_graph_built_by_a_host_language_library
+    guid_target:        opt_a7bae21758bc4b458d0298e86cee21f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
