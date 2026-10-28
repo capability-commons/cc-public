@@ -45,9 +45,11 @@ edge:                   []
 """
 
 
+import io
 import pathlib
 import re
 import subprocess
+import tarfile
 import tempfile
 
 import ruamel.yaml
@@ -64,6 +66,7 @@ import cctool.gate.gate
 import cctool.graph.extract
 import cctool.graph.logic
 import cctool.graph.parse
+import cctool.release.shadow
 
 
 # A release tag is v and the version, and git describe finds the last
@@ -116,6 +119,25 @@ KEY_DEPENDENCY    = 'dependency'
 TUPLE_KEY_PACKAGE = ('platform', 'name', 'version', 'sha256')
 KEY_RENAME        = 'rename'
 TUPLE_KEY_RENAME  = ('old', 'new', 'guid')
+
+# The maturity a release declares, as the ruling on the maturity of a
+# release asks, and the rule that gives the maturity of each source file
+# of the tree a release is cut from.
+#
+RELATION_MATURITY = 'relation_has_maturity'
+KEY_EDGE          = 'edge'
+KEY_RELATION      = 'id_relation'
+KEY_TARGET        = 'id_target'
+RULES_MATURITY    = '''
+% decl shipped_maturity(id:    symbol,
+%                       file:  symbol,
+%                       level: number)
+#show shipped_maturity/3.
+
+shipped_maturity(Id, File, Level) :-
+    file_maturity(Id, Level),
+    item(Id, _, "", File, _).
+'''
 
 
 # -----------------------------------------------------------------------------
@@ -271,14 +293,16 @@ def mentioned_by(list_item: list[tuple[str, str, dict]]) -> dict[str, list[str]]
 
 
 # -----------------------------------------------------------------------------
-def prepare(root: pathlib.Path, brief: str) -> dict:
+def prepare(root: pathlib.Path, brief: str, maturity: str | None = None) -> dict:
     """
     Write the release item and the version module for a release of HEAD
     of the repository at root, in one edit, and return what was done.
     The version is the last release tag's, bumped by the level that the
     change since it calls for; with no release tag, it is the version the
-    module holds, as the first release. Nothing is committed or tagged:
-    the maintainer decides each release.
+    module holds, as the first release. The release item declares the
+    maturity level maturity, if given, which cctool release check holds
+    the code it ships to. Nothing is committed or tagged: the maintainer
+    decides each release.
 
     The result holds the tag the release follows, the version before and
     after, the level and the touched rows that call for it, the short
@@ -340,7 +364,8 @@ def prepare(root: pathlib.Path, brief: str) -> dict:
     if list_rename:
         list_field.append((KEY_RENAME, list_rename))
 
-    tree.update(cctool.edit.edit.new(tree, id_release, list_field, []))
+    tree.update(cctool.edit.edit.new(tree, id_release, list_field,
+                                     [(RELATION_MATURITY, maturity)] if maturity else []))
     tree.update({str(cctool.check.release_record.PATH_MODULE):
                  cctool.check.release_record.REGEX_VERSION.sub(
                      lambda match: match.group(1) + version + match.group(3), text_module)})
@@ -425,7 +450,50 @@ def verify(root: pathlib.Path, tag: str, rev: str) -> list[str]:
                           'item, and run cctool release prepare again.'.format(
                               file = file, base = base))
 
+    list_found += _maturity_found(root, rev, file, item)
+
     return list_found
+
+
+# -----------------------------------------------------------------------------
+def _maturity_found(root: pathlib.Path, rev: str, file: str, item: dict) -> list[str]:
+    """
+    Return a sentence for each reason the release item item, in file at
+    the commit rev, breaks its maturity: it must declare exactly one,
+    and each source file that the package ships must be at that level
+    or above.
+
+    """
+
+    list_level = [edge.get(KEY_TARGET) for edge in item.get(KEY_EDGE) or []
+                  if isinstance(edge, dict) and edge.get(KEY_RELATION) == RELATION_MATURITY]
+    if len(list_level) != 1:
+        return ['{file} declares {count} maturity levels, not one. Remove the release item, '
+                'and run cctool release prepare again with --maturity.'.format(
+                    file = file, count = len(list_level))]
+
+    with tempfile.TemporaryDirectory() as name:
+        dir_tree = pathlib.Path(name)
+        archive  = subprocess.run(['git', 'archive', '--format=tar', rev], cwd = root,
+                                  capture_output = True, check = True).stdout
+        with tarfile.open(fileobj = io.BytesIO(archive)) as handle:
+            handle.extractall(dir_tree, filter = 'data')
+        facts = cctool.graph.extract.extract(dir_tree)
+        rows  = cctool.graph.logic.run(facts, RULES_MATURITY)
+        table = cctool.release.shadow.wheel(dir_tree)
+
+    map_level = {id_level: int(level) for (id_level, level) in facts['maturity_level']}
+    if list_level[0] not in map_level:
+        return ['{file} declares the maturity {level}, which the tree does not hold.'.format(
+                    file = file, level = list_level[0])]
+
+    return ['{file} is at maturity {below}, below the maturity {level} that the release '
+            'declares. Raise the maturity of the file once it meets the demands of the level, '
+            'or declare a lower maturity for the release.'.format(
+                file = shipped, below = below, level = map_level[list_level[0]])
+            for (_, shipped, below) in sorted(rows['shipped_maturity'], key = lambda row: row[1])
+            if cctool.release.shadow.is_shipped(shipped, table)
+            and int(below) < map_level[list_level[0]]]
 
 
 # -----------------------------------------------------------------------------

@@ -67,6 +67,12 @@ def release() -> None:
               required = True,
               metavar  = 'TEXT',
               help     = 'Why the release is made, as the brief of the release item.')
+@click.option('--maturity',
+              required = True,
+              metavar  = 'ID',
+              help     = 'The maturity level the release is for, such as maturity_100. '
+                         'cctool release check refuses a release that ships a source file '
+                         'below it.')
 @click.option('--root',
               metavar = 'DIRPATH',
               default = '.',
@@ -74,7 +80,7 @@ def release() -> None:
                                    file_okay = False,
                                    path_type = pathlib.Path),
               help    = 'The repository. Defaults to the working directory.')
-def prepare(brief: str, root: pathlib.Path) -> None:
+def prepare(brief: str, maturity: str, root: pathlib.Path) -> None:
     """
     Write the release item and the version module for a release of HEAD.
 
@@ -86,8 +92,8 @@ def prepare(brief: str, root: pathlib.Path) -> None:
     no release tag, the release is the first, at the version the module
     holds. The release item records the runtime packages of pixi.lock.
     It records too the old id, new id and guid of each item renamed
-    since the tag. The renames, the removals and the commits since the
-    tag are printed.
+    since the tag, and the maturity level the release is for. The
+    renames, the removals and the commits since the tag are printed.
     Nothing is committed or tagged: commit what is written, run the
     release gate, then cctool release check, and tag the commit if the
     release is to be made. The exit status is 2 when nothing can be
@@ -96,7 +102,7 @@ def prepare(brief: str, root: pathlib.Path) -> None:
     """
 
     try:
-        result = cctool.release.release.prepare(root.resolve(), brief)
+        result = cctool.release.release.prepare(root.resolve(), brief, maturity)
     except TUPLE_ERROR as error:
         click.echo(str(error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)

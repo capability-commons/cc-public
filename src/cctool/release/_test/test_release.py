@@ -168,7 +168,7 @@ def repo(tree, monkeypatch):
 # -----------------------------------------------------------------------------
 @pytest.mark.prepush
 def test_the_first_release_takes_the_version_of_the_module(repo):
-    result = cctool.release.release.prepare(repo, 'The first release.')
+    result = cctool.release.release.prepare(repo, 'The first release.', 'maturity_0')
     assert (result['base'], result['version'], result['level']) == (None, '0.1.0', None)
     assert result['written'] == ['_data/release/release_cc_public_0_1_0.yaml', 'src/cctool/version.py']
     _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
@@ -181,7 +181,7 @@ def test_the_first_release_takes_the_version_of_the_module(repo):
 # -----------------------------------------------------------------------------
 @pytest.mark.prepush
 def test_a_commit_after_the_one_that_adds_the_release_item_may_be_tagged(repo):
-    cctool.release.release.prepare(repo, 'The first release.')
+    cctool.release.release.prepare(repo, 'The first release.', 'maturity_0')
     _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
     (repo / 'README.md').write_text((repo / 'README.md').read_text() + 'More.\n')
     _commit(repo, cctool.commit.message.compose('Change README.md so that it says more',
@@ -198,7 +198,7 @@ def test_a_rename_of_a_public_item_bumps_the_minor_part_before_one(repo):
     assert cctool.edit.edit.apply(tree) == {}
     _commit(repo, cctool.commit.message.compose('Rename concern_simplicity to concern_plainness',
                                                 'A plainer name.'))
-    result = cctool.release.release.prepare(repo, 'A plainer name for a concern.')
+    result = cctool.release.release.prepare(repo, 'A plainer name for a concern.', 'maturity_0')
     assert (result['base'], result['version'], result['level']) == ('v0.1.0', '0.2.0', 'major')
     assert result['renamed'] == [('concern_simplicity', 'concern_plainness')]
     assert result['commit']['concern_simplicity'] == [_short(repo)]
@@ -217,7 +217,7 @@ def test_the_release_item_records_the_renames_and_the_check_holds_it_to_them(rep
     assert cctool.edit.edit.apply(tree) == {}
     _commit(repo, cctool.commit.message.compose('Rename concern_simplicity to concern_plainness',
                                                 'A plainer name.'))
-    cctool.release.release.prepare(repo, 'A plainer name for a concern.')
+    cctool.release.release.prepare(repo, 'A plainer name for a concern.', 'maturity_0')
     path = repo / '_data/release/release_cc_public_0_2_0.yaml'
     item = cctool.edit.edit.Tree(repo).map_document['_data/release/release_cc_public_0_2_0.yaml'][0]
     assert [dict(rename) for rename in item['rename']] == [
@@ -233,6 +233,30 @@ def test_the_release_item_records_the_renames_and_the_check_holds_it_to_them(rep
     assert cctool.release.release.verify(repo, 'v0.2.0', 'HEAD') == [
         '_data/release/release_cc_public_0_2_0.yaml does not record the renames since v0.1.0. Remove the '
         'release item, and run cctool release prepare again.']
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.prepush
+def test_a_release_that_ships_code_below_its_maturity_may_not_be_tagged(repo):
+    cctool.release.release.prepare(repo, 'The first release.', 'maturity_20')
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
+    list_found = cctool.release.release.verify(repo, 'v0.1.0', 'HEAD')
+    assert list_found
+    assert all(found.endswith(', below the maturity 20 that the release declares. Raise the '
+                              'maturity of the file once it meets the demands of the level, or '
+                              'declare a lower maturity for the release.')
+               for found in list_found)
+    assert 'src/cctool/version.py is at maturity 0' in ' '.join(list_found)
+
+
+# -----------------------------------------------------------------------------
+@pytest.mark.prepush
+def test_a_release_that_declares_no_maturity_may_not_be_tagged(repo):
+    cctool.release.release.prepare(repo, 'The first release.')
+    _commit(repo, cctool.commit.message.compose('Add release_cc_public_0_1_0', 'The first release.'))
+    assert cctool.release.release.verify(repo, 'v0.1.0', 'HEAD') == [
+        '_data/release/release_cc_public_0_1_0.yaml declares 0 maturity levels, not one. Remove '
+        'the release item, and run cctool release prepare again with --maturity.']
 
 
 # -----------------------------------------------------------------------------

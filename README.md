@@ -120,6 +120,7 @@ would send; a pushed tag names history already made, and is passed over.
     cctool friction                         report signals of friction
     cctool gate                             check, lint and test what is staged
     cctool timing [--runs N]                sum up the times of the gate
+    cctool coverage [--data FILEPATH]       check coverage against maturity
     cctool message new TITLE --brief TEXT   write a commit message
     cctool message check FILEPATH           check a commit message
     cctool message draft FILEPATH           give a merge or revert message its item
@@ -127,7 +128,8 @@ would send; a pushed tag names history already made, and is passed over.
                                             check commits already made
     cctool history check --pre-push REMOTE  check what a push would send
     cctool impact [REV] [--staged]          what a commit touches, and what is near
-    cctool release prepare --brief TEXT     write the release item and the version
+    cctool release prepare --brief TEXT --maturity ID
+                                            write the release item and the version
     cctool release check TAG [REV]          check a commit before it is tagged
     cctool format [--check]                 lay out every YAML document
     cctool query sql|logic [QUERY]          query the predicates of the graph

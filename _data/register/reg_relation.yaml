@@ -1680,9 +1680,12 @@ entries:
     description:        |
                         The source file whose item is identified by
                         SOURCE has reached the maturity level
-                        identified by TARGET. A file with no such edge
-                        has the lowest level, and a file may not have
-                        a level above that of a file it imports.
+                        identified by TARGET, or the release
+                        identified by SOURCE is for that level. A file
+                        with no such edge has the lowest level, and a
+                        file may not have a level above that of a file
+                        it imports. A release may not ship a file of a
+                        level below its own.
     note:               |
                         The ruling on the maturity of code chose a
                         maturity on each source file, in its own item,
@@ -1691,15 +1694,15 @@ entries:
 
     edge:
 
-      - id_relation:    relation_constrains_source
-        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
-        id_target:      relcon_is_implementation
-        guid_target:    relcon_93bd73e89b474e1e8f5dd82b2bf2e8de
-
       - id_relation:    relation_constrains_target
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_maturity_level
         guid_target:    relcon_7a0ee8ec1d06409ea4a4db6511c608d4
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_can_have_maturity
+        guid_target:    relcon_bc63ec8007ee48caa3a1eada48d67a30
 
   # ---------------------------------------------------------------------------
   # relation_has_criticality -- Has criticality relation
