@@ -1,0 +1,85 @@
+id_self:                ann_commit_checks_can_find_private_members_by_one_edge
+guid_self:              ann_d0f3cae9ded946afa7d181644100610a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit authors of a peer checked through one relation
+brief:                  |
+                        The commit checks authenticate an author and a
+                        signing key against reg_team_member alone, so
+                        a private member of a peer fails them under
+                        every option. Under the inverse option the
+                        check can find every register of members by
+                        the one relation it already uses for
+                        placement, and so check private members
+                        without naming them in public. Under the
+                        option of peer types the members have a type
+                        cc-public does not know, so its checks cannot
+                        authenticate them.
+description:            |
+                        Sources:
+                        - The commit hooks refuse an author who is not
+                          the git_author of a member, and report a
+                          commit not signed with a member's
+                          git_signing_key
+                          (_data/register/reg_team_member.yaml at
+                          description).
+                        - The checks read only the document whose id
+                          is reg_team_member
+                          (src/cctool/commit/message.py within
+                          ID_MEMBERS, _authors and _signing_keys).
+                        - Measured 2026-10-28 in a scratch copy of a
+                          peer that holds a private member by the
+                          inverse edge: author_violations refuses that
+                          member's git_author, and the member lookup
+                          returns only the guid of
+                          member_william_payne.
+                        - That a query over primary_edge for
+                          relation_has_items_held_in_register from
+                          type_team_member returns both
+                          reg_team_member and the peer's register is
+                          measured in
+                          ann_inverse_member_register_keeps_private_people_private.
+                        - Under the option of peer types, a peer holds
+                          no entries of a consumed type
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at brief).
+                        - The lookup problem for privacy is argued in
+                          ann_peer_types_leave_private_members_unresolved;
+                          this premise set is about authenticating who
+                          acts.
+                        - ASSUMPTION: the commit checks would be
+                          changed to read members by the relation
+                          rather than by register id. Strength:
+                          moderate; every option needs a change to the
+                          checks, and the inverse option makes it a
+                          query over data already held. It holds at
+                          ten times the size, as each private peer
+                          with its own people meets it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

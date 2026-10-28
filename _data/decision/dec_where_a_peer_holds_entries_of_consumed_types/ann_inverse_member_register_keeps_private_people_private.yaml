@@ -1,0 +1,88 @@
+id_self:                ann_inverse_member_register_keeps_private_people_private
+guid_self:              ann_3977a289fb574a8b8f4c499b1ee4eba2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Private team members held by an inverse edge
+brief:                  |
+                        Under the inverse option a private peer holds
+                        people it must not name in public as entries
+                        of type_team_member, in a register document of
+                        its own that carries mark_private. The check
+                        accepts that register, cctool new writes a new
+                        member into it, and cc-public gains only the
+                        inverse reading, with nothing about the peer
+                        or its people. One query over the existing
+                        relation finds both the public and the private
+                        register of members.
+description:            |
+                        Sources:
+                        - The team member register is public, and a
+                          member who should not be named in public is
+                          held in the team member register of a
+                          private repository instead
+                          (_data/register/reg_team_member.yaml at
+                          note).
+                        - A team member entry holds a git_author with
+                          a name and an email address, and a
+                          git_signing_key
+                          (_data/register/reg_team_member.yaml at
+                          entries.member_william_payne).
+                        - A mark is a property of the item, not of the
+                          repository that holds it, and mark_private
+                          is for an item holding personal data
+                          (_data/register/reg_protective_mark.yaml at
+                          entries.mark_private.note and
+                          entries.mark_private.usage).
+                        - Measured 2026-10-28 in a scratch copy: with
+                          an inverse reading added to the entry of
+                          relation_has_items_held_in_register in a
+                          copy of cc-public, and a peer register
+                          marked mark_private that names
+                          type_team_member by that inverse and holds
+                          one member with a git_author, cctool check
+                          on the peer reports no
+                          misplaced_register_entry; the one failure
+                          left is the fixture's mention of a concept
+                          that copy no longer holds.
+                        - Measured 2026-10-28 in the same copy: cctool
+                          new with --dry-run for a second member
+                          prints a diff that adds it to the peer's
+                          private register, not to reg_team_member.
+                        - Measured 2026-10-28 in the same copy: a
+                          logic query for every register R with
+                          primary_edge from type_team_member to R by
+                          relation_has_items_held_in_register returns
+                          both reg_team_member and the peer's
+                          register.
+                        - An edge is held by the item that records it,
+                          so the direction decides who is able to
+                          record the fact in a federation
+                          (_data/register/reg_relation.yaml at note).
+                          Strength: strong for one private peer, since
+                          it is measured end to end. It holds at ten
+                          times the size, because each private peer
+                          records its own edge in its own document and
+                          cc-public never changes per peer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

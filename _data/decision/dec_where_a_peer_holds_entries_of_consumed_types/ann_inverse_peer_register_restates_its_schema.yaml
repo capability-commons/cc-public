@@ -1,0 +1,83 @@
+id_self:                ann_inverse_peer_register_restates_its_schema
+guid_self:              ann_e65ec767de6e427589faf796e1952abd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schema restated by every inverse peer register
+brief:                  |
+                        Under the inverse option a peer register
+                        states its type by one edge and its schema by
+                        another, and a check must keep the two in
+                        step. An extending register gets both from one
+                        edge. When cc-public changes the schema of a
+                        home register, every inverse peer register
+                        fails until it is edited, while an extending
+                        register follows with no edit.
+description:            |
+                        Sources:
+                        - That an extending register takes the schema
+                          of the consumed register it extends is cited
+                          in
+                          ann_inverse_peer_entries_keep_shape_only_by_a_rule.
+                        - Under the inverse option, the inverse edge
+                          names only the type; the schema comes from
+                          the register's own schema edge
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_names_its_type_by_an_inverse_edge.yaml
+                          at brief; how a register takes its schema is
+                          cited in
+                          ann_inverse_peer_entries_keep_shape_only_by_a_rule).
+                        - The trial rule that keeps the two in step,
+                          and its results, are given in
+                          ann_home_schema_rule_needs_the_type_edge
+                          (measured 2026-10-28).
+                        - Measured 2026-10-28: with the trial rule in
+                          place, pointing the schema edge of
+                          reg_concept at sch_register in a copy of
+                          cc-public made the peer check fail the
+                          fixture peer's concept register, which still
+                          named sch_reg_concept.
+                        - The extending option adds a new edge, a
+                          placement rule that accepts it, and a rule
+                          for which register cctool new writes into
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief). Strength: moderate. The extending
+                          option pays once, in code, with a new
+                          relation and more rule changes than the
+                          inverse option plus one check; the inverse
+                          option pays per peer register, in data, each
+                          time a home schema changes. A rename of a
+                          schema is carried by rename maps; a change
+                          to another schema is not. It grows at ten
+                          times the size, with peers times registers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

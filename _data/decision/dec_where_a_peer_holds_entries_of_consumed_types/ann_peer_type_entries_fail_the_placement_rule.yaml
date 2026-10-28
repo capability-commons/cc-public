@@ -1,0 +1,86 @@
+id_self:                ann_peer_type_entries_fail_the_placement_rule
+guid_self:              ann_d96d105cc59c4a90b7440b9bf8341786
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer type entries caught by the placement rule
+brief:                  |
+                        The option of peer types keeps the placement
+                        rule as it is, but a peer's type entries are
+                        themselves entries of type_type, which names
+                        reg_data_item_type as its one register. A
+                        measured peer register of types fails the
+                        placement check. So this option still needs
+                        one of the other three for its types and
+                        relations, and the system ends with two ways
+                        to place a peer's entries.
+description:            |
+                        Sources:
+                        - Under the option of peer types, a peer
+                          defines a type of its own, with its own
+                          prefix and register, and the placement rule
+                          stays as it is
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_defines_types_for_entries_of_its_own.yaml
+                          at brief).
+                        - A peer holds registers of its own for any
+                          types, relations, concepts and other entries
+                          it needs
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief).
+                        - Type entries exist only as entries of the
+                          data item type register, and type_type names
+                          reg_data_item_type by
+                          relation_has_items_held_in_register;
+                          type_relation names reg_relation the same
+                          way (_data/register/reg_data_item_type.yaml
+                          at entries.type_type.note and
+                          entries.type_type.edge;
+                          _data/register/reg_data_item_type.yaml at
+                          entries.type_relation.edge).
+                        - Measured 2026-10-28 on an unchanged copy of
+                          cc-public: a copy of the fixture peer with a
+                          register of its own types, specified by
+                          sch_reg_data_item_type and holding one peer
+                          type for patrol concepts, gave
+                          misplaced_register_entry for that register
+                          and that type entry, as an entry of
+                          type_type.
+                        - The placement check fails an entry whose
+                          type does not name the register it sits in
+                          (src/cctool/check/check.lp within
+                          misplaced_register_entry).
+                        - That each peer type entry must also name a
+                          concept is sourced in
+                          ann_a_peer_type_entry_is_itself_a_consumed_type.
+                          Strength: strong, since it is measured and
+                          follows from the ruling that a peer holds
+                          types of its own. It holds at ten times the
+                          size, and every peer that defines a type or
+                          a relation meets it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,85 @@
+id_self:                ann_inverse_option_records_placement_two_ways
+guid_self:              ann_86bd9ebd120b4d5893783b6044c4ffee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One placement fact recorded in two directions
+brief:                  |
+                        The inverse option needs no new code, but it
+                        gives one fact two ways to be recorded: on the
+                        type entry in cc-public and on the register in
+                        a peer. Nothing checks that a fact is recorded
+                        only once, and recording it both ways passes
+                        the check. Registers that name their types
+                        record placement in one direction everywhere.
+description:            |
+                        Sources:
+                        - That no relation entry in cc-public embeds
+                          an inverse today, though the schema allows
+                          one, and that an edge may be recorded in
+                          either direction and tooling reads it in
+                          both, is sourced in
+                          ann_first_inverse_in_the_data_misses_raw_readers.
+                        - Under the inverse option, each type entry
+                          keeps naming its register in cc-public, and
+                          a peer register names the consumed type by
+                          the inverse edge
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_names_its_type_by_an_inverse_edge.yaml
+                          at brief).
+                        - Measured 2026-10-28: in a copy of cc-public
+                          with the inverse added, an edge of the
+                          inverse from reg_concept to type_concept,
+                          beside the edge type_concept already
+                          records, left cctool check at 0 failures.
+                        - The checks for things stated twice are
+                          duplicate_prefix, duplicate_id,
+                          duplicate_guid, repeated_item,
+                          shared_exact_match, term_rated_twice and
+                          input_fed_twice, with the advice
+                          redundant_hierarchy_edge; none compares an
+                          edge with its inverse
+                          (src/cctool/check/check.lp within each of
+                          those predicates; src/cctool/check/advise.lp
+                          within redundant_hierarchy_edge; listed
+                          2026-10-28 from the shown predicates of both
+                          files).
+                        - Under the option of registers that name
+                          their types, each register names its types
+                          and no type entry names a register (cited in
+                          ann_turned_edge_touches_every_register_and_new).
+                          Strength: moderate. It adds a convention,
+                          not a mechanism, and a one-rule check could
+                          forbid the second direction, which is itself
+                          one more rule. It holds for registers that
+                          name their types only if the turned edge is
+                          a relation whose source is the register, not
+                          an inverse. It holds at ten times the size,
+                          since each new register can pick either
+                          direction.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

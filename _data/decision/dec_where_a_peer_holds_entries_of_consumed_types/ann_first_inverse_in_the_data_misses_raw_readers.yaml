@@ -1,0 +1,74 @@
+id_self:                ann_first_inverse_in_the_data_misses_raw_readers
+guid_self:              ann_3617dc8737a54d60b609ed4f5d4cfb9e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The first embedded inverse in the published data
+brief:                  |
+                        No relation in cc-public embeds an inverse
+                        today, so the inverse edge option puts the
+                        first one into the public data format. A
+                        partner that reads the YAML as written, and
+                        not through cctool, finds only the consumed
+                        register from the type entry, and misses every
+                        peer register until it learns to read
+                        inverses. The format already defines the
+                        inverse, so this is a reader that was never
+                        exercised, not a new rule.
+description:            |
+                        Sources:
+                        - Measured 2026-10-28 by loading
+                          _data/register/reg_relation.yaml with a YAML
+                          parser: 37 relation entries, and none holds
+                          an inverse.
+                        - The relation entry schema already defines an
+                          optional inverse with an id, a guid and a
+                          brief
+                          (_data/schema/sch_regentry_relation.yaml at
+                          properties.inverse).
+                        - The relation register says an edge may be
+                          recorded in either direction and that
+                          tooling reads it in both
+                          (_data/register/reg_relation.yaml at note).
+                        - cctool query jq sees the YAML documents as
+                          they are written (cctool query jq --help,
+                          run 2026-10-28).
+                        - Measured 2026-10-28 in the scratch copy with
+                          the inverse and a second concept register: a
+                          jq filter over the edges of type_concept for
+                          relation_has_items_held_in_register returned
+                          only reg_concept, while the SQL, SPARQL and
+                          logic readers returned both registers
+                          (measured in
+                          ann_shared_query_readers_see_an_inverse_placement).
+                        - The data format is supported and the query
+                          vocabulary is not (cited in
+                          ann_shared_query_readers_see_an_inverse_placement).
+                          Strength: weak to moderate; every option
+                          makes a raw reader learn something new, and
+                          here what it learns is already in the
+                          schema. It grows at ten times the size,
+                          since each partner tool written against
+                          today's data meets its first inverse here.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

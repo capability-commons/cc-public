@@ -1,0 +1,148 @@
+id_self:                ann_cctool_new_picks_a_register_by_sort_order
+guid_self:              ann_fb3f88ff918d4c469509cb4c5904529b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Register choice of cctool new left to sort order
+brief:                  |
+                        The inverse option changes no code, so cctool
+                        new keeps taking the first register it finds
+                        in sorted order, with no way to choose. It
+                        finds a peer's register only because register
+                        ids sort before type ids. One redundant
+                        inverse edge on a register of cc-public passes
+                        every check and yet makes cctool new refuse to
+                        add an entry in every peer whose register id
+                        sorts after that register's, as the fixture
+                        peer's does; a register id qualified by
+                        cc_patrol sorts before it and escapes. Where
+                        one segment holds two registers of team
+                        members, one marked public and one marked
+                        private, a new private person lands in the
+                        public-marked register, as measured. The
+                        branch that reads the inverse has no test, so
+                        nothing catches the change before it ships.
+                        The other two options that keep the type say
+                        only that cctool new writes into the register
+                        of the segment being edited, which leaves the
+                        two-register case open but not settled by
+                        code.
+description:            |
+                        Sources:
+                        - cctool new takes the first matching edge in
+                          sorted order that links the type to a
+                          register, and accepts either the type's own
+                          edge or an edge recorded through an inverse
+                          (src/cctool/edit/edit.py within _register).
+                        - Every register id starts with the register
+                          prefix and every type id with the type
+                          prefix, so an edge recorded on a register
+                          sorts before one recorded on a type entry
+                          (src/cctool/graph/prefix.py within stem;
+                          src/cctool/edit/edit.py within _register).
+                        - cctool new takes only fields, links, a root
+                          and a dry run, and no register (python3 -m
+                          cctool.cli.command new --help, run
+                          2026-10-28).
+                        - The inverse option accepts the peer register
+                          with no change to the code of the placement
+                          check or cctool new
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_names_its_type_by_an_inverse_edge.yaml
+                          at brief).
+                        - Measured 2026-10-28: with the inverse added
+                          in a copy of cc-public and the fixture
+                          peer's concept register naming type_concept
+                          by it, cctool new with --dry-run for a new
+                          concept in the peer printed a diff that adds
+                          it to the peer's register.
+                        - Measured 2026-10-28: with one more edge of
+                          the inverse, from reg_concept to
+                          type_concept, added in the copy of
+                          cc-public, which passes cctool check as
+                          measured in
+                          ann_inverse_option_records_placement_two_ways,
+                          the same cctool new in the peer refused
+                          because reg_concept is held by a consumed
+                          segment.
+                        - Which registers that edge captures depends
+                          on how their ids sort against reg_concept; a
+                          qualified register id for cc_patrol sorts
+                          first and is not captured (measured by the
+                          verifier and given in
+                          ann_turned_edge_touches_every_register_and_new).
+                        - Measured 2026-10-28 in a scratch copy: a
+                          peer holding two registers that name
+                          type_team_member by the inverse, one marked
+                          mark_public with an id that sorts first and
+                          one marked mark_private, passes cctool
+                          check, and cctool new with --dry-run for a
+                          person described as not named in public adds
+                          the entry to the public-marked register.
+                        - A protective mark decides what may be done
+                          with an item and with whom it may be shared
+                          (_data/register/reg_protective_mark.yaml at
+                          usage).
+                        - No test of the edit package mentions an
+                          inverse; the one test of an inverse is in
+                          the check package (measured 2026-10-28 by a
+                          search of src/cctool/edit/_test for
+                          "inverse";
+                          src/cctool/check/_test/test_check.py within
+                          test_an_edge_recorded_through_an_inverse_is_read_in_reverse).
+                        - The extending option and the option of
+                          registers that name their types each state
+                          that cctool new writes into the register of
+                          the segment being edited
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_peer_register_extends_a_consumed_register.yaml
+                          at brief;
+                          _data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_register_names_the_types_it_holds.yaml
+                          at brief).
+                        - Round 1 noted the sorted choice only as a
+                          risk at ten times the size
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/ann_inverse_edge_lets_a_peer_register_name_its_type.yaml
+                          at description).
+                        - ASSUMPTION: a segment that shares data with
+                          partners holds both public and private
+                          people, and so wants two registers of one
+                          type. Strength: moderate; it is measured
+                          with one peer, and a dry run shows the diff.
+                          Which peers the redundant edge captures
+                          turns on how their register ids sort, which
+                          no one chooses on purpose. The fix is small,
+                          a rule that prefers the register of the
+                          segment being edited, a register option on
+                          cctool new or a rule on marks, with one
+                          test, but none is in the option today, and
+                          the claim of no change to code then falls.
+                          It grows at ten times the size, since every
+                          consumed register that records the inverse
+                          can capture the choice, and more segments
+                          hold both public and private entries of one
+                          type.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94

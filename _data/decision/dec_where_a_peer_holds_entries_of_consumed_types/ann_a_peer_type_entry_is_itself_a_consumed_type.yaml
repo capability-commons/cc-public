@@ -1,0 +1,81 @@
+id_self:                ann_a_peer_type_entry_is_itself_a_consumed_type
+guid_self:              ann_1624324dc4094829bfaa69fd526b56e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer type entries held as entries of a consumed type
+brief:                  |
+                        A type a peer defines is itself an entry of
+                        type_type, which cc-public defines, so the
+                        option of peer types still holds entries of a
+                        consumed type and still fails placement
+                        against the shipped release. Its type entry
+                        must also name a concept. So no option lets a
+                        partner add its own vocabulary on
+                        release_cc_public_0_1_0 as shipped; each needs
+                        a cc-public release first. With the inverse
+                        added, the same peer type register passes
+                        placement by naming type_type.
+description:            |
+                        Sources:
+                        - The option's text, the ruling that a peer
+                          holds types of its own, the edge of
+                          type_type to reg_data_item_type, and a
+                          measured placement failure of a peer type
+                          entry are cited in
+                          ann_peer_type_entries_fail_the_placement_rule.
+                        - The type of an id is the type whose prefix
+                          it has (src/cctool/graph/derive.lp within
+                          has_type).
+                        - A type entry requires id_concept and
+                          guid_concept
+                          (_data/schema/sch_regentry_type.yaml at
+                          required).
+                        - Measured 2026-10-28: a scratch peer that
+                          consumes release_cc_public_0_1_0 and holds a
+                          register of one peer type, with that type's
+                          own register of one entry, checked against
+                          an unchanged copy of the snapshot, failed
+                          misplaced_register_entry for the type entry,
+                          as an entry of type_type, and the schema
+                          check asked for id_concept; the entry of the
+                          peer type passed placement.
+                        - Measured 2026-10-28: with the inverse added
+                          to relation_has_items_held_in_register in a
+                          copy of the snapshot, and an edge of it from
+                          that peer type register to type_type, the
+                          misplaced_register_entry failure was gone;
+                          the rest were the fixture's missing fields,
+                          prefix form and layout. Strength: strong,
+                          since it is measured and follows from the
+                          ruling; it removes the one compatibility
+                          advantage the option of peer types could
+                          claim. It holds at ten times the size, since
+                          every peer type and relation meets it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

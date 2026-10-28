@@ -1,0 +1,93 @@
+id_self:                ann_turned_edge_touches_every_register_and_new
+guid_self:              ann_b114f407ca6a48a2b757338c813c5e0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Parts touched by turning the register edge round
+brief:                  |
+                        Turning the edge round edits ten register
+                        files of cc-public and the code of cctool new,
+                        since with the turned edge and unchanged code
+                        cctool new picks the register whose id sorts
+                        first. In a peer whose register id sorts after
+                        cc-public's, such as the fixture peer
+                        measured, it picks cc-public's register and
+                        refuses. The inverse option changes one entry
+                        in one file and no code. Both end with the
+                        same placement check.
+description:            |
+                        Sources:
+                        - Ten type entries record an edge of
+                          relation_has_items_held_in_register, each to
+                          a different register held in its own file
+                          under _data/register (measured 2026-10-28 by
+                          reading
+                          _data/register/reg_data_item_type.yaml at
+                          entries and listing the targets).
+                        - Under the option of registers that name
+                          their types, each register names its types
+                          and no type entry names a register
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/opt_register_names_the_types_it_holds.yaml
+                          at brief).
+                        - Measured 2026-10-28: in a copy of cc-public
+                          with the inverse added, moving the edge of
+                          type_concept from its type entry to
+                          reg_concept as an inverse kept cctool check
+                          at 0 failures, and cctool new with --dry-run
+                          in cc-public still wrote into reg_concept.
+                        - Measured 2026-10-28: with that change,
+                          cctool new with --dry-run in the fixture
+                          peer, whose concept register names
+                          type_concept by the inverse, refused because
+                          reg_concept is held by a consumed segment.
+                        - Measured 2026-10-28 by the verifier, in a
+                          copy of cc-public with the inverse and an
+                          edge of it from reg_concept to type_concept:
+                          cctool new with --dry-run refused in the
+                          fixture peer, whose register id sorts after
+                          reg_concept, but wrote into the peer's
+                          register when that register's id was the
+                          register prefix with cc_patrol_concept after
+                          it, the form the qualified option of
+                          dec_naming_of_a_peer_register gives, which
+                          sorts before reg_concept.
+                        - How cctool new picks a register in sorted
+                          order is cited in
+                          ann_cctool_new_picks_a_register_by_sort_order.
+                        - The inverse option changes one relation
+                          entry, adds one edge per peer register, and
+                          was measured to need no change to code
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/ann_inverse_edge_lets_a_peer_register_name_its_type.yaml
+                          at brief and at description). Strength:
+                          strong for the count of parts, which is
+                          measured; the edit to cctool new is small.
+                          It is fixed at ten times the size for
+                          cc-public, and each new consumed type with a
+                          register adds one more file to turn.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

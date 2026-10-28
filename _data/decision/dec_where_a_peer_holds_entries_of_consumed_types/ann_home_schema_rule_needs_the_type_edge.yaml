@@ -1,0 +1,135 @@
+id_self:                ann_home_schema_rule_needs_the_type_edge
+guid_self:              ann_7a17d0c5e1604536a26d0334cea748c7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A schema rule that works only while the type names its register
+brief:                  |
+                        The inverse option has the same schema gap
+                        that round 1 found for registers that name
+                        their types. Because each type entry still
+                        names its home register in cc-public, one
+                        short rule closes the gap: a peer register
+                        must name the same schema as that home
+                        register. Measured, the rule flags a peer
+                        register with no schema, passes one that names
+                        the home schema, and finds nothing in
+                        cc-public. Under the register-naming option no
+                        type entry names a home register, so the rule
+                        has nothing to compare with, and closing the
+                        gap needs new data or new code.
+description:            |
+                        Sources:
+                        - The gap under the inverse option is measured
+                          in
+                          ann_inverse_peer_entries_keep_shape_only_by_a_rule
+                          and
+                          ann_inverse_peer_mark_register_skips_the_mark_schema,
+                          and how a register document takes its schema
+                          is cited there.
+                        - Measured 2026-10-28: with the inverse option
+                          in place, the fixture peer's concept
+                          register, with no term_preferred on its
+                          entry, fails the schema check when it names
+                          sch_reg_concept.
+                        - Measured 2026-10-28: a trial rule of six
+                          lines added to a copy of
+                          src/cctool/check/check.lp, which fails a
+                          register that holds items of a type but does
+                          not name the schema of the register that the
+                          type entry itself names, reported the peer
+                          register that names no schema and passed the
+                          one that names sch_reg_concept.
+                        - Measured 2026-10-28: the same copy of
+                          cc-public, with the inverse and the trial
+                          rule, gave 0 failures under cctool check.
+                        - Measured 2026-10-28 in a scratch copy, by
+                          running through cctool.graph.logic.run a
+                          rule that reports a register naming a type
+                          by the inverse edge when the type's own edge
+                          leads to a register specified by a schema
+                          the peer register does not name: it gives
+                          one row, for the peer mark register with no
+                          schema, naming sch_reg_protective_mark; no
+                          row for the peer register that names
+                          sch_reg_protective_mark; and no row over
+                          cc-public.
+                        - Measured 2026-10-28 in a single-tree scratch
+                          copy: a logic rule of five conditions over
+                          primary_edge, edge and
+                          relation_is_specified_by_schema, run with
+                          cctool query logic, flagged a second concept
+                          register with no schema edge against
+                          sch_reg_concept, and flagged nothing when
+                          that register named sch_reg_concept.
+                        - The trial rule finds the home register from
+                          the edge recorded on the type entry (the
+                          edge fact read in src/cctool/graph/derive.lp
+                          within primary_edge).
+                        - That each type entry keeps naming its
+                          register under the inverse option is cited
+                          in
+                          ann_inverse_option_records_placement_two_ways,
+                          and that no type entry names a register
+                          under the register-naming option in
+                          ann_turned_edge_touches_every_register_and_new.
+                        - The type entry names the schema of its
+                          items, such as sch_regentry_protective_mark
+                          for marks
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_protective_mark.edge), but that
+                          schema is applied only to a whole document,
+                          never to an entry on its own
+                          (src/cctool/graph/derive.lp within
+                          document_schema).
+                        - The schema of the mark register reaches the
+                          entry schema only inside its own allOf
+                          (_data/schema/sch_reg_protective_mark.yaml
+                          at allOf).
+                        - ASSUMPTION: under registers that name their
+                          types, the home register would have to be
+                          found some other way, such as from the
+                          segment that holds the type entry, which the
+                          check does not derive today. Strength:
+                          strong for the inverse option, since the
+                          rule and its results are measured; a real
+                          rule also needs a header and a test like the
+                          other checks. It shows the inverse gap has a
+                          cheap fix from data already held, while the
+                          register-naming option would need
+                          entry-level schema checks or a new edge. It
+                          holds at ten times the size, since one rule
+                          covers every consumed type whatever the
+                          number of peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

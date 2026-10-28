@@ -1,0 +1,92 @@
+id_self:                ann_a_mark_rule_on_type_fails_peer_mark_types
+guid_self:              ann_2697b16d7393450b8aa817c0cd1faa0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A mark-type rule that peer mark types would break
+brief:                  |
+                        The check accepts any item as a protective
+                        mark, even a concept. A rule that a mark
+                        reference must name an entry of
+                        type_protective_mark closes that hole, and it
+                        passes a peer's own marks under every option
+                        that keeps the consumed type. Where a peer
+                        defines a mark type of its own, its marks have
+                        another type, so the rule would fail every one
+                        of them, or would have to learn each peer's
+                        type.
+description:            |
+                        Sources:
+                        - A mark reference counts as resolved when any
+                          item holds its id or guid, whatever that
+                          item's type (src/cctool/check/advise.lp
+                          within unresolved_mark).
+                        - Measured 2026-10-28 in a scratch copy: a
+                          peer segment item that carries
+                          concept_federated_segment as a protective
+                          mark passes cctool check, with no failure
+                          about the mark.
+                        - Measured 2026-10-28 in the same copy,
+                          through cctool.graph.logic.run: a rule that
+                          reports a mark reference whose target's type
+                          is not type_protective_mark gives one row,
+                          for concept_federated_segment, no row for a
+                          peer mark held by the inverse edge, and no
+                          row over cc-public.
+                        - The type of an id is the type whose prefix
+                          it has (cited in
+                          ann_a_peer_type_entry_is_itself_a_consumed_type).
+                        - Under the option of peer types, a peer
+                          defines a type of its own with its own
+                          prefix for entries it needs (cited in
+                          ann_peer_type_entries_fail_the_placement_rule).
+                        - A mark from a federated partner may be held
+                          in that partner's own register
+                          (_data/register/reg_protective_mark.yaml at
+                          note).
+                        - An unresolvable mark must be treated as more
+                          restrictive than any resolvable one
+                          (_data/register/reg_protective_mark.yaml at
+                          note). Strength: moderate; the hole is in
+                          every option today, but only the option of
+                          peer types blocks the simple fix. It holds
+                          at ten times the size, since each partner
+                          with marks of its own adds a type the rule
+                          would need to know.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_names_its_type_by_an_inverse_edge
+    guid_target:        opt_6869a2e4600e43c88d6922932a20ea08
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_names_the_types_it_holds
+    guid_target:        opt_e234da6cf6d544b2982dd35c855766e5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_peer_register_extends_a_consumed_register
+    guid_target:        opt_95cddbc8cbe541ce9cd080a1ceff8252
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_peer_defines_types_for_entries_of_its_own
+    guid_target:        opt_97d5860a936e460791c2f9012ea9e81b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

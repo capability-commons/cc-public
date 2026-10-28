@@ -1,0 +1,97 @@
+id_self:                ann_mixed_peer_register_checked_by_one_entry_schema
+guid_self:              ann_11613a1b32644a6bb153c3a0b5634eb7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Wrong entry schema applied in a mixed peer register
+brief:                  |
+                        In one register that holds a concept and a
+                        concern, cctool checks both entries against
+                        the register's one schema. The concern is
+                        checked against the concept rules, and the
+                        fields a concern must have go unchecked. One
+                        register per subject keeps each register under
+                        one schema, which the check already handles;
+                        one register per peer needs a new way to
+                        choose each entry's schema before a change can
+                        be checked.
+description:            |
+                        Sources:
+                        - Under the one-register option, a peer holds
+                          one register for every entry it adds, and
+                          each entry is checked against the schema of
+                          its type's entries
+                          (_data/decision/dec_naming_of_a_peer_register/opt_one_register_per_peer_for_all_its_entries.yaml
+                          at brief).
+                        - A schema is found only for a document, from
+                          its type or its own edge, and the entries
+                          inside a register are checked as part of it
+                          (src/cctool/graph/derive.lp within
+                          document_schema).
+                        - A concern entry requires question and
+                          measure; a concept entry requires
+                          term_preferred
+                          (_data/schema/sch_regentry_concern.yaml at
+                          required;
+                          _data/schema/sch_regentry_concept.yaml at
+                          required).
+                        - Measured 2026-10-28: with the inverse in a
+                          copy of cc-public, a fixture peer register
+                          that names type_concept and type_concern by
+                          inverse edges and sch_reg_concept as its
+                          schema, holding one concept and one concern
+                          with no question and no measure, raised no
+                          placement failure; the concern was reported
+                          for lacking term_preferred, and not for
+                          lacking question or measure.
+                        - Under the qualified option, a peer register
+                          keeps the schema of the register of
+                          cc-public it follows, such as
+                          sch_reg_concept
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_qualified_by_its_segment.yaml
+                          at brief). The free option says nothing of
+                          schemas, but its example names a register
+                          for one subject
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_unique_and_otherwise_free.yaml
+                          at brief).
+                        - The loss for validators outside cctool is
+                          argued in
+                          ann_mixed_peer_register_outside_its_binding_schema.
+                          Strength: strong; it is measured and the
+                          mixed case passes silently today. It holds
+                          at ten times the size, since each type a
+                          peer mixes adds a case the new rule must
+                          handle. It does not choose between the
+                          qualified and the free options.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_a_peer_register
+    guid_target:        dec_cbd7d5dc7c3d49a9a3c4f0e2bb1b4c16
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_qualified_by_its_segment
+    guid_target:        opt_da53b57b9c3141c09101eeeb0068c266
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_unique_and_otherwise_free
+    guid_target:        opt_4f761517782b46aca0212d384d01bd59
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_register_per_peer_for_all_its_entries
+    guid_target:        opt_6560a03257754e34879ac72497276974
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
