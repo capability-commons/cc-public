@@ -670,6 +670,13 @@ def _emit_value(value:  typing.Any,
     # runs, since breaking it would change it.
     #
     if isinstance(value, ruamel.yaml.scalarstring.LiteralScalarString) and value.strip():
+        # A block takes its indent from its first line of words, so one
+        # that starts with a space would lose it, and the layout would
+        # change the prose each time it is laid out.
+        #
+        if value.lstrip('\n')[:1].isspace():
+            raise Unsupported('Prose whose first line starts with a space: {head}'.format(
+                                  head = value.strip()[:60]))
         out.append(head.ljust(column) + ('|' if value.endswith('\n') else '|-'))
         out.extend(_body(value, max(COLUMN_VALUE, indent + INDENT_STEP)))
         return
