@@ -1,0 +1,50 @@
+id_self:                ann_a_second_validator_can_pass_what_the_first_refuses
+guid_self:              ann_a312e061b9534bf380e21587d2b47baf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A second validator can pass what the first refuses
+brief:                  |
+                        A document that jsonschema-rs passes is not
+                        validated again, so a keyword that
+                        jsonschema-rs reads more loosely than
+                        jsonschema would let a violation go
+                        unreported, with nothing to show it. Only the
+                        property tests, which the gate of a commit
+                        leaves out, would find such a difference.
+description:            |
+                        Sources:
+                        - A document the check passes is kept as
+                          having no rows [src/cctool/check/schema.py
+                          within _errors_of].
+                        - Every keyword but pattern is read by
+                          jsonschema-rs itself
+                          [src/cctool/check/schema.py within _Fast].
+                        - The property tests are marked fuzz, which
+                          the gate of a commit leaves out; the gate of
+                          a push runs them with few examples, and an
+                          overnight run with many
+                          [src/cctool/_test/test_property.py at
+                          description].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_schema_validator
+    guid_target:        dec_09232a0ca66b4ef6a19821e2931d0f90
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_jsonschema_rs_then_jsonschema
+    guid_target:        opt_5dc959b0c16444e2b6696ceaca779319
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,66 @@
+id_self:                ann_fast_check_agrees_with_jsonschema
+guid_self:              ann_51cdc242c58041b7aea4b02b764132ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The jsonschema-rs check agrees with jsonschema
+brief:                  |
+                        On the tree, and on tens of thousands of its
+                        YAML documents changed at random, the
+                        jsonschema-rs check found a document to
+                        conform exactly when jsonschema did. A pattern
+                        is read by the same function for both, and a
+                        value that plain JSON cannot hold goes to
+                        jsonschema.
+description:            |
+                        Sources:
+                        - The rows of the whole tree are the same with
+                          and without the check: 0 rows each over
+                          3,661 pairs [measured by Claude in the cloud
+                          container on 2026-10-28].
+                        - 19,000 YAML documents of the tree, each
+                          changed in one place at random (a field
+                          removed or added, a value replaced, a
+                          character put into a string): 0 that
+                          jsonschema refused were passed by
+                          jsonschema-rs; 3 that jsonschema passed were
+                          validated again by jsonschema, which costs
+                          time but loses nothing [measured by Claude
+                          in the cloud container on 2026-10-28].
+                        - A property test changes YAML documents of
+                          the tree and asserts the two verdicts are
+                          the same; it passed at 2,000 examples
+                          [src/cctool/_test/test_property.py within
+                          test_the_fast_check_of_a_changed_document_agrees_with_jsonschema].
+                        - jsonschema-rs reads \d as ECMA 262 does,
+                          ASCII digits only, while the pattern
+                          function reads it as Python does; the
+                          replaced keyword makes the two read every
+                          pattern alike [src/cctool/check/schema.py
+                          within _Match;
+                          src/cctool/check/_test/test_check.py within
+                          test_the_fast_check_of_a_schema_reads_a_pattern_as_jsonschema_does].
+                        - Formats are asserted by neither
+                          [src/cctool/check/schema.py within _Fast].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_schema_validator
+    guid_target:        dec_09232a0ca66b4ef6a19821e2931d0f90
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_jsonschema_rs_then_jsonschema
+    guid_target:        opt_5dc959b0c16444e2b6696ceaca779319
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

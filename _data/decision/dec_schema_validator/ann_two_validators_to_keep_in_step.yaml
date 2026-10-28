@@ -1,0 +1,45 @@
+id_self:                ann_two_validators_to_keep_in_step
+guid_self:              ann_c289ba11f5ab425288ab49ec313d8b0f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two validators to keep in step
+brief:                  |
+                        The check adds about 200 lines to the schema
+                        module: a copy of each YAML document as plain
+                        JSON, a bridge that gives jsonschema-rs the
+                        pattern function, and a registry that leaves
+                        out a schema whose $ref names none. An upgrade
+                        of either library may need them changed, and
+                        the property test to show they still agree.
+description:            |
+                        Sources:
+                        - src/cctool/check/schema.py within _Fast,
+                          _registry_fast, _Match, ErrorUnplain and
+                          plain.
+                        - The check store keys its verdicts by the
+                          versions of both libraries, so an upgrade
+                          validates again [src/cctool/check/store.py
+                          within TUPLE_DIST].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_schema_validator
+    guid_target:        dec_09232a0ca66b4ef6a19821e2931d0f90
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_jsonschema_rs_then_jsonschema
+    guid_target:        opt_5dc959b0c16444e2b6696ceaca779319
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
