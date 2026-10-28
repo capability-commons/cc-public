@@ -1,0 +1,41 @@
+id_self:                ruling_check_of_import_layering
+guid_self:              ruling_38338202172a4b3f8ef1fa5259d7a885
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Import rule over the graph
+brief:                  |
+                        The extractor records each import between
+                        modules as a fact, modules belong to logical
+                        components by edges, a relation between
+                        components says which may depend on which, and
+                        a rule reports an import the components do not
+                        allow. The rule starts as advice, since
+                        imports already run both ways between some
+                        parts. import-linter contracts, and no check
+                        of imports, are rejected. Ruled by WTP on
+                        2026-10-28 at 14:08 UTC, by writing "Uphold
+                        opt_import_rule_over_the_graph as
+                        recommended".
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_import_rule_over_the_graph
+    guid_target:        opt_04e09fce10254167bb77c0462bdfa206
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_import_linter_contracts
+    guid_target:        opt_f0cc282ae7f346148dc157ee97e304ce
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_no_import_check
+    guid_target:        opt_f40a679878e449f7a98c24e6151eee15
