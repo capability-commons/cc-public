@@ -1586,3 +1586,44 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_option
         guid_target:    relcon_72a33d1a1fb543cfac75c57192d14a4f
+
+  # ---------------------------------------------------------------------------
+  # relation_may_depend_on -- May depend on relation
+  #
+  relation_may_depend_on:
+    id_self:            relation_may_depend_on
+    guid_self:          relation_bccd56de6534443fa3f357505b271dad
+    title:              May depend on relation
+    brief:              |
+                        SOURCE may depend on TARGET
+    description:        |
+                        The design entity identified by SOURCE may use
+                        the design entity identified by TARGET, so
+                        that an implementation of SOURCE may import or
+                        call an implementation of TARGET.
+
+                        A design entity may always depend on itself. A
+                        chain of these edges may not lead back to
+                        where it began, so the design entities that
+                        depend on each other stand in an order.
+    note:               |
+                        The rule
+                        lpp_cctool.check.advise.import_not_allowed
+                        reads these edges, and advises on a python
+                        import between modules that realize logical
+                        components that no edge lets depend on each
+                        other.
+    acyclic:            true
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_design_entity
+        guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_design_entity
+        guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72

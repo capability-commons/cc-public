@@ -301,6 +301,14 @@ PREDICATE         = {
                            'default as the code writes them, or empty if it has '
                            'none, and whether it is optional and variadic, as true '
                            'or false.'),
+    'python_import':      (('module', 'imported'),
+                           'The python module or package module imports what the item '
+                           'imported would hold, if the tree holds it: a module or a '
+                           'package, by the id its dotted name calls for.'),
+    'python_within':      (('module', 'package', 'depth:number'),
+                           'The python module or package module is inside the package '
+                           'that the item package would hold, depth packages down from '
+                           'the top.'),
     'python_returns':     (('id', 'type'),
                            'The python function that holds the item id returns type, '
                            'as the code writes it, or empty if it does not say.'),
@@ -488,6 +496,12 @@ KEY_SEVERITY      = 'severity'
 # The receiver of a method is not a parameter.
 #
 MAP_DEFINITION    = {}
+
+# The dotted name of each module that a python module imports, keyed by
+# the document of its docstring, as MAP_DEFINITION is, since none of it
+# is in the document.
+#
+MAP_IMPORT        = {}
 SET_RECEIVER      = {'self', 'cls'}
 
 Facts             = dict[str, set[tuple[str, ...]]]
@@ -781,8 +795,20 @@ def _facts_of_document(file:             str,
             if returns is not None:
                 facts['python_returns'].add((id_self, returns))
         elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
-            facts['module_name'].add((str(document.get(KEY_ID_SELF)),
-                                      module_name(pathlib.Path(file))))
+            id_self = str(document.get(KEY_ID_SELF))
+            facts['module_name'].add((id_self, module_name(pathlib.Path(file))))
+            (held, list_dotted) = MAP_IMPORT.get(id(document), (None, []))
+            if held is not None and held() is document:
+                facts['python_import'].update((id_self, imported)
+                                              for dotted in list_dotted
+                                              for imported in _python_ids(dotted))
+            if pathlib.Path(file).suffix == SUFFIX_PYTHON:
+                list_part = module_name(pathlib.Path(file)).partition(DELIM_PREFIX)[2].split(
+                                                                                DELIM_MODULE)
+                facts['python_within'].update(
+                    (id_self, PREFIX_PACKAGE + DELIM_MODULE.join(list_part[:depth]),
+                     str(depth))
+                    for depth in range(1, len(list_part)))
 
     del facts['word_replacement']
 
@@ -1018,6 +1044,7 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
     map_document = {str(relative): parse(text, relative)}
 
     if relative.suffix == SUFFIX_PYTHON:
+        _note_imports(map_document[str(relative)][0], text)
         for (key, expected, tuple_parameter, returns, document) in definitions(text,
                                                                                 relative):
             _define(document[0], (expected, tuple_parameter, returns))
@@ -1029,6 +1056,47 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
             map_document[key]   = document
 
     return map_document
+
+
+# -----------------------------------------------------------------------------
+def _note_imports(document: typing.Any, text: str) -> None:
+    """
+    Note in MAP_IMPORT the dotted name of each module that the python
+    module text imports, anywhere in it, until document, the document
+    of its docstring, is gone. A module that cannot be parsed, or whose
+    docstring holds no mapping, is noted as importing nothing.
+
+    """
+
+    if not isinstance(document, dict):
+        return
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return
+
+    set_dotted = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            set_dotted.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            set_dotted.add(node.module)
+            set_dotted.update(node.module + DELIM_MODULE + alias.name for alias in node.names)
+
+    MAP_IMPORT[id(document)] = (weakref.ref(document), sorted(set_dotted))
+    weakref.finalize(document, MAP_IMPORT.pop, id(document), None)
+
+
+# -----------------------------------------------------------------------------
+def _python_ids(dotted: str) -> list[str]:
+    """
+    Return the ids that the module or package dotted, as an import
+    names it, would hold.
+
+    """
+
+    name = dotted.lower()
+    return [MAP_PREFIX_MODULE[SUFFIX_PYTHON] + name, PREFIX_PACKAGE + name]
 
 
 # -----------------------------------------------------------------------------

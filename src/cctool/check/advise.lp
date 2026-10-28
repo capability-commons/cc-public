@@ -460,3 +460,99 @@ ruling_with_unargued_driver(Ruling, Option, Concern) :-
     primary_edge(Option, "relation_is_option_for", Decision),
     driver(Decision, Concern),
     not argued(Option, Concern).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.advise.import_not_allowed
+% guid_self:              lpp_64f6e4eca1dc4dc28a720cf4b9b1bb02
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Import not allowed
+% brief:                  |
+%                         A python module imports a module of another
+%                         logical component, and no edge of
+%                         relation_may_depend_on lets its component
+%                         depend on that one. It is advice while the
+%                         components and their edges are first laid
+%                         down.
+% did:                    |
+%                         {module}, of {component}, imports {imported},
+%                         of {other}, which {component} may not depend
+%                         on.
+% fix:                    |
+%                         Move the code so that the import follows the
+%                         order of the components, or, if the order
+%                         should change, add the edge of
+%                         relation_may_depend_on from the component of
+%                         the module to the other.
+% edge:                   []
+%
+% ...
+%
+% decl import_not_allowed(module:    symbol,
+%                         component: symbol,
+%                         imported:  symbol,
+%                         other:     symbol,
+%                         file:      symbol,
+%                         line:      number)
+#show import_not_allowed/6.
+
+import_not_allowed(Module, Component, Imported, Other, File, Line) :-
+    python_import(Module, Imported),
+    python_component(Module, Component),
+    python_component(Imported, Other),
+    Component != Other,
+    not primary_edge(Component, "relation_may_depend_on", Other),
+    item(Module, _, _, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% The logical component of a python module or package is the one that
+% the nearest item realizes: the module itself, or else the innermost
+% package it is inside that realizes one.
+%
+% decl python_component(module:    symbol,
+%                       component: symbol)
+
+python_component(Module, Component) :-
+    nearest_realizer(Module, Depth),
+    realizer_at(Module, Depth, Component).
+
+
+% -----------------------------------------------------------------------------
+% The depth of the nearest item that realizes a logical component for a
+% python module or package.
+%
+% decl nearest_realizer(module: symbol,
+%                       depth:  number)
+
+nearest_realizer(Module, Depth) :-
+    realizer_at(Module, _, _),
+    Depth = #max { Below : realizer_at(Module, Below, _) }.
+
+
+% -----------------------------------------------------------------------------
+% A python module or package, or a package it is inside at depth, realizes
+% the logical component. The module itself is deeper than any package.
+%
+% decl realizer_at(module:    symbol,
+%                  depth:     number,
+%                  component: symbol)
+
+realizer_at(Module, Depth, Component) :-
+    python_within(Module, Package, Depth),
+    primary_edge(Package, "relation_realizes", Component),
+    has_type(Component, "type_logical_component").
+
+realizer_at(Module, 1000, Component) :-
+    module_name(Module, _),
+    primary_edge(Module, "relation_realizes", Component),
+    has_type(Component, "type_logical_component").

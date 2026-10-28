@@ -194,15 +194,17 @@ def _dump(data):
 
 
 # -----------------------------------------------------------------------------
-def _module(root, relative, id_self):
+def _module(root, relative, id_self, list_edge = (), code = ''):
     """
-    Write a python module whose docstring holds an item with id_self.
+    Write a python module whose docstring holds an item with id_self
+    and the edges of list_edge, followed by code.
 
     """
 
     path = root / relative
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text('"""\n---\n{item}...\n"""\n'.format(item = _dump(_fields(root, id_self))))
+    path.write_text('"""\n---\n{item}...\n"""\n{code}'.format(
+                        item = _dump(_fields(root, id_self, list_edge)), code = code))
 
 
 # -----------------------------------------------------------------------------
@@ -232,6 +234,46 @@ def _check(root):
     failures = cctool.check.check.check(root)
     failures.pop(cctool.check.check.NAME_LAYOUT, None)
     return failures
+
+
+def _components(tree, list_depend = ()):
+    """
+    Write lco_x and lco_y, each of which may depend on the other where
+    list_depend names the pair of them, and the package x, which
+    realizes lco_x and holds the module x.y. The package x.z inside it
+    realizes lco_y and holds x.z.w, which imports x.y. Return the
+    advice import_not_allowed gives on tree, once tree is known to have
+    no failures.
+
+    """
+
+    _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x')
+    _item(tree, '_data/logical_component/lco_y.yaml', 'lco_y')
+    for (source, target) in list_depend:
+        _replace(tree, '_data/logical_component/{source}.yaml'.format(source = source),
+                 'edge: []', _dump({'edge': [_edge(tree, 'relation_may_depend_on', target)]}))
+    _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
+    _module(tree, 'src/x/y.py', 'pym_x.y')
+    _module(tree, 'src/x/z/__init__.py', 'pyp_x.z', [_edge(tree, 'relation_realizes', 'lco_y')])
+    _module(tree, 'src/x/z/w.py', 'pym_x.z.w', code = 'import x.y\nfrom . import v\n')
+
+    (failures, advice, _) = cctool.check.check.review(tree)
+    failures.pop(cctool.check.check.NAME_LAYOUT, None)
+    assert failures == {}
+    return advice.get('import_not_allowed', [])
+
+
+def test_an_import_of_a_component_not_depended_on_is_advised(tree):
+    assert _components(tree) == [('pym_x.z.w', 'lco_y', 'pym_x.y', 'lco_x', 'src/x/z/w.py', '3')]
+
+
+def test_an_import_of_a_component_that_may_be_depended_on_passes(tree):
+    assert _components(tree, [('lco_y', 'lco_x')]) == []
+
+
+def test_an_import_of_a_component_depended_on_the_other_way_is_advised(tree):
+    assert [row[:4] for row in _components(tree, [('lco_x', 'lco_y')])] == [
+        ('pym_x.z.w', 'lco_y', 'pym_x.y', 'lco_x')]
 
 
 # -----------------------------------------------------------------------------
