@@ -1,0 +1,29 @@
+id_self:                opt_every_edge_read_same_step
+guid_self:              opt_aa6f5f4f1a344a6facd32f271ac40165
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every edge read in the same step
+brief:                  |
+                        Every Kahn edge is read in the step it was
+                        written, except a feedback edge, which is read
+                        in the next. Nodes run in dependency order
+                        within a step.
+description:            |
+                        The least latency, as in synchronous languages
+                        such as Lustre. An edge that crosses execution
+                        units then makes the consumer wait within the
+                        step, so the step must be long enough for the
+                        whole chain.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4

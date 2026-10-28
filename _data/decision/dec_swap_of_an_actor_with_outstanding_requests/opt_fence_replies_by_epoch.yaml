@@ -1,0 +1,37 @@
+id_self:                opt_fence_replies_by_epoch
+guid_self:              opt_bfc6863da23e474a877824bf0d32cc70
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fence replies by epoch
+brief:                  |
+                        The engine stamps each request an actor sends
+                        with the epoch of the actor instance, and
+                        bumps the epoch when the actor is swapped at a
+                        step. A reply that carries a stale epoch is
+                        dropped and raises a fault that the trace
+                        records, and the new actor sends the request
+                        again where it still needs the reply. The swap
+                        needs no wait, and the lost reply is declared
+                        behavior of the actor kind, not a silent
+                        effect.
+description:            |
+                        From the second round of reading (2026-10-28).
+                        MillWheel (Akidau et al. 2013) fences a
+                        replaced worker in the same way: a new owner
+                        invalidates the old owner's token, and a late
+                        write carrying the old token is refused. Only
+                        an actor whose requests can safely be sent
+                        again may be swapped this way.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
