@@ -685,6 +685,51 @@ peer_register_schema_differs(Register, Type, Home, Schema) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.unqualified_peer_register
+% guid_self:              lpp_38bb69e68fee461abf46c2ad941350a5
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unqualified peer register
+% brief:                  |
+%                         The id of a register held by a segment that
+%                         consumes another carries the name of its
+%                         segment after the register prefix and before
+%                         its subject, as the id of a release does.
+% did:                    |
+%                         {register} is held by {segment}, and its id
+%                         does not begin reg_{name}_.
+% fix:                    |
+%                         Rename {register} with cctool rename to an id
+%                         that begins reg_{name}_.
+% edge:                   []
+%
+% ...
+%
+% decl unqualified_peer_register(register: symbol,
+%                                segment:  symbol,
+%                                name:     symbol,
+%                                file:     symbol,
+%                                line:     number)
+#show unqualified_peer_register/5.
+
+unqualified_peer_register(Register, Segment, Name, File, Line) :-
+    item(Register, _, "", File, Line),
+    has_type(Register, "type_register"),
+    segment_of(File, Segment),
+    edge(Segment, "relation_consumes", _),
+    Name = @substr(Segment, 8, @strlen(Segment) - 8),
+    @match(@cat("reg_", Name, "_.+"), Register) = 0.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unrecorded_module
 % guid_self:              lpp_1f20ba7d65fe41a483d60dd2775d4e4d
 % copyright:              Copyright 2026 William Payne

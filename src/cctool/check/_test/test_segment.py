@@ -302,6 +302,30 @@ def test_a_peer_register_with_another_schema_fails(tree, tmp_path_factory, monke
 
 
 # -----------------------------------------------------------------------------
+def test_a_peer_register_without_the_name_of_its_segment_fails(tree, tmp_path_factory,
+                                                              monkeypatch):
+    """
+    The id of a register in a peer carries the name of the segment of
+    the peer after the register prefix.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root = _peer(tmp_path_factory, held = TEXT_HELD)
+    path = root / FILE_PEER_CONCEPT
+    path.rename(root / '_data' / 'register' / 'reg_widget_concept.yaml')
+    path = root / '_data' / 'register' / 'reg_widget_concept.yaml'
+    path.write_text(path.read_text(encoding = 'utf-8')
+                        .replace('reg_peer_concept', 'reg_widget_concept'),
+                    encoding = 'utf-8')
+    (failures, _, notices) = cctool.check.check.review(root)
+
+    assert failures == {'unqualified_peer_register': [
+        ('reg_widget_concept', ID_PEER, 'peer', '_data/register/reg_widget_concept.yaml', '1')]}
+    assert notices  == {}
+
+
+# -----------------------------------------------------------------------------
 def test_a_tree_with_no_segment_consumes_nothing(tree, tmp_path_factory, monkeypatch):
     """
     A tree with no segment item reads no consumed tree, and fails
