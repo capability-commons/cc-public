@@ -1,0 +1,86 @@
+id_self:                ann_maturity_bound_costs_one_comparison_per_import
+guid_self:              ann_53a495b32d6c4e0ba230567d6093dee7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of the maturity bound
+brief:                  |
+                        The transitive bound needs no walk of
+                        transitive imports. If every direct import
+                        goes to code of equal or higher maturity,
+                        every chain of imports does too, so one
+                        comparison per import edge is enough. On
+                        components the comparisons run over the edges
+                        between 14 components rather than the imports
+                        of 60 modules.
+description:            |
+                        Sources:
+                        - September asks for a check that computes the
+                          transitive imports of each module
+                          [origin/main:ddr/ddr_maturity.yaml at
+                          consequence].
+                        - If each module's maturity is at most that of
+                          each module it imports directly, the
+                          relation holds along every chain, by
+                          induction over the chain (reasoning, no
+                          external source).
+                        - The ruled import rule records imports as
+                          facts, puts modules in logical components by
+                          edges, states allowed dependencies as a
+                          relation between components, and reports an
+                          import that relation does not allow
+                          [_data/decision/dec_check_of_import_layering/ruling_check_of_import_layering.yaml
+                          at brief].
+                        - Dev has 60 Python modules outside the test
+                          folders, beside 11 package files, 71 Python
+                          files in all [src/cctool, count of files
+                          with an id_self beginning pym_ outside the
+                          _test folders, measured by Claude in the
+                          cloud container, 2026-10-28].
+                        - There are fourteen logical component files
+                          on dev [_data/logical_component/, one file
+                          each].
+                        - The component option lets modules take the
+                          maturity of their component, bounds a
+                          component by the components it depends on,
+                          and has the import rule report a component
+                          that depends on one of lower maturity
+                          [_data/decision/dec_maturity_of_code/opt_maturity_on_each_logical_component.yaml
+                          at brief].
+                        - ASSUMPTION: every module declares a maturity
+                          or takes one from its component, so no
+                          module in a chain is without a value.
+                          Strength: weak as a separator, since both
+                          options cost milliseconds today. It holds at
+                          ten times the size, since the cost stays
+                          linear in import edges for modules and
+                          linear in component edges for components,
+                          and the component check reads only the facts
+                          the import rule already extracts.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_code
+    guid_target:        dec_aa4f56f52fbe4a8898555bacb64496c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

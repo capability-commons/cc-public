@@ -1,0 +1,94 @@
+id_self:                ann_demands_fixed_per_level_spend_on_minor_code
+guid_self:              ann_132476b2ec4340068410097707fc65ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Demands that ignore criticality
+brief:                  |
+                        Demands listed on each level apply whatever
+                        the criticality, so a mature module whose
+                        failure does not matter must pay for a
+                        coverage floor and measured budgets. A table
+                        of both, or objectives phased by maturity, let
+                        that module ask for little and keep the costly
+                        measurement for code that matters.
+description:            |
+                        Sources:
+                        - The per level option lists, for each level,
+                          a coverage floor, every requirement it
+                          realizes verified and budgets met, whatever
+                          the criticality
+                          [_data/decision/dec_what_a_maturity_requires/opt_demands_listed_per_level.yaml
+                          at brief].
+                        - The phased option says that each objective a
+                          criticality requires names the maturity from
+                          which it is required, and that a maturity
+                          alone requires nothing
+                          [_data/decision/dec_what_a_maturity_requires/opt_objectives_phased_by_maturity.yaml
+                          at brief].
+                        - The table option holds one register entry
+                          for each pair of a criticality and a
+                          maturity
+                          [_data/decision/dec_what_a_maturity_requires/opt_table_of_criticality_and_maturity.yaml
+                          at brief].
+                        - September made the lowest criticality level
+                          of each dimension a null level that requires
+                          nothing beyond the base
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          decision].
+                        - Coverage, profiles and budgets are measured
+                          overnight
+                          [_data/decision/dec_where_test_evidence_is_measured/ruling_where_test_evidence_is_measured.yaml
+                          at brief], and a budget is a requirement
+                          with a measure that must have a verifier
+                          [_data/decision/dec_home_of_a_performance_budget/ruling_home_of_a_performance_budget.yaml
+                          at brief].
+                        - Coverage per test took 2.6 times the base
+                          run in the container
+                          [_data/decision/dec_where_test_evidence_is_measured/ann_measuring_at_push_keeps_the_commit_gate_fast.yaml
+                          at description].
+                        - September expected most of what is built to
+                          sit at the low end of the scale, and gave
+                          the tool itself no level, so code in
+                          cc-public sits at the base
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          rationale, on spaces widest at the bottom,
+                          and at decision]. Strength: moderate.
+                          Aggregate coverage costs only about 6 per
+                          cent, so the saving comes from per-test
+                          coverage, budgets and long property runs. It
+                          grows at ten times the size, where those
+                          costs grow with the tree under the per-level
+                          option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_maturity_requires
+    guid_target:        dec_f0a4e3f7311f40f9ae0556637a7a49f0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_table_of_criticality_and_maturity
+    guid_target:        opt_6e8a71da040141f28db9c14a0b23212d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_objectives_phased_by_maturity
+    guid_target:        opt_0e4bc2984f854459af40bd34c299f444
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_demands_listed_per_level
+    guid_target:        opt_3a8cd34165f842daae93730d942ec128
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

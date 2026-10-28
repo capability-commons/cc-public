@@ -1,0 +1,114 @@
+id_self:                ann_named_stages_need_no_mapping_to_a_scale
+guid_self:              ann_8ce975415e9947c892908d0fd6c8a618
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named stages with no mapping to keep
+brief:                  |
+                        September said the stages decide the levels.
+                        Three or four named stages in one register are
+                        the smallest set of levels that does the job,
+                        and a level defined as a named stage traces
+                        directly to what it promises. A level taken
+                        from an outside scale traces first to that
+                        scale, then through a mapping to what the
+                        tooling checks, so two links and a second
+                        thing must be kept beside the levels. A spaced
+                        scale adds a numbering rule, which earns its
+                        place only if levels are often inserted.
+description:            |
+                        Sources:
+                        - The stages of the lifecycle must be defined
+                          first, and they decide the levels, not the
+                          other way about
+                          [origin/main:ddr/ddr_maturity.yaml at
+                          consequence].
+                        - The named stages option has three or four
+                          stages, ordered in a register and named for
+                          what they promise, such as draft, tested,
+                          verified and released
+                          [_data/decision/dec_maturity_levels/opt_a_few_named_stages.yaml
+                          at brief].
+                        - The external scale option takes levels from
+                          a published scale of readiness or capability
+                          and maps them to what the tooling can check
+                          [_data/decision/dec_maturity_levels/opt_levels_from_an_external_scale.yaml
+                          at brief].
+                        - The technology readiness scale has nine
+                          levels, from 1 to 9, canonized in ISO
+                          16290:2013, with level 9 described as flight
+                          proven or proven in operational environment,
+                          and its definitions use hardware terms
+                          [https://en.wikipedia.org/wiki/Technology_readiness_level].
+                        - The spaced scale option numbers levels from
+                          0 to 100 with gaps, each a register entry
+                          that names the stage it stands for
+                          [_data/decision/dec_maturity_levels/opt_levels_on_a_spaced_scale.yaml
+                          at brief].
+                        - September chose spaced numbers so that a
+                          level can be inserted without a rename and
+                          so that a name carries its own order without
+                          a rank beside it
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          decision and rationale].
+                        - No criticality register exists on dev, so a
+                          spaced scale for maturity would not yet
+                          share a convention with anything built
+                          [_data/register/, which holds no criticality
+                          register].
+                        - The guidance asks that a type, relation,
+                          field or command be added only when a real
+                          instance needs it [AGENTS.md#keep-it-small].
+                        - ASSUMPTION: published readiness scales
+                          describe the readiness of a technology or
+                          the capability of a process, not the
+                          verification evidence held for one part of a
+                          code base, so the mapping to checks is not
+                          given by the scale. Strength for
+                          traceability: Moderate. The external scale
+                          gains a cited reason for each level, which
+                          counts for it. It loses because the mapping
+                          to checks is a second, local trace. The
+                          spaced scale traces as well as named stages
+                          if each entry names its stage. At ten times
+                          the size the mapping is still one table, so
+                          the point does not grow much. Strength for
+                          simplicity: moderate. Named stages need an
+                          order written in the register, which a
+                          spaced number would carry in the name, so
+                          the spaced scale is close behind. The
+                          external scale adds a whole mapping. At ten
+                          times the size the code grows but the number
+                          of stages does not, so the point holds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_levels
+    guid_target:        dec_e34adb2f8d22437598612ceb14169d96
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_a_few_named_stages
+    guid_target:        opt_67a80b9a43724cf58efc687b9e86a547
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_levels_from_an_external_scale
+    guid_target:        opt_03b227f75731409baf2c4d3fc1a04b1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

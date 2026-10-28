@@ -1,0 +1,98 @@
+id_self:                ann_declared_release_maturity_refuses_an_unintended_drop
+guid_self:              ann_8c9964685a834c419024504533776691
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A drop in release maturity refused before the tag
+brief:                  |
+                        WTP decides each release. If a release takes
+                        the lowest maturity of what it holds, one low
+                        module added late turns an intended product
+                        into a demonstration, and the claim of the
+                        release falls without any change to the
+                        release and with no refusal. A declared
+                        maturity that the release check compares with
+                        the code refuses that release, so the drop is
+                        found before the tag and must be met by a
+                        deliberate edit that WTP reads. With no
+                        maturity on a release, a consumer cannot tell
+                        either kind apart.
+description:            |
+                        Sources:
+                        - WTP decides each release for now
+                          [_data/decision/dec_who_may_release/ruling_maintainer_decides_each_release.yaml
+                          at brief].
+                        - The lowest maturity option claims the lowest
+                          maturity of the code a release holds
+                          [_data/decision/dec_maturity_of_a_release/opt_release_takes_the_lowest_maturity.yaml
+                          at brief].
+                        - The declared option has the release check
+                          refuse a release if any code it holds is of
+                          lower maturity than declared
+                          [_data/decision/dec_maturity_of_a_release/opt_release_declares_a_maturity_that_is_checked.yaml
+                          at brief].
+                        - The no maturity option leaves the maturity
+                          of each part visible only in the graph the
+                          release holds
+                          [_data/decision/dec_maturity_of_a_release/opt_release_claims_no_maturity.yaml
+                          at brief].
+                        - The release item of 0.1.0 records its brief,
+                          version and runtime packages, and no
+                          maturity
+                          [_data/release/release_cc_public_0_1_0.yaml
+                          at brief, version and dependency].
+                        - The release check already returns each
+                          reason a commit may not be tagged
+                          [src/cctool/release/release.py within
+                          verify].
+                        - All software is written by agents, many at
+                          once, and reviewed by one maintainer
+                          [owner's statement, 2026-10-28]. Strength
+                          for reviewability: Moderate. A computed
+                          claim could be shown at release time, which
+                          narrows the gap. With no claim the reviewer
+                          must read every part. At ten times the size,
+                          with more parts changing between releases, a
+                          refusal that names the part is the cheaper
+                          thing to judge. Strength for reliability:
+                          strong if maturity is declared on code at
+                          all. It holds at ten times the size, where
+                          one low module among many is harder to see
+                          by eye.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_a_release
+    guid_target:        dec_815b8427548d495a9f387274c7436385
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_declares_a_maturity_that_is_checked
+    guid_target:        opt_4af772d1af664313ba5e0774f559a8ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_takes_the_lowest_maturity
+    guid_target:        opt_c6b3b6a10e5a43da957f36910ee3f150
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_claims_no_maturity
+    guid_target:        opt_17a72abd8514435cb7402f507b43f7b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

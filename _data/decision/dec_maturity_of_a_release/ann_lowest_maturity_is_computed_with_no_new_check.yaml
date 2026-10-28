@@ -1,0 +1,71 @@
+id_self:                ann_lowest_maturity_is_computed_with_no_new_check
+guid_self:              ann_a7bd5ab14bff437db9a8e65e78c73f16
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A release maturity computed rather than declared
+brief:                  |
+                        Taking the lowest maturity of what a release
+                        holds is one computation, written into the
+                        release item when it is prepared. A declared
+                        maturity needs that same computation, a field
+                        written by hand, and a new reason to refuse in
+                        the release check. No maturity on a release
+                        adds nothing.
+description:            |
+                        Sources:
+                        - The lowest maturity option claims the lowest
+                          maturity of the code a release holds
+                          [_data/decision/dec_maturity_of_a_release/opt_release_takes_the_lowest_maturity.yaml
+                          at brief].
+                        - The declared option refuses a release if any
+                          code it holds is of lower maturity than
+                          declared, which needs that lowest value to
+                          compare with
+                          [_data/decision/dec_maturity_of_a_release/opt_release_declares_a_maturity_that_is_checked.yaml
+                          at brief].
+                        - Release preparation writes the release item
+                          for HEAD from what it computes over the
+                          commits since the last tag
+                          [src/cctool/release/release.py within
+                          prepare].
+                        - The release check already returns each
+                          reason a commit may not be tagged
+                          [src/cctool/release/release.py within
+                          verify].
+                        - The no maturity option leaves the maturity
+                          of each part visible only in the graph the
+                          release holds
+                          [_data/decision/dec_maturity_of_a_release/opt_release_claims_no_maturity.yaml
+                          at brief]. Strength: moderate. The declared
+                          option does one more job, checking intent,
+                          and that job is what its extra parts buy. At
+                          ten times the size the count of parts is the
+                          same.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_a_release
+    guid_target:        dec_815b8427548d495a9f387274c7436385
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_takes_the_lowest_maturity
+    guid_target:        opt_c6b3b6a10e5a43da957f36910ee3f150
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_declares_a_maturity_that_is_checked
+    guid_target:        opt_4af772d1af664313ba5e0774f559a8ae
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

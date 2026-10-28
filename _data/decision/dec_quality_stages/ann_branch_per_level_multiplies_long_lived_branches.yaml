@@ -1,0 +1,87 @@
+id_self:                ann_branch_per_level_multiplies_long_lived_branches
+guid_self:              ann_c3b7326ded984441be70afc83c5aa9de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Long-lived branches added by each option
+brief:                  |
+                        One branch adds nothing. A verified branch
+                        adds one name and one nightly fast-forward,
+                        with no merge commits. A branch for each
+                        maturity level adds a branch and a promotion
+                        step for every level, from levels not yet
+                        decided, close to the many long-lived branches
+                        already rejected with git flow.
+description:            |
+                        Sources:
+                        - The one-branch option lands all work on dev
+                          through the commit and push gates
+                          [_data/decision/dec_quality_stages/opt_one_branch.yaml
+                          at brief].
+                        - The verified branch option moves the branch
+                          each night, by fast-forward only, to a dev
+                          commit that passes every overnight test,
+                          coverage and budget check, and cuts releases
+                          only from it
+                          [_data/decision/dec_quality_stages/opt_dev_and_a_verified_branch.yaml
+                          at brief].
+                        - The branch per level option has a branch for
+                          each maturity level and promotes a commit
+                          from one level's branch to the next as it
+                          passes the next level's demands
+                          [_data/decision/dec_quality_stages/opt_a_branch_per_maturity_level.yaml
+                          at brief].
+                        - The levels of maturity are still open
+                          [_data/decision/dec_maturity_levels/, which
+                          holds three options and no ruling].
+                        - Git flow was rejected, with releases from
+                          dev until the maintainer moves the release
+                          line to main and breaking work on next after
+                          1.0
+                          [_data/decision/dec_branch_lines/ruling_branch_lines.yaml
+                          at brief and edge].
+                        - Git flow keeps four kinds of long-lived
+                          branch for one integration job
+                          [_data/decision/dec_branch_lines/ann_git_flow_merges_between_long_lived_branches.yaml
+                          at brief].
+                        - dev only moves forward by fast-forward
+                          merges and its history stays linear
+                          [AGENTS.md#working-beside-other-agents].
+                          Strength: strong against a branch per level,
+                          moderate between one branch and a verified
+                          branch, which differ by one branch and one
+                          job. At ten times the size the count of
+                          branches does not grow, but each promotion
+                          step runs more often.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_quality_stages
+    guid_target:        dec_11742a996cfd43768f7baf90954fa166
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_branch
+    guid_target:        opt_e353fe31702c4325817b2227c746d3d9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_and_a_verified_branch
+    guid_target:        opt_09c6c0ab56384aec80c763186d49fb28
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_a_branch_per_maturity_level
+    guid_target:        opt_eec4efd3ea0f410e98088be9a66e0b48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

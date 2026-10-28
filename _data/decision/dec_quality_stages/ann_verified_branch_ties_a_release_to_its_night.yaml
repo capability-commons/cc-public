@@ -1,0 +1,84 @@
+id_self:                ann_verified_branch_ties_a_release_to_its_night
+guid_self:              ann_78325dd5a67749a9a11d7b04bef99612
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each release traced to the night that passed it
+brief:                  |
+                        A verified branch moved only by fast-forward
+                        records in git which dev commit passed the
+                        overnight run, so every release traces to that
+                        evidence. A branch for each maturity level
+                        gives a whole tree one level, which does not
+                        trace to maturities declared part by part.
+description:            |
+                        Sources:
+                        - The ruling on test evidence measures
+                          coverage, profiles and budgets overnight
+                          only, on condition that a nightly stage
+                          guards what is released, so that nothing
+                          unmeasured is released
+                          [_data/decision/dec_where_test_evidence_is_measured/ruling_where_test_evidence_is_measured.yaml
+                          at brief].
+                        - The verified branch option moves the branch
+                          each night, by fast-forward only, to a dev
+                          commit that passes every overnight test,
+                          coverage and budget check, and cuts releases
+                          only from it
+                          [_data/decision/dec_quality_stages/opt_dev_and_a_verified_branch.yaml
+                          at brief].
+                        - The one branch option cuts a release from a
+                          dev commit that the overnight run and the
+                          release gate have passed
+                          [_data/decision/dec_quality_stages/opt_one_branch.yaml
+                          at brief].
+                        - The report of each scheduled review is a
+                          file in the project's shared notes folder,
+                          not in the tree, so under one branch the
+                          record of which commit the overnight run
+                          passed lives outside the graph and history
+                          [.agents/skills/reviewing-the-repository/SKILL.md#the-report].
+                        - The branch per level option has a branch for
+                          each maturity level and promotes a commit
+                          from one level's branch to the next as it
+                          passes the next level's demands
+                          [_data/decision/dec_quality_stages/opt_a_branch_per_maturity_level.yaml
+                          at brief].
+                        - Both code maturity options declare maturity
+                          per component or per module, not per tree
+                          [_data/decision/dec_maturity_of_code/opt_maturity_on_each_logical_component.yaml
+                          and opt_maturity_on_each_module.yaml at
+                          brief]. Strength: Moderate, and conditional
+                          on the review report staying outside the
+                          tree. If the overnight run recorded the
+                          commit it passed in a committed item, one
+                          branch would trace as well. At ten times the
+                          size, with more commits a night, the branch
+                          position stays one fact per night.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_quality_stages
+    guid_target:        dec_11742a996cfd43768f7baf90954fa166
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_and_a_verified_branch
+    guid_target:        opt_09c6c0ab56384aec80c763186d49fb28
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_a_branch_per_maturity_level
+    guid_target:        opt_eec4efd3ea0f410e98088be9a66e0b48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

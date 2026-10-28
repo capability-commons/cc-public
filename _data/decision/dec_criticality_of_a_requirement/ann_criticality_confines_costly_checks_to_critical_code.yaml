@@ -1,0 +1,85 @@
+id_self:                ann_criticality_confines_costly_checks_to_critical_code
+guid_self:              ann_92371b3eb0af492aa7f986dbc1bd3c72
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Costly verification only where failure matters
+brief:                  |
+                        With no criticality, every requirement is
+                        verified to the same standard, so the
+                        overnight run must give all code the most
+                        stringent checks or none. A criticality
+                        derived onto the code lets it give the costly
+                        checks only to code that realizes a critical
+                        requirement. Deriving it is one maximum over
+                        the code's edges to requirements, which costs
+                        little.
+description:            |
+                        Sources:
+                        - The no criticality option verifies every
+                          requirement to the same standard
+                          [_data/decision/dec_criticality_of_a_requirement/opt_no_criticality.yaml
+                          at brief].
+                        - Both derived options have code take the
+                          greatest criticality among the requirements
+                          it realizes
+                          [_data/decision/dec_criticality_of_a_requirement/opt_one_criticality_derived_onto_code.yaml
+                          and
+                          opt_criticality_in_two_dimensions_derived_onto_code.yaml
+                          at brief].
+                        - A dimension a requirement does not declare
+                          is at its base level, which requires nothing
+                          beyond the base
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          decision].
+                        - The slow run took 17 min 8 s real on an
+                          8-core machine, and most of the full gate's
+                          time is in tests marked slow, which grow
+                          with the data
+                          [_data/decision/dec_release_gate/ann_first_release_gate_took_17_to_26_minutes.yaml
+                          at brief and description].
+                        - Dev holds four requirement items and no
+                          criticality type [_data/requirement/, four
+                          files, measured by Claude in the cloud
+                          container, 2026-10-28].
+                        - ASSUMPTION: the overnight run selects costly
+                          checks by the derived criticality. Strength:
+                          moderate. Today there are few requirements,
+                          so the saving is small. At ten times the
+                          size the derivation stays linear in edges
+                          while the cost of verifying everything to
+                          the top standard grows with the whole tree.
+                          Cost does not separate one dimension from
+                          two.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_criticality_of_a_requirement
+    guid_target:        dec_2ca3b4246ed44762afc7f970a247e372
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_criticality_derived_onto_code
+    guid_target:        opt_45c92f3feabd47979ded96ab2ec0d75a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_criticality_in_two_dimensions_derived_onto_code
+    guid_target:        opt_fed53c7508a64b05a7382598300eadce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_criticality
+    guid_target:        opt_0c2bbbef28324385be61d4aa71dcc325
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

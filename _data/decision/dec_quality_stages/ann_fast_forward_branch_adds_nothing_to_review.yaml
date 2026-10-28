@@ -1,0 +1,79 @@
+id_self:                ann_fast_forward_branch_adds_nothing_to_review
+guid_self:              ann_9e15f49b702c46f2852f44cc64562bc8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A second branch that holds no new commits
+brief:                  |
+                        A verified branch moved by fast-forward holds
+                        only commits WTP has already seen on dev, so
+                        it adds nothing to review. The commits on dev
+                        not yet on verified form one range, a queue
+                        the reviewer can read. Promotion through a
+                        branch for each level gives several such
+                        ranges to watch.
+description:            |
+                        Sources:
+                        - The verified branch option moves the branch
+                          each night, by fast-forward only, to a dev
+                          commit that passes every overnight test,
+                          coverage and budget check, and cuts releases
+                          only from it
+                          [_data/decision/dec_quality_stages/opt_dev_and_a_verified_branch.yaml
+                          at brief].
+                        - dev only moves forward by fast-forward
+                          merges and its history stays linear
+                          [AGENTS.md#working-beside-other-agents].
+                        - The branch per level option has a branch for
+                          each maturity level and promotes a commit
+                          from one level's branch to the next as it
+                          passes the next level's demands
+                          [_data/decision/dec_quality_stages/opt_a_branch_per_maturity_level.yaml
+                          at brief].
+                        - Git flow was rejected, with releases from
+                          dev until the maintainer moves the release
+                          line to main and breaking work on next after
+                          1.0
+                          [_data/decision/dec_branch_lines/ruling_branch_lines.yaml
+                          at brief and edge].
+                        - WTP wants work from many agents integrated
+                          sooner through a fast first gate, with later
+                          stages catching thorny problems before
+                          release [owner's statement, 2026-10-28].
+                        - The commit gate takes about 78 s for a code
+                          commit
+                          [_data/decision/dec_tooling_language/ann_gate_takes_a_minute.yaml
+                          at brief]. Strength: Moderate. One branch
+                          adds no ranges at all but leaves the
+                          reviewer to find which commit passed. A
+                          branch per level adds one range per level,
+                          and more beside main and next. At ten times
+                          the size more commits wait each night, and
+                          one range remains easy to read.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_quality_stages
+    guid_target:        dec_11742a996cfd43768f7baf90954fa166
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_and_a_verified_branch
+    guid_target:        opt_09c6c0ab56384aec80c763186d49fb28
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_a_branch_per_maturity_level
+    guid_target:        opt_eec4efd3ea0f410e98088be9a66e0b48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

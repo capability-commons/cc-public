@@ -1,0 +1,98 @@
+id_self:                ann_nightly_run_costs_the_same_for_any_commit_count
+guid_self:              ann_95615f3ace6c43c0b05ee739eb591db7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of promotion per commit against one nightly run
+brief:                  |
+                        A nightly run tests one dev commit, so its
+                        cost does not grow with the number of commits
+                        agents land that day. Promoting each commit
+                        through a branch per maturity level runs each
+                        level's demands per commit, so the cost grows
+                        with commits times levels. With a slow run of
+                        about 17 minutes already, that does not fit a
+                        night at ten times the size.
+description:            |
+                        Sources:
+                        - All software is written by agents, many at
+                          once, reviewed by WTP [owner's statement,
+                          2026-10-28].
+                        - The verified branch option moves the branch
+                          each night, by fast-forward only, to a dev
+                          commit that passes every overnight test,
+                          coverage and budget check, and cuts releases
+                          only from it
+                          [_data/decision/dec_quality_stages/opt_dev_and_a_verified_branch.yaml
+                          at brief].
+                        - The one branch option cuts a release from a
+                          dev commit that the overnight run and the
+                          release gate have passed
+                          [_data/decision/dec_quality_stages/opt_one_branch.yaml
+                          at brief].
+                        - The branch per level option has a branch for
+                          each maturity level and promotes a commit
+                          from one level's branch to the next as it
+                          passes the next level's demands
+                          [_data/decision/dec_quality_stages/opt_a_branch_per_maturity_level.yaml
+                          at brief].
+                        - The slow run took 17 min 8 s real on an
+                          8-core machine and the full gate about 26
+                          minutes on 4 cores
+                          [_data/decision/dec_release_gate/ann_first_release_gate_took_17_to_26_minutes.yaml
+                          at brief and description].
+                        - The ruling on test evidence measures
+                          coverage, profiles and budgets overnight
+                          only, on condition that a nightly stage
+                          guards what is released, so that nothing
+                          unmeasured is released
+                          [_data/decision/dec_where_test_evidence_is_measured/ruling_where_test_evidence_is_measured.yaml
+                          at brief].
+                        - WTP wants the stages ordered by the most
+                          risk reduction per computational resource
+                          [owner's statement, 2026-10-28, recorded as
+                          ann_each_stage_buys_the_most_risk_reduction_for_its_time].
+                        - ASSUMPTION: under the branch per level
+                          option each commit is promoted on its own,
+                          as its brief reads. Batched promotion would
+                          cost the same as one nightly run per level.
+                        - ASSUMPTION: the slow run grows about
+                          linearly with the tests, near three hours at
+                          ten times the size. Strength: strong. It
+                          holds and grows at ten times the size, since
+                          both the commit count and each run's length
+                          grow. The verified branch and one branch
+                          cost the same machine time, and the
+                          fast-forward itself costs one ref update.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_quality_stages
+    guid_target:        dec_11742a996cfd43768f7baf90954fa166
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_and_a_verified_branch
+    guid_target:        opt_09c6c0ab56384aec80c763186d49fb28
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_branch
+    guid_target:        opt_e353fe31702c4325817b2227c746d3d9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_a_branch_per_maturity_level
+    guid_target:        opt_eec4efd3ea0f410e98088be9a66e0b48
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

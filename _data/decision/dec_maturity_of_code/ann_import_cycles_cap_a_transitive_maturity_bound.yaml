@@ -1,0 +1,94 @@
+id_self:                ann_import_cycles_cap_a_transitive_maturity_bound
+guid_self:              ann_6a6b17074120466c90a962ff190b48c7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Import cycles that weaken a maturity ratchet
+brief:                  |
+                        Some packages already import each other, and
+                        the ruled import rule starts as advice for
+                        that reason. A maturity bound read from the
+                        same imports can only report, not refuse,
+                        until those cycles are broken. September
+                        rejected a bound that only reports, so neither
+                        maturity option is a working ratchet on the
+                        day it lands.
+description:            |
+                        Sources:
+                        - The checker imports the editor and the
+                          release package [src/cctool/check/check.py,
+                          the imports of cctool.edit.layout and
+                          cctool.release.record].
+                        - The editor imports the checker
+                          [src/cctool/edit/edit.py, the import of
+                          cctool.check.check].
+                        - The release package imports the checker
+                          [src/cctool/release/release.py, the import
+                          of cctool.check.check, as listed in
+                          ann_unchecked_imports_already_run_both_ways].
+                        - The import rule over the graph starts as
+                          advice, since imports already run both ways
+                          between some parts
+                          [_data/decision/dec_check_of_import_layering/ruling_check_of_import_layering.yaml
+                          at brief].
+                        - Under a transitive bound, every module in an
+                          import cycle depends on every other, so all
+                          of them must declare the same maturity
+                          [origin/main:ddr/ddr_maturity.yaml at
+                          decision, read with the cycles above].
+                        - September rejected letting a module declare
+                          a maturity its dependencies do not support
+                          and reporting it as a note, because a claim
+                          allowed to stand is one that will be
+                          believed [origin/main:ddr/ddr_maturity.yaml
+                          at alternative].
+                        - The component option has the import rule
+                          report a component that depends on one of
+                          lower maturity, and the module option has a
+                          check report a module that does
+                          [_data/decision/dec_maturity_of_code/opt_maturity_on_each_logical_component.yaml
+                          at brief, opt_maturity_on_each_module.yaml
+                          at brief].
+                        - ASSUMPTION: some of the packages in these
+                          cycles belong to different logical
+                          components once modules are given
+                          components, since no edge from a module to a
+                          component exists yet. Strength: moderate and
+                          temporary. It holds against either maturity
+                          option until the cycles are broken, and is
+                          gone once they are. At ten times the size
+                          the number of pairs that can form cycles
+                          grows faster than the modules, so the cost
+                          of making the bound refuse rises with it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_code
+    guid_target:        dec_aa4f56f52fbe4a8898555bacb64496c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_maturity
+    guid_target:        opt_ef2ce2b10ac14727858470010b1f2a8b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

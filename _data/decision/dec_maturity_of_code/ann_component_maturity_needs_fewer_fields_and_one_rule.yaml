@@ -1,0 +1,121 @@
+id_self:                ann_component_maturity_needs_fewer_fields_and_one_rule
+guid_self:              ann_27cf0b47ddc94db6833fc7f77271d351
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity on fourteen components under the ruled import rule
+brief:                  |
+                        A maturity on each logical component is one
+                        field in one of fourteen files, read beside
+                        the drivers of that component, and one more
+                        comparison in the import rule already ruled. A
+                        maturity on each module puts a field on about
+                        sixty module items, ninety with the test
+                        folders, and adds a check of transitive
+                        imports between modules, a second reading of
+                        dependencies beside the rule over components.
+                        A breach can then come from an import added in
+                        a module far from the one that declares the
+                        maturity, so the reviewer has to read the
+                        transitive imports to judge the change. No
+                        maturity adds nothing.
+description:            |
+                        Sources:
+                        - The ruled import rule records imports as
+                          facts, puts modules in logical components by
+                          edges, states allowed dependencies as a
+                          relation between components, and reports an
+                          import that relation does not allow
+                          [_data/decision/dec_check_of_import_layering/ruling_check_of_import_layering.yaml
+                          at brief].
+                        - There are fourteen logical component files
+                          on dev [_data/logical_component/, one file
+                          each].
+                        - 92 Python files under src hold a module item
+                          in their docstring, 60 of them outside the
+                          test folders [src/cctool, count of files
+                          with an id_self beginning pym_, measured by
+                          Claude in the cloud container, 2026-10-28].
+                        - The module option bounds each module by
+                          every module it imports, directly or through
+                          another
+                          [_data/decision/dec_maturity_of_code/opt_maturity_on_each_module.yaml
+                          at brief].
+                        - The component option lets modules take the
+                          maturity of their component, bounds a
+                          component by the components it depends on,
+                          and has the import rule report a component
+                          that depends on one of lower maturity
+                          [_data/decision/dec_maturity_of_code/opt_maturity_on_each_logical_component.yaml
+                          at brief].
+                        - September placed that transitive reading in
+                          the layering check, which then read imports
+                          between modules
+                          [origin/main:ddr/ddr_maturity.yaml at
+                          consequence].
+                        - September put maturity on the module and
+                          rejected a coarser unit because the whole
+                          would move at the pace of its least finished
+                          part [origin/main:ddr/ddr_maturity.yaml at
+                          alternative].
+                        - The no maturity option holds every item to
+                          the same checks, as now
+                          [_data/decision/dec_maturity_of_code/opt_no_maturity.yaml
+                          at brief].
+                        - AGENTS.md asks that each change be small
+                          enough to read in one sitting
+                          [AGENTS.md#keep-it-small].
+                        - All software is written by agents, many at
+                          once, and reviewed by one maintainer
+                          [owner's statement, 2026-10-28].
+                        - ASSUMPTION: under the component option, a
+                          module that joins a component takes its
+                          maturity without any line in the diff that
+                          says so. Strength for reviewability:
+                          Moderate. The count of fields to judge is
+                          about four times smaller, and a breach names
+                          two components rather than a chain of
+                          modules. The assumption cuts the other way:
+                          a reviewer of a new module must know its
+                          component's maturity. At ten times the size
+                          the gap widens, since modules grow faster
+                          than components. Strength for simplicity:
+                          strong on the count of mechanisms. The
+                          component option adds no new dependency
+                          reading, and the module option adds one. No
+                          maturity is simpler still, at the cost of
+                          the lever WTP asked to discuss. At ten times
+                          the size the gap widens, since modules grow
+                          faster than components.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_code
+    guid_target:        dec_aa4f56f52fbe4a8898555bacb64496c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,90 @@
+id_self:                ann_verified_branch_names_the_commit_the_night_passed
+guid_self:              ann_eee58fddc573410686d1da1381fd5830
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A branch that marks what the overnight run passed
+brief:                  |
+                        The overnight run tests the tip of dev at one
+                        moment, and work lands after it. Release
+                        preparation works on HEAD and nothing records
+                        which commit passed overnight, so with one
+                        branch the condition that a nightly stage
+                        guards what is released rests on someone
+                        checking by hand. A verified branch moved
+                        forward only by a passing night names that
+                        commit, and a missed or failed night leaves it
+                        where it was.
+description:            |
+                        Sources:
+                        - The ruling on test evidence measures
+                          coverage, profiles and budgets overnight
+                          only, on condition that a nightly stage
+                          guards what is released, so that nothing
+                          unmeasured is released
+                          [_data/decision/dec_where_test_evidence_is_measured/ruling_where_test_evidence_is_measured.yaml
+                          at brief].
+                        - The daily review runs at 03:00 UTC
+                          [_data/decision/dec_where_test_evidence_is_measured/dec_where_test_evidence_is_measured.yaml
+                          at description].
+                        - The scheduled reviews are run by agents, and
+                          a missed run is itself a finding
+                          [.agents/skills/reviewing-the-repository/SKILL.md#reviewing-the-repository].
+                        - Release preparation writes the release item
+                          for HEAD [src/cctool/release/release.py
+                          within prepare], and the release check reads
+                          the tree at a commit, not a record of which
+                          commit passed overnight
+                          [src/cctool/release/release.py within
+                          verify].
+                        - The one branch option cuts a release from a
+                          dev commit that the overnight run and the
+                          release gate have passed
+                          [_data/decision/dec_quality_stages/opt_one_branch.yaml
+                          at brief].
+                        - The verified branch option moves the branch
+                          each night, by fast-forward only, to a dev
+                          commit that passes every overnight test,
+                          coverage and budget check, and cuts releases
+                          only from it
+                          [_data/decision/dec_quality_stages/opt_dev_and_a_verified_branch.yaml
+                          at brief].
+                        - The branch per level option has a branch for
+                          each maturity level and promotes a commit
+                          from one level's branch to the next as it
+                          passes the next level's demands
+                          [_data/decision/dec_quality_stages/opt_a_branch_per_maturity_level.yaml
+                          at brief]. Strength: strong against one
+                          branch, since it fails safe when a night is
+                          missed. The branch-per-level option shares
+                          the property but depends on maturity levels
+                          not yet decided. It holds at ten times the
+                          size, where more commits land between a
+                          night and a release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_quality_stages
+    guid_target:        dec_11742a996cfd43768f7baf90954fa166
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dev_and_a_verified_branch
+    guid_target:        opt_09c6c0ab56384aec80c763186d49fb28
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_branch
+    guid_target:        opt_e353fe31702c4325817b2227c746d3d9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

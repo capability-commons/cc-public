@@ -1,0 +1,82 @@
+id_self:                ann_component_maturity_sits_where_requirements_point
+guid_self:              ann_28fba40253814c9ca74b6c380e76d0a5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity on the node the trace already reaches
+brief:                  |
+                        Requirements on dev name a logical component
+                        as their subject, and code reaches a component
+                        by a realizes edge. A maturity declared on the
+                        component sits on the node that requirements,
+                        driving concerns and allowed dependencies
+                        already trace to. A maturity on each module
+                        sits on an item that nothing in the trace yet
+                        reaches.
+description:            |
+                        Sources:
+                        - Each of the four requirements on dev names a
+                          logical component as its subject,
+                          lco_tooling or lco_chat
+                          [_data/requirement/rqt_rename_keeps_guid.yaml
+                          and the other three requirement files, at
+                          edge relation_has_subject].
+                        - The only code item that names a component is
+                          the root package pyp_cctool, which realizes
+                          lco_tooling [src/cctool/__init__.py at the
+                          docstring item, edge relation_realizes].
+                        - There is no edge yet from a module to a
+                          component [measured by Claude in the cloud
+                          container, 2026-10-28].
+                        - The ruled import rule records imports as
+                          facts, puts modules in logical components by
+                          edges, states allowed dependencies as a
+                          relation between components, and reports an
+                          import that relation does not allow
+                          [_data/decision/dec_check_of_import_layering/ruling_check_of_import_layering.yaml
+                          at brief].
+                        - A logical component names its driving
+                          concerns by relation_is_driven_by
+                          [_data/logical_component/lco_tooling.yaml at
+                          edge].
+                        - September put maturity on the module and
+                          rejected a coarser unit because the whole
+                          would move at the pace of its least finished
+                          part [origin/main:ddr/ddr_maturity.yaml at
+                          alternative]. Strength: Moderate to strong.
+                          With a component maturity, the claim "this
+                          is mature" and the requirements it must meet
+                          hang on one node, so a check can ask whether
+                          every requirement on that component is
+                          verified. At ten times the size it holds
+                          better, since modules multiply faster than
+                          components. September's objection about pace
+                          is real but is a cost to other concerns, not
+                          a gap in the trace.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_code
+    guid_target:        dec_aa4f56f52fbe4a8898555bacb64496c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

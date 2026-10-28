@@ -1,0 +1,121 @@
+id_self:                ann_named_stages_match_gates_that_already_run
+guid_self:              ann_e3feaed46c554629b5e3bca74a7d3a19
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Levels that each name a gate that already runs
+brief:                  |
+                        A maturity claim is only as trustworthy as the
+                        check behind it. A few stages named for what
+                        they promise can each be tied to a gate that
+                        already runs and whose cost is known: the
+                        commit gate, the pre-push gate, the overnight
+                        run and the release gate. A level with no gate
+                        of its own adds either a new run or no
+                        evidence. A nine-level published readiness
+                        scale has more levels than there are gates,
+                        and describes states such as proven in an
+                        operational environment, which no check here
+                        can establish.
+description:            |
+                        Sources:
+                        - The pre-push gate runs every test not marked
+                          slow, and the commit gate leaves out slow,
+                          prepush and fuzz tests
+                          [src/cctool/gate/gate.py at MARK_PUSH and
+                          MARK_COMMIT].
+                        - A code commit takes about 78 s in the gate
+                          on the development VM and a data-only commit
+                          about 10 s
+                          [_data/decision/dec_tooling_language/ann_gate_takes_a_minute.yaml
+                          at brief].
+                        - The overnight run holds the slow run, the
+                          fuzz run and the full check [pyproject.toml
+                          at tool.pixi.tasks.slow,
+                          tool.pixi.tasks.fuzz and
+                          tool.pixi.tasks.check-full].
+                        - The release gate runs every check and test
+                          with no cached verdicts on each Python, and
+                          builds and installs the package
+                          [_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          at brief].
+                        - The ruling on where test evidence is
+                          measured makes the overnight run the only
+                          place coverage, profiles and budgets are
+                          measured
+                          [_data/decision/dec_where_test_evidence_is_measured/ruling_where_test_evidence_is_measured.yaml
+                          at brief].
+                        - The named stages option has three or four
+                          stages, ordered in a register and named for
+                          what they promise, such as draft, tested,
+                          verified and released
+                          [_data/decision/dec_maturity_levels/opt_a_few_named_stages.yaml
+                          at brief].
+                        - The technology readiness scale has nine
+                          levels, from 1 to 9, canonized in ISO
+                          16290:2013, with level 9 described as flight
+                          proven or proven in operational environment,
+                          and its definitions use hardware terms
+                          [https://en.wikipedia.org/wiki/Technology_readiness_level].
+                        - The external scale option takes levels from
+                          a published scale of readiness or capability
+                          and maps them to what the tooling can check
+                          [_data/decision/dec_maturity_levels/opt_levels_from_an_external_scale.yaml
+                          at brief].
+                        - The stages of the lifecycle must be defined
+                          first, and they decide the levels, not the
+                          other way about
+                          [origin/main:ddr/ddr_maturity.yaml at
+                          consequence].
+                        - ASSUMPTION: several readiness levels would
+                          map to the same check here, so a level
+                          claimed would say more than any check
+                          showed.
+                        - ASSUMPTION: a maturity level is shown by
+                          evidence from some run, so each level needs
+                          a run that tells it from the level below.
+                          Strength for reliability: moderate. It
+                          favors levels derived from the gates over
+                          levels imported from outside. The spaced
+                          scale is neutral on this point, since each
+                          of its entries can also name a gate. It
+                          holds at ten times the size, since the gates
+                          stay few as the code grows. Strength for
+                          performance efficiency: weak to moderate.
+                          The spaced numbering itself costs nothing,
+                          so the point is about how many levels are
+                          used, not how they are numbered. It holds at
+                          ten times the size, since each extra run
+                          then costs more.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_levels
+    guid_target:        dec_e34adb2f8d22437598612ceb14169d96
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_a_few_named_stages
+    guid_target:        opt_67a80b9a43724cf58efc687b9e86a547
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_levels_from_an_external_scale
+    guid_target:        opt_03b227f75731409baf2c4d3fc1a04b1e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

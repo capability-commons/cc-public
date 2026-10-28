@@ -1,0 +1,79 @@
+id_self:                ann_declared_release_maturity_can_key_a_shorter_gate
+guid_self:              ann_0914b1464ca444dab1c8f086a805b776
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared release maturity as the key for a shorter gate
+brief:                  |
+                        Checking a release against what it holds is
+                        one minimum over the maturity of its code,
+                        which costs nothing beside a full gate of
+                        about 26 minutes. A maturity declared before
+                        the gate runs tells the gate which demands to
+                        check, so a low-maturity demonstration or fix
+                        can take a shorter path. A maturity computed
+                        after, or none, gives the gate no such key.
+description:            |
+                        Sources:
+                        - The full gate for v0.1.0 took about 26
+                          minutes on 4 cores
+                          [_data/decision/dec_release_gate/ann_first_release_gate_took_17_to_26_minutes.yaml
+                          at brief].
+                        - The full gate is timed at the first release
+                          before any shorter path for patches is added
+                          [_data/decision/dec_release_gate/ruling_release_gate.yaml
+                          at brief].
+                        - The time of the full gate sits between a fix
+                          and its release, and WTP wants to respond to
+                          reported problems quickly
+                          [_data/decision/dec_release_gate/ann_full_gate_lengthens_time_to_a_fix.yaml
+                          at brief and description].
+                        - The declared option has the release check
+                          refuse a release if any code it holds is of
+                          lower maturity than declared
+                          [_data/decision/dec_maturity_of_a_release/opt_release_declares_a_maturity_that_is_checked.yaml
+                          at brief].
+                        - The lowest maturity option claims the lowest
+                          maturity of the code a release holds
+                          [_data/decision/dec_maturity_of_a_release/opt_release_takes_the_lowest_maturity.yaml
+                          at brief].
+                        - WTP described a quick demonstration on a
+                          short timescale, released with a declared
+                          maturity that matched the lowest declared
+                          maturity of its components [owner's
+                          statement, 2026-10-28].
+                        - ASSUMPTION: a shorter release path, once
+                          added, would select its demands by maturity.
+                          The ruled full gate runs every check today
+                          whatever the maturity. Strength: weak today,
+                          since the full gate runs everything. It
+                          holds at ten times the size, where the full
+                          gate grows with the slow tests and a keyed
+                          shorter path saves more.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_a_release
+    guid_target:        dec_815b8427548d495a9f387274c7436385
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_release_declares_a_maturity_that_is_checked
+    guid_target:        opt_4af772d1af664313ba5e0774f559a8ae
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_release_claims_no_maturity
+    guid_target:        opt_17a72abd8514435cb7402f507b43f7b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

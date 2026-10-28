@@ -1,0 +1,91 @@
+id_self:                ann_data_integrity_has_no_safety_or_security_dimension
+guid_self:              ann_6cba815d04db4b278d7b14cd8c6bc1df
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No dimension for a requirement that guards the data
+brief:                  |
+                        The requirements that keep the graph sound,
+                        such as rqt_edit_refuses_new_failure, are
+                        about faults and data integrity, not harm to a
+                        third party or a compromise. Safety and
+                        security dimensions give them nowhere to
+                        declare a level, and September's rule gave the
+                        tooling no level at all. One criticality on
+                        one scale lets such a requirement be marked
+                        critical and so earn a verifier that states
+                        its procedure.
+description:            |
+                        Sources:
+                        - rqt_edit_refuses_new_failure says the
+                          tooling makes no edit that would add a
+                          failure to the tree, so that an edit leaves
+                          the tree as sound as it found it, and its
+                          subject is lco_tooling
+                          [_data/requirement/rqt_edit_refuses_new_failure.yaml
+                          at brief, rationale and edge].
+                        - September's two dimensions are safety, as
+                          harm to a third party, and security, as
+                          compromise or disclosure
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          decision].
+                        - September said the repository is a tool,
+                          takes no level from the rule, and is
+                          accounted for by tool qualification, and
+                          that the lever is for the segments that hold
+                          what is built with the tool
+                          [origin/main:ddr/ddr_criticality.yaml at
+                          decision and consequence].
+                        - The one criticality option declares one
+                          criticality on one scale and takes the
+                          greatest onto code
+                          [_data/decision/dec_criticality_of_a_requirement/opt_one_criticality_derived_onto_code.yaml
+                          at brief].
+                        - Once criticality exists, a critical
+                          requirement must have a verifier whose item
+                          states the procedure and what shows success
+                          [_data/decision/dec_when_a_test_case_item_is_written/ruling_when_a_test_case_item_is_written.yaml
+                          at brief].
+                        - The no criticality option verifies every
+                          requirement to the same standard
+                          [_data/decision/dec_criticality_of_a_requirement/opt_no_criticality.yaml
+                          at brief]. Strength: moderate. It depends on
+                          the one scale meaning how bad an unmet
+                          obligation is in general, and on dropping
+                          the exemption of the tooling. A third
+                          dimension for integrity would also answer
+                          it, at the cost of another field. At ten
+                          times the size more requirements guard data,
+                          so the point grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_criticality_of_a_requirement
+    guid_target:        dec_2ca3b4246ed44762afc7f970a247e372
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_criticality_derived_onto_code
+    guid_target:        opt_45c92f3feabd47979ded96ab2ec0d75a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_criticality_in_two_dimensions_derived_onto_code
+    guid_target:        opt_fed53c7508a64b05a7382598300eadce
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_criticality
+    guid_target:        opt_0c2bbbef28324385be61d4aa71dcc325
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

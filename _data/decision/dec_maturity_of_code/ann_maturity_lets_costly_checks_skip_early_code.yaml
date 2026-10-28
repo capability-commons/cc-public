@@ -1,0 +1,86 @@
+id_self:                ann_maturity_lets_costly_checks_skip_early_code
+guid_self:              ann_ad449b4859c54bf3a514b0bac7d1d5ba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Costly checks confined to mature code
+brief:                  |
+                        With no maturity, every item gets the same
+                        checks, so the costly ones either run over the
+                        whole tree or run nowhere. A declared maturity
+                        lets the overnight run spend per-test
+                        coverage, budgets and long property runs only
+                        on code that claims a high maturity. That
+                        keeps the machine time of verification from
+                        growing with every sketch an agent writes.
+description:            |
+                        Sources:
+                        - The full gate for v0.1.0 took about 26
+                          minutes on 4 cores, and the slow run took 17
+                          min 8 s real on an 8-core machine
+                          [_data/decision/dec_release_gate/ann_first_release_gate_took_17_to_26_minutes.yaml
+                          at description].
+                        - In that run 3,058 of the 3,760 tests are
+                          marked slow
+                          [_data/decision/dec_release_gate/ann_first_release_gate_took_17_to_26_minutes.yaml
+                          at description].
+                        - Coverage per test with the C tracer took 2.6
+                          times the base run, and 534 s for the
+                          commit-gate tests on 4 CPUs
+                          [_data/decision/dec_where_test_evidence_is_measured/ann_measuring_at_push_keeps_the_commit_gate_fast.yaml
+                          and
+                          ann_remote_or_nightly_evidence_adds_failure_modes.yaml
+                          at description].
+                        - In earlier work higher maturity required
+                          more coverage and more stringent testing,
+                          and lower maturity was less constrained
+                          [owner's statement, 2026-10-28].
+                        - The no maturity option holds every item to
+                          the same checks, as now
+                          [_data/decision/dec_maturity_of_code/opt_no_maturity.yaml
+                          at brief].
+                        - All software is written by agents, many at
+                          once, and reviewed by one maintainer
+                          [owner's statement, 2026-10-28].
+                        - ASSUMPTION: the overnight run selects its
+                          costly checks by the declared maturity. If
+                          it runs them on all code anyway, maturity
+                          changes what is required but not what is
+                          spent. Strength: moderate today, since the
+                          tree is small and coverage is measured
+                          overnight only. It grows at ten times the
+                          size, where slow tests that grow with the
+                          data would run on every module, mature or
+                          not.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_maturity_of_code
+    guid_target:        dec_aa4f56f52fbe4a8898555bacb64496c2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_logical_component
+    guid_target:        opt_caaa9408878c42d1842cafc28efd1a19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_maturity_on_each_module
+    guid_target:        opt_9df2c6f39b43489eb318d7b129c46a4a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_maturity
+    guid_target:        opt_ef2ce2b10ac14727858470010b1f2a8b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
