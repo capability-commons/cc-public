@@ -19,7 +19,13 @@ description:            |
                         commands registered on it. Each module other
                         than command and group holds the commands of
                         one kind.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_cli
+    guid_target:        lco_90f819c2a5e544a7a19d4a7f7b8b3265
 
 ...
 """

@@ -1,0 +1,33 @@
+id_self:                lco_tooling_gate
+guid_self:              lco_32ec17050dab45ba9cfbf2a3a3338eb2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Commit gate
+brief:                  |
+                        The part of the tooling that refuses a commit
+                        whose content fails the check, the lint or the
+                        tests.
+description:            |
+                        Realized by the package cctool.gate. Its edges
+                        of relation_may_depend_on record the order in
+                        which the packages of the tooling import each
+                        other, which the advice import_not_allowed
+                        guards.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_tooling
+    guid_target:        lco_10147b22f69f495789103cec049b2c6a
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_tooling_check
+    guid_target:        lco_8c063855d4344ccd8e184b94b26b079c

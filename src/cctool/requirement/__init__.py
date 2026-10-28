@@ -21,7 +21,13 @@ description:            |
                         statement of a requirement, which is never
                         stored, and the module that raises the
                         questions and characteristics of its review.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_requirement
+    guid_target:        lco_cfadc2691d0247eb85b8344464c98dc0
 
 ...
 """

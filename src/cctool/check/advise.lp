@@ -478,11 +478,14 @@ ruling_with_unargued_driver(Ruling, Option, Concern) :-
 % title:                  Import not allowed
 % brief:                  |
 %                         A python module imports a module of another
-%                         logical component, and no edge of
-%                         relation_may_depend_on lets its component
-%                         depend on that one. It is advice while the
-%                         components and their edges are first laid
-%                         down.
+%                         logical component, and no chain of edges of
+%                         relation_may_depend_on leads from its
+%                         component to that one, nor is its component a
+%                         part of that one. Tests and conftest modules
+%                         are left out, since a test may use whatever it
+%                         needs to set up what it tests. It is advice
+%                         while the components and their edges are first
+%                         laid down.
 % did:                    |
 %                         {module}, of {component}, imports {imported},
 %                         of {other}, which {component} may not depend
@@ -510,8 +513,43 @@ import_not_allowed(Module, Component, Imported, Other, File, Line) :-
     python_component(Module, Component),
     python_component(Imported, Other),
     Component != Other,
-    not primary_edge(Component, "relation_may_depend_on", Other),
+    not may_use(Component, Other),
+    not test_module(Module),
     item(Module, _, _, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% A logical component may use another that a chain of edges of
+% relation_may_depend_on leads to, or a component it is a part of.
+%
+% decl may_use(component: symbol,
+%              other:     symbol)
+
+may_use(Component, Other) :-
+    primary_edge(Component, "relation_may_depend_on", Other).
+
+may_use(Component, Other) :-
+    primary_edge(Component, "relation_is_part_of", Other),
+    has_type(Other, "type_logical_component").
+
+may_use(Component, Other) :-
+    may_use(Component, Between),
+    may_use(Between, Other).
+
+
+% -----------------------------------------------------------------------------
+% A python module is a test: a module of a _test package, or a conftest
+% module.
+%
+% decl test_module(module: symbol)
+
+test_module(Module) :-
+    python_within(Module, Package, _),
+    @match(".*\\._test", Package) = 1.
+
+test_module(Module) :-
+    module_name(Module, _),
+    @match(".*\\.conftest", Module) = 1.
 
 
 % -----------------------------------------------------------------------------

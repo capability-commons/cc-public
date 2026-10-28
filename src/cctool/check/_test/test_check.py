@@ -236,10 +236,10 @@ def _check(root):
     return failures
 
 
-def _components(tree, list_depend = ()):
+def _components(tree, list_depend = (), relation = 'relation_may_depend_on'):
     """
-    Write lco_x and lco_y, each of which may depend on the other where
-    list_depend names the pair of them, and the package x, which
+    Write lco_x and lco_y, and an edge of relation from the first of
+    each pair of list_depend to the second, and the package x, which
     realizes lco_x and holds the module x.y. The package x.z inside it
     realizes lco_y and holds x.z.w, which imports x.y. Return the
     advice import_not_allowed gives on tree, once tree is known to have
@@ -251,7 +251,7 @@ def _components(tree, list_depend = ()):
     _item(tree, '_data/logical_component/lco_y.yaml', 'lco_y')
     for (source, target) in list_depend:
         _replace(tree, '_data/logical_component/{source}.yaml'.format(source = source),
-                 'edge: []', _dump({'edge': [_edge(tree, 'relation_may_depend_on', target)]}))
+                 'edge: []', _dump({'edge': [_edge(tree, relation, target)]}))
     _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
     _module(tree, 'src/x/y.py', 'pym_x.y')
     _module(tree, 'src/x/z/__init__.py', 'pyp_x.z', [_edge(tree, 'relation_realizes', 'lco_y')])
@@ -269,6 +269,22 @@ def test_an_import_of_a_component_not_depended_on_is_advised(tree):
 
 def test_an_import_of_a_component_that_may_be_depended_on_passes(tree):
     assert _components(tree, [('lco_y', 'lco_x')]) == []
+
+
+def test_an_import_along_a_chain_of_components_passes(tree):
+    _item(tree, '_data/logical_component/lco_z.yaml', 'lco_z')
+    assert _components(tree, [('lco_y', 'lco_z'), ('lco_z', 'lco_x')]) == []
+
+
+def test_an_import_by_a_part_of_its_whole_passes(tree):
+    assert _components(tree, [('lco_y', 'lco_x')], 'relation_is_part_of') == []
+
+
+def test_an_import_by_a_test_passes(tree):
+    _components(tree)
+    _module(tree, 'src/x/z/_test/test_w.py', 'pym_x.z._test.test_w', code = 'import x.y\n')
+    (_, advice, _) = cctool.check.check.review(tree)
+    assert [row[0] for row in advice['import_not_allowed']] == ['pym_x.z.w']
 
 
 def test_an_import_of_a_component_depended_on_the_other_way_is_advised(tree):

@@ -19,7 +19,13 @@ description:            |
                         This package holds the gate that the
                         pre-commit hook runs over the content a commit
                         would record.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_gate
+    guid_target:        lco_32ec17050dab45ba9cfbf2a3a3338eb2
 
 ...
 """

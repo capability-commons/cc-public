@@ -20,7 +20,13 @@ description:            |
                         shares, and one module for each format: an
                         Obsidian vault and an Open Knowledge Format
                         bundle.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_export
+    guid_target:        lco_c65004fdf98544968ea413833cee5eb1
 
 ...
 """

@@ -77,6 +77,7 @@ TUPLE_SOURCE_KEPT   = ('src/cctool/cli/__init__.py',
                        'src/cctool/edit/edit.py',
                        'src/cctool/check/layout.py',
                        'src/cctool/graph/jq.py')
+FILE_PACKAGE        = '__init__.py'
 
 
 # The team member register, and the line of it that gives the key the
@@ -123,7 +124,9 @@ def _source_kept() -> frozenset[pathlib.Path]:
     TUPLE_SOURCE_KEPT, each module or logic program that one of them or
     a file the copy keeps outside src mentions by its id, or by the id
     of a class or function in it, and those that they mention in turn,
-    with the folders that hold them.
+    with the folders that hold them and the package module of each, so
+    that a module kept is in the logical component its package
+    realizes.
 
     """
 
@@ -142,8 +145,10 @@ def _source_kept() -> frozenset[pathlib.Path]:
                 set_kept.add(path)
                 list_todo.append(path)
 
-    return frozenset(set_kept | {dir_parent for path in set_kept for dir_parent in path.parents
-                                 if DIR_SOURCE in dir_parent.parents})
+    set_dir = {dir_parent for path in set_kept for dir_parent in path.parents
+               if DIR_SOURCE in dir_parent.parents}
+    return frozenset(set_kept | set_dir | {path for each in set_dir
+                                           if (path := each / FILE_PACKAGE).is_file()})
 
 
 # -----------------------------------------------------------------------------

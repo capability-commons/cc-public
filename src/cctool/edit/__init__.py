@@ -21,7 +21,13 @@ description:            |
                         the files that hold them, in the layout of the
                         repository. Each edit is checked before it is
                         written, and refused if it adds a failure.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_edit
+    guid_target:        lco_233d00615349417dbd2c42f56f57628c
 
 ...
 """

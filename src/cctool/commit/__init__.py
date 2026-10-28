@@ -19,7 +19,13 @@ description:            |
                         This package holds the module that composes a
                         commit message around a new commit item, and
                         checks a message against sch_commit.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_commit
+    guid_target:        lco_d7d9788186dc4a6f8911c0689661bb17
 
 ...
 """

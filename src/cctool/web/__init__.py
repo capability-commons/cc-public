@@ -23,7 +23,13 @@ description:            |
                         Tufte: serif text, a margin for notes, and
                         color only in marks that carry meaning. The
                         pages change nothing.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_web
+    guid_target:        lco_a6e9915337994ec082212cf219206eca
 
 ...
 """

@@ -21,7 +21,13 @@ description:            |
                         tree, and the module that computes the bump,
                         writes the release item and checks a tag
                         candidate.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          lco_tooling_release
+    guid_target:        lco_e66937bb66764834822e08955b9d4d2e
 
 ...
 """
