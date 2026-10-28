@@ -26,6 +26,8 @@ edge:                   []
 """
 
 
+import pathlib
+import shutil
 import subprocess
 
 import pytest
@@ -36,18 +38,31 @@ import cctool.commit.repo
 
 pytestmark = pytest.mark.prepush
 
+# The source of the repository, all of which land needs in the copy,
+# since it checks the commits it lands with the code they hold; and
+# what a copy of it leaves out.
+#
+DIR_SOURCE = pathlib.Path(__file__).resolve().parents[3]
+TUPLE_SKIP = ('_test', '__pycache__', 'conftest.py')
+
 
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def topic(signed_repo):
     """
-    Return the root of a signed copy of the repository in which the
+    Return the root of a signed copy of the repository, with all of its
+    source, in which the
     branch topic holds one unsigned commit beyond the first, and main
     has moved on by a signed commit of its own, as when an agent's work
     comes back after the maintainer's.
 
     """
 
+    shutil.copytree(DIR_SOURCE, signed_repo / DIR_SOURCE.name,
+                    ignore        = shutil.ignore_patterns(*TUPLE_SKIP),
+                    dirs_exist_ok = True)
+    _git(signed_repo, 'add', '--all')
+    _git(signed_repo, 'commit', '--quiet', '--no-verify', '--amend', '--no-edit')
     _git(signed_repo, 'checkout', '--quiet', '-b', 'topic')
     path = signed_repo / 'AGENTS.md'
     path.write_text(path.read_text() + '\nNotes.\n')
@@ -106,6 +121,25 @@ def test_land_with_reset_author_makes_the_maintainer_the_author(topic):
     assert len(cctool.commit.repo.land(topic, path, reset_author = True)) == 2
     assert _git(topic, 'log', '-2', '--format=%an <%ae> %G?', 'main').splitlines() == [
         'William Payne <wtpayne@gmail.com> G', 'William Payne <wtpayne@gmail.com> G']
+
+
+def test_land_checks_the_commits_with_the_code_they_hold(topic):
+    _git(topic, 'checkout', '--quiet', 'topic')
+    path = topic / 'src' / 'cctool' / 'commit' / 'history.py'
+    path.write_text(path.read_text().replace(
+        '    list_found = []\n',
+        '    list_found = [\'The checks of the landed code ran.\']\n', 1))
+    _commit(topic, 'Change the history check so that it always fails', 'It always fails.',
+            is_signed = False)
+    _git(topic, 'checkout', '--quiet', 'main')
+    head = _git(topic, 'rev-parse', 'main')
+    path = topic.parent / 'topic.bundle'
+    cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
+
+    with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'checks of the landed code ran'):
+        cctool.commit.repo.land(topic, path)
+    assert _git(topic, 'rev-parse', 'main') == head
+    assert _git(topic, 'branch', '--show-current').strip() == 'main'
 
 
 def test_land_of_commits_that_conflict_leaves_the_branch(topic):

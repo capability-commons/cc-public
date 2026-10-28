@@ -43,12 +43,20 @@ edge:                   []
 """
 
 
+import os
 import pathlib
 import subprocess
+import sys
 
 import cctool.commit.history
 import cctool.commit.message
 
+
+# The folder of the source, and the module that runs cctool, with which
+# a fresh process checks the commits that land.
+#
+DIR_SOURCE     = 'src'
+MODULE_COMMAND = 'cctool.cli.command'
 
 # The ref of a branch, as git bundle list-heads names the heads of a
 # bundle.
@@ -91,7 +99,9 @@ def land(root:         pathlib.Path,
     is signed as it is replayed. If reset_author is true, whoever
     replays them also becomes their author. They are then checked as
     cctool history check checks them. A replay that conflicts, or a
-    check that fails, leaves the current branch where it was.
+    check that fails, leaves the current branch where it was. The
+    check runs in a fresh process with the code the commits hold,
+    since they may change the checks themselves.
 
     """
 
@@ -125,18 +135,41 @@ def land(root:         pathlib.Path,
 
     tip         = _git(root, 'rev-parse', 'HEAD').strip()
     list_commit = cctool.commit.history.commits(root, [base + '..' + tip])
-    list_found  = cctool.commit.history.failures(root, list_commit)
-    _git(root, 'checkout', '--quiet', base)
-    if list_found:
+    try:
+        done = _checked(root, base + '..' + tip)
+    finally:
+        _run(root, 'checkout', '--quiet', base)
+    if done.returncode != 0:
         raise ErrorRepo('The commits of {branch}, replayed and signed as {tip}, fail their '
                         'checks, so nothing is landed:\n{found}'.format(
                             branch = branch,
                             tip    = tip[:cctool.commit.history.LENGTH_SHORT],
-                            found  = '\n'.join(list_found)))
+                            found  = (done.stdout + done.stderr).strip()))
 
     _git(root, 'merge', '--quiet', '--ff-only', tip)
 
     return [cctool.commit.history.short(root, commit) for commit in list_commit]
+
+
+# -----------------------------------------------------------------------------
+def _checked(root: pathlib.Path, rev_range: str) -> subprocess.CompletedProcess:
+    """
+    Return the run of cctool history check over rev_range, in a fresh
+    process whose python path starts at the source checked out at root.
+    The commits that land may change the extractor and the rules
+    together, so they are checked with their own code, never with the
+    modules this process imported before they were checked out.
+
+    """
+
+    env               = dict(os.environ)
+    list_path         = [str(root / DIR_SOURCE), env.get('PYTHONPATH', '')]
+    env['PYTHONPATH'] = os.pathsep.join(path for path in list_path if path)
+
+    return subprocess.run([sys.executable, '-m', MODULE_COMMAND,
+                           'history', 'check', rev_range, '--root', str(root)],
+                          cwd = root, env = env, capture_output = True, text = True,
+                          check = False)
 
 
 # -----------------------------------------------------------------------------
