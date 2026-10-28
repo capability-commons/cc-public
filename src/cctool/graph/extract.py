@@ -309,6 +309,8 @@ PREDICATE         = {
                            'The python module or package module is inside the package '
                            'that the item package would hold, depth packages down from '
                            'the top.'),
+    'maturity_level':     (('id', 'level:number'),
+                           'The maturity level id has the number level on the scale.'),
     'measure':            (('id', 'quantity', 'bound', 'limit', 'unit', 'statistic',
                             'runs:number'),
                            'The requirement id bounds a measured quantity: the '
@@ -433,6 +435,12 @@ MAP_PREFIX_MODULE = {SUFFIX_PYTHON:  cctool.graph.prefix.stem('type_python_modul
 PREFIX_PACKAGE    = cctool.graph.prefix.stem('type_python_package')
 NAME_PACKAGE      = '__init__'
 DELIM_MODULE      = '.'
+
+# The start of the id of a maturity level, whose number on the scale is
+# its field level.
+#
+PREFIX_MATURITY   = cctool.graph.prefix.stem('type_maturity_level')
+KEY_LEVEL         = 'level'
 
 # A class or function holds an item in its docstring, as a module does.
 # Its YAML document is keyed by the path of its file and the names of
@@ -1541,6 +1549,7 @@ def _walk(node:     typing.Any,
                            _line(node, KEY_ID_SELF, location)))
         _signature(id_self, node, facts)
         _stated(id_self, node, facts)
+        _level(id_self, node, facts)
         for alias in _list_str(node.get(KEY_ALIAS)):
             facts['alias'].add((id_self, alias))
         holder = id_self
@@ -1898,6 +1907,29 @@ def _checks(document: dict[str, typing.Any], facts: Facts) -> None:
 
 
 # -----------------------------------------------------------------------------
+def _level(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for the number of the maturity level id_self, if node is
+    the entry of one and gives it as a whole number.
+
+    """
+
+    if id_self.startswith(PREFIX_MATURITY) and _is_whole(node.get(KEY_LEVEL)):
+        facts['maturity_level'].add((id_self, str(int(node[KEY_LEVEL]))))
+
+
+# -----------------------------------------------------------------------------
+def _is_whole(value: typing.Any) -> bool:
+    """
+    Return True if value is a whole number, as YAML reads one, and not
+    a truth value.
+
+    """
+
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+# -----------------------------------------------------------------------------
 def _measure(document: dict[str, typing.Any], facts: Facts) -> None:
     """
     Add a fact for the measure that document, if it is a requirement,
@@ -1906,7 +1938,7 @@ def _measure(document: dict[str, typing.Any], facts: Facts) -> None:
     """
 
     measure = document.get(KEY_MEASURE)
-    if not isinstance(measure, dict) or not isinstance(measure.get(KEY_RUNS), int):
+    if not isinstance(measure, dict) or not _is_whole(measure.get(KEY_RUNS)):
         return
     list_value = [measure.get(key) for key in TUPLE_MEASURE]
     if any(value is None or isinstance(value, (dict, list)) for value in list_value):

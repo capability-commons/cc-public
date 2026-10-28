@@ -1,0 +1,68 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_regentry_maturity_level.yaml
+id_self:                sch_regentry_maturity_level
+guid_self:              sch_70a15fa0144e471eb805e8e4b098eed0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity level register entry schema
+brief:                  |
+                        What a maturity level register entry carries
+                        beyond the general register entry.
+description:            |
+                        A maturity level entry carries its number on
+                        the scale, and the demands that code at that
+                        level must meet. Its title names the stage of
+                        the lifecycle the level stands for.
+usage:                  |
+                        Composed with sch_register_entry by
+                        sch_reg_maturity_level as the shape of every
+                        entry in the maturity level register.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register_entry.yaml
+
+required:
+  - level
+  - demand
+
+properties:
+
+  level:
+    type:               integer
+    minimum:            0
+    maximum:            100
+    description:        |
+                        The number of the level, from 0 to 100, which
+                        its id ends with. Levels are spaced, so that a
+                        level can be put between two others.
+
+  demand:
+    type:               array
+    description:        |
+                        What code at this level must show, beyond the
+                        demands of every lower level, each as one
+                        statement.
+
+    items:
+      type:             object
+      additionalProperties:  false
+
+      required:
+        - brief
+
+      properties:
+
+        brief:
+          type:         string
+          minLength:    1
+          description:  |
+                        What the code must show.
+
+edge:                   []

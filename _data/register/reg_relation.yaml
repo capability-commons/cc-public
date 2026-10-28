@@ -1667,3 +1667,36 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_can_be_verified
         guid_target:    relcon_5e9fa4b6665846bf8a3ac8b09c410260
+
+  # ---------------------------------------------------------------------------
+  # relation_has_maturity -- Has maturity relation
+  #
+  relation_has_maturity:
+    id_self:            relation_has_maturity
+    guid_self:          relation_c5d07e0c5ebc4945b88f843a64cdbe81
+    title:              Has maturity relation
+    brief:              |
+                        SOURCE has the maturity TARGET
+    description:        |
+                        The source file whose item is identified by
+                        SOURCE has reached the maturity level
+                        identified by TARGET. A file with no such edge
+                        has the lowest level, and a file may not have
+                        a level above that of a file it imports.
+    note:               |
+                        The ruling on the maturity of code chose a
+                        maturity on each source file, in its own item,
+                        over one on each logical component.
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_implementation
+        guid_target:    relcon_93bd73e89b474e1e8f5dd82b2bf2e8de
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_maturity_level
+        guid_target:    relcon_7a0ee8ec1d06409ea4a4db6511c608d4

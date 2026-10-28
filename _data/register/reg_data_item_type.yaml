@@ -1850,3 +1850,52 @@ entries:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_federated_segment
         guid_target:    rol_78f362fc44d6488296f6f6c5f44e781b
+
+  # ---------------------------------------------------------------------------
+  # type_maturity_level -- Maturity level type
+  #
+  type_maturity_level:
+    id_self:            type_maturity_level
+    guid_self:          type_12567d1336984d428d015972fba53cc9
+    title:              Maturity level type
+    brief:              |
+                        Type of maturity level data items.
+    description:        |
+                        Each maturity level data item stands for one
+                        stage of the lifecycle of code, by its number
+                        on the scale.
+    usage:              |
+                        A source file names its maturity level by an
+                        edge of relation_has_maturity in its [[item]].
+    note:               |
+                        Maturity level data items only ever exist as
+                        entries in the maturity level register.
+
+                        The shape of maturity level data items is
+                        defined by the sch_regentry_maturity_level
+                        schema.
+
+                        The shape of the maturity level register is
+                        defined by the sch_reg_maturity_level schema.
+    prefix:             maturity
+    regex_id:           ^maturity_(0|[1-9][0-9]?|100)$
+    id_concept:         concept_maturity_level
+    guid_concept:       concept_060a14fd2c904fcf9a65ef10e7c94e75
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
+        id_target:      reg_maturity_level
+        guid_target:    reg_1812894bc70247c2ab056eb56cb92381
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_regentry_maturity_level
+        guid_target:    sch_70a15fa0144e471eb805e8e4b098eed0
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_maturity_level
+        guid_target:    rol_56770f4626a84e3f8221adb1116f622f

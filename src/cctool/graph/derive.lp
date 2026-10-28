@@ -294,3 +294,105 @@ driver(Decision, Concern) :-
 driver(Decision, Concern) :-
     has_type(Decision, "type_decision"),
     primary_edge(Decision, "relation_is_driven_by", Concern).
+
+
+
+
+
+% -----------------------------------------------------------------------------
+% The logical component of a python module or package is the one that
+% the nearest item realizes: the module itself, or else the innermost
+% package it is inside that realizes one.
+%
+% decl python_component(module:    symbol,
+%                       component: symbol)
+
+python_component(Module, Component) :-
+    nearest_realizer(Module, Depth),
+    realizer_at(Module, Depth, Component).
+
+
+% -----------------------------------------------------------------------------
+% The depth of the nearest item that realizes a logical component for a
+% python module or package.
+%
+% decl nearest_realizer(module: symbol,
+%                       depth:  number)
+
+nearest_realizer(Module, Depth) :-
+    realizer_at(Module, _, _),
+    Depth = #max { Below : realizer_at(Module, Below, _) }.
+
+
+% -----------------------------------------------------------------------------
+% A python module or package, or a package it is inside at depth, realizes
+% the logical component. The module itself is deeper than any package.
+%
+% decl realizer_at(module:    symbol,
+%                  depth:     number,
+%                  component: symbol)
+
+realizer_at(Module, Depth, Component) :-
+    python_within(Module, Package, Depth),
+    primary_edge(Package, "relation_realizes", Component),
+    has_type(Component, "type_logical_component").
+
+realizer_at(Module, 1000, Component) :-
+    module_name(Module, _),
+    primary_edge(Module, "relation_realizes", Component),
+    has_type(Component, "type_logical_component").
+
+
+% -----------------------------------------------------------------------------
+% The lowest maturity level, which a source file that declares none
+% has.
+%
+% decl lowest_maturity(level: number)
+
+lowest_maturity(Level) :-
+    maturity_level(_, _),
+    Level = #min { Each : maturity_level(_, Each) }.
+
+
+% -----------------------------------------------------------------------------
+% The source file that holds the item id has the maturity level, by
+% its number: the greatest it declares by relation_has_maturity, or
+% the lowest if it declares none.
+%
+% decl file_maturity(id:    symbol,
+%                    level: number)
+
+file_maturity(Id, Level) :-
+    declares_maturity(Id),
+    Level = #max { Each : primary_edge(Id, "relation_has_maturity", Entry),
+                          maturity_level(Entry, Each) }.
+
+file_maturity(Id, Level) :-
+    module_name(Id, _),
+    item(Id, _, "", _, _),
+    not declares_maturity(Id),
+    lowest_maturity(Level).
+
+
+% -----------------------------------------------------------------------------
+% The item id declares a maturity level.
+%
+% decl declares_maturity(id: symbol)
+
+declares_maturity(Id) :-
+    primary_edge(Id, "relation_has_maturity", Entry),
+    maturity_level(Entry, _).
+
+
+% -----------------------------------------------------------------------------
+% The maturity of a logical component is that of the most mature python
+% module or package in it, computed and never stored.
+%
+% decl component_maturity(component: symbol,
+%                         level:     number)
+
+component_maturity(Component, Level) :-
+    python_component(_, Component),
+    Level = #max { Each : python_component(Module, Component),
+                          file_maturity(Module, Each) }.
+

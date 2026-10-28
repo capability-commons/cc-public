@@ -1,0 +1,41 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_reg_maturity_level.yaml
+id_self:                sch_reg_maturity_level
+guid_self:              sch_d5ed00aed3cf4dbab5a258e9476fb447
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity level register schema
+brief:                  |
+                        The maturity level register specifically: a
+                        register whose entries are additionally
+                        maturity levels.
+description:            |
+                        This schema composes the general register
+                        schema with the maturity level register entry
+                        schema. Each of its entries is a register
+                        entry and a maturity level together, closed to
+                        any field that neither shape declares.
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_register.yaml
+
+  - type:               object
+
+    properties:
+
+      entries:
+
+        additionalProperties:
+
+          allOf:
+            - $ref:     https://capability-commons.org/schema/sch_regentry_maturity_level.yaml
+
+          unevaluatedProperties:  false
+
+edge:                   []

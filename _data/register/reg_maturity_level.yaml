@@ -1,0 +1,180 @@
+id_self:                reg_maturity_level
+guid_self:              reg_1812894bc70247c2ab056eb56cb92381
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maturity level register
+brief:                  |
+                        Register of the levels of maturity that a
+                        source file may declare.
+description:            |
+                        The maturity level register holds one entry
+                        per level, numbered from 0 to 100 with gaps
+                        between them, read as the numbered lifecycle
+                        stages of automotive practice are. Each entry
+                        lists what code at that level must show,
+                        beyond what each lower level demands. A source
+                        file declares its level by an edge of
+                        relation_has_maturity, takes the lowest level
+                        if it declares none, and may not declare a
+                        level above that of a file it imports.
+usage:                  |
+                        A source file names its level in its own item,
+                        by an edge of relation_has_maturity to an
+                        entry here.
+note:                   |
+                        The stages and their demands are a first
+                        proposal for WTP to revise.
+
+entries:
+
+  # ---------------------------------------------------------------------------
+  # maturity_0 -- Sketch
+  #
+  maturity_0:
+    id_self:            maturity_0
+    guid_self:          maturity_733e9195f4694e17a454c5ed4dadc3b4
+    title:              Sketch
+    brief:              |
+                        Code written to find out what is needed, which
+                        may change or go at any time.
+    description:        |
+                        The lowest level, which a source file that
+                        declares no maturity takes.
+    level:              0
+
+    demand:
+      - brief:          |
+                        It passes the commit gate: the check, the lint
+                        and the tests.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_20 -- Prototype
+  #
+  maturity_20:
+    id_self:            maturity_20
+    guid_self:          maturity_02e160cbd66043818c5bda2f96e06b08
+    title:              Prototype
+    brief:              |
+                        Code that does what it is for on the main
+                        path, and is kept.
+    description:        |
+                        Code at this level is worth keeping, so a test
+                        guards what it does.
+    level:              20
+
+    demand:
+      - brief:          |
+                        A test exercises it.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_40 -- Development
+  #
+  maturity_40:
+    id_self:            maturity_40
+    guid_self:          maturity_4f05274d18c74fa3990a09449d9c700a
+    title:              Development
+    brief:              |
+                        Code whose behavior is settled enough for its
+                        requirements to be verified.
+    description:        |
+                        Code at this level has settled what it does,
+                        so what it is required to do can be shown.
+    level:              40
+
+    demand:
+      - brief:          |
+                        Each requirement it realizes has a verifier.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_60 -- Feature complete
+  #
+  maturity_60:
+    id_self:            maturity_60
+    guid_self:          maturity_97bc8576b3f84cd0869b080f0356ebab
+    title:              Feature complete
+    brief:              |
+                        Code that does all it is meant to, with its
+                        behavior covered by tests.
+    description:        |
+                        Code at this level does all it is meant to, so
+                        its tests reach most of it.
+    level:              60
+
+    demand:
+      - brief:          |
+                        Its tests cover the floor of lines and
+                        branches that this level sets.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_80 -- Verified
+  #
+  maturity_80:
+    id_self:            maturity_80
+    guid_self:          maturity_14a94c94c5d94252bf993a6e96726f26
+    title:              Verified
+    brief:              |
+                        Code that is shown to meet its requirements,
+                        in its tests and in review.
+    description:        |
+                        Code at this level has been shown to meet its
+                        requirements, and its tests reach nearly all
+                        of it.
+    level:              80
+
+    demand:
+      - brief:          |
+                        Its tests cover the higher floor of lines and
+                        branches that this level sets.
+      - brief:          |
+                        The check gives no advice on it.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_100 -- Released
+  #
+  maturity_100:
+    id_self:            maturity_100
+    guid_self:          maturity_034f3271cf924c72b942fdd440d5a107
+    title:              Released
+    brief:              |
+                        Code that a release may ship, and that changes
+                        only by the process of a release.
+    description:        |
+                        Code at this level ships in a release, and its
+                        release vouches for it.
+    level:              100
+
+    demand:
+      - brief:          |
+                        Each release that ships it declares this
+                        maturity, and its check passes.
+
+    alias:              []
+    edge:               []
+
+edge:
+
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
+    id_target:          sch_reg_maturity_level
+    guid_target:        sch_d5ed00aed3cf4dbab5a258e9476fb447

@@ -3924,3 +3924,52 @@ unverified_measure(Requirement, File, Line) :-
     measure(Requirement, _, _, _, _, _, _),
     not primary_edge(_, "relation_verifies", Requirement),
     item(Requirement, _, _, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.maturity_above_import
+% guid_self:              lpp_a29b5c8f616b490ba1a39766e5377efb
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Maturity above an import
+% brief:                  |
+%                         A source file has no maturity level above that
+%                         of a file it imports, since code is only as
+%                         trustworthy as what it rests on. A file that
+%                         declares none has the lowest. A bound on each
+%                         import bounds every file reached through
+%                         others too.
+% did:                    |
+%                         {module}, at maturity {level}, imports
+%                         {imported}, at maturity {below}.
+% fix:                    |
+%                         Raise the maturity of the file imported, once
+%                         it meets the demands of the level, or lower
+%                         the maturity of the file that imports it.
+% edge:                   []
+%
+% ...
+%
+% decl maturity_above_import(module:   symbol,
+%                            level:    number,
+%                            imported: symbol,
+%                            below:    number,
+%                            file:     symbol,
+%                            line:     number)
+#show maturity_above_import/6.
+
+maturity_above_import(Module, Level, Imported, Below, File, Line) :-
+    python_import(Module, Imported),
+    file_maturity(Module, Level),
+    file_maturity(Imported, Below),
+    Level > Below,
+    item(Module, _, _, File, Line).
+

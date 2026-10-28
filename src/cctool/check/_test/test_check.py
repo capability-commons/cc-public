@@ -45,6 +45,7 @@ import cctool.cli.command
 import cctool.commit.change
 import cctool.graph.logic
 import cctool.graph.extract
+import cctool.graph.sql
 import cctool.graph.tool
 from cctool.conftest import DIR_REPO
 
@@ -234,6 +235,47 @@ def _check(root):
     failures = cctool.check.check.check(root)
     failures.pop(cctool.check.check.NAME_LAYOUT, None)
     return failures
+
+
+def _matured(tree, importer = None, imported = None):
+    """
+    Write the module x.a, which imports x.b, with the maturity levels
+    importer and imported, where given, and return the failures of tree.
+
+    """
+
+    _module(tree, 'src/x/__init__.py', 'pyp_x')
+    _module(tree, 'src/x/b.py', 'pym_x.b',
+            [_edge(tree, 'relation_has_maturity', imported)] if imported else [])
+    _module(tree, 'src/x/a.py', 'pym_x.a',
+            [_edge(tree, 'relation_has_maturity', importer)] if importer else [],
+            code = 'import x.b\n')
+    return _check(tree)
+
+
+def test_a_file_above_the_maturity_of_a_file_it_imports_is_reported(tree):
+    assert _matured(tree, 'maturity_40', 'maturity_20') == {'maturity_above_import': [
+        ('pym_x.a', '40', 'pym_x.b', '20', 'src/x/a.py', '3')]}
+
+
+def test_a_file_that_declares_no_maturity_has_the_lowest(tree):
+    assert _matured(tree, 'maturity_20') == {'maturity_above_import': [
+        ('pym_x.a', '20', 'pym_x.b', '0', 'src/x/a.py', '3')]}
+
+
+def test_a_file_at_or_below_the_maturity_of_what_it_imports_passes(tree):
+    assert _matured(tree, 'maturity_40', 'maturity_40') == {}
+    assert _matured(tree, None, 'maturity_60') == {}
+
+
+def test_a_component_has_the_maturity_of_its_most_mature_file(tree):
+    _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x')
+    _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
+    _module(tree, 'src/x/b.py', 'pym_x.b', [_edge(tree, 'relation_has_maturity', 'maturity_60')])
+    _module(tree, 'src/x/c.py', 'pym_x.c', [_edge(tree, 'relation_has_maturity', 'maturity_20')])
+    facts = cctool.graph.extract.extract(tree)
+    text  = "SELECT level FROM component_maturity WHERE component = 'lco_x'"
+    assert cctool.graph.sql.query(facts, text) == (('level',), [(60,)])
 
 
 def _components(tree, list_depend = (), relation = 'relation_may_depend_on'):
