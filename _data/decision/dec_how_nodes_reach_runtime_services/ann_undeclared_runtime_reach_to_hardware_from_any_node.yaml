@@ -1,0 +1,84 @@
+id_self:                ann_undeclared_runtime_reach_to_hardware_from_any_node
+guid_self:              ann_dba03ce6ab084fe18e962c76c61f5a5a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Undeclared reach to hardware from any node
+brief:                  |
+                        With an undeclared runtime parameter, every
+                        node can reach every service, hardware
+                        included, so a defect or a compromised node
+                        kind anywhere in the graph can act on
+                        actuators or registers, and a review must read
+                        every node's code to know which can. Declared
+                        capabilities let cctool confine hardware
+                        access to the nodes that need it, such as
+                        control nodes, and the trace shows each use;
+                        source and sink nodes confine it to whatever
+                        the graph wires. Neither stops C++ code from
+                        touching hardware some other way, so the gain
+                        is in what checks and reviews can see, not in
+                        enforcement.
+description:            |
+                        Sources:
+                        - Under the undeclared option nothing outside
+                          the node shows which nodes depend on the
+                          runtime.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_runtime_parameter_undeclared.yaml
+                          at description)
+                        - The declared option lets cctool check where
+                          capabilities are used and confine them to
+                          control nodes.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_runtime_parameter_with_declared_capabilities.yaml
+                          at brief)
+                        - C++ is an inherently unsafe language, so
+                          processes in one address space cannot be
+                          prevented from modifying each other's state
+                          (Vrba et al. 2009, The Nornir run-time
+                          system, section on message transport).
+                        - Security asks who can read or change what
+                          and how that is enforced; safety asks how
+                          each hazard is avoided or limited.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question and
+                          entries.concern_safety.question) Strength:
+                          strong for review and audit; it would be
+                          stronger still if the build linked hardware
+                          access only into declared node kinds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

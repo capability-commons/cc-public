@@ -1,0 +1,94 @@
+id_self:                ann_gap_admission_leaves_every_reply_open_at_a_step
+guid_self:              ann_93f62858f92d4f54b20506d574937cfa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every reply between actors left open at a step boundary
+brief:                  |
+                        When a gap admits only the messages waiting as
+                        it opens, a request from one actor to another
+                        is handled in the next gap at the earliest and
+                        its reply in the gap after, so every such
+                        request is still open at one step boundary or
+                        more. A boundary that follows a request
+                        between actors is then not quiescent for them,
+                        which makes the open question of swapping an
+                        actor with requests outstanding the normal
+                        case for actors that talk to each other, and a
+                        swap there risks a lost or misdirected reply.
+                        Draining until empty, where the gap ends,
+                        completes exchanges between engine-run actors
+                        within the gap, so the boundary is quiescent
+                        for them, as it is for Kahn nodes; only
+                        requests to outside services stay open.
+description:            |
+                        Sources:
+                        - Messages that actors send during the gap
+                          wait for the next gap.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/opt_messages_waiting_when_the_gap_opens.yaml
+                          at brief)
+                        - A request and its reply between two actors
+                          take two steps when admission is fixed at
+                          the gap start.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_admission_at_the_gap_start_adds_a_step_per_hop.yaml
+                          at brief)
+                        - Draining until empty may not end when actors
+                          answer each other.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_drain_until_empty_may_not_end.yaml
+                          at brief)
+                        - Quiescence of a node means no transaction is
+                          in progress at it and none will start
+                          (Kramer and Magee 1990, The evolving
+                          philosophers problem, section on node
+                          quiescence). The part 2 note on that paper
+                          applies this to the engine: an actor request
+                          and reply that span steps is a dependent
+                          transaction still open at the boundary, so
+                          the boundary is quiescent for actors only if
+                          their exchanges complete inside the gap or
+                          the engine waits for them.
+                        - The swap decision rests on the step boundary
+                          being quiescent, which it is not for an
+                          actor whose request and reply span steps.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/dec_swap_of_an_actor_with_outstanding_requests.yaml
+                          at description)
+                        - A node version is swapped at a step, with
+                          its state upgraded.
+                          (_data/decision/dec_swap_of_a_node_version/ruling_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        Strength: moderate; it weighs as heavily as
+                        live swaps of actors are frequent, and a
+                        bounded number of rounds per gap would recover
+                        most of it for short exchanges.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_drain_until_every_mailbox_is_empty
+    guid_target:        opt_5e2092eb1ee2491ca8095b05589d15ca
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

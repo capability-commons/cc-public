@@ -1,0 +1,93 @@
+id_self:                ann_gap_time_budget_as_the_only_direct_time_bound
+guid_self:              ann_09585689f3dd479198db66d547271a37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Time budget as the only direct bound on gap length
+brief:                  |
+                        A time budget is the only option that states
+                        the length of a gap directly, which is the
+                        quantity the step period and a safety
+                        function's deadline depend on, though a gap
+                        can still overrun it by one handler's worst
+                        time, since a running handler is not
+                        interrupted. Admitting the messages waiting
+                        when the gap opens bounds a gap only through
+                        the mailbox capacities times each handler's
+                        worst time, and with capacities derived from
+                        maximum rates plus a margin that product can
+                        be far above what the step period leaves. On
+                        timing alone the budget leads. Admission at
+                        the gap start still wins on replay, and a
+                        budget stated as a requirement on the gap and
+                        checked by measurement, rather than enforced
+                        by stopping, would give it most of this
+                        benefit.
+description:            |
+                        Sources:
+                        - Actors that run between steps add their work
+                          to every step's period, so one busy actor
+                          delays every Kahn node, a safety function's
+                          included.
+                          (_data/decision/dec_how_actors_are_run/ann_actor_work_lengthens_every_kahn_step.yaml
+                          at brief)
+                        - Capacity is derived from the maximum rate
+                          times the step period plus a jitter margin;
+                          occasional overruns are absorbed by the
+                          margin, and a step consistently over its
+                          period triggers degraded mode (WTP,
+                          2026-10-28).
+                        - A budget is a requirement of its own,
+                          verified like any other.
+                          (_data/decision/dec_home_of_a_performance_budget/ruling_home_of_a_performance_budget.yaml
+                          at brief)
+                        - Fixing admission when the gap opens leaves
+                          one open input for replay, while a time
+                          budget makes the set handled depend on how
+                          fast the actors ran.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_gap_admission_fixed_when_the_gap_opens.yaml
+                          at brief)
+                        - The safety concern measures time to reach a
+                          safe state after a failure, in ms.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure)
+                        ASSUMPTION: handlers run to completion and are
+                        not preempted mid-message. ASSUMPTION:
+                        worst-case handler times on the Orin are not
+                        yet measured, so the count bound cannot yet be
+                        turned into a time. Strength: moderate; it
+                        favors the time budget on timing alone, and
+                        fades once handler times are measured and
+                        shown to fit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

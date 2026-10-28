@@ -1,0 +1,66 @@
+id_self:                ann_actor_swap_needs_no_repriming_of_an_absent_loop
+guid_self:              ann_498877b6953444509481dfde6d099bd3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actor swap with no repriming of an absent loop
+brief:                  |
+                        The ruled default rule has the engine prime a
+                        feedback edge again after a rewire or a
+                        version swap. In a loop of actors that may
+                        already carry messages, priming again adds a
+                        first message beside those in flight, which
+                        can duplicate one, and it meets the open
+                        question of swapping an actor with outstanding
+                        requests. Under the absent option nothing is
+                        primed: the new version handles whatever is
+                        waiting. The absent option keeps a swap of an
+                        actor local to that actor.
+description:            |
+                        Sources:
+                        - The engine primes the edge again after a
+                          rewire or a version swap.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - An actor's request and reply can span steps,
+                          so a step boundary is not quiescent for that
+                          actor.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/dec_swap_of_an_actor_with_outstanding_requests.yaml
+                          at description)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                          ASSUMPTION: priming an actor loop means
+                          sending a first message, since an actor
+                          mailbox has no slot to overwrite. Strength:
+                          moderate; it matters only for actor loops
+                          that are swapped while running, which the
+                          ruled change sets allow.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

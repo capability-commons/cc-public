@@ -1,0 +1,66 @@
+id_self:                ann_loss_check_reruns_on_every_change_set
+guid_self:              ann_94f199f512264c549673e0e8756fd6da
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loss check that reruns on every change set
+brief:                  |
+                        A field written once on each policy entry
+                        keeps working as graphs change: a new policy
+                        is classified once, and every edge that uses
+                        it is covered. A deployment may apply any
+                        change set that checks against the running
+                        graph, so a change that puts a latch on an
+                        edge whose requirement forbids loss is refused
+                        before it runs. Under the option to leave loss
+                        to requirements, each such change needs its
+                        tests rerun or rewritten, which cannot happen
+                        on the target before a change set is applied.
+description:            |
+                        Sources:
+                        - A deployment may apply any change set that
+                          checks against the resolved dataflow graph
+                          it is running.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml
+                          at brief)
+                        - The option adds one field to each policy
+                          entry, written once by the engine's authors.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/opt_each_policy_declares_data_loss.yaml
+                          at description)
+                        - Maintainability asks how readily a change
+                          can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                          ASSUMPTION: the target checks a change set
+                          against the graph but runs no tests before
+                          applying it. Strength: strong while runtime
+                          change sets are allowed; weaker if every
+                          change goes through a full test cycle
+                          first.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_data_loss_left_to_requirements
+    guid_target:        opt_455334fa4a0c4c3cb1f5ed086a5aea9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

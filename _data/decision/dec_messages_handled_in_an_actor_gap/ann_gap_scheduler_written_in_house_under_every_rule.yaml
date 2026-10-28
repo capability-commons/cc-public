@@ -1,0 +1,83 @@
+id_self:                ann_gap_scheduler_written_in_house_under_every_rule
+guid_self:              ann_ceab8c36b5fd43779c6beb8da3d8ca6d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap scheduler written in house under every rule
+brief:                  |
+                        The ready-made actor runtimes in view, such as
+                        CAF, run actors continuously on worker pools
+                        and offer none of the three rules, so
+                        whichever rule is chosen the engine writes its
+                        own gap scheduler and takes no third-party
+                        code for it. The options are close to equal
+                        here. Admission when the gap opens is the
+                        smallest to own, a snapshot of counts and a
+                        fixed loop; a time budget adds a dependence on
+                        each platform's timer service, a small extra
+                        surface per target.
+description:            |
+                        Sources:
+                        - A shared pool is what mature actor
+                          frameworks use by default.
+                          (_data/decision/dec_how_actors_are_run/ann_actor_code_plainest_on_a_thread_or_pool.yaml
+                          at brief)
+                        - CAF maps actors onto a pre-dimensioned set
+                          of worker threads, with work stealing by
+                          default.
+                          (_data/decision/dec_how_actors_are_run/ann_many_actors_on_as_many_threads_as_cores.yaml
+                          at description)
+                        - Ready-made pools carry license and
+                          language-level costs to count.
+                          (_data/decision/dec_how_actors_are_run/ann_ready_made_actor_pools_license_and_cpp_level.yaml
+                          at brief)
+                        - Actors run between steps.
+                          (_data/decision/dec_how_actors_are_run/ruling_actors_between_steps.yaml
+                          at brief)
+                        - The C runtime of Lingua Franca, a
+                          deterministic reactor runtime, is about
+                          2,000 lines and occupies tens of kilobytes
+                          for a minimal application (Lohstroh et al.
+                          2021, Toward a Lingua Franca for
+                          deterministic concurrent systems, section
+                          3.1).
+                        - The dependency risk concern asks what the
+                          design takes from third parties.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question)
+                        ASSUMPTION: no ready-made actor runtime offers
+                        a gap between steps with a stated admission
+                        rule; this generalizes from CAF and has not
+                        been surveyed. ASSUMPTION: the platform timer
+                        a time budget would read comes from the OS or
+                        RTOS of each target, not from the engine.
+                        Strength: weak; the difference between options
+                        is small, and it is recorded so that the
+                        concern has its say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

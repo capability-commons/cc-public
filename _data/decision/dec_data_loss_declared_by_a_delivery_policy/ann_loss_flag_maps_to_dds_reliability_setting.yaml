@@ -1,0 +1,64 @@
+id_self:                ann_loss_flag_maps_to_dds_reliability_setting
+guid_self:              ann_6bb573d650fe4899bdb178047935d432
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loss declaration that maps to the DDS reliability setting
+brief:                  |
+                        DDS and ROS 2 state per endpoint whether
+                        delivery may lose samples, as best effort or
+                        reliable, and how many are kept, as keep last
+                        with a depth or keep all. A loss declaration
+                        on each policy gives a gateway to such a
+                        partner a value to set and compare, so a check
+                        can refuse an edge that forbids loss but
+                        crosses to a best-effort endpoint. Leaving
+                        loss to requirements gives the gateway nothing
+                        to match.
+description:            |
+                        Sources:
+                        - ROS 2 quality of service offers best effort,
+                          which may lose samples, and reliable, which
+                          retries until they are delivered, alongside
+                          keep last with a depth and keep all
+                          (https://design.ros2.org/articles/qos).
+                        - A declared policy gives a gateway to a DDS
+                          partner a stated policy to set and match.
+                          (_data/decision/dec_edge_policy/ann_declared_policy_matches_dds_quality_of_service.yaml
+                          at brief)
+                        - Compatibility asks whether a partner can
+                          read and use what the design produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                          ASSUMPTION: Patrol or a later user will
+                          exchange data with ROS 2 or DDS nodes
+                          through gateways. Strength: moderate; it
+                          grows with the number of DDS-facing
+                          boundaries and is nil without one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_data_loss_left_to_requirements
+    guid_target:        opt_455334fa4a0c4c3cb1f5ed086a5aea9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

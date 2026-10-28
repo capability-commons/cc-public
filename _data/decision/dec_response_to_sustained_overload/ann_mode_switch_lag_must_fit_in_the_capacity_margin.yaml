@@ -1,0 +1,76 @@
+id_self:                ann_mode_switch_lag_must_fit_in_the_capacity_margin
+guid_self:              ann_07f28098b8fd4f4e9b9d6ea04a7be9b2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mode switch lag that the capacity margin must absorb
+brief:                  |
+                        Under the mode port, the control node must see
+                        a sustained overrun before it acts, hysteresis
+                        delays it further, and the change then takes a
+                        stated number of steps to reach every node.
+                        Queues keep growing for that whole time, so
+                        the derived capacity needs a margin for the
+                        switch lag as well as for jitter, which costs
+                        memory on every edge it covers. Engine
+                        shedding acts on the step it falls behind and
+                        needs no such margin. The cost is bounded and
+                        computable from the stated lag, so it weighs
+                        against the mode port only modestly.
+description:            |
+                        Sources:
+                        - Capacity is derived as maximum rate times
+                          step period plus a jitter margin; occasional
+                          overruns are absorbed by that margin; the
+                          control node switches with hysteresis (WTP,
+                          2026-10-28).
+                        - The mode-port option states a requirement
+                          that a change reaches every node within a
+                          stated number of steps.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief)
+                        - Without priority for events, a reactive
+                          process network may postpone an event for
+                          arbitrary periods, so the delay has to be
+                          bounded explicitly (Geilen and Basten 2004,
+                          Reactive process networks, section 5.4).
+                        - DKPN's dynamic-priority policy reacts to
+                          load by reading FIFO fill levels normalized
+                          by capacity (Arras et al. 2016, DKPN, as
+                          noted in round 2).
+                        - Peak memory in megabytes is a measure of
+                          performance efficiency.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure)
+                          ASSUMPTION: the switch lag is a few steps,
+                          so the extra margin is a few messages per
+                          covered edge. Strength: moderate; it grows
+                          with the lag in steps and the size of the
+                          messages on the edges that fill during it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

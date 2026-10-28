@@ -1,0 +1,72 @@
+id_self:                ann_overflow_check_costs_one_comparison
+guid_self:              ann_6ad86a59d70f42b2b13eb1ca16d6ad59
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow check that costs one comparison per write
+brief:                  |
+                        Detecting an overflow is a comparison of the
+                        count with the capacity when an item is
+                        written, and in a static build the fail-safe
+                        of each port is known when the code is
+                        generated, so a per-port rule costs no more at
+                        run time than one rule for the engine. Neither
+                        adds memory, since the capacity is already
+                        reserved. Blocking costs far more: a wait in
+                        one node delays every node after it in the
+                        step and, under one step rate, the whole step,
+                        which is the overload that degraded mode
+                        exists to answer.
+description:            |
+                        Sources:
+                        - One engine runs a static subgraph whose
+                          schedule is generated as plain C++17 calls
+                          fixed at build time.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          at brief)
+                        - Parameterized dataflow makes overflow a
+                          declared semantic check rather than a side
+                          effect of a buffer filling (Bhattacharya and
+                          Bhattacharyya 2001, Parameterized dataflow
+                          modeling for DSP systems, section VI).
+                        - Degraded mode is only for steps consistently
+                          over their period (WTP, 2026-10-28).
+                          ASSUMPTION: in the dynamic subgraph the
+                          per-port fail-safe is one small enumeration
+                          read beside the capacity, not a virtual
+                          call. Strength: moderate; it shows the two
+                          dropping options equal on performance and
+                          blocking worse, so performance does not
+                          decide between per-port and engine-wide.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_blocks_the_producer
+    guid_target:        opt_198c75629cc9474988160ec4254b845c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

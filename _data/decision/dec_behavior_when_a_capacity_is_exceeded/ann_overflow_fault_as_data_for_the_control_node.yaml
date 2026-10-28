@@ -1,0 +1,83 @@
+id_self:                ann_overflow_fault_as_data_for_the_control_node
+guid_self:              ann_c72df71a214a42678d44f1cbc5364a32
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow fault delivered as data to the control node
+brief:                  |
+                        Raising a fault is a safe response only if
+                        something acts on it. If the engine exposes
+                        overflow counts as source ports, as it will
+                        expose queue occupancy, the control node that
+                        triggers degraded mode can read them and
+                        choose the safe state, with hysteresis, as an
+                        ordinary part of the graph that checks and
+                        replay see. The fail-the-step entry is the
+                        exception to watch: it ends the step for every
+                        node after the failing one, safety functions
+                        included, so it should be allowed only where
+                        the step's failure itself leads to a safe
+                        state. Blocking raises no fault at all, so
+                        nothing downstream learns of it.
+description:            |
+                        Sources:
+                        - A control node monitoring queue sizes or
+                          processor temperature triggers degraded
+                          mode, with hysteresis; the engine exposes
+                          occupancy as source ports, a recorded
+                          exception (WTP, 2026-10-28).
+                        - In the drafted schedule a node that returns
+                          any signal other than continue ends the step
+                          for the nodes after it.
+                          (_data/decision/dec_where_engine_behavior_lives/ann_failing_observer_node_can_end_the_step.yaml
+                          at brief)
+                        - In the Zeitgeist application, late data is
+                          dropped while the system keeps track of how
+                          much was dropped (Akidau et al. 2013,
+                          MillWheel: fault-tolerant stream processing
+                          at internet scale, section 4.5).
+                        - A behavior moves into the engine only when a
+                          recorded decision shows no inserted node can
+                          do it within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief) Strength: moderate to strong for
+                          safety; it favors either dropping option
+                          over blocking and asks the per-port option
+                          to restrict failing the step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_blocks_the_producer
+    guid_target:        opt_198c75629cc9474988160ec4254b845c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

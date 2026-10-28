@@ -1,0 +1,84 @@
+id_self:                ann_blocked_producer_moves_overflow_outside_the_graph
+guid_self:              ann_cafd0e2aee594652bd5ca90514c17909
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Blocked producer that moves the overflow outside the graph
+brief:                  |
+                        Under one message per edge per step, the
+                        reader of a message runs only once the
+                        producer's step has ended, so a producer that
+                        waits for room part way through a step waits
+                        for something its own step prevents. The step
+                        cannot finish, or the excess must be carried
+                        into the next step's message, which is a
+                        different rule. At a sensor the wait cannot
+                        happen at all, so the excess is lost in the
+                        driver or its receive ring, outside the graph
+                        and its trace. Nor can the engine relieve the
+                        wait by growing the buffer, as bounded Kahn
+                        scheduling does, since buffers are fixed.
+                        Dropping inside the graph with a fault keeps
+                        the loss where it is seen.
+description:            |
+                        Sources:
+                        - Bounded Kahn scheduling relieves an
+                          artificial deadlock by growing the smallest
+                          full channel; with fixed capacities that
+                          remedy is unavailable (Parks 1995, Bounded
+                          scheduling of process networks, sections 4.2
+                          and 4.3).
+                        - The engine allocates every buffer from the
+                          port types, and reallocation does not fit
+                          high-integrity systems.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief)
+                        - Under one message per edge per step blocking
+                          turns an overflow into a missed step
+                          deadline upstream, and a sensor cannot be
+                          made to wait.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_overflow_blocks_the_producer.yaml
+                          at description) ASSUMPTION: a camera or
+                          network driver on the Orin drops frames or
+                          packets when its own buffers fill, without a
+                          record in the engine's trace. Strength:
+                          strong against blocking for item overflow
+                          within a message; it does not bear on edges
+                          a designer gives a deeper queue.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_blocks_the_producer
+    guid_target:        opt_198c75629cc9474988160ec4254b845c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

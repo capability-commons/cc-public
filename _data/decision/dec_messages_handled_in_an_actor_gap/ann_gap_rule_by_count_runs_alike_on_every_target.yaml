@@ -1,0 +1,77 @@
+id_self:                ann_gap_rule_by_count_runs_alike_on_every_target
+guid_self:              ann_53821a2c315142caabd6cbb97455f25d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap rule by message count that runs alike on every target
+brief:                  |
+                        Admitting the messages waiting when the gap
+                        opens needs only a count per mailbox, taken
+                        once, so, given the gap that admitted each
+                        outside message, the same graph handles the
+                        same messages in each gap on an Orin, on a
+                        single core with no OS, or in a simulation on
+                        a desktop. A time budget needs a fine
+                        monotonic clock on each target and can stop
+                        only between messages, since a running handler
+                        is not interrupted; the set of messages a gap
+                        handles then changes with the speed of the
+                        target, so a variant tested on one board does
+                        not carry its behavior to another. Draining
+                        until empty is as portable as the count where
+                        it ends.
+description:            |
+                        Sources:
+                        - The engine is a new C++ engine, C++17
+                          planned, aimed at embedded reach (WTP,
+                          2026-10-28).
+                        - Actors between steps need only the engine's
+                          own thread of control, so they work on a
+                          single core with no OS.
+                          (_data/decision/dec_how_actors_are_run/ann_actors_between_steps_need_no_os_threads.yaml
+                          at brief)
+                        - CAF cannot interrupt running actors (CAF
+                          scheduler documentation, as cited in
+                          _data/decision/dec_how_actors_are_run/ann_blocked_actor_holds_what_shares_its_thread.yaml
+                          at description).
+                        - A time budget makes the set handled depend
+                          on how fast the actors ran.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_gap_admission_fixed_when_the_gap_opens.yaml
+                          at brief)
+                        - The flexibility concern asks on which
+                          platforms the design runs and what it takes
+                          to install on a new one.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question)
+                          ASSUMPTION: the engine's handlers run to
+                          completion and are not preempted mid-message
+                          on any target. Strength: moderate; it
+                          matters as soon as a graph is tested on a
+                          host and run on a slower or faster target.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

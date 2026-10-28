@@ -1,0 +1,86 @@
+id_self:                ann_throughput_target_sizes_queue_depth_not_item_count
+guid_self:              ann_9a03eb5b053d4249bbd64c2f33ce688b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Throughput target that sizes queue depth, not item count
+brief:                  |
+                        The buffer-throughput analysis computes how
+                        many tokens a channel must hold for the graph
+                        to reach a throughput, which is the queue
+                        depth of an edge. Under one message per edge
+                        per step that depth is already fixed at one
+                        message, or two where writer and reader
+                        overlap, so the analysis has nothing left to
+                        choose. The number this decision sets is how
+                        many items one message must hold, and that
+                        follows from what the producer can deliver
+                        within a step, not from the throughput of the
+                        graph. A throughput target therefore answers a
+                        different question, while producer maxima
+                        answer this one.
+description:            |
+                        Sources:
+                        - Stuijk, Geilen and Basten size the capacity
+                          of each channel, counted in tokens, against
+                          a throughput constraint, modeling a bounded
+                          channel as a reverse channel whose initial
+                          tokens are the free space (Stuijk et al.
+                          2006, Exploring trade-offs in buffer
+                          requirements and throughput constraints for
+                          SDF graphs, section 4).
+                        - In single-rate dataflow the buffer on an
+                          edge never exceeds its initial tokens plus
+                          one (Bilsen et al. 1996, Cyclo-static
+                          dataflow, section on single-rate dataflow).
+                        - Single step rate for the whole Kahn part,
+                          each message a list of items, so Kahn edges
+                          are homogeneous SDF with one message per
+                          edge per step and static buffers (WTP,
+                          2026-10-28).
+                        - A throughput target is stated for the graph,
+                          and cctool computes the smallest capacity of
+                          each edge that meets it.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_computed_from_a_throughput_target.yaml
+                          at brief)
+                        - The capacity bounds the array on a port, and
+                          a capacity that is too small breaks a
+                          requirement at run time.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/dec_how_the_capacity_of_a_port_is_set.yaml
+                          at description) Strength: strong for Kahn
+                          edges under the convention; the throughput
+                          option keeps a role only on edges a designer
+                          gives a queue deeper than one message, where
+                          it sizes depth rather than items.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_computed_from_a_throughput_target
+    guid_target:        opt_b152b1c6076d4e4181e1812aea7bf58d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

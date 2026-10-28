@@ -1,0 +1,83 @@
+id_self:                ann_first_values_on_forward_edges_under_next_step
+guid_self:              ann_9f1586c2f48e4ce5a8b5bc6756104305
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First values that next-step reading puts on every forward edge
+brief:                  |
+                        Under next-step reading every edge, forward
+                        ones included, holds a first value for the
+                        first step, so a pipeline produces L steps of
+                        output computed from first values before real
+                        data reaches its end. The ruled rule asks a
+                        port to declare that it can supply a default,
+                        which most forward ports have no reason to do,
+                        so either that rule is widened to every port,
+                        a new burden on node authors, or the engine
+                        sends a message with a count of 0 on the first
+                        step, which the convention allows but every
+                        node must then handle. Same-step reading puts
+                        first values only on feedback edges, where the
+                        ruling already covers them, and derived
+                        reading adds them only on edges that cross
+                        units, inserted by the transform.
+description:            |
+                        Sources:
+                        - Every edge then holds a first value, which
+                          the rule on default values on feedback edges
+                          would have to cover for forward edges too.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_every_edge_read_next_step.yaml
+                          at description)
+                        - Each node kind declares for each port
+                          whether it can supply a default, and a
+                          feedback edge needs at least one end that
+                          can.
+                          (_data/decision/dec_default_values_on_feedback_edges/ruling_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - Pipelining across stages adds initial tokens
+                          to every channel that crosses stages, more
+                          for channels that skip stages (Lattuada and
+                          Ferrandi 2013, Modeling pipelined
+                          applications with synchronous dataflow
+                          graphs, section IV-B). Strength: moderate;
+                          the count of 0 answer is cheap if every node
+                          already treats an empty list as normal,
+                          which the bounded-array convention
+                          encourages.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

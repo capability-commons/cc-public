@@ -1,0 +1,65 @@
+id_self:                ann_throughput_target_capacity_moves_with_node_timing
+guid_self:              ann_7888cfa71c844d9b9cc43eb131deb415
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Throughput-derived capacity that moves with every node's timing
+brief:                  |
+                        A capacity computed from a throughput target
+                        depends on the execution time of every node on
+                        the cycle that constrains it, so a faster or
+                        slower version of any node, or a move to
+                        another platform, changes capacities that the
+                        node never touches. A swap of a node version
+                        at a step would then change the memory layout
+                        of the running graph. Capacities derived from
+                        producer maxima change only when a stated
+                        maximum changes, so a node swap that keeps its
+                        declared maxima leaves every buffer as it was.
+description:            |
+                        Sources:
+                        - Throughput comes from a self-timed
+                          state-space exploration over node execution
+                          times, and only channels on a causal
+                          dependency cycle are grown (Stuijk et al.
+                          2006, Exploring trade-offs in buffer
+                          requirements and throughput constraints for
+                          SDF graphs).
+                        - A node version is swapped at a step, with
+                          its state upgraded.
+                          (_data/decision/dec_swap_of_a_node_version/ruling_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - The engine allocates the buffers of each
+                          edge from the port types.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief) Strength: moderate; it rests on
+                          execution times being measured per platform,
+                          which the throughput option needs and the
+                          other two do not.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_computed_from_a_throughput_target
+    guid_target:        opt_b152b1c6076d4e4181e1812aea7bf58d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

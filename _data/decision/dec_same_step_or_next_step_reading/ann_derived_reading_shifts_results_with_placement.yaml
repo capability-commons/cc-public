@@ -1,0 +1,76 @@
+id_self:                ann_derived_reading_shifts_results_with_placement
+guid_self:              ann_26d40aa0cf4144c994fab7171b2e68d5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Derived reading that shifts results when placement changes
+brief:                  |
+                        Under derived reading, the step in which a
+                        value reaches a node depends on where the
+                        transform placed its producer, so the same
+                        graph regenerated for a host with a different
+                        number of cores can deliver some values a step
+                        later and give different outputs step by step.
+                        Under next-step or same-step reading
+                        everywhere, a node sees the same values
+                        whatever the placement, and only timing
+                        changes. Since the ruling on placement expects
+                        variants generated per host, derived reading
+                        makes behavior a property of the placed
+                        variant: tests, recorded runs and evidence
+                        must name the placed graph, and comparing a
+                        run on one platform with a run on another
+                        needs the reading of each edge. That is a real
+                        cost to moving across platforms, and the price
+                        of the latency gain.
+description:            |
+                        Sources:
+                        - A variant can be generated with as many
+                          processes on a host as it has cores, so much
+                          of the dynamism goes into rewriting the
+                          dataflow graph.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Analysis that ignored the stage assignment
+                          was off by about 1.5x in throughput and
+                          buffer size, so checks belong on the placed
+                          graph (Lattuada and Ferrandi 2013, Modeling
+                          pipelined applications with synchronous
+                          dataflow graphs, section V).
+                        - Edges within one unit are read in the same
+                          step where the latency requirement needs it,
+                          and edges that cross units in the next.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_reading_derived_by_placement.yaml
+                          at brief) ASSUMPTION: the lowered graph's
+                          digest records the reading of each edge, so
+                          a run can name it; if not, a field must be
+                          added. Strength: moderate; it is a cost to
+                          state and manage rather than a reason to
+                          reject the option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

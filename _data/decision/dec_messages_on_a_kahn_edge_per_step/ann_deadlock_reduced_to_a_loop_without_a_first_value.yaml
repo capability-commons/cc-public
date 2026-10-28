@@ -1,0 +1,90 @@
+id_self:                ann_deadlock_reduced_to_a_loop_without_a_first_value
+guid_self:              ann_e063e0c4de8b449cab0eb747ba3344b3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deadlock reduced to a loop without a first value
+brief:                  |
+                        With one message per edge per step, every edge
+                        is on one clock and every buffer has a known
+                        size before the graph runs, so the only
+                        deadlock left is a loop with no first value,
+                        which the ruled check on feedback defaults
+                        rejects before deployment. Queues of
+                        configured depth with dynamic rates leave
+                        artificial deadlocks possible, and the best
+                        the engine can then do is detect one and raise
+                        a fault while the system runs. For a safety
+                        function, a stall that is reported is still a
+                        stall: rejecting the graph before it runs
+                        removes the hazard, while detecting it at run
+                        time only starts the fail-safe. Declared rates
+                        per port are also decidable before running, so
+                        the case is against the configured queues, not
+                        against declared rates.
+description:            |
+                        Sources:
+                        - Whether a general Kahn network runs in
+                          bounded memory is undecidable, and Parks'
+                          remedy for artificial deadlock is to grow
+                          the smallest full channel (Parks 1995,
+                          Bounded scheduling of process networks,
+                          chapters 3 and 4).
+                        - A cycle of blocked processes in one part of
+                          a system goes undetected by a global check
+                          while the rest runs, and a cycle with no
+                          initial token is a real deadlock that no
+                          capacity fixes (Geilen and Basten 2003,
+                          Requirements on the execution of Kahn
+                          process networks).
+                        - In synchronous Kahn networks an argument
+                          crosses the whole network in one step, and a
+                          recursion is deadlock-free if it passes
+                          through a delay, which is easy to check
+                          statically (Caspi and Pouzet 1996,
+                          Synchronous Kahn networks, sections 2.1 and
+                          3.2).
+                        - The engine allocates every edge buffer from
+                          the port types, and reallocation by an
+                          owning end was rejected as unfit for
+                          controlled allocation.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief)
+                        - A feedback edge needs at least one end that
+                          declares it can supply a default.
+                          (_data/decision/dec_default_values_on_feedback_edges/ruling_default_from_a_port_that_declares_it.yaml
+                          at brief) Strength: strong; it would weaken
+                          only if graphs that need queues deeper than
+                          one message turned out to be common.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

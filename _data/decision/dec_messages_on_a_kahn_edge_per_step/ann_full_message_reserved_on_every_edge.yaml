@@ -1,0 +1,77 @@
+id_self:                ann_full_message_reserved_on_every_edge
+guid_self:              ann_05d5703919e840d88fbb0feaff538555
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Full message reserved on every edge, and batches for slow readers
+brief:                  |
+                        One message per step costs memory and latency.
+                        Every edge reserves a whole message at its
+                        capacity, or two where writer and reader
+                        overlap, even on steps that carry nothing, and
+                        a consumer that needs data only now and then
+                        still runs every step, usually on an empty
+                        list. Declared rates per port let a slow node
+                        fire less often and size each buffer to what
+                        its rates need, and a configured queue can be
+                        shallow where the designer knows the traffic
+                        is light. The cost is the one Ritz et al.
+                        measured for scalable dataflow, and it buys
+                        the static sizes argued elsewhere, so it is a
+                        reason to keep the deeper options as recorded
+                        exceptions rather than a reason to reject the
+                        default.
+description:            |
+                        Sources:
+                        - Scalable synchronous dataflow cuts the
+                          overhead of each activation by carrying a
+                          block of samples, at the cost of more data
+                          memory and more latency, and the paper
+                          bounds both by a cap on the blocking factor
+                          (Ritz, Pankert, Zivojnovic and Meyr 1993,
+                          Optimum vectorisation of scalable
+                          synchronous dataflow graphs, section 1).
+                        - In multirate synchronous dataflow each node
+                          fires as often as the balance equations
+                          require, and the buffer of each arc follows
+                          from the schedule (Lee and Messerschmitt
+                          1987, Synchronous data flow).
+                        - The known cost of the option: each edge
+                          reserves a full message, and a slow consumer
+                          sees data in batches.
+                          (_data/decision/dec_messages_on_a_kahn_edge_per_step/opt_one_message_per_kahn_edge_per_step.yaml
+                          at description) ASSUMPTION: on the Orin the
+                          memory reserved for full messages is small
+                          next to the image and tensor buffers that
+                          dominate Patrol's graph; this needs a
+                          measurement. Strength: moderate; it would
+                          grow if a target with little memory, the
+                          embedded reach the engine aims at, ran
+                          graphs with many large, mostly empty edges.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declared_rates_per_port
+    guid_target:        opt_648d2232ae11471581ff03d5b2f413c1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

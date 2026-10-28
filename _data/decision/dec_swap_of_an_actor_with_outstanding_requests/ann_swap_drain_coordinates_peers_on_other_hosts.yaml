@@ -1,0 +1,78 @@
+id_self:                ann_swap_drain_coordinates_peers_on_other_hosts
+guid_self:              ann_c2e10eb2cf284f0fb5bcdb02f65777d5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Drain that coordinates peers on other hosts
+brief:                  |
+                        Stopping new requests to the actor means
+                        stopping its peers, which may run on other
+                        execution units or hosts, so a drain is a
+                        protocol across machines that each transport
+                        must carry. Waiting for nothing outstanding
+                        and fencing by epoch are decided where the
+                        actor runs: the engine counts its open
+                        requests, or stamps them and checks the stamp
+                        on each reply. The stamp must survive
+                        transport nodes, as a sequence or step tag on
+                        actor messages would need to anyway to keep
+                        order across a proxy, so the fence adds little
+                        per platform.
+description:            |
+                        Sources:
+                        - The drain option stops new requests to and
+                          from the actor.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/opt_drain_outstanding_requests_first.yaml
+                          at brief)
+                        - Quiescence of a node needs its passive set,
+                          every node that can start transactions on
+                          it, to be passivated (Kramer and Magee 1990,
+                          The evolving philosophers problem, section
+                          on node quiescence).
+                        - Point-to-point in-order delivery is not
+                          transitive, so a proxy such as an inserted
+                          transport node reorders actor messages
+                          unless they carry a tag (Menard et al. 2023,
+                          High-performance deterministic concurrency
+                          using Lingua Franca, section 2).
+                        - The flexibility concern asks on which
+                          platforms and environments the design runs.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question)
+                          ASSUMPTION: actors in one region may be
+                          placed on different execution units or
+                          hosts, as Kahn nodes may. Strength:
+                          moderate; it does not arise while every
+                          actor of a region runs in one process.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_only_actors_with_nothing_outstanding
+    guid_target:        opt_6dd27e11f9ef4af9bff084df1e5b348d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

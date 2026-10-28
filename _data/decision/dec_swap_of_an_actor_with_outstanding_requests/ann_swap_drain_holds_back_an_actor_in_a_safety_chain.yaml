@@ -1,0 +1,78 @@
+id_self:                ann_swap_drain_holds_back_an_actor_in_a_safety_chain
+guid_self:              ann_f7b5ca3ed48e4442bf3aeec27e4d45f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requests held back from an actor in a safety chain during a drain
+brief:                  |
+                        Draining first stops new requests to and from
+                        the actor for as long as replies take, so an
+                        actor that relays a stop or a mode change
+                        cannot pass it on during that time. In the IEC
+                        61499 case on Erlang, the authors warn that
+                        suspending a process that controls an actuator
+                        may delay a time-critical answer, and note
+                        that an update can be scheduled only in safe
+                        states. Swapping only an actor with nothing
+                        outstanding never holds its traffic back, and
+                        the fence swaps at the next step, so both keep
+                        the actor answering; a precondition that the
+                        swap waits for a safe state would serve any of
+                        the options.
+description:            |
+                        Sources:
+                        - The change set stops new requests to and
+                          from the actor while the outstanding replies
+                          arrive.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/opt_drain_outstanding_requests_first.yaml
+                          at brief)
+                        - Suspension of a process that directly
+                          controls hardware may delay a time-sensitive
+                          answer, such as stopping a motor, and an
+                          update can be scheduled to run only in safe
+                          states (Prenzel and Provost 2017, Dynamic
+                          software updating of IEC 61499
+                          implementation using Erlang runtime system,
+                          sections 4.4 and 5.2).
+                        - The safety concern asks how the design
+                          avoids or limits each hazard.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question)
+                        ASSUMPTION: an actor can sit on the path of a
+                        stop or mode command, as it may where Patrol's
+                        commands arrive from outside systems.
+                        Strength: moderate; it disappears for actors
+                        that no safety function depends on, which a
+                        change set could be checked for.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_only_actors_with_nothing_outstanding
+    guid_target:        opt_6dd27e11f9ef4af9bff084df1e5b348d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

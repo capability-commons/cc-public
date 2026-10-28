@@ -1,0 +1,79 @@
+id_self:                ann_flooded_port_as_a_lever_for_an_attacker
+guid_self:              ann_5fab50ba0f464be6bea566e5d154f613
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Flooded port as a lever for an attacker
+brief:                  |
+                        Whoever controls what arrives at a port,
+                        through a spoofed network source or a faulty
+                        upstream node, can overflow it at will, and
+                        each fail-safe then becomes a lever. Keeping
+                        the first items lets early, forged items crowd
+                        out real ones. Blocking stalls every node
+                        upstream, a denial of service. Failing the
+                        step stops the graph. A per-port rule lets the
+                        ports exposed to outside input take the
+                        response that gives an attacker least, such as
+                        dropping the whole message with a fault, which
+                        loses that step's real items too but lets no
+                        forged partial list through, and the fault
+                        count makes a flood visible. One rule for the
+                        engine gives every exposed port the crowding
+                        weakness.
+description:            |
+                        Sources:
+                        - A count larger than the capacity, written by
+                          a faulty or hostile sender, makes every
+                          reader that trusts it read past the array,
+                          so the receiver of a crossing must check the
+                          count.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ann_received_count_and_stale_tail_of_a_bounded_array.yaml
+                          at brief)
+                        - The security concern asks what an attacker
+                          can reach and what it would cost.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question)
+                        - Every overflow raises a fault that the trace
+                          records, whichever fail-safe is chosen.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief) ASSUMPTION: some Patrol sources,
+                          such as messages from an operator station or
+                          another robot, cross a network an attacker
+                          could reach. Strength: moderate; the
+                          crowding attack needs control of arrival
+                          order, and a per-port choice helps only if
+                          exposed ports are identified, which the
+                          delivery-policy and crossing rules can mark.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_blocks_the_producer
+    guid_target:        opt_198c75629cc9474988160ec4254b845c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

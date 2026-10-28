@@ -1,0 +1,72 @@
+id_self:                ann_absent_first_value_matches_lingua_franca_loops
+guid_self:              ann_e546224916e14eac907667f208d6647b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Absent first value as Lingua Franca loops have it
+brief:                  |
+                        Lingua Franca, the nearest deterministic actor
+                        framework and one measured on the Orin's
+                        predecessor, closes a loop with a delay whose
+                        first reading is absent. A loop of reactors
+                        brought into a cc-public graph, or taken out
+                        of one, maps directly under the absent option,
+                        while the default rule would need a default
+                        invented for it. Tools that place an initial
+                        value on a delay, such as synchronous dataflow
+                        tools and Simulink, model loops of the Kahn
+                        kind, and the absent option keeps the default
+                        rule there, so it loses no partner.
+description:            |
+                        Sources:
+                        - Any feedback loop between reactions needs at
+                          least a microstep delay (Lohstroh et al.
+                          2021, Toward a Lingua Franca for
+                          deterministic concurrent systems, section
+                          6).
+                        - The Lingua Franca C runtime was measured on
+                          the NVIDIA Jetson AGX (Lohstroh et al. 2021,
+                          section 3.1).
+                        - Partner tools place first values on arcs or
+                          on delay blocks.
+                          (_data/decision/dec_default_values_on_feedback_edges/ann_partner_tools_place_first_values_on_arcs_or_blocks.yaml
+                          at brief)
+                        - The absent option keeps the default rule for
+                          loops through Kahn nodes.
+                          (_data/decision/dec_first_value_of_an_actor_loop/opt_actor_loops_may_start_absent.yaml
+                          at brief)
+                        - Compatibility asks whether the design can
+                          read and use what a partner produces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.1)
+                          ASSUMPTION: a Lingua Franca model may be a
+                          partner of cc-public; none is named in the
+                          tree yet. Strength: weak to moderate; it
+                          rests on a partner not yet chosen.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

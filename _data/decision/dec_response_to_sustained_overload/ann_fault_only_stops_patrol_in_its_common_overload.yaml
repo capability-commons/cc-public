@@ -1,0 +1,86 @@
+id_self:                ann_fault_only_stops_patrol_in_its_common_overload
+guid_self:              ann_4bf606688f0b4f4ea088abe0711eef27
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fault-only response that stops Patrol in its common overload
+brief:                  |
+                        On the Orin the expected overload is the
+                        camera at 30 Hz outrunning inference, possibly
+                        made worse by thermal throttling, so it is a
+                        condition of service, not a rare failure.
+                        Raising a fault and leaving the rest to fault
+                        handling gives no way to go on at reduced
+                        quality, so Patrol would stop or restart
+                        whenever inference falls behind. A cheaper
+                        mode keeps the robot doing its task, with
+                        fewer detections or a lower inference rate.
+                        The fault-only option suits graphs where an
+                        overrun is never expected in service, which
+                        Patrol's is not.
+description:            |
+                        Sources:
+                        - Patrol, on an NVIDIA Orin with a camera at
+                          30 Hz, is the engine's first user; degraded
+                          mode is for a step that consistently takes
+                          longer than its period, triggered by a
+                          control node watching queue sizes or
+                          processor temperature (WTP, 2026-10-28).
+                        - Overload where a producer outruns a
+                          consumer, camera rate against inference, is
+                          called the common case on the Orin.
+                          (/mnt/project-files/notes/literature/part-2/README.md,
+                          part 4 of the section on the one thing that
+                          changes a ruling)
+                        - The fault-only option is enough only where
+                          an overrun is never expected in service and
+                          gives no way to keep running at reduced
+                          quality.
+                          (_data/decision/dec_response_to_sustained_overload/opt_overload_raised_as_a_fault_only.yaml
+                          at description)
+                        - Availability in percent of scheduled time is
+                          a measure of reliability.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.measure)
+                          ASSUMPTION: Patrol's mission tolerates
+                          reduced detection quality for a while better
+                          than a stop. Strength: strong for Patrol;
+                          weak for a graph whose load is fixed and
+                          proven to fit its period.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overload_raised_as_a_fault_only
+    guid_target:        opt_7c043da00a6d44fb99f20f2873ddc5a1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

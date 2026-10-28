@@ -1,0 +1,94 @@
+id_self:                ann_swap_rule_that_asks_nothing_of_actor_authors
+guid_self:              ann_1ed38fbd16b94676b7082dc3a3aa0a7a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Swap rule that asks nothing of actor authors
+brief:                  |
+                        Waiting for nothing outstanding and draining
+                        first are carried out by the engine from
+                        requests it already routes, so for single
+                        request and reply exchanges an actor author
+                        writes nothing for them. The fence asks each
+                        author to establish which requests are safe to
+                        send again and to write the resend, and
+                        carrying requests in state asks for a written
+                        upgrade of each request. Vandewoude et al.
+                        keep transaction knowledge in the middleware
+                        rather than in component code, and WTP wants
+                        the mechanism simple and light on node
+                        authors, so on this concern the two waiting
+                        options lead.
+description:            |
+                        Sources:
+                        - Adding transaction knowledge to component
+                          code increases implicit coupling and hinders
+                          reuse, so it is pushed into middleware
+                          message tagging (Vandewoude et al. 2007,
+                          Tranquility, section 6.3).
+                        - Only an actor whose requests can safely be
+                          sent again may be swapped by the fence, and
+                          the new actor sends the request again where
+                          it still needs the reply.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/opt_fence_replies_by_epoch.yaml
+                          at brief and description)
+                        - Carrying requests in state needs an upgrade
+                          written and tested by the author of each
+                          actor kind.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/ann_request_state_needs_a_written_upgrade.yaml
+                          at brief)
+                        - Waiting for no outstanding requests is safe
+                          only for actors whose exchanges are single
+                          request and reply.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/ann_nothing_outstanding_is_not_quiescence.yaml
+                          at brief)
+                        - WTP wants the approach pragmatic, as simple
+                          as feasible, and free of clever mechanisms
+                          that burden node authors (WTP, 2026-10-28).
+                        - The maintainability concern asks how far a
+                          change in one part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question)
+                        Strength: moderate; the waiting options still
+                        need the fallback argued elsewhere, and for
+                        exchanges of several messages someone must say
+                        when an exchange is complete; a fence with an
+                        engine-generated resend for requests declared
+                        safe would narrow the gap.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_swap_only_actors_with_nothing_outstanding
+    guid_target:        opt_6dd27e11f9ef4af9bff084df1e5b348d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_outstanding_requests_carried_in_state
+    guid_target:        opt_42ec5a3eb73749b8837cf87cf502f1ac

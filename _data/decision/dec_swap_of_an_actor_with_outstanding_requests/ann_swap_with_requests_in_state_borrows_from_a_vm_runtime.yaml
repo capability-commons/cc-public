@@ -1,0 +1,85 @@
+id_self:                ann_swap_with_requests_in_state_borrows_from_a_vm_runtime
+guid_self:              ann_d4b5ec00a32e4dadb49b76acf971ad1f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Carrying requests across a swap borrowed only from VM runtimes
+brief:                  |
+                        A working precedent in the notes for swapping
+                        a process with its pending messages intact is
+                        Erlang/OTP, where the runtime keeps a
+                        suspended process's mailbox and runs a state
+                        transform on reload; the IEC 61499 work got
+                        live update by compiling to Erlang to use that
+                        runtime. A C++17 engine cannot take that
+                        runtime, so carrying requests in state would
+                        be built in house. The fence follows a
+                        published mechanism, MillWheel's sequencer
+                        token, and the two waiting options need only a
+                        counter or a gate, all small enough to own, so
+                        none of the four adds a third-party
+                        dependency, and the concern bears weakly on
+                        the choice.
+description:            |
+                        Sources:
+                        - Suspended Erlang processes keep receiving
+                          messages into their mailbox, and the update
+                          suspends the process, loads the new module
+                          and transforms its state (Prenzel and
+                          Provost 2017, Dynamic software updating of
+                          IEC 61499 implementation using Erlang
+                          runtime system, sections 2.2 and 3.2).
+                        - Erlang/OTP release handling installs
+                          upgrades through relup and code_change.
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_live_is_a_code_loading_channel.yaml
+                          at description)
+                        - MillWheel's fence is a sequencer token that
+                          new workers invalidate before starting work,
+                          a mechanism rather than a library (Akidau et
+                          al. 2013, MillWheel, section 6.2).
+                        - Orleans virtual actors persist their state
+                          and are activated on demand, which may be a
+                          further precedent for swaps (Bernstein et
+                          al. 2014, Orleans, as listed in the
+                          actor-models reading list of 2026-10-28;
+                          citation unverified and from memory, not yet
+                          read).
+                        - The engine is a new C++ engine, C++17
+                          planned (WTP, 2026-10-28).
+                        - The dependency risk concern asks what the
+                          design takes from third parties.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question)
+                        ASSUMPTION: no C++ library supplies the
+                        carrying of outstanding requests across a code
+                        swap; this has not been surveyed. Strength:
+                        weak; no option adds a dependency, and the
+                        point is mainly that carrying requests in
+                        state has no ready-made part to take.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_outstanding_requests_carried_in_state
+    guid_target:        opt_42ec5a3eb73749b8837cf87cf502f1ac
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

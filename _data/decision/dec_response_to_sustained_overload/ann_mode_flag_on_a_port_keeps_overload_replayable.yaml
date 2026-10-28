@@ -1,0 +1,86 @@
+id_self:                ann_mode_flag_on_a_port_keeps_overload_replayable
+guid_self:              ann_ce388f503c0c413b85735a8de536f649
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mode flag on a port that keeps an overloaded run replayable
+brief:                  |
+                        With the mode flag on an ordinary port fed by
+                        one control node and changing only at a step,
+                        every switch is a value on an edge that the
+                        trace records, and between switches the
+                        network stays a plain Kahn network. A run that
+                        degraded can then be replayed and its switch
+                        points tested like any other input. Under
+                        engine load shedding, what is dropped depends
+                        on how fast each step ran, so the same inputs
+                        give different outputs on another machine,
+                        under a debugger, or in simulation. A fault
+                        alone keeps replay, but only up to the fault.
+description:            |
+                        Sources:
+                        - Between events a reactive process network
+                          still obeys the Kahn principle, and the
+                          events themselves travel on the same
+                          channels as the data, distinguished only at
+                          the receiver (Geilen and Basten 2004,
+                          Reactive process networks, sections 3.2.6
+                          and 5.5).
+                        - In Lingua Franca a mode change takes effect
+                          only after the current tag, and determinism
+                          is defined for the same sequence of tagged
+                          inputs, so a mode switch replays
+                          (Schulz-Rosengarten et al. 2023, Polyglot
+                          modal models through Lingua Franca, section
+                          4.2).
+                        - Back-pressure should not carry meaning; only
+                          the data path determines results (Miranda et
+                          al. 2010, Erbium, section on termination).
+                        - The shedding option drops by timing, so a
+                          run cannot be replayed from its inputs
+                          alone.
+                          (_data/decision/dec_response_to_sustained_overload/opt_load_shedding_by_the_engine.yaml
+                          at description)
+                        - The replay log option records every value
+                          that entered the graph from outside.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/opt_replay_from_a_recorded_log.yaml
+                          at brief) ASSUMPTION: occupancy and
+                          temperature enter as source ports whose
+                          values the replay log records, so the
+                          control node's decisions replay too.
+                          Strength: strong; it would weaken only if
+                          the engine logged every shed step, which
+                          makes replay follow the log rather than the
+                          inputs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,85 @@
+id_self:                ann_runtime_reads_mid_step_depend_on_timing
+guid_self:              ann_023933c2dbd44d72a3b44aeec9ad5213
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime reads mid-step whose values depend on timing
+brief:                  |
+                        A node that calls the runtime during its step
+                        reads a value at whatever moment the call
+                        happens, and queue occupancy or the clock
+                        changes as other execution units run, so the
+                        same inputs and state give different outputs
+                        from run to run. Declaring and recording the
+                        capability makes such a run replayable from
+                        the log, but not reproducible from its inputs,
+                        and a test cannot set the value. A source port
+                        is sampled once at the step boundary and
+                        arrives as an input processed in the node's
+                        own turn, so the node stays a function of its
+                        inputs and state.
+description:            |
+                        Sources:
+                        - Every lasting dataflow system keeps nodes as
+                          plain functions over inputs and state, and a
+                          node that reads the runtime directly hides
+                          an input from checks and replay.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/dec_how_nodes_reach_runtime_services.yaml
+                          at description)
+                        - Futures and callbacks that complete outside
+                          an actor's serial turn break its serial
+                          semantics; a reply should arrive as an event
+                          on a typed input (Prokopec and Odersky 2016,
+                          Reactors, channels, and event streams,
+                          section 4.2).
+                        - The declared option records every value the
+                          runtime returns in the trace.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_runtime_parameter_with_declared_capabilities.yaml
+                          at brief)
+                        - Functional suitability asks whether each
+                          function gives the right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question)
+                          ASSUMPTION: Patrol's Kahn steps run on
+                          several execution units at once, so
+                          occupancy read mid-step is moving. Strength:
+                          strong for occupancy and the clock; weak for
+                          values fixed during a run, such as a
+                          hardware identity.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

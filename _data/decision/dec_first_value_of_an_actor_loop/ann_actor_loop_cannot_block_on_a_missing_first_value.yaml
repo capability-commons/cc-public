@@ -1,0 +1,83 @@
+id_self:                ann_actor_loop_cannot_block_on_a_missing_first_value
+guid_self:              ann_9bcc6c451ea543389293f64799fbf98f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actor loop that cannot block on a missing first value
+brief:                  |
+                        The default rule exists because a Kahn read
+                        waits for a token, so a Kahn cycle with no
+                        first token is a real deadlock. An actor never
+                        waits for a message: it runs on the messages
+                        waiting for it in a gap between steps, and
+                        with none it does nothing. A loop that passes
+                        only through actors therefore has no deadlock
+                        for a first value to break, and in Reactors
+                        and Lingua Franca such a loop needs only a
+                        delay whose first reading is absent. The
+                        evidence leans toward letting actor loops
+                        start absent.
+description:            |
+                        Sources:
+                        - A feedback cycle with no initial token is a
+                          real deadlock that no capacity can fix,
+                          which is why a Kahn feedback edge needs an
+                          end that can supply a first value (Geilen
+                          and Basten 2003, Requirements on the
+                          execution of Kahn process networks, as
+                          summarized in
+                          /mnt/project-files/notes/literature/part-2/2003-requirements-on-the-execution-of-kpns.md).
+                        - In reactors, port values reset to absent
+                          after each tag, and a feedback loop needs a
+                          delay rather than a default value (Lohstroh
+                          et al. 2019, Reactors: a deterministic model
+                          for composable reactive systems, sections
+                          2.1 and 3.6).
+                        - Lingua Franca requires at least a microstep
+                          delay in any feedback loop between reactions
+                          (Lohstroh et al. 2021, Toward a Lingua
+                          Franca for deterministic concurrent systems,
+                          section 6).
+                        - Actors run on the engine's threads in the
+                          gaps between Kahn steps, draining the
+                          messages waiting for them.
+                          (_data/decision/dec_how_actors_are_run/opt_actors_between_steps.yaml
+                          at brief)
+                        - The open option on gap admission has
+                          messages sent during a gap wait for the next
+                          gap, which is the delay a loop needs.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/opt_messages_waiting_when_the_gap_opens.yaml
+                          at brief) ASSUMPTION: actors handle each
+                          message as it comes and never wait inside a
+                          handler for a particular message, as the
+                          between-steps ruling implies. Strength:
+                          strong on liveness; it would weaken if
+                          actors were allowed to block on a reply
+                          inside a handler.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

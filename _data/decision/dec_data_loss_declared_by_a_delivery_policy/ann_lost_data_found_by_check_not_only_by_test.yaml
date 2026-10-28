@@ -1,0 +1,71 @@
+id_self:                ann_lost_data_found_by_check_not_only_by_test
+guid_self:              ann_d3af5b2dd6af4716ae26104360b03fa8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lost data found by a check, not only by a test
+brief:                  |
+                        With one message per Kahn edge per step and
+                        one fixed list of delivery policies, whether
+                        an edge can lose data is a property of its
+                        policy and the graph, which a cheap graph
+                        check decides for every edge. A test finds
+                        loss only where it looks, as the option to
+                        leave loss to requirements says, and a
+                        latest-value latch loses data only when its
+                        producer outruns its consumer, which a test at
+                        nominal rate never sees. The evidence leans
+                        toward declaring loss on each policy.
+description:            |
+                        Sources:
+                        - Lost data is data overwritten before it is
+                          read (Xiang et al. 2018, Detecting data-flow
+                          errors based on Petri nets with data
+                          operations, definitions of the four errors).
+                          The paper finds it by searching a
+                          reachability graph; the note on it judges
+                          that under one message per edge per step the
+                          check needs no such search.
+                          (/mnt/project-files/notes/literature/round-2/2018-data-flow-errors-petri-nets-data-operations.md)
+                        - Loss then shows only where a test looks for
+                          it.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/opt_data_loss_left_to_requirements.yaml
+                          at description)
+                        - A dataflow edge carries a delivery policy
+                          named from a fixed list.
+                          (_data/decision/dec_edge_policy/ruling_named_delivery_policy_on_edge_now.yaml
+                          at brief)
+                        - Kahn edges are homogeneous SDF, one message
+                          per edge per step (WTP, 2026-10-28).
+                          ASSUMPTION: requirements that forbid loss
+                          are linked to edges, so the check knows
+                          which edges to hold to it. Strength: strong
+                          for latches and crossings; it says nothing
+                          about loss inside node code.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_data_loss_left_to_requirements
+    guid_target:        opt_455334fa4a0c4c3cb1f5ed086a5aea9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

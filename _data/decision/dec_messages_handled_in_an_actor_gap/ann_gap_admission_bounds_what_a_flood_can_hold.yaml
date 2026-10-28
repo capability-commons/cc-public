@@ -1,0 +1,90 @@
+id_self:                ann_gap_admission_bounds_what_a_flood_can_hold
+guid_self:              ann_b928e6e919294f1898f2ff9bc81a7b2e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Work in a gap held by a flood of outside messages
+brief:                  |
+                        A sender outside the graph that floods an
+                        actor holds up whatever shares the actor's
+                        thread, and between steps that is the next
+                        Kahn step. Draining until empty lets messages
+                        that arrive during the gap keep it open, so a
+                        sustained flood can stall every Kahn node.
+                        Admitting only the messages waiting when the
+                        gap opens caps a gap at what the bounded
+                        mailboxes held at that moment. A time budget
+                        caps the gap too, but if each gap starts again
+                        at the head of the engine's order, a flooded
+                        actor early in that order can spend the budget
+                        and starve the actors after it, gap after gap.
+description:            |
+                        Sources:
+                        - An actor that is flooded with messages on
+                          purpose holds whatever shares its thread,
+                          and between steps it holds up the next Kahn
+                          step.
+                          (_data/decision/dec_how_actors_are_run/ann_blocked_actor_holds_what_shares_its_thread.yaml
+                          at brief)
+                        - The drain option continues until no actor
+                          has a message waiting.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/opt_drain_until_every_mailbox_is_empty.yaml
+                          at brief)
+                        - A time budget runs in the engine's order
+                          until it is spent, and the messages it did
+                          not reach wait for the next gap.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/opt_time_budget_for_each_gap.yaml
+                          at brief)
+                        - The security concern asks what an attacker
+                          can reach. (_data/register/reg_concern.yaml
+                          at entries.concern_security.question)
+                        - Every producer has a stated maximum data
+                          rate, capacity is derived from it, and
+                          overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                        ASSUMPTION: an outside sender's messages reach
+                        actors through bounded, engine-owned
+                        mailboxes, so a flood beyond the stated rate
+                        ends in the declared fail-safe rather than
+                        unbounded growth. ASSUMPTION: each budgeted
+                        gap starts again at the head of the engine's
+                        order; the option does not say, and a gap that
+                        resumed where the last one stopped would not
+                        starve later actors. Strength: moderate; it
+                        holds wherever an actor takes input from
+                        outside the graph, as Patrol's commands from
+                        outside systems may, and weakens if every
+                        outside input passes through a gateway node
+                        that enforces its stated rate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_until_every_mailbox_is_empty
+    guid_target:        opt_5e2092eb1ee2491ca8095b05589d15ca
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

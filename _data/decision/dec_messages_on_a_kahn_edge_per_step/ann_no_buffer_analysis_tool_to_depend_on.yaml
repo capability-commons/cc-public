@@ -1,0 +1,85 @@
+id_self:                ann_no_buffer_analysis_tool_to_depend_on
+guid_self:              ann_0efae414382546459518c918a11c334a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No buffer analysis tool to depend on
+brief:                  |
+                        Under one message per step the capacity of an
+                        edge is a product and a sum, and its depth is
+                        one or two messages, so cctool needs no
+                        solver. Declared rates need the balance
+                        equations solved and a schedule and buffer
+                        sizes computed, which is well understood but
+                        still code to write and keep. Configured
+                        queues need the minimum deadlock-free depths
+                        computed, which for a throughput target is an
+                        NP-complete search. That is a substantial
+                        piece of analysis that cc-public must write
+                        and maintain or take from a third party such
+                        as an academic tool set, with its own license
+                        and maintainer to watch. The engine side
+                        differs as well: deadlock detection is engine
+                        code that must be carried as a recorded
+                        exception.
+description:            |
+                        Sources:
+                        - Finding the buffer sizes that meet a
+                          throughput target is NP-complete, though
+                          real kernels take milliseconds to minutes
+                          (Stuijk, Geilen and Basten 2006, Exploring
+                          trade-offs in buffer requirements and
+                          throughput constraints for SDF graphs).
+                        - Lattuada and Ferrandi compute throughput and
+                          buffers of a placed solution with an
+                          existing SDF tool, SDF3 (Lattuada and
+                          Ferrandi 2013, Modeling pipelined
+                          applications with synchronous dataflow
+                          graphs).
+                        - The engine does nothing a node could do, and
+                          behavior moves into it only by a recorded
+                          decision with a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief) ASSUMPTION: no buffer analysis
+                          tool now in use is suitable as a dependency
+                          of cctool; its license and maintenance were
+                          not checked. Strength: moderate; it would
+                          fade if a well maintained, permissively
+                          licensed analysis library were found.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declared_rates_per_port
+    guid_target:        opt_648d2232ae11471581ff03d5b2f413c1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

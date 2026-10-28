@@ -1,0 +1,82 @@
+id_self:                ann_count_of_zero_keeps_writer_and_reader_in_step
+guid_self:              ann_64371abee3c142308628b89b97cd9c03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Count of zero that keeps writer and reader in step
+brief:                  |
+                        Three independent sources trace deadlock or a
+                        starved reader to a node that sometimes writes
+                        an output and sometimes does not, while its
+                        reader expects one. Under one message per edge
+                        per step a node with nothing to say still
+                        writes a message whose count is 0, so every
+                        reader gets exactly one message every step and
+                        no producer can fall out of step with its
+                        consumers. Queues of configured depth with
+                        dynamic rates admit the selective writes that
+                        cause these deadlocks. Declared rates avoid
+                        them too, since each port writes a fixed
+                        number of messages per firing; the case here
+                        is against the configured queues.
+description:            |
+                        Sources:
+                        - In the worked example of Kavi et al., two
+                          cycles deadlock because selective outputs,
+                          chosen far apart, are not correlated; a
+                          firing cycle is live when the links it
+                          consumes equal those it produces (Kavi,
+                          Buckles and Bhat 1986, A formal definition
+                          of data flow graph models, Theorem 1 and the
+                          example).
+                        - In static token form, a value is defined
+                          under exactly the condition under which it
+                          is used, and each channel action appears at
+                          most once in a loop body (Teifel and Manohar
+                          2004, Static tokens: using dataflow to
+                          automate concurrent pipeline synthesis,
+                          sections 2 and 3).
+                        - A discrete-event integrator that did not
+                          emit on every input deadlocked a feedback
+                          loop, and the fix was to force an output
+                          after every input (McInnes and Thorne 2010,
+                          ScipySim: toward heterogeneous system
+                          simulation for the SciPy platform).
+                        - Each message is a bounded array whose length
+                          varies per message up to a capacity.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ruling_bounded_array_of_fixed_size_elements.yaml
+                          at brief) Strength: strong for the class of
+                          deadlock it names; it says nothing about
+                          overload, which is a separate decision.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

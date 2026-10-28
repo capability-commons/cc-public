@@ -1,0 +1,88 @@
+id_self:                ann_runtime_api_binds_node_code_to_each_target
+guid_self:              ann_c26469f5dada434e8e9dd0dfb44227a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime API that binds node code to each target
+brief:                  |
+                        A runtime parameter is an engine API that
+                        every target, simulator and replay harness
+                        must implement in full, and every node that
+                        calls it is bound to it, so a change to the
+                        API touches every such node. BlockFactory
+                        shows the narrow form of this working: one
+                        context object lets the same block run in
+                        Simulink, simulation and on the robot. Source
+                        ports go further: node code depends on no
+                        engine API at all, and the platform-specific
+                        part sits in a source or sink node that a
+                        variant swaps per target. Both
+                        runtime-parameter options carry this cost
+                        equally; declaring the capabilities does not
+                        shrink the API.
+description:            |
+                        Sources:
+                        - In BlockFactory a block reaches the engine
+                          only through one narrow interface, and the
+                          same plugin runs in Simulink, in a Gazebo
+                          simulation and on the real robot (Ferigo et
+                          al. 2020, A generic synchronous dataflow
+                          architecture to rapidly prototype and deploy
+                          robot controllers, as noted in round 2).
+                        - The same authors found that hidden block
+                          state forced the step size to be passed by
+                          hand as a parameter (Ferigo et al. 2020, as
+                          noted in round 2).
+                        - Shared objects are managed by one process
+                          responsible for all accesses to them,
+                          reached through channels (Kahn and MacQueen
+                          1977, Coroutines and networks of parallel
+                          processes, as noted in round 2).
+                        - The engine is a new C++ engine aiming for
+                          embedded reach (WTP, 2026-10-28).
+                        - Flexibility measures the effort to install
+                          on a new platform; dependency risk asks what
+                          happens when a part one depends on changes.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.measure and
+                          entries.concern_dependency_risk.question)
+                          Strength: moderate; it grows with the number
+                          of targets and with node kinds written by
+                          others against the API.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

@@ -1,0 +1,72 @@
+id_self:                ann_item_maximum_as_a_function_kept_in_step_with_code
+guid_self:              ann_63d9daac181546d5a3796689e83ad086
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Item maximum as a function kept in step with node code
+brief:                  |
+                        Under derived capacities, a node author whose
+                        output count depends on its inputs states that
+                        dependency as a function, and the function
+                        must stay true as the node's code changes. A
+                        stated maximum below what the code can produce
+                        is a latent overflow that the derivation hides
+                        behind a confident number. Inferring the
+                        maximum from code instead is undecidable in
+                        general, so the declaration has to be checked
+                        instead: the harness proposed for fuzzing a
+                        single node checks each output against its
+                        declared maximum, which would make the burden
+                        testable. A plain number should be the
+                        default, with a function only where a fixed
+                        number wastes too much memory.
+description:            |
+                        Sources:
+                        - Classifying a general dataflow actor's rates
+                          from its code is undecidable in general, and
+                          the paper's method is sufficient but not
+                          necessary (Zebelein et al. 2008,
+                          Classification of general data flow actors
+                          into known models of computation, section
+                          1).
+                        - The proposed harness, generated from the
+                          node interface, checks that each output
+                          stays within its declared maximum items.
+                          (_data/decision/dec_fuzzing_of_a_single_node/opt_harness_generated_from_the_node_interface.yaml
+                          at brief)
+                        - A non-source port declares its maximum items
+                          per step either as a number or as a function
+                          of its inputs' maxima.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief)
+                        - WTP wants to avoid clever mechanisms that
+                          burden node authors (WTP, 2026-10-28).
+                          ASSUMPTION: most ports can state a fixed
+                          number, such as a detector's largest list,
+                          and few need a function. Strength: moderate;
+                          a caution on the derived option's wording
+                          rather than a reason to prefer another
+                          option, since a written capacity carries the
+                          same risk with no check at all.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

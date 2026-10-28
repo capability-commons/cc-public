@@ -1,0 +1,84 @@
+id_self:                ann_gap_rule_that_actor_authors_need_not_reason_about
+guid_self:              ann_9cea8e5427b540d4b7ff4e6b75c6f3b0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap rule that actor authors need not reason about
+brief:                  |
+                        With admission fixed when the gap opens, an
+                        actor author writes a handler for one message
+                        and the engine sets the order, so a change to
+                        one actor reaches another only through the
+                        messages it sends, never through how long its
+                        handler runs. Under a time budget, a slower
+                        handler in one actor moves the stopping point
+                        and so changes what every later actor handles
+                        in that gap, which spreads a local change
+                        across the region and its tests. Under
+                        draining until empty, the authors of actors
+                        that message each other must jointly show that
+                        their exchange settles, which is reasoning
+                        across actors that no single author owns.
+description:            |
+                        Sources:
+                        - In Lingua Franca, given the declared
+                          dependencies, any scheduling policy that
+                          keeps them preserves determinism, and
+                          dependencies are declared rather than
+                          inferred from code (Lohstroh et al. 2021,
+                          Toward a Lingua Franca for deterministic
+                          concurrent systems, section 3.8).
+                        - Close coupling makes change more difficult,
+                          and nodes should be composed so that they
+                          communicate by independent transactions
+                          (Kramer and Magee 1990, The evolving
+                          philosophers problem, sections on dependent
+                          transactions and composition rules).
+                        - Two actors that answer each other never
+                          leave both mailboxes empty.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_drain_until_empty_may_not_end.yaml
+                          at brief)
+                        - WTP wants the approach as simple as
+                          feasible, avoiding clever mechanisms that
+                          burden node authors (WTP, 2026-10-28).
+                        - The maintainability concern asks how far a
+                          change in one part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question)
+                          Strength: strong for the time budget, whose
+                          coupling through timing is invisible in the
+                          graph; moderate for draining, whose burden
+                          falls only on actors that message each other
+                          within a gap.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_handled_in_an_actor_gap
+    guid_target:        dec_2901369d748f4c85b13481eed25eef07
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_waiting_when_the_gap_opens
+    guid_target:        opt_a2b3d2b2e61e4597a6ef6042ebadb6db
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_time_budget_for_each_gap
+    guid_target:        opt_f903e479b6004285b3b0c9b88062cc8d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_until_every_mailbox_is_empty
+    guid_target:        opt_5e2092eb1ee2491ca8095b05589d15ca
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

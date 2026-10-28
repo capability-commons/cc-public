@@ -1,0 +1,76 @@
+id_self:                ann_one_step_rate_makes_nodes_plain_periodic_tasks
+guid_self:              ann_61034b200d9d443380cb882ff7c5f212
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One step rate that makes nodes plain periodic tasks
+brief:                  |
+                        With one message per edge per step, every node
+                        fires once per step, so the repetition vector
+                        is all ones. That is the class of graph in
+                        which running each node as a strictly periodic
+                        task loses no throughput, start times and
+                        buffer sizes come out in closed form, and an
+                        ordinary schedulability test decides whether a
+                        placement, or a change set, fits the execution
+                        units. Declared rates per port keep periodic
+                        scheduling possible, but each period then
+                        follows from the repetition vector, and graphs
+                        with mismatched rates are where it fell short
+                        of the best throughput. Configured queues with
+                        dynamic rates fall outside the analysis
+                        altogether.
+description:            |
+                        Sources:
+                        - The actors of an acyclic cyclo-static graph
+                          with periodic input can be scheduled as
+                          implicit-deadline periodic tasks, and this
+                          matched the self-timed throughput in 16 of
+                          19 applications, falling short for
+                          mismatched-rate graphs (Bamakhrama and
+                          Stefanov 2011, Hard-real-time scheduling of
+                          data-dependent tasks in embedded streaming
+                          applications, abstract and section 5.2).
+                        - A single step rate for the whole Kahn part,
+                          with each message a list of items, so Kahn
+                          edges are homogeneous synchronous dataflow
+                          with one message per edge per step (WTP,
+                          2026-10-28).
+                        - A deployment may apply any change set that
+                          checks against the graph it is running.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml
+                          at brief) ASSUMPTION: Patrol's Kahn part is
+                          acyclic apart from feedback edges with first
+                          values; the 2011 proofs cover acyclic graphs
+                          only, so loops need their own analysis.
+                          Strength: strong for throughput and
+                          admission checks; the latency cost of this
+                          schedule is argued on the decision on
+                          same-step or next-step reading.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,87 @@
+id_self:                ann_same_step_wait_couples_execution_units
+guid_self:              ann_1c9348a0e9c94cd3a7397f954c8abd04
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same-step wait that couples execution units
+brief:                  |
+                        When an edge that crosses execution units is
+                        read in the same step, the consumer's unit
+                        waits within the step for the producer's, so
+                        the step must be long enough for the whole
+                        chain across units, and an overrun on one unit
+                        delays every unit downstream of it in that
+                        step. Next-step reading on crossing edges lets
+                        every unit run its share of the step in
+                        parallel on messages completed at the last
+                        step boundary, so an overrun on one unit does
+                        not hold up the others within that step.
+                        Reading derived by placement does this for
+                        crossing edges and keeps same-step reading
+                        only within a unit, where the wait does not
+                        cross units. The literature also warns that
+                        timing bounds of a distributed synchronous
+                        program are hard to obtain.
+description:            |
+                        Sources:
+                        - An edge that crosses execution units makes
+                          the consumer wait within the step, so the
+                          step must be long enough for the whole
+                          chain.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_every_edge_read_same_step.yaml
+                          at description)
+                        - OC2REP distributes a Lustre program by
+                          inserting waiting FIFO puts and gets from
+                          placement commands, and the authors note
+                          that timing bounds for the distributed
+                          program are hard to get (Halbwachs et al.
+                          1991, The synchronous data flow programming
+                          language LUSTRE).
+                        - Occasional overruns are absorbed by the
+                          margin in the derived capacity; degraded
+                          mode is only for steps consistently over
+                          their period (WTP, 2026-10-28).
+                        - Values cross execution units only through
+                          transport nodes a transform inserts.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml
+                          at brief) Strength: strong for graphs placed
+                          on several units; it does not bear on a
+                          graph placed on one unit, where the options
+                          differ only in latency and parallelism.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

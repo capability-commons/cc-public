@@ -1,0 +1,61 @@
+id_self:                ann_loss_depends_on_the_full_rule_not_only_the_policy
+guid_self:              ann_921cd88a437a46fbafc7fde6f8cb2c03
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loss that depends on the full rule, not only the policy
+brief:                  |
+                        A yes or no on each policy is too coarse. A
+                        latest-value latch loses data by design; an
+                        in-order queue loses nothing unless it fills
+                        and its rule for when it is full drops; a fold
+                        loses each value but keeps their summary. The
+                        declaration must therefore say at least never,
+                        by design, or only on overflow, and read the
+                        full rule of the edge. This does not favor
+                        leaving loss to requirements, but the option
+                        to declare loss needs that refinement to be
+                        right.
+description:            |
+                        Sources:
+                        - The fixed list includes every value in order
+                          up to a stated capacity with a stated rule
+                          for when it is full, the latest value, and a
+                          fold.
+                          (_data/decision/dec_edge_policy/opt_named_delivery_policy_on_edge_now.yaml
+                          at brief)
+                        - The option declares whether each entry can
+                          lose data.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/opt_each_policy_declares_data_loss.yaml
+                          at brief)
+                        - Overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                          Strength: moderate; it changes the form of
+                          the field, not whether to have one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

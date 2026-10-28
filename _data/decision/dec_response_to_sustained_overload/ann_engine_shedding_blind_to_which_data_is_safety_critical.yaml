@@ -1,0 +1,85 @@
+id_self:                ann_engine_shedding_blind_to_which_data_is_safety_critical
+guid_self:              ann_a8ecdbd2951f48dcaccc941d6b80c376
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine shedding that cannot tell which data feeds a safety function
+brief:                  |
+                        An engine that drops whole steps, or messages
+                        on edges marked sheddable, does not know which
+                        outputs a safety function depends on, so a
+                        dropped step can starve an obstacle stop as
+                        readily as a logger. Mixed-criticality
+                        scheduling keeps the high-criticality work and
+                        sheds the rest; the mode port does the same by
+                        construction, since a node with no mode port
+                        never degrades and the designer chooses which
+                        nodes have one. Marking edges sheddable
+                        recovers some of this, but the choice is
+                        spread over edges and the effect of a drop on
+                        downstream nodes is not stated anywhere.
+description:            |
+                        Sources:
+                        - Mixed-criticality scheduling (Vestal 2007)
+                          is one of the precedents the decision names
+                          for a planned response.
+                          (_data/decision/dec_response_to_sustained_overload/dec_response_to_sustained_overload.yaml
+                          at description) ASSUMPTION: as usually
+                          described, mixed-criticality scheduling
+                          keeps the high-criticality work under
+                          overload and sheds the rest; no literature
+                          note covers it.
+                        - A node with no mode port never degrades, and
+                          a switched-off node sends an empty list.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief and description)
+                        - Shedding drops whole steps, or messages on
+                          sheddable edges, and nodes know nothing of
+                          it.
+                          (_data/decision/dec_response_to_sustained_overload/opt_load_shedding_by_the_engine.yaml
+                          at brief)
+                        - In a block diagram with triggers, a block
+                          that is not fired holds its last output,
+                          starting from a value the user gives
+                          (Lublinerman and Tripakis 2008, Translating
+                          data flow to synchronous block diagrams, as
+                          noted in round 2), where a node switched off
+                          by the mode port sends an empty list; what a
+                          stopped node emits is a choice with effects
+                          downstream.
+                        - Safety asks how each hazard is avoided or
+                          limited. (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question) ASSUMPTION:
+                          Patrol's graph mixes safety functions with
+                          work that may degrade, such as full-rate
+                          inference or recording. Strength: strong
+                          against dropping whole steps; moderate
+                          against sheddable edges, which a check could
+                          confine away from safety paths.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

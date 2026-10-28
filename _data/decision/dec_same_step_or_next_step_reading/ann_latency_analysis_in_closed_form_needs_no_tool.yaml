@@ -1,0 +1,67 @@
+id_self:                ann_latency_analysis_in_closed_form_needs_no_tool
+guid_self:              ann_257ab4bedbdb474a8e8f640b0e95f8eb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Latency analysis in closed form that needs no outside tool
+brief:                  |
+                        Derived reading needs cctool to compute the
+                        latency of each path on the placed graph,
+                        which might suggest taking in a third-party
+                        dataflow analysis tool. Under one message per
+                        step it does not need one: with every node
+                        firing once per step the latency of a path is
+                        a count of next-step edges times the step, and
+                        the schedulability test is a sum of execution
+                        times per unit. Same-step and next-step
+                        reading everywhere need even less, a
+                        topological order and nothing. The three
+                        options carry about the same dependency risk,
+                        provided the derived option is held to this
+                        closed form; feedback loops fall outside the
+                        published proofs and need their own short
+                        check.
+description:            |
+                        Sources:
+                        - With a repetition vector of all ones,
+                          latency is the sum of the periods along the
+                          longest output path (Bamakhrama and Stefanov
+                          2012, Managing latency in embedded streaming
+                          applications under hard-real-time
+                          scheduling, section 4.2).
+                        - The proofs of strictly periodic scheduling
+                          hold for acyclic graphs with periodic input
+                          (Bamakhrama and Stefanov 2011,
+                          Hard-real-time scheduling of data-dependent
+                          tasks in embedded streaming applications,
+                          section 4).
+                        - Lattuada and Ferrandi rely on an existing
+                          SDF tool to analyze the placed graph
+                          (Lattuada and Ferrandi 2013, Modeling
+                          pipelined applications with synchronous
+                          dataflow graphs). Strength: weak to
+                          moderate; a real point only in that it
+                          removes a dependency the derived option
+                          might otherwise seem to need.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

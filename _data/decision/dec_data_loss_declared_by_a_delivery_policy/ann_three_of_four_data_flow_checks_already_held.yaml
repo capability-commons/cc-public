@@ -1,0 +1,76 @@
+id_self:                ann_three_of_four_data_flow_checks_already_held
+guid_self:              ann_d123a7e15adc407dbf7ee67e64d69bee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data-flow checks that mostly need only the wiring
+brief:                  |
+                        Of the four data-flow errors the option
+                        checks, missing data on a loop is what the
+                        ruled default rule already refuses, and
+                        inconsistent data is what engine-owned buffers
+                        and one writer per input are meant to rule
+                        out. Redundant data, an output nothing reads,
+                        needs only the graph's wiring. Only lost data
+                        needs the new field. As worded, the option
+                        risks a second check for jobs the graph checks
+                        already do; on simplicity the leaner course is
+                        the one field and one rule for lost data,
+                        folded into checks that exist. Leaving loss to
+                        requirements adds nothing at all, which is its
+                        one clear strength here.
+description:            |
+                        Sources:
+                        - The four errors map to a feedback edge with
+                          no first-value supplier, a breach of one
+                          writer xor many readers, an output port no
+                          one reads, and a write that overwrites an
+                          unread value (Xiang et al. 2018, as
+                          summarized in
+                          /mnt/project-files/notes/literature/round-2/2018-data-flow-errors-petri-nets-data-operations.md).
+                        - A check refuses a feedback edge with no end
+                          that can supply a default.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The option has cctool check a graph for all
+                          four errors.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/opt_each_policy_declares_data_loss.yaml
+                          at brief)
+                        - The engine allocates the buffers of each
+                          edge.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief) ASSUMPTION: a graph check already
+                          holds each input to one writer.
+                        - Simplicity counts jobs done by more than one
+                          mechanism. (_data/register/reg_concern.yaml
+                          at entries.concern_simplicity.measure.1)
+                          Strength: moderate; it bears on the scope of
+                          the check, not on the field, which the
+                          option says adds nothing to node code.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_data_loss_left_to_requirements
+    guid_target:        opt_455334fa4a0c4c3cb1f5ed086a5aea9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

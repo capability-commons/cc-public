@@ -1,0 +1,80 @@
+id_self:                ann_overflow_fail_safe_is_lost_data_too
+guid_self:              ann_9aaf71b97bd9464fbd3663364e31b0fd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow fail-safe as a second place data is lost
+brief:                  |
+                        A port that overflows and drops the excess
+                        loses data as surely as a latch does, and so
+                        does an actor input that drops an unexpected
+                        message. These losses come from a port's
+                        fail-safe, not from the edge's delivery
+                        policy, so a declaration on the policy alone
+                        leaves them out, and a check built on it would
+                        report an edge as lossless when its port can
+                        drop. Declaring loss still beats leaving it to
+                        tests, but the check must read the fail-safe
+                        of each port as well.
+description:            |
+                        Sources:
+                        - Each port may declare its fail-safe from a
+                          fixed list, such as drop the excess items
+                          and raise a fault.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief)
+                        - Overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                        - In MillWheel, the Zeitgeist application
+                          drops late data while counting how much it
+                          dropped (Akidau et al. 2013, MillWheel:
+                          fault-tolerant stream processing at internet
+                          scale, section 4.5).
+                        - Akka drops an unmatched actor message and
+                          Erlang buffers it, a tradeoff the authors
+                          name between races and memory leaks
+                          (Prokopec and Odersky 2016, Reactors,
+                          channels, and event streams for composable
+                          distributed programming, section 2); with
+                          bounded buffers only the drop remains, as
+                          the note on the paper concludes.
+                          (/mnt/project-files/notes/literature/round-2/2016-reactors-channels-event-streams.md)
+                        - Traceability asks whether each need can be
+                          traced to what meets it.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.1)
+                          Strength: moderate; it holds whichever
+                          fail-safe option is ruled, unless overflow
+                          blocks the producer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_data_loss_declared_by_a_delivery_policy
+    guid_target:        dec_3b586af684344412bb0a4db15505ecdd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_each_policy_declares_data_loss
+    guid_target:        opt_066b5e7426c044ff9351b3f45428c4d6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_data_loss_left_to_requirements
+    guid_target:        opt_455334fa4a0c4c3cb1f5ed086a5aea9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

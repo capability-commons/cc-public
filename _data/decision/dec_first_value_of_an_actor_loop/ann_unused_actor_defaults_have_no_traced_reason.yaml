@@ -1,0 +1,63 @@
+id_self:                ann_unused_actor_defaults_have_no_traced_reason
+guid_self:              ann_3eda115b54524860b4aefe4401417c6b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unused actor defaults with no traced reason
+brief:                  |
+                        Under the rule for every loop, an actor in a
+                        loop must declare a default it never uses, as
+                        the option itself says. Such a declaration
+                        exists only to satisfy the check, and a reader
+                        who finds it will assume it matters. Under the
+                        absent option the reason an actor loop is
+                        accepted is the kind of each node in it, which
+                        the graph already records, so the loop stays
+                        traced without an element that nothing calls
+                        for.
+description:            |
+                        Sources:
+                        - Under the rule for every loop, actors that
+                          already handle a missing message must still
+                          declare a default they never use.
+                          (_data/decision/dec_first_value_of_an_actor_loop/opt_default_rule_for_every_loop.yaml
+                          at description)
+                        - The port option records only that a port can
+                          supply a default; the value lives in node
+                          code.
+                          (_data/decision/dec_default_values_on_feedback_edges/ann_first_value_of_a_loop_kept_in_node_code.yaml
+                          at brief)
+                        - Traceability asks whether anything exists
+                          that nothing calls for.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.2)
+                          Strength: moderate; it grows with the number
+                          of actor loops, and is small if actor loops
+                          are rare.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

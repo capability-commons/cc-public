@@ -1,0 +1,76 @@
+id_self:                ann_cross_host_wait_within_a_step_as_an_attack_path
+guid_self:              ann_431db3d346834f42ae68736cfcf4e2b1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cross-host wait within a step as an attack path
+brief:                  |
+                        Where an edge crosses hosts and is read in the
+                        same step, the consumer host's step cannot
+                        finish until the remote message arrives, so
+                        whoever can delay or flood the link between
+                        the hosts can stretch every step on the
+                        consumer, the safety functions there included.
+                        Next-step reading on crossing edges gives the
+                        message a whole step period to arrive and lets
+                        the consumer's other work proceed, which
+                        narrows the attack but does not remove it: a
+                        message that never arrives still blocks a
+                        waiting read, so the transport still needs a
+                        timeout and a fail-safe. Derived reading
+                        treats crossing edges as next-step and gets
+                        the same narrowing.
+description:            |
+                        Sources:
+                        - An edge that crosses execution units makes
+                          the consumer wait within the step.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_every_edge_read_same_step.yaml
+                          at description)
+                        - Kahn edges split by transport keep waiting,
+                          ordered reads, so determinism holds whatever
+                          the transport (Benveniste et al. 2008,
+                          Actors without directors).
+                        - A transport must send each step's message
+                          whatever its count, as a transport that
+                          waits to fill a packet can deadlock a loop
+                          (Nadezhkin et al. 2009, Realizing FIFO
+                          communication when mapping Kahn process
+                          networks onto the Cell). ASSUMPTION: some
+                          deployments place nodes on hosts joined by a
+                          network a third party can reach; Patrol on
+                          one Orin may not. Strength: moderate; it
+                          applies only to edges between hosts, and the
+                          timeout on the transport matters more than
+                          the choice of reading.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

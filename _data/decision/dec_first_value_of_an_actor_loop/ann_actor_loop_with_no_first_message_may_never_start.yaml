@@ -1,0 +1,68 @@
+id_self:                ann_actor_loop_with_no_first_message_may_never_start
+guid_self:              ann_68aaae19a6874f6994338d5350704fca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Actor loop with no first message that may never start
+brief:                  |
+                        A loop of actors that only react to messages,
+                        with no first message and no input from
+                        outside the loop, never runs. That is not a
+                        deadlock but a dead loop, and nothing would
+                        report it. The default rule forces one end to
+                        emit a first message, so such a loop always
+                        starts. Under the absent option a loop entered
+                        from outside, such as a request and its reply,
+                        works as intended, but a loop meant to keep
+                        itself going, such as a periodic exchange
+                        between two actors, silently does nothing.
+description:            |
+                        Sources:
+                        - The default rule has the source emit a first
+                          token or the destination use its default
+                          when nothing has arrived.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The absent option lets a loop through actors
+                          start with no value.
+                          (_data/decision/dec_first_value_of_an_actor_loop/opt_actor_loops_may_start_absent.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                          ASSUMPTION: some Patrol actor loops are
+                          meant to run on their own rather than be
+                          entered from outside; none is drafted in the
+                          tree yet. Strength: moderate; it falls away
+                          if the check under the absent option also
+                          requires every actor loop to have an input
+                          from outside it, which is a refinement, not
+                          a new option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

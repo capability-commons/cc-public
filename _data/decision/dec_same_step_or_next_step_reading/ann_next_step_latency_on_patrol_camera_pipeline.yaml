@@ -1,0 +1,77 @@
+id_self:                ann_next_step_latency_on_patrol_camera_pipeline
+guid_self:              ann_1ce55b07e5c34ed78d22e503ebabcf8c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Next-step latency on Patrol's camera pipeline
+brief:                  |
+                        If every edge is read in the next step, a
+                        pipeline of L levels takes L steps, each as
+                        long as the slowest node. At Patrol's 30 Hz
+                        camera rate a step is about 33 ms, so a
+                        five-level chain from capture through
+                        inference to a command takes about 165 ms,
+                        against about one step if the chain runs in
+                        order within the step. The literature measures
+                        this cost at about five times the self-timed
+                        latency on average over real applications, and
+                        it is worst for unbalanced pipelines with
+                        cheap capture and expensive inference. Reading
+                        in the same step removes it, and deriving the
+                        reading from a latency requirement removes it
+                        where the requirement asks.
+description:            |
+                        Sources:
+                        - Under implicit-deadline periodic scheduling
+                          the latency of a graph is the sum of the
+                          periods along the longest output path, which
+                          raised latency about 5x on average over 19
+                          applications; giving bottleneck producers
+                          shorter deadlines brings it down to the
+                          self-timed minimum at a cost in processors
+                          (Bamakhrama and Stefanov 2012, Managing
+                          latency in embedded streaming applications
+                          under hard-real-time scheduling, sections
+                          4.2 and 5.2).
+                        - Patrol's Orin configuration holds a 30 Hz
+                          camera rate.
+                          (_data/decision/dec_how_actors_are_run/ann_actor_work_lengthens_every_kahn_step.yaml
+                          at description) ASSUMPTION: a
+                          perception-to-command chain on Patrol has
+                          about five levels; the figure scales
+                          linearly with the real count. Strength:
+                          strong; the formula is exact for one message
+                          per step, and only the level count is
+                          assumed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_same_step_or_next_step_reading
+    guid_target:        dec_29822c3f73724f1282d2d128d7fcdfb4
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

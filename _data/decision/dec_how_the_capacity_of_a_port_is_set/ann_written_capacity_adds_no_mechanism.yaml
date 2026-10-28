@@ -1,0 +1,78 @@
+id_self:                ann_written_capacity_adds_no_mechanism
+guid_self:              ann_86a3ee6161004c28bade9791e03ac214
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Written capacity as the one rule that adds no mechanism
+brief:                  |
+                        Writing each capacity by hand adds nothing to
+                        what the bounded-array ruling already has, a
+                        capacity declared on the port. Deriving it
+                        adds four things: a maximum rate on every
+                        producer, a maximum items per step on other
+                        ports as a number or a function of inputs, a
+                        propagation transform, and a declared bound on
+                        every feedback edge with a check that it
+                        holds. A throughput target adds more still: an
+                        execution time for every node, a target, and a
+                        solver for a problem that is NP-complete in
+                        general. On simplicity alone the written rule
+                        wins and the throughput rule loses; the
+                        derived rule's mechanisms do reuse the variant
+                        transforms already ruled, so its added count
+                        is real but modest.
+description:            |
+                        Sources:
+                        - Each message is a bounded array with a
+                          capacity the port declares.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ruling_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - The buffer minimization problem is
+                          NP-complete (Stuijk et al. 2006, Exploring
+                          trade-offs in buffer requirements and
+                          throughput constraints for SDF graphs,
+                          section 1).
+                        - A transform inserts sender and receiver
+                          nodes where placement splits an edge, so the
+                          variant pipeline already runs transforms
+                          over the resolved graph.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - WTP wants the approach as simple as feasible
+                          and grounded in theory (WTP, 2026-10-28).
+                          Strength: moderate; the count of mechanisms
+                          is clear, but simplicity of the engine is
+                          not changed by any option, since all three
+                          are done before the target sees the graph.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_written_in_configuration
+    guid_target:        opt_442416f9b5b642e0b8ed9a73befa5b20
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_computed_from_a_throughput_target
+    guid_target:        opt_b152b1c6076d4e4181e1812aea7bf58d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,83 @@
+id_self:                ann_shedding_policy_in_every_engine_build_and_target
+guid_self:              ann_4a2a443386a34440887548e659b2d95f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shedding policy carried in every engine build and target
+brief:                  |
+                        Load shedding is a policy in the engine, so
+                        its code, its timing measurements and its
+                        choice of what to drop are in every build and
+                        must work on every target, including one with
+                        no operating system, and changing the policy
+                        is an engine change. The mode-port option
+                        keeps the policy in a control node that is
+                        fixed, replaced or tuned like any other node,
+                        and needs from the engine only the occupancy
+                        source ports, a small recorded exception.
+                        Fault-only adds the least to the engine, a
+                        step timer and a fault. The minimal-engine
+                        ruling admits shedding only if no node can do
+                        it within a measured budget, and nothing yet
+                        shows that a control node cannot.
+description:            |
+                        Sources:
+                        - The engine does nothing a node could do, and
+                          a behavior moves into it only when a
+                          recorded decision shows no inserted node can
+                          do it within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief)
+                        - Code in the engine is in every build and on
+                          every target, and every change to it is an
+                          engine change.
+                          (_data/decision/dec_where_engine_behavior_lives/ann_service_code_in_every_engine_build_and_target.yaml
+                          at brief)
+                        - The shedding option puts a policy in the
+                          engine, against the ruling on where engine
+                          behavior lives.
+                          (_data/decision/dec_response_to_sustained_overload/opt_load_shedding_by_the_engine.yaml
+                          at description)
+                        - The engine is a new C++ engine aiming for
+                          embedded reach (WTP, 2026-10-28). Strength:
+                          strong; it would weaken only if a
+                          measurement showed the control node's
+                          reaction too slow for the budget, which
+                          would then be the recorded exception.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overload_raised_as_a_fault_only
+    guid_target:        opt_7c043da00a6d44fb99f20f2873ddc5a1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

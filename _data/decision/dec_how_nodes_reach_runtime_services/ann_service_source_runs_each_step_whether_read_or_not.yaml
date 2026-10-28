@@ -1,0 +1,69 @@
+id_self:                ann_service_source_runs_each_step_whether_read_or_not
+guid_self:              ann_0145580fa75e4bdabc0aa76125cefdb5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Service source that runs each step whether read or not
+brief:                  |
+                        A service as a source node produces a message
+                        every step, so its cost is paid each step even
+                        when no reader uses the value, while a runtime
+                        call costs only when made. For occupancy and
+                        temperature the message is a few numbers and
+                        the cost is small, and it is paid once per
+                        step rather than per message; per-message
+                        accounting in Nornir doubled the cost of each
+                        transfer. A transform can leave out a source
+                        with no reader. The point weighs slightly for
+                        the parameter, and the measurement on the Orin
+                        settles it.
+description:            |
+                        Sources:
+                        - Nornir's accounting raised the cost of a
+                          message transfer from about 0.68 to 1.4
+                          microseconds (Vrba et al. 2009, The Nornir
+                          run-time system, section on accounting).
+                        - Each Kahn edge carries one message per step
+                          (WTP, 2026-10-28).
+                        - Performance efficiency covers throughput and
+                          the processor time the system uses.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.description)
+                          ASSUMPTION: occupancy for a whole execution
+                          unit fits in one small message, and the
+                          engine reads it from buffer indices it
+                          already holds. Strength: weak; under a dozen
+                          small sources per step the difference is
+                          unlikely to show against a 33 ms step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

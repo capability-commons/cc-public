@@ -1,0 +1,72 @@
+id_self:                ann_occupancy_sources_already_proposed_for_overload
+guid_self:              ann_2e38d4f131be426997a9e06d35009489
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Occupancy sources already proposed for overload control
+brief:                  |
+                        The degraded-mode proposal already has the
+                        engine expose queue occupancy, and the
+                        platform temperature, as source ports, as a
+                        recorded exception. Choosing source ports for
+                        runtime services makes that the one mechanism
+                        for every service; choosing a runtime
+                        parameter leaves two ways to reach the same
+                        occupancy, which a maintainer must keep
+                        consistent and a reader must check both of.
+                        Probes inserted as nodes by a transform, as
+                        the TensorFlow debugger does, are the same
+                        pattern again.
+description:            |
+                        Sources:
+                        - The engine exposes queue occupancy, and the
+                          platform temperature, as source ports, a
+                          recorded exception under the minimal engine.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief)
+                        - The engine exposes occupancy as source
+                          ports, a recorded exception (WTP,
+                          2026-10-28).
+                        - tfdbg watches values by inserting nodes into
+                          the runtime graph rather than adding hooks
+                          to the engine (Cai et al. 2016, TensorFlow
+                          debugger, section 3).
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question)
+                          Strength: moderate; it holds if the
+                          mode-port option is upheld, and lapses if
+                          overload is answered another way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

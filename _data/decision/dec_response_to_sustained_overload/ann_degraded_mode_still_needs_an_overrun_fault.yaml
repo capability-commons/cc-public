@@ -1,0 +1,89 @@
+id_self:                ann_degraded_mode_still_needs_an_overrun_fault
+guid_self:              ann_657e34a34b5945bd905431adff3e1605
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overrun fault still needed beneath degraded mode
+brief:                  |
+                        The mode-port option leaves its guarantee to
+                        requirements and tests, and the engine
+                        promises nothing. If the cheaper mode still
+                        overruns, because throttling worsens or a
+                        bound was wrong, the queues keep filling and
+                        only the overflow fail-safe on each port
+                        catches it, after data is already lost. The
+                        fault-only option's mechanism, measuring each
+                        step against its period and raising a fault on
+                        a sustained overrun, is the last resort that
+                        degraded mode still needs; Lingua Franca pairs
+                        a deadline with a miss handler for the same
+                        reason. The point favors keeping that
+                        measurement whichever option is upheld, rather
+                        than the fault-only option alone.
+description:            |
+                        Sources:
+                        - The mode-port option makes emptying queues
+                          and the time to reach every node
+                          requirements with tests as evidence, and the
+                          engine guarantees nothing about them.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief)
+                        - The fault-only option measures each step
+                          against its period and raises a fault on a
+                          sustained overrun.
+                          (_data/decision/dec_response_to_sustained_overload/opt_overload_raised_as_a_fault_only.yaml
+                          at brief)
+                        - Lingua Franca attaches a handler to a missed
+                          deadline that may raise an alarm or switch
+                          to a safe degraded mode (Lohstroh et al.
+                          2021, Toward a Lingua Franca for
+                          deterministic concurrent systems, section
+                          3.7).
+                        - KPN semantics give no bound on execution
+                          time, so a step-time bound must be stated
+                          and measured separately (Dulloo and Marquet
+                          2004, Design of a real-time scheduler for
+                          Kahn process networks on multiprocessor
+                          systems, as noted in round 2).
+                        - Overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                        - Safety asks what state the system falls back
+                          to when it fails.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question) Strength:
+                          strong as a requirement on the upheld
+                          option; it is answered by adding the overrun
+                          fault to the mode-port option, and then no
+                          longer challenges it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overload_raised_as_a_fault_only
+    guid_target:        opt_7c043da00a6d44fb99f20f2873ddc5a1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

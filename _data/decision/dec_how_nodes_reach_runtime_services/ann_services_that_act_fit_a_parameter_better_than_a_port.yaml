@@ -1,0 +1,78 @@
+id_self:                ann_services_that_act_fit_a_parameter_better_than_a_port
+guid_self:              ann_4ef4bac3e19e40f78ac3169fafd14b73
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Services that act, which fit a parameter better than a port
+brief:                  |
+                        Some services act rather than report, such as
+                        setting a hardware register or a clock
+                        frequency, and some answer a request with a
+                        value the node needs in the same step. A
+                        source port cannot carry them: an action needs
+                        a sink node, and a request and reply through
+                        an actor take at least a step, about 33 ms at
+                        Patrol's camera rate. A runtime parameter does
+                        both within the step with one call. This is
+                        the source-port option's real cost, and the
+                        declared capability keeps the parameter
+                        visible while paying it; the lean depends on
+                        how many such services Patrol actually needs.
+description:            |
+                        Sources:
+                        - A service that has to act does not fit a
+                          source and would need a sink node or an
+                          actor.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_runtime_services_as_source_ports.yaml
+                          at description)
+                        - When a gap handles only the messages waiting
+                          as it opens, a request and its reply between
+                          actors take two steps.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_admission_at_the_gap_start_adds_a_step_per_hop.yaml
+                          at brief)
+                        - The camera runs at 30 Hz; in Stableflow the
+                          runtime parameter gave access to hardware
+                          (WTP, 2026-10-28).
+                        - Response time is a measure of performance
+                          efficiency. (_data/register/reg_concern.yaml
+                          at
+                          entries.concern_performance_efficiency.measure)
+                          ASSUMPTION: actions on hardware can usually
+                          wait for the step boundary, as a sink node
+                          writes them, and same-step request and reply
+                          services are few. Strength: moderate; it
+                          rises if a node needs a same-step answer
+                          from hardware, and falls if every action can
+                          be a sink.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

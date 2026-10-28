@@ -1,0 +1,66 @@
+id_self:                ann_jitter_margin_as_the_longest_step_tolerated
+guid_self:              ann_8ecc164a33a74b228eea2d08d75fa253
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Jitter margin stated as the longest step tolerated
+brief:                  |
+                        Items that arrive during a long step join the
+                        next step's list, so a list holds what arrived
+                        over the last step's actual length, not over
+                        the period. A margin m in the derived capacity
+                        therefore tolerates any step up to (1 + m)
+                        periods, once or every time, and an overflow
+                        means a step ran longer than that. The margin
+                        is then not a fudge factor but a stated limit
+                        that should equal the threshold at which
+                        degraded mode takes over. For a 30 Hz camera
+                        at a 30 Hz step, phase drift alone puts two
+                        frames in one list now and then, so the margin
+                        can never be zero.
+description:            |
+                        Sources:
+                        - Capacity is maximum rate times step period
+                          plus a jitter margin; occasional overruns
+                          are absorbed by the capacity margin, and
+                          degraded mode is for steps consistently over
+                          their period (WTP, 2026-10-28).
+                        - An occasional overrun is absorbed by the
+                          margin: items that arrive during a long step
+                          join the next step's list.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at description)
+                        - The response to sustained overload is
+                          decided separately.
+                          (_data/decision/dec_response_to_sustained_overload/dec_response_to_sustained_overload.yaml
+                          at brief) ASSUMPTION: each step drains the
+                          whole list that the crossing policy
+                          delivers, so lists do not accumulate across
+                          steps. Strength: moderate to strong; it
+                          supports the derived option and asks that
+                          the margin be stated in units of step
+                          length, tied to the overload trigger; it
+                          fails if a source can burst above its stated
+                          rate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

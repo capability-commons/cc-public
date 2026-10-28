@@ -1,0 +1,76 @@
+id_self:                ann_maximum_rate_read_from_a_partner_specification
+guid_self:              ann_9b9d2edf91e54ce5a25ab75d357c22e0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maximum rate read from a partner's specification
+brief:                  |
+                        A sensor or upstream system from another
+                        supplier states its maximum output rate in its
+                        own specification, and the parametric dataflow
+                        models state per-port maxima in the same form.
+                        Derived capacities take that figure as it is
+                        given, so a partner supplies a rate with a
+                        unit, not a capacity in the engine's terms,
+                        and a partner analysis tool can read the
+                        declared maxima back. A written capacity gives
+                        a partner only a number with no stated basis,
+                        and a throughput target needs execution times
+                        of nodes that a partner cannot supply. Where a
+                        source has no known rate, the derived option
+                        still takes a declared maximum, so it loses
+                        nothing the written option has.
+description:            |
+                        Sources:
+                        - In parameterized dataflow each actor
+                          specifies an upper bound on the tokens
+                          transferred at each port (Bhattacharya and
+                          Bhattacharyya 2001, Parameterized dataflow
+                          modeling for DSP systems, section on PSDF
+                          graphs).
+                        - A BPDF programmer must give a maximal value
+                          for each parameter to ensure boundedness
+                          (Bebelis et al. 2013, BPDF: a statically
+                          analyzable dataflow model with integer and
+                          boolean parameters, section 2.2).
+                        - DIF gives each parameter a declared domain
+                          as a set or an interval for exchange between
+                          tools (Hsu et al. 2004, DIF: an interchange
+                          format for dataflow-based design tools,
+                          section 2.4).
+                        - All data producers have a maximum data rate,
+                          which in practice is always known (WTP,
+                          2026-10-28). ASSUMPTION: Patrol's camera and
+                          other bought sensors state a maximum frame
+                          or message rate in their data sheets.
+                          Strength: moderate; compatibility is a
+                          secondary driver here, but the point favors
+                          the derived option on each of the concern's
+                          questions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_capacity_of_a_port_is_set
+    guid_target:        dec_10efd9d5fac84dceaea82467f95f3d48
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_derived_from_maximum_producer_rates
+    guid_target:        opt_fbadbd9662fd49dc9da5ea398a1fd13e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_computed_from_a_throughput_target
+    guid_target:        opt_b152b1c6076d4e4181e1812aea7bf58d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

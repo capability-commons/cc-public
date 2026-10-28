@@ -1,0 +1,79 @@
+id_self:                ann_blocking_across_units_inherits_the_transport_rules
+guid_self:              ann_f378e0b8209d4ab5a85a54c90586eed2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Blocking across execution units that inherits the transport's rules
+brief:                  |
+                        A drop with a fault is decided where the item
+                        is written into the bounded array, before any
+                        transport node sees the message, so the
+                        response is the engine's own code on every
+                        placement. Blocking a producer whose reader
+                        sits on another execution unit needs flow
+                        control back across the link, and that
+                        behavior is whatever the transport library
+                        provides, including its own buffering and its
+                        own drops when a history fills. The overflow
+                        response would then change with the choice of
+                        transport and its version, a dependency the
+                        dropping options do not have.
+description:            |
+                        Sources:
+                        - The engine carries values only within one
+                          execution unit, and a transform inserts
+                          sender and receiver nodes where placement
+                          splits an edge.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - A transport whose packet size is wrong can
+                          deadlock a cycle, since the producer waits
+                          to fill a packet that depends on its own
+                          output, so how a transport waits is part of
+                          the graph's behavior (Nadezhkin et al. 2009,
+                          Realizing FIFO communication when mapping
+                          Kahn process networks onto the Cell, section
+                          4).
+                        - A transport library has its own rules on who
+                          frees a buffer.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ann_transport_library_rules_on_who_frees_a_buffer.yaml
+                          at brief) ASSUMPTION: transports considered
+                          for crossing units, such as DDS
+                          implementations, apply their own history
+                          depth and may drop or block by their own
+                          quality-of-service settings. Strength:
+                          moderate; it applies only to edges split by
+                          placement, but on the Orin those are the
+                          edges where overflow is most likely.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_blocks_the_producer
+    guid_target:        opt_198c75629cc9474988160ec4254b845c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

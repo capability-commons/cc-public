@@ -1,0 +1,78 @@
+id_self:                ann_swap_cost_in_steps_of_reduced_service
+guid_self:              ann_3a498207338a4cfc865cd85c8772256a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of each swap option in steps of reduced service
+brief:                  |
+                        Carrying requests in state costs nothing at
+                        run time beyond the state upgrade at the step.
+                        The fence costs one more round trip for each
+                        request it drops, which is at least two steps
+                        when a gap admits only the messages waiting as
+                        it opens, and the service does the work twice.
+                        Draining first stops the actor's new requests
+                        for as long as its slowest reply takes, so
+                        every step of the drain is a step of reduced
+                        service. Waiting for nothing outstanding costs
+                        no service but delays the change by an amount
+                        not known ahead, up to the stated number of
+                        steps, after which the change is refused.
+description:            |
+                        Sources:
+                        - At Patrol's camera rate of 30 Hz a step is
+                          about 33 ms, and a request and its reply
+                          between two actors take two steps when
+                          admission is fixed at the gap start.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_admission_at_the_gap_start_adds_a_step_per_hop.yaml
+                          at brief)
+                        - The fence drops a reply with a stale epoch
+                          and the new actor sends the request again.
+                          (_data/decision/dec_swap_of_an_actor_with_outstanding_requests/opt_fence_replies_by_epoch.yaml
+                          at brief)
+                        - In the IEC 61499 case, a suspension during
+                          an update lasted about 20 ms against a 100
+                          ms cycle (Prenzel and Provost 2017, Dynamic
+                          software updating of IEC 61499
+                          implementation using Erlang runtime system,
+                          section 4.4).
+                        - The performance concern measures response
+                          time at the 50th and 99th percentiles.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure)
+                          Strength: moderate; the costs are small
+                          while swaps are rare, and grow with swap
+                          frequency and the length of the requests in
+                          flight.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_swap_of_an_actor_with_outstanding_requests
+    guid_target:        dec_be24b6031485453bbdb2c9e56e70c502
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_outstanding_requests_carried_in_state
+    guid_target:        opt_42ec5a3eb73749b8837cf87cf502f1ac
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

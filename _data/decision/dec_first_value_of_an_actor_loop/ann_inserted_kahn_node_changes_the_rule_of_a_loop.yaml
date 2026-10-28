@@ -1,0 +1,66 @@
+id_self:                ann_inserted_kahn_node_changes_the_rule_of_a_loop
+guid_self:              ann_a8a657ba14a249cbbe4488547c1fe58c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Inserted Kahn node that changes the rule of a loop
+brief:                  |
+                        Under the absent option, inserting a Kahn node
+                        into a loop of actors, as a transform or a
+                        variant operation might, turns it into a mixed
+                        loop and so brings the default rule into force
+                        on ports far from the edit. The check or the
+                        operation's preconditions would refuse the
+                        change until some end declares a default, so
+                        the cost is a refusal at check time, not a
+                        fault in the field. Under the rule for every
+                        loop the same edit needs nothing new, since
+                        the loop already has its default.
+description:            |
+                        Sources:
+                        - A loop that mixes Kahn nodes and actors
+                          keeps the default rule.
+                          (_data/decision/dec_first_value_of_an_actor_loop/opt_actor_loops_may_start_absent.yaml
+                          at description)
+                        - A variant operation that would make a
+                          feedback edge with no end able to supply a
+                          default is refused by its preconditions.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to others.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1)
+                          ASSUMPTION: transforms may insert Kahn
+                          nodes, such as transport or probe nodes,
+                          into paths that now join only actors.
+                          Strength: weak to moderate; it depends on
+                          how often such insertions happen, and a
+                          refusal is cheap to fix.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_an_actor_loop
+    guid_target:        dec_5b07a9fb7bc44cf29e122fc5273dcc4a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actor_loops_may_start_absent
+    guid_target:        opt_31e8c41f404746a68153a3db2a489835
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_default_rule_for_every_loop
+    guid_target:        opt_ce3a2cda5c7b4edcafbedf9bfddc65f8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

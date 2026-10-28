@@ -1,0 +1,86 @@
+id_self:                ann_one_step_rate_bounds_the_fastest_loop
+guid_self:              ann_ded106cf6b6842bcb123899d641505d0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One step rate that bounds the fastest loop the Kahn part can close
+brief:                  |
+                        One message per step decouples the data rate
+                        from the step rate, so a 200 Hz sensor feeding
+                        a 30 Hz step arrives as a list of about seven
+                        items, and moving to a platform or sensor with
+                        other rates changes only derived capacities,
+                        not the graph. That is good for flexibility.
+                        The limit is the other way: a control loop
+                        that must close faster than the step cannot be
+                        written in the Kahn part at all, and must go
+                        to an actor or another subsystem, or the whole
+                        Kahn part must step at the fastest rate any
+                        loop needs. Declared rates per port let a node
+                        fire several times in a step, which can model
+                        a fast inner loop beside a slow outer one in
+                        one graph, though those firings still fall
+                        within the step unless the schedule spreads
+                        them. The single rate fits Patrol, where the
+                        camera sets the pace, and should be stated as
+                        a limit for graphs that mix fast control with
+                        slow perception.
+description:            |
+                        Sources:
+                        - A single step rate for the whole Kahn part,
+                          with each message a list of items (WTP,
+                          2026-10-28).
+                        - Every producer has a stated maximum rate,
+                          and capacity is derived from the maximum
+                          rate times the step period plus a jitter
+                          margin, by a transform in variant generation
+                          (WTP, 2026-10-28).
+                        - Multirate synchronous dataflow lets nodes
+                          fire at different rates within one periodic
+                          schedule (Lee and Messerschmitt 1987,
+                          Synchronous data flow).
+                        - A real fixed-step robot controller stack
+                          needed single-rate discrete execution, and
+                          its controllers were very sensitive to time
+                          delays (Ferigo et al. 2020, A generic
+                          synchronous dataflow architecture to rapidly
+                          prototype and deploy robot controllers).
+                          ASSUMPTION: Patrol's Kahn part has no loop
+                          that must close faster than the camera step;
+                          a motor current loop, if any, runs outside
+                          the engine. Strength: moderate; a real limit
+                          of the option, which matters only when a
+                          graph needs loops at two very different
+                          rates.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declared_rates_per_port
+    guid_target:        opt_648d2232ae11471581ff03d5b2f413c1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

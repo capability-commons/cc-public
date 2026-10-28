@@ -1,0 +1,74 @@
+id_self:                ann_input_cannot_drive_memory_or_stall_the_graph
+guid_self:              ann_1576b5a3ce2e4934a9687491458a9f1e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Input that cannot drive memory use or stall the graph
+brief:                  |
+                        Under one message per step no buffer size and
+                        no firing depends on the data, so a flood of
+                        input, from a faulty sensor or a hostile peer
+                        on the network, can at most fill one message
+                        to its capacity, where the port's declared
+                        fail-safe takes over. Declared rates have the
+                        same property. Under configured queues with
+                        dynamic rates, how full each queue gets
+                        depends on the data, so an input crafted to
+                        make one node write more than its readers take
+                        can drive part of the graph into a deadlock.
+                        The detector reports it, but the graph has
+                        stopped, which is a denial of service an
+                        attacker can reach through data alone.
+description:            |
+                        Sources:
+                        - Bounded memory is undecidable once token
+                          rates depend on data (Buck 1993, Scheduling
+                          dynamic dataflow graphs with bounded memory
+                          using the token flow model).
+                        - A stream combined with a sampled copy of
+                          itself needs storage that grows and will
+                          sooner or later overflow, which the clock
+                          calculus rejects before running (Caspi and
+                          Pouzet 1996, Synchronous Kahn networks,
+                          section 2.1).
+                        - Overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                        - Where rates are dynamic, a cycle of blocked
+                          nodes is reported as a fault, and the engine
+                          never grows a queue.
+                          (_data/decision/dec_messages_on_a_kahn_edge_per_step/opt_queues_of_configured_depth_with_deadlock_detection.yaml
+                          at brief) Strength: moderate; it applies
+                          only to graphs with dynamic rates and inputs
+                          an attacker can reach.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declared_rates_per_port
+    guid_target:        opt_648d2232ae11471581ff03d5b2f413c1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,70 @@
+id_self:                ann_induced_overload_chooses_what_the_engine_drops
+guid_self:              ann_1ff6875726734a798dbde3d71bfa92d7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Induced overload that chooses what the engine drops
+brief:                  |
+                        Anyone who can raise the load, by flooding an
+                        input from outside or heating the processor,
+                        can trigger the overload response. Under
+                        engine shedding that hands an attacker a lever
+                        on what data is lost, with nothing in the
+                        graph or trace saying why a step went missing.
+                        Under the mode port the response is designed
+                        and tested in advance, only the one control
+                        node can set the flag, and the trace records
+                        the measured values that made it switch. Input
+                        beyond a producer's stated maximum rate is
+                        overflow at the port, not overload, so its
+                        declared fail-safe applies first.
+description:            |
+                        Sources:
+                        - Each mode flag has one writer, and whatever
+                          raised it is visible in the graph and the
+                          trace.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief and description)
+                        - BPDF gives each boolean parameter a single
+                          modifier actor (Bebelis et al. 2013, BPDF,
+                          section 2.2).
+                        - Every producer has a stated maximum rate and
+                          overflow is a broken requirement with a
+                          declared fail-safe (WTP, 2026-10-28).
+                        - Security asks whether every action can be
+                          traced and what an attacker can reach.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question)
+                          ASSUMPTION: some of Patrol's inputs, such as
+                          commands over a network, are reachable by
+                          others. Strength: moderate; an attacker who
+                          can force degraded mode still degrades the
+                          robot under any option, so the gain is in
+                          predictability and accountability.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

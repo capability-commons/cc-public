@@ -1,0 +1,82 @@
+id_self:                ann_rate_declarations_and_balance_failures_for_authors
+guid_self:              ann_00faaf1b6462492baf12ccd06fee0564
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Rate declarations and balance failures that fall on node authors
+brief:                  |
+                        Declared rates per port ask every node author
+                        to state how many messages each port reads or
+                        writes per firing, and a graph whose rates do
+                        not balance is rejected with an error about
+                        rates the integrator did not write. One
+                        message per step asks only for the maximum
+                        items per step on an output port, which the
+                        derived capacity needs anyway, and makes every
+                        node a function called once per step.
+                        Configured queues ask nothing of node authors,
+                        but someone must choose and maintain a depth
+                        for each edge, and a deadlock found in the
+                        field points at a depth rather than at the
+                        code that caused it. The single rule is the
+                        easiest of the three for a newcomer to
+                        understand and the least likely to spread a
+                        change from one node to its neighbors.
+description:            |
+                        Sources:
+                        - Under declared rates, node authors state
+                          rates, and a graph whose rates do not
+                          balance is rejected.
+                          (_data/decision/dec_messages_on_a_kahn_edge_per_step/opt_declared_rates_per_port.yaml
+                          at description)
+                        - Non-sensor ports declare maximum items per
+                          step, possibly as a function of their
+                          inputs, propagated downstream (WTP,
+                          2026-10-28).
+                        - WTP wants the approach pragmatic and as
+                          simple as feasible, avoiding clever
+                          mechanisms that burden node authors (WTP,
+                          2026-10-28).
+                        - Under scalable dataflow, blocks are user
+                          code written to handle a vector of samples
+                          in one activation (Ritz et al. 1993, Optimum
+                          vectorisation of scalable synchronous
+                          dataflow graphs, section 1); with a run-time
+                          count they loop to the count received, which
+                          is the same small burden under every option
+                          that uses bounded arrays. Strength: moderate
+                          to strong; it rests on WTP's stated
+                          preference and on the option texts rather
+                          than on a measurement of author effort.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_messages_on_a_kahn_edge_per_step
+    guid_target:        dec_561681bcb4d743e8bc156ad1cda171c7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_message_per_kahn_edge_per_step
+    guid_target:        opt_e3ecc23bab924902838eb2ba6104dd91
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declared_rates_per_port
+    guid_target:        opt_648d2232ae11471581ff03d5b2f413c1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_queues_of_configured_depth_with_deadlock_detection
+    guid_target:        opt_1045ed396aeb49499ba5a4ce4a6038de
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

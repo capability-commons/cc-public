@@ -1,0 +1,69 @@
+id_self:                ann_fail_safe_bound_per_variant_like_capacity
+guid_self:              ann_86fcf8688b47412680e9e495224733b2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fail-safe bound per variant like the capacity
+brief:                  |
+                        A fail-safe declared per port can be set in
+                        variant generation by the same transform that
+                        derives the capacity, so the variant for a
+                        test bench can fail the step at once and stop
+                        on the first broken bound, while the variant
+                        for the field drops and raises a fault. One
+                        rule for the whole engine fixes the same
+                        response on every platform and in every
+                        configuration, so it cannot be loud in testing
+                        and tolerant in service. Blocking cannot be
+                        adapted at all where a source cannot wait.
+description:            |
+                        Sources:
+                        - The capacity is part of the variant
+                          generated for the configuration that uses
+                          the producer.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief)
+                        - Each port declares its fail-safe from a
+                          fixed list, such as drop the excess and
+                          raise a fault, drop the whole message, or
+                          fail the step.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief)
+                        - The flexibility concern asks on which
+                          platforms and environments the design runs.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question)
+                          ASSUMPTION: test and simulation
+                          configurations of Patrol are variants of the
+                          same family as the field configuration.
+                          Strength: moderate; it depends on the
+                          fail-safe being a setting the variant may
+                          change, which the per-port option allows but
+                          does not yet say.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_behavior_when_a_capacity_is_exceeded
+    guid_target:        dec_376614a7f39542d08d7fe18119254c10
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fail_safe_declared_per_port
+    guid_target:        opt_8af009581fe9417d892d5eb51af16488
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_fail_safe_for_the_engine
+    guid_target:        opt_a0cb277f36c1479cb9b096c6488ee424
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

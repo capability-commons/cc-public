@@ -1,0 +1,72 @@
+id_self:                ann_temperature_source_ties_degraded_mode_to_a_platform
+guid_self:              ann_28e78c0c2fa34e77970c7c8d4f5d77b2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Temperature source that ties degraded mode to a platform
+brief:                  |
+                        The mode-port option reads processor
+                        temperature from the platform, which on the
+                        Orin means NVIDIA's own interfaces and on a
+                        later target means another vendor's. That
+                        dependence is real but sits in one source node
+                        per platform, swapped by a variant, and queue
+                        occupancy comes from the engine with no third
+                        party at all. Engine shedding and fault-only
+                        need only a clock. No option takes a
+                        third-party library, so the options are close
+                        under dependency risk, with the mode port's
+                        platform exposure contained.
+description:            |
+                        Sources:
+                        - The platform exposes temperature as a source
+                          port.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief)
+                        - Patrol runs on an NVIDIA Orin; the engine
+                          targets embedded reach (WTP, 2026-10-28).
+                        - Dependency risk asks what happens if a third
+                          party's part is changed or withdrawn.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question)
+                          ASSUMPTION: the Orin exposes temperature
+                          through vendor-specific interfaces of its
+                          Linux board support package, and another
+                          target would expose it differently or not at
+                          all. ASSUMPTION: a control node can still
+                          trigger on occupancy alone where no
+                          temperature source exists. Strength: weak;
+                          it decides nothing between the options and
+                          marks where porting work falls.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_response_to_sustained_overload
+    guid_target:        dec_61f554fd0e544fd787562a6f2873c92b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overload_raised_as_a_fault_only
+    guid_target:        opt_7c043da00a6d44fb99f20f2873ddc5a1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
