@@ -311,6 +311,8 @@ PREDICATE         = {
                            'the top.'),
     'maturity_level':     (('id', 'level:number'),
                            'The maturity level id has the number level on the scale.'),
+    'criticality_level':  (('id', 'level:number'),
+                           'The criticality id has the number level on the scale.'),
     'measure':            (('id', 'quantity', 'bound', 'limit', 'unit', 'statistic',
                             'runs:number'),
                            'The requirement id bounds a measured quantity: the '
@@ -441,6 +443,11 @@ DELIM_MODULE      = '.'
 #
 PREFIX_MATURITY   = cctool.graph.prefix.stem('type_maturity_level')
 KEY_LEVEL         = 'level'
+
+# The predicate of the number of each level, by the start of its id.
+#
+MAP_LEVEL         = {PREFIX_MATURITY:                                 'maturity_level',
+                     cctool.graph.prefix.stem('type_criticality'): 'criticality_level'}
 
 # A class or function holds an item in its docstring, as a module does.
 # Its YAML document is keyed by the path of its file and the names of
@@ -1909,13 +1916,14 @@ def _checks(document: dict[str, typing.Any], facts: Facts) -> None:
 # -----------------------------------------------------------------------------
 def _level(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     """
-    Add a fact for the number of the maturity level id_self, if node is
-    the entry of one and gives it as a whole number.
+    Add a fact for the number of the maturity level or criticality
+    id_self, if node is the entry of one and gives it as a whole number.
 
     """
 
-    if id_self.startswith(PREFIX_MATURITY) and _is_whole(node.get(KEY_LEVEL)):
-        facts['maturity_level'].add((id_self, str(int(node[KEY_LEVEL]))))
+    for (prefix, name) in MAP_LEVEL.items():
+        if id_self.startswith(prefix) and _is_whole(node.get(KEY_LEVEL)):
+            facts[name].add((id_self, str(int(node[KEY_LEVEL]))))
 
 
 # -----------------------------------------------------------------------------

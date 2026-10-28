@@ -1899,3 +1899,52 @@ entries:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_maturity_level
         guid_target:    rol_56770f4626a84e3f8221adb1116f622f
+
+  # ---------------------------------------------------------------------------
+  # type_criticality -- Criticality type
+  #
+  type_criticality:
+    id_self:            type_criticality
+    guid_self:          type_8703a93cf58043f3b804c08c90222c0b
+    title:              Criticality type
+    brief:              |
+                        Type of criticality data items.
+    description:        |
+                        Each criticality data item stands for one
+                        level of how bad a failure would be, by its
+                        number on the scale.
+    usage:              |
+                        A requirement names its criticality by an edge
+                        of relation_has_criticality.
+    note:               |
+                        Criticality data items only ever exist as
+                        entries in the criticality register.
+
+                        The shape of criticality data items is defined
+                        by the sch_regentry_criticality schema.
+
+                        The shape of the criticality register is
+                        defined by the sch_reg_criticality schema.
+    prefix:             crit
+    prefix_exception:   criticality is longer than the eight letters a prefix may have, and its first three letters, cri, do not read as the word, so the type takes crit, which September used and which reads as criticality.
+    regex_id:           ^crit_(0|[1-9][0-9]?|100)$
+    id_concept:         concept_criticality
+    guid_concept:       concept_9672d8c6a2e149b69d6729f7c52912e2
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_held_in_register
+        guid_relation:  relation_e47ddfa559db431eab5e1051dd899440
+        id_target:      reg_criticality
+        guid_target:    reg_6d05a704bf29428399a0e0d0916fe6f3
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_regentry_criticality
+        guid_target:    sch_bf7e95b9422b43b288a4c0dad829693e
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_criticality
+        guid_target:    rol_e1ce0ee130d448f08d639c70d18508c5

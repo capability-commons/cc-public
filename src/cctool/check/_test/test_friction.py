@@ -49,7 +49,7 @@ def test_a_deprecated_term_is_not_shared(tree):
 
 def test_a_prefix_exception_is_a_signal(tree):
     report = cctool.check.friction.friction(tree)
-    assert [row[0] for row in report['rule_exception']] == ['type_python_class']
+    assert [row[0] for row in report['rule_exception']] == ['type_criticality', 'type_python_class']
 
 
 def test_a_decision_with_no_ruling_is_open(tree):

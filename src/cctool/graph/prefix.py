@@ -34,6 +34,7 @@ edge:                   []
 MAP_PREFIX        = {'type_annotation':                 'ann',
                      'type_commit':                     'cmt',
                      'type_concept':                    'concept',
+                     'type_criticality':                'crit',
                      'type_concern':                    'concern',
                      'type_dataflow_graph':             'dfg',
                      'type_dataflow_node':              'dfn',

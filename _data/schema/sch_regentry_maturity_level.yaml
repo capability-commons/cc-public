@@ -65,4 +65,18 @@ properties:
           description:  |
                         What the code must show.
 
+        criticality:
+          type:         array
+          minItems:     1
+          uniqueItems:  true
+          description:  |
+                        Optional. The ids of the criticalities that
+                        the demand applies to, so that a level asks
+                        more of critical code. A demand that names
+                        none applies at every criticality.
+
+          items:
+            type:       string
+            pattern:    ^crit_[0-9]+$
+
 edge:                   []

@@ -1,0 +1,169 @@
+id_self:                reg_criticality
+guid_self:              reg_6d05a704bf29428399a0e0d0916fe6f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Criticality register
+brief:                  |
+                        Register of the levels of criticality that a
+                        requirement may declare.
+description:            |
+                        The criticality register holds one entry per
+                        level, on one scale from 0 to 100 with gaps
+                        between the levels, widest at the low end.
+                        Each entry says what failing an obligation at
+                        that level could lead to, for safety and
+                        security alike, and which levels of external
+                        scales it corresponds to. A requirement
+                        declares its level by an edge of
+                        relation_has_criticality, and has the lowest
+                        level if it declares none. Code takes the
+                        greatest criticality among the requirements
+                        whose subject it realizes.
+usage:                  |
+                        A demand of a maturity level may name the
+                        criticalities it applies to, so that a level
+                        asks more of critical code.
+note:                   |
+                        September had two dimensions, safety and
+                        security, of five levels each. The ruling on
+                        the criticality of a requirement keeps one
+                        scale, so each level here takes the
+                        consequences of both September levels with the
+                        same number.
+
+entries:
+
+  # ---------------------------------------------------------------------------
+  # crit_10 -- No consequence
+  #
+  crit_10:
+    id_self:            crit_10
+    guid_self:          crit_80170c3c46ec4eb9b1c24cf26f1f101c
+    title:              No consequence
+    brief:              |
+                        Level 10 of criticality: no consequence.
+    description:        |
+                        The level of a requirement whose failure could
+                        have the consequence this entry names.
+    level:              10
+    consequence:        |
+                        A failure has no effect on safety or security.
+    corresponds_to:     |
+                        Design assurance level E of DO-178C; no
+                        security level.
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # crit_40 -- Recoverable disruption
+  #
+  crit_40:
+    id_self:            crit_40
+    guid_self:          crit_9bf0115c88db42c19a419cf9e6044ed5
+    title:              Recoverable disruption
+    brief:              |
+                        Level 40 of criticality: recoverable
+                        disruption.
+    description:        |
+                        The level of a requirement whose failure could
+                        have the consequence this entry names.
+    level:              40
+    consequence:        |
+                        A failure disrupts an operation that can be
+                        recovered, with no injury, or discloses
+                        information with no protected content.
+    corresponds_to:     |
+                        Design assurance level D; security level 1 of
+                        IEC 62443 and cybersecurity assurance level 1
+                        of ISO/SAE 21434.
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # crit_60 -- Minor harm or protected disclosure
+  #
+  crit_60:
+    id_self:            crit_60
+    guid_self:          crit_ae54073cec72499583a38cedf5184381
+    title:              Minor harm or protected disclosure
+    brief:              |
+                        Level 60 of criticality: minor harm or
+                        protected disclosure.
+    description:        |
+                        The level of a requirement whose failure could
+                        have the consequence this entry names.
+    level:              60
+    consequence:        |
+                        A failure could cause minor injury,
+                        significant loss of assets, a mission failure
+                        with commercial consequence, or the disclosure
+                        of protected or commercially sensitive
+                        information.
+    corresponds_to:     |
+                        Design assurance level C; security level 2 and
+                        cybersecurity assurance level 2.
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # crit_80 -- Serious harm or compromise of control
+  #
+  crit_80:
+    id_self:            crit_80
+    guid_self:          crit_f1a2c8a6f7374e058fb9e463cb751f6a
+    title:              Serious harm or compromise of control
+    brief:              |
+                        Level 80 of criticality: serious harm or
+                        compromise of control.
+    description:        |
+                        The level of a requirement whose failure could
+                        have the consequence this entry names.
+    level:              80
+    consequence:        |
+                        A failure could cause serious injury to one
+                        person, major environmental or asset loss,
+                        loss of control over a populated area, or a
+                        compromise of command and control or of
+                        protected personal data at scale.
+    corresponds_to:     |
+                        Design assurance level B; security level 3 and
+                        cybersecurity assurance level 3.
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # crit_90 -- Death or loss of control
+  #
+  crit_90:
+    id_self:            crit_90
+    guid_self:          crit_b27432f39c5a4f63a9332a60a1a9b9fa
+    title:              Death or loss of control
+    brief:              |
+                        Level 90 of criticality: death or loss of
+                        control.
+    description:        |
+                        The level of a requirement whose failure could
+                        have the consequence this entry names.
+    level:              90
+    consequence:        |
+                        A failure could cause death or serious injury
+                        to a third party, or a compromise that enables
+                        loss of control or physical harm.
+    corresponds_to:     |
+                        Design assurance level A; security level 4 and
+                        cybersecurity assurance level 4.
+    alias:              []
+    edge:               []
+
+edge:
+
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
+    id_target:          sch_reg_criticality
+    guid_target:        sch_90748dd4431f4b689379989c665d0d6b

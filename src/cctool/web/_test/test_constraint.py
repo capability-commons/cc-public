@@ -87,6 +87,7 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
         ['Admitted at the target of ', ('relation_verifies', 'Verifies relation'), '.'],
         ['Excluded at the source of ',
          ('relation_has_actor', 'Has actor relation'), ', ',
+         ('relation_has_criticality', 'Has criticality relation'), ', ',
          ('relation_has_process', 'Has process relation'), ' and ',
          ('relation_has_subject', 'Has subject relation'), '.']]
 

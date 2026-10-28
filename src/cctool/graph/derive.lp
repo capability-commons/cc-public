@@ -396,3 +396,79 @@ component_maturity(Component, Level) :-
     Level = #max { Each : python_component(Module, Component),
                           file_maturity(Module, Each) }.
 
+
+% -----------------------------------------------------------------------------
+% The lowest criticality, which a requirement that declares none has.
+%
+% decl lowest_criticality(level: number)
+
+lowest_criticality(Level) :-
+    criticality_level(_, _),
+    Level = #min { Each : criticality_level(_, Each) }.
+
+
+% -----------------------------------------------------------------------------
+% The requirement has the criticality, by its number: the greatest it
+% declares by relation_has_criticality, or the lowest if it declares
+% none.
+%
+% decl requirement_criticality(requirement: symbol,
+%                              level:       number)
+
+requirement_criticality(Requirement, Level) :-
+    declares_criticality(Requirement),
+    Level = #max { Each : primary_edge(Requirement, "relation_has_criticality", Entry),
+                          criticality_level(Entry, Each) }.
+
+requirement_criticality(Requirement, Level) :-
+    has_type(Requirement, "type_requirement"),
+    not declares_criticality(Requirement),
+    lowest_criticality(Level).
+
+
+% -----------------------------------------------------------------------------
+% The requirement declares a criticality.
+%
+% decl declares_criticality(requirement: symbol)
+
+declares_criticality(Requirement) :-
+    primary_edge(Requirement, "relation_has_criticality", Entry),
+    criticality_level(Entry, _).
+
+
+% -----------------------------------------------------------------------------
+% The source file or definition that holds the item id realizes the
+% subject of the requirement: the subject is what it realizes, or the
+% logical component it is in.
+%
+% decl responsible_for(id:          symbol,
+%                      requirement: symbol)
+
+responsible_for(Id, Requirement) :-
+    module_name(Id, _),
+    primary_edge(Id, "relation_realizes", Subject),
+    primary_edge(Requirement, "relation_has_subject", Subject).
+
+responsible_for(Id, Requirement) :-
+    python_component(Id, Subject),
+    primary_edge(Requirement, "relation_has_subject", Subject).
+
+
+% -----------------------------------------------------------------------------
+% The code that holds the item id has the criticality, by its number:
+% the greatest among the requirements it is responsible for, or the
+% lowest if it is responsible for none. It is derived, never declared.
+%
+% decl code_criticality(id:    symbol,
+%                       level: number)
+
+code_criticality(Id, Level) :-
+    responsible_for(Id, _),
+    Level = #max { Each : responsible_for(Id, Requirement),
+                          requirement_criticality(Requirement, Each) }.
+
+code_criticality(Id, Level) :-
+    module_name(Id, _),
+    not responsible_for(Id, _),
+    lowest_criticality(Level).
+

@@ -278,6 +278,44 @@ def test_a_component_has_the_maturity_of_its_most_mature_file(tree):
     assert cctool.graph.sql.query(facts, text) == (('level',), [(60,)])
 
 
+def _criticality(tree, text):
+    """
+    Return the rows that the SQL text gives on the facts of tree.
+
+    """
+
+    return cctool.graph.sql.query(cctool.graph.extract.extract(tree), text)[1]
+
+
+def test_a_requirement_that_declares_no_criticality_has_the_lowest(tree):
+    text = "SELECT level FROM requirement_criticality WHERE requirement = 'rqt_rename_keeps_guid'"
+    assert _criticality(tree, text) == [(10,)]
+
+
+def test_code_has_the_greatest_criticality_of_the_requirements_on_its_component(tree):
+    _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x')
+    _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
+    _module(tree, 'src/x/y.py', 'pym_x.y')
+    for (id_self, criticality) in (('rqt_rename_keeps_guid', 'crit_60'),
+                                   ('rqt_format_keeps_formatted_file', 'crit_80')):
+        relative = '_data/requirement/{id}.yaml'.format(id = id_self)
+        _replace(tree, relative, '  - id_relation:        relation_has_subject\n'
+                 '    guid_relation:      ', '  - id_relation:        relation_has_criticality\n'
+                 '    guid_relation:      {relation}\n'
+                 '    id_target:          {target}\n'
+                 '    guid_target:        {guid}\n\n'
+                 '  - id_relation:        relation_has_subject\n'
+                 '    guid_relation:      '.format(relation = _guid_of(tree, 'relation_has_criticality'),
+                                                   target   = criticality,
+                                                   guid     = _guid_of(tree, criticality)))
+        _replace(tree, relative,
+                 'id_target:          lco_tooling\n    guid_target:        ' + _guid_of(tree, 'lco_tooling'),
+                 'id_target:          lco_x\n    guid_target:        ' + _guid_of(tree, 'lco_x'))
+    assert _check(tree) == {}
+    text = "SELECT id, level FROM code_criticality WHERE id IN ('pym_x.y', 'pyp_x') ORDER BY id"
+    assert _criticality(tree, text) == [('pym_x.y', 80), ('pyp_x', 80)]
+
+
 def _components(tree, list_depend = (), relation = 'relation_may_depend_on'):
     """
     Write lco_x and lco_y, and an edge of relation from the first of
