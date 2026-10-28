@@ -1,0 +1,68 @@
+id_self:                ann_fuzzers_reach_deeper_into_small_units
+guid_self:              ann_75b496be1c8f4157b91181e5237fdd0d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fuzzers that reach deeper into small units
+brief:                  |
+                        A coverage-guided fuzzer explores the branches
+                        of what it runs, and the deeper a branch sits
+                        behind other branches, the less often random
+                        mutation reaches it. One node in its own
+                        harness is a small unit with few paths, so the
+                        fuzzer reaches its deep branches; the same
+                        node inside a whole graph sits behind every
+                        node upstream of it, and most mutations are
+                        spent there. Fuzzing nodes one at a time is
+                        what makes fuzzing worthwhile for faults that
+                        would otherwise reach a deployed system.
+description:            |
+                        Sources:
+                        - Fuzzing tools such as American Fuzzy Lop
+                          work much better when the system under test
+                          is smaller and less complex in the McCabe
+                          sense, so the aim was to isolate individual
+                          nodes in their own harness and fuzz them
+                          individually (WTP, 2026-10-28).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_fuzzing_of_a_single_node
+    guid_target:        dec_7b5d62e92bac454a97f50c23a9d69cfc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_generated_from_the_node_interface
+    guid_target:        opt_389ac62fcc9348608546d1ae2da479ad
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_written_for_each_node
+    guid_target:        opt_5fb27bfb589d4f6dbfd35501d5c0e6cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fuzz_whole_graphs_only
+    guid_target:        opt_85665bd623444127b8eff66a84990db3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,63 @@
+id_self:                ann_declared_interfaces_make_the_harness_mechanical
+guid_self:              ann_3971a3339fcb4d4e8c3d6218cbd86283
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared interfaces that make the harness mechanical
+brief:                  |
+                        Under the rulings, everything a node reads in
+                        a step is declared and bounded: messages are
+                        bounded arrays of fixed-size elements, the
+                        engine owns every buffer, and node state is
+                        typed data the engine holds. So the space of a
+                        step's inputs is known from the interface, and
+                        a harness that decodes bytes into it can be
+                        generated, kept in step with the interface by
+                        construction. A hand-written harness repeats
+                        the interface, drifts when it changes and is
+                        skipped when time is short.
+description:            |
+                        Sources:
+                        - Each message on an edge is an array of
+                          elements of one fixed-size type, with a
+                          length that varies per message up to a
+                          capacity the port declares.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ruling_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - The engine, or the generator in a static
+                          build, allocates the buffers of each edge
+                          from the port types.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_fuzzing_of_a_single_node
+    guid_target:        dec_7b5d62e92bac454a97f50c23a9d69cfc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_generated_from_the_node_interface
+    guid_target:        opt_389ac62fcc9348608546d1ae2da479ad
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_harness_written_for_each_node
+    guid_target:        opt_5fb27bfb589d4f6dbfd35501d5c0e6cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

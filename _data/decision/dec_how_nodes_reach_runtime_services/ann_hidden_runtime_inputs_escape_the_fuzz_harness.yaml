@@ -1,0 +1,53 @@
+id_self:                ann_hidden_runtime_inputs_escape_the_fuzz_harness
+guid_self:              ann_9842360530ba43ad872b8cd5a2508815
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hidden runtime inputs that escape the fuzz harness
+brief:                  |
+                        A node fuzzed in its own harness can be
+                        explored only through inputs the harness can
+                        see. A runtime service reached through an
+                        undeclared parameter is an input the harness
+                        cannot generate, so the node's behavior on it
+                        goes unfuzzed. Services as source ports are
+                        ordinary inputs the harness feeds; declared
+                        capabilities tell the generator which services
+                        to stand in for.
+description:            |
+                        Sources:
+                        - The aim of isolating individual nodes in
+                          their own test harness and fuzzing them
+                          individually (WTP, 2026-10-28).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

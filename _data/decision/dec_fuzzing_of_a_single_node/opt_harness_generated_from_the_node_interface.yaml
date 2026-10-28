@@ -1,0 +1,38 @@
+id_self:                opt_harness_generated_from_the_node_interface
+guid_self:              opt_389ac62fcc9348608546d1ae2da479ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Harness generated from the node interface
+brief:                  |
+                        The generator writes a harness for each node
+                        kind from its declared interface. The harness
+                        decodes the fuzzer's bytes into the inputs of
+                        a step, each a bounded array of up to its
+                        capacity, including a count of 0, together
+                        with any mode port, runtime-service port and a
+                        value of the declared state type, and runs a
+                        sequence of steps against buffers the harness
+                        owns as the engine would. It checks that no
+                        step crashes or trips a sanitizer, that each
+                        output stays within its declared maximum
+                        items, and that the same inputs give the same
+                        outputs. The harness has the libFuzzer entry
+                        point, which AFL++ also runs, and a stateless
+                        node is fuzzed one step at a time.
+description:            |
+                        Proposed to WTP on 2026-10-28. It needs
+                        nothing from node authors beyond the
+                        declarations the rulings already ask for.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_fuzzing_of_a_single_node
+    guid_target:        dec_7b5d62e92bac454a97f50c23a9d69cfc

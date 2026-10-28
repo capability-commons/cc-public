@@ -1,0 +1,45 @@
+id_self:                ann_faults_between_nodes_need_a_graph
+guid_self:              ann_e8350debf2524dc7a03f4de146618567
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faults between nodes that need a graph
+brief:                  |
+                        A node fuzzed alone sees any input its
+                        interface allows, including inputs no real
+                        producer sends, and none of the faults that
+                        come from how nodes interact, such as a mode
+                        change reaching nodes at different steps. Some
+                        fuzzing of whole graphs or subgraphs is still
+                        needed for those, though it complements
+                        fuzzing single nodes rather than replacing it.
+description:            |
+                        Sources:
+                        - The flag travels with the data, so each node
+                          samples it at its own step, and a change
+                          must reach every node within a stated number
+                          of steps.
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief)
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_fuzzing_of_a_single_node
+    guid_target:        dec_7b5d62e92bac454a97f50c23a9d69cfc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fuzz_whole_graphs_only
+    guid_target:        opt_85665bd623444127b8eff66a84990db3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,65 @@
+id_self:                ann_one_entry_point_for_several_fuzzers
+guid_self:              ann_c21f695fe80a4ce780bb00c0fce0112b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One entry point for several fuzzers
+brief:                  |
+                        The libFuzzer entry point, one function taking
+                        a buffer of bytes, is also run by AFL++ and by
+                        Honggfuzz, so a harness written to it is not
+                        tied to one fuzzer, and a fuzzer can be
+                        swapped without touching harnesses. A harness
+                        that runs one step in the same process, with
+                        no allocation since the buffers are fixed,
+                        runs many thousands of times a second, where a
+                        whole graph runs at the pace of its slowest
+                        node.
+description:            |
+                        Sources:
+                        - AFL++ documentation, fuzzing in depth:
+                          harnesses written for libFuzzer can be
+                          compiled and run with AFL++.
+                          https://aflplus.plus/docs/fuzzing_in_depth/
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_fuzzing_of_a_single_node
+    guid_target:        dec_7b5d62e92bac454a97f50c23a9d69cfc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_generated_from_the_node_interface
+    guid_target:        opt_389ac62fcc9348608546d1ae2da479ad
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_written_for_each_node
+    guid_target:        opt_5fb27bfb589d4f6dbfd35501d5c0e6cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fuzz_whole_graphs_only
+    guid_target:        opt_85665bd623444127b8eff66a84990db3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
