@@ -978,16 +978,17 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
                                                                     new = id_new, old = id_old))
 
     list_pair = [*_derived(tree, id_old, id_new), (id_old, id_new)]
-    edit      = {}
 
     for (_, id_to) in list_pair:
         if id_to in tree.map_item:
             raise ErrorEdit('An item with the id {id} exists.'.format(id = id_to))
 
-    for (id_from, id_to) in list_pair:
-        edit_one = _rename_one(tree, id_from, id_to)
-        tree.update(edit_one)
-        edit.update(edit_one)
+    # The items held are renamed together, in one pass over the tree,
+    # and then the item itself, whose file or folder may move. Each pass
+    # leaves its edit in place in tree.
+    #
+    edit = _rename_all(tree, dict(list_pair[:-1]))
+    edit.update(_rename_all(tree, {id_old: id_new}))
 
     return edit
 
@@ -1022,88 +1023,104 @@ def _derived(tree: Tree, id_old: str, id_new: str) -> list[tuple[str, str]]:
 
 
 # -----------------------------------------------------------------------------
-def _rename_one(tree: Tree, id_old: str, id_new: str) -> Edit:
+def _rename_all(tree: Tree, map_id: dict[str, str]) -> Edit:
     """
-    Return the edit that gives the item id_old the id id_new: in its own
-    YAML document, in every reference and mention of it in a document,
-    in every string of a logic program that is id_old, and in the name
-    of its file, or of its folder, if it is named for it. A register
-    entry keeps id_old in its alias list. A dataflow node is filed
-    under the last part of its id, so its key changes with it.
+    Return the edit that gives each item named in map_id its new id: in
+    its own YAML document, in every reference and mention of it in a
+    document, in every string of a logic program that is its id, and in
+    the name of its file, or of its folder, if it is named for it. A
+    register entry keeps its old id in its alias list. A dataflow node
+    is filed under the last part of its id, so its key changes with it.
 
     An item embedded in another, such as an interface member, keeps no
     alias: its schema allows none, and whatever refers to it carries
     its guid, which does not change.
 
     The rules match items by id, in strings such as "relation_is_option_for". Left
-    as they were, the rules that name id_old would match nothing, and
+    as they were, the rules that name an old id would match nothing, and
     so pass without a word.
 
     """
 
-    (_, _, holder, relative, _) = tree.map_item[id_old]
-    is_entry                    = any(row[2] == id_old for row in tree.facts['register_entry_key'])
-    list_node                   = [(row[0], row[1]) for row in tree.facts['dataflow_node']
-                                   if row[2] == id_old]
-    edit                        = _renamed_documents(tree, id_old, id_new)
+    if not map_id:
+        return {}
 
-    for file in tree.map_document:
-        if pathlib.Path(file).suffix != cctool.graph.extract.SUFFIX_PROGRAM:
-            continue
-        text    = edit.get(file) or tree.text(file)
-        renamed = text.replace('"{id}"'.format(id = id_old), '"{id}"'.format(id = id_new))
-        if renamed != text:
-            edit[file] = renamed
+    set_entry = {row[2] for row in tree.facts['register_entry_key']} & set(map_id)
+    list_node = [(row[0], row[1], map_id[row[2]]) for row in tree.facts['dataflow_node']
+                 if row[2] in map_id]
+    list_file = [(tree.map_item[id_old][3], id_old) for id_old in map_id
+                 if not tree.map_item[id_old][2]]
+    edit      = _renamed_documents(tree, map_id)
 
-    path = pathlib.Path(relative)
-    if not holder and path.stem == id_old:
-        edit[str(path.with_name(id_new + path.suffix))] = edit.pop(relative)
-        edit[relative] = None
-    if not holder and path.parent.name == id_old:
-        _move_folder(tree, edit, path.parent, id_new)
+    for (relative, id_old) in list_file:
+        path = pathlib.Path(relative)
+        if path.stem == id_old:
+            edit[str(path.with_name(map_id[id_old] + path.suffix))] = edit.pop(relative)
+            edit[relative] = None
+        if path.parent.name == id_old:
+            _move_folder(tree, edit, path.parent, map_id[id_old])
 
     tree.update(edit)
 
-    if is_entry:
-        item          = _Item(tree, id_new)
+    # Each alias and each key is put in place on its own, since two may
+    # be in one file.
+    #
+    for id_old in sorted(set_entry):
+        item          = _Item(tree, map_id[id_old])
         (start, end)  = item.extent(KEY_ALIAS)
         list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []]
-        edit.update(item.replace(start, end, cctool.check.layout.dump(
-                                    {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS))))
+        edit_alias    = item.replace(start, end, cctool.check.layout.dump(
+                                    {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS)))
+        tree.update(edit_alias)
+        edit.update(edit_alias)
 
-    key_new = id_new.rpartition(DELIM_NAME)[2]
-    for (graph, key) in list_node:
+    for (graph, key, id_new) in list_node:
+        key_new = id_new.rpartition(DELIM_NAME)[2]
         if key == key_new:
             continue
         item       = _Item(tree, graph)
         item.node  = item.node[cctool.graph.extract.KEY_NODE]
         index      = item.base + item.node.lc.key(key)[0]
         text       = item.line(index)
-        edit.update(item.replace(index, index + 1, [text.replace(key + ':', key_new + ':', 1)]))
+        edit_key   = item.replace(index, index + 1, [text.replace(key + ':', key_new + ':', 1)])
+        tree.update(edit_key)
+        edit.update(edit_key)
 
     return edit
 
 
 # -----------------------------------------------------------------------------
-def _renamed_documents(tree: Tree, id_old: str, id_new: str) -> Edit:
+def _renamed_documents(tree: Tree, map_id: dict[str, str]) -> Edit:
     """
-    Return the edit that gives id_old the id id_new in every YAML
-    document that names it.
+    Return the edit that gives each item named in map_id its new id in
+    every YAML document that names it, and in every string of a logic
+    program that is its id, all in one pass, the longest ids first.
 
     """
 
-    regex = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
-    edit  = {}
+    alternation = '|'.join(re.escape(id_old) for id_old in sorted(map_id, key = len,
+                                                                   reverse = True))
+    regex       = re.compile(PATTERN_WHOLE_ID.format(id = '(?:' + alternation + ')'))
+    regex_rule  = re.compile('"(' + alternation + ')"')
+    edit        = {}
 
     for file in cctool.graph.extract.files(tree.map_document):
         text      = tree.text(file)
         list_line = text.split('\n')
         for (first, last) in cctool.check.layout.spans(text, pathlib.Path(file)):
-            list_line[first:last + 1] = [regex.sub(id_new, line)
+            list_line[first:last + 1] = [regex.sub(lambda match: map_id[match.group(0)], line)
                                          for line in list_line[first:last + 1]]
         renamed = '\n'.join(list_line)
         if renamed != text:
             edit[file] = _format(renamed, file)
+
+    for file in tree.map_document:
+        if pathlib.Path(file).suffix != cctool.graph.extract.SUFFIX_PROGRAM:
+            continue
+        text    = edit.get(file) or tree.text(file)
+        renamed = regex_rule.sub(lambda match: '"' + map_id[match.group(1)] + '"', text)
+        if renamed != text:
+            edit[file] = renamed
 
     return edit
 
