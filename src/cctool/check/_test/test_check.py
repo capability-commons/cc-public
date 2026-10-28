@@ -1708,6 +1708,19 @@ def test_a_term_is_not_advice_once_the_item_links_its_concept(tree):
     assert [row for row in advice.get('term_to_link', []) if row[0] == 'lco_y'] == []
 
 
+@pytest.mark.parametrize('text', ['Ruled by WTP on 2026-10-26 at 21:13 UTC.',
+                                  'Measured 2026-10-26 21:13 in the container.',
+                                  'Said at 2026-10-26T21:13:05Z.'])
+def test_a_date_with_a_time_of_day_is_reported(tree, text):
+    _text_item(tree, 'lco_y', text)
+    assert [row[:1] for row in _check(tree)['time_of_day_in_text']] == [('lco_y',)]
+
+
+def test_a_date_alone_passes(tree):
+    _text_item(tree, 'lco_y', 'Ruled by WTP on 2026-10-26, in 1 h 21 min.')
+    assert 'time_of_day_in_text' not in _check(tree)
+
+
 def test_a_relation_that_reads_through_an_unconstrained_end_is_reported(tree):
     _replace(tree, '_data/register/reg_relation.yaml',
              '    reads_through:\n      - target\n',

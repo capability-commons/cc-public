@@ -1851,6 +1851,44 @@ word_to_replace(Holder, Word, Preferred, Rule, File, Line) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.time_of_day_in_text
+% guid_self:              lpp_fe0f2f4feee944f292222418582afbd9
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Time of day in text
+% brief:                  |
+%                         A text that dates something gives the date
+%                         alone, never a time of day, so that every
+%                         dated statement is written the same way.
+% did:                    |
+%                         The text of {holder} gives the time of day in
+%                         "{text}".
+% fix:                    |
+%                         Give the date alone. git keeps the time of the
+%                         commit that added the text.
+% edge:                   []
+%
+% ...
+%
+% decl time_of_day_in_text(holder: symbol,
+%                          text:   symbol,
+%                          file:   symbol,
+%                          line:   number)
+#show time_of_day_in_text/4.
+
+time_of_day_in_text(Holder, Text, File, Line) :-
+    time_of_day(Holder, Text, File, Line).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unresolved_term
 % guid_self:              lpp_ff2545b97815451bb143615dcc113cab
 % copyright:              Copyright 2026 William Payne

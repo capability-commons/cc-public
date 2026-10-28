@@ -123,6 +123,11 @@ SIZE_CITED        = 400
 #
 REGEX_WORD        = re.compile(r'[A-Za-z]+')
 REGEX_QUOTED      = re.compile(r'"[^"\n]*"')
+
+# A date followed by a time of day, as in 2026-10-26T21:13,
+# 2026-10-26 21:13 or 2026-10-26 at 21:13 UTC.
+#
+REGEX_TIME_OF_DAY = re.compile(r'\b\d{4}-\d{2}-\d{2}(?:T|\s+at\s+|\s+)\d{1,2}:\d{2}(?::\d{2})?\b')
 REGEX_REF         = re.compile(r'/(sch_[a-z0-9_]+)\.yaml')
 
 # A wiki link to a concept: [[term]], or [[concept|label]]
@@ -248,6 +253,9 @@ PREDICATE         = {
     'avoided_word':       (('holder', 'word', 'file', 'line:number'),
                            'The text of a field of the item holder uses word, which a '
                            'writing style rule asks to replace, in file at line.'),
+    'time_of_day':        (('holder', 'text', 'file', 'line:number'),
+                           'The text of a field of the item holder gives a date with a '
+                           'time of day, text, in file at line.'),
     'term_word':          (('holder', 'field', 'term', 'file', 'line:number'),
                            'The text of the field of the item holder uses the words of '
                            'term, a preferred or admitted term of a concept, outside '
@@ -1581,6 +1589,8 @@ def _mention(text:      str,
         facts['term_word'].add((holder, field[0], term, file,
                                 str(line + offset + text.count('\n', 0, start))))
 
+    _time_of_day(text, holder, file, line + offset, facts)
+
     set_avoided = {row[1] for row in facts['word_replacement']}
 
     for match in REGEX_WORD.finditer(unquoted):
@@ -1588,6 +1598,19 @@ def _mention(text:      str,
         if word in set_avoided:
             facts['avoided_word'].add((holder, word, file,
                                        str(line + offset + text.count('\n', 0, match.start()))))
+
+
+# -----------------------------------------------------------------------------
+def _time_of_day(text: str, holder: str, file: str, line: int, facts: dict) -> None:
+    """
+    Add a fact for each date with a time of day that text gives, where
+    line is the line of the file that the first line of text is on.
+
+    """
+
+    for match in REGEX_TIME_OF_DAY.finditer(text):
+        facts['time_of_day'].add((holder, ' '.join(match.group(0).split()), file,
+                                  str(line + text.count('\n', 0, match.start()))))
 
 
 # -----------------------------------------------------------------------------
