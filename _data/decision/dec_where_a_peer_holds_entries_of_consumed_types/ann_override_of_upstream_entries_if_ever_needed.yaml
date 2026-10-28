@@ -1,0 +1,65 @@
+id_self:                ann_override_of_upstream_entries_if_ever_needed
+guid_self:              ann_52c11c8a00b54d2cbffe851881b9d600
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How downstream entries could override upstream ones
+brief:                  |
+                        A downstream peer may one day need to redefine
+                        an entry it consumes, such as a concept whose
+                        sense differs in its field. Until then it adds
+                        an entry of its own with a new id, such as a
+                        narrower concept. If overriding is added
+                        later, it could work as an exception to unique
+                        ids: an entry with the same id and guid as an
+                        upstream one, held in a register that names
+                        the same type, overrides it for the segment
+                        that holds it and for those that consume that
+                        segment, and for no segment beside it.
+description:            |
+                        Sources:
+                        - WTP wants downstream peers to be able to
+                          redefine concepts as they need, but keeps
+                          unique ids for now and admits that
+                          overriding may be needed in future (WTP,
+                          2026-10-28).
+                        - Every prefix and id is unique across a peer
+                          and what it consumes
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief;
+                          _data/decision/dec_uniqueness_of_names_across_segments/ruling_names_unique_across_what_a_segment_consumes.yaml
+                          at brief).
+                        - The effective register of a type is the
+                          union of the registers that name it along a
+                          segment's chain of consumed segments
+                          (_data/decision/dec_where_a_peer_holds_entries_of_consumed_types/ruling_peer_register_names_its_type_by_an_inverse_edge.yaml
+                          at brief).
+                        - An item with the same id and guid in two
+                          places fails as a repeated item today
+                          (src/cctool/check/check.lp within
+                          repeated_item); under overriding, that
+                          pairing across registers of one type would
+                          be reported as an override instead.
+                        - References run within a segment or into one
+                          it consumes, never upward or sideways
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          at brief), so an override seen only along a
+                          segment's own chain keeps to that direction.
+                        - ASSUMPTION: overriding a protective mark,
+                          the prefix of a type or the constraints of a
+                          relation would let a peer weaken its own
+                          checks, so such entries would be left out of
+                          overriding. Strength: a sketch for later,
+                          not an argument for or against an option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_a_peer_holds_entries_of_consumed_types
+    guid_target:        dec_0b588ae42fe34b6696cb1f666e0ba692
