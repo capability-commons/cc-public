@@ -472,3 +472,54 @@ code_criticality(Id, Level) :-
     not responsible_for(Id, _),
     lowest_criticality(Level).
 
+
+
+% -----------------------------------------------------------------------------
+% The segment reads the items of other: its own, and those of each
+% segment along its chain of consumed segments back to cc-public.
+%
+% decl segment_reads(segment: symbol,
+%                    other:   symbol)
+
+segment_reads(Segment, Segment) :-
+    segment_of(_, Segment),
+    Segment != "".
+
+segment_reads(Segment, Other) :-
+    segment_reads(Segment, Middle),
+    edge(Middle, "relation_consumes", Release),
+    item(Release, _, _, File, _),
+    segment_of(File, Other).
+
+
+% -----------------------------------------------------------------------------
+% The effective register of a type, as the segment reads it, is the
+% union of every register that holds its items in a segment the segment
+% reads, so each segment has its own register and those upstream of it.
+% Ids stay unique across the union, and an entry downstream does not
+% override one upstream.
+%
+% decl effective_register(segment:  symbol,
+%                         type:     symbol,
+%                         register: symbol)
+
+effective_register(Segment, Type, Register) :-
+    segment_reads(Segment, Other),
+    primary_edge(Type, "relation_has_items_held_in_register", Register),
+    item(Register, _, _, File, _),
+    segment_of(File, Other).
+
+
+% -----------------------------------------------------------------------------
+% The entry id of the type is in the effective register of the type, as
+% the segment reads it, held in register.
+%
+% decl effective_entry(segment:  symbol,
+%                      type:     symbol,
+%                      id:       symbol,
+%                      register: symbol)
+
+effective_entry(Segment, Type, Id, Register) :-
+    effective_register(Segment, Type, Register),
+    register_entry_key(Register, _, Id),
+    has_type(Id, Type).

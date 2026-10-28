@@ -42,6 +42,7 @@ import cctool.check.segment
 import cctool.commit.message
 import cctool.edit.edit
 import cctool.graph.extract
+import cctool.graph.sql
 import cctool.release.shadow
 
 
@@ -323,6 +324,34 @@ def test_a_peer_register_without_the_name_of_its_segment_fails(tree, tmp_path_fa
     assert failures == {'unqualified_peer_register': [
         ('reg_widget_concept', ID_PEER, 'peer', '_data/register/reg_widget_concept.yaml', '1')]}
     assert notices  == {}
+
+
+# -----------------------------------------------------------------------------
+def test_the_effective_register_of_a_peer_is_the_union_along_its_chain(tree, tmp_path_factory,
+                                                                      monkeypatch):
+    """
+    The peer reads the entries of type_concept from its own register
+    and from that of cc-public, and cc-public reads only its own.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    facts = cctool.graph.extract.facts_of(
+                cctool.check.segment.union(_peer(tmp_path_factory, held = TEXT_HELD)))
+    text  = ("SELECT segment, register FROM effective_register WHERE type = 'type_concept' "
+             "ORDER BY segment, register")
+    entry = ("SELECT segment, register FROM effective_entry "
+             "WHERE id IN ('concept_peer_widget', 'concept_federated_segment') "
+             "ORDER BY segment, register")
+
+    assert cctool.graph.sql.query(facts, text)[1] == [
+        ('segment_cc_public', 'reg_concept'),
+        (ID_PEER,             'reg_concept'),
+        (ID_PEER,             'reg_peer_concept')]
+    assert cctool.graph.sql.query(facts, entry)[1] == [
+        ('segment_cc_public', 'reg_concept'),
+        (ID_PEER,             'reg_concept'),
+        (ID_PEER,             'reg_peer_concept')]
 
 
 # -----------------------------------------------------------------------------
