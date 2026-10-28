@@ -24,8 +24,22 @@
 #                         author git will record, and a failure stops
 #                         the commit. cctool message new writes a
 #                         message that passes.
+#
+#                         git signs a commit only after this hook, so
+#                         the hook cannot see its signature. When the
+#                         team member register gives a signing key and
+#                         git is not set to sign, it prints a notice and
+#                         lets the commit go on: cctool history check,
+#                         which the pre-push hook runs, refuses to push
+#                         a commit that is not signed.
 # edge:                   []
 #
 # ...
+
+if [ "$(git config --bool commit.gpgsign)" != true ] &&
+   grep -q '^ *git_signing_key:' _data/register/reg_team_member.yaml 2>/dev/null; then
+    echo 'notice: git is not set to sign commits (commit.gpgsign), and a push refuses' \
+         'a commit that is not signed. Sign it before you push, with git commit --amend -S.' >&2
+fi
 
 exec pixi run --locked cctool message check "$1" --author "$(git var GIT_AUTHOR_IDENT)"

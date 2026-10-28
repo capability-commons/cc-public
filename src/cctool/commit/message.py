@@ -101,6 +101,7 @@ KEY_EDGE        = 'edge'
 KEY_ENTRIES     = 'entries'
 ID_MEMBERS      = 'reg_team_member'
 KEY_GIT_AUTHOR  = 'git_author'
+KEY_SIGNING_KEY = 'git_signing_key'
 
 # A trailer that names the team member who supplied the content of the
 # commit, by the guid of their register entry.
@@ -111,6 +112,17 @@ REGEX_CONTRIBUTOR = re.compile(r'^Contributor:\s*(.*?)\s*$')
 # GIT_AUTHOR_IDENT gives it, before the time and the zone.
 #
 REGEX_IDENT     = re.compile(r'^(.*?<[^>]*>)')
+
+# The letters git gives for the signature of a commit, as %G? prints
+# them: G and U are good signatures, and the rest are said in words.
+#
+SET_STATUS_GOOD = {'G', 'U'}
+MAP_STATUS      = {'N': 'is not signed',
+                   'B': 'has a bad signature',
+                   'X': 'is signed with a key that has expired',
+                   'Y': 'is signed with a key that has since expired',
+                   'R': 'is signed with a key that is revoked',
+                   'E': 'has a signature that git cannot check, as its key is not in the keyring'}
 
 # The subject lines that git drafts for a merge and for a revert. A
 # merge into the main branch is drafted without the branch it is into.
@@ -350,6 +362,42 @@ def author_violations(root: pathlib.Path, ident: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
+def signature_violations(root: pathlib.Path, status: str, list_key: list[str]) -> list[str]:
+    """
+    Return a sentence if a commit is not signed with the git_signing_key
+    of a team member that the register in the tree at root holds.
+    status is the letter git gives for its signature, as %G? prints
+    it, and list_key the ids and fingerprints of the key that made it,
+    as %GK, %GF and %GP print them. A register that gives no
+    git_signing_key checks nothing.
+
+    git gives G for a good signature, and U for a good one by a key
+    whose owner the keyring does not vouch for; either is a signature
+    by the key it names. Any other letter is no signature that can be
+    trusted to be one.
+
+    """
+
+    set_key = _signing_keys(cctool.check.segment.union(root))
+
+    if not set_key:
+        return []
+    if status not in SET_STATUS_GOOD:
+        return ['The commit {state}, and a team member that {id} holds signs each commit with '
+                'their git_signing_key. Sign it with git commit --amend -S, or several with '
+                'git rebase --force-rebase -S.'.format(
+                    state = MAP_STATUS.get(status, 'has a signature git cannot verify'),
+                    id    = ID_MEMBERS)]
+    if any(key.upper().endswith(member) for key in list_key if key for member in set_key):
+        return []
+
+    key = next((key for key in list_key if key), 'unknown')
+
+    return ['The commit is signed with the key {key}, which is the git_signing_key of no team '
+            'member that {id} holds.'.format(key = key, id = ID_MEMBERS)]
+
+
+# -----------------------------------------------------------------------------
 def contributors(text: str) -> list[str]:
     """
     Return the guid that each Contributor trailer of the commit message
@@ -398,6 +446,23 @@ def _authors(map_document: dict) -> set[str]:
             return {str(entry[KEY_GIT_AUTHOR])
                     for entry in (document.get(KEY_ENTRIES) or {}).values()
                     if isinstance(entry, dict) and entry.get(KEY_GIT_AUTHOR)}
+
+    return set()
+
+
+# -----------------------------------------------------------------------------
+def _signing_keys(map_document: dict) -> set[str]:
+    """
+    Return the git_signing_key of each team member that the team member
+    register in map_document holds, in capitals.
+
+    """
+
+    for (document, _) in map_document.values():
+        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
+            return {str(entry[KEY_SIGNING_KEY]).upper()
+                    for entry in (document.get(KEY_ENTRIES) or {}).values()
+                    if isinstance(entry, dict) and entry.get(KEY_SIGNING_KEY)}
 
     return set()
 

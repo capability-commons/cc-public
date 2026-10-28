@@ -44,4 +44,17 @@ properties:
                         cctool history check. A member who authors no
                         commits has none.
 
+  git_signing_key:
+    type:               string
+    pattern:            '^[0-9A-F]{16}([0-9A-F]{24})?$'
+    description:        |
+                        Optional. The OpenPGP key, as its long key id
+                        or its fingerprint in capitals, with which
+                        this member signs the commits they author.
+                        Once any member gives one, cctool history
+                        check reports a commit that is not signed,
+                        whose signature git cannot verify, or that is
+                        signed with a key no member gives, so a push
+                        of such a commit is refused.
+
 edge:                   []
