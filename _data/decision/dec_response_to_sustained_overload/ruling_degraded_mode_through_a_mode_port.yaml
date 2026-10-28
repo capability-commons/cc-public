@@ -1,0 +1,42 @@
+id_self:                ruling_degraded_mode_through_a_mode_port
+guid_self:              ruling_cd7cf7b2530f4d01b0398d8e1cc7eab9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Degraded mode through a mode port
+brief:                  |
+                        Sustained overload is answered by a degraded
+                        mode selected through a mode port. Ruled by
+                        WTP on 2026-10-28, as recommended, with a
+                        change: the mode may be part of a broader
+                        control message given to each node at each
+                        step, carrying the current time, both
+                        monotonic and wall-clock, the mode flag and
+                        any other application-specific states and
+                        modes. Calling the system's time functions
+                        would break determinism, so the time is
+                        supplied rather than read. This is an
+                        application-level convention more than a
+                        mechanism the engine provides.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_degraded_mode_through_a_mode_port
+    guid_target:        opt_5bfcb568a9a44f80b4a78eaa886e05f9
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_load_shedding_by_the_engine
+    guid_target:        opt_c3b8760a444247509cfe7f69b836964a
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_overload_raised_as_a_fault_only
+    guid_target:        opt_7c043da00a6d44fb99f20f2873ddc5a1
