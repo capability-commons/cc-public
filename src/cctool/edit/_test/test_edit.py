@@ -193,6 +193,34 @@ def test_a_new_entry_is_written_as_the_first_in_an_empty_register(tree, zero):
 
 
 def test_an_edit_that_adds_a_failure_is_refused_and_not_written(tree):
+    """
+    ---
+
+    id_self:                pyf_cctool.edit._test.test_edit.test_an_edit_that_adds_a_failure_is_refused_and_not_written
+    guid_self:              pyf_81b3731d64a74b17be3051c6dd125676
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that an edit adding a failure is refused
+    brief:                  |
+                            An edit that would add a failure is refused,
+                            and nothing is written.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_edit_refuses_new_failure
+        guid_target:        rqt_51de788f22ca445aa39c2bf8c6a3cba6
+
+    ...
+    """
+
     assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN}) == {'missing_about': [('ann_x',)]}
     assert not (tree / '_data/annotation/ann_x.yaml').exists()
 
@@ -366,6 +394,33 @@ GUID_NODE     = 'dfn_1ddea9503ffe480f8f98787c422c5b98'
 
 
 def test_rename_of_an_interface_member_keeps_its_guid_and_adds_no_alias(tree):
+    """
+    ---
+
+    id_self:                pyf_cctool.edit._test.test_edit.test_rename_of_an_interface_member_keeps_its_guid_and_adds_no_alias
+    guid_self:              pyf_207110681e604b4aa9e9e4e1c7eda2a4
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that a rename keeps the guid
+    brief:                  |
+                            A renamed interface member keeps its guid.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_rename_keeps_guid
+        guid_target:        rqt_13626bd69288481c9b8283e68a87aecd
+
+    ...
+    """
+
     assert _edit(tree, {'rename': ['icm_cctool_check.failures',
                                    'icm_cctool_check.failure_map']}) == {}
     text = (tree / ICD).read_text()

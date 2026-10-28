@@ -1737,9 +1737,16 @@ MEASURE = """measure:
 """
 
 
-def test_a_requirement_with_a_measure_passes(tree):
+def test_a_requirement_with_a_measure_and_a_verifier_passes(tree):
     _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml', 'rationale:', MEASURE + 'rationale:')
     assert _check(tree) == {}
+
+
+def test_a_requirement_with_a_measure_and_no_verifier_is_reported(tree):
+    relative = '_data/requirement/rqt_format_keeps_formatted_file.yaml'
+    _replace(tree, relative, 'rationale:', MEASURE + 'rationale:')
+    assert _check(tree) == {'unverified_measure': [('rqt_format_keeps_formatted_file', relative,
+                                                    '1')]}
 
 
 def test_a_requirement_with_a_measure_and_a_qualifier_is_reported(tree):

@@ -84,6 +84,7 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
     _excluded(tree, 'rol_requirement')
     graph = cctool.web.argument.Graph(tree)
     assert cctool.web.constraint.sentences(graph, 'rol_requirement')[1:] == [
+        ['Admitted at the target of ', ('relation_verifies', 'Verifies relation'), '.'],
         ['Excluded at the source of ',
          ('relation_has_actor', 'Has actor relation'), ', ',
          ('relation_has_process', 'Has process relation'), ' and ',

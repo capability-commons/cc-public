@@ -3884,3 +3884,43 @@ unconsumed_reference(Holder, Id, Segment, Other, File, Line) :-
     Segment != Other,
     not segment_consumes(Segment, Other),
     not unresolved_consumes(Segment).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.unverified_measure
+% guid_self:              lpp_0d5d2e107c3b420cb9f3c0dfc5c8ebee
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unverified measure
+% brief:                  |
+%                         A requirement with a measure has a verifier,
+%                         an item that verifies it, since a bound that
+%                         nothing measures cannot be shown to hold.
+% did:                    |
+%                         {requirement} has a measure, and nothing
+%                         verifies it.
+% fix:                    |
+%                         Write the test that measures the quantity, and
+%                         give it an item with an edge of
+%                         relation_verifies to the requirement.
+% edge:                   []
+%
+% ...
+%
+% decl unverified_measure(requirement: symbol,
+%                         file:        symbol,
+%                         line:        number)
+#show unverified_measure/3.
+
+unverified_measure(Requirement, File, Line) :-
+    measure(Requirement, _, _, _, _, _, _),
+    not primary_edge(_, "relation_verifies", Requirement),
+    item(Requirement, _, _, File, Line).

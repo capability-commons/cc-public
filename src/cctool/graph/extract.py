@@ -309,6 +309,12 @@ PREDICATE         = {
                            'The python module or package module is inside the package '
                            'that the item package would hold, depth packages down from '
                            'the top.'),
+    'measure':            (('id', 'quantity', 'bound', 'limit', 'unit', 'statistic',
+                            'runs:number'),
+                           'The requirement id bounds a measured quantity: the '
+                           'statistic of quantity over runs runs is at most or at least, '
+                           'by bound, limit in unit. limit is written as the requirement '
+                           'writes it, since it need not be whole.'),
     'python_returns':     (('id', 'type'),
                            'The python function that holds the item id returns type, '
                            'as the code writes it, or empty if it does not say.'),
@@ -485,6 +491,13 @@ KEY_FLAG          = 'flag'
 #
 KEY_CHECK         = 'check'
 KEY_SEVERITY      = 'severity'
+
+# The field of a requirement that bounds a measured quantity, its number
+# of runs, and the parts its fact holds before the runs, in order.
+#
+KEY_MEASURE       = 'measure'
+KEY_RUNS          = 'runs'
+TUPLE_MEASURE     = ('quantity', 'bound', 'limit', 'unit', 'statistic')
 
 # What the code says of each class or function that holds a YAML document,
 # keyed by the id of the document, with a weak reference to it: the id its place
@@ -782,6 +795,7 @@ def _facts_of_document(file:             str,
         _ports(document, facts)
         _commands(document, facts)
         _checks(document, facts)
+        _measure(document, facts)
         _dataflow_graph(document, (file, base), facts)
         (held, definition) = MAP_DEFINITION.get(id(document), (None, None))
         if held is not None and held() is document:
@@ -1881,6 +1895,25 @@ def _checks(document: dict[str, typing.Any], facts: Facts) -> None:
                                        interface,
                                        str(member.get(KEY_NAME, key)),
                                        str(member.get(KEY_SEVERITY, ''))))
+
+
+# -----------------------------------------------------------------------------
+def _measure(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for the measure that document, if it is a requirement,
+    states, if the measure is complete and its runs are whole.
+
+    """
+
+    measure = document.get(KEY_MEASURE)
+    if not isinstance(measure, dict) or not isinstance(measure.get(KEY_RUNS), int):
+        return
+    list_value = [measure.get(key) for key in TUPLE_MEASURE]
+    if any(value is None or isinstance(value, (dict, list)) for value in list_value):
+        return
+    facts['measure'].add((str(document.get(KEY_ID_SELF)),
+                          *(str(value) for value in list_value),
+                          str(measure[KEY_RUNS])))
 
 
 # -----------------------------------------------------------------------------

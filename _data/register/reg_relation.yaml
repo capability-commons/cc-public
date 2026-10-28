@@ -1627,3 +1627,43 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_design_entity
         guid_target:    relcon_b2a9d1f1b0e14741ac810f2962abaa72
+
+  # ---------------------------------------------------------------------------
+  # relation_verifies -- Verifies relation
+  #
+  relation_verifies:
+    id_self:            relation_verifies
+    guid_self:          relation_fc0c6e647b114e2d82abbfb938b09774
+    title:              Verifies relation
+    brief:              |
+                        SOURCE verifies TARGET
+    description:        |
+                        The item identified by SOURCE, most often a
+                        test function, shows that the requirement or
+                        design entity identified by TARGET holds, by
+                        the method the requirement names.
+
+                        A test names what it verifies by this edge in
+                        the item of its docstring, written only for a
+                        test that verifies something. Where one test
+                        function cannot stand for the verification, a
+                        test case item does.
+    note:               |
+                        The ruling on how a test names what it
+                        verifies chose this edge over a test case item
+                        for every test and over a pytest marker, since
+                        it is the mechanism by which code names what
+                        it realizes.
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_implementation
+        guid_target:    relcon_93bd73e89b474e1e8f5dd82b2bf2e8de
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_can_be_verified
+        guid_target:    relcon_5e9fa4b6665846bf8a3ac8b09c410260
