@@ -10,19 +10,29 @@ protective_mark:
 
 title:                  Reading derived by the placement transform
 brief:                  |
-                        The placement transform decides for each Kahn
-                        edge whether it is read in the same step or
-                        the next, from the placement and the latency
-                        requirement: edges within one execution unit
-                        are read in the same step where the latency
-                        requirement needs it, and edges that cross
-                        execution units are read in the next. Node
+                        A step is local to an execution unit, and
+                        there is no step common to the whole graph.
+                        Within one execution unit an edge is read in
+                        the unit's dependency order: a consumer that
+                        runs after its producer reads the message of
+                        the same local step, and in each loop one
+                        feedback edge reads the previous step's value,
+                        with its first value from the port that
+                        declares it. Between execution units an edge
+                        is a bounded queue, and each unit reads
+                        exactly one message per input edge per local
+                        step, waiting for it, so results do not depend
+                        on timing, as in a Kahn process network. Node
                         authors state nothing, and timing and capacity
                         checks run on the placed graph.
 description:            |
                         Proposed from the second round of reading
-                        (2026-10-28). Analysis that ignored placement
-                        was off by 1.5x in the 2013 study of pipelined
+                        (2026-10-28), and restated after WTP pointed
+                        out that there is no real notion of a step
+                        beyond a single execution unit, between which
+                        there are only queues (WTP, 2026-10-28).
+                        Analysis that ignored placement was off by
+                        1.5x in the 2013 study of pipelined
                         applications, so checks belong on the lowered
                         graph.
 
