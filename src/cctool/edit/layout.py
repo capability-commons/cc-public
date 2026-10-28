@@ -50,6 +50,7 @@ edge:                   []
 
 
 import ast
+import functools
 import io
 import pathlib
 import re
@@ -123,6 +124,22 @@ YAML              = cctool.graph.parse.Yaml('rt', width = 10 ** 9, preserve_quot
 Map               = ruamel.yaml.comments.CommentedMap
 Seq               = ruamel.yaml.comments.CommentedSeq
 
+# The types of scalar whose writing depends on nothing but the value, so
+# that what _render writes for one is kept. A number of ruamel.yaml's
+# own types, such as ScalarFloat, also keeps the form it was written
+# in, and is written afresh each time.
+#
+SET_TYPE_KEPT     = {str, int, bool, type(None),
+                     ruamel.yaml.scalarstring.SingleQuotedScalarString,
+                     ruamel.yaml.scalarstring.DoubleQuotedScalarString}
+COUNT_RENDER      = 65536
+
+# A text that holds one of these may hold a comment, an anchor, an
+# alias or a tag, which only a load by ruamel.yaml records, so that the
+# printer can refuse or keep them.
+#
+TUPLE_MARK_RUAMEL = ('#', '&', '*', '!')
+
 
 # -----------------------------------------------------------------------------
 class Unsupported(Exception):
@@ -176,7 +193,20 @@ def _violation(relative: str, text: str) -> tuple | None:
     Return the row of the layout check for the file at relative, which
     holds text, or None if it is laid out.
 
+    The file is first laid out from a read by the fast reader. Most
+    files are laid out already, and one that its layout leaves as it
+    was is one that ruamel.yaml reads too, since the layout is written
+    by ruamel.yaml. Any other file is laid out again from a read by
+    ruamel.yaml, which alone gives the row, so that a file libyaml reads
+    and ruamel.yaml refuses is still reported as not YAML.
+
     """
+
+    try:
+        if format_file(text, pathlib.Path(relative), is_fast = True) == text:
+            return None
+    except Unsupported:
+        pass
 
     try:
         laid_out = format_file(text, pathlib.Path(relative))
@@ -205,17 +235,18 @@ def _first_difference(text: str, other: str) -> int:
 
 
 # -----------------------------------------------------------------------------
-def format_file(text: str, relative: pathlib.Path) -> str:
+def format_file(text: str, relative: pathlib.Path, is_fast: bool = False) -> str:
     """
     Return text, the content of the file at relative, with the
-    YAML documents it holds laid out and the rest of it unchanged.
+    YAML documents it holds laid out and the rest of it unchanged. If
+    is_fast, a document is read as _load reads it.
 
     """
 
     if relative.suffix == cctool.graph.extract.SUFFIX_YAML:
         if cctool.graph.extract.DIR_DATA not in relative.parts:
             return text
-        return format(text)
+        return format(text, is_fast)
 
     list_line = text.split('\n')
 
@@ -226,7 +257,7 @@ def format_file(text: str, relative: pathlib.Path) -> str:
     for (first, last, mark, indent) in reversed(_spans(text, relative)):
         list_doc  = [_unmark(line, mark).removeprefix(indent)
                      for line in list_line[first:last + 1]]
-        list_body = format('\n'.join(list_doc)).rstrip('\n').split('\n')
+        list_body = format('\n'.join(list_doc), is_fast).rstrip('\n').split('\n')
         list_new  = [LINE_OPEN, ''] + list_body + ['', LINE_CLOSE]
         list_line[first:last + 1] = [_mark(indent + line if line else '', mark)
                                      for line in list_new]
@@ -322,14 +353,15 @@ def _documented(module: ast.Module) -> list[ast.AST]:
 
 
 # -----------------------------------------------------------------------------
-def format(text: str) -> str:
+def format(text: str, is_fast: bool = False) -> str:
     """
-    Return the YAML document text laid out.
+    Return the YAML document text laid out. If is_fast, it is read as
+    _load reads it, and otherwise by YAML.
 
     """
 
     try:
-        document = YAML.load(text)
+        document = _load(text) if is_fast else YAML.load(text)
     except ruamel.yaml.YAMLError as error:
         raise Unsupported('The document is not YAML: {error}'.format(
                                     error = ' '.join(str(error).split()))) from error
@@ -345,6 +377,23 @@ def format(text: str) -> str:
     _emit_map(document, 0, lead, out, is_item = False)
 
     return '\n'.join(out).rstrip('\n') + '\n'
+
+
+# -----------------------------------------------------------------------------
+def _load(text: str) -> typing.Any:
+    """
+    Return the YAML document text as YAML loads it, or as near as the
+    layout check needs. A text that holds none of TUPLE_MARK_RUAMEL has
+    no comment, anchor, alias or tag, and is read by the fast reader,
+    which keeps quotes as YAML does but records no comments. Any other
+    text is read by YAML.
+
+    """
+
+    if any(mark in text for mark in TUPLE_MARK_RUAMEL):
+        return YAML.load(text)
+
+    return cctool.graph.parse.load(text, is_quoted = True)
 
 
 # -----------------------------------------------------------------------------
@@ -672,7 +721,35 @@ def _render(value: typing.Any) -> str:
     """
     Return one scalar as YAML would write it, quoted where it must be.
     The library decides, so that the rules for when a plain scalar
-    would be read as something else are never restated here.
+    would be read as something else are never restated here. Most
+    scalars, such as ids and guids, are written many times over a tree,
+    so what is written for one of SET_TYPE_KEPT is kept.
+
+    """
+
+    if type(value) in SET_TYPE_KEPT:
+        return _render_kept(type(value), value)
+
+    return _render_afresh(value)
+
+
+# -----------------------------------------------------------------------------
+@functools.lru_cache(maxsize = COUNT_RENDER)
+def _render_kept(_kind: type, value: typing.Any) -> str:
+    """
+    Return value, a scalar of the type _kind, as _render_afresh writes
+    it. _kind is part of the key, so that True and 1 are kept apart.
+
+    """
+
+    return _render_afresh(value)
+
+
+# -----------------------------------------------------------------------------
+def _render_afresh(value: typing.Any) -> str:
+    """
+    Return one scalar as YAML writes it, or raise Unsupported if it
+    cannot be written on one line.
 
     """
 

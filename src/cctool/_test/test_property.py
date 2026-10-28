@@ -26,7 +26,9 @@ description:            |
                         part that a file holds is never reported, and
                         the fast check of a schema finds a document of
                         the tree, however changed, to conform only if
-                        jsonschema does.
+                        jsonschema does, and a layout of a text read
+                        by the fast reader is that of a ruamel.yaml
+                        read.
 
                         The tests are marked fuzz, so the gate of a
                         commit leaves them out. A run makes few
@@ -383,6 +385,20 @@ def _change(document, path, data):
         parent[data.draw(WORD)] = data.draw(VALUE)
     else:
         parent[path[-1]] = data.draw(VALUE)
+
+
+# -----------------------------------------------------------------------------
+@hypothesis.example(text = "'a': \"b\"\nc: ['d']\n")
+@hypothesis.example(text = '0\t')
+@hypothesis.given(text = strategies.one_of(
+                             strategies.text(max_size = 200),
+                             DOCUMENT.map(lambda document: '\n'.join(
+                                              cctool.edit.layout.dump(document, 0)) + '\n')))
+def test_the_layout_check_of_a_text_read_fast_is_that_of_a_ruamel_read(text):
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(cctool.edit.layout, '_load', cctool.edit.layout.YAML.load)
+        expected = cctool.edit.layout._violation('_data/x.yaml', text)
+    assert cctool.edit.layout._violation('_data/x.yaml', text) == expected
 
 
 # -----------------------------------------------------------------------------
