@@ -43,6 +43,29 @@ properties:
                         ends with. Levels are spaced, so that a level
                         can be put between two others.
 
+  coverage:
+    type:               object
+    additionalProperties:  false
+    description:        |
+                        Optional. The floor, in per cent, that the
+                        tests must cover of the lines and of the
+                        branches of a source file at this level or
+                        above. A higher level that sets none keeps the
+                        floor of the level below it. cctool coverage
+                        compares each file with its floor overnight.
+
+    properties:
+
+      line:
+        type:           integer
+        minimum:        0
+        maximum:        100
+
+      branch:
+        type:           integer
+        minimum:        0
+        maximum:        100
+
   demand:
     type:               array
     description:        |

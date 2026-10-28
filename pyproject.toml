@@ -100,7 +100,7 @@ path                    = "src/cctool/release/hook.py"
 channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "osx-64", "linux-64"]
 
-# What only development needs: the test runner, the linter, the
+# What only development needs: the test runner, coverage, the linter, the
 # browser driver, and the build backend that the wheel tests call. The
 # environment tool leaves these out.
 #
@@ -109,6 +109,7 @@ hatchling               = ">=1.32,<2"
 playwright              = ">=1.48,<2"
 
 [tool.pixi.dependencies]
+coverage                = ">=7.6,<8"
 hypothesis              = ">=6.100,<7"
 pytest                  = ">=9.1.1,<10"
 pytest-xdist            = ">=3.8,<4"
@@ -127,6 +128,13 @@ browsers                = "playwright install chromium"
 # first. The slow run is the one that makes few.
 #
 fuzz                    = { cmd = "pytest -m fuzz", env = { CCTOOL_FUZZ = "overnight" } }
+
+# The overnight coverage: the tests run once, without workers, under
+# coverage of lines and branches, and each source file is compared with
+# the floor its maturity sets. The data is left in .coverage, which no
+# commit records.
+#
+coverage                = { cmd = "coverage run --branch -m pytest -p no:xdist -q && cctool coverage" }
 
 # The overnight check of the tree: every YAML document validated with
 # jsonschema alone, with no verdict kept before reused, so that one the

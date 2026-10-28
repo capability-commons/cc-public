@@ -34,8 +34,10 @@ import sys
 import click
 
 import cctool.cli.group
+import cctool.gate.coverage
 import cctool.gate.gate
 import cctool.gate.timing
+import cctool.graph.logic
 
 
 # -----------------------------------------------------------------------------
@@ -87,6 +89,49 @@ def gate(root: pathlib.Path) -> None:
 
     sys.exit(cctool.cli.group.EXIT_OK if all(row[1] for row in list_result)
              else cctool.cli.group.EXIT_NONCONFORMITY)
+
+
+# -----------------------------------------------------------------------------
+@cctool.cli.group.main.command()
+@click.option('--data', 'path_data',
+              metavar = 'FILEPATH',
+              default = None,
+              type    = click.Path(dir_okay = False, path_type = pathlib.Path),
+              help    = 'The data that coverage run wrote. Defaults to .coverage in the '
+                        'repository.')
+@click.option('--root',
+              metavar = 'DIRPATH',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The repository whose tests ran. Defaults to the working '
+                        'directory.')
+def coverage(path_data: pathlib.Path | None, root: pathlib.Path) -> None:
+    """
+    Check the coverage of each source file against its maturity.
+
+    The tests must first have run under coverage run --branch, as pixi
+    run coverage runs them overnight. A source file whose lines or
+    branches are covered less than the floor that its maturity level,
+    or a lower one, sets is reported, and one the run did not measure
+    is covered by none. Nothing measured is kept. The exit status is 1
+    when a file is below its floor, and 2 when the coverage cannot be
+    read.
+
+    """
+
+    root = root.resolve()
+    try:
+        list_line = cctool.gate.coverage.check(
+                        root, path_data or root / cctool.gate.coverage.FILE_DATA)
+    except (cctool.gate.coverage.ErrorCoverage, cctool.graph.logic.ErrorLogic) as error:
+        click.echo(str(error), err = True)
+        sys.exit(cctool.cli.group.EXIT_ERROR)
+
+    for line in list_line:
+        click.echo(line)
+    sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if list_line else cctool.cli.group.EXIT_OK)
 
 
 # -----------------------------------------------------------------------------
