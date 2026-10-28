@@ -663,7 +663,8 @@ misplaced_register_entry(Register, Id, Type) :-
 %                         {register} holds entries of {type}, but is not
 %                         specified by {schema}, the schema of {home}.
 % fix:                    |
-%                         Specify {register} by {schema}.
+%                         Specify the register by the schema of the
+%                         register that the type itself names.
 % edge:                   []
 %
 % ...
@@ -705,8 +706,9 @@ peer_register_schema_differs(Register, Type, Home, Schema) :-
 %                         {register} is held by {segment}, and its id
 %                         does not begin reg_{name}_.
 % fix:                    |
-%                         Rename {register} with cctool rename to an id
-%                         that begins reg_{name}_.
+%                         Rename the register with cctool rename to an
+%                         id that carries the name of its segment after
+%                         the register prefix.
 % edge:                   []
 %
 % ...
