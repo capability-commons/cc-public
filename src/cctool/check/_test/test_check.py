@@ -1727,6 +1727,29 @@ def test_a_term_a_requirement_slot_writes_without_a_link_is_reported(tree):
         ('rqt_rename_keeps_guid', 'condition', 'item')]
 
 
+MEASURE = """measure:
+  quantity:             the wall time of a rename
+  bound:                at_most
+  limit:                2
+  unit:                 s
+  statistic:            median
+  runs:                 5
+"""
+
+
+def test_a_requirement_with_a_measure_passes(tree):
+    _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml', 'rationale:', MEASURE + 'rationale:')
+    assert _check(tree) == {}
+
+
+def test_a_requirement_with_a_measure_and_a_qualifier_is_reported(tree):
+    _replace(tree, '_data/requirement/rqt_rename_keeps_guid.yaml', 'rationale:',
+             MEASURE + 'qualifier:              quickly\nrationale:')
+    assert [row[:5] for row in _check(tree)['schema_violation']] == [
+        ('rqt_rename_keeps_guid', 'sch_requirement', '_data/requirement/rqt_rename_keeps_guid.yaml',
+         '1', '/')]
+
+
 def test_a_term_of_a_declared_concept_written_without_a_link_is_advice(tree):
     _text_item(tree, 'lco_y', 'Each item has a guid, and the items have titles.',
                ['concept_identifiable_data_item'])

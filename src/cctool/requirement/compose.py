@@ -24,9 +24,11 @@ description:            |
                         word names, and an interface is able to do it.
                         The process word is the preferred term of its
                         concept, and the object and the qualifier
-                        follow it. A slot shows each term it links as
-                        the term alone. Slots that do not compose are
-                        refused with ErrorCompose.
+                        follow it. A requirement with a measure has
+                        its qualifier composed from the measure. A
+                        slot shows each term it links as the term
+                        alone. Slots that do not compose are refused
+                        with ErrorCompose.
 edge:                   []
 
 ...
@@ -45,6 +47,7 @@ KEY_MODAL_VERB       = 'modal_verb'
 KEY_ACTIVITY         = 'activity'
 KEY_OBJECT           = 'object'
 KEY_QUALIFIER        = 'qualifier'
+KEY_MEASURE          = 'measure'
 KEY_TITLE            = 'title'
 KEY_TERM_PREFERRED   = 'term_preferred'
 KEY_EDGE             = 'edge'
@@ -61,6 +64,11 @@ RELATION_HAS_PROCESS = 'relation_has_process'
 
 ACTIVITY_INTERACTION = 'interaction'
 ACTIVITY_INTERFACE   = 'interface'
+
+# The words of the bound of a measure, by the bound.
+#
+MAP_BOUND            = {'at_most':  'at most',
+                        'at_least': 'at least'}
 
 # The keyword that opens a condition, by the kind of the condition.
 #
@@ -149,6 +157,8 @@ def parts(requirement: typing.Mapping[str, typing.Any], node_of: NodeOf) -> list
                   Part(KEY_OBJECT, _slot(requirement, KEY_OBJECT))]
     if KEY_QUALIFIER in requirement:
         list_part.append(Part(KEY_QUALIFIER, _slot(requirement, KEY_QUALIFIER)))
+    if KEY_MEASURE in requirement:
+        list_part.append(Part(KEY_MEASURE, _measure(requirement[KEY_MEASURE])))
 
     return list_part
 
@@ -165,6 +175,30 @@ def _slot(requirement: typing.Mapping[str, typing.Any], key: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ErrorCompose('The slot {key} is missing.'.format(key = key))
     return cctool.graph.item.terms(value.strip())
+
+
+# -----------------------------------------------------------------------------
+def _measure(measure: typing.Any) -> str:
+    """
+    Return the qualifier composed from measure: the statistic of the
+    quantity over the runs, and the bound it keeps.
+
+    """
+
+    try:
+        runs  = int(measure['runs'])
+        limit = float(measure['limit'])
+        text  = 'with the {statistic} of {quantity} over {runs} {noun} {bound} {limit} {unit}'
+        return text.format(statistic = measure['statistic'],
+                           quantity  = cctool.graph.item.terms(str(measure['quantity']).strip()),
+                           runs      = runs,
+                           noun      = 'run' if runs == 1 else 'runs',
+                           bound     = MAP_BOUND[measure['bound']],
+                           limit     = '{limit:g}'.format(limit = limit),
+                           unit      = measure['unit'])
+    except (KeyError, TypeError, ValueError) as error:
+        raise ErrorCompose('The measure is not complete: {error}.'.format(
+                                                                    error = error)) from error
 
 
 # -----------------------------------------------------------------------------

@@ -71,6 +71,18 @@ def test_an_interaction_names_its_actor():
                     'each failure within one second.')
 
 
+def test_a_measure_is_composed_into_the_qualifier():
+    requirement = _requirement(measure = {'quantity':  'the [[wall time]] of a check',
+                                          'bound':     'at_most',
+                                          'limit':     20.0,
+                                          'unit':      's',
+                                          'statistic': 'median',
+                                          'runs':      5})
+    text        = cctool.requirement.compose.statement(requirement, MAP_NODE.get)
+    assert text == ('The Checker shall report each failure with the median of the wall time '
+                    'of a check over 5 runs at most 20 s.')
+
+
 def test_an_interface_is_able_to():
     requirement = _requirement(activity = 'interface', modal_verb = 'should')
     text        = cctool.requirement.compose.statement(requirement, MAP_NODE.get)
@@ -91,7 +103,8 @@ def test_a_slot_shows_each_term_it_links_as_the_term():
                                                    'id_target':   'lco_x'},
                                                   {'id_relation': 'relation_has_process',
                                                    'id_target':   'concept_x'}]),
-    _requirement(object = '')])
+    _requirement(object = ''),
+    _requirement(measure = {'quantity': 'the wall time', 'bound': 'below'})])
 def test_slots_that_do_not_compose_are_refused(requirement):
     with pytest.raises(cctool.requirement.compose.ErrorCompose):
         cctool.requirement.compose.statement(requirement, MAP_NODE.get)

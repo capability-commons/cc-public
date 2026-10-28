@@ -60,6 +60,14 @@ def test_questions_ask_after_a_missing_condition():
 
 
 # -----------------------------------------------------------------------------
+def test_a_measure_stands_for_the_qualifier():
+    requirement   = dict(REQUIREMENT, measure = {'quantity': 'the wall time'})
+    list_question = cctool.requirement.review.questions(requirement, 'keep')
+    assert not any(question.text.startswith('It has no qualifier.')
+                   for question in list_question)
+
+
+# -----------------------------------------------------------------------------
 def test_characteristics_say_what_the_tree_shows():
     list_question = cctool.requirement.review.questions(REQUIREMENT, 'keep')
     map_said      = {code: said for (code, _, _, said)

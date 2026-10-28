@@ -50,6 +50,7 @@ import cctool.requirement.compose
 KEY_CONDITION        = cctool.requirement.compose.KEY_CONDITION
 KEY_OBJECT           = cctool.requirement.compose.KEY_OBJECT
 KEY_QUALIFIER        = cctool.requirement.compose.KEY_QUALIFIER
+KEY_MEASURE          = cctool.requirement.compose.KEY_MEASURE
 KEY_RATIONALE        = 'rationale'
 KEY_METHOD           = 'verification_method'
 KEY_APPROACH         = 'verification_approach'
@@ -134,7 +135,7 @@ def questions(requirement: Requirement, process_word: str) -> list[Question]:
         list_question.append(Question(CATEGORY_DELETION,
                                       'It has no condition. Does it hold in every '
                                       'state and mode?'))
-    if KEY_QUALIFIER not in requirement:
+    if KEY_QUALIFIER not in requirement and KEY_MEASURE not in requirement:
         list_question.append(Question(CATEGORY_DELETION,
                                       'It has no qualifier. Is a measure of how well, '
                                       'how soon or how often needed?'))

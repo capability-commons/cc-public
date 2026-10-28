@@ -37,6 +37,11 @@ description:            |
                         condition is given with its kind, and a kind
                         with its condition.
 
+                        A requirement that bounds a measured quantity,
+                        such as a budget of time, states the bound in
+                        measure, and the qualifier is composed from
+                        it, so the two are not given together.
+
                         rationale and verification_method are the
                         attributes A1 and A2 that the INCOSE guide
                         marks as essential. verification_approach is
@@ -63,6 +68,12 @@ allOf:
       - object
       - rationale
       - verification_method
+
+    not:
+
+      required:
+        - measure
+        - qualifier
 
     dependentRequired:
 
@@ -145,6 +156,83 @@ allOf:
         description:    |
                         Optional. How well or in what manner, as a
                         clause after the object.
+
+      measure:
+        type:           object
+        additionalProperties:  false
+
+        required:
+          - quantity
+          - bound
+          - limit
+          - unit
+          - statistic
+          - runs
+
+        properties:
+
+          quantity:
+            type:       string
+            minLength:  1
+            maxLength:  200
+            pattern:    ^[^\n]+$
+            description:  |
+                        What is measured, as a noun phrase, such as
+                        the wall time of a check of the repository.
+
+          bound:
+            type:       string
+
+            enum:
+              - at_most
+              - at_least
+
+            description:  |
+                        Whether the limit is the most or the least
+                        that the statistic may be.
+
+          limit:
+            type:       number
+            description:  |
+                        The limit, in unit.
+
+          unit:
+            type:       string
+            minLength:  1
+            maxLength:  20
+            pattern:    ^\S+$
+            description:  |
+                        The unit of the limit, as its symbol, such as
+                        s or MB.
+
+          statistic:
+            type:       string
+
+            enum:
+              - median
+              - mean
+              - maximum
+              - minimum
+
+            description:  |
+                        The statistic of the runs that is compared
+                        with the limit. A single run varies with the
+                        machine and its load, so a bound on time names
+                        the statistic it holds for.
+
+          runs:
+            type:       integer
+            minimum:    1
+            description:  |
+                        The number of runs the statistic is taken
+                        over.
+
+        description:    |
+                        Optional, and not with qualifier. The bound
+                        that a measured quantity must keep, from which
+                        the qualifier of the statement is composed, so
+                        that the bound is written once and a rule can
+                        compare it with what is measured.
 
       rationale:
         type:           string
