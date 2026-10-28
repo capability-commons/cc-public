@@ -209,6 +209,7 @@ def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
     the text of the class or function for a key that names one, the
     section of a logic program for a key that names a predicate, the text
     of the file for any file but a YAML document, and nothing otherwise.
+    map_module keeps what is read of each file once for all its keys.
 
     """
 
@@ -224,7 +225,12 @@ def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
         return text
 
     if path.suffix == cctool.graph.extract.SUFFIX_PROGRAM:
-        return _section(text, key.rpartition(cctool.graph.extract.DELIM_DEFINITION)[2])
+        if file not in map_module:
+            mark             = cctool.graph.extract.MAP_MARK_COMMENT[path.suffix]
+            map_module[file] = [(first, found)
+                                for (first, found, _) in cctool.graph.extract.blocks(text, mark)]
+        return _section(text, map_module[file],
+                        key.rpartition(cctool.graph.extract.DELIM_DEFINITION)[2])
 
     if file not in map_module:
         map_module[file] = ast.parse(text)
@@ -238,18 +244,20 @@ def _source(root: pathlib.Path, key: str, map_module: dict) -> str:
 
 
 # -----------------------------------------------------------------------------
-def _section(text: str, name: str) -> str:
+def _section(text: str, list_block: list[tuple[int, str | None]], name: str) -> str:
     """
     Return the section of the logic program text that holds the
     predicate name: from the item before its declaration to the rule of
-    hyphens that opens the next section, or to the end.
+    hyphens that opens the next section, or to the end. list_block
+    holds the first line of each item of text and the predicate it
+    declares, as blocks in pym_cctool.graph.extract finds them, once
+    for all the predicates of a file.
 
     """
 
     mark      = cctool.graph.extract.MAP_MARK_COMMENT[cctool.graph.extract.SUFFIX_PROGRAM]
     list_line = text.split('\n')
-    list_hit  = [first for (first, found, _) in cctool.graph.extract.blocks(text, mark)
-                 if found == name]
+    list_hit  = [first for (first, found) in list_block if found == name]
 
     if not list_hit:
         return ''

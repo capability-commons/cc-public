@@ -193,23 +193,13 @@ def _violation(relative: str, text: str) -> tuple | None:
     Return the row of the layout check for the file at relative, which
     holds text, or None if it is laid out.
 
-    The file is first laid out from a read by the fast reader. Most
-    files are laid out already, and one that its layout leaves as it
-    was is one that ruamel.yaml reads too, since the layout is written
-    by ruamel.yaml. Any other file is laid out again from a read by
-    ruamel.yaml, which alone gives the row, so that a file libyaml reads
-    and ruamel.yaml refuses is still reported as not YAML.
+    The file is laid out by lay_out, so that a file libyaml reads and
+    ruamel.yaml refuses is still reported as not YAML.
 
     """
 
     try:
-        if format_file(text, pathlib.Path(relative), is_fast = True) == text:
-            return None
-    except Unsupported:
-        pass
-
-    try:
-        laid_out = format_file(text, pathlib.Path(relative))
+        laid_out = lay_out(text, pathlib.Path(relative))
     except Unsupported as error:
         return (relative, '1', str(error))
     if laid_out != text:
@@ -232,6 +222,29 @@ def _first_difference(text: str, other: str) -> int:
             return index + 1
 
     return min(len(text.split('\n')), len(other.split('\n'))) + 1
+
+
+# -----------------------------------------------------------------------------
+def lay_out(text: str, relative: pathlib.Path) -> str:
+    """
+    Return what format_file returns for text, the content of the file at
+    relative, as fast as it can be found. The file is first laid out
+    from a read by the fast reader. Most files are laid out already,
+    and one that its layout leaves as it was is one that ruamel.yaml
+    reads too, since the layout is written by ruamel.yaml. Any other
+    file is laid out again from a read by ruamel.yaml, which alone keeps
+    all that the layout keeps, and which alone refuses a file that
+    libyaml reads and ruamel.yaml does not.
+
+    """
+
+    try:
+        if format_file(text, relative, is_fast = True) == text:
+            return text
+    except Unsupported:
+        pass
+
+    return format_file(text, relative)
 
 
 # -----------------------------------------------------------------------------

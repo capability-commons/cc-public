@@ -1875,7 +1875,7 @@ def _format(text: str, relative: str) -> str:
     """
 
     try:
-        return cctool.check.layout.format_file(text, pathlib.Path(relative))
+        return cctool.check.layout.lay_out(text, pathlib.Path(relative))
     except cctool.check.layout.Unsupported as error:
         raise ErrorEdit('The edit leaves {file} unlaid: {error}'.format(
                                                 file = relative, error = error)) from error
