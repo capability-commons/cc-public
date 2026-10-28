@@ -1,0 +1,100 @@
+id_self:                ann_segment_in_a_register_id_must_change_when_it_moves
+guid_self:              ann_a40350b6b14f4baabed39e70a3600cc8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A register id that must change when its holder changes
+brief:                  |
+                        Flexibility touches this decision only where a
+                        register changes its holder, such as a peer
+                        type and its register moving into cc-public,
+                        or a peer split in two. A qualified id, and
+                        the one register per peer that is named for
+                        its segment, then names the wrong segment and
+                        must be renamed, while a free id can move as
+                        it is. The cost is small, since a register
+                        rename keeps the prefix and the guid, and the
+                        point is weak.
+description:            |
+                        Sources:
+                        - Under the qualified option a register id
+                          carries the name of the
+                          segment that holds it, and a check fails a peer register whose id
+                          does not
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_qualified_by_its_segment.yaml
+                          at brief); the one-register option names its register for the
+                          segment too
+                          (_data/decision/dec_naming_of_a_peer_register/opt_one_register_per_peer_for_all_its_entries.yaml
+                          at brief).
+                        - The registers of cc-public carry no segment
+                          name, such as
+                          reg_concept
+                          (_data/decision/dec_naming_of_a_peer_register/dec_naming_of_a_peer_register.yaml
+                          at brief), so a qualified register moved into cc-public names a
+                          segment that no longer holds it, against the point of
+                          ann_segment_in_a_register_id_shows_who_holds_it, until renamed.
+                        - An entry moves into cc-public when a second
+                          segment needs it
+                          (_data/decision/dec_how_peers_add_vocabulary/ruling_peer_holds_registers_of_its_own.yaml
+                          at brief).
+                        - Under the free option no check ties the id
+                          to the segment
+                          (_data/decision/dec_naming_of_a_peer_register/opt_register_id_unique_and_otherwise_free.yaml
+                          at brief).
+                        - A rename keeps the prefix
+                          (src/cctool/edit/edit.py within rename),
+                          so a register keeps its guid and no guid is retyped
+                          (src/cctool/commit/change.lp within retyped_guid), and rename maps
+                          carry the new id to consumers by guid
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief).
+                        - Measured 2026-10-28 in a scratch copy:
+                          cctool rename, dry run, in
+                          a fixture peer that consumes the checkout, is refused for any
+                          item, a register or a concept entry, with ".githooks/commit-msg
+                          is held by segment_cc_public, a segment that this tree consumes,
+                          so it cannot be changed here." A rename in a peer is by hand
+                          today, whatever option is chosen.
+                        - ASSUMPTION: when a peer type moves into
+                          cc-public, its register
+                          moves with it; and a peer may be split, renamed, or copied as the
+                          start of a partner's segment.
+                        Strength: weak. Such moves are rare, a
+                        register rename is an ordinary rename, and the
+                        rename defect in a peer hits every option. It
+                        grows at ten times the size only with the
+                        number of promotions, and it does not outweigh
+                        the clash argued in
+                        ann_free_register_names_collide_across_peers.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_naming_of_a_peer_register
+    guid_target:        dec_cbd7d5dc7c3d49a9a3c4f0e2bb1b4c16
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_register_id_unique_and_otherwise_free
+    guid_target:        opt_4f761517782b46aca0212d384d01bd59
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_register_id_qualified_by_its_segment
+    guid_target:        opt_da53b57b9c3141c09101eeeb0068c266
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_register_per_peer_for_all_its_entries
+    guid_target:        opt_6560a03257754e34879ac72497276974
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

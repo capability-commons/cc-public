@@ -1,0 +1,121 @@
+id_self:                ann_people_of_one_name_clash_across_sibling_peers
+guid_self:              ann_7c82ed69e4fb41d7aa5eba51bbc17baa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  People of one name in two sibling peers
+brief:                  |
+                        Of the names this decision covers, only the
+                        ids of people carry personal data, since a
+                        team member id is formed from the person's
+                        name. Two sibling peers that hold people of
+                        one name, or one person twice, give them one
+                        id, and under unique names across what a
+                        segment consumes the clash is mended by
+                        renaming a person in one peer, whose owner
+                        must first be told the name that clashed in a
+                        segment it may not see. Reserved prefixes
+                        leave member ids as they are, while a stem
+                        keeps the two people apart and adds to each id
+                        only the segment, which a shadow already
+                        names.
+description:            |
+                        Sources:
+                        - A team member id and title are formed from
+                          the person's name, for
+                          example member_william_payne (_data/register/reg_team_member.yaml
+                          at entries.member_william_payne), and the id is member then a
+                          name (_data/register/reg_data_item_type.yaml at
+                          entries.type_team_member.regex_id).
+                        - Personal data lives only in private
+                          repositories, and some
+                          segments may hold personal data under the GDPR (owner's
+                          statement, 2026-10-22, quoted in
+                          _data/decision/dec_how_peers_add_vocabulary/ann_private_members_held_in_the_peer.yaml
+                          at description).
+                        - Measured 2026-10-28 in a scratch copy of the
+                          snapshot: a fixture
+                          peer with a team member register of its own, holding a second
+                          William Payne under a new guid, fails duplicate_id naming the id
+                          and both guids, with the fix "Rename one of the two with cctool
+                          rename". A member id with the stem patrol after the prefix, in
+                          the same register, raised no id failure, only the placement and
+                          schema failures the fixture invited.
+                        - Under the first option the clash is found
+                          when a third segment
+                          consumes both peers, and is mended by a rename in one of them
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_names_unique_across_what_a_segment_consumes.yaml
+                          at brief).
+                        - A tree cannot change a file of a tree it
+                          consumes
+                          (src/cctool/edit/edit.py within _refuse_consumed), so the rename
+                          is made by the owner of the peer, not by the segment that found
+                          the clash.
+                        - Under reserved prefixes, the ids of other
+                          entries a peer adds stay
+                          unique only across the peer and what it consumes
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_prefixes_reserved_in_cc_public.yaml
+                          at brief).
+                        - Under stems, every id of an entry a peer
+                          adds to a consumed type
+                          carries the stem
+                          (_data/decision/dec_uniqueness_of_names_across_segments/opt_segment_stem_in_every_peer_name.yaml
+                          at brief), and type_team_member is a type of cc-public
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_team_member).
+                        - A shadow holds an item's id, guid and type
+                          and the federated
+                          segment that holds it
+                          (_data/decision/dec_what_data_a_release_ships/ruling_what_data_a_release_ships.yaml
+                          at brief), and a reference never runs sideways
+                          (_data/decision/dec_references_across_instances/opt_segments_consume_downward.yaml
+                          at brief), so a stem tells a reader of a person's id nothing a
+                          shadow or a consumer does not already know.
+                        - A store that loads both peers joins two
+                          items of one id into one
+                          node, as argued in ann_sibling_ids_merge_into_one_node_in_a_graph;
+                          for people, that puts the data of two persons on one node.
+                        - ASSUMPTION: partners' peers will hold
+                          people, and one person may
+                          work with two partners, so one id in two sibling peers is likelier
+                          for people than for other entries.
+                        Strength: weak today, with one private peer of
+                        WTP's own and no cctool check that reads two
+                        peers at once (src/cctool/check/segment.py
+                        within trees). Moderate at ten times the size
+                        with partners holding people. It goes against
+                        the option WTP intends to uphold; a rule that
+                        only member ids carry a stem would answer most
+                        of it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_uniqueness_of_names_across_segments
+    guid_target:        dec_b1629e2954804e948d74558a21150bd6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_segment_stem_in_every_peer_name
+    guid_target:        opt_f1b7ad215f4946c190e734cfbac72839
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_names_unique_across_what_a_segment_consumes
+    guid_target:        opt_b33bab77a5b340e98833895bcbca158a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prefixes_reserved_in_cc_public
+    guid_target:        opt_cff6aec9b1d9454d98cc1cb52d6b71c8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_privacy
+    guid_target:        concern_21836c761c2e41a4894d8c8968508a94
