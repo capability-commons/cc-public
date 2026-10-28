@@ -313,6 +313,11 @@ PREDICATE         = {
                            'The text of a field of the item holder names id, in file '
                            'at line. Any word shaped like an id is a mention, but only '
                            'one with the prefix of a known type need name an item.'),
+    'id_prefix':          (('id', 'prefix'),
+                           'The id, of an item or named by a mention, begins with '
+                           'prefix and an underscore, or is prefix if it has no '
+                           'underscore. It is found here once for each id, so that '
+                           'the rules need not call out to find it.'),
     'alias':              (('id', 'alias'),
                            'The item id was once named alias.'),
     'acyclic_relation':   (('relation',),
@@ -667,6 +672,10 @@ def facts_of(map_document: Documents, with_tool: bool = True) -> Facts:
 
     for (name, set_row) in (cctool.graph.tool.facts() if with_tool else {}).items():
         facts[name].update(set_row)
+
+    facts['id_prefix']     = {(word, word.partition('_')[0])
+                              for word in ({row[0] for row in facts['item']}
+                                           | {row[1] for row in facts['mention']})}
 
     return facts
 

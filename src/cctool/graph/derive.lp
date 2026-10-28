@@ -28,15 +28,15 @@
 % -----------------------------------------------------------------------------
 % The prefix of an id is that of the type whose prefix and an underscore
 % begin it. A prefix holds no underscore, so it is what comes before
-% the first one, found once for each id rather than tried against
-% each type.
+% the first one, which the extractor finds once for each id as
+% id_prefix rather than each rule trying it against each type.
 %
 % decl prefix_of(id:     symbol,
 %                prefix: symbol)
 
 prefix_of(Id, Prefix) :-
     item(Id, _, _, _, _),
-    Prefix = @prefix(Id),
+    id_prefix(Id, Prefix),
     type_prefix(_, Prefix, _).
 
 

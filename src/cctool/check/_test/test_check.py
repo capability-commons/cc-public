@@ -1356,6 +1356,7 @@ def test_a_register_entry_of_a_type_the_register_does_not_hold_is_reported():
     facts['item'].update({('reg_x', 'reg_1', '', 'f', '1'), ('ann_x', 'ann_1', 'reg_x', 'f', '2')})
     facts['type_prefix'].update({('type_register', 'reg', '.*'), ('type_annotation', 'ann', '.*')})
     facts['register_entry_key'].add(('reg_x', 'ann_x', 'ann_x'))
+    facts['id_prefix'].update({('reg_x', 'reg'), ('ann_x', 'ann')})
     rows  = cctool.graph.logic.run(facts, cctool.check.check.RULES.read_text())
     assert rows['misplaced_register_entry'] == [('reg_x', 'ann_x', 'type_annotation')]
 

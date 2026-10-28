@@ -41,18 +41,19 @@ description:            |
                         PREDICATE in pym_cctool.graph.extract.
 
                         clingo has no string functions of its own, so
-                        five are given in python and called with @:
+                        four are given in python and called with @:
                         @match(regex, text) is 1 if regex matches the
                         whole of text and 0 if not; @cat(a, b, ...)
                         joins its arguments; @strlen(text) is the
-                        length of text; @substr(text, start, length)
-                        is the part of text that begins at start,
-                        counted from 0; and @prefix(text) is what
-                        comes before its first underscore. Each call
-                        goes back to python, so a rule that calls one
-                        for every pair of two predicates is slow:
-                        @prefix finds the prefix of an id once, where
-                        @match would try it against every type.
+                        length of text; and @substr(text, start,
+                        length) is the part of text that begins at
+                        start, counted from 0. Each call goes back to
+                        python, so a rule that calls one for every row
+                        of a large predicate is slow. The prefix of an
+                        id is such a case: the extractor gives it as
+                        the fact id_prefix, rather than a call for
+                        each of the thousands of ids that prose
+                        mentions.
 edge:                   []
 
 ...
@@ -129,16 +130,6 @@ class Context:
             raise ErrorLogic('Bad regex {regex!r}: {error}'.format(
                                   regex = regex.string, error = error)) from error
         return clingo.Number(int(is_match))
-
-    # -------------------------------------------------------------------------
-    def prefix(self, text: clingo.Symbol) -> clingo.Symbol:
-        """
-        Return what comes before the first underscore of text, or all of
-        text if it has none.
-
-        """
-
-        return clingo.String(text.string.partition('_')[0])
 
     # -------------------------------------------------------------------------
     def cat(self, *args: clingo.Symbol) -> clingo.Symbol:

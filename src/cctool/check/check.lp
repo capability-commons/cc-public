@@ -1800,7 +1800,7 @@ unreadable_file(File, Line, Message) :-
 
 dangling_mention(Holder, Id, File, Line) :-
     mention(Holder, Id, File, Line),
-    Prefix = @prefix(Id),
+    id_prefix(Id, Prefix),
     type_prefix(_, Prefix, _),
     not item(Id, _, _, _, _),
     not item(_, Id, _, _, _),
