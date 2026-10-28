@@ -280,6 +280,28 @@ def test_a_peer_register_that_names_no_type_fails(tree, tmp_path_factory, monkey
 
 
 # -----------------------------------------------------------------------------
+def test_a_peer_register_with_another_schema_fails(tree, tmp_path_factory, monkeypatch):
+    """
+    A register in a peer that names a consumed type is specified by the
+    schema of the register the type names, so one specified by another
+    schema fails.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root = _peer(tmp_path_factory, held = TEXT_HELD)
+    path = root / FILE_PEER_CONCEPT
+    path.write_text(path.read_text(encoding = 'utf-8')
+                        .replace('sch_reg_concept', 'sch_reg_concern')
+                        .replace('sch_9c44fa0e85434706a25fb5a892955069', 'sch_cca032062b3f433689d41fb41e306309'),
+                    encoding = 'utf-8')
+    (failures, _, _) = cctool.check.check.review(root)
+
+    assert failures['peer_register_schema_differs'] == [
+        ('reg_peer_concept', 'type_concept', 'reg_concept', 'sch_reg_concept')]
+
+
+# -----------------------------------------------------------------------------
 def test_a_tree_with_no_segment_consumes_nothing(tree, tmp_path_factory, monkeypatch):
     """
     A tree with no segment item reads no consumed tree, and fails

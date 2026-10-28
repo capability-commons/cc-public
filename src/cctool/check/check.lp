@@ -641,6 +641,50 @@ misplaced_register_entry(Register, Id, Type) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.peer_register_schema_differs
+% guid_self:              lpp_6c587a500eaf49f790b2966cba0c179c
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Peer register schema differs
+% brief:                  |
+%                         A register that names the type of its entries
+%                         by the inverse of
+%                         relation_has_items_held_in_register is
+%                         specified by the schema of the register that
+%                         the type itself names, so that every register
+%                         of a type holds its entries in one shape.
+% did:                    |
+%                         {register} holds entries of {type}, but is not
+%                         specified by {schema}, the schema of {home}.
+% fix:                    |
+%                         Specify {register} by {schema}.
+% edge:                   []
+%
+% ...
+%
+% decl peer_register_schema_differs(register: symbol,
+%                                   type:     symbol,
+%                                   home:     symbol,
+%                                   schema:   symbol)
+#show peer_register_schema_differs/4.
+
+peer_register_schema_differs(Register, Type, Home, Schema) :-
+    edge(Register, Inverse, Type),
+    inverse_relation(Inverse, "relation_has_items_held_in_register"),
+    edge(Type, "relation_has_items_held_in_register", Home),
+    primary_edge(Home, "relation_is_specified_by_schema", Schema),
+    not primary_edge(Register, "relation_is_specified_by_schema", Schema).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unrecorded_module
 % guid_self:              lpp_1f20ba7d65fe41a483d60dd2775d4e4d
 % copyright:              Copyright 2026 William Payne
