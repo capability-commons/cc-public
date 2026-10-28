@@ -10,19 +10,21 @@ protective_mark:
 
 title:                  Windows in engine-owned ring buffers
 brief:                  |
-                        Each edge's buffer is a ring the engine owns.
-                        A writer acquires a window in it, writes in
-                        place and commits; a reader acquires a window,
-                        reads in place and releases it; a slow reader
-                        makes the writer wait, so no pool is needed.
-                        One writer or many readers hold a window at a
-                        time, never both. A node's state may not hold
-                        a window past a step, since the engine copies
-                        and upgrades state. Only the engine and
-                        transport node pairs move a value between
-                        buffers. A pool stays a recorded exception,
-                        for payloads too large for a ring where a
-                        measurement shows it.
+                        Each edge's buffer is a ring the engine owns,
+                        whose slots each hold whole messages, so a
+                        window never wraps and a node placed on a GPU
+                        sees contiguous data. A writer acquires a
+                        window in it, writes in place and commits; a
+                        reader acquires a window, reads in place and
+                        releases it; a slow reader makes the writer
+                        wait, so no pool is needed. One writer or many
+                        readers hold a window at a time, never both. A
+                        node's state may not hold a window past a
+                        step, since the engine copies and upgrades
+                        state. Only the engine and transport node
+                        pairs move a value between buffers. A pool
+                        stays a recorded exception, for payloads too
+                        large for a ring where a measurement shows it.
 description:            |
                         A refinement of read-only or moved tokens from
                         the reading for part 2. Windowed FIFOs (Haid
@@ -34,7 +36,16 @@ description:            |
                         enforce it, hence the engine and transport
                         nodes only. Wadler also shows that a copyable
                         value may not contain a linear one, which is
-                        why state may not hold a window.
+                        why state may not hold a window. Whole-message
+                        slots are from the second round of reading: a
+                        dataflow framework for OpenCL (2016) rejected
+                        ring buffers because GPU kernels need
+                        contiguous input and output. Nornir (2009)
+                        measured copying cheaper than allocating below
+                        about 256 bytes, so small items may simply be
+                        copied into slots; the threshold on the Orin
+                        needs its own measurement, and on ARM a buffer
+                        without fences needs explicit memory ordering.
 
 edge:
 

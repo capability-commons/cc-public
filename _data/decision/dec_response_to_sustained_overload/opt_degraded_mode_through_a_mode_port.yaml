@@ -21,10 +21,19 @@ brief:                  |
                         queue occupancy, and the platform exposes
                         temperature, as source ports, which is a
                         recorded exception under the minimal engine.
-                        That queues empty faster than they fill in
-                        degraded mode is a requirement in the property
-                        form, with tests as its evidence; the engine
-                        guarantees nothing about it.
+                        Each mode flag has one writer. The flag
+                        travels with the data, so each node samples it
+                        at its own step, and a node that a mode
+                        switches off sends an empty list. Each node
+                        with modes declares whether its state resumes
+                        or restarts when it returns to normal mode,
+                        restart by default. That queues empty faster
+                        than they fill in degraded mode, and that a
+                        change reaches every node within a stated
+                        number of steps, are requirements in the
+                        property form, with tests as their evidence
+                        and timing analyzed over sequences of modes;
+                        the engine guarantees nothing about them.
 description:            |
                         WTP's proposal: nodes switch to a cheaper mode
                         so that queues empty faster than they fill,
@@ -39,7 +48,16 @@ description:            |
                         stays deterministic and can be replayed. A
                         node with no mode port never degrades, so the
                         burden on authors is one optional port and one
-                        cheaper code path.
+                        cheaper code path. The details on one writer,
+                        sampling with the data, return to normal mode
+                        and analysis over mode sequences are from the
+                        second round of reading: BPDF (2013), Reactive
+                        process networks (2004), modal models in
+                        Lingua Franca (2023) and the scenario-aware
+                        dataflow survey (2011). The empty list follows
+                        the convention of a count of 0, which several
+                        papers show avoids the deadlocks of nodes that
+                        only sometimes write an output.
 
 edge:
 

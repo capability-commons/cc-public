@@ -21,7 +21,10 @@ brief:                  |
                         vary, declares its maximum items per step
                         either as a number or as a function of its
                         inputs' maxima, and the transform propagates
-                        the maxima downstream.
+                        the maxima downstream. Each feedback edge
+                        declares its own maximum, so that the
+                        propagation reaches a fixed point around every
+                        loop.
 description:            |
                         WTP's proposal: all data producers have a
                         maximum data rate, which in practice is always
@@ -34,6 +37,16 @@ description:            |
                         array lengths. An occasional overrun is
                         absorbed by the margin: items that arrive
                         during a long step join the next step's list.
+                        The bound on feedback edges is from the second
+                        round of reading: propagating bounds over a
+                        graph with cycles is a fixed-point problem,
+                        and a loop whose bound grows on each pass
+                        never settles (Interface reconciliation in
+                        Kahn process networks, 2015). The end that
+                        supplies a feedback edge's first value is a
+                        natural place to state its bound. Every
+                        parameter having a declared maximum is also
+                        the rule of BPDF (2013).
 
 edge:
 
