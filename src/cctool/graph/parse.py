@@ -220,7 +220,7 @@ def load(text: str, is_quoted: bool = False) -> typing.Any:
     map_style = MAP_STYLE_QUOTED if is_quoted else MAP_STYLE_BLOCK
     if IS_FAST:
         try:
-            return _build(yaml.compose(text, Loader = _Composer), set(), map_style)
+            return _build(yaml.compose(text, Loader = _Composer), set(), map_style, text)
         except (Unbuilt, yaml.YAMLError):
             pass
     return (ROUND_TRIP_QUOTED if is_quoted else ROUND_TRIP).load(text)
@@ -229,13 +229,16 @@ def load(text: str, is_quoted: bool = False) -> typing.Any:
 # -----------------------------------------------------------------------------
 def _build(node:      yaml.nodes.Node | None,
            set_seen:  set[int],
-           map_style: dict[str, type]) -> typing.Any:
+           map_style: dict[str, type],
+           text:      str) -> typing.Any:
     """
     Return the value of node, in the types of ruamel.yaml, with the
     line and column of each key and item. set_seen holds the nodes
     built so far, so that an alias, which is a node seen twice, is
     left to ruamel.yaml. map_style gives the type of a string scalar of
-    each style that is kept.
+    each style that is kept. text is the text that node is read from,
+    so that a node with an anchor, which ruamel.yaml keeps on the value,
+    is left to ruamel.yaml.
 
     """
 
@@ -244,12 +247,14 @@ def _build(node:      yaml.nodes.Node | None,
     if id(node) in set_seen:
         raise Unbuilt('alias')
     set_seen.add(id(node))
+    if text[node.start_mark.index:node.start_mark.index + 1] == '&':
+        raise Unbuilt('anchor')
 
     if isinstance(node, yaml.nodes.ScalarNode):
         return _scalar(node, map_style)
     if isinstance(node, yaml.nodes.SequenceNode):
-        return _sequence(node, set_seen, map_style)
-    return _mapping(node, set_seen, map_style)
+        return _sequence(node, set_seen, map_style, text)
+    return _mapping(node, set_seen, map_style, text)
 
 
 # -----------------------------------------------------------------------------
@@ -259,6 +264,11 @@ def _scalar(node: yaml.nodes.ScalarNode, map_style: dict[str, type]) -> typing.A
 
     """
 
+    # libyaml marks an empty value at the end of the indicator before
+    # it, and ruamel.yaml at the next token, so it is left to ruamel.
+    #
+    if node.start_mark.index == node.end_mark.index:
+        raise Unbuilt('empty scalar')
     if node.tag == TAG_STR:
         if node.style in map_style:
             return map_style[node.style](node.value)
@@ -281,7 +291,8 @@ def _scalar(node: yaml.nodes.ScalarNode, map_style: dict[str, type]) -> typing.A
 # -----------------------------------------------------------------------------
 def _sequence(node:      yaml.nodes.SequenceNode,
               set_seen:  set[int],
-              map_style: dict[str, type]) -> ruamel.yaml.comments.CommentedSeq:
+              map_style: dict[str, type],
+              text:      str) -> ruamel.yaml.comments.CommentedSeq:
     """
     Return the list of the sequence node, with the line and column of
     each item.
@@ -295,7 +306,7 @@ def _sequence(node:      yaml.nodes.SequenceNode,
     sequence.lc.line = node.start_mark.line
     sequence.lc.col  = node.start_mark.column
     for (index, item) in enumerate(node.value):
-        sequence.append(_build(item, set_seen, map_style))
+        sequence.append(_build(item, set_seen, map_style, text))
         sequence.lc.add_kv_line_col(index, [item.start_mark.line, item.start_mark.column])
     return sequence
 
@@ -303,7 +314,8 @@ def _sequence(node:      yaml.nodes.SequenceNode,
 # -----------------------------------------------------------------------------
 def _mapping(node:      yaml.nodes.MappingNode,
              set_seen:  set[int],
-             map_style: dict[str, type]) -> ruamel.yaml.comments.CommentedMap:
+             map_style: dict[str, type],
+             text:      str) -> ruamel.yaml.comments.CommentedMap:
     """
     Return the mapping of the mapping node, with the line and column of
     each key and its value.
@@ -317,12 +329,12 @@ def _mapping(node:      yaml.nodes.MappingNode,
     mapping.lc.line = node.start_mark.line
     mapping.lc.col  = node.start_mark.column
     for (node_key, node_value) in node.value:
-        key = _build(node_key, set_seen, map_style)
+        key = _build(node_key, set_seen, map_style, text)
         if not isinstance(key, (str, int, float, bool)) or key is None:
             raise Unbuilt('key')
         if key in mapping:
             raise Unbuilt('repeated key')
-        mapping[key] = _build(node_value, set_seen, map_style)
+        mapping[key] = _build(node_value, set_seen, map_style, text)
         mapping.lc.add_kv_line_col(key, [node_key.start_mark.line,   node_key.start_mark.column,
                                          node_value.start_mark.line, node_value.start_mark.column])
     return mapping

@@ -290,15 +290,25 @@ def test_the_fast_reading_of_a_document_is_that_of_ruamel(document):
 
 
 # -----------------------------------------------------------------------------
+@hypothesis.example(text = '-_')
+@hypothesis.example(text = '&0 a')
+@hypothesis.example(text = '0: ')
 @hypothesis.example(text = '0\t')
 @hypothesis.example(text = '!')
 @hypothesis.example(text = '=')
 @hypothesis.given(text = strategies.text(max_size = 200))
 def test_the_fast_reading_of_any_text_that_ruamel_reads_is_the_same(text):
+    # ruamel.yaml raises more than YAMLError on some texts, such as an
+    # IndexError on -_, and the fast reader must then raise the same.
+    #
     try:
         expected = _lines(ruamel.yaml.YAML(typ = 'rt').load(text))
     except ruamel.yaml.YAMLError:
         hypothesis.reject()
+    except Exception as error:
+        with pytest.raises(type(error)):
+            cctool.graph.parse.load(text)
+        return
     assert _lines(cctool.graph.parse.load(text)) == expected
 
 
