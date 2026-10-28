@@ -51,7 +51,7 @@ import tempfile
 ENV_STORE     = 'CC_PUBLIC_STORE'
 DIR_PACKAGE   = pathlib.Path(__file__).resolve().parents[1]
 TUPLE_SUFFIX  = ('.py', '.lp')
-TUPLE_DIST    = ('ruamel.yaml', 'PyYAML', 'jsonschema', 'referencing', 'clingo')
+TUPLE_DIST    = ('ruamel.yaml', 'PyYAML', 'jsonschema', 'jsonschema-rs', 'referencing', 'clingo')
 SUFFIX_STORE  = '.json'
 DELIM_KEY     = '\0'
 

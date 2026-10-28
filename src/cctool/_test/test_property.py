@@ -22,8 +22,11 @@ description:            |
                         layout, a rename undone gives back the tree, a
                         file of any text is read or reported
                         unreadable, a commit message that message new
-                        prints passes message check, and a citation of
-                        a part that a file holds is never reported.
+                        prints passes message check, a citation of a
+                        part that a file holds is never reported, and
+                        the fast check of a schema finds a document of
+                        the tree, however changed, to conform only if
+                        jsonschema does.
 
                         The tests are marked fuzz, so the gate of a
                         commit leaves them out. A run makes few
@@ -42,6 +45,7 @@ edge:                   []
 
 
 import contextlib
+import copy
 import functools
 import os
 import pathlib
@@ -52,7 +56,9 @@ import click.testing
 import pytest
 import ruamel.yaml
 
+import cctool.check.check
 import cctool.check.citation
+import cctool.check.schema
 import cctool.cli.command
 import cctool.commit.message
 import cctool.conftest
@@ -60,6 +66,7 @@ import cctool.edit.edit
 import cctool.edit.layout
 import cctool.gate.gate
 import cctool.graph.extract
+import cctool.graph.logic
 import cctool.graph.parse
 
 
@@ -119,6 +126,15 @@ WORD              = strategies.from_regex(r'[a-z]{1,8}(_[a-z]{1,8}){0,3}', fullm
 KEY               = strategies.sampled_from(('title', 'brief', 'description', 'note',
                                              'condition', 'object', 'rationale'))
 SCALAR            = strategies.one_of(TEXT, strategies.integers(), strategies.booleans())
+VALUE             = strategies.recursive(
+                        strategies.one_of(SCALAR, strategies.none(),
+                                          strategies.floats(allow_nan = False),
+                                          strategies.sampled_from(('', 'a\n', '\ufeff', '\u0661',
+                                                                   'mark_public', 'Add x.'))),
+                        lambda each: strategies.one_of(strategies.lists(each, max_size = 3),
+                                                       strategies.dictionaries(KEY, each,
+                                                                               max_size = 3)),
+                        max_leaves = 6)
 DOCUMENT          = strategies.dictionaries(KEY, strategies.one_of(SCALAR,
                                                                    strategies.lists(TEXT,
                                                                                     max_size = 4)),
@@ -281,6 +297,92 @@ def test_the_fast_reading_of_any_text_that_ruamel_reads_is_the_same(text):
     except ruamel.yaml.YAMLError:
         hypothesis.reject()
     assert _lines(cctool.graph.parse.load(text)) == expected
+
+
+# -----------------------------------------------------------------------------
+@hypothesis.given(data = strategies.data())
+def test_the_fast_check_of_a_changed_document_agrees_with_jsonschema(data):
+    (map_document, map_file, map_schema, list_pair) = _schema_pairs()
+    (id_document, id_schema) = data.draw(strategies.sampled_from(list_pair))
+    document = copy.deepcopy(map_document[map_file[id_document]][0])
+    list_path = list(_paths(document))
+    for _ in range(data.draw(strategies.integers(min_value = 1, max_value = 3))):
+        _change(document, data.draw(strategies.sampled_from(list_path)), data)
+    set_invalid = {id_each for (id_each, schema) in map_schema.items()
+                   if not cctool.check.schema.is_valid(schema)}
+    registry    = cctool.check.schema.registry_of([schema for (id_each, schema) in map_schema.items()
+                                                   if id_each not in set_invalid])
+    validator   = cctool.check.schema.Validator(map_schema[id_schema], registry = registry)
+    fast        = cctool.check.schema._Fast(map_schema, set_invalid)
+    is_valid    = not cctool.check.schema.errors(validator, document)
+    assert fast.is_valid(id_schema, document) == is_valid
+
+
+# -----------------------------------------------------------------------------
+@functools.cache
+def _schema_pairs():
+    """
+    Return the documents of the tree, the file of each, the schemas,
+    and each pair of a document and a schema it must conform to.
+
+    """
+
+    map_document = cctool.graph.extract.documents(DIR_REPO)
+    facts        = cctool.graph.extract.facts_of(map_document)
+    program      = '{rules}\n{show}'.format(
+                       rules = cctool.check.check.RULES.read_text(),
+                       show  = cctool.graph.logic.show('document_schema',
+                                                       cctool.graph.logic.derived()))
+    map_file     = {row[0]: row[3] for row in facts['item'] if not row[2]}
+    map_schema   = {id_document: map_document[file][0] for (id_document, file) in map_file.items()
+                    if isinstance(map_document[file][0], dict)
+                    and cctool.check.schema.KEY_ID_SCHEMA in map_document[file][0]}
+    list_pair    = sorted(pair for pair in cctool.graph.logic.run(facts, program)['document_schema']
+                          if pair[0] in map_file and pair[1] in map_schema)
+    return (map_document, map_file, map_schema, list_pair)
+
+
+# -----------------------------------------------------------------------------
+def _paths(node, path = ()):
+    """
+    Yield the path of each part of node below it.
+
+    """
+
+    if isinstance(node, dict):
+        list_each = list(node.items())
+    elif isinstance(node, list):
+        list_each = list(enumerate(node))
+    else:
+        return
+    for (key, value) in list_each:
+        yield (*path, key)
+        yield from _paths(value, (*path, key))
+
+
+# -----------------------------------------------------------------------------
+def _change(document, path, data):
+    """
+    Change the part of document at path, if it is still there: remove
+    it, add a field beside it, or put a value drawn from data in its
+    place.
+
+    """
+
+    parent = document
+    try:
+        for part in path[:-1]:
+            parent = parent[part]
+        parent[path[-1]]
+    except (KeyError, IndexError, TypeError):
+        return
+    choice = data.draw(strategies.sampled_from(('remove', 'add', 'value')))
+    if choice == 'remove':
+        del parent[path[-1]]
+    elif choice == 'add' and isinstance(parent, dict):
+        parent[data.draw(WORD)] = data.draw(VALUE)
+    else:
+        parent[path[-1]] = data.draw(VALUE)
 
 
 # -----------------------------------------------------------------------------

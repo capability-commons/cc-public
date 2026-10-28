@@ -28,6 +28,7 @@ edge:                   []
 """
 
 
+import datetime
 import gc
 import io
 import pathlib
@@ -291,6 +292,20 @@ def test_a_pattern_end_matches_only_at_the_end_of_the_text():
     assert validator.is_valid('A title')
     assert not validator.is_valid('A title\n')
     assert cctool.check.schema.ecma('^a[$]\\$b$') == '^a[$]\\$b\\Z'
+
+
+def test_the_fast_check_of_a_schema_reads_a_pattern_as_jsonschema_does():
+    map_schema = {'sch_x': {'$id':        'https://example.org/sch_x.yaml',
+                            'type':       'object',
+                            'properties': {'title': {'type': 'string', 'pattern': '^[^\\n]+$'},
+                                           'count': {'type': 'string', 'pattern': '^\\d+$'}}},
+                  'sch_y': {'$id':        'https://example.org/sch_y.yaml',
+                            '$ref':       'https://example.org/sch_none.yaml'}}
+    fast       = cctool.check.schema._Fast(map_schema, set())
+    assert fast.is_valid('sch_x', {'title': 'A title', 'count': '\u0661'})
+    assert not fast.is_valid('sch_x', {'title': 'A title\n'})
+    assert not fast.is_valid('sch_x', {'title': datetime.date(2026, 10, 28)})
+    assert not fast.is_valid('sch_y', {})
 
 
 def test_a_title_that_ends_in_a_newline_is_reported(tree):

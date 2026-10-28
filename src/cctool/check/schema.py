@@ -25,6 +25,15 @@ description:            |
                         reported with the line of the file it is found
                         at.
 
+                        Each document is first validated with
+                        jsonschema-rs, which is many times faster and
+                        reads pattern with the same function as here.
+                        Only a document it finds to fail, or cannot
+                        read, is validated again with jsonschema,
+                        whose errors give the rows, so that what is
+                        reported does not depend on which library
+                        found it.
+
                         A schema is itself a YAML document, and
                         sch_schema holds it to the metaschema of JSON
                         Schema. No document is validated against a
@@ -40,6 +49,7 @@ edge:                   []
 
 import functools
 import json
+import math
 import re
 import typing
 import urllib.parse
@@ -47,6 +57,7 @@ import urllib.parse
 import jsonschema
 import jsonschema.exceptions
 import jsonschema.validators
+import jsonschema_rs
 import referencing
 import referencing.exceptions
 
@@ -91,6 +102,11 @@ END_PYTHON        = '\\Z'
 TUPLE_ERROR_USE   = (jsonschema.exceptions.SchemaError,
                      jsonschema.exceptions.UnknownType,
                      referencing.exceptions.Unresolvable)
+
+# What jsonschema-rs raises for a schema it cannot use, such as one with
+# a $ref that names no schema. Its ValidationError is a ValueError.
+#
+TUPLE_ERROR_FAST  = (ValueError, jsonschema_rs.ReferencingError)
 
 
 # -----------------------------------------------------------------------------
@@ -195,6 +211,7 @@ def violations(map_document: cctool.graph.extract.Documents,
     map_validator = {}
     set_row       = set()
     kept          = _Kept(cache, map_schema)
+    fast          = _Fast(map_schema, set_invalid)
 
     for (id_document, id_schema) in sorted(set_pair):
         if id_document not in map_file or id_schema not in map_schema:
@@ -207,10 +224,8 @@ def violations(map_document: cctool.graph.extract.Documents,
         if list_row is not None:
             set_row.update(list_row)
             continue
-        if id_schema not in map_validator:
-            map_validator[id_schema] = Validator(map_schema[id_schema], registry = registry)
         try:
-            list_error = errors(map_validator[id_schema], document)
+            list_error = _errors_of(id_schema, document, map_schema, registry, map_validator, fast)
         except referencing.exceptions.Unresolvable as error:
             # A $ref to a schema that fails the metaschema is reported
             # already. One to a schema that does not exist is reported
@@ -229,6 +244,208 @@ def violations(map_document: cctool.graph.extract.Documents,
     kept.save()
 
     return _once(set_row, kept)
+
+
+# -----------------------------------------------------------------------------
+class _Fast:
+    """
+    The validators of jsonschema-rs, one for each schema of the tree that
+    it can use. It is asked only whether a document conforms: a document
+    it finds to fail is validated again with jsonschema, which gives the
+    errors. Its pattern keyword is replaced by _match, so that a pattern
+    is read as it is read here. A format is not asserted, as jsonschema
+    does not assert it by default.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, map_schema: dict[str, dict], set_invalid: set[str]):
+        """
+        Make ready the validators for the schemas of map_schema, leaving
+        out those of set_invalid. Each is built when it is first used.
+
+        """
+
+        self.map_schema    = map_schema
+        self.set_invalid   = set_invalid
+        self.is_ready      = False
+        self.registry      = None
+        self.map_validator = {}
+
+    # -------------------------------------------------------------------------
+    def is_valid(self, id_schema: str, document: typing.Any) -> bool:
+        """
+        Return True if document conforms to the schema id_schema, as
+        jsonschema-rs finds it, or False if it does not, or if the
+        document or the schema cannot be given to jsonschema-rs.
+
+        """
+
+        validator = self._validator(id_schema)
+        if validator is None:
+            return False
+        try:
+            return validator.is_valid(plain(document))
+        except ErrorUnplain:
+            return False
+
+    # -------------------------------------------------------------------------
+    def _validator(self, id_schema: str) -> jsonschema_rs.Validator | None:
+        """
+        Return the validator for the schema id_schema, or None if
+        jsonschema-rs cannot use it.
+
+        """
+
+        if id_schema not in self.map_validator:
+            if not self.is_ready:
+                self.registry = _registry_fast(self.map_schema, self.set_invalid)
+                self.is_ready = True
+            if self.registry is None:
+                return None
+            try:
+                self.map_validator[id_schema] = jsonschema_rs.validator_for(
+                                                    plain(self.map_schema[id_schema]),
+                                                    registry         = self.registry,
+                                                    validate_formats = False,
+                                                    keywords         = {'pattern': _Match},
+                                                    offline          = True)
+            except (ErrorUnplain, *TUPLE_ERROR_FAST):
+                self.map_validator[id_schema] = None
+
+        return self.map_validator[id_schema]
+
+
+# -----------------------------------------------------------------------------
+def _registry_fast(map_schema: dict[str, dict],
+                   set_invalid: set[str]) -> jsonschema_rs.Registry | None:
+    """
+    Return the registry of jsonschema-rs that resolves a reference to each
+    schema of map_schema that it can use, by its $id, or None if it
+    cannot be made. jsonschema-rs resolves each $ref as the registry is
+    made, so a schema left out of set_invalid is left out too if a $ref
+    in it names no schema of the registry.
+
+    """
+
+    map_plain = {}
+    for (id_schema, schema) in map_schema.items():
+        if id_schema in set_invalid:
+            continue
+        try:
+            map_plain[str(schema[KEY_ID_SCHEMA])] = (schema, plain(schema))
+        except ErrorUnplain:
+            continue
+
+    is_changed = True
+    while is_changed:
+        set_left = {url for (url, (schema, _)) in map_plain.items()
+                    if not all(_target(url, ref) in map_plain or not _target(url, ref)
+                               for ref in _known(schema)[1])}
+        for url in set_left:
+            del map_plain[url]
+        is_changed = bool(set_left)
+
+    try:
+        return jsonschema_rs.Registry([(url, pair[1]) for (url, pair) in map_plain.items()])
+    except TUPLE_ERROR_FAST:
+        return None
+
+
+# -----------------------------------------------------------------------------
+def _target(base: str, ref: str) -> str:
+    """
+    Return the url of the schema that ref, a $ref in the schema whose $id
+    is base, names, or an empty string if it names a part of that same
+    schema.
+
+    """
+
+    url = urllib.parse.urljoin(base, ref).partition(MARK_FRAGMENT)[0]
+    return '' if url == base else url
+
+
+# -----------------------------------------------------------------------------
+class _Match:
+    """
+    The pattern keyword, for jsonschema-rs, read as _pattern reads it.
+
+    """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, _parent: dict, pattern: str, _path: list):
+        """
+        Keep pattern, compiled.
+
+        """
+
+        self.regex = _compiled(pattern)
+
+    # -------------------------------------------------------------------------
+    def validate(self, instance: typing.Any) -> None:
+        """
+        Raise ValueError if the string instance does not match.
+
+        """
+
+        if isinstance(instance, str) and not self.regex.search(instance):
+            raise ValueError('{instance!r} does not match'.format(instance = instance))
+
+
+# -----------------------------------------------------------------------------
+class ErrorUnplain(Exception):
+    """
+    Raised for a value that JSON cannot hold as it is: a key that is not
+    a string, a float that is not finite, or a scalar of any type that
+    JSON lacks, such as a date. jsonschema sees such a value as it is,
+    so that a date is not a string, and would be read otherwise by
+    jsonschema-rs.
+
+    """
+
+
+# -----------------------------------------------------------------------------
+def plain(node: typing.Any) -> typing.Any:
+    """
+    Return a copy of node made of the plain types of JSON, each of which
+    jsonschema reads as it reads node, or raise ErrorUnplain. A boolean
+    of ruamel.yaml that is not a bool is an int to jsonschema, and so is
+    one here.
+
+    """
+
+    if isinstance(node, dict):
+        if not all(isinstance(key, str) for key in node):
+            raise ErrorUnplain
+        return {str(key): plain(value) for (key, value) in node.items()}
+    if isinstance(node, list):
+        return [plain(value) for value in node]
+    if node is None or isinstance(node, bool):
+        return node
+    if isinstance(node, str):
+        return str(node)
+    if isinstance(node, int):
+        return int(node)
+    if isinstance(node, float) and math.isfinite(node):
+        return float(node)
+    raise ErrorUnplain
+
+
+# -----------------------------------------------------------------------------
+def _errors_of(id_schema, document, map_schema, registry, map_validator, fast):
+    """
+    Return the errors of document under the schema id_schema: none if
+    the fast check finds it to conform, or else those that jsonschema
+    finds, with a validator kept in map_validator.
+
+    """
+
+    if fast.is_valid(id_schema, document):
+        return []
+    if id_schema not in map_validator:
+        map_validator[id_schema] = Validator(map_schema[id_schema], registry = registry)
+
+    return errors(map_validator[id_schema], document)
 
 
 # -----------------------------------------------------------------------------
