@@ -65,7 +65,7 @@ title:                  The peer segment
 brief:                  |
                         A peer of cc-public, made for a test. Its
                         brief names concept_federated_segment, which
-                        cc-public holds.
+                        cc-public holds{widget}.
 
 edge:
 
@@ -76,19 +76,87 @@ edge:
 """
 
 
+FILE_PEER_CONCEPT = '_data/register/reg_peer_concept.yaml'
+
+TEXT_PEER_CONCEPT = """\
+id_self:                reg_peer_concept
+guid_self:              reg_3c1f0a7e2b5d4c6e8f9a0b1c2d3e4f50
+copyright:              Copyright 2026 The Peer
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer concept register
+brief:                  |
+                        Register of the concepts of the peer.
+description:            |
+                        The peer concept register holds the concepts
+                        that the peer adds to those of cc-public.
+usage:                  |
+                        The peer names its own concepts here.
+note:                   |
+                        It is made for a test.
+
+edge:
+
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
+    id_target:          sch_reg_concept
+    guid_target:        sch_9c44fa0e85434706a25fb5a892955069
+{held}
+entries:
+
+  # ---------------------------------------------------------------------------
+  # concept_peer_widget -- Peer widget
+  #
+  concept_peer_widget:
+    id_self:            concept_peer_widget
+    guid_self:          concept_7d2e4f6a8b0c4d1e9f3a5b7c9d1e3f50
+    title:              Peer widget
+    brief:              |
+                        A widget that the peer makes.
+    description:        |
+                        It is made for a test.
+    term_preferred:     peer widget
+    alias:              []
+    edge:               []
+"""
+
+TEXT_HELD = """\
+
+  - id_relation:        relation_holds_items_of_type
+    guid_relation:      relation_ce28906bcbe94695821f8639d3b8e298
+    id_target:          type_concept
+    guid_target:        type_f90804f7b03149fa9850883bd11b9a28
+"""
+
+
 # -----------------------------------------------------------------------------
 def _peer(tmp_path_factory,
           release = 'release_cc_public_0_1_0',
-          guid    = 'release_b9909b2c09ac45e08e9e4fd466d0ded3'):
+          guid    = 'release_b9909b2c09ac45e08e9e4fd466d0ded3',
+          held    = None):
     """
     Return the root of a new peer, which consumes release, with guid.
+    With held, the peer also holds a concept register of its own, which
+    names the type of its entries with held, and its segment item names
+    the concept that register holds.
 
     """
 
-    root = tmp_path_factory.mktemp('peer')
-    path = root / FILE_PEER
+    root   = tmp_path_factory.mktemp('peer')
+    path   = root / FILE_PEER
+    widget = '' if held is None else ', and concept_peer_widget,\n                        which the peer holds'
     path.parent.mkdir(parents = True)
-    path.write_text(TEXT_PEER.format(release = release, guid = guid), encoding = 'utf-8')
+    path.write_text(TEXT_PEER.format(release = release, guid = guid, widget = widget),
+                    encoding = 'utf-8')
+    if held is not None:
+        path = root / FILE_PEER_CONCEPT
+        path.parent.mkdir(parents = True)
+        path.write_text(TEXT_PEER_CONCEPT.format(held = held), encoding = 'utf-8')
     return root
 
 
@@ -176,6 +244,38 @@ def test_a_peer_that_consumes_a_release_passes(tree, tmp_path_factory, monkeypat
     (failures, _, notices) = cctool.check.check.review(_peer(tmp_path_factory))
 
     assert failures == {}
+    assert notices  == {}
+
+
+# -----------------------------------------------------------------------------
+def test_a_peer_register_that_names_its_type_passes(tree, tmp_path_factory, monkeypatch):
+    """
+    A register in a peer that names a consumed type with the inverse of
+    relation_has_items_held_in_register holds entries of that type, and
+    the peer has neither failures nor notices.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    (failures, _, notices) = cctool.check.check.review(_peer(tmp_path_factory, held = TEXT_HELD))
+
+    assert failures == {}
+    assert notices  == {}
+
+
+# -----------------------------------------------------------------------------
+def test_a_peer_register_that_names_no_type_fails(tree, tmp_path_factory, monkeypatch):
+    """
+    A register in a peer that does not name the type of its entries
+    holds them out of place.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    (failures, _, notices) = cctool.check.check.review(_peer(tmp_path_factory, held = ''))
+
+    assert failures == {'misplaced_register_entry': [
+        ('reg_peer_concept', 'concept_peer_widget', 'type_concept')]}
     assert notices  == {}
 
 
