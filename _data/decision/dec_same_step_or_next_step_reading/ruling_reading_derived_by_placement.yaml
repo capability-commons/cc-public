@@ -1,0 +1,43 @@
+id_self:                ruling_reading_derived_by_placement
+guid_self:              ruling_d39184111d0c4a7db023105d9809a1ad
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Reading derived by placement
+brief:                  |
+                        Steps are local to an execution unit. Within a
+                        unit an edge is read in dependency order, with
+                        one feedback edge in each loop reading the
+                        previous step's value; between units an edge
+                        is a bounded queue with no common step. Ruled
+                        by WTP on 2026-10-28, who confirmed both
+                        halves of this reading.
+description:            |
+                        WTP added that the jitter margin on an edge
+                        between units may need to be generous, since
+                        it depends on how fast or slow each unit runs,
+                        and that development will refine algorithms
+                        and move nodes between units until they are
+                        balanced and run smoothly (WTP, 2026-10-28).
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_reading_derived_by_placement
+    guid_target:        opt_4ca2d44dc86f4f86bde1622ab1e95234
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_every_edge_read_next_step
+    guid_target:        opt_67d9ef415fd64fbcb97897adc1a0ad59
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_every_edge_read_same_step
+    guid_target:        opt_aa6f5f4f1a344a6facd32f271ac40165
