@@ -14,38 +14,57 @@ brief:                  |
                         source file may declare.
 description:            |
                         The maturity level register holds one entry
-                        per level, numbered from 0 to 100 with gaps
-                        between them, read as the numbered lifecycle
-                        stages of automotive practice are. Each entry
-                        lists what code at that level must show,
-                        beyond what each lower level demands. A source
-                        file declares its level by an edge of
-                        relation_has_maturity, takes the lowest level
-                        if it declares none, and may not declare a
-                        level above that of a file it imports.
+                        per level, numbered from 0 with gaps between
+                        them, read as the numbered lifecycle stages of
+                        automotive practice are. Each entry lists what
+                        code at that level must show, beyond what each
+                        lower level demands. A source file declares
+                        its level by an edge of relation_has_maturity,
+                        takes the lowest level if it declares none,
+                        and may not declare a level above that of a
+                        file it imports.
 usage:                  |
                         A source file names its level in its own item,
                         by an edge of relation_has_maturity to an
                         entry here.
 note:                   |
-                        The stages and their demands are a first
-                        proposal for WTP to revise.
+                        The levels from 20 follow the gates of the
+                        numbered Material Life Cycle (MLC) of
+                        automotive practice, as WTP gave them on
+                        2026-10-28, read through the systems and
+                        software stage that each gate is aligned with.
+                        maturity_0 comes before MLC 20.
+
+                        As at those gates, a document is asked for at
+                        several levels: a draft early, an update at a
+                        later level and the final version later still,
+                        so that an incomplete document is inspected
+                        early rather than written at the last moment
+                        (WTP, 2026-10-28). Here the documents are the
+                        requirements of a component, its test plan,
+                        which is the verification method and approach
+                        of each requirement and its verifiers, and its
+                        architecture, which is its place among the
+                        components and the decisions about it.
 
 entries:
 
   # ---------------------------------------------------------------------------
-  # maturity_0 -- Sketch
+  # maturity_0 -- Unassessed
   #
   maturity_0:
     id_self:            maturity_0
     guid_self:          maturity_733e9195f4694e17a454c5ed4dadc3b4
-    title:              Sketch
+    title:              Unassessed
     brief:              |
-                        Code written to find out what is needed, which
-                        may change or go at any time.
+                        Code that has not yet entered the lifecycle,
+                        such as a sketch written to find out what is
+                        needed.
     description:        |
                         The lowest level, which a source file that
-                        declares no maturity takes.
+                        declares no maturity takes. It stands before
+                        MLC 20, and code here may change or go at any
+                        time.
     level:              0
 
     demand:
@@ -57,21 +76,64 @@ entries:
     edge:               []
 
   # ---------------------------------------------------------------------------
-  # maturity_20 -- Prototype
+  # maturity_20 -- Request and alignment
   #
   maturity_20:
     id_self:            maturity_20
     guid_self:          maturity_02e160cbd66043818c5bda2f96e06b08
-    title:              Prototype
+    title:              Request and alignment
     brief:              |
-                        Code that does what it is for on the main
-                        path, and is kept.
+                        Code whose need is stated: the requirements it
+                        is to meet are written and trace to its
+                        logical component.
     description:        |
-                        Code at this level is worth keeping, so a test
-                        guards what it does.
+                        Read as MLC 20, request and strategy
+                        alignment, which systems and software practice
+                        maps to requirements engineering (ASPICE
+                        SYS.2).
     level:              20
 
     demand:
+      - brief:          |
+                        A draft of its requirements: it realizes a
+                        logical component, and at least one
+                        requirement has that component as its subject.
+      - brief:          |
+                        A draft of its architecture: its logical
+                        component is a part of the component it
+                        belongs to.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_40 -- Concept and prototype
+  #
+  maturity_40:
+    id_self:            maturity_40
+    guid_self:          maturity_4f05274d18c74fa3990a09449d9c700a
+    title:              Concept and prototype
+    brief:              |
+                        Code whose design is chosen and shown to work
+                        as a prototype on its main path.
+    description:        |
+                        Read as MLC 40, concept and lab selection,
+                        which systems and software practice maps to
+                        architecture and prototyping (ASPICE SYS.3 and
+                        SWE.1).
+    level:              40
+
+    demand:
+      - brief:          |
+                        An update of its requirements and a draft of
+                        its test plan: each requirement on its
+                        component gives its verification method and
+                        approach.
+      - brief:          |
+                        An update of its architecture: its component
+                        has its place in the order of components, by
+                        its edges of relation_may_depend_on, and each
+                        decision about the component has its options.
       - brief:          |
                         A test exercises it.
 
@@ -79,43 +141,30 @@ entries:
     edge:               []
 
   # ---------------------------------------------------------------------------
-  # maturity_40 -- Development
-  #
-  maturity_40:
-    id_self:            maturity_40
-    guid_self:          maturity_4f05274d18c74fa3990a09449d9c700a
-    title:              Development
-    brief:              |
-                        Code whose behavior is settled enough for its
-                        requirements to be verified.
-    description:        |
-                        Code at this level has settled what it does,
-                        so what it is required to do can be shown.
-    level:              40
-
-    demand:
-      - brief:          |
-                        Each requirement it realizes has a verifier.
-
-    alias:              []
-    edge:               []
-
-  # ---------------------------------------------------------------------------
-  # maturity_60 -- Feature complete
+  # maturity_60 -- Technical release
   #
   maturity_60:
     id_self:            maturity_60
     guid_self:          maturity_97bc8576b3f84cd0869b080f0356ebab
-    title:              Feature complete
+    title:              Technical release
     brief:              |
-                        Code that does all it is meant to, with its
-                        behavior covered by tests.
+                        Code released as a unit: each requirement it
+                        realizes is verified, and its tests reach most
+                        of it.
     description:        |
-                        Code at this level does all it is meant to, so
-                        its tests reach most of it.
+                        Read as MLC 60, technical approvals, which
+                        systems and software practice maps to software
+                        unit verification (ASPICE SWE.4).
     level:              60
 
     demand:
+      - brief:          |
+                        The final version of its requirements, and an
+                        update of its test plan: each requirement it
+                        realizes has a verifier.
+      - brief:          |
+                        The final version of its architecture: each
+                        decision about its component is ruled.
       - brief:          |
                         Its tests cover the floor of lines and
                         branches that this level sets.
@@ -124,22 +173,30 @@ entries:
     edge:               []
 
   # ---------------------------------------------------------------------------
-  # maturity_80 -- Verified
+  # maturity_80 -- Integration and pre-series
   #
   maturity_80:
     id_self:            maturity_80
     guid_self:          maturity_14a94c94c5d94252bf993a6e96726f26
-    title:              Verified
+    title:              Integration and pre-series
     brief:              |
-                        Code that is shown to meet its requirements,
-                        in its tests and in review.
+                        Code verified in the whole it is part of, as
+                        it runs from the command line or the service
+                        it serves.
     description:        |
-                        Code at this level has been shown to meet its
-                        requirements, and its tests reach nearly all
-                        of it.
+                        Read as MLC 80, process qualification and
+                        pre-series production, which systems and
+                        software practice maps to integration testing.
     level:              80
 
     demand:
+      - brief:          |
+                        The final version of its test plan: each
+                        verifier of a requirement it realizes passed
+                        in the last run of the night.
+      - brief:          |
+                        A test runs it through the interface it
+                        serves, as a user or a peer would.
       - brief:          |
                         Its tests cover the higher floor of lines and
                         branches that this level sets.
@@ -150,24 +207,50 @@ entries:
     edge:               []
 
   # ---------------------------------------------------------------------------
-  # maturity_100 -- Released
+  # maturity_100 -- Production release
   #
   maturity_100:
     id_self:            maturity_100
     guid_self:          maturity_034f3271cf924c72b942fdd440d5a107
-    title:              Released
+    title:              Production release
     brief:              |
-                        Code that a release may ship, and that changes
-                        only by the process of a release.
+                        Code released for use, frozen into the
+                        baseline of a release, which changes only by
+                        the process of a release.
     description:        |
-                        Code at this level ships in a release, and its
-                        release vouches for it.
+                        Read as MLC 100, mass production release at
+                        the start of production, which software
+                        practice maps to a locked baseline.
     level:              100
 
     demand:
       - brief:          |
                         Each release that ships it declares this
                         maturity, and its check passes.
+
+    alias:              []
+    edge:               []
+
+  # ---------------------------------------------------------------------------
+  # maturity_120 -- Maintenance and retirement
+  #
+  maturity_120:
+    id_self:            maturity_120
+    guid_self:          maturity_74733d19e15c450fa9af72124c14061e
+    title:              Maintenance and retirement
+    brief:              |
+                        Code in use that is watched, fixed and in time
+                        retired, rather than extended.
+    description:        |
+                        Read as MLC 120, continuous monitoring and end
+                        of life, which software practice maps to
+                        maintenance and updates in the field.
+    level:              120
+
+    demand:
+      - brief:          |
+                        A change to it fixes a defect or prepares its
+                        retirement, and names what it fixes.
 
     alias:              []
     edge:               []
