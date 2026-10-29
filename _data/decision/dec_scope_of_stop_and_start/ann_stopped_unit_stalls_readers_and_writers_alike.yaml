@@ -1,0 +1,112 @@
+id_self:                ann_stopped_unit_stalls_readers_and_writers_alike
+guid_self:              ann_8333c73ebc014e13843c33fd308471c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stopped unit that stalls both its readers and its writers
+brief:                  |
+                        A unit that stops neither reads nor writes.
+                        Its readers wait without end, since a receiver
+                        waits for exactly one message in each local
+                        step and no record gives it a timeout, and its
+                        writers wait too once the bounded queue to it
+                        fills on a lossless edge. The trial showed the
+                        second: after a stop of u2, u1, which writes
+                        to it, blocked in a send at step 7 while
+                        status still said it was running; the first
+                        follows from the ICD. The one-unit option
+                        speaks only of readers, and leans on what a
+                        receiver does when no message comes, which
+                        nothing yet states. A safety function in a
+                        neighboring unit thus stops while reported as
+                        running, and whoever can send runtime control
+                        requests gains a quiet way to cause that.
+                        Stopping every unit at once avoids it,
+                        provided the engine wakes units blocked on a
+                        channel, as the trial's stop of all units did.
+description:            |
+                        Sources:
+                        - A receiver waits for exactly one message in
+                          each local step, and a
+                          sender waits when the bounded queue is full unless the edge's
+                          policy allows loss
+                          (_data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.receiver.dataflow_step.availability and
+                          surface.sender.dataflow_step.back_pressure).
+                        - Under the one-unit option the readers of a
+                          stopped unit see a
+                          missing sender
+                          (_data/decision/dec_scope_of_stop_and_start/opt_stop_and_start_act_on_one_unit.yaml
+                          at brief).
+                        - In the trial, a stop of u2 left u1, which
+                          writes to it, blocked in
+                          a lossless send at step 7 with status reporting it running, and a
+                          later stop of all units, which closes every channel, closed the run
+                          with exit status 0 (review of 2026-10-29, CC-047; area report
+                          trial-engine, TE-18, log stop_one_unit.txt; trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/control.cpp, function stop).
+                        - A deadlock in one part of a network while
+                          the rest runs is never
+                          caught by a check for global deadlock (Geilen and Basten 2003,
+                          Requirements on the execution of Kahn process networks, section 2,
+                          as summarized in
+                          /mnt/project-files/notes/literature/part-2/2003-requirements-on-the-execution-of-kpns.md).
+                        - A message that never arrives blocks a
+                          waiting read, so the
+                          transport needs a timeout and a fail-safe
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml
+                          at brief).
+                        - Runtime control requests carry content
+                          digests so that the engine
+                          and cctool agree which graph is meant
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at description); no dataflow record found says who may send them.
+                        ASSUMPTION: on some deployments someone other
+                        than deployment can reach runtime control.
+                        Strength: strong within one host; across hosts
+                        every option meets the same missing sender at
+                        the level of a host, and the point weakens if
+                        the receiver decision gives every receiver a
+                        timeout and a fail-safe.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_scope_of_stop_and_start
+    guid_target:        dec_bdd3f19c3750475c9940069f54bd28bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_and_start_act_on_the_whole_host
+    guid_target:        opt_1407871f16d444f798a21d173c1d5de1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_ends_the_run
+    guid_target:        opt_d76e2cd8d1ef4ebc8830ea56b67ee6d9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_and_start_act_on_one_unit
+    guid_target:        opt_43fd6818520348c1a76169fe5e19c199
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

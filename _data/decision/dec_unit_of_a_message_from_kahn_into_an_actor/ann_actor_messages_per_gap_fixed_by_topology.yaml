@@ -1,0 +1,89 @@
+id_self:                ann_actor_messages_per_gap_fixed_by_topology
+guid_self:              ann_070989d30c63460285de9fff24064f19
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Count of actor messages in a gap set by the scene or by the graph
+brief:                  |
+                        Under one message for each item, the number of
+                        messages in a gap follows the number of items
+                        the Kahn side produced, so the sensed scene
+                        sets how many queue entries, copies, sorts and
+                        handler calls each gap takes, and a scene with
+                        many items can crowd out messages from outside
+                        the graph, which share the queue. Under one
+                        message for each local step, the count of
+                        messages from Kahn edges is fixed by the
+                        graph: one per edge per gap. The work inside a
+                        handler still grows with the items under both,
+                        but per-step pays the cost of a message once
+                        per batch, as the bounded-array convention
+                        intends.
+description:            |
+                        Sources:
+                        - The trial copies each item into its own
+                          64-byte slot, sorts every
+                          message of the gap, and invokes the actor once per message;
+                          messages from outside share the same queue and are refused as "too
+                          many messages are waiting" when it is full (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/actors.cpp, functions actors_gap
+                          and hook_send).
+                        - A batch of elements in one message shares
+                          the cost of the message,
+                          its call and its header among its elements
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ann_batch_of_elements_shares_the_cost_of_a_message.yaml
+                          at brief).
+                        - Actor work in a gap adds to every step's
+                          period
+                          (_data/decision/dec_how_actors_are_run/ann_actor_work_lengthens_every_kahn_step.yaml
+                          at brief).
+                        - A sender that floods an actor holds up what
+                          shares its thread, and
+                          admission at the gap start caps a gap at what the bounded mailboxes
+                          hold
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_gap_admission_bounds_what_a_flood_can_hold.yaml
+                          at brief).
+                        - Security asks what an attacker can reach and
+                          at what cost;
+                          throughput is a measure of performance efficiency
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question and
+                          entries.concern_performance_efficiency.measure).
+                        ASSUMPTION: the number of items a detector
+                        emits depends on the scene, which someone
+                        outside the robot can shape. Strength:
+                        moderate; it grows with items per step, and
+                        capacities derived from maximum rates bound
+                        both options.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_unit_of_a_message_from_kahn_into_an_actor
+    guid_target:        dec_34a3e6443db64323b25afb5e97e31f32
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_actor_message_for_each_local_step
+    guid_target:        opt_adc12271649948d2901013fab011622a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_actor_message_for_each_item
+    guid_target:        opt_264902d28951466e89b976380217299b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

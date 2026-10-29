@@ -1,0 +1,80 @@
+id_self:                ann_partially_stopped_graph_matches_no_checked_variant
+guid_self:              ann_40e98f9b1b8446a8bf99f1f208027220
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partly stopped graph that matches no checked variant
+brief:                  |
+                        The rulings scale a deployment by generating a
+                        variant, with as many processes as a host has
+                        cores and each complete variant checked, and
+                        they meet sustained overload at run time with
+                        a degraded mode. A stop of one unit is a third
+                        way to shrink a running graph, and it leaves a
+                        configuration that no variant describes and no
+                        check has seen; in the trial a change set sent
+                        to a stopped unit was even answered ok, marked
+                        pending. A stop of the whole host, or a stop
+                        that ends the run, keeps every running
+                        configuration one that a check has passed.
+description:            |
+                        Sources:
+                        - A variant can be generated with as many
+                          processes on a host as it
+                          has cores, so much of the dynamism goes into rewriting the graph
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief).
+                        - Every complete variant is resolved and
+                          checked
+                          (_data/decision/dec_which_resolved_graphs_are_checked/ruling_every_complete_variant_checked.yaml
+                          at brief).
+                        - Sustained overload is answered by a degraded
+                          mode selected through
+                          a mode port
+                          (_data/decision/dec_response_to_sustained_overload/ruling_degraded_mode_through_a_mode_port.yaml
+                          at brief).
+                        - A change set applied to a stopped unit was
+                          answered ok, marked
+                          pending, after 2 s, and a later one silently replaces it, which the
+                          review found by reading the code (review of 2026-10-29, area report
+                          trial-engine, TE-18; trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function hook_apply).
+                        - Flexibility asks whether the design can be
+                          scaled up or down as the
+                          load changes (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question).
+                        Strength: moderate; control of one unit could
+                        still serve the upkeep of one process, which
+                        no record asks for yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_scope_of_stop_and_start
+    guid_target:        dec_bdd3f19c3750475c9940069f54bd28bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_and_start_act_on_the_whole_host
+    guid_target:        opt_1407871f16d444f798a21d173c1d5de1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_ends_the_run
+    guid_target:        opt_d76e2cd8d1ef4ebc8830ea56b67ee6d9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_and_start_act_on_one_unit
+    guid_target:        opt_43fd6818520348c1a76169fe5e19c199
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

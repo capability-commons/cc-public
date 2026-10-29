@@ -1,0 +1,82 @@
+id_self:                ann_one_value_per_actor_message_as_the_icds_read
+guid_self:              ann_5e19c0fc7c2c47479fa81e99524ac4ee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One value per actor message, as the actor ICDs read today
+brief:                  |
+                        One message for each item is how the ICDs read
+                        today, if not the upheld option: an actor
+                        message holds a value of the type its input
+                        port declares, and an actor is invoked once
+                        for each message admitted. The trial built
+                        that reading, with an outside source that
+                        sends one value at a time, and its log called
+                        the point unspecified. Under one message for
+                        each local step, the actor message ICD must
+                        say that a message holds a bounded array, an
+                        actor fed both from outside and from a Kahn
+                        edge gets values in two shapes, or arrays of
+                        one from outside, and its inbox must hold the
+                        largest capacity of its sources. Per-item, for
+                        its part, needs the upheld option amended.
+description:            |
+                        Sources:
+                        - An actor message carries a value of the type
+                          the input port of the
+                          actor declares
+                          (_data/interface_control_document/icd_dataflow_actor_message.yaml
+                          at surface.data.artifact.artifact.message.content).
+                        - An actor is invoked once for each message
+                          admitted to it in a gap
+                          (_data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.invocation).
+                        - The trial's outside send takes exactly one
+                          value of the inbox's
+                          item size (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/actors.cpp, function hook_send).
+                        - The trial's log called the Kahn-into-actor
+                          unit a gap with no spec,
+                          and the review found that it contradicts the upheld option (review
+                          of 2026-10-29, CC-027 and CC-057).
+                        - The reviewer recommends per-step as the
+                          smaller change (review of
+                          2026-10-29, section 7, W-T4).
+                        - WTP will regenerate the trial from the
+                          lessons of the review, and
+                          the next generation should be helped by the records being clear
+                          (WTP, 2026-10-29).
+                        - Maintainability asks how far a change in one
+                          part spreads to others
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question).
+                        Strength: moderate; it bears on wording and on
+                        the shape of actor code, not on behavior,
+                        where the evidence leans the other way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_unit_of_a_message_from_kahn_into_an_actor
+    guid_target:        dec_34a3e6443db64323b25afb5e97e31f32
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_actor_message_for_each_item
+    guid_target:        opt_264902d28951466e89b976380217299b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_actor_message_for_each_local_step
+    guid_target:        opt_adc12271649948d2901013fab011622a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

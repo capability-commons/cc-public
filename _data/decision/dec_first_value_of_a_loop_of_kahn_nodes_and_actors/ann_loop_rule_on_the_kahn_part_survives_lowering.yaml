@@ -1,0 +1,107 @@
+id_self:                ann_loop_rule_on_the_kahn_part_survives_lowering
+guid_self:              ann_fd15956c8d7548f59c0cf70a6c87bc12
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loop rule computed on the Kahn part, unchanged by lowering
+brief:                  |
+                        Under the absent option, whether a feedback
+                        edge needs a default depends only on loops
+                        among Kahn nodes, that is, on the graph with
+                        the edges into actors left out, the graph the
+                        trial's ordering check already used. Under the
+                        needs-a-default option, a loop of actors
+                        placed across two units gains an inserted
+                        sender and receiver and becomes a mixed loop
+                        that the lowered check refuses for a default
+                        the authored loop never needed, as lowering's
+                        own wiring broke the build with a mode
+                        controller in the trial. The checks, as read,
+                        also show the cost of the present wording: the
+                        trial's passes a mixed loop with no edge
+                        marked and fails it once an author marks an
+                        edge with a Kahn end as feedback with no
+                        default, and dev's refuses it unmarked.
+description:            |
+                        Sources:
+                        - Wherever placement splits an edge, lowering
+                          puts a sender and a
+                          receiver on it, each invoked once in every local step
+                          (_data/requirement/rqt_lowering_inserts_transport.yaml at brief;
+                          _data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.sender.dataflow_step.invocation and
+                          surface.receiver.dataflow_step.invocation).
+                        - The needs-a-default option requires a
+                          default of any loop that
+                          passes through a Kahn node
+                          (_data/decision/dec_first_value_of_a_loop_of_kahn_nodes_and_actors/opt_mixed_loop_needs_a_default.yaml
+                          at brief).
+                        - An inserted Kahn node brings a loop of
+                          actors under the default
+                          rule
+                          (_data/decision/dec_first_value_of_an_actor_loop/ann_inserted_kahn_node_changes_the_rule_of_a_loop.yaml
+                          at brief).
+                        - Lowering's own feedback edge from the mode
+                          controller failed the
+                          lowered default check (review of 2026-10-29, CC-023).
+                        - The trial's ordering check leaves out edges
+                          into actors, and its
+                          default check exempts a feedback edge only when both ends are
+                          actors, as read from the code (trial 2c777ab9,
+                          src/cctool/dataflow/checks.py, functions order_loops and
+                          _check_loops).
+                        - Dev's check refuses any loop with no
+                          feedback edge and knows nothing
+                          of actors (repository src/cctool/check/check.lp, rule
+                          feedforward_loop).
+                        - Development will move nodes between units
+                          until they are balanced
+                          (WTP, 2026-10-28, as recorded in
+                          _data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at description).
+                        - Flexibility asks whether the design can be
+                          scaled as the load
+                          changes; maintainability asks how far a change in one part spreads
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question and
+                          entries.concern_maintainability.question).
+                        ASSUMPTION: an edge between two actors in
+                        different units is split by transport like any
+                        other edge; the records do not yet say how
+                        actors in two units exchange messages.
+                        Strength: moderate; it rests on lowering
+                        inserting Kahn nodes into paths between
+                        actors, which the records imply but do not
+                        state for actors.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

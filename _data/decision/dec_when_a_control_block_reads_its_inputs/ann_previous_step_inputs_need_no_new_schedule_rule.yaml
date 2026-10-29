@@ -1,0 +1,114 @@
+id_self:                ann_previous_step_inputs_need_no_new_schedule_rule
+guid_self:              ann_76c62588e4f54070b8c99586d4aad4cf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dependency order that puts a block with only feedback inputs first
+brief:                  |
+                        Under the previous-step option every input of
+                        the unit control block is a feedback edge, so
+                        the block has no input of the same local step
+                        and plain dependency order can run it first.
+                        The repair is two defaults declared on ports
+                        that already exist, under the ruled default
+                        rule, and the trial already wires the mode as
+                        feedback and reads a count of 0 on it as
+                        normal mode. The other two options each need a
+                        scheduling rule of their own: the feeding
+                        nodes, then the block, then the rest, with an
+                        exemption written into
+                        rqt_control_block_writes_first; or a new node
+                        kind with a half that must run last.
+description:            |
+                        Sources:
+                        - The block of a unit runs first in each local
+                          step and reads the
+                          inputs mode_in and host_readings_in
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at surface.unit.dataflow_step.invocation and
+                          surface.unit.dataflow_step.input).
+                        - Wired as the ICDs describe, block, mode
+                          controller and mode_in form
+                          a loop that check.lp refuses with feedforward edges, as reproduced,
+                          and that needs a default no port declares with a feedback edge
+                          (review of 2026-10-29, CC-053).
+                        - The trial's schedule leaves feedback edges
+                          out of the dependencies
+                          and runs a ready control node before other ready nodes, as read
+                          from the code (trial 2c777ab9, src/cctool/dataflow/generate.py,
+                          function unit_order).
+                        - The trial joins the mode controller to
+                          mode_in by a feedback edge,
+                          and a build with a mode controller was refused because neither
+                          port declared a default (trial 2c777ab9,
+                          src/cctool/dataflow/lower.py, function _control_blocks; review of
+                          2026-10-29, CC-023, reproduced).
+                        - The trial's block leaves the mode at 0,
+                          normal, when mode_in holds
+                          no items (trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step).
+                        - A feedback edge needs an end that declares
+                          it can supply a default
+                          (_data/decision/dec_default_values_on_feedback_edges/ruling_default_from_a_port_that_declares_it.yaml
+                          at brief).
+                        - The runs-after option exempts the feeding
+                          nodes from reading the
+                          control message of the same step
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_runs_after_the_nodes_that_feed_it.yaml
+                          at brief); the split option adds a reader that runs last
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_split_into_writer_and_reader.yaml
+                          at brief).
+                        - The reviewer recommends the previous-step
+                          reading (review of
+                          2026-10-29, section 7, W-T3).
+                        - Maintainability asks how far a change in one
+                          part spreads to
+                          others (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question).
+                        ASSUMPTION: in the unit that holds the host
+                        block, the host block and the unit block are
+                        both control nodes with no input of the step,
+                        so one stated tie-break, unit block first, is
+                        still needed. Strength: strong; it rests on a
+                        reproduced contradiction and on trial code
+                        that, read rather than run, would need the two
+                        defaults and the host-readings join marked
+                        feedback; no build with them was tried.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_runs_after_the_nodes_that_feed_it
+    guid_target:        opt_16803251208c4f799160fa657833e16b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_split_into_writer_and_reader
+    guid_target:        opt_6960e3eeabb7460d98a9a0e607dea10f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

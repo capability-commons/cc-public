@@ -1,0 +1,97 @@
+id_self:                ann_mixed_loop_default_only_replaces_the_first_empty_token
+guid_self:              ann_466fda30e5524af696267d5ccb6a013e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Default at an actor crossing that only replaces the first empty token
+brief:                  |
+                        In a loop through an actor, the edge from the
+                        actor into a Kahn node gives an explicit empty
+                        token in any local step in which the actor
+                        sent nothing, so the Kahn read never waits and
+                        the loop cannot deadlock; the small model that
+                        the review links to the actor loop ruling
+                        showed the Kahn node reading the empty token
+                        at step 0 and the actor's replies after. A
+                        required default would therefore change only
+                        the first local step, and the Kahn node must
+                        still handle the empty token at every later
+                        step in which the actor has not answered. What
+                        the default puts there is a value no actor
+                        sent, which the Kahn node cannot tell from a
+                        real answer.
+description:            |
+                        Sources:
+                        - A crossing turns the messages that arrived
+                          into one token at the
+                          start of a step, with an explicit empty token when none arrived
+                          (_data/decision/dec_crossing_between_kahn_and_actors/opt_crossing_policy_on_the_edge.yaml
+                          at brief).
+                        - The default rule exists because a loop with
+                          no first value
+                          deadlocks at its first local step
+                          (_data/requirement/rqt_checks_feedback_default.yaml at rationale).
+                        - In the model of a Kahn node and an actor in
+                          a loop with no first
+                          value anywhere, the Kahn node read the empty token at step 0 and
+                          the reply to step s at step s+1
+                          (/mnt/project-files/notes/literature/actor-loop-experiments.py,
+                          experiment E4, run again on 2026-10-29); the script only states,
+                          without modeling it, that a loop of Kahn nodes alone with no first
+                          value never runs a step (E5). The review notes that no record
+                          holds the experiments the actor loop ruling cites, and that this
+                          script is only in shared notes (review of 2026-10-29, CC-064).
+                        - The trial zeroes an actor's outputs when its
+                          gap opens and copies
+                          them into Kahn inputs in the next local step, and its loop check
+                          treats an edge into an actor as closing no loop (review of
+                          2026-10-29, area report trial-engine, section 3; trial 2c777ab9,
+                          src/cctool/dataflow/checks.py, function order_loops).
+                        - The empty crossing token already opens a
+                          mixed loop
+                          (_data/decision/dec_first_value_of_an_actor_loop/ann_empty_crossing_token_already_opens_a_mixed_loop.yaml
+                          at brief).
+                        - Functional suitability asks whether the
+                          design does anything it
+                          should not; safety asks how the design avoids each hazard
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question and
+                          entries.concern_safety.question).
+                        ASSUMPTION: a Kahn node that reads an actor's
+                        answer, such as a planner's route, acts on a
+                        default as it would on an answer. Strength:
+                        moderate; it holds while every crossing policy
+                        states its empty token, and the experiment is
+                        a model of the rulings, not the engine.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

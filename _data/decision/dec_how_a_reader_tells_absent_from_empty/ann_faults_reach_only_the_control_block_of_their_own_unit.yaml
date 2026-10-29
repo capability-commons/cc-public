@@ -1,0 +1,96 @@
+id_self:                ann_faults_reach_only_the_control_block_of_their_own_unit
+guid_self:              ann_f3914b91009a4f3d8721732d3e55f456
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faults reported only to the control block of their own unit
+brief:                  |
+                        The engine reports a fault to the control
+                        block of the unit where it happens. When the
+                        producer of a safety port and its reader sit
+                        in different units, an overflow at the
+                        producer reaches the producer's control
+                        message, not the reader's, and no record
+                        carries events between units; only the
+                        receiver in the reader's unit sees a sender
+                        that went silent. Whether a reader can see its
+                        input's fault would then change whenever a
+                        node moves to another unit, which development
+                        will do until the units are balanced. A
+                        validity field, or an empty message read as
+                        unknown, travels with the message through the
+                        sender and the receiver, as an end-of-stream
+                        token on the data channel does.
+description:            |
+                        Sources:
+                        - Overflows and overruns are reported as an
+                          event to the control
+                          block of the execution unit
+                          (_data/requirement/rqt_executor_reports_faults.yaml at object).
+                        - The engine reports the events a replay needs
+                          to the control block
+                          of its own execution unit, as it does other readings
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief).
+                        - Lowering puts a sender and a receiver on
+                          every edge split by
+                          placement (_data/requirement/rqt_lowering_inserts_transport.yaml
+                          at object).
+                        - Development will move nodes between units
+                          until they are balanced
+                          (WTP, 2026-10-28, as recorded in
+                          _data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at description).
+                        - An end-of-stream signal sent on a separate
+                          channel gave wrong
+                          output when delays changed the order of arrival, and the paper
+                          notes this is avoided by carrying control tokens on the data
+                          channel (Tretter et al. 2015,
+                          Executing dataflow actors as Kahn processes, section 4.4, as
+                          summarized in
+                          /mnt/project-files/notes/literature/part-2/2015-executing-dataflow-actors-as-kahn-processes.md).
+                        - Flexibility asks whether the design can be
+                          scaled as the load
+                          changes; reliability asks what happens when a part or an input is
+                          faulty (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question and
+                          entries.concern_reliability.question).
+                        Strength: strong where safety ports cross
+                        units; nil for a graph in one unit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fault_read_from_the_control_message
+    guid_target:        opt_2565599856474be697508421e54e0579
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

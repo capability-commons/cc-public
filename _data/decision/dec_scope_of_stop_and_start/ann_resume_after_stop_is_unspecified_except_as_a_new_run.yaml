@@ -1,0 +1,104 @@
+id_self:                ann_resume_after_stop_is_unspecified_except_as_a_new_run
+guid_self:              ann_cf06334cd6e0434295b9a00d4902bf77
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resume after a stop that the records define only as a new run
+brief:                  |
+                        The records already fix how units start: at
+                        their first local step. A stop that ends the
+                        run fits that word for word, and resuming
+                        becomes a new run with its own recording, as
+                        run records are ruled. The one-unit option
+                        resumes a unit at its next local step, against
+                        the start convention of the runtime control
+                        ICD. The whole-host option restarts every unit
+                        together from the first local step, though
+                        units share no common step, without saying
+                        whether node state, messages still queued
+                        between units and feedback defaults start
+                        afresh. Under either, a recording that spans a
+                        stop and a start needs the step of each, which
+                        the replay ruling does not list, and in the
+                        trial a step missing from the recording was
+                        enough to make replay diverge.
+description:            |
+                        Sources:
+                        - Execution units start at their first local
+                          step
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.artifact.start.convention).
+                        - The one-unit option resumes the unit at the
+                          next local step, and
+                          the whole-host option begins every unit together from the first
+                          local step
+                          (_data/decision/dec_scope_of_stop_and_start/opt_stop_and_start_act_on_one_unit.yaml
+                          at brief;
+                          _data/decision/dec_scope_of_stop_and_start/opt_stop_and_start_act_on_the_whole_host.yaml
+                          at brief).
+                        - Units have no common step
+                          (_data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at brief).
+                        - A replay log holds outside inputs, the gap
+                          that admitted each, and
+                          the step of each change set and swap
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief).
+                        - The record of a run is a run item in the
+                          tree
+                          (_data/decision/dec_shape_of_a_dataflow_run/ruling_run_item_in_the_tree.yaml
+                          at brief).
+                        - A failed local step left no rows, and replay
+                          then diverged on every
+                          later step (review of 2026-10-29, CC-012).
+                        - In studies of actor systems, a few percent
+                          of bugs came from
+                          coordination at shutdown and at startup (Menard et al. 2023,
+                          High-performance deterministic concurrency using Lingua Franca,
+                          section 2, as summarized in
+                          /mnt/project-files/notes/literature/round-2/2023-high-performance-deterministic-concurrency-lingua-franca.md).
+                        - Maintainability asks how readily a newcomer
+                          understands the design
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question).
+                        Strength: moderate; a whole-host restart that
+                        resets everything is in effect a new run
+                        without a new recording, so the gap between
+                        those two options lies mostly in the records.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_scope_of_stop_and_start
+    guid_target:        dec_bdd3f19c3750475c9940069f54bd28bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_ends_the_run
+    guid_target:        opt_d76e2cd8d1ef4ebc8830ea56b67ee6d9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_and_start_act_on_one_unit
+    guid_target:        opt_43fd6818520348c1a76169fe5e19c199
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_and_start_act_on_the_whole_host
+    guid_target:        opt_1407871f16d444f798a21d173c1d5de1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

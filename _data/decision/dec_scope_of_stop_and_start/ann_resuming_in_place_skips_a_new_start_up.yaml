@@ -1,0 +1,75 @@
+id_self:                ann_resuming_in_place_skips_a_new_start_up
+guid_self:              ann_d8751f124aa5481aab19f5cdd06644c9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resume in place without a second start-up
+brief:                  |
+                        A stop that ends the run makes every resume a
+                        full start-up: buffers and state set aside
+                        from the declarations before the first local
+                        step, every transport connection opened again,
+                        a new recording begun. The one-unit and
+                        whole-host options can keep these across a
+                        stop, so a pause and resume costs little.
+                        Nothing in the records yet asks for a quick
+                        resume, so the cost counts only if pausing
+                        turns out to be a common use.
+description:            |
+                        Sources:
+                        - Memory for every buffer and every state is
+                          allocated before the
+                          first local step, from the declarations
+                          (_data/requirement/rqt_memory_before_first_step.yaml at object and
+                          qualifier).
+                        - The trial opens its transport connections,
+                          with a blocking accept
+                          and a connect that retries, before runtime control starts (review
+                          of 2026-10-29, CC-016; trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/transport.cpp, function
+                          transport_open).
+                        - Under the stop-ends-run option resuming
+                          means a new run with a new
+                          recording
+                          (_data/decision/dec_scope_of_stop_and_start/opt_stop_ends_the_run.yaml
+                          at brief).
+                        - Response time is a measure of performance
+                          efficiency
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure).
+                        ASSUMPTION: Patrol has no drafted use for
+                        pausing and resuming the engine. Strength:
+                        weak; start-up is paid once per run, and it
+                        matters only for frequent pauses.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_scope_of_stop_and_start
+    guid_target:        dec_bdd3f19c3750475c9940069f54bd28bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_and_start_act_on_one_unit
+    guid_target:        opt_43fd6818520348c1a76169fe5e19c199
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_and_start_act_on_the_whole_host
+    guid_target:        opt_1407871f16d444f798a21d173c1d5de1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_ends_the_run
+    guid_target:        opt_d76e2cd8d1ef4ebc8830ea56b67ee6d9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

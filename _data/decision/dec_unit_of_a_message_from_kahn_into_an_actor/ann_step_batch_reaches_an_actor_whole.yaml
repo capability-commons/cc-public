@@ -1,0 +1,83 @@
+id_self:                ann_step_batch_reaches_an_actor_whole
+guid_self:              ann_e9507660bb1d4f809eb39aaf8bdb8610
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Items of one step handed to an actor together
+brief:                  |
+                        Under one message for each local step an actor
+                        receives all the items a Kahn node wrote in
+                        one step together, so an actor that must act
+                        on everything one camera frame produced, such
+                        as a map update from all its detections, sees
+                        exactly that set. Under one message for each
+                        item the actor sees one item per invocation,
+                        and nothing marks where one step's items end,
+                        since the trial's messages carry a sequence
+                        number from their source and no step. An actor
+                        that hands its input to a library that takes a
+                        batch must then gather items across
+                        invocations without knowing when the batch is
+                        complete.
+description:            |
+                        Sources:
+                        - The trial invokes an actor once per message
+                          with an inbox of one,
+                          and numbers messages per source (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/actors.cpp, function actors_gap;
+                          /mnt/project-files/notes/dataflow-trial/process-log.md, phase 4).
+                        - A varying data rate becomes a varying number
+                          of items, not a
+                          varying number of messages
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml
+                          at description).
+                        - In-order delivery does not survive an
+                          inserted proxy, so actor
+                          messages that pass one need step or sequence tags (Menard et al.
+                          2023, High-performance deterministic concurrency using Lingua
+                          Franca, section 2, as summarized in
+                          /mnt/project-files/notes/literature/round-2/2023-high-performance-deterministic-concurrency-lingua-franca.md).
+                        - Functional suitability asks whether each
+                          function gives the right
+                          result; dependency risk asks what the design takes from third
+                          parties (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question and
+                          entries.concern_dependency_risk.question).
+                        ASSUMPTION: some actors wrap a third-party
+                        library, such as a mapping or planning
+                        library, whose calls take a whole batch.
+                        Strength: moderate for function; weak for
+                        dependency risk, which rests on libraries not
+                        yet chosen.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_unit_of_a_message_from_kahn_into_an_actor
+    guid_target:        dec_34a3e6443db64323b25afb5e97e31f32
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_actor_message_for_each_local_step
+    guid_target:        opt_adc12271649948d2901013fab011622a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_actor_message_for_each_item
+    guid_target:        opt_264902d28951466e89b976380217299b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

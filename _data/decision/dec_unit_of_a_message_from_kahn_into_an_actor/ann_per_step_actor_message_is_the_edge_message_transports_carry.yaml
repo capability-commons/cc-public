@@ -1,0 +1,78 @@
+id_self:                ann_per_step_actor_message_is_the_edge_message_transports_carry
+guid_self:              ann_0202ad6a76954574866342d88546354a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Crossing into an actor sized by the capacity transform alone
+brief:                  |
+                        Capacities are derived by a transform when a
+                        variant is generated, from each producer's
+                        maximum rate. Under one message for each local
+                        step, the crossing into an actor holds one
+                        message per Kahn edge per gap, sized by the
+                        capacity of the port it comes from, so a
+                        variant that raises a camera's rate or moves
+                        nodes to other units resizes it with the
+                        transform that already exists. Under one
+                        message for each item, each actor's queue
+                        length must also be derived from the maximum
+                        items of every Kahn edge that feeds it, on top
+                        of its outside sources, a second derivation to
+                        run again whenever an upstream rate changes;
+                        the trial skipped it with one fixed queue of
+                        1024 for all actors.
+description:            |
+                        Sources:
+                        - Every producer has a stated maximum rate,
+                          capacity is derived by a
+                          transform in variant generation, and ports that are not sensors
+                          declare maximum items per step, propagated downstream (WTP,
+                          2026-10-28).
+                        - The capacity of each port is derived by a
+                          transform from the
+                          maximum rates its producers state
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/ruling_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief).
+                        - A variant can be generated with as many
+                          processes as a host has
+                          cores, so much of the dynamism goes into rewriting the graph
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief).
+                        - The trial fixes one queue of 1024 messages
+                          shared by all actors
+                          (trial 2c777ab9, src/cctool/dataflow/engine/src/actors.cpp,
+                          constant QUEUE_SIZE).
+                        - Flexibility asks whether the design can be
+                          scaled up or down as the
+                          load changes (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question).
+                        Strength: weak to moderate; both derivations
+                        are mechanical, and the difference is one more
+                        rule for each actor.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_unit_of_a_message_from_kahn_into_an_actor
+    guid_target:        dec_34a3e6443db64323b25afb5e97e31f32
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_actor_message_for_each_local_step
+    guid_target:        opt_adc12271649948d2901013fab011622a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_actor_message_for_each_item
+    guid_target:        opt_264902d28951466e89b976380217299b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

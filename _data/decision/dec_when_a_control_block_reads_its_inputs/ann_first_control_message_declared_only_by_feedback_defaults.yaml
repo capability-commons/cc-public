@@ -1,0 +1,89 @@
+id_self:                ann_first_control_message_declared_only_by_feedback_defaults
+guid_self:              ann_1adaa6867ddf4cc5a27334ae1bf13a12
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  First control message declared only when the block's inputs lag
+brief:                  |
+                        Under the previous-step option the first local
+                        step is fully declared: the mode starts
+                        normal, the host readings start empty, and the
+                        check verifies that both defaults exist. Under
+                        the runs-after option the host block, the
+                        receiver of host readings and the mode
+                        controller run in the first local step before
+                        any control message exists, and in the trial a
+                        node that ran ahead of its block read an
+                        all-zero message at step 0. Under the split
+                        option the first writer depends on a handoff
+                        from a reader that has not yet run, and the
+                        option gives that handoff no first value. A
+                        start state that the records declare and the
+                        check verifies is one a safety case can cite.
+description:            |
+                        Sources:
+                        - The previous-step option declares the
+                          default normal on mode_in and
+                          an empty default on host_readings_in
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_reads_inputs_of_the_previous_step.yaml
+                          at brief).
+                        - A node is never invoked without a control
+                          message
+                          (_data/interface_control_document/icd_dataflow_control_message.yaml
+                          at surface.data.artifact.availability).
+                        - A node invoked before the control message
+                          would see stale time and
+                          modes (_data/requirement/rqt_control_block_writes_first.yaml at
+                          rationale).
+                        - In the trial, a probe that ran ahead of its
+                          unit's block read an
+                          all-zero control message at step 0 and the previous step's message
+                          after that (review of 2026-10-29, CC-001, reproduced).
+                        - The split option's writer runs first and
+                          takes what the reader
+                          handed over in the previous step
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_split_into_writer_and_reader.yaml
+                          at brief).
+                        - Safety asks what state the design falls back
+                          to when it fails
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question).
+                        ASSUMPTION: application modes carried in the
+                        control message may one day gate safety
+                        functions; today the mode only selects a
+                        cheaper path under overload. Strength:
+                        moderate; the hazard is a wrong mode or time
+                        in the first local step, and it would grow if
+                        modes gated safety functions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_runs_after_the_nodes_that_feed_it
+    guid_target:        opt_16803251208c4f799160fa657833e16b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_split_into_writer_and_reader
+    guid_target:        opt_6960e3eeabb7460d98a9a0e607dea10f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

@@ -1,0 +1,80 @@
+id_self:                ann_split_block_handoff_outside_any_declared_port
+guid_self:              ann_ae5e3c703ef34ad3a9b84096394172e6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Handoff into the privileged writer outside any declared port
+brief:                  |
+                        Under the split option the reader hands the
+                        block's inputs to the next step's writer. If
+                        that handoff is a declared feedback edge with
+                        a default, the option is the previous-step
+                        option with one node more; if it is anything
+                        else, it is a path into the one node
+                        privileged to read time and services that no
+                        port declares. The generated fuzz harness
+                        works from the declared interface, its inputs
+                        with a count of 0 included and its declared
+                        state, so it would never reach that path, and
+                        no check would see it. The previous-step and
+                        runs-after options keep every input of the
+                        block on declared ports.
+description:            |
+                        Sources:
+                        - Control blocks are the only nodes privileged
+                          to read time and
+                          runtime services
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief).
+                        - The generator writes each node kind's
+                          harness from its declared
+                          interface, decoding each input as a bounded array up to its
+                          capacity, a count of 0 included, with any mode or service port and
+                          a value of the declared state type
+                          (_data/decision/dec_fuzzing_of_a_single_node/opt_harness_generated_from_the_node_interface.yaml
+                          at brief;
+                          _data/decision/dec_fuzzing_of_a_single_node/ruling_harness_generated_from_the_node_interface.yaml
+                          at brief).
+                        - The state of a node is held by the engine
+                          and handed to that node
+                          at each invocation
+                          (_data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.state), so declared state carries
+                          nothing from one node to another.
+                        - The split option does not say how the reader
+                          hands its values to
+                          the writer
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_split_into_writer_and_reader.yaml
+                          at brief).
+                        - Security asks what an attacker can reach
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question).
+                        Strength: weak; it turns on how the handoff
+                        would be built, which the option leaves open.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_split_into_writer_and_reader
+    guid_target:        opt_6960e3eeabb7460d98a9a0e607dea10f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

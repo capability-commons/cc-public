@@ -1,0 +1,102 @@
+id_self:                ann_same_step_host_readings_exist_only_in_the_host_block_unit
+guid_self:              ann_014a9d9002a0482bb426259180ee06b4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same-step host readings that exist only in the host block's unit
+brief:                  |
+                        The gain the runs-after option offers, host
+                        readings of this local step, exists only in
+                        the unit that holds the host block. Every
+                        other unit gets them through an inserted
+                        receiver, and since local steps of different
+                        units share no step, the block there can only
+                        wait for the next message to arrive, with
+                        every node of its unit behind it. The trial
+                        shows what a waiting crossing costs: with no
+                        user edge between units, the lossless
+                        host-readings crossing alone held a 10 ms unit
+                        to the 50 ms period of another and gave it
+                        overruns that can push the mode controller
+                        into degraded mode. Under the previous-step
+                        option the readings are the value last
+                        received, so the block itself never waits on
+                        another unit, and moving the host block or a
+                        mode controller to another unit leaves the
+                        order unchanged.
+description:            |
+                        Sources:
+                        - The host block runs in the unit it is placed
+                          in and passes its
+                          readings to the blocks of every unit of its host
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at description and surface.host.dataflow_step.invocation).
+                        - Lowering puts a sender and a receiver on
+                          every edge whose ends lie
+                          in different units
+                          (_data/requirement/rqt_lowering_inserts_transport.yaml at object).
+                        - Steps are local to a unit, and between units
+                          an edge is a bounded
+                          queue with no common step
+                          (_data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at brief).
+                        - Development will move nodes between units
+                          until they are balanced
+                          (WTP, 2026-10-28, as recorded in
+                          _data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at description).
+                        - The trial put the host block in the first
+                          unit; with no user edge
+                          between units, a 10 ms unit was held to 50 ms by the lossless
+                          host-readings channel and reported overruns (review of 2026-10-29,
+                          CC-011, reproduced; trial 2c777ab9, src/cctool/dataflow/lower.py,
+                          function _control_blocks).
+                        - Whether a receiver waits is the question of
+                          an open decision of
+                          its own
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/dec_how_a_receiver_takes_values_from_another_unit.yaml
+                          at brief).
+                        - Flexibility asks whether the design can be
+                          scaled as the load
+                          changes; reliability asks what happens when a part is faulty
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question and
+                          entries.concern_reliability.question).
+                        Strength: moderate; whether the host-readings
+                        crossing waits belongs to the receiver
+                        decision, and this point is only that the
+                        runs-after option needs the wait to keep its
+                        promise while the previous-step option does
+                        not.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_runs_after_the_nodes_that_feed_it
+    guid_target:        opt_16803251208c4f799160fa657833e16b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

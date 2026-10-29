@@ -1,0 +1,85 @@
+id_self:                ann_platform_reads_fall_after_the_control_message
+guid_self:              ann_a8a65015a5ff4278b25d186732f874bf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Platform service calls placed after the control message is written
+brief:                  |
+                        The host block is the node that reads host
+                        services from the platform: the operating
+                        system and vendor services such as a thermal
+                        sensor. Under the previous-step option the
+                        unit block has no input of the step, and
+                        writes-first places it before the host block
+                        in the unit they share, so the platform calls
+                        come after the control message is written: a
+                        changed or missing service affects only the
+                        next step's readings, though a slow call still
+                        lengthens the step. Under the runs-after
+                        option those calls sit ahead of the control
+                        message for every node of that unit. The split
+                        option orders them as the previous-step option
+                        does.
+description:            |
+                        Sources:
+                        - The host block reads what belongs to the
+                          host, such as processor
+                          temperature
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at description).
+                        - The trial's host block opens a sysfs thermal
+                          file and calls
+                          getloadavg in every local step, while the unit block reads only
+                          the clocks (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/platform_posix.cpp, functions
+                          df_platform_cpu_temp_mc and df_platform_load_permille;
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, functions
+                          control_block_host_step and control_block_unit_step).
+                        - That call allocates in every step of the
+                          unit holding the host
+                          block (review of 2026-10-29, CC-009, reproduced).
+                        - The block writes the control message before
+                          any other node of its
+                          unit is invoked
+                          (_data/requirement/rqt_control_block_writes_first.yaml at
+                          qualifier).
+                        - Dependency risk asks what happens if
+                          something taken from a third
+                          party changes or is withdrawn (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question).
+                        Strength: weak; the calls are short, and
+                        reading the platform on a thread of its own,
+                        as the review proposes for CC-009, would
+                        shrink the difference.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_split_into_writer_and_reader
+    guid_target:        opt_6960e3eeabb7460d98a9a0e607dea10f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_runs_after_the_nodes_that_feed_it
+    guid_target:        opt_16803251208c4f799160fa657833e16b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

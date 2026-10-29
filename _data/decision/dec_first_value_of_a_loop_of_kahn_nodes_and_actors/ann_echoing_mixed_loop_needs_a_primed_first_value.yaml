@@ -1,0 +1,86 @@
+id_self:                ann_echoing_mixed_loop_needs_a_primed_first_value
+guid_self:              ann_29ebe68ce81c4f9791e9fc49325e51e1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Mixed loop that never starts when its nodes only pass on what arrives
+brief:                  |
+                        A mixed loop starts on its own only if some
+                        node in it writes without first receiving. In
+                        the model the Kahn node sent its step number
+                        in every step, so the loop ran from the first
+                        gap. A Kahn node that passes on only what it
+                        receives, with an actor that only replies,
+                        would read empty tokens for ever, as a loop of
+                        actors with no first message stayed idle in
+                        every gap, and nothing would report it. A
+                        default that holds an item primes such a loop,
+                        and the needs-a-default option requires some
+                        end to supply a default. Under the absent
+                        option a loop meant to run on its own must
+                        rely on a node that writes unprompted, or on
+                        an actor's start handler, which no record yet
+                        defines.
+description:            |
+                        Sources:
+                        - A loop of actors with no first message
+                          handled nothing in six gaps,
+                          and the mixed loop ran because its Kahn node wrote in every step
+                          (/mnt/project-files/notes/literature/actor-loop-experiments.py,
+                          experiments E1 and E4, run again on 2026-10-29).
+                        - Under the absent option the Kahn nodes read
+                          the empty token until
+                          the actor first sends
+                          (_data/decision/dec_first_value_of_a_loop_of_kahn_nodes_and_actors/opt_mixed_loop_may_start_absent.yaml
+                          at brief).
+                        - A loop of actors with no first message is a
+                          dead loop that nothing
+                          reports
+                          (_data/decision/dec_first_value_of_an_actor_loop/ann_actor_loop_with_no_first_message_may_never_start.yaml
+                          at brief).
+                        - The source of a feedback edge may emit a
+                          first token, or its
+                          destination use its default
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief).
+                        - The actor loop ruling relies on an actor's
+                          start handler, which no
+                          ICD or requirement defines (review of 2026-10-29, CC-064).
+                        - Reliability asks how often the design fails,
+                          and for how long
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question).
+                        ASSUMPTION: some mixed loop in Patrol, such as
+                        a request forwarded to an actor and its reply,
+                        passes on only what arrives. Strength:
+                        moderate; it falls away if the declared
+                        default is empty, which primes nothing, or if
+                        the absent option gains a check that some node
+                        in each mixed loop writes without input.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

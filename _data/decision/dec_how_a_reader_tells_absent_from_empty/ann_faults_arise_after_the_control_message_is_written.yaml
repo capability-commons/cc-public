@@ -1,0 +1,101 @@
+id_self:                ann_faults_arise_after_the_control_message_is_written
+guid_self:              ann_6b11760953a248d98fb4efa0385192d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faults that arise after the step's control message is written
+brief:                  |
+                        The control message of a local step is written
+                        once, by the control block, before any other
+                        node of the unit runs. A message is dropped or
+                        cut when its producer overflows later in that
+                        same step, and a silent sender is found when
+                        the receiver runs, so the fault does not yet
+                        exist when the control message is written. For
+                        the reader to find it there before it runs,
+                        the engine must change the control message
+                        part way through the step, against its ICD and
+                        against the replay of recorded control
+                        messages, or deliver it a step late, as the
+                        trial's code does. Faults for each input would
+                        also make the layout of the control message
+                        depend on the graph, and filling it is engine
+                        behavior that the minimal engine ruling admits
+                        only as a recorded exception. A field in the
+                        edge message, or the empty message itself, is
+                        written where the fault happens.
+description:            |
+                        Sources:
+                        - The control message is produced once in each
+                          local step, by the
+                          control block, before any other node of the unit is invoked; it is
+                          a value of one fixed-size type; on replay the block writes the
+                          recorded message so every node sees what it saw
+                          (_data/interface_control_document/icd_dataflow_control_message.yaml
+                          at surface.data.artifact.production,
+                          surface.data.artifact.artifact.control_message.encoding and
+                          surface.data.artifact.determinism).
+                        - The control block samples time, modes and
+                          readings once, before
+                          the step, and every node of the unit sees the same values
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_control_message_sampled_once_at_the_step_boundary.yaml
+                          at brief).
+                        - The fault option has the engine fill in the
+                          faults of a reader's
+                          inputs before the reader runs
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_fault_read_from_the_control_message.yaml
+                          at brief).
+                        - The trial applies a port's fail-safe as soon
+                          as the producing node
+                          returns, part way through the step (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, function overflow).
+                        - The engine takes on a behavior only with a
+                          recorded decision and a
+                          measured budget
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief).
+                        - Maintainability asks how far a change in one
+                          part spreads to others
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question).
+                        Strength: strong; it follows from the ICD and
+                        from the requirement that the block writes
+                        first, and it would fall only if the fault
+                        option meant the faults of the step before.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fault_read_from_the_control_message
+    guid_target:        opt_2565599856474be697508421e54e0579
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

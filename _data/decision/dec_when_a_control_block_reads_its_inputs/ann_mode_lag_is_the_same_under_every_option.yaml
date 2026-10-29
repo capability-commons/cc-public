@@ -1,0 +1,86 @@
+id_self:                ann_mode_lag_is_the_same_under_every_option
+guid_self:              ann_b58dc1192f324a0b987419b73fa3d5ef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Same lag from overrun to mode under all three options
+brief:                  |
+                        Trace an overrun in local step k. Under the
+                        previous-step option the block reports it at
+                        k+1, the mode controller acts at k+1, and the
+                        block hands the new mode to every node at k+2.
+                        Under the runs-after option the mode
+                        controller at k+1 still reads the message of
+                        step k, which does not yet hold the overrun,
+                        so it acts at k+2 and the block passes the
+                        mode on in that same step: k+2 again. The
+                        split option also gives k+2. The runs-after
+                        option buys freshness only for host readings,
+                        by one local step, and only in the unit that
+                        holds the host block.
+description:            |
+                        Sources:
+                        - The mode controller reads the control
+                          message, which carries the
+                          overruns, and writes the mode flag
+                          (_data/interface_control_document/icd_dataflow_mode_controller.yaml
+                          at surface.step.dataflow_step.input and
+                          surface.step.dataflow_step.output).
+                        - Under the runs-after option a node that both
+                          feeds and reads the
+                          block, such as the mode controller, reads the previous step's
+                          message
+                          (_data/decision/dec_when_a_control_block_reads_its_inputs/opt_control_block_runs_after_the_nodes_that_feed_it.yaml
+                          at brief).
+                        - The trial counts an overrun after the step
+                          ends, and the block
+                          copies the count into the next control message (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, function run_unit;
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step).
+                        - The mode changes only after its condition
+                          has held for a set
+                          number of local steps, 5 by default in the trial
+                          (_data/requirement/rqt_mode_controller_hysteresis.yaml at brief;
+                          trial 2c777ab9,
+                          src/cctool/dataflow/standard/node_kind/mode_controller.yaml).
+                        - The lag of a mode switch must fit in the
+                          capacity margin
+                          (_data/decision/dec_response_to_sustained_overload/ann_mode_switch_lag_must_fit_in_the_capacity_margin.yaml
+                          at brief).
+                        - Response time is a measure of performance
+                          efficiency
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure).
+                        ASSUMPTION: host readings such as processor
+                        temperature change slowly next to a local step
+                        of about 33 ms, so one step of age costs
+                        little. Strength: moderate; derived by tracing
+                        the records and the trial, not measured.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_when_a_control_block_reads_its_inputs
+    guid_target:        dec_de7ae722f41c47d3a2407a0ac930da19
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_control_block_reads_inputs_of_the_previous_step
+    guid_target:        opt_038c490130054acd8a52b28b22158694
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_control_block_runs_after_the_nodes_that_feed_it
+    guid_target:        opt_16803251208c4f799160fa657833e16b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

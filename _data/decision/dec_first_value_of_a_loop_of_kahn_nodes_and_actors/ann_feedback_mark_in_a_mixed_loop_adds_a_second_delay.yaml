@@ -1,0 +1,77 @@
+id_self:                ann_feedback_mark_in_a_mixed_loop_adds_a_second_delay
+guid_self:              ann_40f9e4f09ec74767878506c8fc9f4526
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second step of delay when a mixed loop's mark lands on a Kahn edge
+brief:                  |
+                        A pass around a loop through an actor already
+                        takes one local step, since what a Kahn node
+                        writes in step s is handled in the gap after
+                        it and read in step s+1. Dev's check refuses
+                        any loop with no feedback edge, and the
+                        needs-a-default option does not say which edge
+                        of a mixed loop carries the default. If the
+                        mark lands on an edge between two Kahn nodes,
+                        that edge also reads the previous step, and
+                        each pass takes two local steps, about 66 ms
+                        at Patrol's camera rate instead of 33. Under
+                        the absent option the crossing can be the
+                        loop's only delay.
+description:            |
+                        Sources:
+                        - Actors run in the gaps between local steps,
+                          and an edge from actors
+                          to a Kahn node gives the one message the next local step reads
+                          (_data/decision/dec_how_actors_are_run/ruling_actors_between_steps.yaml
+                          at brief;
+                          _data/interface_control_document/icd_dataflow_actor_message.yaml
+                          at surface.data.artifact.batching).
+                        - A feedback edge carries the message of the
+                          previous local step
+                          (_data/requirement/rqt_executor_feedback_previous.yaml at object).
+                        - Dev's check refuses a loop of feedforward
+                          edges, with no exception
+                          for actors (repository src/cctool/check/check.lp, rule
+                          feedforward_loop).
+                        - At Patrol's camera rate of 30 Hz a local
+                          step is about 33 ms
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ann_admission_at_the_gap_start_adds_a_step_per_hop.yaml
+                          at brief).
+                        - Response time is a measure of performance
+                          efficiency
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure).
+                        ASSUMPTION: authors mark whichever edge is
+                        convenient, since nothing tells them to mark
+                        the crossing. Strength: weak to moderate; it
+                        vanishes if the default rule names the
+                        crossing from the actor as the edge that
+                        carries the default.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

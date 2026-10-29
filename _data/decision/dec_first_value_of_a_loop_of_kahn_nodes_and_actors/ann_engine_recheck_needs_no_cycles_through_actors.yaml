@@ -1,0 +1,74 @@
+id_self:                ann_engine_recheck_needs_no_cycles_through_actors
+guid_self:              ann_eac29b5c56bf4920b2f5da03b3bc69fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine recheck of change sets with no search through actors
+brief:                  |
+                        The engine repeats the checks that keep it
+                        safe on every change set it receives, since a
+                        change set could be stale or corrupted in
+                        transit. Under the absent option a change set
+                        that closes a loop through an actor with no
+                        default cannot stall the engine, because the
+                        crossing supplies an empty token, so nothing
+                        about such loops needs repeating. Under the
+                        needs-a-default option the engine must either
+                        search for loops through actor routes in every
+                        change set it receives, more code exposed to
+                        input from outside, or accept change sets that
+                        cctool would refuse, which the ruling that
+                        both check a change set means to avoid.
+description:            |
+                        Sources:
+                        - The engine does not trust a change set
+                          because cctool checked it,
+                          and repeats the checks that keep it safe, which are cheap to repeat
+                          (_data/requirement/rqt_dynamic_rechecks.yaml at brief and
+                          rationale).
+                        - A change set is checked by cctool before it
+                          is sent and by the
+                          runtime before it is applied
+                          (_data/decision/dec_change_set_at_a_step/ruling_change_set_checked_by_both.yaml
+                          at brief).
+                        - Crafted runtime control input has crashed
+                          the trial engine (review
+                          of 2026-10-29, CC-046).
+                        - Security asks what an attacker can reach and
+                          what it would cost
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question).
+                        ASSUMPTION: under either option the engine
+                        would recheck loops among Kahn nodes, since
+                        such a loop with no first value stalls a unit.
+                        Strength: weak; a search for loops is small
+                        code, and the engine's recheck list does not
+                        yet cover feedback defaults under either
+                        option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

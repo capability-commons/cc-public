@@ -1,0 +1,76 @@
+id_self:                ann_empty_first_value_needs_no_value_of_the_type
+guid_self:              ann_a8a26bfb423f47d7aa2c91c1740d32e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Empty first value that needs no value of the loop's type
+brief:                  |
+                        An empty token is a count of 0 and needs no
+                        value of the type the edge carries. A default
+                        needs a node that can make a value of that
+                        type, and some types may have no value that is
+                        right as a first value everywhere, such as a
+                        camera frame or a handle to a resource. Where
+                        such a type is defined by or wraps a
+                        third-party library, the needs-a-default
+                        option makes the loop's first value depend on
+                        that library's code at start-up and after
+                        every swap, and a change in the library
+                        changes it. The absent option takes nothing
+                        from the library for the first step of a mixed
+                        loop.
+description:            |
+                        Sources:
+                        - A node that can make a default value of a
+                          type makes every port of
+                          that type able to supply one, and the engine primes the edge again
+                          after a rewire or a version swap
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief).
+                        - An existing argument assumes that some
+                          types, such as a frame from
+                          a camera or a handle to a resource, have no value right as a first
+                          value everywhere
+                          (_data/decision/dec_default_values_on_feedback_edges/ann_first_value_chosen_per_use_not_per_type.yaml
+                          at description).
+                        - A count of 0 means nothing arrived
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml
+                          at surface.data.artifact.artifact.message.convention).
+                        - Dependency risk asks what happens if
+                          something taken from a third
+                          party changes (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question).
+                        ASSUMPTION: some type that crosses between
+                        actors and Kahn nodes in Patrol wraps a
+                        third-party library, such as a tensor of an
+                        inference runtime. Strength: weak; it rests on
+                        types not yet drafted, and it falls away if an
+                        empty default counts as a default under the
+                        needs-a-default option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_first_value_of_a_loop_of_kahn_nodes_and_actors
+    guid_target:        dec_5d5fe9732cd94c748ae9d32f4f76293b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mixed_loop_may_start_absent
+    guid_target:        opt_90a8c97d9dd645a183da2088fa9d2d44
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mixed_loop_needs_a_default
+    guid_target:        opt_6130da323cc74aa48b5e078565b8f51b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

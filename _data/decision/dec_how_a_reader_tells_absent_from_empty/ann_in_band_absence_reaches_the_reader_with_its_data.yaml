@@ -1,0 +1,108 @@
+id_self:                ann_in_band_absence_reaches_the_reader_with_its_data
+guid_self:              ann_1dc37e6c62954363aa6bbe38a5df6f05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Absence on a safety port carried in the message the reader holds
+brief:                  |
+                        When a message on a safety port is missing,
+                        dropped or cut, the argument behind the
+                        fail-safe ruling relies on its reader knowing
+                        of the fault and reaching a safe state, the
+                        sooner the better. A validity field, or a rule
+                        that an empty message means unknown on that
+                        port, puts the absence in the message the
+                        reader already holds, in the local step it
+                        reads. Reading the fault from the control
+                        message depends on the engine catching every
+                        fault and routing it there before the reader
+                        runs; in the records, and in the trial's code,
+                        faults reach only the control block, one step
+                        later, and in the trial a killed TCP sender
+                        left its receiver running 100 steps on empty
+                        messages with nothing reported. Whoever can
+                        stop a sender or cut a link could then make a
+                        sensor read as an empty scene.
+description:            |
+                        Sources:
+                        - An empty or absent message with a fault
+                          leads the consumer to a
+                          safe state, while a list cut short reads as free space
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/ann_truncated_obstacle_list_reads_as_free_space.yaml
+                          at brief).
+                        - A count of 0 means nothing arrived, and a
+                          node treats a message
+                          with no items as nothing arrived
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml
+                          at surface.data.artifact.artifact.message.convention;
+                          _data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.availability).
+                        - The drop-message fail-safe gives the reader
+                          an empty message
+                          (_data/test_case/case_executor_fail_safe.yaml at
+                          expected_results).
+                        - The engine reports a fault as an event to
+                          the control block, which
+                          passes on the events reported since the last local step
+                          (_data/requirement/rqt_executor_reports_faults.yaml at object;
+                          _data/interface_control_document/icd_dataflow_control_block.yaml
+                          at surface.unit.dataflow_step.output).
+                        - The fault reaches only the control block,
+                          one local step later
+                          (review of 2026-10-29, CC-061); the trial's unit block passes on
+                          the engine's events when it next runs, as read from the code
+                          (trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step).
+                        - With the sender killed, the receiver ran 100
+                          more local steps on
+                          empty messages and status showed nothing wrong (review of
+                          2026-10-29, CC-016, reproduced).
+                        - Safety measures the time to reach a safe
+                          state after a failure;
+                          security asks what an attacker can reach
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure and
+                          entries.concern_security.question).
+                        ASSUMPTION: some deployments carry a safety
+                        port across a link that a third party can
+                        reach. Strength: strong for safety; the
+                        security part holds only where such a link
+                        exists.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fault_read_from_the_control_message
+    guid_target:        opt_2565599856474be697508421e54e0579
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

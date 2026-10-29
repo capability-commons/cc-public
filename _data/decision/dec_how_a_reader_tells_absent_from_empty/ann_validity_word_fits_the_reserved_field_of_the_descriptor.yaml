@@ -1,0 +1,77 @@
+id_self:                ann_validity_word_fits_the_reserved_field_of_the_descriptor
+guid_self:              ann_20e6072405c04ec8b391c479084ccca5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Cost of a validity word against per-input faults in control messages
+brief:                  |
+                        A validity field costs one word per message
+                        and one comparison per read. The trial's
+                        descriptor of a message already holds a 32-bit
+                        word that is reserved and unused, so the field
+                        would not grow it, though the transport frame,
+                        today a bare count before the items, needs one
+                        word more. Empty-as-unknown adds no field and
+                        costs one item of capacity on each safety port
+                        for the saw-nothing item. Faults in the
+                        control message make its one fixed-size type
+                        grow with the number of inputs in the unit,
+                        written in every step. All three costs are
+                        small; only the last grows with the graph.
+description:            |
+                        Sources:
+                        - The trial's message descriptor holds the
+                          items, the count, the
+                          capacity, the item size and a reserved word that no code uses
+                          (trial 2c777ab9, src/cctool/dataflow/engine/include/df/node.h,
+                          struct df_array).
+                        - The trial's TCP frame is a bare host-order
+                          count followed by the
+                          items (review of 2026-10-29, CC-016).
+                        - The control message is a value of one type
+                          of fixed size, written
+                          once in each local step, and each node is given only the fields it
+                          declares
+                          (_data/interface_control_document/icd_dataflow_control_message.yaml
+                          at surface.data.artifact.artifact.control_message.encoding;
+                          _data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief).
+                        - Peak memory and throughput are measures of
+                          performance efficiency
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure).
+                        Strength: weak; every cost is a few bytes per
+                        message or per step, and none decides the
+                        question alone.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fault_read_from_the_control_message
+    guid_target:        opt_2565599856474be697508421e54e0579
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

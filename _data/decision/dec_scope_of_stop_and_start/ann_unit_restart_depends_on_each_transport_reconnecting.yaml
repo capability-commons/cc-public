@@ -1,0 +1,80 @@
+id_self:                ann_unit_restart_depends_on_each_transport_reconnecting
+guid_self:              ann_95754895a2f94c0e8ba0c24b7eb705be
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unit restart that rests on each transport's handling of a lost peer
+brief:                  |
+                        Where units are separate processes or hosts,
+                        stopping and restarting one while its
+                        neighbors run means each transport between
+                        them must survive the loss of a peer and its
+                        return. The transport libraries live only in
+                        sender and receiver nodes, and each kind, a
+                        shared-memory queue, ZeroMQ or TCP, treats a
+                        vanished peer its own way; the trial's TCP
+                        transport killed the sender's process by
+                        SIGPIPE or fed the receiver empty messages,
+                        never reconnected, and opened its connections
+                        only before runtime control started. A stop of
+                        the whole host, or one that ends the run,
+                        opens and closes every transport with the run,
+                        so no library's reconnect behavior becomes
+                        part of the engine's semantics.
+description:            |
+                        Sources:
+                        - Transport libraries are used only by the
+                          sender and the receiver
+                          (_data/requirement/rqt_transport_confines_library.yaml at object).
+                        - A transport is of one kind, such as ZeroMQ,
+                          a shared-memory queue
+                          or TCP, with one transform each
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief).
+                        - Killing the receiver killed the sender's
+                          process with exit -13,
+                          killing the sender left the receiver on empty messages, and nothing
+                          reconnects (review of 2026-10-29, CC-016, reproduced; area report
+                          trial-engine, TE-14).
+                        - Dependency risk asks what happens if
+                          something taken from a third
+                          party changes or is withdrawn (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question).
+                        ASSUMPTION: the transport kinds differ in how
+                        they treat a lost peer; ZeroMQ, for one,
+                        reconnects on its own, while a plain socket
+                        does not. Strength: moderate for units in
+                        separate processes or hosts; nil for units
+                        that are threads of one process.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_scope_of_stop_and_start
+    guid_target:        dec_bdd3f19c3750475c9940069f54bd28bf
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_and_start_act_on_the_whole_host
+    guid_target:        opt_1407871f16d444f798a21d173c1d5de1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_stop_ends_the_run
+    guid_target:        opt_d76e2cd8d1ef4ebc8830ea56b67ee6d9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_stop_and_start_act_on_one_unit
+    guid_target:        opt_43fd6818520348c1a76169fe5e19c199
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

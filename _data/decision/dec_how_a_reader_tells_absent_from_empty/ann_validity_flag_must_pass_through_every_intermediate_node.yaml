@@ -1,0 +1,90 @@
+id_self:                ann_validity_flag_must_pass_through_every_intermediate_node
+guid_self:              ann_bd448ed4c9bd42008706c2ab81b121e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Validity that every intermediate node must pass on to a safety reader
+brief:                  |
+                        A validity field protects the reader of a
+                        safety port only if every node between the
+                        place where the message went missing and that
+                        reader passes the field on. The option says
+                        only that the reader of a safety-relevant port
+                        acts on it; a filter or fusion node that reads
+                        an input marked absent and writes its own
+                        output as valid and empty turns the absence
+                        back into an empty scene. Under the
+                        empty-as-unknown option an intermediate node
+                        that receives no items writes none, and the
+                        safety port fails safe with no rule for the
+                        nodes in between. A rule that every output of
+                        a node is marked invalid when one of its
+                        inputs is would close the gap, but the option
+                        does not state it.
+description:            |
+                        Sources:
+                        - The validity option has the reader of a
+                          safety-relevant port act on
+                          the field in the same local step
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_validity_flag_on_every_edge_message.yaml
+                          at brief).
+                        - The empty-as-unknown option has a safety
+                          port's reader apply its
+                          fail-safe to every empty message
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_empty_read_as_unknown_on_safety_ports.yaml
+                          at brief).
+                        - In a Kahn network a node that filters,
+                          emitting nothing when it has
+                          nothing to say, makes conditionals replicate through the network
+                          (Lohstroh et al. 2021, Toward a Lingua Franca for deterministic
+                          concurrent systems, section 2.2, as summarized in
+                          /mnt/project-files/notes/literature/part-2/2021-toward-a-lingua-franca-deterministic-concurrent-systems.md);
+                          the note, not the paper, takes an empty bounded array as the
+                          natural absent value of a Kahn edge.
+                        - The engine does nothing a node could do
+                          unless a recorded decision
+                          shows otherwise, so a propagation rule kept in the engine would
+                          need one
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief).
+                        - Functional suitability asks whether each
+                          function gives the right
+                          result (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question).
+                        ASSUMPTION: intermediate nodes write no items
+                        when they read none; a tracker that predicts
+                        from its state would not. Strength: moderate;
+                        it falls away if the validity option gains a
+                        propagation rule.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

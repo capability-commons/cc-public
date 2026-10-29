@@ -1,0 +1,84 @@
+id_self:                ann_saw_nothing_item_needed_from_every_safety_producer
+guid_self:              ann_aa74c0d419814085aa21ed836dee67fb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Saw-nothing item required of every producer of a safety port
+brief:                  |
+                        Under the empty-as-unknown option every
+                        producer that feeds a safety port must send an
+                        item that says it saw nothing, so its author
+                        must know that a reader downstream is
+                        safety-relevant, and a later change in which
+                        ports are safety-relevant spreads back to the
+                        producers. A producer that wraps third-party
+                        code, such as an inference library that
+                        returns an empty list, needs a wrapper to turn
+                        that list into the item, and an update of the
+                        library that changes its empty result passes
+                        unnoticed. A node switched off by the ruled
+                        degraded mode sends an empty list, which its
+                        safety reader would then treat as unknown in
+                        every degraded step. A validity field can be
+                        written where absence arises, by the receiver,
+                        the fail-safe or the mode switch, and leaves a
+                        producer's empty list meaning what it says.
+description:            |
+                        Sources:
+                        - Under the empty-as-unknown option "saw
+                          nothing" must be sent as an
+                          item that says so
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_empty_read_as_unknown_on_safety_ports.yaml
+                          at brief).
+                        - A node that a mode switches off sends an
+                          empty list
+                          (_data/decision/dec_response_to_sustained_overload/opt_degraded_mode_through_a_mode_port.yaml
+                          at brief).
+                        - The validity option marks a message valid,
+                          absent, dropped or
+                          disabled
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_validity_flag_on_every_edge_message.yaml
+                          at brief).
+                        - Dependency risk asks what happens if
+                          something taken from a third
+                          party changes; maintainability asks how far a change in one part
+                          spreads (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question and
+                          entries.concern_maintainability.question).
+                        ASSUMPTION: some producer of a safety port
+                        wraps a third-party library, such as an object
+                        detector on the Orin's inference runtime.
+                        Strength: moderate; it grows with the number
+                        of producers that feed safety ports.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_reader_tells_absent_from_empty
+    guid_target:        dec_3f3fb9cbeed44b9f9589fd8be4817b59
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_validity_flag_on_every_edge_message
+    guid_target:        opt_dbee7d28089e4319807b3311ddcf701d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_empty_read_as_unknown_on_safety_ports
+    guid_target:        opt_9beac89081454184a8d62e09d42452b5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
