@@ -1,5 +1,5 @@
-id_self:                lco_dataflow_engine_nodes_recording
-guid_self:              lco_9a7992bfe09741d88f91eddad2cec5e3
+id_self:                lco_dataflow_nodes_transport
+guid_self:              lco_bce618955a564a86b253576be2e9a9f7
 copyright:              Copyright 2026 William Payne
 license:                Apache-2.0
 
@@ -8,23 +8,22 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  Recording and replay nodes
+title:                  Transport nodes
 brief:                  |
-                        The nodes that record what a run receives from
-                        outside and what the control blocks pass on,
-                        and the players that feed a recorded run back
-                        in.
+                        The sender and receiver nodes that carry
+                        values between execution units and between
+                        hosts, over a shared-memory queue, ZeroMQ or
+                        TCP.
 description:            |
-                        The recording is made by nodes rather than by
-                        the engine (WTP, 2026-10-29). They answer the
-                        question: what writes things down, and plays
-                        them back?
+                        They are the only nodes that depend on a
+                        transport library. They answer the question:
+                        what carries a value between execution units?
 
 edge:
 
   - id_relation:        relation_is_part_of
     guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
-    id_target:          lco_dataflow_engine_nodes
+    id_target:          lco_dataflow_nodes
     guid_target:        lco_ebdb8ec023a2488aa46e73a6a6bfb719
 
   - id_relation:        relation_may_depend_on
