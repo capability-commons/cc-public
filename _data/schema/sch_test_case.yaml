@@ -1,0 +1,104 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_test_case.yaml
+id_self:                sch_test_case
+guid_self:              sch_bc274a7041534289a7e8fa3e6924e988
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Test case schema
+brief:                  |
+                        The shape of a test case: how a requirement or
+                        design entity is shown to hold, as
+                        preconditions, inputs and expected results.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_edge.
+
+                        The fields follow the information that
+                        ISO/IEC/IEEE 29119-3:2013, clause 7.3.5, gives
+                        for a test case. Its unique identifier is
+                        id_self, and its objective is the title. Its
+                        traceability is the edges of relation_verifies
+                        to what it verifies. The method is the method
+                        of verification that the requirement names, so
+                        that inspection, analysis and demonstration,
+                        which have no test function, are test cases
+                        too. The preconditions say the state needed
+                        before the inputs are given, the inputs are
+                        the actions in order, and the expected results
+                        say what shows success, with tolerances where
+                        they apply.
+
+                        Priority, actual results and the test result
+                        are left out: the order of running is not
+                        recorded, and results are observations, not
+                        committed items.
+usage:                  |
+                        Named by type_test_case as the schema of every
+                        test case, each in a folder test_case of the
+                        _data folder of the root, or of a _data folder
+                        beside the item it tests.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - verification_method
+      - inputs
+      - expected_results
+
+    properties:
+
+      verification_method:
+        type:           string
+
+        enum:
+          - test
+          - demonstration
+          - inspection
+          - analysis
+
+        description:    |
+                        The method by which the test case verifies,
+                        one of those a requirement may name.
+
+      preconditions:
+        type:           string
+        minLength:      1
+        description:    |
+                        Optional. The state that the test item and its
+                        environment must be in before the inputs are
+                        given.
+
+      inputs:
+        type:           array
+        minItems:       1
+        description:    |
+                        Each action that brings the test item to where
+                        its results can be compared with those
+                        expected, in order.
+
+        items:
+          type:         string
+          minLength:    1
+
+      expected_results:
+        type:           string
+        minLength:      1
+        description:    |
+                        What shows success: the outputs and behavior
+                        expected in response to the inputs, with
+                        tolerances where they apply.
+
+unevaluatedProperties:  false
+edge:                   []

@@ -67,6 +67,7 @@ MAP_PREFIX        = {'type_annotation':                 'ann',
                      'type_federated_segment':          'segment',
                      'type_shell_script':               'shell',
                      'type_team_member':                'member',
+                     'type_test_case':                  'case',
                      'type_type':                       'type',
                      'type_writing_style_rule':         'style'}
 

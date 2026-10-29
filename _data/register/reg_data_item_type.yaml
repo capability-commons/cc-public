@@ -1948,3 +1948,56 @@ entries:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_criticality
         guid_target:    rol_e1ce0ee130d448f08d639c70d18508c5
+
+  # ---------------------------------------------------------------------------
+  # type_test_case -- Test case type
+  #
+  type_test_case:
+    id_self:            type_test_case
+    guid_self:          type_d762d6195d444111a1c5ec256d29040d
+    title:              Test case type
+    brief:              |
+                        Type of test case data items.
+    description:        |
+                        Each test case data item states how what it
+                        verifies is shown to hold, by one method of
+                        verification: its preconditions, its inputs in
+                        order and the results that show success.
+    usage:              |
+                        A test case names each requirement or design
+                        entity it verifies by an edge of
+                        relation_verifies. A requirement at a
+                        criticality that a maturity level asks more of
+                        must have one, where code at that level
+                        realizes it.
+    note:               |
+                        Each test case has a file of its own, in
+                        _data/test_case/ at the root of the tree or in
+                        a test_case folder of a _data folder beside
+                        what it tests, so that what documents a
+                        [[item]] is kept with it where it can be.
+
+                        The ruling on when a test case is written
+                        keeps the test function as the verification
+                        wherever one can stand for it, so few tests
+                        have a test case.
+
+                        The shape of test case data items is defined
+                        by the sch_test_case schema.
+    prefix:             case
+    regex_id:           ^case_[a-z][a-z0-9_]*$
+    id_concept:         concept_test_case
+    guid_concept:       concept_f06af83a876d4225b67cd0b24b685b4a
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_test_case
+        guid_target:    sch_bc274a7041534289a7e8fa3e6924e988
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_verifier
+        guid_target:    rol_6b9d3ac50d77473e9f6a071b5e910ce7
