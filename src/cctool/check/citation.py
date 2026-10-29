@@ -100,16 +100,22 @@ REGEX_SHELL       = re.compile(r'^(\w+) *\( *\)', re.MULTILINE)
 REGEX_HEADING     = re.compile(r'^#+ +(.+?) *#* *$', re.MULTILINE)
 
 # The names of the parts of each file read, kept in one OS process and
-# keyed by its path, mtime and size. It is emptied when it holds this
-# many.
+# keyed by its path, mtime and size, or by its path and text for a file
+# an edit writes. It is emptied when it holds this many.
 #
 CACHE_PARTS       = {}
 COUNT_PARTS       = 1024
 
+# The texts of the files that an edit writes, keyed by path relative to the
+# root of the tree, with None for a file that it removes.
+#
+Texts             = dict[str, str | bytes | None]
+
 
 # -----------------------------------------------------------------------------
 def violations(root:         pathlib.Path,
-               map_document: cctool.graph.extract.Documents) -> tuple[list, list]:
+               map_document: cctool.graph.extract.Documents,
+               map_text:     Texts | None = None) -> tuple[list, list]:
     """
     Return the rows of the two checks of citations in the prose of the
     documents of the tree at root: each citation of a file of the tree
@@ -117,34 +123,58 @@ def violations(root:         pathlib.Path,
     hold. A row gives the file and line of the document, the id of the
     item, and the citation.
 
+    A file that map_text holds is read from there, and not from the
+    disk: its text, or None if it is gone, as an edit leaves it.
+
     """
 
-    map_file   = files(root)
+    map_file   = files(root, map_text)
     list_line  = []
     list_name  = []
 
     for (key, (document, line)) in sorted(map_document.items()):
         file = cctool.graph.extract.file_of(key)
         for (id_item, text) in _texts(document, None):
-            for (kind, citation, cited, name) in citations(text, root, map_file):
+            for (kind, citation, cited, name) in citations(text, root, map_file, map_text):
                 if kind == 'line':
                     list_line.append((file, str(line), id_item or file, citation))
-                elif not holds(root, cited, name):
+                elif not holds(root, cited, name, map_text):
                     list_name.append((file, str(line), id_item or file, cited, name))
 
     return (sorted(set(list_line)), sorted(set(list_name)))
 
 
 # -----------------------------------------------------------------------------
+def citing(map_document: cctool.graph.extract.Documents,
+           set_file:     set[str]) -> cctool.graph.extract.Documents:
+    """
+    Return the documents of map_document that may cite a file of
+    set_file: those held in one, and those whose prose holds the name
+    of one, since every way of writing the path of a file ends in its
+    name. The citations of every other document are found the same
+    whatever those files hold, and whether they are there or not.
+
+    """
+
+    set_name = {pathlib.PurePosixPath(file).name for file in set_file}
+
+    return {key: (document, line) for (key, (document, line)) in map_document.items()
+            if cctool.graph.extract.file_of(key) in set_file
+            or any(name in text for (_, text) in _texts(document, None) for name in set_name)}
+
+
+# -----------------------------------------------------------------------------
 def citations(text:     str,
               root:     pathlib.Path,
-              map_file: dict[str, str]) -> list[tuple[str, str, str, str]]:
+              map_file: dict[str, str],
+              map_text: Texts | None = None) -> list[tuple[str, str, str, str]]:
     """
     Return each citation of a file of the tree in text, as its kind
     (line or name), the citation as written, the cited file, and the
     part named, which is empty for a citation by line. map_file maps
     each way of writing the path of a file of the tree at root to the
-    file.
+    file, and map_text holds the files read from it and not from the
+    disk, as violations reads them.
 
     """
 
@@ -177,10 +207,11 @@ def citations(text:     str,
         if not found or REGEX_PROSE.match(found.group(2)):
             continue
         name = found.group(2)
-        if REGEX_CODELIKE.search(name) or name in parts(root, cited):
+        if REGEX_CODELIKE.search(name) or name in parts(root, cited, map_text):
             list_cite.append(('name', match.group(1) + found.group(0), cited, name))
         rest = rest[found.end():]
-        while (found := REGEX_MORE.match(rest)) and found.group(1) in parts(root, cited):
+        while ((found := REGEX_MORE.match(rest))
+               and found.group(1) in parts(root, cited, map_text)):
             list_cite.append(('name', found.group(0).strip(), cited, found.group(1)))
             rest = rest[found.end():]
 
@@ -203,23 +234,32 @@ def _line_later(rest: str, size: int) -> str:
 
 
 # -----------------------------------------------------------------------------
-def holds(root: pathlib.Path, cited: str, name: str) -> bool:
+def holds(root:     pathlib.Path,
+          cited:    str,
+          name:     str,
+          map_text: Texts | None = None) -> bool:
     """
     Return True if the file cited, a path relative to root, holds the
-    part name.
+    part name, reading it from map_text if that holds it.
 
     """
 
-    return name in parts(root, cited)
+    return name in parts(root, cited, map_text)
 
 
 # -----------------------------------------------------------------------------
-def parts(root: pathlib.Path, cited: str) -> frozenset[str]:
+def parts(root:     pathlib.Path,
+          cited:    str,
+          map_text: Texts | None = None) -> frozenset[str]:
     """
     Return the names of the parts of the file cited, a path relative to
-    root, that a citation may name.
+    root, that a citation may name. The file is read from map_text if
+    that holds it, and from the disk otherwise.
 
     """
+
+    if map_text and cited in map_text:
+        return _parts_of_text(cited, map_text[cited])
 
     path = root / cited
     try:
@@ -239,16 +279,60 @@ def _parts(path: str, mtime: int, size: int) -> frozenset[str]:
 
     key = (path, mtime, size)
     if key not in CACHE_PARTS:
-        if len(CACHE_PARTS) >= COUNT_PARTS:
-            CACHE_PARTS.clear()
         try:
-            text  = pathlib.Path(path).read_text(encoding = 'utf-8')
-            names = MAP_PARSER.get(pathlib.PurePosixPath(path).suffix, _names_shell)(text)
-        except (OSError, UnicodeDecodeError, SyntaxError, ValueError, IndexError,
-                ruamel.yaml.YAMLError):
-            names = ()
-        CACHE_PARTS[key] = frozenset(names)
+            text = pathlib.Path(path).read_text(encoding = 'utf-8')
+        except (OSError, UnicodeDecodeError):
+            text = None
+        _keep(key, _names(path, text))
     return CACHE_PARTS[key]
+
+
+# -----------------------------------------------------------------------------
+def _parts_of_text(cited: str, text: str | bytes | None) -> frozenset[str]:
+    """
+    Return the names of the parts of the file cited if it held text, or
+    of none if text is None, read once for each text.
+
+    """
+
+    key = (cited, text)
+    if key not in CACHE_PARTS:
+        if isinstance(text, bytes):
+            try:
+                text = text.decode('utf-8')
+            except UnicodeDecodeError:
+                text = None
+        _keep(key, _names(cited, text))
+    return CACHE_PARTS[key]
+
+
+# -----------------------------------------------------------------------------
+def _keep(key: tuple, names: frozenset[str]) -> None:
+    """
+    Keep names in CACHE_PARTS under key, emptying it first if it is full.
+
+    """
+
+    if len(CACHE_PARTS) >= COUNT_PARTS:
+        CACHE_PARTS.clear()
+    CACHE_PARTS[key] = names
+
+
+# -----------------------------------------------------------------------------
+def _names(path: str, text: str | None) -> frozenset[str]:
+    """
+    Return the names of the parts that the file at path holds if it
+    holds text, read as its suffix says, or none if text is None or
+    cannot be read so.
+
+    """
+
+    if text is None:
+        return frozenset()
+    try:
+        return frozenset(MAP_PARSER.get(pathlib.PurePosixPath(path).suffix, _names_shell)(text))
+    except (SyntaxError, ValueError, IndexError, ruamel.yaml.YAMLError):
+        return frozenset()
 
 
 # -----------------------------------------------------------------------------
@@ -344,22 +428,31 @@ def _texts(value: typing.Any, id_item: str | None) -> typing.Iterator[tuple[str 
 
 
 # -----------------------------------------------------------------------------
-def files(root: pathlib.Path) -> dict[str, str]:
+def files(root: pathlib.Path, map_text: Texts | None = None) -> dict[str, str]:
     """
     Return a map from each way prose may write the path of a file of the
     tree at root to its path: the path itself, and each tail of it after
     a slash that no other file shares. A tail that files share maps to
-    FILE_AMBIGUOUS.
+    FILE_AMBIGUOUS. A file that map_text holds is in the tree if its
+    text is not None, whether or not it is on the disk.
 
     """
 
-    list_file = []
+    set_file = set()
     for (dir_here, list_dir, list_name) in os.walk(root):
         list_dir[:] = [name for name in list_dir
                        if name not in SET_DIR_SKIPPED and not name.endswith('.egg-info')]
         for name in list_name:
             relative = os.path.relpath(os.path.join(dir_here, name), root)
-            list_file.append(relative.replace(os.sep, '/'))
+            set_file.add(relative.replace(os.sep, '/'))
+
+    for (relative, text) in (map_text or {}).items():
+        if text is None:
+            set_file.discard(relative)
+        else:
+            set_file.add(relative)
+
+    list_file = sorted(set_file)
 
     map_file  = {file: file for file in list_file}
     map_count = {}

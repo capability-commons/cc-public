@@ -329,6 +329,72 @@ def test_a_failure_the_tree_already_has_is_not_added(tree):
     assert _edit(tree, {'set': ['concept_concept', 'note', 'A note.']}) == {}
 
 
+def test_an_edit_that_cites_a_file_by_line_is_refused(tree):
+    hook  = tree / '.githooks/pre-commit'
+    text  = hook.read_text()
+    added = _edit(tree, {'set': ['shell_githooks_pre_commit',
+                                 'brief',
+                                 'Runs the gate, as src/cctool/check/layout.py line 3 shows.']})
+    assert [row[2:] for row in added.pop('line_citation')] == [
+        ('shell_githooks_pre_commit', 'src/cctool/check/layout.py line 3')]
+    assert added == {}
+    assert hook.read_text() == text
+
+
+def test_an_edit_that_takes_out_a_part_another_item_cites_is_refused(tree):
+    assert _edit(tree, {'new':   'ann_x',
+                        'field': FIELD_ANN,
+                        'link':  [['relation_is_about', 'concept_concept'],
+                                  ['relation_is_about', 'concept_relation']]},
+                       {'set': ['shell_githooks_pre_commit',
+                                'brief',
+                                'Runs the gate, as ann_x.yaml at edge.1.id_target says.']}) == {}
+    added = _edit(tree, {'unlink': ['ann_x', 'relation_is_about', 'concept_relation']})
+    assert [row[2:] for row in added.pop('unresolved_citation')] == [
+        ('shell_githooks_pre_commit', '_data/annotation/ann_x.yaml', 'edge.1.id_target')]
+    assert added == {}
+
+
+def test_removing_an_item_a_python_comment_names_is_refused(tree):
+    assert _edit(tree, NEW_SUBJECT) == {}
+    path = tree / 'src/cctool/check/layout.py'
+    path.write_text(path.read_text() + '\n# Kept for lco_x.\n')
+    added = _edit(tree, {'remove': 'lco_x'})
+    assert [row[:3] for row in added.pop('dangling_mention')] == [
+        ('pym_cctool.check.layout', 'lco_x', 'src/cctool/check/layout.py')]
+    assert added == {}
+    assert (tree / '_data/logical_component/lco_x.yaml').exists()
+
+
+def test_a_rename_keeps_a_failure_the_item_had(tree):
+    assert _edit(tree, {'new':   'ann_x',
+                        'field': FIELD_ANN,
+                        'link':  [['relation_is_about', 'concept_concept']]}) == {}
+    path = tree / '_data/annotation/ann_x.yaml'
+    path.write_text(path.read_text().replace(
+        'The editing commands keep the tree free of new\n'
+        '                        failures, whatever they change.\n',
+        'See concept_gone, and src/cctool/check/layout.py line 3.\n'))
+    failures = cctool.check.check.check(tree)
+    assert [row[:2] for row in failures['dangling_mention']] == [('ann_x', 'concept_gone')]
+    assert [row[2] for row in failures['line_citation']] == ['ann_x']
+    assert _edit(tree, {'rename': ['ann_x', 'ann_y']}) == {}
+    failures = cctool.check.check.check(tree)
+    assert [row[:2] for row in failures['dangling_mention']] == [('ann_y', 'concept_gone')]
+    assert [row[2] for row in failures['line_citation']] == ['ann_y']
+
+
+def test_a_move_keeps_a_failure_the_module_had(tree):
+    path = tree / 'src/cctool/check/layout.py'
+    path.write_text(path.read_text() + '\n# Kept for lco_gone.\n')
+    assert [row[:3] for row in cctool.check.check.check(tree)['dangling_mention']] == [
+        ('pym_cctool.check.layout', 'lco_gone', 'src/cctool/check/layout.py')]
+    assert _edit(tree, {'move': ['src/cctool/check/layout.py',
+                                 'src/cctool/edit/printer.py']}) == {}
+    assert [row[:3] for row in cctool.check.check.check(tree)['dangling_mention']] == [
+        ('pym_cctool.edit.printer', 'lco_gone', 'src/cctool/edit/printer.py')]
+
+
 def test_a_new_concept_needs_an_item_that_names_it(tree):
     field = {'title': 'X', 'brief': 'X.', 'description': 'X.', 'term_preferred': 'x'}
     assert _edit(tree, {'new': 'concept_x', 'field': field}) == {'unused_concept': [('concept_x',)]}

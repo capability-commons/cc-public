@@ -107,23 +107,35 @@ def newest(map_document: cctool.graph.extract.Documents) -> tuple[str, str, str,
 
 # -----------------------------------------------------------------------------
 def disagreements(root:         pathlib.Path,
-                  map_document: cctool.graph.extract.Documents) -> list[tuple[str, ...]]:
+                  map_document: cctool.graph.extract.Documents,
+                  map_text:     dict[str, str | bytes | None] | None = None
+                  ) -> list[tuple[str, ...]]:
     """
     Return a row for the newest release item of the tree at root if
     the version module holds another version: the file and line of the
     item, its id, its version, and the version the module holds. A tree
     with no version module, or no release item, has nothing to compare.
+    The version module is read from map_text if that holds it, as an
+    edit leaves it, and from the disk otherwise.
 
     """
 
     path  = root / PATH_MODULE
     found = newest(map_document)
 
-    if found is None or not path.is_file():
+    if map_text and str(PATH_MODULE) in map_text:
+        text = map_text[str(PATH_MODULE)]
+        text = text.decode('utf-8') if isinstance(text, bytes) else text
+    elif path.is_file():
+        text = path.read_text(encoding = 'utf-8')
+    else:
+        text = None
+
+    if found is None or text is None:
         return []
 
     (file, line, id_self, version) = found
-    module = module_version(path.read_text(encoding = 'utf-8'))
+    module = module_version(text)
 
     if module == version:
         return []

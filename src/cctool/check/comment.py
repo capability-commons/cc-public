@@ -45,11 +45,20 @@ SUFFIX_PYTHON     = '.py'
 
 Rows              = list[tuple[str, ...]]
 
+# The mentions in each text of a module read, kept in one OS process, so
+# that an edit, which checks the tree before and after, and the trees
+# that tests copy, read each text once. It is emptied when it holds this
+# many.
+#
+CACHE_MENTION     = {}
+COUNT_MENTION     = 1024
+
 
 # -----------------------------------------------------------------------------
 def violations(root:         pathlib.Path,
                map_document: cctool.graph.extract.Documents,
-               facts:        cctool.graph.extract.Facts) -> Rows:
+               facts:        cctool.graph.extract.Facts,
+               map_text:     dict[str, str | bytes | None] | None = None) -> Rows:
     """
     ---
 
@@ -69,6 +78,10 @@ def violations(root:         pathlib.Path,
                             python module of the tree at root mentions and
                             no item of facts holds: the holder, the id,
                             the file and the line.
+    description:            |
+                            A module that map_text holds is read from
+                            there, as an edit leaves it, and not from the
+                            disk.
     edge:                   []
 
     ...
@@ -85,7 +98,16 @@ def violations(root:         pathlib.Path,
         if not key.endswith(SUFFIX_PYTHON) or key != cctool.graph.extract.file_of(key):
             continue
         holder = map_holder.get(key, key)
-        for (line, word) in mentions((root / key).read_text(encoding = 'utf-8')):
+        if map_text and key in map_text:
+            text = map_text[key]
+            text = text.decode('utf-8') if isinstance(text, bytes) else text
+        else:
+            text = (root / key).read_text(encoding = 'utf-8')
+        if text not in CACHE_MENTION:
+            if len(CACHE_MENTION) >= COUNT_MENTION:
+                CACHE_MENTION.clear()
+            CACHE_MENTION[text] = mentions(text)
+        for (line, word) in CACHE_MENTION[text]:
             if word.partition('_')[0] in set_prefix and word not in set_held:
                 list_row.append((holder, word, key, str(line)))
 

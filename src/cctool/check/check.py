@@ -67,32 +67,37 @@ NAME_PAIR         = 'document_schema'
 NAME_SCHEMA       = 'schema_violation'
 
 # One more again: each YAML document is laid out as cctool format lays
-# it out. An edit lays out every file it writes, so this is checked over
-# the files of a tree, and not over the documents of an edit.
+# it out. This reads the text of each file, and not only its documents,
+# so it is checked over the files of a tree, by check_files. An edit
+# checks it too, over the files it writes as it leaves them.
 #
 NAME_LAYOUT       = 'unformatted_file'
 
 # And one more: the version module holds the version of the newest
 # release item, since the release step writes both. This reads a file
-# beside the documents, so it too is checked over the files of a tree.
+# beside the documents, so it too is checked by check_files.
 #
 NAME_VERSION      = 'version_disagreement'
 
 # And one more: a segment item names the newest release item of each tree
 # it consumes. Its rows are failures while that tree is an installed
-# release, and notices while it is a checkout.
+# release, and notices while it is a checkout. This is the one check
+# that an edit leaves out, as WTP chose on 2026-10-29, since its rows
+# follow from which release of each consumed tree is installed, which no
+# edit of this tree changes.
 #
 NAME_CONSUMED     = 'consumed_release_disagreement'
 
 # And two more: prose cites a file of the tree by the part it means, not
 # by line number, and the cited file holds the part it names. These read
-# the cited files, so they too are checked over the files of a tree.
+# the cited files, so they too are checked by check_files.
 #
 NAME_LINE_CITE    = 'line_citation'
 NAME_NAME_CITE    = 'unresolved_citation'
 
 # The comments of a python module are not data items, so the ids they
-# mention are read from the files too, and checked as dangling mentions.
+# mention are read from the files too, by check_files, and checked as
+# dangling mentions.
 #
 NAME_DANGLING     = 'dangling_mention'
 
@@ -233,27 +238,75 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
         (failures, notices) = cctool.check.segment.attribute(failures, facts)
         (advice, _)         = cctool.check.segment.attribute(advice, facts)
 
-    (list_line, list_name) = cctool.check.citation.violations(root, map_own)
-    list_comment           = cctool.check.comment.violations(
-                                 root, map_own, cctool.graph.extract.facts_of(map_document))
+    failures = merged(failures,
+                      check_files(root, map_own, cctool.graph.extract.facts_of(map_document)))
 
-    if list_comment:
-        failures[NAME_DANGLING] = sorted(set(failures.get(NAME_DANGLING, [])) | set(list_comment))
-
-    for (name, list_row, found) in ((NAME_LINE_CITE, list_line, failures),
-                                    (NAME_NAME_CITE, list_name, failures),
-                                    (NAME_LAYOUT,
-                                     cctool.check.layout.violations(root, map_own),
-                                     failures),
-                                    (NAME_VERSION,
-                                     cctool.check.release_record.disagreements(root, map_own),
-                                     failures),
-                                    (NAME_CONSUMED, failing, failures),
-                                    (NAME_CONSUMED, noticed, notices)):
+    for (list_row, found) in ((failing, failures), (noticed, notices)):
         if list_row:
-            found[name] = list_row
+            found[NAME_CONSUMED] = list_row
 
     return (failures, advice, notices)
+
+
+# -----------------------------------------------------------------------------
+def check_files(root:        pathlib.Path,
+                map_own:     cctool.graph.extract.Documents,
+                facts:       cctool.graph.extract.Facts,
+                map_text:    cctool.check.citation.Texts | None = None,
+                set_changed: set[str] | None = None) -> Failures:
+    """
+    Return the failures of the checks that read the files of the tree at
+    root, and not only its documents map_own: the citations in prose,
+    the ids that python comments mention, the layout of each file, and
+    the version module. facts are those of every document read with the
+    tree, those of the trees it consumes too.
+
+    An edit is checked as it leaves the tree, so a file that map_text
+    holds is read from there, and not from the disk: its text, or None
+    if the edit removes it. If set_changed is given, only the files it
+    names, and the documents that may cite one, are checked for layout
+    and citations, since the rows of every other file are the same
+    before the edit and after it.
+
+    """
+
+    if set_changed is None:
+        map_cite    = map_own
+        list_layout = cctool.check.layout.violations(root, map_own)
+    else:
+        map_cite    = cctool.check.citation.citing(map_own, set_changed)
+        list_layout = cctool.check.layout.violations_of_files(root, map_own,
+                                                              set_changed, map_text)
+
+    (list_line, list_name) = cctool.check.citation.violations(root, map_cite, map_text)
+    failures               = {}
+
+    for (name, list_row) in ((NAME_DANGLING,
+                              cctool.check.comment.violations(root, map_own, facts, map_text)),
+                             (NAME_LINE_CITE, list_line),
+                             (NAME_NAME_CITE, list_name),
+                             (NAME_LAYOUT,    list_layout),
+                             (NAME_VERSION,
+                              cctool.check.release_record.disagreements(root, map_own, map_text))):
+        if list_row:
+            failures[name] = list_row
+
+    return failures
+
+
+# -----------------------------------------------------------------------------
+def merged(failures: Failures, more: Failures) -> Failures:
+    """
+    Return failures with the rows of more added, each row once.
+
+    """
+
+    found = dict(failures)
+
+    for (name, list_row) in more.items():
+        found[name] = sorted(set(found[name]) | set(list_row)) if name in found else list_row
+
+    return found
 
 
 # -----------------------------------------------------------------------------

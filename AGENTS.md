@@ -121,7 +121,9 @@ unfinished edits of another.
 - Prefer `cctool new`, `header`, `link`, `unlink`, `set`, `unset`,
   `remove`, `rename`, `move` and `batch` to editing YAML by hand. They mint
   guids, fill in rights, keep the layout, and refuse an edit that adds
-  a failure. Use `--dry-run` to see an edit first.
+  a failure. An edit runs every check `cctool check` runs but one,
+  `consumed_release_disagreement`, whose rows follow from which releases
+  are installed. Use `--dry-run` to see an edit first.
 - Give a new python module, logic program file or script its item with
   `cctool header FILEPATH`. The id of a module follows from its path. A
   class or function gets an item only when something must point at

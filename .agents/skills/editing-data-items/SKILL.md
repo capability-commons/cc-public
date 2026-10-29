@@ -18,6 +18,13 @@ procedure, and the traps.
 > and written only if it adds no failure. A refusal is the checker
 > telling you something true; fix the cause, do not work around it.
 
+An edit runs every check that `cctool check` runs, citations, python
+comments and layout included, but one: `consumed_release_disagreement`,
+whose rows follow from which releases of the consumed trees are
+installed, which no edit changes. A failure the tree had before the
+edit is not counted against it, and stays with its item through a
+rename or a move.
+
 ## The procedure
 
 1. Read the type entry in `_data/register/reg_data_item_type.yaml` and

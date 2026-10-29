@@ -188,6 +188,37 @@ def violations(root: pathlib.Path, map_document: cctool.graph.extract.Documents)
 
 
 # -----------------------------------------------------------------------------
+def violations_of_files(root:         pathlib.Path,
+                        map_document: cctool.graph.extract.Documents,
+                        set_file:     set[str],
+                        map_text:     dict[str, str | bytes | None] | None = None) -> list:
+    """
+    Return a row, as violations does, for each file of set_file that
+    holds a document of map_document and is not laid out, reading it
+    from map_text if that holds it, as an edit leaves it, and from the
+    disk otherwise. The store is neither read nor written, since an
+    edit checks only the files it writes.
+
+    """
+
+    list_row = []
+
+    for relative in cctool.graph.extract.files(map_document):
+        if relative not in set_file:
+            continue
+        text = (map_text or {}).get(relative)
+        if text is None:
+            text = (root / relative).read_text(encoding = 'utf-8')
+        elif isinstance(text, bytes):
+            text = text.decode('utf-8')
+        row = _violation(relative, text)
+        if row is not None:
+            list_row.append(row)
+
+    return list_row
+
+
+# -----------------------------------------------------------------------------
 def _violation(relative: str, text: str) -> tuple | None:
     """
     Return the row of the layout check for the file at relative, which

@@ -219,13 +219,15 @@ class Tree:
 
         """
 
-        self.root         = root
-        self.map_stat     = _stats(root)
-        self.map_original = cctool.check.segment.union(root)
-        self.map_document = dict(self.map_original)
-        self.edit         = {}
-        self.map_source   = {}
+        self.root           = root
+        self.map_stat       = _stats(root)
+        self.map_original   = cctool.check.segment.union(root)
+        self.map_document   = dict(self.map_original)
+        self.edit           = {}
+        self.map_source     = {}
+        self.map_renamed    = {}
         self._index()
+        self.facts_original = self.facts
 
     # -------------------------------------------------------------------------
     def update(self, edit: Edit) -> None:
@@ -1006,8 +1008,23 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     #
     edit = _rename_all(tree, dict(list_pair[:-1]))
     edit.update(_rename_all(tree, {id_old: id_new}))
+    _renamed(tree, dict(list_pair))
 
     return edit
+
+
+# -----------------------------------------------------------------------------
+def _renamed(tree: Tree, map_id: dict[str, str]) -> None:
+    """
+    Record in tree that the edits give each item named in map_id its new
+    id, so that an id renamed twice maps from the first to the last.
+
+    """
+
+    for (id_first, id_last) in tree.map_renamed.items():
+        tree.map_renamed[id_first] = map_id.get(id_last, id_last)
+    for (id_old, id_new) in map_id.items():
+        tree.map_renamed.setdefault(id_old, id_new)
 
 
 # -----------------------------------------------------------------------------
@@ -1221,6 +1238,7 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
 
     edit = _renamed_ids(tree, map_id)
     tree.update(edit)
+    _renamed(tree, map_id)
     edit.update(_redotted(tree, set_file, dotted(old), dotted(new)))
     tree.update(edit)
 
@@ -1599,19 +1617,34 @@ def apply(tree: Tree, is_written: bool = True) -> cctool.check.check.Failures:
     Check the tree with the edits made so far in place, and return the
     failures they add. Write them only if they add none and is_written.
 
+    The checks are those that cctool check runs, the files they read
+    read as the edits leave them, but for the one that compares the
+    segment item with the releases it consumes: its rows follow from
+    which releases are installed, which no edit of the tree changes.
+
     A failure is compared without its line, since an edit moves the
-    lines below it.
+    lines below it. A failure of the tree before the edits is compared
+    with the ids and files the edits rename and move as they leave
+    them, so that an item that had a failure keeps it when it is
+    renamed or moved, and it is not taken for one the edits add.
 
     """
 
-    cache  = cctool.check.check.CACHE_SCHEMA
-    before = cctool.check.check.check_documents(tree.map_original, cache)
-    after  = cctool.check.check.check_documents(tree.map_document, cache)
+    cache       = cctool.check.check.CACHE_SCHEMA
+    before      = cctool.check.check.check_documents(tree.map_original, cache)
+    after       = cctool.check.check.check_documents(tree.map_document, cache)
 
     if _place(tree, after):
         after = cctool.check.check.check_documents(tree.map_document, cache)
 
-    added  = _added(before, after)
+    set_changed = set(tree.edit)
+    before      = cctool.check.check.merged(before, cctool.check.check.check_files(
+                      tree.root, _own(tree.map_original), tree.facts_original,
+                      None, set_changed))
+    after       = cctool.check.check.merged(after, cctool.check.check.check_files(
+                      tree.root, _own(tree.map_document), tree.facts,
+                      tree.edit, set_changed))
+    added       = _added(_carried(tree, before), after)
 
     if is_written and not added:
         _write(tree)
@@ -1956,6 +1989,45 @@ def _prune(root: pathlib.Path, path: pathlib.Path) -> None:
             (path / DIR_CACHE).rmdir()
         path.rmdir()
         path = path.parent
+
+
+# -----------------------------------------------------------------------------
+def _own(map_document: cctool.graph.extract.Documents) -> cctool.graph.extract.Documents:
+    """
+    Return the documents of map_document that the tree being edited
+    holds, leaving out those of the trees it consumes.
+
+    """
+
+    return {key: value for (key, value) in map_document.items()
+            if cctool.graph.extract.consumer(key) is None}
+
+
+# -----------------------------------------------------------------------------
+def _carried(tree:     Tree,
+             failures: cctool.check.check.Failures) -> cctool.check.check.Failures:
+    """
+    Return failures, the failures of the tree before its edits, with
+    each id the edits rename, and each file they move, as the edits
+    leave it.
+
+    """
+
+    map_file = {}
+    for (relative, text) in tree.edit.items():
+        if text is None or relative not in tree.map_source:
+            continue
+        (source, set_seen) = (tree.map_source[relative], {relative})
+        while source in tree.map_source and source not in set_seen:
+            set_seen.add(source)
+            source = tree.map_source[source]
+        map_file[source] = relative
+
+    def carried(cell: str) -> str:
+        return tree.map_renamed.get(cell, map_file.get(cell, cell))
+
+    return {name: [tuple(carried(cell) for cell in row) for row in list_row]
+            for (name, list_row) in failures.items()}
 
 
 # -----------------------------------------------------------------------------
