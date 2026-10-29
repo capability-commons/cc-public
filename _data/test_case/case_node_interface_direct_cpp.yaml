@@ -1,0 +1,29 @@
+id_self:                case_node_interface_direct_cpp
+guid_self:              case_1a1f02daa8c24e399b92b75f7b2ccde5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  C++ node called directly
+brief:                  |
+                        Verifies that c++ nodes in the static subgraph
+                        are called directly, so the compiler can
+                        inline them.
+verification_method:    inspection
+preconditions:          A static build with a C++ node exists.
+
+inputs:
+  - Read the call the generated schedule makes to the node.
+
+expected_results:       It calls the C++ function, not the C entry point.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_node_interface_direct_cpp
+    guid_target:        rqt_90abc54547ee4b92ac72c205770c3408

@@ -1,0 +1,30 @@
+id_self:                case_executor_reports_faults
+guid_self:              case_26861f2bd72648f5b04240854b47add0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fault events reach the control block
+brief:                  |
+                        Verifies that the engine records nothing
+                        itself; it reports faults so that nodes can
+                        record them.
+verification_method:    test
+preconditions:          A graph with a node that overflows once and a node that sleeps past the period once.
+
+inputs:
+  - Run ten local steps.
+  - Read the events the control block passes on.
+
+expected_results:       Exactly one overflow event and one overrun event, each naming the local step they happened in.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_executor_reports_faults
+    guid_target:        rqt_ff9e06deb1e44b2787eedafdba93f7d8

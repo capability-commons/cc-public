@@ -1,0 +1,29 @@
+id_self:                case_deployment_checks_before_send
+guid_self:              case_2c6c8c3be717443696a3f3c05f62719d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bad change set is not sent
+brief:                  |
+                        Verifies that a change set is checked in full
+                        by cctool before any of it reaches a host.
+verification_method:    test
+preconditions:          A test host runs a known graph.
+
+inputs:
+  - Compute a change set that adds an edge between mismatched ports.
+  - Ask deployment to send it.
+
+expected_results:       Deployment refuses, names the failure, and the host receives nothing.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_deployment_checks_before_send
+    guid_target:        rqt_cd202be3ef674a7f9f2ba39a6f92bec8

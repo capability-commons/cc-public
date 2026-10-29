@@ -1,0 +1,28 @@
+id_self:                case_control_block_writes_first
+guid_self:              case_7b73c9309ca74318a0690e81fdf58549
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control message precedes all nodes
+brief:                  |
+                        Verifies that every node of a unit sees the
+                        control message of the current local step.
+verification_method:    test
+preconditions:          A unit with three nodes that log the time in their control message.
+
+inputs:
+  - Run five local steps.
+
+expected_results:       In every local step, every node logs the time the control block wrote in that local step.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_control_block_writes_first
+    guid_target:        rqt_456a593449f94bdbb0cb1f3da4014a7d

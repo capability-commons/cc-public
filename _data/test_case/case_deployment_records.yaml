@@ -1,0 +1,29 @@
+id_self:                case_deployment_records
+guid_self:              case_608535b58f8f4d039501bd8f93fcba5b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deployment leaves a record
+brief:                  |
+                        Verifies that every deployment leaves a record
+                        of exactly what went where.
+verification_method:    test
+preconditions:          A test host runs an engine with runtime control.
+
+inputs:
+  - Deploy a dataflow variant to the host.
+  - Read the deployment record written.
+
+expected_results:       The record names the host, the variant, the commit and the content digest the host reports.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_deployment_records
+    guid_target:        rqt_33fad51c57d1465fba2ebd1d86f4ed5e

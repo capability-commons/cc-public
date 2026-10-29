@@ -1,0 +1,30 @@
+id_self:                case_dictionary_upgrade_chain
+guid_self:              case_c5fcca6871794d61b212f54148b61544
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upgrade path across two versions
+brief:                  |
+                        Verifies that given two versions, the
+                        dictionary gives the chain of mappings between
+                        them.
+verification_method:    test
+preconditions:          A dictionary holds versions 1, 2 and 3 of one value, each naming the one before.
+
+inputs:
+  - Ask for the path from version 1 to version 3.
+  - Apply it to a value of version 1.
+
+expected_results:       Two mappings come back in order, and the value they give equals the one written by hand for version 3.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dictionary_upgrade_chain
+    guid_target:        rqt_cec62da8fea44e8a960009b58dc3db23

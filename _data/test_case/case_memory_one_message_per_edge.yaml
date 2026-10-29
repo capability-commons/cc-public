@@ -1,0 +1,28 @@
+id_self:                case_memory_one_message_per_edge
+guid_self:              case_f79995b7412a4cbe9044923daeb03e32
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Buffer per edge
+brief:                  |
+                        Verifies that each Kahn edge holds one message
+                        at a time, sized to its capacity.
+verification_method:    inspection
+preconditions:          Generated source for a graph with edges inside one execution unit and edges between units.
+
+inputs:
+  - Read the buffer declarations.
+
+expected_results:       Each edge inside a unit has one message buffer; each edge whose writer and reader overlap has two.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_memory_one_message_per_edge
+    guid_target:        rqt_191384eeed0e43eeb5e8ad9678c9f7e9

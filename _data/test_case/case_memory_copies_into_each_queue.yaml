@@ -1,0 +1,28 @@
+id_self:                case_memory_copies_into_each_queue
+guid_self:              case_3101e40bdca64cf2b682ebbc350384a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readers do not see each other
+brief:                  |
+                        Verifies that values are copied, not shared,
+                        between nodes.
+verification_method:    test
+preconditions:          One node feeds two readers; the first reader overwrites its input buffer.
+
+inputs:
+  - Run one local step.
+
+expected_results:       The second reader sees the value as it was written.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_memory_copies_into_each_queue
+    guid_target:        rqt_f4f4e8672572416dad384b013d9a528a

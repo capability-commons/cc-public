@@ -1,0 +1,28 @@
+id_self:                case_platform_confines_services
+guid_self:              case_1a52a3ab8ee7419093b5daf1fb0ca631
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Platform layer not visible to ordinary nodes
+brief:                  |
+                        Verifies that only privileged code can read
+                        clocks and services.
+verification_method:    inspection
+preconditions:          The build of an ordinary node.
+
+inputs:
+  - Try to include the platform header from an ordinary node.
+
+expected_results:       The build of the ordinary node fails.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_platform_confines_services
+    guid_target:        rqt_d7d3cf8609cd4f0e996cb6ada9a511f1

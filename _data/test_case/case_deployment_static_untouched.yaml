@@ -1,0 +1,29 @@
+id_self:                case_deployment_static_untouched
+guid_self:              case_87624e97659e4518835fa61ce3e28b66
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static difference refused
+brief:                  |
+                        Verifies that a change set may touch only the
+                        dynamic subgraph; a change to the static part
+                        needs a new build.
+verification_method:    test
+preconditions:          Two resolved graphs differ only in the setting of one static node.
+
+inputs:
+  - Ask deployment for the change set between them.
+
+expected_results:       Deployment refuses and names the static node.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_deployment_static_untouched
+    guid_target:        rqt_389e950f881346ca8cb4bbd75dd3832a

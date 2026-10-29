@@ -1,0 +1,29 @@
+id_self:                case_recorder_off_step_path
+guid_self:              case_0fc722b9b355455a9c489fab19ff5797
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Slow store does not slow steps
+brief:                  |
+                        Verifies that a recorder hands its writes to
+                        storage to another thread and reports a fault
+                        if it falls behind.
+verification_method:    test
+preconditions:          A recorder writing to a store that takes 200 ms per write, in a unit with a 50 ms period.
+
+inputs:
+  - Run 100 local steps.
+
+expected_results:       No local step overruns because of the recorder, and the recorder reports that it fell behind.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_recorder_off_step_path
+    guid_target:        rqt_484c3e142a454c5ca58b3ce046adfc01

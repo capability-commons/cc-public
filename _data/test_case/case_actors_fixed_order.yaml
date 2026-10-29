@@ -1,0 +1,28 @@
+id_self:                case_actors_fixed_order
+guid_self:              case_53bb363f73044dbc854313bd457e63a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Order independent of timing
+brief:                  |
+                        Verifies that the order an actor sees messages
+                        in does not depend on timing.
+verification_method:    test
+preconditions:          An actor declares source a before source b; both send three messages within one gap, in varying timing.
+
+inputs:
+  - Run the same scenario 100 times with random delays.
+
+expected_results:       Every run handles a1, a2, a3, b1, b2, b3.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_actors_fixed_order
+    guid_target:        rqt_eb9ba8c84c674dac80a191a502c9057e

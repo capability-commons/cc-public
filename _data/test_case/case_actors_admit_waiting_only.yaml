@@ -1,0 +1,29 @@
+id_self:                case_actors_admit_waiting_only
+guid_self:              case_3d3ee870b13c46219f10b221f5de180f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Self-sent message waits a gap
+brief:                  |
+                        Verifies that messages sent during a gap wait
+                        for the next gap.
+verification_method:    test
+preconditions:          An actor that, on each message, sends one message to itself.
+
+inputs:
+  - Send it one message.
+  - Run three local steps.
+
+expected_results:       The actor handles exactly one message in each gap.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_actors_admit_waiting_only
+    guid_target:        rqt_27fda5badfa34a03989bff98500d3c27

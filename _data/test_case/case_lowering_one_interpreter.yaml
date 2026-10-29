@@ -1,0 +1,29 @@
+id_self:                case_lowering_one_interpreter
+guid_self:              case_0932f197d512476da9968b83b4418a53
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lowering emits operations only
+brief:                  |
+                        Verifies that lowering has no code path of its
+                        own for changing graphs: it emits variant
+                        operations.
+verification_method:    inspection
+preconditions:          The lowering package exists.
+
+inputs:
+  - Read every function of the package that returns a graph.
+
+expected_results:       Each builds its result by applying variant operations, and none edits a graph directly.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_lowering_one_interpreter
+    guid_target:        rqt_eb570f007e0c41f4a5e73c9b8602620e

@@ -1,0 +1,30 @@
+id_self:                case_generator_omits_dynamic
+guid_self:              case_c1b31ea453504833b091b984e7a0fdc3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No dynamic machinery in a static build
+brief:                  |
+                        Verifies that a build with no dynamic nodes
+                        carries none of the code that changes a graph
+                        at run time.
+verification_method:    inspection
+preconditions:          A lowered graph with no dynamic nodes.
+
+inputs:
+  - Generate and build it.
+  - List the symbols of the binary.
+
+expected_results:       No symbol of the Dynamic subgraph is present.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_generator_omits_dynamic
+    guid_target:        rqt_4ff2eb31615744a98cea6e66e3059d7f

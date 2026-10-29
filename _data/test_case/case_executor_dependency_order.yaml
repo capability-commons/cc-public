@@ -1,0 +1,29 @@
+id_self:                case_executor_dependency_order
+guid_self:              case_76202d57d6244a2a817c295d917235f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Chain runs in order
+brief:                  |
+                        Verifies that within one execution unit, a
+                        reader runs after its writers, once per local
+                        step.
+verification_method:    test
+preconditions:          Nodes a, b and c in one execution unit, where b reads a and c reads b, each logging its invocations.
+
+inputs:
+  - Run five local steps.
+
+expected_results:       The log is a, b, c in every local step, and c sees in each local step the value a wrote in that local step.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_executor_dependency_order
+    guid_target:        rqt_0ac0c2c114d34e13a1fa10ca7f560a82

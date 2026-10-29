@@ -1,0 +1,28 @@
+id_self:                case_control_block_replay
+guid_self:              case_e83f7f93f324416bb5d429b07eb99c5f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay gives the same control messages
+brief:                  |
+                        Verifies that on replay, nodes see the same
+                        time, modes and readings they saw before.
+verification_method:    test
+preconditions:          A recording of 100 local steps.
+
+inputs:
+  - Replay it a day later on another host.
+
+expected_results:       Every node receives the control messages of the recording, byte for byte.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_control_block_replay
+    guid_target:        rqt_77601c84846546f1b0809c5047210b06

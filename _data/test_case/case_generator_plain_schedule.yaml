@@ -1,0 +1,29 @@
+id_self:                case_generator_plain_schedule
+guid_self:              case_3edd4d1089a34114891090403c0479a9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Schedule has no allocation or indirection
+brief:                  |
+                        Verifies that the static part of a build is
+                        straight-line calls the compiler can see
+                        through.
+verification_method:    inspection
+preconditions:          Generated source for a static-only build exists.
+
+inputs:
+  - Run a static analyzer over the generated schedule for calls that allocate and for calls through pointers.
+
+expected_results:       The analyzer finds none.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_generator_plain_schedule
+    guid_target:        rqt_280b11a0b46f4ac4926e58aed9a5d604

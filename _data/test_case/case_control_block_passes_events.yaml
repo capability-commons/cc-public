@@ -1,0 +1,29 @@
+id_self:                case_control_block_passes_events
+guid_self:              case_a889719ca111454995b9a687357e94f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Events reach the recording
+brief:                  |
+                        Verifies that control blocks are the path by
+                        which engine events reach a recording.
+verification_method:    test
+preconditions:          A graph with a recorder on the events output of the control block.
+
+inputs:
+  - Cause an overflow, an overrun and an outside message.
+  - Read the recording.
+
+expected_results:       All three events are in the recording, at the local steps they happened.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_control_block_passes_events
+    guid_target:        rqt_56d985498215497a802ecf67b9f225d0

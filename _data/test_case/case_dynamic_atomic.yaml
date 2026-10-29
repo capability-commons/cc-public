@@ -1,0 +1,28 @@
+id_self:                case_dynamic_atomic
+guid_self:              case_ac678679d5164485b23ec15deadc4193
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bad last part leaves nothing applied
+brief:                  |
+                        Verifies that no local step ever sees half a
+                        change set.
+verification_method:    test
+preconditions:          A running graph; a change set that adds two nodes and then an edge to a port that does not exist.
+
+inputs:
+  - Apply the change set.
+
+expected_results:       It is refused; neither node is added; the graph runs on unchanged.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dynamic_atomic
+    guid_target:        rqt_e80dd96722dc4d42b2449c3970efc469

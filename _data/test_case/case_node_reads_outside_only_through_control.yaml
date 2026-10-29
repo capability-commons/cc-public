@@ -1,0 +1,28 @@
+id_self:                case_node_reads_outside_only_through_control
+guid_self:              case_582f0ed691724e8b9d22c8512dcbe3bc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No direct reads of time
+brief:                  |
+                        Verifies that ordinary nodes never call
+                        clocks, sensors or the engine directly.
+verification_method:    analysis
+preconditions:          The source of the ordinary nodes of a system.
+
+inputs:
+  - Search the source and its call graph for calls to clocks, the platform layer and the engine.
+
+expected_results:       None are found outside the control blocks.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_node_reads_outside_only_through_control
+    guid_target:        rqt_411b1c87c06d4ec1b3492c14956f07c0

@@ -1,0 +1,30 @@
+id_self:                case_generator_fuzz_harness
+guid_self:              case_e9c2a0a600184b85b2239888d8cef184
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Harness runs under a fuzzer
+brief:                  |
+                        Verifies that every node implementation can be
+                        fuzzed on its own, from its declared
+                        interface.
+verification_method:    test
+preconditions:          A node implementation with two inputs and state exists, and its harness has been generated.
+
+inputs:
+  - Build the harness with libFuzzer.
+  - Run it for 60 seconds.
+
+expected_results:       It runs, feeds arrays from empty to full capacity, and reports no crash in a correct node.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_generator_fuzz_harness
+    guid_target:        rqt_370364a591924d35a06b42fe25120028

@@ -1,0 +1,30 @@
+id_self:                case_resolver_records_origin
+guid_self:              case_85067d87caa440da99f10d4e904834dc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Origin trace of a setting changed twice
+brief:                  |
+                        Verifies that every node, edge and setting in
+                        a resolved graph can be traced to where it
+                        came from.
+verification_method:    test
+preconditions:          A base sets a value; a variant changes it; a variant of that variant changes it again.
+
+inputs:
+  - Resolve the second variant.
+  - Read the origin of the setting.
+
+expected_results:       The origin names the base and both operations, in the order they were applied.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_resolver_records_origin
+    guid_target:        rqt_9e56e4a9b2b04cf790c127a102a94c2b

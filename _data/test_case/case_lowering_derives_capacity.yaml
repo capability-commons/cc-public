@@ -1,0 +1,29 @@
+id_self:                case_lowering_derives_capacity
+guid_self:              case_e1fdd42a5626436cbd228e85299f408d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Capacity follows the period
+brief:                  |
+                        Verifies that port capacities are worked out,
+                        not written by hand.
+verification_method:    test
+preconditions:          A camera declares a maximum of 30 frames each second, and feeds a detector.
+
+inputs:
+  - Lower the graph with a period of 100 ms.
+  - Lower it again with a period of 200 ms.
+
+expected_results:       The capacity of the input port of the detector grows with the period, and in each case is at least the rate times the period.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_lowering_derives_capacity
+    guid_target:        rqt_d4dbcf24c6df4ebca8bfb205f84ca44b

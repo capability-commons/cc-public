@@ -1,0 +1,29 @@
+id_self:                case_control_refuses_wrong_digest
+guid_self:              case_b5e41b5e2d5d440f89d58c6824dd3a45
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stale digest refused
+brief:                  |
+                        Verifies that requests carry digests so cctool
+                        and the engine always mean the same graph.
+verification_method:    test
+preconditions:          An engine running a known graph.
+
+inputs:
+  - Send a request naming another digest.
+  - Ask for status.
+
+expected_results:       The request is refused, and the status shows the same graph running.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_control_refuses_wrong_digest
+    guid_target:        rqt_5ffa07b209d44a1e86ff0fcde40f0a6e

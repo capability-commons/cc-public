@@ -1,0 +1,30 @@
+id_self:                case_dataflow_run_names_its_graph
+guid_self:              case_a6c08346db7442969a386a9109889836
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run record requires what ran
+brief:                  |
+                        Verifies that a run record says exactly which
+                        graph ran, where, and on which build, so a
+                        result can be traced and repeated.
+verification_method:    inspection
+preconditions:          The schema of the run record is in the tree.
+
+inputs:
+  - Write a run record that leaves out the content digest.
+  - Run cctool check.
+
+expected_results:       cctool check reports a schema violation naming the missing digest.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dataflow_run_names_its_graph
+    guid_target:        rqt_936c6199716f4c089845270ba5ed55e4

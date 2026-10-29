@@ -1,0 +1,30 @@
+id_self:                case_dictionary_new_member_needs_default
+guid_self:              case_e48e2e76869e4841929cbffbbd2671d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  New member with no default is refused
+brief:                  |
+                        Verifies that a new version that adds a member
+                        with no default cannot upgrade an old value,
+                        so it is refused.
+verification_method:    test
+preconditions:          A dictionary holds a type at version 1.
+
+inputs:
+  - Add version 2, which adds a member with no default and names version 1 as the one it upgrades.
+  - Run cctool check.
+
+expected_results:       A failure names version 2 and the member that has no default.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dictionary_new_member_needs_default
+    guid_target:        rqt_04478c590abd4b5cb48013329df62aa9

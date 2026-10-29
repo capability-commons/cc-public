@@ -1,0 +1,29 @@
+id_self:                case_lowering_inserts_transport
+guid_self:              case_3574d62305ee4e2eb78434d626f88f37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Crossing edge gets a sender and a receiver
+brief:                  |
+                        Verifies that wherever placement splits an
+                        edge, lowering puts a sender and a receiver on
+                        it.
+verification_method:    test
+preconditions:          A resolved graph places camera and detector in one execution unit and tracker in another.
+
+inputs:
+  - Lower the graph.
+
+expected_results:       The edge from detector to tracker is replaced by a sender in the first unit and a receiver in the second; no other edge changes.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_lowering_inserts_transport
+    guid_target:        rqt_e0066d6f77d74f9daba925f2583ccc80

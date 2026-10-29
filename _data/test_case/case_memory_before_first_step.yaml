@@ -1,0 +1,30 @@
+id_self:                case_memory_before_first_step
+guid_self:              case_09c5e5e1c2dc4d898c1bba3cfcd424cb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No allocation while running
+brief:                  |
+                        Verifies that memory for buffers and state is
+                        allocated up front, from the declarations.
+verification_method:    test
+preconditions:          An engine built with a counting allocator, running a static graph.
+
+inputs:
+  - Start the engine.
+  - Note the allocation count after the first local step.
+  - Run 1000 more local steps.
+
+expected_results:       The allocation count does not change after the first local step.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_memory_before_first_step
+    guid_target:        rqt_daf221bd2d6d4263bf862d98132d58b2

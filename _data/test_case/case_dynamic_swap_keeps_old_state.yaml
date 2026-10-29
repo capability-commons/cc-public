@@ -1,0 +1,30 @@
+id_self:                case_dynamic_swap_keeps_old_state
+guid_self:              case_84ca0208888549c8b0e636f294bc240a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failed swap rolls back
+brief:                  |
+                        Verifies that a new node version that fails
+                        its first local step is replaced by the old
+                        one with its old state.
+verification_method:    test
+preconditions:          A running node at version 1 with state; version 2 that fails on its first invocation.
+
+inputs:
+  - Swap to version 2.
+  - Run two local steps.
+
+expected_results:       Version 1 runs again with the state it had, and a swap event says the old version was put back.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dynamic_swap_keeps_old_state
+    guid_target:        rqt_2ee49e5d220749ddb0eac505a8ec4b50

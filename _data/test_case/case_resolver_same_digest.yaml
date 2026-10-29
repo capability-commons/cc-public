@@ -1,0 +1,30 @@
+id_self:                case_resolver_same_digest
+guid_self:              case_e1c5c075f8ad45b7ac7df29d8218b57c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resolution is repeatable
+brief:                  |
+                        Verifies that resolution is deterministic: the
+                        same inputs give the same resolved graph, byte
+                        for byte in its canonical form.
+verification_method:    test
+preconditions:          A dataflow variant with several operations exists.
+
+inputs:
+  - Resolve it in one process.
+  - Resolve it again in a new process with caches cleared.
+
+expected_results:       Both resolutions give the same input digest and the same content digest.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_resolver_same_digest
+    guid_target:        rqt_dfb3aa337e654496923fe4cbe67727dd

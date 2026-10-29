@@ -1,0 +1,30 @@
+id_self:                case_dataflow_schema_merge_keys
+guid_self:              case_008e27a62c834b75a91a9ecf5343e606
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every array of a dataflow graph declares its key
+brief:                  |
+                        Verifies that every array in a dataflow graph
+                        names the key that picks out one element, so
+                        that a variant operation can address it.
+verification_method:    inspection
+preconditions:          The schema of the dataflow graph is in the tree.
+
+inputs:
+  - List every array in the schema of the dataflow graph.
+  - For each, read the key it declares.
+
+expected_results:       Every array declares a key of one or more of its fields, and an edge is keyed by its two ends.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dataflow_schema_merge_keys
+    guid_target:        rqt_4f7e70f2918b4226a129473b0bd4704a

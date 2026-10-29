@@ -1,0 +1,28 @@
+id_self:                case_transport_one_message_per_step
+guid_self:              case_ff251839e6084148b3b1892619093275
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Order and count across units
+brief:                  |
+                        Verifies that a receiver waits for its
+                        message, so results do not depend on timing.
+verification_method:    test
+preconditions:          A sender sends 1000 numbered messages over each transport.
+
+inputs:
+  - Run with random delays in both units.
+
+expected_results:       The receiver delivers 1 to 1000, one in each of its local steps, over every transport.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_transport_one_message_per_step
+    guid_target:        rqt_79c5ab1fb2c34108a0185b6f081e57fa

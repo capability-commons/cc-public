@@ -1,0 +1,28 @@
+id_self:                case_control_stops_at_step_end
+guid_self:              case_95c2c9f9b8af4081a9a42128cff9eac4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stop waits for the local step
+brief:                  |
+                        Verifies that an execution unit never stops
+                        part way through a local step.
+verification_method:    test
+preconditions:          A unit with a node that takes 50 ms.
+
+inputs:
+  - Send stop 10 ms into a local step.
+
+expected_results:       The local step completes, every output is written, and then the unit stops.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_control_stops_at_step_end
+    guid_target:        rqt_dd0dced7fcf44baba44a762cbc7a027d

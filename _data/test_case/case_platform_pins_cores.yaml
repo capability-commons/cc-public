@@ -1,0 +1,30 @@
+id_self:                case_platform_pins_cores
+guid_self:              case_051c2a0eb0794ce38bb3e9a929925659
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pinned to the named core
+brief:                  |
+                        Verifies that placement can say which core an
+                        execution unit runs on, and the platform layer
+                        does it.
+verification_method:    test
+preconditions:          A Linux host with at least four cores.
+
+inputs:
+  - Start a graph whose execution unit is placed on core 2.
+  - Read the CPU affinity of its thread.
+
+expected_results:       The affinity is core 2 only.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_platform_pins_cores
+    guid_target:        rqt_303199eaa86d47568669e1a727d80a1a

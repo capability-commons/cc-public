@@ -1,0 +1,30 @@
+id_self:                case_checks_binding_time
+guid_self:              case_ef6dece2532a48be89a177a2de4c11c7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build-time setting changed at start-up
+brief:                  |
+                        Verifies that a setting fixed at build time
+                        cannot be changed by a variant at start-up or
+                        run time.
+verification_method:    test
+preconditions:          A node declares a setting bound no later than build time.
+
+inputs:
+  - Write a variant that sets it at start-up.
+  - Run cctool check.
+
+expected_results:       A failure names the setting and the variant.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_checks_binding_time
+    guid_target:        rqt_11fa76d408824047b87ef8e306f488c8

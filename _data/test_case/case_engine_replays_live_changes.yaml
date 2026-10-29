@@ -1,0 +1,29 @@
+id_self:                case_engine_replays_live_changes
+guid_self:              case_03c9fe00d98841028fa979230592b71a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay reproduces every edge
+brief:                  |
+                        Verifies that a run in which the graph changed
+                        while it ran can be replayed exactly.
+verification_method:    test
+preconditions:          A deterministic graph, run with a change set at local step 20, a swap at 40 and outside messages throughout, with every edge recorded.
+
+inputs:
+  - Replay the run from its recording, with every edge recorded again.
+  - Compare the two.
+
+expected_results:       The messages on every edge are identical in both.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_engine_replays_live_changes
+    guid_target:        rqt_09583da2ddd345149679e413fe4c5c87

@@ -1,0 +1,28 @@
+id_self:                case_executor_feedback_previous
+guid_self:              case_629922651d554541b2c15d31aa683e1c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loop reads the previous value
+brief:                  |
+                        Verifies that each loop is broken by one edge
+                        that is read one local step late.
+verification_method:    test
+preconditions:          A node adds 1 to its input and feeds it back to itself through one feedback edge whose default is 0.
+
+inputs:
+  - Run four local steps.
+
+expected_results:       The node outputs 1, 2, 3 and 4.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_executor_feedback_previous
+    guid_target:        rqt_cff4a67931ea44c097df4d1ea6e88831

@@ -1,0 +1,29 @@
+id_self:                case_actors_report_admission
+guid_self:              case_2175588997be4435bcb67758cea70af6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Admission event
+brief:                  |
+                        Verifies that which gap took in each outside
+                        message is reported, so it can be recorded.
+verification_method:    test
+preconditions:          A running graph with an actor that receives outside messages.
+
+inputs:
+  - Send one outside message.
+  - Read the events from the control block.
+
+expected_results:       One admission event names the actor, the source, the sequence number and the gap.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_actors_report_admission
+    guid_target:        rqt_6564e43edd1b4c02a5146f73c02c0b8f

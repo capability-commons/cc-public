@@ -1,0 +1,30 @@
+id_self:                case_resolver_never_stores
+guid_self:              case_36a9711add064962b36333eabc57d603
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resolver writes nothing to the tree
+brief:                  |
+                        Verifies that a resolved graph is never
+                        written into the tree as a second copy of a
+                        variant.
+verification_method:    inspection
+preconditions:          A tree under version control, with a clean working copy.
+
+inputs:
+  - Resolve every complete dataflow variant.
+  - Run git status.
+
+expected_results:       The working copy is still clean; only cache folders outside the tree were written.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_resolver_never_stores
+    guid_target:        rqt_287d0439988d4fb59065acdf1d710074

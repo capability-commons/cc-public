@@ -1,0 +1,29 @@
+id_self:                case_actors_replay_admission
+guid_self:              case_0e35542269e34652812e6bd5ab366299
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outside messages replayed at their gaps
+brief:                  |
+                        Verifies that on replay, outside messages
+                        enter at the same gap they did on the recorded
+                        run.
+verification_method:    test
+preconditions:          A recorded run in which three outside messages were admitted at gaps 4, 9 and 9.
+
+inputs:
+  - Replay the recording.
+
+expected_results:       The messages are admitted at gaps 4, 9 and 9.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_actors_replay_admission
+    guid_target:        rqt_2ffa8a3e03554a7ea9be1fb5aa80c593

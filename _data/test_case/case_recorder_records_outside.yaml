@@ -1,0 +1,29 @@
+id_self:                case_recorder_records_outside
+guid_self:              case_e6c198cfea7e4e0fa2770b607abe4d1a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording is complete
+brief:                  |
+                        Verifies that recorders capture everything a
+                        replay needs.
+verification_method:    test
+preconditions:          A graph with a camera source, a control block and recorders on both.
+
+inputs:
+  - Run 100 local steps with one change set.
+  - Read the recording.
+
+expected_results:       It holds each frame, each control message and the change event, each with its local step.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_recorder_records_outside
+    guid_target:        rqt_6e903f08868e4b67b41be9175ec1b76f

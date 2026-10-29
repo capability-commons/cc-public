@@ -1,0 +1,31 @@
+id_self:                case_dynamic_reports_changes
+guid_self:              case_8e9146eec4e8449f9c2593a526ffac92
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change events
+brief:                  |
+                        Verifies that every change to the running
+                        graph is reported, so that a replay can make
+                        it at the same local step.
+verification_method:    test
+preconditions:          A running graph with a dynamic subgraph.
+
+inputs:
+  - Apply a change set.
+  - Swap a node version.
+  - Read the events.
+
+expected_results:       One change event and one swap event, each naming its local step.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dynamic_reports_changes
+    guid_target:        rqt_cb6535099ef648479290f8a62a8f4a13

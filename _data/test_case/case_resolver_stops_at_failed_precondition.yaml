@@ -1,0 +1,29 @@
+id_self:                case_resolver_stops_at_failed_precondition
+guid_self:              case_6558531a85f941dbbb25108f332eada6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Removal of an absent node stops resolution
+brief:                  |
+                        Verifies that an operation whose preconditions
+                        do not hold stops resolution and is named in
+                        the report.
+verification_method:    test
+preconditions:          A dataflow variant removes a node that its base does not hold.
+
+inputs:
+  - Resolve the dataflow variant.
+
+expected_results:       Resolution fails, naming the operation by its id, and no resolved graph is given.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_resolver_stops_at_failed_precondition
+    guid_target:        rqt_3cd9881f1a714d8ea85103d5eb5f6f37

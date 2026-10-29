@@ -1,0 +1,30 @@
+id_self:                case_mode_controller_hysteresis
+guid_self:              case_9ede8df2c86249beb5cc9ad7cb9e3cb5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Alternating overruns do not flip the mode
+brief:                  |
+                        Verifies that the mode changes only after its
+                        condition has held for a set number of local
+                        steps.
+verification_method:    test
+preconditions:          A mode controller with hold set to 5.
+
+inputs:
+  - Feed it overruns in every other local step for 20 local steps.
+  - Then overruns in 5 local steps in a row.
+
+expected_results:       The mode stays normal for the first 20 and changes to degraded after the fifth overrun in a row.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_mode_controller_hysteresis
+    guid_target:        rqt_7db7987a2bcb4298acb24e60aa2fd8a8

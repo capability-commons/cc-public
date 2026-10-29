@@ -1,0 +1,31 @@
+id_self:                case_executor_fail_safe
+guid_self:              case_3b0d51f8a82e4e96a1cd0af4f47efff6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each fail-safe on overflow
+brief:                  |
+                        Verifies that an overflow is handled as the
+                        port says: drop the excess, drop the message,
+                        or fail the local step.
+verification_method:    test
+preconditions:          A node that writes capacity plus 3 items to a port.
+
+inputs:
+  - Run one local step with the fail-safe drop excess.
+  - Again with drop message.
+  - Again with fail the local step.
+
+expected_results:       The reader gets the first capacity items; then an empty message; then the local step is failed. Each run reports one overflow event.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_executor_fail_safe
+    guid_target:        rqt_f867abfea7b14c8b9226a29944a62e81

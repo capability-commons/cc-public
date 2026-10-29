@@ -1,0 +1,31 @@
+id_self:                case_dynamic_rechecks
+guid_self:              case_088899e29c27449d92cb525e1edcc107
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Unsafe change sets refused
+brief:                  |
+                        Verifies that the engine does not trust a
+                        change set because cctool checked it.
+verification_method:    test
+preconditions:          A running graph with a static and a dynamic subgraph.
+
+inputs:
+  - Send a change set that joins mismatched ports.
+  - One that leaves an input unfed.
+  - One that removes a static node.
+  - One naming another graph digest.
+
+expected_results:       Each is refused with a reason, and the graph is unchanged.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_dynamic_rechecks
+    guid_target:        rqt_8ca04f9bdcf542e58ca1ae4e4e10506e

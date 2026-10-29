@@ -1,0 +1,28 @@
+id_self:                case_transport_waits_when_full
+guid_self:              case_b8176d09679449fbb305189941dc58a5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No loss with a slow receiver
+brief:                  |
+                        Verifies that a lossless edge never drops a
+                        message because the receiver is slow.
+verification_method:    test
+preconditions:          A sender twice as fast as its receiver on a lossless edge.
+
+inputs:
+  - Run until 500 messages are sent.
+
+expected_results:       The receiver delivers all 500, in order.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_transport_waits_when_full
+    guid_target:        rqt_02d231d27dd24143bfcee544f7fd069b

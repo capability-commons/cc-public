@@ -1,0 +1,29 @@
+id_self:                case_transport_confines_library
+guid_self:              case_16584edcf5c54c3ab56f430dbf527285
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Only transport nodes depend on transports
+brief:                  |
+                        Verifies that nothing else in the engine
+                        depends on ZeroMQ, sockets or shared memory
+                        libraries.
+verification_method:    inspection
+preconditions:          The engine source tree.
+
+inputs:
+  - List the libraries each package depends on.
+
+expected_results:       Only the transport nodes depend on a transport library.
+
+edge:
+
+  - id_relation:        relation_verifies
+    guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+    id_target:          rqt_transport_confines_library
+    guid_target:        rqt_6ea7b6469a2b4e7cae12b18d1543e2f3
