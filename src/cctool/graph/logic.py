@@ -94,9 +94,13 @@ TUPLE_WORDING     = ('did', 'fix')
 REGEX_COMMENT     = re.compile(r'%\*.*?\*%|%[^\n]*', re.DOTALL)
 
 # Each string is written between double quotes, with a backslash
-# before a backslash or a double quote, and a newline as \n.
+# before a backslash or a double quote, and a newline as \n. A lone
+# surrogate, which stands for a byte of a file name that is not UTF-8,
+# cannot be given to clingo, so it is written as the text \udcff.
 #
-MAP_ESCAPE        = str.maketrans({'\\': '\\\\', '"': '\\"', '\n': '\\n'})
+MAP_ESCAPE        = str.maketrans({'\\': '\\\\', '"': '\\"', '\n': '\\n'}
+                                  | {code: '\\\\u{code:04x}'.format(code = code)
+                                     for code in range(0xD800, 0xE000)})
 
 Rows              = dict[str, list[tuple[str, ...]]]
 

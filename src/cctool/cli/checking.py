@@ -59,7 +59,8 @@ def check(root: pathlib.Path) -> None:
     failure. A row about the trees that the segment of the tree
     consumes is printed next, as "notice:" and then the same, and is
     not a failure either. The exit status is 1 when any check fails,
-    and 2 when the checks cannot be run.
+    and 2 when the checks cannot be run, whatever stops them, so that
+    a fault of cctool is never read as a failure of the tree.
 
     """
 
@@ -67,6 +68,11 @@ def check(root: pathlib.Path) -> None:
         (failures, advice, notices) = cctool.check.check.review(root.resolve())
     except cctool.graph.logic.ErrorLogic as error:
         click.echo('The checks could not be run: {error}'.format(error = error), err = True)
+        sys.exit(cctool.cli.group.EXIT_ERROR)
+    except Exception as error:
+        click.echo('The checks could not be run: {kind}: {error}'.format(
+                       kind = type(error).__name__, error = ' '.join(str(error).split())),
+                   err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
 
     map_column  = cctool.check.check.columns()

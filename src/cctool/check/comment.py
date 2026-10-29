@@ -97,6 +97,8 @@ def violations(root:         pathlib.Path,
     for key in sorted(map_document):
         if not key.endswith(SUFFIX_PYTHON) or key != cctool.graph.extract.file_of(key):
             continue
+        if isinstance(map_document[key][0], cctool.graph.extract.Unreadable):
+            continue
         holder = map_holder.get(key, key)
         if map_text and key in map_text:
             text = map_text[key]

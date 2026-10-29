@@ -31,6 +31,7 @@ edge:                   []
 import datetime
 import gc
 import io
+import os
 import pathlib
 import re
 import uuid
@@ -550,6 +551,60 @@ def test_a_module_that_is_not_python_is_reported(tree):
     assert (file, line) == ('src/cctool/broken.py', '3')
     assert message.startswith('The module is not python')
     assert list(failures) == ['unrecorded_module']
+
+
+def test_a_module_that_is_not_utf_8_is_reported(tree):
+    (tree / 'src/cctool/latin.py').write_bytes(b'# caf\xe9\n')
+    failures = _check(tree)
+    [(file, line, message)] = failures.pop('unreadable_file')
+    assert (file, line) == ('src/cctool/latin.py', '1')
+    assert message.startswith('The file is not UTF-8')
+    assert list(failures) == ['unrecorded_module']
+
+
+@pytest.mark.parametrize('key', ['1995', 'true', '2026-10-29'])
+def test_a_key_that_is_not_text_is_reported(tree, key):
+    relative = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
+    path     = tree / relative
+    path.write_text(path.read_text() + 'note:\n  {key}: x\n'.format(key = key))
+    line     = path.read_text().count('\n')
+    [(file, at, message)] = _check(tree).pop('unreadable_file')
+    assert (file, at) == (relative, str(line))
+    assert message.startswith('The key ')
+    assert ' is not text.' in message
+
+
+def test_a_file_that_cannot_be_read_is_reported(tree, monkeypatch):
+    relative = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x')
+
+    def refused(path, *args, **kwargs):
+        if str(path).endswith(relative):
+            raise PermissionError(13, 'Permission denied', str(path))
+        return open(path, *args, **kwargs)
+
+    monkeypatch.setattr(cctool.graph.extract, 'open', refused, raising = False)
+    assert _check(tree) == {'unreadable_file': [
+        (relative, '1', 'The file cannot be read: Permission denied')]}
+
+
+def test_a_file_whose_name_is_not_utf_8_is_reported(tree):
+    (tree / '_data/annotation').mkdir(exist_ok = True)
+    path = pathlib.Path(os.fsdecode(bytes(tree / '_data/annotation') + b'/x\xff.yaml'))
+    path.write_text('title: x\n')
+    [(file, line, message)] = _check(tree).pop('unreadable_file')
+    assert (file, line) == ('_data/annotation/x\\udcff.yaml', '1')
+    assert message.startswith('The name of the file is not UTF-8')
+
+
+def test_a_check_that_crashes_exits_2_with_one_line(tree, monkeypatch):
+    def crashed(_root):
+        raise KeyError('x\ny')
+
+    monkeypatch.setattr(cctool.check.check, 'review', crashed)
+    result = click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                              ['check', '--root', str(tree)])
+    assert result.exit_code == 2
+    assert result.stderr == "The checks could not be run: KeyError: 'x\\ny'\n"
 
 
 def test_an_annotation_and_an_option_about_an_item_pass(tree):

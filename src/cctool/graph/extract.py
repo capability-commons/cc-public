@@ -645,11 +645,27 @@ def documents(root:    pathlib.Path,
         if package is not None and relative.parts[0] != DIR_DATA:
             relative = pathlib.Path(package, relative)
         try:
+            _is_named_in_text(relative)
             map_document.update(read(path, relative))
         except ErrorRead as error:
             map_document[str(relative)] = (Unreadable(error), error.line)
 
     return map_document
+
+
+# -----------------------------------------------------------------------------
+def _is_named_in_text(relative: pathlib.Path) -> None:
+    """
+    Raise ErrorRead if the path relative is not text, as a file name
+    that is not UTF-8 is not, since no fact can then name the file.
+
+    """
+
+    try:
+        str(relative).encode('utf-8')
+    except UnicodeEncodeError as error:
+        raise ErrorRead('The name of the file is not UTF-8, so no check can name it. '
+                        'Rename it.', 1) from error
 
 
 # -----------------------------------------------------------------------------
@@ -1036,7 +1052,7 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
     """
 
     if path.suffix in (SUFFIX_YAML, SUFFIX_PYTHON, SUFFIX_PROGRAM):
-        data = path.read_bytes()
+        data = _bytes(path)
         key  = (str(relative), hashlib.blake2b(data, digest_size = 16).digest())
         if key not in MAP_READ:
             if len(MAP_READ) >= COUNT_READ:
@@ -1057,14 +1073,30 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
     # read, and only as far as a comment header could go. It is known
     # to be unchanged by its size and the digest of its head.
     #
-    with open(path, 'rb') as file:
-        head = file.read(SIZE_HEAD)
+    head = _bytes(path, SIZE_HEAD)
     key  = (str(relative), path.stat().st_size, hashlib.blake2b(head, digest_size = 16).digest())
     if key not in MAP_READ:
         if len(MAP_READ) >= COUNT_READ:
             MAP_READ.clear()
         MAP_READ[key] = {str(relative): _header(_line_of_file(path), mark_comment(relative))}
     return MAP_READ[key]
+
+
+# -----------------------------------------------------------------------------
+def _bytes(path: pathlib.Path, size: int = -1) -> bytes:
+    """
+    Return the bytes of the file at path, or only its first size bytes
+    if size is given. Raise ErrorRead if the file cannot be read, as
+    when its mode lets no one read it.
+
+    """
+
+    try:
+        with open(path, 'rb') as file:
+            return file.read(size)
+    except OSError as error:
+        raise ErrorRead('The file cannot be read: {error}'.format(
+                            error = error.strerror or error), 1) from error
 
 
 # -----------------------------------------------------------------------------
@@ -1466,16 +1498,42 @@ def _document_of(node: ast.AST) -> tuple[typing.Any, int] | None:
 def _load(text: str, base: int) -> typing.Any:
     """
     Return the YAML document text, whose first line is line base of
-    its file. Raise ErrorRead if it is not YAML, or repeats a key.
+    its file. Raise ErrorRead if it is not YAML, repeats a key, or has
+    a key that is not text.
 
     """
 
     try:
-        return cctool.graph.parse.load(text)
+        document = cctool.graph.parse.load(text)
     except cctool.graph.parse.ERROR as error:
         mark = getattr(error, 'problem_mark', None)
         raise ErrorRead('The document is not YAML: {error}'.format(error = error),
                         base + (mark.line if mark is not None else 0)) from error
+
+    _keys_are_text(document, base)
+    return document
+
+
+# -----------------------------------------------------------------------------
+def _keys_are_text(value: typing.Any, base: int) -> None:
+    """
+    Raise ErrorRead, at the line of the key, if a mapping anywhere in
+    value, a document whose first line is line base of its file, has a
+    key that is not text, such as 1995 or true, since every field is
+    named by text.
+
+    """
+
+    if isinstance(value, list):
+        for each in value:
+            _keys_are_text(each, base)
+    elif isinstance(value, dict):
+        for (key, each) in value.items():
+            if not isinstance(key, str):
+                raise ErrorRead('The key {key} is not text. Quote it, as in "{key}", if '
+                                'it is meant as text.'.format(key = key),
+                                base + value.lc.key(key)[0])
+            _keys_are_text(each, base)
 
 
 # -----------------------------------------------------------------------------
