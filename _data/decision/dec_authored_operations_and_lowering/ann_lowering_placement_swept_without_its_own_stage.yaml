@@ -1,0 +1,71 @@
+id_self:                ann_lowering_placement_swept_without_its_own_stage
+guid_self:              ann_714167553a454fd49b2d5c1c29210b85
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Placement swept without a stage of its own
+brief:                  |
+                        A sweep can vary only the host and place
+                        operations of a variant while its other
+                        operations stay fixed, so exploring mappings
+                        over one application needs no separate mapping
+                        stage. Each run item names its variant and
+                        resolved digest, so a run whose placement
+                        alone changed is told apart by its variant's
+                        operations, which leaves the four-stage
+                        option's separate mapping digest a convenience
+                        rather than a need, and spares a stage that
+                        the Patrol drafts could not keep in order.
+description:            |
+                        Sources:
+                        - A sweep item holds a dataflow variant with
+                          declared parameters and the values to try,
+                          and cctool generates one resolved dataflow
+                          graph per point.
+                          (_data/decision/dec_parameters_of_a_variant/opt_sweep_items_generate_unstored_variants.yaml
+                          at brief)
+                        - A dataflow run names its variant and
+                          resolved digest.
+                          (_data/decision/dec_shape_of_a_dataflow_run/opt_run_item_in_the_tree.yaml
+                          at brief)
+                        - The Patrol drafts mix application and
+                          mapping operations in one variant.
+                          (_data/decision/dec_authored_operations_and_lowering/ann_lowering_stage_cannot_follow_operation_kind.yaml
+                          at brief)
+                        - Drawn from the tutorial on lowering written
+                          for WTP on 2026-10-29, whose recommendation
+                          WTP followed (WTP, 2026-10-29). Strength: moderate; it
+                          answers the two arguments for the four-stage
+                          option rather than adding a new benefit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_authored_operations_and_lowering
+    guid_target:        dec_984a188b4abf407897de4a60ae34c9ef
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_vocabulary_for_authoring_and_lowering
+    guid_target:        opt_be507c5e042f4446ab6716a88dbe562b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_four_stages_with_the_mapping_split_out
+    guid_target:        opt_5ef87800e207460fa983503d0e92c7ac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
