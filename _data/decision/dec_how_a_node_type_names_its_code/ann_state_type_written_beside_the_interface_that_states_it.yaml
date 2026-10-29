@@ -1,0 +1,96 @@
+id_self:                ann_state_type_written_beside_the_interface_that_states_it
+guid_self:              ann_48b023498cd241ad817201e775ef748d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State type written again beside the interface that states it
+brief:                  |
+                        A step surface already states its state as a
+                        typed member, and the state ruling makes that
+                        a type of the data dictionary. A node type
+                        item or a manifest entry that names the state
+                        type writes it a second time, and in the
+                        trial, as its generator reads, nothing
+                        compared that copy with the code before the
+                        compiler or linker did, and nothing at all for
+                        a node written in C. A header read by the
+                        extractor takes the signature from the marked
+                        function, so a check can compare its state and
+                        port types with the interface, as the Python
+                        check does today. That check does not exist
+                        for step surfaces, which the C++ ruling leaves
+                        uncovered, so the header option must add it.
+description:            |
+                        Sources:
+                        - A step surface declares what the step reads
+                          and writes between
+                          invocations as typed members.
+                          (_data/schema/sch_interface_control_document.yaml at
+                          $defs.surface_dataflow_step.properties.state)
+                        - A node's state is a value of a type in a
+                          data dictionary.
+                          (_data/decision/dec_form_of_node_state/opt_state_as_typed_data.yaml
+                          at brief, upheld by ruling_state_as_typed_data)
+                        - The node type item and the manifest each
+                          name the state type.
+                          (_data/decision/dec_how_a_node_type_names_its_code/opt_node_type_names_its_symbol_and_sources.yaml
+                          and
+                          _data/decision/dec_how_a_node_type_names_its_code/opt_library_manifest_lists_its_node_types.yaml
+                          at brief)
+                        - The trial's kind files named a state type
+                          beside the function.
+                          As the generator reads, it declared a C++ node's step function
+                          with that state type in a generated header, so a mismatch with
+                          the code would surface only when the build compiled or linked,
+                          and it passed a C node its state as an untyped pointer. (trial
+                          2c777ab9, src/cctool/dataflow/_test/_example/node_kind/accumulate.yaml;
+                          src/cctool/dataflow/generate.py, functions _kind_header and
+                          _entry)
+                        - Names from items were validated by nothing
+                          before the compiler.
+                          (review of 2026-10-29, CC-020)
+                        - A dataflow step surface names no language
+                          and is not covered by
+                          the C++ signature check.
+                          (_data/decision/dec_check_of_cpp_interfaces/ruling_cpp_interfaces_checked_from_the_first.yaml
+                          at brief)
+                        Strength: moderate; the second copy is
+                        certain, while the check that would catch
+                        drift under the header option is new work.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_node_type_names_its_code
+    guid_target:        dec_daf5d2178cc74e649d05606b37c199ba
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_code_header_names_its_node_type
+    guid_target:        opt_a0c7b92b7ffd448daf39b042ba35f11a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_node_type_names_its_symbol_and_sources
+    guid_target:        opt_e957d54f8e7a4aad8087c64fa18ea378
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_library_manifest_lists_its_node_types
+    guid_target:        opt_21ddc4149c0347128ae0223c3144990f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

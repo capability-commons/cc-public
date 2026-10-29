@@ -1,0 +1,92 @@
+id_self:                ann_icd_field_lists_second_source_of_engine_structs
+guid_self:              ann_1e497218d57c4ed083dbc6ae799c22c3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Interface field lists as a second source of the engine's structs
+brief:                  |
+                        Two rulings make the type of a port or of node
+                        state a dictionary item with a version and
+                        upgrades, the edge message and control message
+                        interfaces already say their payload is a type
+                        of the data dictionary, and the trial
+                        generated its C structs from dictionary types.
+                        If interface control documents also list the
+                        fields of the messages they carry, and a
+                        generator writes C structs from those lists,
+                        the engine gets two sources of structs, and
+                        one message can be stated in both. If the
+                        listed fields must instead name dictionary
+                        entries, the option becomes the dictionary
+                        option for messages. The JSON Schema option
+                        and the dictionary option each keep one source
+                        for what the engine exchanges.
+description:            |
+                        Sources:
+                        - Each type is a data item in a data
+                          dictionary, with a version and
+                          upgrade mappings.
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml at brief)
+                        - Port types name entries of data dictionaries
+                          held as items.
+                          (_data/decision/dec_port_types/ruling_port_types_from_data_dictionaries.yaml at brief)
+                        - The edge message carries a bounded array of
+                          a type of the data
+                          dictionary, and the control message is a value of one type of
+                          the data dictionary.
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml at surface.data.artifact.artifact.message.payload;
+                          _data/interface_control_document/icd_dataflow_control_message.yaml at surface.data.artifact.artifact.control_message.encoding)
+                        - The trial's generator writes the structs of
+                          every dictionary type
+                          into one header. (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, function _types)
+                        - Under the typed-field option, generators
+                          write Python classes, C
+                          structs and a JSON Schema from the one list of each artifact and
+                          callable.
+                          (_data/decision/dec_where_the_shape_of_dataflow_data_is_stated/opt_shape_as_typed_fields_in_the_icd.yaml at brief)
+                        - The simplicity measure counts jobs done by
+                          more than one
+                          mechanism.
+                          (_data/register/reg_concern.yaml at entries.concern_simplicity.measure)
+                        Strength: moderate; it falls away if the
+                        typed-field option is narrowed to Python types
+                        and file documents, leaving engine messages to
+                        the dictionary as the JSON Schema option does.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_as_typed_fields_in_the_icd
+    guid_target:        opt_a881efcf7d154ae6842fe1d1e5c24c40
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_in_json_schema_items
+    guid_target:        opt_45f10b7bf0fb4cc8a15e7904481e2f5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_as_data_dictionary_types
+    guid_target:        opt_202f17dbe62a48e9906a5fe63756271f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

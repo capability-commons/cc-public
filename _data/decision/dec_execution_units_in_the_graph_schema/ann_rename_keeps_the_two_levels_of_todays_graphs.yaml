@@ -1,0 +1,91 @@
+id_self:                ann_rename_keeps_the_two_levels_of_todays_graphs
+guid_self:              ann_a10252add2a64a97b124f5bf9bcb4141
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Two levels of today's graphs and ruling text kept by a rename
+brief:                  |
+                        The graph schema follows Stableflow's
+                        configuration with hosts and processes, and
+                        the one graph in the tree, ported from a
+                        Stableflow configuration, places its two nodes
+                        on one OS process of one host, which the rule
+                        on unplaced nodes checks. One unit for each OS
+                        process keeps those two levels and that rule
+                        and renames the lower level, so the smoketest
+                        graph and the rule change only in names and a
+                        ported configuration keeps its shape; units
+                        with a form keep two levels but drop the
+                        process section, and three levels add one.
+                        WTP's ruling speaks of processes that say
+                        which core they run on, and of variants with
+                        as many processes on a host as it has cores,
+                        which reads literally if a process is the
+                        unit. Against this, the rename gives up the
+                        threads that a requirement asks for.
+description:            |
+                        Sources:
+                        - The sections of the graph schema follow the
+                          configuration model
+                          of Stableflow, with its node, edge and process, and a host is
+                          where OS processes run. (_data/schema/sch_dataflow_graph.yaml at
+                          note and description)
+                        - The smoketest graph has one host, one OS
+                          process and two nodes on
+                          it, and was first ported from the smoketest configuration of
+                          Stableflow.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at
+                          os_process, dataflow_node and note)
+                        - A check fails a node whose OS process, or an
+                          OS process whose
+                          host, the graph does not list. (src/cctool/check/check.lp within
+                          unplaced)
+                        - The configuration of a process can and
+                          should say which core it
+                          runs on, and a variant can be generated with as many processes on
+                          a host as it has cores.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Threads in an app are required
+                          (ann_threads_of_one_process_asked_for_by_unit_forms, in this
+                          batch; _data/requirement/rqt_platform_unit_forms.yaml at brief).
+                        - Compatibility counts partner formats read
+                          and written without
+                          loss. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.measure.0)
+                        Strength: weak to moderate; the migration is
+                        small under any option, and the threads
+                        requirement outweighs it unless WTP drops
+                        threads.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_execution_units_in_the_graph_schema
+    guid_target:        dec_136dd1de96d247ec8fa573dccf12a0d8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_unit_for_each_os_process
+    guid_target:        opt_91e1aecf74b04f80814c77cd8407fa3b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_hosts_processes_and_units
+    guid_target:        opt_4ea65bb303c04d6da36c14dae884e70b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

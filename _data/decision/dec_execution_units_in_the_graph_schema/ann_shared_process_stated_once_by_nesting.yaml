@@ -1,0 +1,93 @@
+id_self:                ann_shared_process_stated_once_by_nesting
+guid_self:              ann_7f24c306cce3412e8b15c566e3b12608
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Shared process stated once by nesting, or twice by form and key
+brief:                  |
+                        Under three levels a unit's process is its
+                        parent, so units in one process sit on one
+                        host and share memory by construction, the
+                        existing rule on unplaced nodes grows by one
+                        hop, and moving a unit into a process of its
+                        own is one placement. Under units with a form,
+                        sharing is a key that thread units name, so
+                        new rules must check that units naming one key
+                        sit on one host and all have the thread form,
+                        and a unit alone in a process can be written
+                        two ways, in the process form or as a thread
+                        whose key no other unit names. Three levels
+                        cost an explicit process for every unit, even
+                        where each process holds one, and one more
+                        kind of part where the closed core has an
+                        operation for each kind of part.
+description:            |
+                        Sources:
+                        - Three levels: hosts, the OS processes on a
+                          host, and the units in
+                          a process.
+                          (_data/decision/dec_execution_units_in_the_graph_schema/opt_hosts_processes_and_units.yaml
+                          at brief)
+                        - Two levels, with thread units naming the OS
+                          process they share by
+                          a key.
+                          (_data/decision/dec_execution_units_in_the_graph_schema/opt_units_on_hosts_with_a_form.yaml
+                          at brief)
+                        - A node runs on an OS process of its graph,
+                          and an OS process on a
+                          host of it, which one rule checks in two hops.
+                          (src/cctool/check/check.lp within unplaced)
+                        - Every array of a dataflow graph names a key,
+                          so that a variant
+                          operation can address its elements.
+                          (_data/requirement/rqt_dataflow_schema_merge_keys.yaml at object)
+                        - One option for the closed core has a named
+                          operation for each
+                          kind of part, such as adding or removing a host, a unit or a
+                          node, and another has generic operations on keyed elements.
+                          (_data/decision/dec_operations_of_the_closed_core/opt_one_operation_per_kind_of_part.yaml
+                          and
+                          _data/decision/dec_operations_of_the_closed_core/opt_generic_operations_on_keyed_elements.yaml
+                          at brief)
+                        - Simplicity counts jobs done by more than one
+                          mechanism.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1)
+                        ASSUMPTION: under the form option an OS
+                        process exists only as a key that units name,
+                        with no element of its own that could hold a
+                        setting of the process. Strength: moderate;
+                        the extra rules are small, and the extra level
+                        costs little under generic operations.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_execution_units_in_the_graph_schema
+    guid_target:        dec_136dd1de96d247ec8fa573dccf12a0d8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_hosts_processes_and_units
+    guid_target:        opt_4ea65bb303c04d6da36c14dae884e70b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_units_on_hosts_with_a_form
+    guid_target:        opt_9349cc4077a44e4c819245da705b9745
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

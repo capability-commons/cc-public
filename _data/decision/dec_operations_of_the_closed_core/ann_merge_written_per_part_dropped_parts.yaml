@@ -1,0 +1,100 @@
+id_self:                ann_merge_written_per_part_dropped_parts
+guid_self:              ann_6666084159b84d6f8debf408ed50cbd9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge written part by part that dropped the parts it did not list
+brief:                  |
+                        The trial's merge copied hosts, units and
+                        nodes in one loop and edges in another, and
+                        lost what neither listed: the merged variant's
+                        records and replay flag vanished, an edge's
+                        delivery policy was replaced by the base
+                        edge's with no conflict reported, since edges
+                        were not compared, and the merged node's
+                        origin held only the merge. A merge defined
+                        once over every keyed list of the schema,
+                        comparing elements by their declared merge
+                        key, carries a new list by construction and
+                        gives the open question of conflicts between
+                        merged variants one place to detect a clash.
+                        The generic and hybrid options define their
+                        operations over keyed elements; under one
+                        operation for each kind of part, merge is one
+                        more operation whose handling is specific to
+                        each part.
+description:            |
+                        Sources:
+                        - The trial's merge loses the merged variant's
+                          records and replay
+                          flag, replaces an edge's delivery policy with the base edge's,
+                          compares hosts, units and nodes but not edges, and gives the
+                          merged node only the merge as origin. (review of 2026-10-29,
+                          CC-007, detail TM-03, reproduced in
+                          areas/trial-model-logs/p06_merge.out; trial 2c777ab9,
+                          src/cctool/dataflow/resolve.py, function _merge)
+                        - Every list of the graph schema declares a
+                          merge key.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/ruling_merge_key_declared_for_every_list.yaml at brief)
+                        - The resolver records every operation that
+                          touched each part, in
+                          order.
+                          (_data/decision/dec_origin_trace_of_a_resolved_graph/ruling_trace_of_every_touching_operation.yaml at brief)
+                        - Under the per-part option the fields and
+                          preconditions of each
+                          operation are specific to its part.
+                          (_data/decision/dec_operations_of_the_closed_core/opt_one_operation_per_kind_of_part.yaml at brief)
+                        - An argument on the open conflict decision
+                          treats refusing a
+                          conflicting merge as a precondition of the merge, which the
+                          resolver already checks.
+                          (_data/decision/dec_conflict_between_merged_variants/ann_merge_conflict_as_a_failed_precondition.yaml at brief)
+                        ASSUMPTION: under the generic options merge is
+                        written as a walk over each keyed list of the
+                        schema, not as code for each section.
+                        Strength: moderate; the trial's omissions are
+                        bugs any option could fix, but only a merge
+                        over declared keys stays complete as the
+                        schema grows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_operations_of_the_closed_core
+    guid_target:        dec_a276ef56d3754b0dadddb186ee8ed08f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_operations_on_keyed_elements
+    guid_target:        opt_cea4ef4285c945bd8dca0ce2c20a4714
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_core_with_named_graph_operations
+    guid_target:        opt_b1c416d1ff5e452fb30d8ac1baa68245
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_operation_per_kind_of_part
+    guid_target:        opt_fb4e9a8b745644df86a8d7fd3ec731a3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

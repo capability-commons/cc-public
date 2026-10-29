@@ -1,0 +1,101 @@
+id_self:                ann_stock_validators_read_json_schema_items
+guid_self:              ann_9c9fe73b3c924ffcb347f95797cc2e3c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Document shapes that a partner can validate with stock tools
+brief:                  |
+                        JSON Schema is a public standard, and the
+                        repository's schemas already follow its
+                        2020-12 draft, so a partner or a wrapper
+                        language that writes variants or reads run
+                        records can validate them with any conforming
+                        validator, under the JSON Schema option and
+                        under the typed-field option, which also
+                        generates a JSON Schema for files. Dictionary
+                        types are an in-house form that only cctool
+                        reads. The gain is partial: the array keywords
+                        of 2020-12 cannot say which field identifies
+                        an element or whether order matters, which
+                        merge keys and the input digest need, so these
+                        must be extension keywords that a stock
+                        validator keeps only as annotations.
+description:            |
+                        Sources:
+                        - The repository's meta-schema composes the
+                          draft 2020-12
+                          meta-schema. (_data/schema/sch_schema.yaml at description)
+                        - A dataflow graph is configuration data that
+                          any wrapper language
+                          can produce, as ruled on 2026-10-29.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at description)
+                        - The validation keywords for arrays in draft
+                          2020-12 are
+                          maxItems, minItems, uniqueItems, maxContains and minContains,
+                          and none names a key or declares order insignificant. (JSON
+                          Schema Validation, draft 2020-12, section 6.4,
+                          https://json-schema.org/draft/2020-12/json-schema-validation)
+                        - An implementation should treat a keyword it
+                          does not support as
+                          an annotation, and the core's data model takes an array to be
+                          an ordered list. (JSON Schema Core, draft 2020-12, section 6.5
+                          and the instance data model,
+                          https://json-schema.org/draft/2020-12/json-schema-core)
+                        - Every array of a dataflow graph must name
+                          the key that picks out
+                          one element, and no schema declares one today.
+                          (_data/requirement/rqt_dataflow_schema_merge_keys.yaml at brief;
+                          review of 2026-10-29, CC-058)
+                        - The trial sorted every array that had a
+                          merge key, ordered or
+                          not, and two different variants shared one input digest. (review
+                          of 2026-10-29, CC-005)
+                        - The compatibility measure counts the tools a
+                          partner must
+                          install to take part.
+                          (_data/register/reg_concern.yaml at entries.concern_compatibility.measure)
+                        ASSUMPTION: a partner is given the schemas
+                        that the dataflow schemas refer to by $ref,
+                        such as sch_standalone, since a stock
+                        validator must load them too. Strength:
+                        moderate; it counts once a partner or a
+                        wrapper language writes or reads these
+                        documents, and the merge semantics stay
+                        cctool's under every option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_in_json_schema_items
+    guid_target:        opt_45f10b7bf0fb4cc8a15e7904481e2f5e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_as_typed_fields_in_the_icd
+    guid_target:        opt_a881efcf7d154ae6842fe1d1e5c24c40
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_as_data_dictionary_types
+    guid_target:        opt_202f17dbe62a48e9906a5fe63756271f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

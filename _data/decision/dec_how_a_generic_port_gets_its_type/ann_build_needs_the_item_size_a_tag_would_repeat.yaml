@@ -1,0 +1,77 @@
+id_self:                ann_build_needs_the_item_size_a_tag_would_repeat
+guid_self:              ann_140ff1f5f6e94d41b672132739bced7a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Item size the build needs before any tag is read
+brief:                  |
+                        The engine allocates the buffer of every edge
+                        from the port's type and capacity before the
+                        first local step, and a message is an array of
+                        items of one fixed-size type. The item size of
+                        a generic port is therefore fixed when the
+                        engine is built, whatever the option, and the
+                        trial's generator sized each channel from the
+                        type its node was given. A tag on every
+                        message then states at run time what the build
+                        already knows, a second mechanism for one job,
+                        while a type parameter states it once, where
+                        lowering writes it.
+description:            |
+                        Sources:
+                        - Engine memory allocates the buffer for every
+                          edge from the port
+                          types and capacities, as items of one fixed-size type in a buffer
+                          for the whole capacity.
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml
+                          at description and
+                          surface.data.artifact.artifact.message.encoding)
+                        - Every buffer is allocated before the first
+                          local step, from the
+                          declarations.
+                          (_data/requirement/rqt_memory_before_first_step.yaml at object
+                          and qualifier;
+                          _data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief)
+                        - The trial's generator wrote each channel's
+                          item size from the
+                          type given to its sender, and each array carries its item size.
+                          (trial 2c777ab9, src/cctool/dataflow/generate.py, function
+                          _host; src/cctool/dataflow/engine/include/df/node.h, struct
+                          df_array)
+                        - Simplicity counts jobs done by more than one
+                          mechanism.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1)
+                        Strength: moderate; a tag adds a guard at a
+                        process boundary, so it is not pure
+                        duplication (see
+                        ann_type_tag_lets_one_sender_serve_every_type,
+                        in this batch).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bytes_with_a_type_tag
+    guid_target:        opt_3f16ec8cd2ea4672a5dd375ae2f11d12
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_type_parameter_bound_for_each_node
+    guid_target:        opt_d33605b31bbb49cbb33625dffb167399
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

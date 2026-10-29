@@ -1,0 +1,80 @@
+id_self:                ann_fold_reads_a_field_of_whatever_type_it_is_given
+guid_self:              ann_d49201b37be340838747b18b3a87d337
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generic fold that reads a field of whatever type it is given
+brief:                  |
+                        The fold adapter is generic over its edge, yet
+                        it interprets each item: the trial's fold read
+                        the first field as a 64-bit integer, nothing
+                        checked the edge's type, and an edge of
+                        shorter items overflowed the heap. Under bytes
+                        with a tag only a node that interprets the
+                        bytes declares a type, so fold cannot be
+                        generic and falls back to a node type for each
+                        type. A type parameter serves fold only with a
+                        constraint on what may be bound, which the
+                        option does not state, and the trial's
+                        parameter, with no check that it was bound at
+                        all, passed both checks, made the build fail
+                        on a missing key, and skipped the type check
+                        of both ends. The type parameter option holds
+                        if it adds a check that every parameter is
+                        bound and a constraint a node type can state.
+description:            |
+                        Sources:
+                        - The fold adapter takes values of one type
+                          and folds them into one
+                          by a declared function.
+                          (_data/interface_control_document/icd_dataflow_delivery_adapter.yaml
+                          at surface.fold.dataflow_step)
+                        - The trial's fold read eight bytes per item
+                          as the first field,
+                          and on a type of 32-bit items AddressSanitizer reported a heap
+                          overflow; nothing checked that the first field is a 64-bit
+                          integer. (review of 2026-10-29, CC-010; trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/adapters.cpp, function
+                          fold_step)
+                        - A generic node without its type parameter
+                          passed both checks,
+                          the build then failed with a missing key, and the type check was
+                          skipped for its ends; the review reproduced it with a probe.
+                          (review of 2026-10-29,
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model.md,
+                          TM-16;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model-logs/p23_generic.out)
+                        - Adapters are among the nodes that work on
+                          messages of any type.
+                          (_data/decision/dec_how_a_generic_port_gets_its_type/dec_how_a_generic_port_gets_its_type.yaml
+                          at brief)
+                        Strength: strong on the trial's evidence; the
+                        remedy for the type parameter option is small
+                        and known.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bytes_with_a_type_tag
+    guid_target:        opt_3f16ec8cd2ea4672a5dd375ae2f11d12
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_type_parameter_bound_for_each_node
+    guid_target:        opt_d33605b31bbb49cbb33625dffb167399
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

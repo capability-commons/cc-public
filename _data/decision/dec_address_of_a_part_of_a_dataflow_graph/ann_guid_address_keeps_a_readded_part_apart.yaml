@@ -1,0 +1,68 @@
+id_self:                ann_guid_address_keeps_a_readded_part_apart
+guid_self:              ann_abf0ebde3fea4f8387d7663d5ea4e855
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Guid addresses that keep a removed part and a re-added one apart
+brief:                  |
+                        In the trial, a variant that removed a node
+                        and then added a new node of the same name got
+                        an origin for the new node's setting that
+                        named the base and the add, crediting the base
+                        for a value it no longer supplied and leaving
+                        the removal out. A trace keyed by name joins
+                        two parts that held one name at different
+                        times. Keyed by a guid minted when the node is
+                        added, the new node starts a trace of its own,
+                        the old one keeps its removal, and a rename of
+                        either changes no address. The review's
+                        expected fix instead keeps the name as the
+                        address and records the removal before the
+                        add, so path strings and structured keys can
+                        be made right too; the guid makes this class
+                        of error impossible rather than fixed.
+description:            |
+                        Sources:
+                        - After a remove and an add of a node with one
+                          name, the origin of
+                          its setting names the base and the add, and omits the removal;
+                          the expected origin is the base, the removal and the add.
+                          (review of 2026-10-29, CC-041, detail TM-12)
+                        - The resolver records, for each part, the
+                          base item and every
+                          operation that touched it, in order.
+                          (_data/decision/dec_origin_trace_of_a_resolved_graph/ruling_trace_of_every_touching_operation.yaml at brief)
+                        - A dataflow node on dev has an id and a guid
+                          of its own.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at dataflow_node)
+                        - Each variant operation is named by an id
+                          with a guid.
+                          (_data/decision/dec_identity_of_a_variant_operation/ruling_operation_named_by_id_with_guid.yaml at brief)
+                        ASSUMPTION: an operation that adds a node
+                        mints a new guid for it, as one that adds a
+                        member of a port group does. Strength: weak to
+                        moderate; it turns on whether a reviewer wants
+                        the history of a name or the history of a
+                        part.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_address_of_a_part_of_a_dataflow_graph
+    guid_target:        dec_c2894e5525c24ca2948264437cd883b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_address_by_guid_where_one_exists
+    guid_target:        opt_b0aa24dea5da49a78968c4f70bbc287f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

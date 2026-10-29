@@ -1,0 +1,98 @@
+id_self:                ann_versioned_library_as_the_unit_a_partner_ships
+guid_self:              ann_996688a4d6c3407299844d81325eb14d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Versioned library as the unit a partner can ship
+brief:                  |
+                        A manifest that lists a library's node types,
+                        built and versioned as one unit, lets a
+                        partner supply nodes as a compiled library and
+                        its manifest with no sources, as DIF lets a
+                        graph hide the code inside its blocks and
+                        BlockFactory ships blocks as plugin libraries.
+                        It also gives a digest one versioned thing to
+                        pin. A header needs source text for the
+                        extractor, and a node type item names sources
+                        the generator compiles, so neither takes a
+                        node without its source; but under any option
+                        a C++ node that the schedule calls directly
+                        needs at least its header, and its source if
+                        the call is to be inlined.
+description:            |
+                        Sources:
+                        - DIF can hide the code that implements the
+                          blocks of an
+                          exchanged graph. (Hsu, Keceli, Ko, Shahparnia and Bhattacharyya
+                          2004, DIF: An Interchange Format for Dataflow-Based Design
+                          Tools, abstract, via
+                          /mnt/project-files/notes/literature/part-2/2004-dif-dataflow-interchange-format.md,
+                          Cite as, Hides code)
+                        - BlockFactory deploys updated blocks by
+                          distributing a plugin
+                          library, and the note warns that a swapped binary under an
+                          unchanged graph must not keep the old evidence. (Ferigo,
+                          Traversaro, Romano and Pucci 2020, A generic synchronous
+                          dataflow architecture to rapidly prototype and deploy robot
+                          controllers, section 4, via
+                          /mnt/project-files/notes/literature/round-2/2020-generic-sdf-architecture-for-robot-controllers.md,
+                          Bears on, live node swaps)
+                        - The C entry points serve other languages,
+                          code loaded at run
+                          time and fuzz harnesses, and C++ nodes in the static subgraph are
+                          called directly.
+                          (_data/decision/dec_language_of_the_node_interface/opt_c_contract_with_direct_cpp_calls.yaml
+                          at brief; _data/requirement/rqt_node_interface_direct_cpp.yaml
+                          at object)
+                        - Open options pin node types by version, or
+                          keep a separate digest
+                          of the build.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_digest_identifies_the_graph_only.yaml
+                          and
+                          _data/decision/dec_what_the_digest_of_a_build_identifies/opt_separate_digest_of_the_build.yaml
+                          at brief)
+                        - Compatibility asks what a partner must adopt
+                          in order to take
+                          part. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                        ASSUMPTION: some partner or vendor nodes for
+                        Patrol will arrive as compiled libraries
+                        without sources. Strength: weak to moderate;
+                        no record names a binary-only partner yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_node_type_names_its_code
+    guid_target:        dec_daf5d2178cc74e649d05606b37c199ba
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_library_manifest_lists_its_node_types
+    guid_target:        opt_21ddc4149c0347128ae0223c3144990f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_code_header_names_its_node_type
+    guid_target:        opt_a0c7b92b7ffd448daf39b042ba35f11a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_node_type_names_its_symbol_and_sources
+    guid_target:        opt_e957d54f8e7a4aad8087c64fa18ea378
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

@@ -1,0 +1,91 @@
+id_self:                ann_graph_picks_one_of_two_codes_for_one_interface
+guid_self:              ann_ae31bdb2843c46869807a0dbfdabdeab
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Choice between two codes that realize one interface
+brief:                  |
+                        A configured node today names only the
+                        interface it presents, while the requirements
+                        speak of each implementation a node can use,
+                        and a swap at a step replaces version n of a
+                        node with version n+1 in a running engine, so
+                        both codes must be present in the engine and
+                        told apart. A node type item or a manifest
+                        entry gives the graph and a change set
+                        something to name for each code. A header
+                        points from code to interface only, so when
+                        two files realize one interface nothing in the
+                        graph says which one the generator compiles
+                        for a node, unless the node also names its
+                        code, which the option does not say. The trial
+                        kept the second version of its accumulator as
+                        a kind of its own that named the first.
+description:            |
+                        Sources:
+                        - A dataflow node realizes one interface
+                          control document, and a
+                          check fails one that realizes other than one.
+                          (_data/schema/sch_dataflow_node.yaml at description;
+                          src/cctool/check/check.lp within interface_count)
+                        - A fuzz harness is required for each
+                          implementation that a
+                          dataflow node can use.
+                          (_data/requirement/rqt_generator_fuzz_harness.yaml at object)
+                        - At the start of a step the engine runs
+                          version n+1 in place of
+                          version n, keeping the old state until the new version completes
+                          a step, so it can go back.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief, upheld by ruling_swap_at_a_step_with_state_upgrade)
+                        - The trial's second accumulator was a kind
+                          that named the first
+                          as the kind it versions, with another function in the same source
+                          file. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/_example/node_kind/accumulate_v2.yaml)
+                        ASSUMPTION: a change of code that keeps the
+                        interface, such as a bug fix, is swapped
+                        without a new interface version; where the
+                        state type changes, the interface's state
+                        member changes and a new interface version
+                        tells the two apart. Strength: moderate; a
+                        header could also name a version or key that a
+                        node names, at the cost of a reference the
+                        option does not describe.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_node_type_names_its_code
+    guid_target:        dec_daf5d2178cc74e649d05606b37c199ba
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_node_type_names_its_symbol_and_sources
+    guid_target:        opt_e957d54f8e7a4aad8087c64fa18ea378
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_library_manifest_lists_its_node_types
+    guid_target:        opt_21ddc4149c0347128ae0223c3144990f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_code_header_names_its_node_type
+    guid_target:        opt_a0c7b92b7ffd448daf39b042ba35f11a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

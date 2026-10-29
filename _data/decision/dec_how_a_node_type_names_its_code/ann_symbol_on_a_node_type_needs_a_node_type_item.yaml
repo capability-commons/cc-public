@@ -1,0 +1,95 @@
+id_self:                ann_symbol_on_a_node_type_needs_a_node_type_item
+guid_self:              ann_f598be1768234b6d9977453f54b07309
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Binding of code that needs a node type item from another decision
+brief:                  |
+                        Naming the symbol and sources on the node type
+                        assumes an item for the node type, which no
+                        registered type holds today; the open decision
+                        on port declarations creates one only under
+                        its node type option, and the decision on
+                        where dataflow items are kept names node types
+                        without saying what they hold. If port
+                        declarations go on the step surface, this
+                        option must create a node type item for the
+                        binding alone, or write code names into the
+                        interface control document, whose schema note
+                        says it names no implementation. The header
+                        option needs no node type item, since code
+                        points to the interface, and a manifest is an
+                        item of its own either way. The two decisions
+                        have two coherent pairs: a node type item with
+                        the binding on it, or the step surface with a
+                        header.
+description:            |
+                        Sources:
+                        - The node type item names its step function,
+                          its state type and
+                          its source files.
+                          (_data/decision/dec_how_a_node_type_names_its_code/opt_node_type_names_its_symbol_and_sources.yaml
+                          at brief)
+                        - The declarations of ports go either on a
+                          node type item or on the
+                          step surface, among others.
+                          (_data/decision/dec_where_dataflow_port_declarations_live/opt_declarations_on_a_dataflow_node_type_item.yaml
+                          and
+                          _data/decision/dec_where_dataflow_port_declarations_live/opt_declarations_on_the_dataflow_step_surface.yaml
+                          at brief)
+                        - The interface control document names no
+                          implementation.
+                          (_data/schema/sch_interface_control_document.yaml at note)
+                        - No registered type of item holds a node
+                          type.
+                          (_data/register/reg_data_item_type.yaml at entries)
+                        - Where the binding of a node type to its code
+                          lives is left open
+                          by dec_where_dataflow_items_are_kept, whose options all keep
+                          node types somewhere without saying what one holds beyond its
+                          interface.
+                          (_data/decision/dec_how_a_node_type_names_its_code/dec_how_a_node_type_names_its_code.yaml
+                          at description;
+                          _data/decision/dec_where_dataflow_items_are_kept/opt_dataflow_items_under_data.yaml,
+                          opt_dataflow_files_in_a_folder_of_their_own.yaml and
+                          opt_project_items_under_data_with_a_packaged_library.yaml at
+                          brief)
+                        - Simplicity asks whether a design follows
+                          from decisions already
+                          made. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.2)
+                        Strength: moderate; it is a dependency, not a
+                        fault, and weighs only once the decision on
+                        port declarations is ruled.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_node_type_names_its_code
+    guid_target:        dec_daf5d2178cc74e649d05606b37c199ba
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_node_type_names_its_symbol_and_sources
+    guid_target:        opt_e957d54f8e7a4aad8087c64fa18ea378
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_code_header_names_its_node_type
+    guid_target:        opt_a0c7b92b7ffd448daf39b042ba35f11a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

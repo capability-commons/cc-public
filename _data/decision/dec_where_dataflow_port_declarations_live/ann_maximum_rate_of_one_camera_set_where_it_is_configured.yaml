@@ -1,0 +1,95 @@
+id_self:                ann_maximum_rate_of_one_camera_set_where_it_is_configured
+guid_self:              ann_e861f884223c404490c6bcc7857f448b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Maximum rate of one camera stated where that camera is configured
+brief:                  |
+                        The capacity ruling derives each capacity from
+                        the maximum rates that producers state, and
+                        WTP tied the buffer size to the variant
+                        generated for the configuration that uses one
+                        particular sensor. One camera driver can run
+                        at different rates in different variants, so
+                        its rate belongs to the configured node, or to
+                        a narrowing there of the type's value. The
+                        trial put the rate in the file of the kind of
+                        node, so, as its code reads, a second rate
+                        would have needed a second kind. The step
+                        surface option lets a configured node narrow a
+                        value where a ruling allows it, the
+                        configured-node option holds it there anyway,
+                        and the node type option as worded has no such
+                        place.
+description:            |
+                        Sources:
+                        - Every producer states a maximum rate, and a
+                          transform sets each
+                          capacity from that rate times the step period plus a margin.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief, upheld by ruling_capacity_derived_from_maximum_producer_rates)
+                        - The buffer size can be part of the variant
+                          generated for the
+                          configuration using a particular sensor, as WTP proposed on
+                          2026-10-28.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at description) Patrol's camera runs at 30 Hz (WTP,
+                          2026-10-28).
+                        - The trial stated the rate on the sensor's
+                          kind, and, as its code
+                          reads, lowering took it from the kind only. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/_example/node_kind/sensor.yaml;
+                          src/cctool/dataflow/lower.py, function _output_capacity)
+                        - The trial's generator took a port's
+                          fail-safe from the
+                          configured node where one was given, and from the kind
+                          otherwise, so one node could override the value of its kind;
+                          two test variants change the fail-safe of one node this way, as
+                          a free override rather than a narrowing. (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, method overflow of class Unit;
+                          src/cctool/dataflow/_test/_example/dataflow_variant/dfv_trial_drop_message.yaml
+                          and dfv_trial_fail_step.yaml; src/cctool/dataflow/_test/test_engine.py,
+                          function test_overflow_drops_the_excess_or_the_message_or_fails_the_local_step)
+                        - A configured node may narrow a value where a
+                          ruling allows it,
+                          such as the maximum rate of one camera.
+                          (_data/decision/dec_where_dataflow_port_declarations_live/opt_declarations_on_the_dataflow_step_surface.yaml
+                          at brief)
+                        ASSUMPTION: one camera driver will be used at
+                        more than one rate across variants; today
+                        Patrol has one camera at one rate. Strength:
+                        moderate; the node type option could take the
+                        same narrowing clause, after which the point
+                        applies to it equally.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_each_configured_node
+    guid_target:        opt_da9c2bec2d9844d6a95d1fad54e1f421
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

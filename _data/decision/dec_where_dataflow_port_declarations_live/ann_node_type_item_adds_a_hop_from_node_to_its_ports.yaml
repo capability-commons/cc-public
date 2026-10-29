@@ -1,0 +1,88 @@
+id_self:                ann_node_type_item_adds_a_hop_from_node_to_its_ports
+guid_self:              ann_e13f9442662d4d55bb24c604d45e5388
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  New item type between a configured node and the ports it presents
+brief:                  |
+                        Today a configured node realizes one interface
+                        control document, an edge end names an
+                        interface member as its port, and the checks
+                        of unknown ports and port types read what
+                        those members state. A node type item is a new
+                        type of item with a schema of its own, and
+                        each of its declarations must point at a port
+                        that another item holds, so the checks either
+                        follow node, node type and interface in turn,
+                        or keep two links from each node consistent.
+                        The trial's files for its standard kinds
+                        restated the ports their interfaces already
+                        held. Fields added to the port and the setting
+                        of the step surface sit on the member they
+                        describe and change the join of no rule.
+description:            |
+                        Sources:
+                        - A dataflow node realizes the interface
+                          control document whose
+                          step surface it presents, and a check fails a node that realizes
+                          other than one. (_data/schema/sch_dataflow_node.yaml at
+                          description; src/cctool/check/check.lp within interface_count)
+                        - The checks of unknown ports and port types
+                          read the ports of the
+                          interface a node presents and the types they state.
+                          (src/cctool/check/check.lp within unknown_port and
+                          port_type_mismatch)
+                        - A dataflow node item is one node of a
+                          dataflow graph, embedded
+                          in it, and no registered type of item holds a node type.
+                          (_data/register/reg_data_item_type.yaml at
+                          entries.type_dataflow_node.description, and its entries)
+                        - The trial's files for its standard kinds of
+                          node restated the
+                          ports that the interfaces under _data hold.
+                          (_data/decision/dec_where_dataflow_items_are_kept/ann_packaged_node_types_restate_ports_their_icds_hold.yaml
+                          at brief)
+                        - Simplicity counts the distinct mechanisms a
+                          design adds, and
+                          maintainability the parts a change touches.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0 and
+                          entries.concern_maintainability.measure.1)
+                        Strength: moderate; the cost is paid once, and
+                        less of it counts against the option if a node
+                        type item is wanted anyway for the binding of
+                        code (dec_how_a_node_type_names_its_code) or a
+                        privileged role
+                        (dec_which_nodes_may_reach_the_outside_world).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

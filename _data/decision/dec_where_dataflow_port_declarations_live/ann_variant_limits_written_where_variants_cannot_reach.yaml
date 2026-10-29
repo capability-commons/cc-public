@@ -1,0 +1,108 @@
+id_self:                ann_variant_limits_written_where_variants_cannot_reach
+guid_self:              ann_2727d944df2c4224bf6584d53d06970a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Limits on variants that a variant could rewrite on its own node
+brief:                  |
+                        The latest binding time of a setting and the
+                        static-only limit of an interface exist so
+                        that a check can fail a variant that binds a
+                        setting too late or makes such a node dynamic.
+                        Declared on each configured node, both limits
+                        sit in the part of the graph that variant
+                        operations write, so one variant can loosen a
+                        limit and break it at once, and the check then
+                        compares the variant with values it chose
+                        itself. The trial already let writes of a
+                        whole node or a whole map of settings slip
+                        past its binding check. On a node type item or
+                        on the step surface, the limit sits in an item
+                        that no variant edits.
+description:            |
+                        Sources:
+                        - Each setting or node declares the latest
+                          time it may be bound,
+                          and a check fails a variant that binds it later.
+                          (_data/decision/dec_binding_time_of_a_variation/ruling_latest_binding_time_per_setting.yaml
+                          at brief)
+                        - Each configured node says whether it is
+                          static or dynamic, an
+                          interface may require its nodes to be static, and a check fails
+                          a dynamic node of such an interface.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_node_with_interface_limit.yaml
+                          at brief, upheld by ruling_mutability_on_node_with_interface_limit)
+                        - Under the configured-node option each
+                          configured node declares
+                          these values, which a delta module can supply.
+                          (_data/decision/dec_where_dataflow_port_declarations_live/opt_declarations_on_each_configured_node.yaml
+                          at brief)
+                        - A variant is a base and an ordered list of
+                          operations. The two
+                          generic options open for the closed core can set any keyed
+                          element of the graph, and the option with one operation for
+                          each kind of part at least adds a node with its fields.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          at brief;
+                          _data/decision/dec_operations_of_the_closed_core/opt_generic_operations_on_keyed_elements.yaml,
+                          _data/decision/dec_operations_of_the_closed_core/opt_generic_core_with_named_graph_operations.yaml
+                          and
+                          _data/decision/dec_operations_of_the_closed_core/opt_one_operation_per_kind_of_part.yaml
+                          at brief)
+                        - In the trial, a setting given when a node is
+                          added, a write of
+                          the whole map of settings and a write of the whole node all
+                          bypassed the binding-time check. (review of 2026-10-29, CC-025;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model.md,
+                          TM-08)
+                        - The trial read the static-only flag and each
+                          latest binding time
+                          from the file of the kind of node, not from the node. (trial
+                          2c777ab9, src/cctool/dataflow/checks.py, functions _check_nodes
+                          and check_variant)
+                        ASSUMPTION: a rule that forbids variants to
+                        write the declaration fields of a node would
+                        restore the check under the configured-node
+                        option, but those fields would then behave as
+                        facts of a type that happen to be stored in
+                        each graph. Strength: strong for the binding
+                        time and the static-only limit; it says
+                        nothing about fail-safes or maximum items,
+                        which limit no variant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_each_configured_node
+    guid_target:        opt_da9c2bec2d9844d6a95d1fad54e1f421
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

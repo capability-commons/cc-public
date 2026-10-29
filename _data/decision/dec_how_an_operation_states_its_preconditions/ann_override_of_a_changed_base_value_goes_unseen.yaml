@@ -1,0 +1,93 @@
+id_self:                ann_override_of_a_changed_base_value_goes_unseen
+guid_self:              ann_7b076689bd794dbc97ad8d6491ca70f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Override of a base value that has since changed, unseen
+brief:                  |
+                        The requirement stops resolution because a
+                        base changed under a variant, and going on
+                        would hide it. An operation that sets a
+                        setting the base also sets finds the setting
+                        present whatever its base value, so when the
+                        base later changes that value the implied
+                        preconditions pass and the variant overrides,
+                        in silence, a value its author never saw. A
+                        written condition that the field equals the
+                        value the author expected stops resolution
+                        there and names the operation, as the test
+                        operation of JSON Patch stops a patch whose
+                        target no longer holds the expected value. The
+                        implied option cannot say this; both written
+                        options can, inside the operation, as the
+                        ruling that each operation states its own
+                        preconditions asks, rather than as a separate
+                        test operation.
+description:            |
+                        Sources:
+                        - Removing a node that is not there, or adding
+                          one that is, means
+                          the base changed under the variant, and going on would hide it.
+                          (_data/requirement/rqt_resolver_stops_at_failed_precondition.yaml at rationale)
+                        - The test operation of JSON Patch checks that
+                          the value at the
+                          target equals a given value, and when an operation fails,
+                          evaluation should stop and the patch as a whole is not deemed
+                          applied successfully. (RFC 6902, sections 4.6 and 5,
+                          https://www.rfc-editor.org/rfc/rfc6902)
+                        - The trial's write needs only the parent of
+                          its path to exist.
+                          (trial 2c777ab9, src/cctool/dataflow/resolve.py, function
+                          _write)
+                        - The written vocabulary includes a field
+                          equal to a value, and
+                          the extras come from the same vocabulary.
+                          (_data/decision/dec_how_an_operation_states_its_preconditions/opt_preconditions_written_on_each_operation.yaml at brief;
+                          _data/decision/dec_how_an_operation_states_its_preconditions/opt_implied_preconditions_with_written_extras.yaml at brief)
+                        - Every variant operation states its own
+                          preconditions, and the
+                          explicit test operation was not upheld.
+                          (_data/decision/dec_preconditions_of_variant_operations/ruling_every_operation_states_its_preconditions.yaml at brief;
+                          _data/decision/dec_preconditions_of_variant_operations/opt_explicit_test_operation.yaml at brief)
+                        ASSUMPTION: authors override base values they
+                        chose with the base value in mind, so a silent
+                        change of that value matters. Strength:
+                        moderate; weak if overrides seldom depend on
+                        the value they replace.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_an_operation_states_its_preconditions
+    guid_target:        dec_26fc718e78654485b12c8287ffe49dc2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_implied_preconditions_with_written_extras
+    guid_target:        opt_f67aa24739ad49fca431bd767daebf37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_preconditions_written_on_each_operation
+    guid_target:        opt_133f0f9e77c9491ba8492a736866f693
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_preconditions_implied_by_the_kind
+    guid_target:        opt_d5eac5e080524803916ed52795ad7e0b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

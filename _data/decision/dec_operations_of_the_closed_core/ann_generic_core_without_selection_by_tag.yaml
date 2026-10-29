@@ -1,0 +1,85 @@
+id_self:                ann_generic_core_without_selection_by_tag
+guid_self:              ann_5df6b853765948b0bc7416b965028b3e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generic core with no operation that selects parts by tag
+brief:                  |
+                        The ruling on dataflow tags has variant
+                        operations select parts by tag, and the Patrol
+                        drafts and the trial both filter by tag: the
+                        trial's filter removed every node that had a
+                        tag, with each edge and record that named one.
+                        The option of generic operations on keyed
+                        elements names each element by its list and
+                        merge key and has no operation that selects by
+                        tag, so a variant that drops a tagged
+                        subsystem must list every node and edge, and
+                        must change whenever the base tags another
+                        part. Both other options keep filter by tag,
+                        whose reason traces to the ruling.
+description:            |
+                        Sources:
+                        - Variant operations and views select parts by
+                          tag.
+                          (_data/decision/dec_feature_model_or_explicit_family/ruling_registered_dataflow_tags_with_constraints.yaml at brief)
+                        - The Patrol drafts use add, join, filter,
+                          write, host and place.
+                          (_data/decision/dec_operations_of_the_closed_core/dec_operations_of_the_closed_core.yaml at description)
+                        - Every Patrol variant draft begins with a
+                          filter that removes the
+                          nodes carrying a presence tag, with their edges.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_edge_positions_shift_on_every_edit.yaml at description)
+                        - The trial's filter removes every node that
+                          has the tag, with the
+                          edges and records that name those nodes, and fails if no node has
+                          it. (trial 2c777ab9, src/cctool/dataflow/resolve.py, functions
+                          _filter and _drop_nodes)
+                        - The generic option has add, remove and set
+                          on an element named
+                          by its list and merge key, plus merge and the application of a
+                          delta module.
+                          (_data/decision/dec_operations_of_the_closed_core/opt_generic_operations_on_keyed_elements.yaml at brief)
+                        ASSUMPTION: a delta module cannot stand in for
+                        filter, since its operations also name
+                        elements by key and so cannot select by tag.
+                        Strength: strong; it falls away only if remove
+                        may take a tag in place of a key, which is a
+                        named operation by another name.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_operations_of_the_closed_core
+    guid_target:        dec_a276ef56d3754b0dadddb186ee8ed08f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_generic_operations_on_keyed_elements
+    guid_target:        opt_cea4ef4285c945bd8dca0ce2c20a4714
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_core_with_named_graph_operations
+    guid_target:        opt_b1c416d1ff5e452fb30d8ac1baa68245
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_operation_per_kind_of_part
+    guid_target:        opt_fb4e9a8b745644df86a8d7fd3ec731a3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

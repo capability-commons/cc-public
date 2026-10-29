@@ -1,0 +1,97 @@
+id_self:                ann_generic_write_bypassed_named_preconditions
+guid_self:              ann_c85d1a3f776f4288b530b3bf9019c31e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generic write that bypassed the rules of the named operations
+brief:                  |
+                        The trial's core had named operations with
+                        preconditions of their own beside a generic
+                        write on any path, and in the review's probes
+                        the write reached what the named operations
+                        guard. It created a unit on a host that does
+                        not exist, which adding a unit refuses, and
+                        lowering gave that unit no control block, so
+                        the node placed there would never run; it
+                        created a node with no node type, which
+                        crashed the check; and of the three ways that
+                        bypassed the binding-time check, two were
+                        writes of a whole node or of a node's settings
+                        map. Under the generic option every change
+                        goes through set, so the preconditions of set
+                        must cover what place and add check; under the
+                        hybrid option two routes reach one field
+                        unless the option says which fields only a
+                        named operation may write. Under one operation
+                        for each kind of part there is no second
+                        route.
+description:            |
+                        Sources:
+                        - The trial's thirteen operations include
+                          write and unset on any
+                          path, and write needs only the parent of its path to exist.
+                          (trial process log, phase 1; trial 2c777ab9,
+                          src/cctool/dataflow/resolve.py, functions _write and _parent)
+                        - A write of a unit with a host that does not
+                          exist, followed by a
+                          place, passes every check, and lowering adds no control block
+                          for that unit, from which the review concludes that the node
+                          never runs; a write of a new node with only a unit makes the
+                          check raise. (review of 2026-10-29, CC-041, detail TM-12, with
+                          the probe logs areas/trial-model-logs/p20_misc.out and
+                          p05_resolver.out)
+                        - Adding a node with a setting, writing a
+                          node's settings map and
+                          writing a whole node all bypass the binding-time check. (review
+                          of 2026-10-29, CC-025, detail TM-08)
+                        - Generic writes would reach the identity and
+                          placement fields of
+                          a node and move it past the rules of place.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_vocab_generated_writes_reach_identity_fields.yaml at brief)
+                        - The hybrid option has generic add, remove
+                          and set, plus named
+                          operations where a change has a rule of its own, such as place
+                          for placement.
+                          (_data/decision/dec_operations_of_the_closed_core/opt_generic_core_with_named_graph_operations.yaml at brief)
+                        Strength: moderate to strong; it weakens if
+                        set may only change a field that exists and
+                        that no named operation governs, and if add
+                        requires every reference an element holds to
+                        resolve.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_operations_of_the_closed_core
+    guid_target:        dec_a276ef56d3754b0dadddb186ee8ed08f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_generic_operations_on_keyed_elements
+    guid_target:        opt_cea4ef4285c945bd8dca0ce2c20a4714
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_generic_core_with_named_graph_operations
+    guid_target:        opt_b1c416d1ff5e452fb30d8ac1baa68245
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_operation_per_kind_of_part
+    guid_target:        opt_fb4e9a8b745644df86a8d7fd3ec731a3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,94 @@
+id_self:                ann_dictionary_types_are_fixed_layout_not_documents
+guid_self:              ann_e28cd37ed99e4bd3b88fa14ff7075dac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed-layout dictionary types against open-ended documents
+brief:                  |
+                        A type of the data dictionary describes plain
+                        data of fixed size that the engine reads in
+                        place, with a fixed capacity for every
+                        sequence and string, and the trial's
+                        dictionary types held only fields of a
+                        primitive or another type, generated as packed
+                        C structs. A variant, a delta module, a sweep
+                        or a report of failures needs what the engine
+                        must never hold: optional fields, maps keyed
+                        by name, lists of any length, a different set
+                        of fields for each kind of operation, and free
+                        text. Stating documents as dictionary types
+                        grows the dictionary into a second type
+                        system, with a rule that keeps its document
+                        half out of every engine message, while the
+                        JSON Schema option leaves the dictionary to
+                        what the engine exchanges.
+description:            |
+                        Sources:
+                        - Everything that crosses an edge is of fixed
+                          size, every sequence
+                          and string has a fixed capacity, and nothing is allocated while
+                          stepping.
+                          (_data/decision/dec_form_of_the_data_dictionary/ann_external_schema_adds_second_language_and_value_form.yaml at description)
+                        - Each type is a data item with a version and
+                          a mapping for each
+                          field.
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml at brief)
+                        - The trial's dictionary types list fields
+                          whose type is a
+                          primitive or another type, and the generator writes them as
+                          packed C structs. (trial 2c777ab9,
+                          src/cctool/dataflow/dictionary.py, MAP_PRIMITIVE and class Field;
+                          src/cctool/dataflow/generate.py, function _types)
+                        - A variant holds a base, an ordered set of
+                          operations each with an
+                          id and a guid, and whether it is abstract or superset; a run holds
+                          bindings, input data by digest, seeds and named measures.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at surface.data.artifact.artifact)
+                        - Each of the trial's thirteen operations
+                          carried fields of its
+                          own: a write a path and a value of any type, an added unit a form
+                          and a period, a merge a list of variants and joins. (trial
+                          2c777ab9, src/cctool/dataflow/resolve.py, MAP_OPERATION and the
+                          functions it names; the added unit's fields as in
+                          src/cctool/dataflow/_test/_example/dataflow_variant/dfv_trial_two_units.yaml)
+                        ASSUMPTION: optional fields, unions and lists
+                        without a bound would be added to the
+                        dictionary for documents only, and a check
+                        would refuse them in any type an engine
+                        message uses. Strength: moderate to strong for
+                        simplicity, since each document feature the
+                        engine must refuse becomes one more rule; it
+                        weakens only if documents were reshaped to
+                        fixed layouts, which no record proposes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_as_data_dictionary_types
+    guid_target:        opt_202f17dbe62a48e9906a5fe63756271f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_in_json_schema_items
+    guid_target:        opt_45f10b7bf0fb4cc8a15e7904481e2f5e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

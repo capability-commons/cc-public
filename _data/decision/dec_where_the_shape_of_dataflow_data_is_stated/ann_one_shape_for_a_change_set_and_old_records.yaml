@@ -1,0 +1,95 @@
+id_self:                ann_one_shape_for_a_change_set_and_old_records
+guid_self:              ann_af93333845c14d8ba9f32bf24c5cee05
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One shape for a change set and for records that outlive a release
+brief:                  |
+                        The change set is written by the toolchain and
+                        received by the engine, and the JSON Schema
+                        option lists it among the documents while the
+                        messages the engine handles stay dictionary
+                        types, so under that option its shape is
+                        stated once for each side unless the engine
+                        receives a different form. Records such as
+                        runs and deployments, and a peer's own
+                        variants, outlive the release whose schema
+                        they were written against, and the ruled
+                        rename maps carry ids across releases but not
+                        reshaped fields. Stating every shape as a
+                        dictionary type gives the change set one shape
+                        on both sides, and gives every document a
+                        mapping for each field from one version to the
+                        next; this is the real strength of the
+                        dictionary option.
+description:            |
+                        Sources:
+                        - The change set belongs to the dynamic part
+                          of the engine, which
+                          receives it in a form computed from two resolved graphs.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml at description and edge)
+                        - The JSON Schema option lists change sets
+                          among the documents with
+                          schemas, and keeps the messages the engine handles as dictionary
+                          types.
+                          (_data/decision/dec_where_the_shape_of_dataflow_data_is_stated/opt_shape_in_json_schema_items.yaml at brief)
+                        - One open option turns a change into an
+                          ordered list of engine
+                          calls, which is then not the document.
+                          (_data/decision/dec_form_of_a_change_set_the_engine_receives/opt_ordered_list_of_engine_calls.yaml at brief)
+                        - The schemas of dataflow items follow the
+                          versions of the tree.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at surface.data.artifact.compatibility)
+                        - Each release ships its renames as an old id,
+                          a new id and the
+                          guid, and a peer rewrites references and mentions from them.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml at brief)
+                        - A new version of a dictionary type maps each
+                          field as kept,
+                          renamed, converted, or new with a default.
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml at brief)
+                        ASSUMPTION: no mechanism carries a reshaped
+                        field of an item into a peer other than an
+                        edit by hand. Strength: moderate; the
+                        change-set half falls away if
+                        dec_form_of_a_change_set_the_engine_receives
+                        upholds opt_ordered_list_of_engine_calls, and
+                        the records half counts only once a peer holds
+                        dataflow documents across a release.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_as_data_dictionary_types
+    guid_target:        opt_202f17dbe62a48e9906a5fe63756271f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_in_json_schema_items
+    guid_target:        opt_45f10b7bf0fb4cc8a15e7904481e2f5e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

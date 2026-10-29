@@ -1,0 +1,82 @@
+id_self:                ann_encoding_between_processes_needs_the_type_at_the_sender
+guid_self:              ann_e4f8e73dc5354e3982f7fe17863a6902
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Sender that must know its type to encode for another process
+brief:                  |
+                        Two of the three options open for the encoding
+                        between OS processes convert each message at
+                        the sender and the receiver, to a canonical
+                        layout or to CDR so that other tools can read
+                        it, and both need the message's type where the
+                        conversion is generated. A sender bound to one
+                        type, by a parameter or as a node type of its
+                        own, gets a converter generated for that type.
+                        A sender that carries bytes with a tag needs a
+                        table of converters for every type, chosen at
+                        run time by the tag, or works only with the
+                        raw memory layout. Partner tools also bind a
+                        generic block for each use: Simulink blocks
+                        can inherit their data type from the signals
+                        they connect to, which a type parameter
+                        mirrors.
+description:            |
+                        Sources:
+                        - The open options are a canonical layout
+                          converted by generated
+                          code at the sender and the receiver, a standard serialization
+                          such as CDR generated from the dictionary types so that other
+                          tools can read the messages, and the memory layout with a check
+                          that both ends share one dictionary digest.
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/opt_canonical_layout_from_the_dictionary.yaml,
+                          _data/decision/dec_encoding_of_a_message_between_os_processes/opt_standard_serialization.yaml
+                          and
+                          _data/decision/dec_encoding_of_a_message_between_os_processes/opt_memory_layout_on_the_wire.yaml
+                          at brief)
+                        - Simulink blocks can inherit data types from
+                          the signals they are
+                          connected to, by a rule set on the block. (MathWorks, Data type
+                          inheritance rules in Simulink,
+                          https://www.mathworks.com/help/simulink/ug/data-type-inheritance-rules-in-simulink.html)
+                        - Compatibility asks whether a partner can
+                          read and use what the
+                          design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                        ASSUMPTION: the converters are generated from
+                        dictionary entries, as the trial generated
+                        structs and upgrade functions from them.
+                        Strength: moderate; it bears only if the
+                        encoding decision picks a converting option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_type_parameter_bound_for_each_node
+    guid_target:        opt_d33605b31bbb49cbb33625dffb167399
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_node_type_for_each_message_type
+    guid_target:        opt_a7874710f17542fdb7ce4c9a88fc8af6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bytes_with_a_type_tag
+    guid_target:        opt_3f16ec8cd2ea4672a5dd375ae2f11d12
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

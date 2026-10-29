@@ -1,0 +1,91 @@
+id_self:                ann_bytes_port_falls_outside_the_ruled_type_check
+guid_self:              ann_114b07814421444b84560e58c44a33b7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Edges at a bytes port that the ruled type check cannot judge
+brief:                  |
+                        Port types name dictionary entries and every
+                        edge is checked against them, on the resolved
+                        graph and again on the lowered one, where the
+                        senders, receivers, adapters and recorders
+                        sit. With bytes and a tag, an edge from a
+                        concrete output into a sender names two
+                        different declarations, so the requirement on
+                        port types needs an exemption, and the edge
+                        from a receiver into its consumer can be
+                        checked only at run time, by the tag. A type
+                        parameter bound by lowering, or a node type
+                        made for each message type, leaves a concrete
+                        type on every port of the lowered graph, so
+                        the existing rule runs unchanged once the
+                        bound type is substituted.
+description:            |
+                        Sources:
+                        - Port types name entries of data
+                          dictionaries, and edges are
+                          checked against those entries.
+                          (_data/decision/dec_port_types/ruling_port_types_from_data_dictionaries.yaml
+                          at brief)
+                        - A failure names an edge whose two ends name
+                          different
+                          declarations in the dictionary, and the dataflow rules run on
+                          each complete variant as resolved and as lowered.
+                          (_data/requirement/rqt_checks_port_types.yaml at condition and
+                          object; _data/requirement/rqt_checks_every_complete_variant.yaml
+                          at object)
+                        - The port type rule compares the types stated
+                          on the ports at the
+                          two ends of an edge. (src/cctool/check/check.lp within
+                          port_type_mismatch)
+                        - The generic spellings in the interfaces
+                          would fail every
+                          inserted adapter or sender, and the review asks for a dictionary
+                          entry or a declared type parameter for each generic port.
+                          (review of 2026-10-29, CC-065;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/records.md,
+                          REC-16)
+                        - Only a node that interprets the bytes
+                          declares a type.
+                          (_data/decision/dec_how_a_generic_port_gets_its_type/opt_bytes_with_a_type_tag.yaml
+                          at brief)
+                        Strength: strong; it follows from a ruling and
+                        two requirements, and weakens only if WTP
+                        accepts run-time checking for inserted nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_bytes_with_a_type_tag
+    guid_target:        opt_3f16ec8cd2ea4672a5dd375ae2f11d12
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_type_parameter_bound_for_each_node
+    guid_target:        opt_d33605b31bbb49cbb33625dffb167399
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_node_type_for_each_message_type
+    guid_target:        opt_a7874710f17542fdb7ce4c9a88fc8af6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

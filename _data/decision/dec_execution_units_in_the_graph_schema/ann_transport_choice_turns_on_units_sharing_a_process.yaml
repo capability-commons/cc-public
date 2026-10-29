@@ -1,0 +1,106 @@
+id_self:                ann_transport_choice_turns_on_units_sharing_a_process
+guid_self:              ann_9d9c87d8bea44ea28a5f5b26df5c49f1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport choice that turns on whether two units share a process
+brief:                  |
+                        The transport between two units is a setting
+                        of the inserted sender and receiver, chosen by
+                        a transform for each variant, and ZeroMQ, one
+                        of the named transports, has one transport for
+                        threads that share a context, another for
+                        processes on one machine, and TCP between
+                        hosts. A transform can choose only if the
+                        graph says which units share an OS process.
+                        The trial gave each unit a host and a form
+                        that, as a search of its code shows, nothing
+                        acted on, so the engine chose a queue or TCP
+                        at run time from its command line, against the
+                        records. Three levels state the sharing by
+                        nesting and units with a form state it by a
+                        process key, while one unit for each process
+                        sends every crossing between processes and
+                        never uses an in-process queue.
+description:            |
+                        Sources:
+                        - Lowering inserts a sender and a receiver
+                          wherever placement puts
+                          the ends of an edge apart, and the transport is a setting: a
+                          shared-memory queue, ZeroMQ or TCP.
+                          (_data/interface_control_document/icd_dataflow_transport.yaml at
+                          description and surface.sender.dataflow_step.settings.transport)
+                        - The transport is a setting with one
+                          transform for each variant,
+                          while the trial chose at run time. (review of 2026-10-29,
+                          CC-057;
+                          _data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief, upheld by ruling_transport_nodes_inserted_by_a_transform)
+                        - ZeroMQ's in-process transport passes
+                          messages through memory
+                          between threads that share a single context, and its
+                          inter-process transport passes them between local processes.
+                          (ZeroMQ, zmq_inproc, https://libzmq.readthedocs.io/en/latest/zmq_inproc.html;
+                          ZeroMQ, zmq_ipc, https://libzmq.readthedocs.io/en/latest/zmq_ipc.html)
+                        - The trial's units carried a host, a form and
+                          a period; a search
+                          of its model and engine code finds nothing that acts on the
+                          form, which the resolver only copies into the graph; and the
+                          engine used a queue for a channel whose ends both ran in its own
+                          process and TCP otherwise. (trial
+                          2c777ab9, src/cctool/dataflow/_test/_example/dataflow_graph/,
+                          unit entries; src/cctool/dataflow/resolve.py, function _add_unit;
+                          src/cctool/dataflow/engine/nodes/transport.cpp,
+                          function transport_open;
+                          /mnt/project-files/notes/dataflow-trial/process-log.md, phase 2,
+                          GAP on the transport kind)
+                        - Compatibility asks what a partner must adopt
+                          to exchange data;
+                          here the partner is a transport library, whose transports are
+                          usable only as it defines them.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                        ASSUMPTION: a queue between threads of one
+                        process costs less than any queue between
+                        processes; the Orin has not been measured.
+                        Strength: moderate; one unit for each process
+                        stays consistent and merely never uses an
+                        in-process transport, which matters most for
+                        the threads-in-an-app form.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_execution_units_in_the_graph_schema
+    guid_target:        dec_136dd1de96d247ec8fa573dccf12a0d8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_hosts_processes_and_units
+    guid_target:        opt_4ea65bb303c04d6da36c14dae884e70b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_units_on_hosts_with_a_form
+    guid_target:        opt_9349cc4077a44e4c819245da705b9745
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_unit_for_each_os_process
+    guid_target:        opt_91e1aecf74b04f80814c77cd8407fa3b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

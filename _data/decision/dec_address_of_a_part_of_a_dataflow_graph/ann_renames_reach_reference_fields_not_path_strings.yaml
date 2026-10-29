@@ -1,0 +1,92 @@
+id_self:                ann_renames_reach_reference_fields_not_path_strings
+guid_self:              ann_7335adb904ee4db9b95de9b7289b3a2c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Renames that reach reference fields and miss ids inside path strings
+brief:                  |
+                        Some addresses are stored: an operation names
+                        the part of its base that it changes, and a
+                        requirement or a tag's entry may name a part.
+                        The ruled rename maps rewrite each reference
+                        field to the id its guid names and each
+                        mention of a whole id, and on dev both the
+                        rename and the check of mentions pass over an
+                        id that follows a period, so an id after the
+                        first in a dotted path string, such as the
+                        port after its node or the second end of an
+                        edge, is neither rewritten nor reported. A
+                        path built from a node's local key holds no id
+                        at all, though a rename changes that key. A
+                        structured key whose fields are id and guid
+                        pairs, as dev's edge ends are, is rewritten
+                        and checked by the machinery that exists, and
+                        a guid needs no rewrite. Derived addresses,
+                        such as the origin trace and reports of
+                        failures, are recomputed after a rename, so
+                        the point bears only on stored ones.
+description:            |
+                        Sources:
+                        - Each release ships its renames as an old id,
+                          a new id and the
+                          guid, and a peer rewrites each reference and each prose mention.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml at brief)
+                        - A rename matches an id as a whole word only
+                          where no period comes
+                          before it. (src/cctool/edit/edit.py within PATTERN_WHOLE_ID)
+                        - The check of mentions reads no id that
+                          follows a period.
+                          (src/cctool/graph/extract.py within REGEX_MENTION)
+                        - A dataflow node is filed under the last part
+                          of its id, so a
+                          rename changes its key. (src/cctool/edit/edit.py within
+                          _rename_all)
+                        - The ends of an edge are references, so the
+                          checker finds an end
+                          that names nothing and a rename keeps the edge.
+                          (_data/schema/sch_dataflow_graph.yaml at description)
+                        - A write in the drafts addresses a setting by
+                          a dotted string.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_every_reader_must_know_each_operation.yaml at description)
+                        ASSUMPTION: an operation names its target with
+                        the address form this decision rules.
+                        Strength: moderate to strong for every stored
+                        address; none for the origin trace and
+                        reports, which are derived.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_address_of_a_part_of_a_dataflow_graph
+    guid_target:        dec_c2894e5525c24ca2948264437cd883b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_address_as_a_structured_key
+    guid_target:        opt_c266c9347c9d4a4f93cb30a456c57683
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_address_by_guid_where_one_exists
+    guid_target:        opt_b0aa24dea5da49a78968c4f70bbc287f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_address_as_a_path_string
+    guid_target:        opt_4ccefa26b9b74bd291ff30baa1f8847e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,96 @@
+id_self:                ann_ids_with_periods_need_escapes_in_a_path_string
+guid_self:              ann_7ab67027653c4b6485a1f57e5f4cd31e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ids with periods that a dotted path string must escape
+brief:                  |
+                        In the graph schema on dev an edge end names
+                        its node and port by id and guid, and those
+                        ids hold periods: a node's id is its graph's
+                        id with the node prefix, a period and its key,
+                        and a port's id is its interface's member
+                        prefix and name, a period and the port, as in
+                        dfn_stableflow_smoketest.ctrl_proc and
+                        icm_printer.value. The trial wrote an end as a
+                        node name, a period and a port name, and split
+                        it at the first period, which, reading the
+                        code, would cut an id like these in two; its
+                        reader could not read dev's one graph at all,
+                        for other reasons of folder and keys. A node
+                        filed under its local key needs no escape, but
+                        a path string that names an edge or a port
+                        over dev's data needs an escape, or a
+                        delimiter that no id uses, which every writer
+                        and reader must apply alike, as JSON Pointer
+                        escapes its separator. A structured key holds
+                        each id as the value of a field, with nothing
+                        to escape, and any YAML or JSON parser reads
+                        it.
+description:            |
+                        Sources:
+                        - An end names a dataflow node and a port of
+                          its interface, each by
+                          id and guid.
+                          (_data/schema/sch_dataflow_graph.yaml at $defs.end)
+                        - The id of a dataflow node is the id of its
+                          graph with the prefix
+                          dfn in place of dfg, then a period and the key the node is filed
+                          under.
+                          (_data/register/reg_data_item_type.yaml at entries.type_dataflow_node.note)
+                        - The id of an interface member, such as a
+                          port, is the id of what
+                          it sits in, then a period and a name of its own.
+                          (_data/schema/sch_interface_control_document.yaml at description)
+                        - The one graph on dev joins its two nodes by
+                          such ids.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at dataflow_edge)
+                        - The trial splits an end at its first period.
+                          (trial 2c777ab9,
+                          src/cctool/dataflow/items.py, function end)
+                        - The trial cannot read
+                          dfg_stableflow_smoketest, which it looks
+                          for in the wrong folder and under other keys, and its ends are
+                          strings where dev's are references. (review of 2026-10-29,
+                          CC-026, detail TM-10)
+                        - JSON Pointer must encode its separator and
+                          its escape character
+                          inside a reference token. (RFC 6901, section 3,
+                          https://www.rfc-editor.org/rfc/rfc6901)
+                        Strength: strong while ends are the id and
+                        guid references dev's schema holds; weaker if
+                        dec_where_dataflow_items_are_kept upholds
+                        files of their own whose local names hold no
+                        period.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_address_of_a_part_of_a_dataflow_graph
+    guid_target:        dec_c2894e5525c24ca2948264437cd883b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_address_as_a_structured_key
+    guid_target:        opt_c266c9347c9d4a4f93cb30a456c57683
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_address_as_a_path_string
+    guid_target:        opt_4ccefa26b9b74bd291ff30baa1f8847e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

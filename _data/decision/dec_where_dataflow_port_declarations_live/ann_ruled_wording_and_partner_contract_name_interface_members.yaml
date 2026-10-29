@@ -1,0 +1,123 @@
+id_self:                ann_ruled_wording_and_partner_contract_name_interface_members
+guid_self:              ann_744f8d3234134f2c9debb8a787ff9599
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ruled wording and partner contract that name interface members
+brief:                  |
+                        Most of the ruled sentences name members of an
+                        interface: each port declares its fail-safe,
+                        each setting its latest binding time, and an
+                        interface may require its nodes to be static.
+                        The schema says the fields of a step surface
+                        beyond its ports and settings, such as
+                        cardinality and failure, state the execution
+                        semantics that compatibility depends on, and
+                        an interface control document is meant to
+                        travel to a partner who has none of the code.
+                        On the surface, a partner who implements the
+                        interface in another language reads the most
+                        items it may write and the defaults it must
+                        supply from the contract it already holds.
+                        Only the default ruling speaks of a node kind,
+                        which fits a node type item, and the
+                        configured-node option fits only the words "or
+                        node" of the binding-time ruling and the
+                        producers that state rates in the capacity
+                        ruling.
+description:            |
+                        Sources:
+                        - Each port declares its fail-safe on overflow
+                          from a fixed list.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/ruling_fail_safe_declared_per_port.yaml
+                          at brief)
+                        - Each setting or node declares its latest
+                          binding time.
+                          (_data/decision/dec_binding_time_of_a_variation/ruling_latest_binding_time_per_setting.yaml
+                          at brief)
+                        - An interface may require its nodes to be
+                          static.
+                          (_data/decision/dec_where_mutability_is_declared/ruling_mutability_on_node_with_interface_limit.yaml
+                          at brief)
+                        - Each node kind declares whether each of its
+                          ports can supply a
+                          default.
+                          (_data/decision/dec_default_values_on_feedback_edges/ruling_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - Ports and settings are interface members of
+                          the step surface, and
+                          an edge end names its port by member id and guid.
+                          (_data/schema/sch_interface_control_document.yaml at $defs.port
+                          and $defs.setting; _data/schema/sch_dataflow_graph.yaml at
+                          $defs.end)
+                        - Each field of a step surface after the ports
+                          and settings states
+                          a part of the execution semantics that compatibility depends on,
+                          and the document names no implementation so that it can travel
+                          to a partner without the code.
+                          (_data/schema/sch_interface_control_document.yaml at
+                          $defs.surface_dataflow_step.description and at note)
+                        - Each capacity is derived from the maximum
+                          rates that producers
+                          state.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/ruling_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief)
+                        - Items beyond the capacity are handled by the
+                          fail-safe the port
+                          declares.
+                          (_data/interface_control_document/icd_dataflow_edge_message.yaml
+                          at surface.data.artifact.failure)
+                        - The node interface is stated in C, the
+                          contract every node
+                          meets, and WTP wants nodes written in whatever language one
+                          wants.
+                          (_data/decision/dec_language_of_the_node_interface/ruling_c_contract_with_direct_cpp_calls.yaml
+                          and
+                          _data/decision/dec_language_of_the_node_interface/opt_c_contract_with_direct_cpp_calls.yaml
+                          at brief;
+                          _data/decision/dec_language_of_the_node_interface/dec_language_of_the_node_interface.yaml
+                          at description)
+                        - The rulings say node kind loosely, and kind
+                          is a deprecated term.
+                          (review of 2026-10-29, CC-062)
+                        Strength: moderate; it reads the rulings
+                        literally, which WTP may not have meant, and
+                        no partner implements a dataflow interface
+                        yet.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_each_configured_node
+    guid_target:        opt_da9c2bec2d9844d6a95d1fad54e1f421
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

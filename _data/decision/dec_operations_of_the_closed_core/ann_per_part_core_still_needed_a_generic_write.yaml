@@ -1,0 +1,92 @@
+id_self:                ann_per_part_core_still_needed_a_generic_write
+guid_self:              ann_5932e80bd01a4451a391922a74b030bb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Per-part core that kept a generic write and grows with the schema
+brief:                  |
+                        Lowering is ruled to write its rewrites in the
+                        operations that authors use, and it writes
+                        fields no author writes, such as the capacity
+                        of each port. The trial's thirteen operations,
+                        nominally one for each kind of part, kept a
+                        generic write, and its lowering used that
+                        write for capacities beside adding nodes,
+                        joining and cutting. Under one operation for
+                        each kind of part, each field that lowering
+                        derives and each list the schema gains, such
+                        as execution units, members of a port group or
+                        records, needs operations of its own with
+                        fields and preconditions, and each is one more
+                        operation that the checks, renames, origin
+                        records and change sets must understand. The
+                        generic and hybrid options reach a new field
+                        or list with the operations they already have.
+description:            |
+                        Sources:
+                        - Generated transforms are written as variant
+                          operations and
+                          applied by the same interpreter as authored ones.
+                          (_data/decision/dec_authored_operations_and_lowering/ruling_one_vocabulary_for_authoring_and_lowering.yaml at brief)
+                        - The trial's lowering emits operations that
+                          add nodes, join and
+                          cut edges, and write each node's map of capacities. (trial
+                          2c777ab9, src/cctool/dataflow/lower.py, the calls of emit)
+                        - The trial's core includes write and unset on
+                          any path. (trial
+                          process log, phase 1)
+                        - How execution units enter the graph schema
+                          is still open
+                          (dec_execution_units_in_the_graph_schema), and a variant
+                          operation that adds a member of a port group mints its guid.
+                          (_data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml at description)
+                        - Checks, rename maps, dictionary upgrades,
+                          origin records and
+                          change sets must each interpret every operation they meet.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_every_reader_must_know_each_operation.yaml at brief)
+                        - The simplicity measure counts the distinct
+                          mechanisms a design
+                          introduces.
+                          (_data/register/reg_concern.yaml at entries.concern_simplicity.measure)
+                        Strength: moderate to strong; it grows with
+                        each lowering step and each list added to the
+                        schema, and it falls away only if the per-part
+                        option keeps a generic write for derived
+                        fields, which makes it the hybrid.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_operations_of_the_closed_core
+    guid_target:        dec_a276ef56d3754b0dadddb186ee8ed08f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_operation_per_kind_of_part
+    guid_target:        opt_fb4e9a8b745644df86a8d7fd3ec731a3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_operations_on_keyed_elements
+    guid_target:        opt_cea4ef4285c945bd8dca0ce2c20a4714
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_generic_core_with_named_graph_operations
+    guid_target:        opt_b1c416d1ff5e452fb30d8ac1baa68245
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

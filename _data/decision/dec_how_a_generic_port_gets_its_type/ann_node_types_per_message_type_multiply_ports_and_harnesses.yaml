@@ -1,0 +1,91 @@
+id_self:                ann_node_types_per_message_type_multiply_ports_and_harnesses
+guid_self:              ann_2e8ec603eafe45f1a0baab4e9d8595d2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Node types, port members and harnesses multiplied by message type
+brief:                  |
+                        One node type for each message type means a
+                        transform makes a sender, a receiver,
+                        adapters, a recorder and a player for every
+                        type that crosses a unit, is adapted or is
+                        recorded. Ports are interface members with ids
+                        and guids that edge ends name, so each
+                        generated type needs port members minted by
+                        the transform, and the fuzz requirement asks
+                        for a harness for each implementation a node
+                        can use. An earlier argument counted the same
+                        cost and noted that it falls away with type
+                        parameters. A type parameter keeps one node
+                        type and one interface, and binding it on each
+                        configured node follows the ruled pattern of
+                        port groups, where the interface declares a
+                        group once and each configured node sets its
+                        count.
+description:            |
+                        Sources:
+                        - A transform makes a node type for each type
+                          of message it needs,
+                          from a template.
+                          (_data/decision/dec_how_a_generic_port_gets_its_type/opt_one_node_type_for_each_message_type.yaml
+                          at brief)
+                        - An edge end names its port by member id and
+                          guid.
+                          (_data/schema/sch_dataflow_graph.yaml at $defs.end)
+                        - A fuzz harness is required for each
+                          implementation a dataflow
+                          node can use. (_data/requirement/rqt_generator_fuzz_harness.yaml
+                          at object)
+                        - Without type parameters, the generator
+                          writes one node kind, or
+                          one dictionary entry, for each recorded or buffered type, a cost
+                          bounded by the number of types.
+                          (_data/decision/dec_where_engine_behavior_lives/ann_inserted_node_kinds_needed_per_port_type.yaml
+                          at brief and description)
+                        - The interface declares a port group once,
+                          and the configuration
+                          of each dataflow node lists its members.
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/opt_port_groups_sharing_a_type.yaml
+                          at brief, upheld by ruling_port_groups_sharing_a_type;
+                          _data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at description)
+                        - Maintainability counts the parts a change
+                          touches, and simplicity
+                          the distinct mechanisms. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure.1 and
+                          entries.concern_simplicity.measure.0)
+                        Strength: moderate; the generated items cost
+                        no hand work, and their number grows with the
+                        types in use, not with the nodes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_node_type_for_each_message_type
+    guid_target:        opt_a7874710f17542fdb7ce4c9a88fc8af6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_type_parameter_bound_for_each_node
+    guid_target:        opt_d33605b31bbb49cbb33625dffb167399
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

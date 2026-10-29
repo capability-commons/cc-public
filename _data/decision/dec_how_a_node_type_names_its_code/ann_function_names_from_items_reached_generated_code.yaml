@@ -1,0 +1,76 @@
+id_self:                ann_function_names_from_items_reached_generated_code
+guid_self:              ann_f3a093d851cb4d1599fa4e299ed12fcf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Function names and paths from items that reached generated code
+brief:                  |
+                        The trial's generator copied names and strings
+                        from its YAML items into C++ and CMake
+                        unchecked, and the review made an item inject
+                        a statement into the generated main through a
+                        list of sources, and run a command at CMake
+                        configure through the name of an unused kind
+                        of node. Under a node type item or a manifest,
+                        the step function and the state type, and on a
+                        node type item the source files, are again
+                        free strings in items, each needing the
+                        validation of names and the quoting that the
+                        review asks for. Under a header, the function
+                        name comes from the extractor's parse of real
+                        code and the path from where the file was
+                        found, so neither is free text.
+description:            |
+                        Sources:
+                        - Names and strings from items reach C++ and
+                          CMake unescaped: the
+                          core given to a unit ran code at start, an actor's sources entry
+                          injects a statement into main, an unused kind's name runs a
+                          command at CMake configure, and bad identifiers fail only in the
+                          compiler. (review of 2026-10-29, CC-020;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-gen.md,
+                          TRIAL-GEN-05)
+                        - The fix is one validator for every
+                          interpolated name, quoted
+                          CMake arguments, and generating only the kinds a graph uses.
+                          (review of 2026-10-29, CC-020)
+                        - The trial named a function and a source file
+                          in the file of each
+                          kind. (/mnt/project-files/notes/dataflow-trial/process-log.md,
+                          phase 2)
+                        Strength: moderate; a validator closes most of
+                        the gap for the other two options, and node
+                        sources are compiled anyway, which the review
+                        says limits the harm.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_node_type_names_its_code
+    guid_target:        dec_daf5d2178cc74e649d05606b37c199ba
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_code_header_names_its_node_type
+    guid_target:        opt_a0c7b92b7ffd448daf39b042ba35f11a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_node_type_names_its_symbol_and_sources
+    guid_target:        opt_e957d54f8e7a4aad8087c64fa18ea378
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_library_manifest_lists_its_node_types
+    guid_target:        opt_21ddc4149c0347128ae0223c3144990f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

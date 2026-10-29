@@ -1,0 +1,85 @@
+id_self:                ann_python_type_fields_fit_the_icd_class_today
+guid_self:              ann_4df7fc1c08c74a26b3f8fe8a2d8dd870
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fields of the Python types listed in the interfaces that name them
+brief:                  |
+                        The resolver, lowering and checks interfaces
+                        name ResolvedGraph, LoweredGraph, ChangeSet
+                        and Failures without their fields, the trial's
+                        author asked for those types to be field lists
+                        in the interface control documents, and the
+                        review's fix takes up that suggestion. The
+                        schema of an interface control document
+                        already lets a native surface declare a class
+                        with attributes, each with a type, so these
+                        fields can be written beside the functions
+                        that return them with no change to the schema,
+                        and each field then traces to the interface
+                        that needs it. That supports the typed-field
+                        option for the Python types. Its larger claim,
+                        one list for Python, C and JSON Schema alike,
+                        has no home today, since a shared declaration
+                        states its shape only in prose.
+description:            |
+                        Sources:
+                        - The Python interfaces name ResolvedGraph,
+                          LoweredGraph,
+                          ChangeSet, Failures, DictionaryType and FieldMapping and define
+                          none of their fields. (trial process log, phase 0)
+                        - The trial's author would put the types in
+                          the interface control
+                          documents as typed field lists that can be generated into
+                          dataclasses. (trial process log, suggestions for the process,
+                          item 1)
+                        - The review's fix for the informal types is a
+                          dictionary entry or
+                          a declared type parameter for each generic port, and Python types
+                          as field lists, citing the log's first suggestion. (review of
+                          2026-10-29, CC-065)
+                        - A class may list its attributes, each with a
+                          type.
+                          (_data/schema/sch_interface_control_document.yaml at $defs.class and $defs.attribute)
+                        - A shared declaration carries an optional
+                          shape written in prose.
+                          (_data/schema/sch_interface_control_document.yaml at $defs.declaration)
+                        - The resolver interface gives its result only
+                          as the spelling
+                          ResolvedGraph.
+                          (_data/interface_control_document/icd_dataflow_resolver.yaml at surface.python.native.function.resolve.returns)
+                        - The next generation should be helped by the
+                          records being clear.
+                          (WTP, 2026-10-29)
+                        Strength: strong for the traceability of the
+                        Python types, which no other option places in
+                        the interface that uses them; weak for the C
+                        and JSON Schema half, which needs a construct
+                        the schema lacks.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_as_typed_fields_in_the_icd
+    guid_target:        opt_a881efcf7d154ae6842fe1d1e5c24c40
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

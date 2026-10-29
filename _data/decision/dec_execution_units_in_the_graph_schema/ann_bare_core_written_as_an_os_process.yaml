@@ -1,0 +1,88 @@
+id_self:                ann_bare_core_written_as_an_os_process
+guid_self:              ann_f33e8088b3f842009eb645677c875417
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Core with no operating system written as an OS process
+brief:                  |
+                        The register defines an OS process as an
+                        executable unit that an operating system
+                        scheduler manages. Three levels write a core
+                        with no operating system as a process that
+                        holds one unit, so the graph of a
+                        microcontroller target would list OS processes
+                        where there is no operating system, and the
+                        review already found the OS process vocabulary
+                        stale against the ruling on execution units.
+                        One unit for each process renames the level to
+                        execution units, and units with a form give
+                        the bare core as a form, so neither uses the
+                        term against its definition. The items
+                        interface already lists a graph's placement as
+                        hosts and execution units, with no OS
+                        processes.
+description:            |
+                        Sources:
+                        - An OS process is an executable unit managed
+                          by an operating
+                          system scheduler. (_data/register/reg_concept.yaml at
+                          entries.concept_os_process.brief)
+                        - A unit alone in its process, or a core with
+                          no operating system,
+                          is a process that holds one unit.
+                          (_data/decision/dec_execution_units_in_the_graph_schema/opt_hosts_processes_and_units.yaml
+                          at brief)
+                        - The OS process vocabulary of the graph
+                          schema and the concepts
+                          is stale against the ruling on placement, and execution unit has
+                          no concept. (review of 2026-10-29, CC-058)
+                        - A graph holds hosts, execution units,
+                          dataflow nodes and dataflow
+                          edges.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at
+                          surface.data.artifact.artifact.graph.content)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        Strength: moderate; the middle level of three
+                        could be named something other than OS
+                        process, at the cost of a level whose meaning
+                        changes with the form of its units.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_execution_units_in_the_graph_schema
+    guid_target:        dec_136dd1de96d247ec8fa573dccf12a0d8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_hosts_processes_and_units
+    guid_target:        opt_4ea65bb303c04d6da36c14dae884e70b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_unit_for_each_os_process
+    guid_target:        opt_91e1aecf74b04f80814c77cd8407fa3b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_units_on_hosts_with_a_form
+    guid_target:        opt_9349cc4077a44e4c819245da705b9745
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

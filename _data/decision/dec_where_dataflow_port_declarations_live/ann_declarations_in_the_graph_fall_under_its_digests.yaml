@@ -1,0 +1,93 @@
+id_self:                ann_declarations_in_the_graph_fall_under_its_digests
+guid_self:              ann_04573978fe90457e813b1cb40c89a125
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declarations that the digests of a graph already cover
+brief:                  |
+                        Held on each configured node, every
+                        declaration is part of the graph, so the
+                        digests of the resolved and lowered graph
+                        change whenever one does, and generated code
+                        depends only on the lowered graph and the
+                        generator, as the requirements on the
+                        generator assume. The trial kept the
+                        declarations in files for each kind of node,
+                        and a change of one fail-safe changed the
+                        generated schedule but no digest. Declarations
+                        on the step surface are covered by version,
+                        since the input digest covers the versions of
+                        the interface control documents a graph names,
+                        though a change made without a new version
+                        would slip as the trial's did. A node type
+                        item is in neither, so its declarations stay
+                        untraced until the open decision on the digest
+                        of a build covers them.
+description:            |
+                        Sources:
+                        - The input digest of a resolved graph covers
+                          its chain of bases,
+                          its variant operations, the dictionary and interface control
+                          document versions they refer to, and the resolver version.
+                          (_data/decision/dec_identity_of_a_resolved_graph/opt_resolved_graph_input_and_content_digests.yaml
+                          at brief, upheld by ruling_resolved_graph_input_and_content_digests;
+                          _data/interface_control_document/icd_dataflow_resolver.yaml at
+                          surface.data.artifact.artifact.resolved_graph.convention)
+                        - Generated source is the same, byte for byte,
+                          from the same
+                          lowered graph and generator version, and it carries the content
+                          digest of the lowered graph.
+                          (_data/requirement/rqt_generator_reproducible.yaml at object;
+                          _data/requirement/rqt_generator_names_digest.yaml at object)
+                        - In the trial, changing the fail-safe in the
+                          file of a kind
+                          changed the generated graph source but not the digest, and nodes
+                          named their kind by bare name with no version. (review of
+                          2026-10-29, CC-008;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model.md,
+                          TM-09)
+                        - Whether the digest of a build also
+                          identifies the node types,
+                          node sources and dictionary entries it binds is open.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/dec_what_the_digest_of_a_build_identifies.yaml
+                          at brief)
+                        ASSUMPTION: lowering could copy each
+                        declaration from the node type or the surface
+                        into the lowered graph, which would give the
+                        other two options the same coverage at the
+                        cost of one copy. Strength: moderate; the gap
+                        is real, as the trial showed, but the open
+                        digest decision or a copy made in lowering
+                        closes it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_each_configured_node
+    guid_target:        opt_da9c2bec2d9844d6a95d1fad54e1f421
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

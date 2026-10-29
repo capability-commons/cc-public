@@ -1,0 +1,79 @@
+id_self:                ann_path_string_keys_a_map_and_reads_in_a_report
+guid_self:              ann_e3940d1b7ae9454c80f12dab7b7fea4e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Path string that keys a map and reads plainly in a report
+brief:                  |
+                        A path string, unlike a structured key, can be
+                        the key of a JSON or YAML map, which is how
+                        the trial held and cached its origin trace, a
+                        map from each address to its operations, and
+                        it reads in a line of a failure report as it
+                        is written. cctool's own edits already address
+                        a field of an item by a dotted path. A
+                        structured key cannot key a map, so the trace
+                        becomes a list of records that the canonical
+                        form must put in a fixed order, the kind of
+                        rule the trial got wrong when it sorted arrays
+                        whose order is meaning. The dotted paths that
+                        exist, though, reach a list element by its
+                        index, as JSON Pointer does, so an edge named
+                        by its ends still needs grammar of its own.
+description:            |
+                        Sources:
+                        - The trial's resolved graph holds its origin
+                          as a map from path to
+                          operations, and caches it as JSON. (trial 2c777ab9,
+                          src/cctool/dataflow/resolve.py, class ResolvedGraph and function
+                          _to_cache)
+                        - An edit splits a path into a field and parts
+                          at periods, and a
+                          part reaches a list element by its index.
+                          (src/cctool/edit/edit.py within _path and _index)
+                        - The trial's canonical form sorted every
+                          array with a merge key,
+                          ordered or not, and two different inputs shared a digest. (review
+                          of 2026-10-29, CC-005)
+                        - JSON Pointer refers to an array element by
+                          its zero-based index.
+                          (RFC 6901, section 4, https://www.rfc-editor.org/rfc/rfc6901)
+                        - The maintainability question asks how
+                          readily a newcomer can
+                          understand the design.
+                          (_data/register/reg_concern.yaml at entries.concern_maintainability.question)
+                        Strength: moderate for simplicity and
+                        readability; it is reduced by the escapes a
+                        path needs over ids that hold periods.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_address_of_a_part_of_a_dataflow_graph
+    guid_target:        dec_c2894e5525c24ca2948264437cd883b0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_address_as_a_path_string
+    guid_target:        opt_4ccefa26b9b74bd291ff30baa1f8847e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_address_as_a_structured_key
+    guid_target:        opt_c266c9347c9d4a4f93cb30a456c57683
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

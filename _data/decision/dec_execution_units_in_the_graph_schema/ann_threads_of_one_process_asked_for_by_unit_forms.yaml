@@ -1,0 +1,92 @@
+id_self:                ann_threads_of_one_process_asked_for_by_unit_forms
+guid_self:              ann_0e91b0df5339493d8716c88e953bae6d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Threads of one OS process that the unit forms requirement asks for
+brief:                  |
+                        The upheld placement option lets an execution
+                        unit be an OS process, a thread or a core with
+                        no operating system, and a requirement has the
+                        same graph run as processes on a workstation
+                        or as threads in an app; its test case runs
+                        two units first as two processes, then as two
+                        threads of one process, and compares the
+                        messages. With one unit for each OS process,
+                        threads are left out of the model, so the
+                        second run cannot be written as a variant and
+                        the requirement has nothing in the graph to
+                        trace to. The trial met the case only by
+                        choosing the form on the command line of one
+                        build. Both other options can state either
+                        form.
+description:            |
+                        Sources:
+                        - An execution unit may be an OS process, a
+                          thread or a core with
+                          no operating system, so the same graph can be placed on a
+                          desktop or an embedded target.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief, upheld by ruling_placement_on_hosts_and_execution_units)
+                        - The same graph can run as processes, threads
+                          or bare cores, for
+                          Patrol from a gaming laptop to a Raspberry Pi 5.
+                          (_data/requirement/rqt_platform_unit_forms.yaml at brief and
+                          rationale)
+                        - The case runs a graph of two units with each
+                          in its own OS
+                          process, then with each in a thread of one OS process.
+                          (_data/test_case/case_platform_unit_forms.yaml at inputs)
+                        - Under one unit for each OS process, threads
+                          within a process are
+                          left out of the model.
+                          (_data/decision/dec_execution_units_in_the_graph_schema/opt_one_unit_for_each_os_process.yaml
+                          at brief)
+                        - The trial ran one build both ways, with the
+                          form chosen by which
+                          units each engine process was told to run. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/test_engine.py, function
+                          test_threads_and_processes_give_the_same_messages;
+                          src/cctool/dataflow/engine/src/runtime.cpp, function run, its
+                          command-line option that names the unit to run)
+                        Strength: strong; it rests on an upheld
+                        option, a requirement and its case, and falls
+                        only if threads are dropped from the platform
+                        layer.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_execution_units_in_the_graph_schema
+    guid_target:        dec_136dd1de96d247ec8fa573dccf12a0d8
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_unit_for_each_os_process
+    guid_target:        opt_91e1aecf74b04f80814c77cd8407fa3b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_hosts_processes_and_units
+    guid_target:        opt_4ea65bb303c04d6da36c14dae884e70b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_units_on_hosts_with_a_form
+    guid_target:        opt_9349cc4077a44e4c819245da705b9745
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

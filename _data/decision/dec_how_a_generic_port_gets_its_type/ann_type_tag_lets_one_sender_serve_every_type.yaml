@@ -1,0 +1,89 @@
+id_self:                ann_type_tag_lets_one_sender_serve_every_type
+guid_self:              ann_4c1b7ebef192465ab2e89d63f36c605c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One sender for every type, with a tag a receiver can check
+brief:                  |
+                        With bytes and a tag, the sender, receiver,
+                        recorder and player are each one compiled node
+                        that never needs a type, so no code or harness
+                        is generated for each type, and one harness
+                        can feed them bytes directly, where the trial,
+                        as its generator reads, gave its generic nodes
+                        no harness at all. A tag also lets a receiver
+                        refuse a message from a sender built for
+                        another type, a mix the trial's TCP framing
+                        could not see, since it carried only a count.
+                        Against this, the review's fix for that
+                        framing adds a header with a channel and a
+                        size, which catches a crossed channel or a
+                        size that differs without a type, and the
+                        memory-layout encoding already checks that
+                        both ends share one dictionary.
+description:            |
+                        Sources:
+                        - A generic port carries the bytes of a
+                          message and a tag, so
+                          recorders and transports never need to know a type.
+                          (_data/decision/dec_how_a_generic_port_gets_its_type/opt_bytes_with_a_type_tag.yaml
+                          at brief)
+                        - As its generator reads, the trial generated
+                          a harness only for
+                          kinds of node whose role is ordinary, which no generic kind has,
+                          and gave a generic port no item type in the generated header of
+                          its kind. (trial
+                          2c777ab9, src/cctool/dataflow/generate.py, functions generate,
+                          _fuzz and _port_type; src/cctool/dataflow/standard/node_kind/,
+                          the role of each generic kind)
+                        - The trial's TCP framing was a bare count
+                          with no magic, step or
+                          size, and the fix adds a header with magic, channel, step and
+                          size. (review of 2026-10-29, CC-016)
+                        - The memory-layout encoding checks that both
+                          ends were built from
+                          the same dictionary digest.
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/opt_memory_layout_on_the_wire.yaml
+                          at brief)
+                        - Maintainability asks how readily a change
+                          can be checked before
+                          it ships. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                        Strength: weak to moderate; the guard is real,
+                        but the framing fix and the encoding decision
+                        give most of it, and the type check on the
+                        graph is lost (see
+                        ann_bytes_port_falls_outside_the_ruled_type_check,
+                        in this batch).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_generic_port_gets_its_type
+    guid_target:        dec_c4150ea0c8b64481b49bb5142bbfc3b8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_bytes_with_a_type_tag
+    guid_target:        opt_3f16ec8cd2ea4672a5dd375ae2f11d12
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_node_type_for_each_message_type
+    guid_target:        opt_a7874710f17542fdb7ce4c9a88fc8af6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

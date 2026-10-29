@@ -1,0 +1,91 @@
+id_self:                ann_implied_absence_caught_lowering_name_clashes
+guid_self:              ann_1c85e67736df425098304d42ba1eee1b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Implied absence that caught clashes in generated operations
+brief:                  |
+                        In the review's probes of the trial, an
+                        author's node named like a control block
+                        passed the resolved check, and lowering's add
+                        of its own control block then stopped with a
+                        report naming the lowering operation: the
+                        implied absence of an add guarded generated
+                        operations with no code in lowering. The same
+                        trial shows the cost of implying them in code
+                        written for each kind: write and join checked
+                        less than their references needed, so a write
+                        could make a unit on a host that does not
+                        exist, which no check caught, and a join
+                        checked its nodes but not their ports, leaving
+                        a bad port to the later check of the graph.
+                        Implied preconditions stay complete only if
+                        they follow from the schema, for example that
+                        an added key is absent and every reference the
+                        element holds resolves, rather than being
+                        coded by hand for each kind.
+description:            |
+                        Sources:
+                        - Authored nodes named like the nodes lowering
+                          adds pass the
+                          resolved check, and lowering then fails because the node is
+                          already there. (review of 2026-10-29, CC-041, detail TM-12, with
+                          the probe log areas/trial-model-logs/p21_names.out; trial
+                          2c777ab9, src/cctool/dataflow/resolve.py, function _add_node)
+                        - A write of a unit with a host that does not
+                          exist passes every
+                          check. (review of 2026-10-29, CC-041, detail TM-12)
+                        - The trial's join checks that the nodes at
+                          its ends exist, not
+                          their ports; in the review's probe a join to a port that does
+                          not exist resolved, and the check of the graph then reported it
+                          as an unknown port. (trial 2c777ab9,
+                          src/cctool/dataflow/resolve.py, function _join; review of
+                          2026-10-29, areas/trial-model-logs/p05_resolver.out)
+                        - Under the implied option the schema of the
+                          core states the
+                          preconditions of each kind once.
+                          (_data/decision/dec_how_an_operation_states_its_preconditions/opt_preconditions_implied_by_the_kind.yaml at brief)
+                        - An end of a dataflow edge names its node and
+                          port as references,
+                          so the checker finds an end that names nothing.
+                          (_data/schema/sch_dataflow_graph.yaml at description)
+                        ASSUMPTION: the schema of the core can mark
+                        which fields of an element are references, as
+                        the id and guid pairs of the graph schema
+                        already are. Strength: moderate; it shows
+                        implied preconditions working for generated
+                        operations, and that their completeness
+                        depends on deriving them from the schema.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_an_operation_states_its_preconditions
+    guid_target:        dec_26fc718e78654485b12c8287ffe49dc2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_preconditions_implied_by_the_kind
+    guid_target:        opt_d5eac5e080524803916ed52795ad7e0b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_implied_preconditions_with_written_extras
+    guid_target:        opt_f67aa24739ad49fca431bd767daebf37
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

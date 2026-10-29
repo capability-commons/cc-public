@@ -1,0 +1,87 @@
+id_self:                ann_written_lists_restate_or_miss_the_required_pair
+guid_self:              ann_801f60949aeb4eb89ecd550059026ec0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Written precondition lists that restate or miss the required pair
+brief:                  |
+                        Resolution must stop when an add finds its
+                        element present or a remove finds it absent,
+                        whatever the author wrote. If preconditions
+                        are only written, an add with no written
+                        absence either overwrites in silence, against
+                        the requirement, or the resolver checks
+                        absence anyway, which is the implied option
+                        with written extras. Written alone, every
+                        operation restates the pair its kind already
+                        fixes, and so does every operation that
+                        lowering generates, since the ruling on one
+                        vocabulary sends those through the same
+                        interpreter; the trial's lowering emitted
+                        operations at every crossing edge, adapter,
+                        recorder and control block.
+description:            |
+                        Sources:
+                        - Resolution stops when an operation finds
+                          absent what it needs,
+                          or present what it adds.
+                          (_data/requirement/rqt_resolver_stops_at_failed_precondition.yaml at condition)
+                        - Under the written option each operation
+                          carries a list in a small
+                          fixed vocabulary, which the resolver checks in order.
+                          (_data/decision/dec_how_an_operation_states_its_preconditions/opt_preconditions_written_on_each_operation.yaml at brief)
+                        - Generated transforms are written as variant
+                          operations and
+                          applied by the same interpreter.
+                          (_data/decision/dec_authored_operations_and_lowering/ruling_one_vocabulary_for_authoring_and_lowering.yaml at brief)
+                        - One vocabulary means one set of
+                          preconditions and one place to
+                          fix a bug.
+                          (_data/requirement/rqt_lowering_one_interpreter.yaml at rationale)
+                        - The trial's lowering emits its own
+                          operations for control blocks,
+                          recorders, adapters and transports. (trial 2c777ab9,
+                          src/cctool/dataflow/lower.py, the calls of emit)
+                        - WTP wants the approach as simple as
+                          feasible. (WTP, 2026-10-28) Strength:
+                          strong; it falls away only if the written
+                          option is read as adding the implied pair by
+                          default, which makes it the option with
+                          written extras.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_an_operation_states_its_preconditions
+    guid_target:        dec_26fc718e78654485b12c8287ffe49dc2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_preconditions_written_on_each_operation
+    guid_target:        opt_133f0f9e77c9491ba8492a736866f693
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_preconditions_implied_by_the_kind
+    guid_target:        opt_d5eac5e080524803916ed52795ad7e0b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_implied_preconditions_with_written_extras
+    guid_target:        opt_f67aa24739ad49fca431bd767daebf37
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

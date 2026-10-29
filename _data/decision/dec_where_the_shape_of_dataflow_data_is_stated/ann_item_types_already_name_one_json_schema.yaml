@@ -1,0 +1,107 @@
+id_self:                ann_item_types_already_name_one_json_schema
+guid_self:              ann_14136d0fe8ce487a9a4ef240ef44af47
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Item types that must already name one JSON Schema each
+brief:                  |
+                        The interface for dataflow items puts the
+                        variant, delta module, sweep, run and
+                        deployment each in a file under _data, and the
+                        repository check fails any item type that does
+                        not name exactly one schema for its items. If
+                        these documents become items, each needs a
+                        JSON Schema item whichever option is upheld,
+                        so the JSON Schema option states each shape in
+                        the one place the check already reads, while
+                        the other two options state it a second time
+                        or must generate the schema item and keep it
+                        in step. An interface control document already
+                        names the schema of a payload, as the graph
+                        artifact names sch_dataflow_graph, so the link
+                        from an interface to the shape it carries
+                        exists today, though only as a spelling, not
+                        as a reference to the schema item that the
+                        check follows.
+description:            |
+                        Sources:
+                        - The variant, delta module, sweep, run and
+                          deployment are each
+                          encoded as YAML in a file under _data.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at surface.data.artifact.artifact)
+                        - Every type names exactly one schema for its
+                          items.
+                          (src/cctool/check/check.lp within schema_count)
+                        - The dataflow graph type names
+                          sch_dataflow_graph as the schema of
+                          its items.
+                          (_data/register/reg_data_item_type.yaml at entries.type_dataflow_graph.edge)
+                        - An artifact's payload names the schema it
+                          conforms to and its
+                          version, and the graph artifact names sch_dataflow_graph by its
+                          spelling.
+                          (_data/schema/sch_interface_control_document.yaml at $defs.artifact;
+                          _data/interface_control_document/icd_dataflow_items.yaml at surface.data.artifact.artifact.graph.payload)
+                        - A type reference in an interface control
+                          document names a shared
+                          declaration or a spelling, and is never a reference to an item.
+                          (_data/schema/sch_interface_control_document.yaml at description)
+                        - The trial's YAML contradicted dev's schemas,
+                          and the review's fix
+                          is to decide one schema, so that the trial's example graphs
+                          validate under cctool check. (review of 2026-10-29, CC-026,
+                          detail TM-10)
+                        ASSUMPTION: a schema generated from field
+                        lists or from dictionary types would be
+                        written into _data as an item, with a rule of
+                        its own to catch drift from its source.
+                        Strength: strong if
+                        dec_where_dataflow_items_are_kept upholds
+                        opt_dataflow_items_under_data, and for
+                        variants under
+                        opt_project_items_under_data_with_a_packaged_library;
+                        it falls away under
+                        opt_dataflow_files_in_a_folder_of_their_own,
+                        where no rule asks for a schema item.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_shape_of_dataflow_data_is_stated
+    guid_target:        dec_f961c2162e3646529bb550456d480627
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_shape_in_json_schema_items
+    guid_target:        opt_45f10b7bf0fb4cc8a15e7904481e2f5e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_as_typed_fields_in_the_icd
+    guid_target:        opt_a881efcf7d154ae6842fe1d1e5c24c40
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_shape_as_data_dictionary_types
+    guid_target:        opt_202f17dbe62a48e9906a5fe63756271f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

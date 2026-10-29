@@ -1,0 +1,112 @@
+id_self:                ann_code_facts_repeated_on_every_configured_node
+guid_self:              ann_e58933203d084cfb82c5b9ee7459fad3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Facts about a node's code repeated on every use of it
+brief:                  |
+                        Whether a port can make a default, the most
+                        items a step can write and how a port fails on
+                        overflow describe what a node's code does, and
+                        the fuzz harness is ruled to be generated once
+                        for each node kind and to check each output
+                        against its declared maximum. Declared on each
+                        configured node, these facts are copied onto
+                        every use of the code, supplied by a delta
+                        module as a second mechanism for what a type
+                        states once, and written again by lowering for
+                        every sender, receiver, adapter, recorder and
+                        control block it inserts. Two uses of one code
+                        could then declare different maxima, and the
+                        harness of the kind has no one value to check
+                        against.
+description:            |
+                        Sources:
+                        - Each node kind declares, for each of its
+                          ports, whether it can
+                          supply a default, and a node that can make a default value of a
+                          type makes every port of that type able to supply one.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief, upheld by ruling_default_from_a_port_that_declares_it)
+                        - The generator writes a harness for each node
+                          kind from its
+                          declared interface, and the harness checks that each output
+                          stays within its declared maximum items.
+                          (_data/decision/dec_fuzzing_of_a_single_node/opt_harness_generated_from_the_node_interface.yaml
+                          at brief, upheld by ruling_harness_generated_from_the_node_interface)
+                        - A fuzz harness is required for each
+                          implementation that a
+                          dataflow node can use.
+                          (_data/requirement/rqt_generator_fuzz_harness.yaml at object)
+                        - The delta module is the one item kind for
+                          reuse.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ruling_closed_core_with_one_reuse_item.yaml
+                          at brief)
+                        - The trial's lowering added senders,
+                          receivers, adapters,
+                          recorders and control blocks as ordinary operations, and, as
+                          its code reads, took their maxima and rates, and by default
+                          their fail-safes, from the files of their kinds. (trial
+                          2c777ab9, src/cctool/dataflow/lower.py, functions
+                          _control_blocks, _transports, _adapt, _recorders and
+                          _output_capacity; src/cctool/dataflow/generate.py, method
+                          overflow of class Unit)
+                        - WTP wants no clever mechanisms that burden
+                          node authors (WTP,
+                          2026-10-28), and the literature notes list declaring a port's
+                          element type, most items per step and ability to supply a first
+                          value as the node author's part.
+                          (/mnt/project-files/notes/literature/part-2/README.md, section
+                          Node-author burden)
+                        - Simplicity counts jobs done by more than one
+                          mechanism, and
+                          maintainability the parts a change touches.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1 and
+                          entries.concern_maintainability.measure.1)
+                        Strength: strong on the repetition and on the
+                        harness; it weakens only if delta modules and
+                        lowering write every value mechanically, which
+                        still leaves two uses free to disagree.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_each_configured_node
+    guid_target:        opt_da9c2bec2d9844d6a95d1fad54e1f421
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

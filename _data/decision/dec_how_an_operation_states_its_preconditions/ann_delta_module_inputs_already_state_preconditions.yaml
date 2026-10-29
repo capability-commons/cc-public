@@ -1,0 +1,89 @@
+id_self:                ann_delta_module_inputs_already_state_preconditions
+guid_self:              ann_a121380f36fc4aabb208ee21928a4faf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Delta module inputs and merge refusal needing no per-operation list
+brief:                  |
+                        The two needs the decision names beyond the
+                        implied pair already have homes of their own.
+                        A delta module declares its inputs, so
+                        applying it is one operation whose
+                        preconditions follow from the module it names,
+                        as an add's follow from the key it names. A
+                        merge that refuses conflicting inputs has that
+                        refusal as a precondition of the merge itself,
+                        which the resolver checks like any other.
+                        Neither needs a written list on each
+                        operation, so the implied option covers both
+                        once the schema of the core states what
+                        applying a module and merging require; written
+                        extras would be a second way to state the same
+                        thing.
+description:            |
+                        Sources:
+                        - A delta module is a named subgraph of
+                          variant operations with
+                          declared inputs and parameters, applied like a single variant
+                          operation to whatever is wired into it.
+                          (_data/decision/dec_vocabulary_of_variant_operations/opt_closed_core_with_one_reuse_item.yaml at brief)
+                        - Refusing a conflict adds no mechanism, being
+                          a precondition of
+                          the merge that the resolver already checks.
+                          (_data/decision/dec_conflict_between_merged_variants/ann_merge_conflict_as_a_failed_precondition.yaml at brief)
+                        - One open option refuses a merge whose inputs
+                          disagree.
+                          (_data/decision/dec_conflict_between_merged_variants/opt_conflicting_merge_refused.yaml at brief)
+                        - The extras option names the declared inputs
+                          of a delta module as
+                          its example.
+                          (_data/decision/dec_how_an_operation_states_its_preconditions/opt_implied_preconditions_with_written_extras.yaml at brief)
+                        - The simplicity measure counts jobs done by
+                          more than one
+                          mechanism.
+                          (_data/register/reg_concern.yaml at entries.concern_simplicity.measure)
+                        ASSUMPTION: a declared input of a delta module
+                        states what it must be wired to, such as the
+                        interface a node must present. Strength:
+                        moderate; it fails if
+                        dec_conflict_between_merged_variants upholds a
+                        rule for each conflict written on each merge,
+                        which would be a written extra in all but
+                        name.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_an_operation_states_its_preconditions
+    guid_target:        dec_26fc718e78654485b12c8287ffe49dc2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_preconditions_implied_by_the_kind
+    guid_target:        opt_d5eac5e080524803916ed52795ad7e0b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_implied_preconditions_with_written_extras
+    guid_target:        opt_f67aa24739ad49fca431bd767daebf37
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_preconditions_written_on_each_operation
+    guid_target:        opt_133f0f9e77c9491ba8492a736866f693
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

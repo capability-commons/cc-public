@@ -1,0 +1,97 @@
+id_self:                ann_implementation_facts_kept_off_the_shared_contract
+guid_self:              ann_ca1500ff479948b98413499b828e9f7d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Facts of one implementation kept off the shared contract
+brief:                  |
+                        Some of these declarations describe one
+                        implementation rather than the contract: the
+                        upheld option gives the static-only limit for
+                        a node that holds hardware it cannot free, and
+                        whether a port can make a default or how many
+                        detections a step can write depends on the
+                        code. On the step surface every implementation
+                        of an interface shares one value, so a
+                        stand-in that replays a recording would
+                        inherit the hardware driver's static-only
+                        limit, and a new implementation that can write
+                        more items needs a new version of the
+                        interface. A node type item lets each
+                        implementation state its own values, keeps the
+                        interface the contract a partner reads, and is
+                        the natural home of two open choices, the
+                        binding of code and a privileged role.
+description:            |
+                        Sources:
+                        - An interface may require its nodes to be
+                          static, as a node that
+                          holds hardware it cannot free for the life of the system must
+                          be.
+                          (_data/decision/dec_where_mutability_is_declared/opt_mutability_on_node_with_interface_limit.yaml
+                          at brief)
+                        - A node that can make a default value of a
+                          type makes every port
+                          of that type able to supply one.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - A detector whose detections vary declares
+                          its maximum items per
+                          step as a number or as a function of its inputs' maxima.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief)
+                        - A new version of an interface is a new
+                          document that supersedes
+                          the last, and the document names no implementation.
+                          (_data/schema/sch_interface_control_document.yaml at note)
+                        - Open options put the binding of code and a
+                          privileged role on the
+                          node type.
+                          (_data/decision/dec_how_a_node_type_names_its_code/opt_node_type_names_its_symbol_and_sources.yaml
+                          at brief;
+                          _data/decision/dec_which_nodes_may_reach_the_outside_world/opt_privileged_roles_declared_by_the_node_type.yaml
+                          at brief)
+                        - A substitute node's definition declares the
+                          frame it is valid
+                          for, and in the Patrol drafts the replay clip reader realizes an
+                          interface of its own, which weakens the stand-in example.
+                          (_data/decision/dec_validity_of_substitute_nodes/ruling_validity_frame_on_the_node_definition.yaml
+                          at brief;
+                          _data/decision/dec_validity_of_substitute_nodes/ann_validity_frame_stated_once_per_substitute.yaml
+                          at description)
+                        Strength: moderate; it depends on how often
+                        two implementations share one interface, and
+                        the drafts so far give each stand-in an
+                        interface of its own.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_port_declarations_live
+    guid_target:        dec_65cfdda958c847f0a418f954700845b6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_declarations_on_a_dataflow_node_type_item
+    guid_target:        opt_7f7f9c8444d34b35be6381985cfd47a6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_declarations_on_the_dataflow_step_surface
+    guid_target:        opt_138d19ebd20c489a900228d18bd12d62
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06
