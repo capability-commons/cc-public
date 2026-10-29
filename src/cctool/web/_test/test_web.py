@@ -737,7 +737,8 @@ def test_interface_index_lists_interface_control_documents(tree):
     (status, _, body) = cctool.web.server.respond(tree, '/interfaces')
     assert status == http.HTTPStatus.OK
     text = body.decode()
-    assert text.count('href="/interface/icd_') == 6
+    assert text.count('href="/interface/icd_') == len(
+                            list((tree / '_data' / 'interface_control_document').glob('icd_*.yaml')))
     assert '<a href="/interface/icd_cctool_check">Checker interface</a>' in text
     assert re.search(r'<td>Python</td>\s*<td class="number">(<span class="gap">)?\d+ of \d+<', text)
 
