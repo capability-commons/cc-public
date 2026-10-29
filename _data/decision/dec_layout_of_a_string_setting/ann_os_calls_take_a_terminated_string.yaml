@@ -1,0 +1,84 @@
+id_self:                ann_os_calls_take_a_terminated_string
+guid_self:              ann_ebc8fa22cf6c421ca1be6f54552bce44
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Paths and endpoints that system calls take zero-terminated
+brief:                  |
+                        Every path or endpoint setting in the three
+                        ICDs ends as an argument of a C interface
+                        outside the engine, a file to open, a
+                        shared-memory name, a socket address or a
+                        ZeroMQ endpoint, and those take a string ended
+                        by a zero byte. A zero-padded character array
+                        can be passed as it is, provided the declared
+                        length leaves room for that zero; as worded,
+                        the option refuses only a longer value, so a
+                        value of exactly the declared length has none.
+                        A bounded array of bytes has no terminator, so
+                        every node that opens a path or an endpoint
+                        must first copy it into a buffer one byte
+                        longer, on its stack or in its state, since a
+                        node allocates no memory of its own while the
+                        system runs.
+description:            |
+                        Sources:
+                        - The printer prints to stdout, stderr or the
+                          path of a file; the
+                          recorder writes to a path or endpoint, the player reads from a
+                          path, and a transport sender, over a shared-memory queue,
+                          ZeroMQ or TCP, reaches its receiver at an endpoint.
+                          (_data/interface_control_document/icd_printer.yaml at
+                          surface.step.dataflow_step.settings.output;
+                          _data/interface_control_document/icd_dataflow_recorder.yaml at
+                          surface.recorder.dataflow_step.settings.sink and
+                          surface.player.dataflow_step.settings.source;
+                          _data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.sender.dataflow_step.settings.transport and
+                          surface.sender.dataflow_step.settings.endpoint)
+                        - A node allocates no memory of its own while
+                          the system runs.
+                          (_data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.initialization)
+                        - WTP wants no clever mechanisms that burden
+                          node authors (WTP,
+                          2026-10-28).
+                        - Compatibility asks whether a partner can
+                          read and use what the
+                          design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                        ASSUMPTION: the POSIX open, fopen and shm_open
+                        calls, getaddrinfo and the ZeroMQ connect and
+                        bind calls all take zero-terminated strings.
+                        Strength: moderate; the copy is small and a
+                        helper in the engine could do it once for
+                        every node, and the point disappears if the
+                        bounded array reserves one zero byte beyond
+                        its capacity.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_a_string_setting
+    guid_target:        dec_a38cca79cc404879a2cf1f6a324b542a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_as_characters_of_a_declared_length
+    guid_target:        opt_b724a635e73543ae8d3c141eb9db6aa6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_as_a_bounded_array_of_bytes
+    guid_target:        opt_8d35a1ae932447b0805bb8610ce173b9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

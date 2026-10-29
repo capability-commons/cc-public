@@ -1,0 +1,77 @@
+id_self:                ann_trace_shows_which_input_won_not_why
+guid_self:              ann_b3cdb9c886884968bf037fcaf3309f2b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trace that shows which input won but not why
+brief:                  |
+                        The ruled trace records the base and every
+                        operation that touched each part, and the
+                        later-wins option adds which input each value
+                        came from. That says where the winning value
+                        came from, but the reason it beat the other is
+                        its place in a list, which no author wrote
+                        down as intent. Under refusal the value that
+                        stands is written by an operation the author
+                        added to settle the conflict, which the trace
+                        names, so the reason is in the record. A
+                        declared rule records intent for a kind of
+                        conflict, not for the element.
+description:            |
+                        Sources:
+                        - The resolver records, for each part, the
+                          base item and every
+                          operation that touched it, in order.
+                          (_data/decision/dec_origin_trace_of_a_resolved_graph/ruling_trace_of_every_touching_operation.yaml
+                          at brief; _data/requirement/rqt_resolver_records_origin.yaml
+                          at object)
+                        - The later-wins option records which input
+                          each value came
+                          from.
+                          (_data/decision/dec_conflict_between_merged_variants/opt_later_merge_input_wins.yaml
+                          at brief)
+                        - After a merge an element held by both sides
+                          has two chains of
+                          origins.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_merged_element_has_two_chains_of_origins.yaml
+                          at brief)
+                        - In the trial the origin of a merged node was
+                          the merge alone,
+                          and its setting had no origin at all. (review of 2026-10-29,
+                          CC-007 and area report trial-model, TM-03)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        Strength: moderate; it bears on review of a
+                        variant and on failure reports. It weakens if
+                        a merge that lets a conflict pass must carry a
+                        note of why for each one, which no option
+                        says.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_later_merge_input_wins
+    guid_target:        opt_ea19fc6143a34d898bdbd7f8bd537393
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

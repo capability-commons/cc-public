@@ -1,0 +1,108 @@
+id_self:                ann_named_conversions_drop_the_expression_language
+guid_self:              ann_5153283a8a8947379cc8270d7dc64cdf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named conversions in place of an expression language
+brief:                  |
+                        Upgrades without arithmetic drop a mechanism:
+                        there is no expression to parse, check,
+                        evaluate in the model and re-emit as C++. In
+                        the trial that pipeline was where faults sat:
+                        the model checked expressions against an
+                        allow-list while the generator copied any
+                        expression into C++, so a conversion the model
+                        refused was still emitted. A fixed list of
+                        named conversions follows the pattern already
+                        ruled for delivery policies, named entries
+                        written once by the engine's authors. The cost
+                        is that some mappings fall outside the list:
+                        dynamic software updating generated most of
+                        each patch but left placeholders for a
+                        programmer, so the option must say what a swap
+                        does then, such as refusing it, or replacing
+                        the node with one started from fresh state.
+description:            |
+                        Sources:
+                        - A mapping may only copy, rename, set a
+                          default or apply a named
+                          conversion from a fixed library.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_without_arithmetic.yaml
+                          at brief)
+                        - The trial's generator emitted any conversion
+                          expression as C++,
+                          and a conversion the model refused was still emitted. (review
+                          of 2026-10-29, area report trial-gen, TRIAL-GEN-06)
+                        - The exact option computes on whole numbers
+                          and fractions
+                          without rounding and then checks the range of the target
+                          field.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_exact_then_checked.yaml
+                          at brief)
+                        - Item text that becomes generated C++ is a
+                          trust boundary the
+                          review raised for names and strings. (review of 2026-10-29,
+                          CC-020)
+                        - Each delivery policy declares whether it can
+                          lose data, one
+                          field written once by the engine's authors and nothing in node
+                          code.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/ruling_each_policy_declares_data_loss.yaml
+                          at brief;
+                          _data/decision/dec_data_loss_declared_by_a_delivery_policy/opt_each_policy_declares_data_loss.yaml
+                          at description)
+                        - Generated patches copied fields of unchanged
+                          type, defaulted
+                          added ones and translated changed ones, and left a placeholder
+                          for the programmer where no translation was possible. (Hicks,
+                          Moore and Nettles 2001, Dynamic software updating, section
+                          3.3.2, via
+                          notes/literature/round-2/2001-dynamic-software-updating.md)
+                        - Where states are not compatible, the old
+                          block can be stopped
+                          and a new one started. (Prenzel and Provost 2017, Dynamic
+                          software updating of IEC 61499 implementation using Erlang
+                          runtime system, section 3.2, via
+                          notes/literature/round-2/2017-dsu-iec-61499-erlang.md)
+                        - Simplicity counts distinct mechanisms and
+                          asks whether a design
+                          follows from decisions already made.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0 and
+                          entries.concern_simplicity.question.2)
+                        Strength: moderate to strong on the count of
+                        mechanisms; weaker if Patrol's state upgrades
+                        turn out to need conversions that no fixed
+                        list anticipates.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_without_arithmetic
+    guid_target:        opt_d98dc5b39d254c188191eb5b85a81583
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

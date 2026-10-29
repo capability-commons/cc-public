@@ -1,0 +1,72 @@
+id_self:                ann_characters_in_an_unstated_encoding
+guid_self:              ann_39c572621195418d801b8c3e4de43e75
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Length in characters of an encoding the option leaves unstated
+brief:                  |
+                        The character option bounds a value by a
+                        length in characters, but a string in YAML is
+                        a sequence of Unicode characters, and in UTF-8
+                        each character outside ASCII takes two or more
+                        bytes. A check that counts characters can then
+                        accept a value that does not fit the bytes
+                        reserved, and one that counts bytes must say
+                        so. A bounded array of bytes states its unit,
+                        and a Linux path is a sequence of bytes in any
+                        case. The checks of setting values are to be
+                        written new, so the unit has to be fixed
+                        before they are.
+description:            |
+                        Sources:
+                        - A string setting is an array of characters
+                          of a declared length,
+                          padded with zeros, and a longer value is refused when the graph
+                          is checked.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_as_characters_of_a_declared_length.yaml
+                          at brief)
+                        - A string setting is a bounded array of
+                          bytes.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_as_a_bounded_array_of_bytes.yaml
+                          at brief)
+                        - The trial wrote setting values with no type
+                          check, so that a
+                          string became a number, and the fix adds a check of each
+                          setting's type. (review of 2026-10-29, CC-019)
+                        - Functional suitability asks whether each
+                          function gives the
+                          right result. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                        ASSUMPTION: YAML strings are Unicode, UTF-8
+                        encodes characters outside ASCII in two to
+                        four bytes, and Linux paths are byte strings.
+                        Strength: weak to moderate; most paths and
+                        endpoints are ASCII, and one word in the
+                        option, bytes for characters, fixes it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_a_string_setting
+    guid_target:        dec_a38cca79cc404879a2cf1f6a324b542a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_as_a_bounded_array_of_bytes
+    guid_target:        opt_8d35a1ae932447b0805bb8610ce173b9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_as_characters_of_a_declared_length
+    guid_target:        opt_b724a635e73543ae8d3c141eb9db6aa6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

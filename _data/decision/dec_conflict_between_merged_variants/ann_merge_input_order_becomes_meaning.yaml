@@ -1,0 +1,89 @@
+id_self:                ann_merge_input_order_becomes_meaning
+guid_self:              ann_08495e97e3754c90b05716e3563163ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Order of merge inputs that becomes meaning to keep
+brief:                  |
+                        When the later input wins, or a declared
+                        first-wins or last-wins rule applies, the
+                        order of a merge's inputs decides the graph,
+                        so it becomes one more ordered list that the
+                        canonical form and the input digest must keep
+                        in order, and that a reader must know matters.
+                        The trial sorted every keyed list, ordered or
+                        not, and two variants that differed only in
+                        the order of two writes shared an input
+                        digest, so from a warm cache one was served
+                        the other's graph. A merge that refuses
+                        conflicts gives the same graph in any order,
+                        so its inputs are a set and sorting them is
+                        harmless.
+description:            |
+                        Sources:
+                        - The trial's canonical form sorted every
+                          array with a merge key,
+                          including those whose order is meaning; one input digest then
+                          gave two content digests, and the fix is to separate having a
+                          merge key from being unordered. (review of 2026-10-29, CC-005)
+                        - Every list of the graph schema declares a
+                          merge key.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/ruling_merge_key_declared_for_every_list.yaml
+                          at brief)
+                        - A merge that fails on conflict gives the
+                          same graph whichever
+                          variant is merged into which.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_merge_that_fails_on_conflict_is_order_free.yaml
+                          at brief)
+                        - The graph of edits is a dataflow graph, and
+                          port groups answer
+                          a merge of any number of variants; the order of a group member
+                          is its position in a list and may shift.
+                          (_data/decision/dec_how_the_graph_of_edits_is_run/ruling_graph_of_edits_as_a_dataflow_graph_with_caches.yaml
+                          at brief;
+                          _data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - Maintainability asks how readily a newcomer
+                          understands the
+                          design and how readily a change can be checked before it
+                          ships. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.0 and
+                          entries.concern_maintainability.question.2)
+                        Strength: moderate; the canonical form is
+                        fixed once, but every place that lists a
+                        merge's inputs, the variant, the node in the
+                        graph of edits and a delta module, must keep
+                        the order, and a slip gives a wrong graph with
+                        no error.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_later_merge_input_wins
+    guid_target:        opt_ea19fc6143a34d898bdbd7f8bd537393
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_merge_declares_a_rule_for_each_conflict
+    guid_target:        opt_2ab79dcfb31c494ebd2837835cfdc3cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

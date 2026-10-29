@@ -1,0 +1,80 @@
+id_self:                ann_graph_digest_recomputable_without_node_sources
+guid_self:              ann_bdd06d2b29a34a5a8318f476d3cd5956
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graph digest a partner can recompute without the node sources
+brief:                  |
+                        A content digest of a graph's canonical form
+                        can be recomputed by anyone who holds the
+                        graph. Folding the content of node types, node
+                        sources and dictionary entries into the
+                        lowered digest means that a partner who
+                        receives a lowered graph or a status reply can
+                        check its digest only with every node source
+                        the graph names, and Patrol's sources will be
+                        private. A separate build digest keeps the
+                        graph digests recomputable from the graph
+                        alone, and puts what needs the sources in a
+                        value of its own.
+description:            |
+                        Sources:
+                        - A content digest of a published canonical
+                          form can be
+                          recomputed by anyone holding the graph, without cctool or the
+                          repository; Patrol's code will live in a private peer.
+                          (_data/decision/dec_identity_of_a_resolved_graph/ann_graph_identity_digest_a_partner_can_recompute.yaml
+                          at brief and description)
+                        - The covers-what-binds option folds every
+                          node type, node source
+                          and dictionary entry the lowered graph names into the lowered
+                          digest; the separate option leaves the graph digests as they
+                          are.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_digest_covers_what_the_graph_binds.yaml
+                          at brief;
+                          _data/decision/dec_what_the_digest_of_a_build_identifies/opt_separate_digest_of_the_build.yaml
+                          at brief)
+                        - A load request carries a lowered graph or
+                          the digest of one
+                          already on the host.
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.artifact.load.content)
+                        - Compatibility asks whether a partner can
+                          read and use what the
+                          design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.0)
+                        Strength: moderate; it matters once a partner
+                        receives lowered graphs or engine status, and
+                        little while every peer is WTP's.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_the_digest_of_a_build_identifies
+    guid_target:        dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_separate_digest_of_the_build
+    guid_target:        opt_445c088d3ebf4976ae834f9e65695580
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_identifies_the_graph_only
+    guid_target:        opt_4f627c8476fc4e1c85acf1da4771b9e7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_covers_what_the_graph_binds
+    guid_target:        opt_96bcd8665b174f5cb63b4671947d8c2f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

@@ -1,0 +1,99 @@
+id_self:                ann_lowered_digest_blind_to_four_binding_changes
+guid_self:              ann_c0f5bd0717204d20925d146baa5a78f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One lowered digest across four changes to what a build binds
+brief:                  |
+                        In the trial, four changes to what a build
+                        binds, a node type's fail-safe, a node type's
+                        input port order, a dictionary entry's field
+                        order and a node's source file, left unchanged
+                        the lowered digest that the build names, while
+                        the generated sources or the node code
+                        compiled in differed. Runtime control compares
+                        that digest to refuse a request meant for
+                        another graph, so it would accept requests for
+                        engines that behave differently. Version
+                        numbers catch these only when every author
+                        bumps them: the trial's two versions of one
+                        node type compiled the same source file, so a
+                        node type's version did not pin its code. A
+                        digest over what the graph binds, or a digest
+                        of the build, catches each.
+description:            |
+                        Sources:
+                        - For each of those changes the resolved and
+                          lowered digests
+                          stayed the same while the generated files or compiled node
+                          code differed (probe p19). (review of 2026-10-29, CC-008 and
+                          area report trial-model, TM-09; area report trial-gen,
+                          TRIAL-GEN-09, for node sources)
+                        - The digest the build names is the content
+                          digest of the
+                          lowered graph, which holds what lowering writes, such as the
+                          capacities it reads from node types, but not the node types,
+                          dictionary entries or node sources themselves; the lowered
+                          input digest covered only the resolved content digest and the
+                          lowering version. (trial 2c777ab9,
+                          src/cctool/dataflow/lower.py, functions lower and _capacities;
+                          src/cctool/dataflow/generate.py, function _graph)
+                        - Version 1 and version 2 of the accumulate
+                          node type both name
+                          the source file accumulate.cpp. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/_example/node_kind/accumulate.yaml
+                          and accumulate_v2.yaml, at source)
+                        - The build carries the lowered digest so that
+                          runtime control
+                          can refuse a graph other than the one the build was made for;
+                          a change set applied to another graph could do anything.
+                          (_data/requirement/rqt_generator_names_digest.yaml at
+                          rationale; _data/requirement/rqt_control_refuses_wrong_digest.yaml
+                          at rationale)
+                        - Dynamic software updating named each changed
+                          type by a hash of
+                          its definition, a consistent name under which old and new
+                          versions could coexist. (Hicks, Moore and Nettles 2001,
+                          Dynamic software updating, section 3.2.2, via
+                          notes/literature/round-2/2001-dynamic-software-updating.md)
+                        - Functional suitability asks whether each
+                          function gives the
+                          right result. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                        Strength: strong; it was reproduced, and every
+                        change set and swap leans on the comparison.
+                        It falls only if a check enforced that content
+                        changes only with a new version, which needs a
+                        digest of the content anyway.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_the_digest_of_a_build_identifies
+    guid_target:        dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_covers_what_the_graph_binds
+    guid_target:        opt_96bcd8665b174f5cb63b4671947d8c2f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_separate_digest_of_the_build
+    guid_target:        opt_445c088d3ebf4976ae834f9e65695580
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_identifies_the_graph_only
+    guid_target:        opt_4f627c8476fc4e1c85acf1da4771b9e7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

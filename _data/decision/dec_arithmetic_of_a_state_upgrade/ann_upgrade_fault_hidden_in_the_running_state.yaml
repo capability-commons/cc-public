@@ -1,0 +1,97 @@
+id_self:                ann_upgrade_fault_hidden_in_the_running_state
+guid_self:              ann_66ae999da97d4a6e9b0ce599a48c6f53
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Upgrade fault that depends on running state no check can read
+brief:                  |
+                        A swap whose state cannot be upgraded is to be
+                        refused by a check before it is sent, but
+                        cctool cannot read node state from a running
+                        engine, so it can refuse only what the
+                        declarations decide. Under exact arithmetic, a
+                        conversion such as n / 2 into an integer field
+                        gives a fraction for every odd n, which is a
+                        fault, so the swap fails at the step for some
+                        states and passes for others. Under the
+                        arithmetic of the target type, a quotient such
+                        as n / 2 always fits, and only overflow or a
+                        division by zero is left to run time. With
+                        named conversions only, each can declare where
+                        it is defined, and the check can decide from
+                        the two field types whether it always fits.
+description:            |
+                        Sources:
+                        - A swap whose state cannot be upgraded is
+                          refused by a check
+                          before it is sent.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - An earlier argument records WTP's request
+                          that an upgrade that
+                          cannot be done be blocked before it is attempted.
+                          (_data/decision/dec_form_of_the_data_dictionary/ann_impossible_state_upgrade_refused_before_swap.yaml
+                          at brief)
+                        - Runtime control offers load, start, stop,
+                          apply and status, and
+                          status reports the digest, the execution units and the step,
+                          not node state.
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.artifact and at
+                          surface.data.artifact.artifact.status.content)
+                        - The exact option makes a result that does
+                          not fit the range and
+                          kind of the target field a fault; the target-type option
+                          truncates division and refuses or faults on range only.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_exact_then_checked.yaml
+                          at brief;
+                          _data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_of_the_target_type.yaml
+                          at brief)
+                        - Functional suitability asks whether each
+                          function gives the
+                          right result. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.0)
+                        ASSUMPTION: each named conversion can declare
+                        its domain and range, so totality follows from
+                        the field types; interval analysis of an
+                        expression could decide many cases too, more
+                        conservatively. Strength: strong against the
+                        exact option for any division into an integer
+                        field; moderate against the target-type
+                        option, where only overflow and division by
+                        zero depend on the data. The swap keeps the
+                        old state until the new version completes a
+                        step, so such a fault is recoverable, but the
+                        check has then passed a swap that fails.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_without_arithmetic
+    guid_target:        opt_d98dc5b39d254c188191eb5b85a81583
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

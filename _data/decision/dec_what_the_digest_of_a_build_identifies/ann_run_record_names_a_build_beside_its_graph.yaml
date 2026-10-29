@@ -1,0 +1,84 @@
+id_self:                ann_run_record_names_a_build_beside_its_graph
+guid_self:              ann_2cdee88889164ca9b07dee90b6e2b88b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Run record that already names a build beside its graph
+brief:                  |
+                        The records already keep a graph and a build
+                        apart: a run record names the resolved digest
+                        and the build of the engine, while deployment
+                        records and recordings name the resolved
+                        digest only. Folding bound content into the
+                        lowered digest changes none of those fields,
+                        so a deployment record still cannot tell two
+                        builds of one graph apart; a separate build
+                        digest gives the build that the run record
+                        names a definition and a value. The trial
+                        already reported two values, the digest of the
+                        graph running and the one built in, since a
+                        change set moves the first and not the second.
+description:            |
+                        Sources:
+                        - A run record names the variant, the content
+                          digest of its
+                          resolved graph, the host and the build of the engine.
+                          (_data/requirement/rqt_dataflow_run_names_its_graph.yaml at
+                          object)
+                        - A deployment record names the content digest
+                          of the resolved
+                          graph, and a recording carries the content digest of the
+                          resolved graph that ran.
+                          (_data/requirement/rqt_deployment_records.yaml at object;
+                          _data/interface_control_document/icd_dataflow_recorder.yaml at
+                          surface.recording.artifact.artifact.recording_file.content)
+                        - The trial's status reply carries the running
+                          digest, which an
+                          applied change set replaces, and the digest the engine was
+                          built with. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/control.cpp, function status;
+                          src/cctool/dataflow/engine/src/dynamic.cpp)
+                        - BlockFactory deploys updated blocks by
+                          distributing only a new
+                          plugin library, with no regeneration, and the note on it draws
+                          the lesson that a binary swapped under an unchanged graph must
+                          not keep the old evidence. (Ferigo, Traversaro, Romano and
+                          Pucci 2020, A generic synchronous dataflow architecture to
+                          rapidly prototype and deploy robot controllers, section 4, via
+                          notes/literature/round-2/2020-generic-sdf-architecture-for-robot-controllers.md)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists and back. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.description)
+                        Strength: moderate to strong for every record
+                        used as evidence. It weakens if records are
+                        changed to cite the lowered digest, which the
+                        covers-what-binds option would then make
+                        enough.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_the_digest_of_a_build_identifies
+    guid_target:        dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_separate_digest_of_the_build
+    guid_target:        opt_445c088d3ebf4976ae834f9e65695580
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_identifies_the_graph_only
+    guid_target:        opt_4f627c8476fc4e1c85acf1da4771b9e7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

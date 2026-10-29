@@ -1,0 +1,87 @@
+id_self:                ann_version_pins_that_change_sets_name_anyway
+guid_self:              ann_82ae84ae9baa423fa12c79c687f8e96d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Version pins that change sets must name anyway
+brief:                  |
+                        The graph-only option adds nothing to the
+                        digests, and its pins are needed whichever
+                        option is upheld: a change set names each node
+                        version it swaps, and the trial found swaps by
+                        comparing node type names, so, as its code
+                        reads, a node type edited in place gives no
+                        swap at all. A pin such as a version number is
+                        also something a reader can follow to an item,
+                        where a digest over sources is opaque. The
+                        separate-digest option adds a third digest,
+                        one more value that the engine reports and
+                        that each change set must say it matches.
+description:            |
+                        Sources:
+                        - Node types, node sources and dictionary
+                          entries are pinned by
+                          version numbers that the graph names.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_digest_identifies_the_graph_only.yaml
+                          at brief)
+                        - A change set carries each node version to
+                          swap, with the
+                          mapping that upgrades its state.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml
+                          at surface.data.artifact.artifact.change_set.content;
+                          _data/decision/dec_swap_of_a_node_version/ruling_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - As its code reads, the trial's change set
+                          swaps a node only
+                          when its node type name or its settings differ; this was not
+                          run. (trial 2c777ab9,
+                          src/cctool/dataflow/deploy.py, function change_set)
+                        - The engine reports both the lowered digest
+                          and the build
+                          digest, and a change set names the one it must match.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_separate_digest_of_the_build.yaml
+                          at brief)
+                        - Simplicity counts the distinct mechanisms a
+                          design introduces;
+                          traceability asks whether each element can be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0 and
+                          entries.concern_traceability.question.0)
+                        Strength: moderate on the count of mechanisms;
+                        weak as protection, since nothing checks that
+                        content changes only with a new version, and
+                        the trial's node types carried no version in
+                        the graph at all (review of 2026-10-29,
+                        CC-008).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_the_digest_of_a_build_identifies
+    guid_target:        dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_digest_identifies_the_graph_only
+    guid_target:        opt_4f627c8476fc4e1c85acf1da4771b9e7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_separate_digest_of_the_build
+    guid_target:        opt_445c088d3ebf4976ae834f9e65695580
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

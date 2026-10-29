@@ -1,0 +1,89 @@
+id_self:                ann_build_digest_over_compiled_files_keeps_no_list
+guid_self:              ann_46b5f2306212473ba976afe2b7177fe0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build digest over the files compiled, with no list of inputs to keep
+brief:                  |
+                        A digest that folds in what the graph binds is
+                        right only while its list of bound inputs is
+                        complete, and the trial's lowered digests
+                        missed exactly such inputs: lowering read node
+                        types, but neither digest covered the node
+                        types themselves. A digest of the generated
+                        sources and node sources is taken over what
+                        the compiler receives, so a new input to the
+                        generator, or a change to the generator, shows
+                        in it with no list to keep. It must be taken
+                        over the files actually compiled, since the
+                        trial's build compiled stale generated files.
+                        Neither option names the engine's own sources
+                        or the compiler flags, so the claim that
+                        engines that behave differently never share a
+                        digest is too strong as worded.
+description:            |
+                        Sources:
+                        - An input digest is correct only if it covers
+                          everything read,
+                          and each new kind of input must be added by hand; an omission
+                          gives a wrong match with no error.
+                          (_data/decision/dec_identity_of_a_resolved_graph/ann_graph_identity_input_list_kept_complete_by_hand.yaml
+                          at brief)
+                        - The trial's lowered input digest covered
+                          only the resolved
+                          digest and the lowering version, and its lowered content
+                          digest only the lowered graph, though lowering reads node
+                          types. (trial 2c777ab9, src/cctool/dataflow/lower.py,
+                          functions lower and _capacities)
+                        - The same source comes from the same lowered
+                          graph and the same
+                          version of the generator, so the generator version is an input
+                          of the build. (_data/requirement/rqt_generator_reproducible.yaml
+                          at object)
+                        - Regenerating after a node type was deleted
+                          left its generated
+                          files, and the build's glob still compiled its stale entry;
+                          every engine was built unoptimized by default. (review of 2026-10-29, area
+                          report trial-gen, TRIAL-GEN-09 and TRIAL-GEN-10)
+                        - Two engines that can behave differently
+                          never report the same
+                          digest.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_digest_covers_what_the_graph_binds.yaml
+                          at brief)
+                        - Maintainability asks how far a change in one
+                          part spreads to
+                          others and how readily a change can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.1 and
+                          entries.concern_maintainability.question.2)
+                        Strength: moderate; the list is short today,
+                        node types, dictionary entries and node
+                        sources, and grows with what the generator
+                        reads.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_the_digest_of_a_build_identifies
+    guid_target:        dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_separate_digest_of_the_build
+    guid_target:        opt_445c088d3ebf4976ae834f9e65695580
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_digest_covers_what_the_graph_binds
+    guid_target:        opt_96bcd8665b174f5cb63b4671947d8c2f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

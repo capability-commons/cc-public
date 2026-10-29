@@ -1,0 +1,92 @@
+id_self:                ann_upgrade_arithmetic_one_side_must_emulate
+guid_self:              ann_eaf5f30ec36647d2b6b28a9d0ee06d10
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Arithmetic that either the model or the engine must emulate
+brief:                  |
+                        The trial allowed only arithmetic in a
+                        conversion so that one text would be valid in
+                        Python and C++ alike; valid text did not mean
+                        the same thing in both, and its upgrade test
+                        passed because it ran the Python path alone,
+                        on a multiplication. Any arithmetic chosen is
+                        native to at most one side: unbounded
+                        integers, and exact fractions from its
+                        standard library, come with Python and need a
+                        rational type that the C++17 standard library
+                        lacks, while truncating division is native to
+                        C++ and not to Python, and an overflow fault
+                        is native to neither. So each new mapping is
+                        new code to compare across the two, compiled
+                        and run. With named conversions, each is
+                        written once on each side and tested once, and
+                        a dictionary entry adds no code.
+description:            |
+                        Sources:
+                        - The trial allowed only arithmetic operators
+                          in a conversion so
+                          that the same text would be valid C, C++ and Python. (trial
+                          2c777ab9, src/cctool/dataflow/dictionary.py, the operators a
+                          conversion may use)
+                        - n / 2 gave 2.5 in the model and 2 in the
+                          generated C++, and
+                          big * 2 overflowed in C++ only; the fix's acceptance test
+                          compiles the generated upgrade and compares it with the model.
+                          (review of 2026-10-29, CC-021)
+                        - The trial's test of an upgrade chain ran the
+                          Python path only,
+                          with the conversion total * 2, and passes for that reason.
+                          (trial 2c777ab9, src/cctool/dataflow/_test/test_model.py,
+                          function test_a_chain_of_upgrades_takes_version_1_to_version_3;
+                          review of 2026-10-29, area report trial-model, TM-06)
+                        - The generator writes the upgrade from the
+                          chain of mappings.
+                          (_data/requirement/rqt_dictionary_upgrade_chain.yaml at
+                          rationale)
+                        - Maintainability asks how readily a change
+                          can be checked before
+                          it ships. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.2)
+                        ASSUMPTION (language rules): C++17 has no
+                        standard rational type; Python's integers are
+                        unbounded and its fractions module is exact;
+                        Python's integer division floors, giving -3
+                        for -5 // 2 where C truncates to -2; signed
+                        overflow is undefined in C and C++. Strength:
+                        moderate; a differential test over generated
+                        expressions can be built once, and the burden
+                        is per new mapping, which stays small if
+                        converted fields are rare.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_without_arithmetic
+    guid_target:        opt_d98dc5b39d254c188191eb5b85a81583
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

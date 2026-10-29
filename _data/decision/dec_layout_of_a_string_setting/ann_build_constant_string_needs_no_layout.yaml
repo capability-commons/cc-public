@@ -1,0 +1,98 @@
+id_self:                ann_build_constant_string_needs_no_layout
+guid_self:              ann_f39ef76f2c7f4abeb87914268f8b2708
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Build constant that needs no capacity, layout or run-time copy
+brief:                  |
+                        A string bound at build is a literal in the
+                        generated code, which the generator can escape
+                        with a helper it already has, once that helper
+                        also escapes control characters. There is no
+                        capacity for a node type to declare and later
+                        outgrow, no count to check and nothing for the
+                        engine to write at run time; under either
+                        fixed layout, a path longer than the declared
+                        capacity means a larger capacity, a new layout
+                        of the settings structure and so a new version
+                        of the node type. The trial ran without any
+                        string setting, and a transport's endpoint may
+                        well be fixed for each deployment by the
+                        transform that inserts the transport nodes.
+description:            |
+                        Sources:
+                        - A string setting bound at build is emitted
+                          as a constant in the
+                          generated code, never held in a settings structure.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_settings_bound_at_build_only.yaml
+                          at brief)
+                        - The trial's generator has a helper that
+                          writes a C string
+                          literal, escaping backslashes and double quotes only, and used
+                          it once. (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, function _c_string; review of
+                          2026-10-29, CC-020)
+                        - Both fixed layouts take a capacity or length
+                          that the node type
+                          declares.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_as_a_bounded_array_of_bytes.yaml
+                          at brief;
+                          _data/decision/dec_layout_of_a_string_setting/opt_string_as_characters_of_a_declared_length.yaml
+                          at brief)
+                        - The trial had no string settings.
+                          (_data/decision/dec_layout_of_a_string_setting/dec_layout_of_a_string_setting.yaml
+                          at description)
+                        - A transform inserts sender and receiver
+                          nodes where placement
+                          splits an edge, one transform for each transport.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - Maintainability counts the parts a
+                          representative change
+                          touches; simplicity counts distinct mechanisms.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure.1 and
+                          entries.concern_simplicity.measure.0)
+                        ASSUMPTION: a change to the layout of a node
+                        type's settings is released as a new version
+                        of the node type. Strength: moderate while
+                        string settings are few and fixed for each
+                        deployment; weak once a string must change
+                        without a rebuild.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_a_string_setting
+    guid_target:        dec_a38cca79cc404879a2cf1f6a324b542a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_settings_bound_at_build_only
+    guid_target:        opt_9bd998bb28d4429580306d72f4eed169
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_as_a_bounded_array_of_bytes
+    guid_target:        opt_8d35a1ae932447b0805bb8610ce173b9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_as_characters_of_a_declared_length
+    guid_target:        opt_b724a635e73543ae8d3c141eb9db6aa6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

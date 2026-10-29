@@ -1,0 +1,85 @@
+id_self:                ann_text_value_already_ruled_a_bounded_array
+guid_self:              ann_e7395c872a5b4997a0520c68841760f7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Text value that the bounded-array ruling already lays out
+brief:                  |
+                        The upheld option on values of varying size
+                        writes a text value as a bounded array, a
+                        count and storage up to a declared capacity. A
+                        string setting in that form adds no second
+                        layout for text, and the count check and the
+                        rule to copy only counted elements, which
+                        every bounded array needs, serve it as well. A
+                        character array of a declared length is a
+                        second text form beside the ruled one, with
+                        its own padding rule and its own check. The
+                        ruling is about messages on edges, so applying
+                        it to settings is an extension, but it gives
+                        the layout a recorded reason.
+description:            |
+                        Sources:
+                        - Each message on an edge is a bounded array
+                          of fixed-size
+                          elements, and a nested or text value is written as such an
+                          array.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/opt_bounded_array_of_fixed_size_elements.yaml
+                          at brief;
+                          _data/decision/dec_how_values_of_varying_size_are_held/ruling_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - A string setting is a bounded array of
+                          bytes, as ruled for
+                          values of varying size.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_as_a_bounded_array_of_bytes.yaml
+                          at brief)
+                        - A received count must be checked against the
+                          capacity, and only
+                          the counted elements copied.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ann_received_count_and_stale_tail_of_a_bounded_array.yaml
+                          at brief)
+                        - The character option pads with zeros up to a
+                          declared length.
+                          (_data/decision/dec_layout_of_a_string_setting/opt_string_as_characters_of_a_declared_length.yaml
+                          at brief)
+                        - Simplicity counts jobs done by more than one
+                          mechanism;
+                          traceability asks whether each element can be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.1 and
+                          entries.concern_traceability.question.0)
+                        Strength: moderate; it rests on reading the
+                        ruling's clause on text values as covering
+                        settings, which WTP may not have meant.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_a_string_setting
+    guid_target:        dec_a38cca79cc404879a2cf1f6a324b542a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_as_a_bounded_array_of_bytes
+    guid_target:        opt_8d35a1ae932447b0805bb8610ce173b9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_as_characters_of_a_declared_length
+    guid_target:        opt_b724a635e73543ae8d3c141eb9db6aa6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

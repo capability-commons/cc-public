@@ -1,0 +1,102 @@
+id_self:                ann_string_set_at_run_time_by_change_set_or_replay
+guid_self:              ann_2cd681fcccbb42c0a5f2389b21c2494c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  String settings that a change set or a replay sets at run time
+brief:                  |
+                        Strings bound only at build cannot serve two
+                        uses the records already have. A change set
+                        adds nodes to the dynamic subgraph with their
+                        declarations, and the trial engine wrote each
+                        setting of such a node at run time into a
+                        fixed settings structure by name, type and
+                        offset; a printer or recorder added that way
+                        cannot have its path compiled in, since it did
+                        not exist at build time. And the trial's tests
+                        start one build many times with a recording
+                        path, and a replay path, given on the command
+                        line for each run; as build constants, a
+                        recorder's sink and a player's source would
+                        need a rebuild for each recording, so the
+                        engine that replays would not be the build
+                        that recorded. The binding-time ruling lets
+                        each setting declare its latest binding time;
+                        build-only narrows that for every string,
+                        whatever it holds.
+description:            |
+                        Sources:
+                        - A change set carries the nodes and edges to
+                          add, with their
+                          placement and declarations.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml
+                          at surface.data.artifact.artifact.change_set.content)
+                        - The trial engine fills the settings of a
+                          node added by a change
+                          set from the request, by each setting's name, type and offset,
+                          and its settings were limited to primitives. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, functions
+                          write_setting and make_node)
+                        - The trial's tests start one built engine
+                          with a recording path
+                          given on its command line, not as a setting, and replay a
+                          recording while recording again to a new path. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/test_dynamic.py and
+                          src/cctool/dataflow/engine/src/runtime.cpp, the record and
+                          replay arguments of the command line)
+                        - Recording nodes write the log from which a
+                          run is replayed.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief)
+                        - Each setting declares the latest time it may
+                          be bound.
+                          (_data/decision/dec_binding_time_of_a_variation/ruling_latest_binding_time_per_setting.yaml
+                          at brief)
+                        - Parameters compiled into generated code kept
+                          one controller
+                          from serving robots that differed only in configuration without
+                          regenerating the sources. (Ferigo, Traversaro, Romano and Pucci
+                          2020, A generic synchronous dataflow architecture to rapidly
+                          prototype and deploy robot controllers, section 5.3, via
+                          notes/literature/round-2/2020-generic-sdf-architecture-for-robot-controllers.md)
+                        - Functional suitability asks whether every
+                          function that is
+                          needed is present. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1)
+                        Strength: strong for recorder, player and
+                        printer nodes and for any node a change set
+                        adds; weak for transport endpoints, which
+                        lowering inserts and which may well be fixed
+                        for each build.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_a_string_setting
+    guid_target:        dec_a38cca79cc404879a2cf1f6a324b542a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_string_settings_bound_at_build_only
+    guid_target:        opt_9bd998bb28d4429580306d72f4eed169
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_as_a_bounded_array_of_bytes
+    guid_target:        opt_8d35a1ae932447b0805bb8610ce173b9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_string_as_characters_of_a_declared_length
+    guid_target:        opt_b724a635e73543ae8d3c141eb9db6aa6
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

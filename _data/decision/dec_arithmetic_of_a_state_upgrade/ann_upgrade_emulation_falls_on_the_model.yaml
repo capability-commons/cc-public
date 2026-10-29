@@ -1,0 +1,82 @@
+id_self:                ann_upgrade_emulation_falls_on_the_model
+guid_self:              ann_8f2dc3241a8e4799948a97d482be4bc8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Emulation that falls on the model rather than the embedded engine
+brief:                  |
+                        Of the two options with arithmetic, the target
+                        type's puts the emulation on the Python model,
+                        where truncating division and a range check
+                        take a few lines, and lets the generated C++
+                        run each mapping natively, with a checked
+                        operation where overflow can occur. Exact
+                        arithmetic puts the emulation on the engine
+                        instead: a mapping with a product or a
+                        quotient needs multi-word integers or
+                        fractions in the C++17 code that runs at a
+                        swap on an embedded target. The review
+                        recommended the target type's arithmetic for
+                        this reason, that the generated code is C++
+                        and the model must match it.
+description:            |
+                        Sources:
+                        - The review's recommendation for what
+                          division means in a state
+                          upgrade is C semantics on the target type, since the generated
+                          code is C++ and the model must match it. (review of 2026-10-29,
+                          section 7, W-T8)
+                        - The engine is a new C++ engine, C++17
+                          planned, targeting
+                          embedded reach, with Patrol on an NVIDIA Orin its first user
+                          (WTP, 2026-10-28).
+                        - At the start of a step the engine upgrades a
+                          swapped node's
+                          state by the dictionary's mapping.
+                          (_data/decision/dec_swap_of_a_node_version/opt_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - The exact option computes on whole numbers
+                          and fractions
+                          without rounding.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_exact_then_checked.yaml
+                          at brief)
+                        - Simplicity counts the distinct mechanisms a
+                          design introduces.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure.0)
+                        ASSUMPTION: GCC and Clang offer builtins that
+                        detect integer overflow, C++17 has no standard
+                        multi-word integer or rational type, and
+                        Python can truncate toward zero and check a
+                        range in a few lines. Strength: moderate; it
+                        favors the target type over exact arithmetic
+                        only, since named conversions are native on
+                        both sides, and it falls away if upgrades are
+                        limited to them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

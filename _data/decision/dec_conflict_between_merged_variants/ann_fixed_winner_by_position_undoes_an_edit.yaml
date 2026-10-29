@@ -1,0 +1,92 @@
+id_self:                ann_fixed_winner_by_position_undoes_an_edit
+guid_self:              ann_c0ccfcfe4e0f4084b81f17c7c081d0ba
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Fixed winner by position that undoes one side's edit
+brief:                  |
+                        The records define no three-way merge against
+                        a common base, and without one a merge cannot
+                        tell a value that one side edited from a base
+                        value that the other side only kept. Two
+                        variants of one base both hold every base node
+                        and edge they did not remove, so whichever
+                        position wins, a merge in one of the two
+                        directions silently puts the untouched base
+                        value back over an edit. The trial did this:
+                        the merging variant's base edge displaced the
+                        merged variant's keep_latest policy with no
+                        error. Refusing the conflict names the element
+                        instead, and a declared first-wins or
+                        last-wins rule keeps the fault for each kind
+                        of conflict it covers.
+description:            |
+                        Sources:
+                        - The ruling has dataflow variants with no
+                          common element merge
+                          without a three-way merge against a common base, and says
+                          nothing of a three-way merge for variants that share one.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - Variants of one root share the ids of the
+                          nodes their base
+                          declares, so a merge that is not three-way cannot tell a
+                          removal from an addition.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_two_way_merge_restores_what_one_side_removed.yaml
+                          at brief and description)
+                        - In the trial, merging a variant that had cut
+                          an edge and joined
+                          it again with keep_latest left the merging variant with the
+                          base edge and no policy, and dropped what the merged variant
+                          added to the recording list, with no error.
+                          Nodes, hosts and units held differently were refused, but
+                          edges and top-level fields were kept from the receiving side.
+                          (review of 2026-10-29, CC-007 and area report trial-model,
+                          TM-03, probe p06; trial 2c777ab9,
+                          src/cctool/dataflow/resolve.py, function _merge)
+                        - An edit to a merged variant reaches every
+                          variant that merges
+                          it, and only a conflict fails, at the merge.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_edit_to_a_merged_variant_reaches_every_merger.yaml
+                          at brief)
+                        - Functional suitability asks whether the
+                          design does anything
+                          it should not. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.3)
+                        Strength: strong for merges of variants that
+                        share a base, which Patrol's family is built
+                        from; weak for pieces with no element in
+                        common, where conflicts are rare. Refusal pays
+                        for it with a conflict for every base element
+                        that one side edited, each to be settled by
+                        hand. It would weaken if the merge were
+                        three-way against the common base, or used the
+                        origin trace to tell an edited value from a
+                        kept base value, which no option proposes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_later_merge_input_wins
+    guid_target:        opt_ea19fc6143a34d898bdbd7f8bd537393
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

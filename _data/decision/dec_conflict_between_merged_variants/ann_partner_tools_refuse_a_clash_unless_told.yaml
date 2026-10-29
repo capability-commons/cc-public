@@ -1,0 +1,90 @@
+id_self:                ann_partner_tools_refuse_a_clash_unless_told
+guid_self:              ann_4bb8679324a74095a4a1542923e591a6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Partner tools that refuse a clash unless told how to merge
+brief:                  |
+                        Two configuration tools a partner may already
+                        use treat a clash as the refusal option does.
+                        Kustomize refuses a generated resource whose
+                        id a base already holds unless the generator
+                        declares merge or replace, and CUE unification
+                        gives one result in any order and reports a
+                        contradiction naming both sides. A partner can
+                        reproduce a refusing merge from the declared
+                        merge keys alone, and two implementations
+                        agree whenever both succeed; reproducing
+                        later-wins also needs the exact order of
+                        inputs through nested merges. Kustomize's
+                        declared behavior is close to a declared rule,
+                        though per resource rather than per kind of
+                        conflict.
+description:            |
+                        Sources:
+                        - Kustomize tracks a resource by its original
+                          id and refuses a
+                          generated resource whose id a base holds unless its behavior is
+                          merge or replace.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_keyed_merge_as_partner_tools_already_do.yaml
+                          at description)
+                        - Unification, which an earlier argument
+                          sources from CUE's
+                          tutorial, gives one result in any order and overrides nothing,
+                          and a contradiction names both sides.
+                          (_data/decision/dec_vocabulary_of_variant_operations/ann_vocab_constraints_that_override_nothing.yaml
+                          at brief and description)
+                        - A merge that fails on conflict is order free
+                          with respect to
+                          its sides.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_merge_that_fails_on_conflict_is_order_free.yaml
+                          at brief)
+                        - Every list of the graph schema declares a
+                          merge key.
+                          (_data/decision/dec_merge_keys_of_graph_schema_lists/ruling_merge_key_declared_for_every_list.yaml
+                          at brief)
+                        - Compatibility asks what a partner must adopt
+                          to read and use
+                          what the design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                        ASSUMPTION: no literature note covers
+                        Kustomize or CUE; the earlier arguments cite
+                        Kustomize's issue tracker and CUE's tutorial.
+                        That a partner may already use either tool,
+                        and that CUE's report of a conflict names both
+                        values, are assumed. Strength: weak to
+                        moderate; no partner exchanges variants yet,
+                        and the evidence is how two tools behave, not
+                        a format either shares.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_merge_declares_a_rule_for_each_conflict
+    guid_target:        opt_2ab79dcfb31c494ebd2837835cfdc3cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_later_merge_input_wins
+    guid_target:        opt_ea19fc6143a34d898bdbd7f8bd537393
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

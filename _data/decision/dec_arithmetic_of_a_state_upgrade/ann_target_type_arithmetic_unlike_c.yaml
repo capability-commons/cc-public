@@ -1,0 +1,80 @@
+id_self:                ann_target_type_arithmetic_unlike_c
+guid_self:              ann_253be067f28e4652a4dcce6786aaef94
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Target-type arithmetic that is not what C does
+brief:                  |
+                        The target-type option says a mapping computes
+                        in the arithmetic of the field it writes, as C
+                        does, but C computes in the types of the
+                        operands and converts afterward: n / 2 with an
+                        integer n written to a float64 field gives 2
+                        in C, and 2.5 if computed in the field's type.
+                        The trial's generated C++ gave 2 there and its
+                        model 2.5. A node author or partner who reads
+                        "as C does" and compiles the mapping as C gets
+                        one answer, one who follows the title gets the
+                        other, and C leaves signed overflow undefined
+                        rather than a fault. The exact option has no
+                        such split: its meaning is arithmetic itself,
+                        which any language with integers and fractions
+                        of any size reproduces.
+description:            |
+                        Sources:
+                        - A mapping computes in the arithmetic of the
+                          field it writes, as
+                          C does, and the model and the generated code share one
+                          definition.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_of_the_target_type.yaml
+                          at brief)
+                        - Into a float64 field the trial's model gave
+                          2.5 and its
+                          generated C++ gave 2. (review of 2026-10-29, area report
+                          trial-model, TM-06)
+                        - The trial review proposed emitting C++ with
+                          explicit casts to
+                          the type of the field. (review of 2026-10-29, area report
+                          trial-gen, TRIAL-GEN-06)
+                        - The node interface is stated in C.
+                          (_data/decision/dec_language_of_the_node_interface/ruling_c_contract_with_direct_cpp_calls.yaml
+                          at brief)
+                        - Compatibility asks what a partner must adopt
+                          to read and use
+                          what the design produces. (_data/register/reg_concern.yaml at
+                          entries.concern_compatibility.question.2)
+                        ASSUMPTION (language rules): C's usual
+                        arithmetic conversions apply to the operands,
+                        not the destination; signed overflow is
+                        undefined in C and C++. Strength: moderate; it
+                        is fixed by rewording the option to say that
+                        every operand is converted to the target type
+                        first, and until then a generator can read it
+                        either way.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

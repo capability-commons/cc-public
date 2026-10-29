@@ -1,0 +1,83 @@
+id_self:                ann_upgrade_loss_left_unrecorded
+guid_self:              ann_a50791a141614be8bcda3ab489cf3d76
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Information an upgrade loses without a record of the loss
+brief:                  |
+                        Under the arithmetic of the target type,
+                        truncation is the defined result, so an
+                        upgraded state that lost a fraction looks like
+                        any other, and nothing records that the
+                        mapping lost information. Under exact
+                        arithmetic any loss is a fault, so every
+                        stored value is the exact image of the old
+                        one. Named conversions could each declare
+                        whether they lose information, as each
+                        delivery policy declares whether it can lose
+                        data, so a check could say where an upgrade
+                        loses it and trace that to the entry that
+                        accepted the loss; the option does not yet say
+                        so.
+description:            |
+                        Sources:
+                        - The target-type option truncates integer
+                          division toward zero;
+                          the exact option makes a result that does not fit a fault,
+                          never a silent truncation.
+                          (_data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_of_the_target_type.yaml
+                          at brief;
+                          _data/decision/dec_arithmetic_of_a_state_upgrade/opt_upgrade_arithmetic_exact_then_checked.yaml
+                          at brief)
+                        - In the trial, total / 2 on 21 gave 10 in the
+                          generated C++ and
+                          10.5 in the model, with no failure from either. (review of
+                          2026-10-29, area report trial-gen, TRIAL-GEN-06)
+                        - Each delivery policy declares whether it can
+                          lose data, and
+                          cctool checks a graph for where data is lost.
+                          (_data/decision/dec_data_loss_declared_by_a_delivery_policy/ruling_each_policy_declares_data_loss.yaml
+                          at brief)
+                        - Traceability asks whether each element can
+                          be traced to the
+                          reason it exists. (_data/register/reg_concern.yaml at
+                          entries.concern_traceability.question.0)
+                        ASSUMPTION: a lost fraction can matter in node
+                        state, such as an accumulated sum that is
+                        halved; a named conversion can declare whether
+                        it loses information. Strength: moderate; most
+                        upgrades copy, rename or default and lose
+                        nothing, so the point bears on the few
+                        converted fields.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_arithmetic_of_a_state_upgrade
+    guid_target:        dec_98f67007f3d046d2a8ba37ac2b94f905
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_arithmetic_exact_then_checked
+    guid_target:        opt_cdb7474db6c144ad915ccbf669cc455c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_upgrade_without_arithmetic
+    guid_target:        opt_d98dc5b39d254c188191eb5b85a81583
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_upgrade_arithmetic_of_the_target_type
+    guid_target:        opt_0bebd0b30c0b4176a7b436b703757743
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac

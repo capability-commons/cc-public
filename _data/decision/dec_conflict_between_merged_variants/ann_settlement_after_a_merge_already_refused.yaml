@@ -1,0 +1,101 @@
+id_self:                ann_settlement_after_a_merge_already_refused
+guid_self:              ann_95cabbff540c48aa86c8047a87a083e7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Settlement after a merge that resolution has already refused
+brief:                  |
+                        The refusal option lets the author settle a
+                        conflict after the merge or in one of its
+                        inputs. After the merge cannot work as the
+                        records stand: resolution stops at the first
+                        operation whose preconditions fail, so the
+                        operation meant to settle a refused merge
+                        never runs. Settling in an input means editing
+                        a merged variant, which reaches every other
+                        variant that merges it, or writing one's own
+                        side to agree before the merge and writing it
+                        back after. The ruled port groups show another
+                        place: a merge's join commands rename one of
+                        two clashing members, so settling commands
+                        could ride in the merge as joins do, which the
+                        option does not say. Later-wins needs no
+                        settlement, and a declared rule needs it only
+                        for the kinds of conflict it refuses.
+description:            |
+                        Sources:
+                        - The author settles a conflict with an
+                          explicit operation, after
+                          the merge or in one of its inputs.
+                          (_data/decision/dec_conflict_between_merged_variants/opt_conflicting_merge_refused.yaml
+                          at brief)
+                        - The first operation whose preconditions fail
+                          stops resolution.
+                          (_data/interface_control_document/icd_dataflow_resolver.yaml at
+                          surface.python.native.function.resolve.guarantee)
+                        - To keep its own value against a merged-in
+                          one, a variant must
+                          first write its side to the incoming value, merge, then write
+                          its own value back.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_conflict_settled_only_before_the_merge.yaml
+                          at brief)
+                        - An edit to a merged variant reaches every
+                          variant that merges
+                          it.
+                          (_data/decision/dec_shape_of_a_variant_family/ann_edit_to_a_merged_variant_reaches_every_merger.yaml
+                          at brief)
+                        - The merge carries the commands that join
+                          edges, and two merged
+                          branches that add a group member with one key are told apart by
+                          guid while the merge's join commands rename one.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief;
+                          _data/decision/dec_naming_of_ports_in_a_group/opt_group_member_as_an_identified_port.yaml
+                          at brief)
+                        - Functional suitability asks whether the
+                          functions help users
+                          complete their tasks; maintainability counts the parts a
+                          representative change touches. (_data/register/reg_concern.yaml
+                          at entries.concern_functional_suitability.question.2 and
+                          entries.concern_maintainability.measure.1)
+                        Strength: strong against the option as worded;
+                        it falls away if the merge may carry settling
+                        commands for named keys, which keeps refusal
+                        as the default and needs no rule per kind.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_merge_declares_a_rule_for_each_conflict
+    guid_target:        opt_2ab79dcfb31c494ebd2837835cfdc3cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_later_merge_input_wins
+    guid_target:        opt_ea19fc6143a34d898bdbd7f8bd537393
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

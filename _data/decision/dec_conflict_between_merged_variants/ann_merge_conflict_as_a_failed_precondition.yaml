@@ -1,0 +1,89 @@
+id_self:                ann_merge_conflict_as_a_failed_precondition
+guid_self:              ann_a6357dcd5e6946159e4979e4260e6877
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Merge conflict as a failed precondition, as a doubly fed input is
+brief:                  |
+                        Refusing a conflict adds no mechanism: it is a
+                        precondition of the merge, which the resolver
+                        already checks, stopping at the first
+                        operation that fails with a report naming it.
+                        It also treats a clash on one key as the
+                        checks already treat the ruling's own example,
+                        two upstream variants using the same port of
+                        the same node: if each feeds that input, their
+                        edges have different ends, so no keyed merge
+                        sees a conflict, and the check of every
+                        complete variant refuses the input fed twice.
+                        A rule for each kind of conflict adds a
+                        vocabulary of conflict kinds and three
+                        outcomes to every merge, and still needs
+                        refusal for kinds it does not name.
+description:            |
+                        Sources:
+                        - Every variant operation states its own
+                          preconditions.
+                          (_data/decision/dec_preconditions_of_variant_operations/ruling_every_operation_states_its_preconditions.yaml
+                          at brief)
+                        - Each operation is checked against its
+                          preconditions, and the
+                          first that fails stops resolution with a report that names it.
+                          (_data/interface_control_document/icd_dataflow_resolver.yaml at
+                          surface.python.native.function.resolve.guarantee)
+                        - The ruling's example of a conflict is two
+                          upstream variants
+                          using the same port of the same node.
+                          (_data/decision/dec_shape_of_a_variant_family/ruling_family_as_a_graph_of_edits_with_merge.yaml
+                          at brief)
+                        - An edge is identified by its two ends.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ruling_edge_identified_by_its_ends.yaml
+                          at brief)
+                        - An input fed by two edges fails the checks,
+                          and every complete
+                          variant is checked. (src/cctool/check/check.lp within
+                          input_fed_twice;
+                          _data/decision/dec_which_resolved_graphs_are_checked/ruling_every_complete_variant_checked.yaml
+                          at brief)
+                        - The rule option names, for each kind of
+                          conflict, first wins,
+                          last wins or refusal, and refuses kinds it does not cover.
+                          (_data/decision/dec_conflict_between_merged_variants/opt_merge_declares_a_rule_for_each_conflict.yaml
+                          at brief)
+                        - Simplicity asks whether a design does what
+                          another mechanism
+                          already does, and whether it follows from decisions already
+                          made. (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.question.1 and
+                          entries.concern_simplicity.question.2)
+                        Strength: strong on the count of mechanisms;
+                        later-wins also adds only one rule. It says
+                        nothing on how an author settles a conflict,
+                        the refusal option's weak point.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_conflict_between_merged_variants
+    guid_target:        dec_1c80fe4d7d4348b39693d46b17cf0724
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_conflicting_merge_refused
+    guid_target:        opt_1b58e3cdb11248f28a2c92a874565622
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_merge_declares_a_rule_for_each_conflict
+    guid_target:        opt_2ab79dcfb31c494ebd2837835cfdc3cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
