@@ -1,0 +1,38 @@
+id_self:                ruling_home_of_observed_evidence
+guid_self:              ruling_3a2a8582e4c54f45929d81189c898bee
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Local evidence store read as facts
+brief:                  |
+                        A run writes what it observed to a local store
+                        in the git directory, and the extractor loads
+                        the current rows as facts for the rules;
+                        nothing observed is committed, except that a
+                        release records a digest and counts of the
+                        evidence it was gated on. Evidence items
+                        rewritten each run, and evidence kept only for
+                        governed runs, are rejected. Ruled by WTP on
+                        2026-10-29.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_evidence_in_a_local_store_read_as_facts
+    guid_target:        opt_d6432f22ad3041ec81d1f694f7d6f604
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_evidence_items_rewritten_each_run
+    guid_target:        opt_b44892076d5940b1ae89190846919522
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_evidence_kept_only_for_governed_runs
+    guid_target:        opt_9d12f03c67a3460b86dd7216f1d08ae8
