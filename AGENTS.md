@@ -119,7 +119,7 @@ unfinished edits of another.
 ## Changing data items
 
 - Prefer `cctool new`, `header`, `link`, `unlink`, `set`, `unset`,
-  `remove`, `rename` and `batch` to editing YAML by hand. They mint
+  `remove`, `rename`, `move` and `batch` to editing YAML by hand. They mint
   guids, fill in rights, keep the layout, and refuse an edit that adds
   a failure. Use `--dry-run` to see an edit first.
 - Give a new python module, logic program file or script its item with

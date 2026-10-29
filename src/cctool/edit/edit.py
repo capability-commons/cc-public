@@ -1457,8 +1457,9 @@ def _refuse_source(tree: Tree, id_item: str) -> None:
     (prefix, _, _) = id_item.partition(DELIM_PREFIX)
     if prefix in SET_PREFIX_SOURCE:
         map_type = {row[1]: row[0] for row in tree.facts['type_prefix']}
-        raise ErrorEdit('An item of {type} lives in the file it names, so move or remove '
-                        'the file by hand.'.format(type = map_type.get(prefix, prefix)))
+        raise ErrorEdit('An item of {type} lives in the file it names, so move the file '
+                        'with cctool move, or remove it by hand.'.format(
+                            type = map_type.get(prefix, prefix)))
 
 
 # -----------------------------------------------------------------------------

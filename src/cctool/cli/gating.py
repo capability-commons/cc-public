@@ -56,12 +56,13 @@ def gate(root: pathlib.Path) -> None:
 
     The staged content is copied out, and each stage runs in the copy.
     The output of a stage that fails is printed before its verdict.
-    All the tests run when code is staged: something under src/ or
-    .githooks/, or a change to pyproject.toml or pixi.lock. When only
-    data is staged, only the tests marked reads_data run, and none run
-    when only decisions are staged. They leave out the tests marked
-    slow, which pixi run test runs, and those marked prepush, which the
-    gate of a push runs.
+    All the tests run when code is staged: something under src/,
+    .githooks/ or .agents/skills/, or a change to AGENTS.md,
+    pyproject.toml or pixi.lock. When only data is staged, only the
+    tests marked reads_data run, and none run when only decisions are
+    staged. They leave out the tests marked slow, which pixi run test
+    runs, those marked prepush, which the gate of a push runs, and
+    those marked fuzz, which pixi run fuzz runs.
     The check keeps the layout and schema verdicts of
     each file in a store in the git directory, which every worktree
     shares. The exit status is 1 when any stage fails, and 2 when the

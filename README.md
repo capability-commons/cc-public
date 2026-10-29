@@ -71,11 +71,13 @@ repeat its check stage; `pixi run test` runs them.
 Once `pixi run hooks` has run, git runs `cctool gate` before each
 commit. It copies the staged content, which is what the commit will
 record, and runs the check, the lint and the tests over the copy. A
-failure stops the commit. The tests run only when code is staged:
-something under `src/` or `.githooks/`, or a change to
-`pyproject.toml` or `pixi.lock`. A commit of data alone is checked and
-linted, but not tested. The gate of a commit also leaves out the tests
-marked prepush, which test the commit and history machinery. The gate
+failure stops the commit. All the tests run when code is staged:
+something under `src/`, `.githooks/` or `.agents/skills/`, or a change
+to `AGENTS.md`, `pyproject.toml` or `pixi.lock`. A commit of data with
+no code runs only the tests marked reads_data, and a commit of
+decisions alone runs none. The gate of a commit also leaves out the
+tests marked prepush, which test the commit and history machinery,
+and those marked fuzz, the property tests. The gate
 of a push runs every test but those marked slow, on what the push
 sends.
 

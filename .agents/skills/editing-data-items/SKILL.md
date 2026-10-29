@@ -43,6 +43,7 @@ procedure, and the traps.
 | take a field out                        | `cctool unset ID FIELDPATH`         |
 | remove an item                          | `cctool remove ID`                  |
 | give an item a new id                   | `cctool rename OLD NEW`             |
+| move a file or folder, and the items it holds | `cctool move OLDPATH NEWPATH`      |
 | add items that need each other          | `cctool batch FILEPATH` (or `-` for stdin) |
 | bring in classes or relations of a standard ontology | `cctool import FILEPATH IRI... --namespace IRI SHORT RELEASE` |
 | compare those classes and relations with their release | `cctool import FILEPATH --namespace IRI SHORT RELEASE --check` |
@@ -151,8 +152,9 @@ by hand. Edges and aliases are not fields for `set`: use `link`,
   and shell ids.** Those items live in the file they name. Give a file
   its item with `cctool header FILEPATH` (the id of a python module or
   of a logic program file follows from its path; any other file needs
-  ID, such as `shell_githooks_pre_commit`). Move or remove the file by
-  hand, then `cctool format`.
+  ID, such as `shell_githooks_pre_commit`). Move the file with `cctool
+  move OLDPATH NEWPATH`, which gives the item the id of its new place
+  and keeps its guid. Remove it by hand, then `cctool format`.
 - **A class or function gets an item only when something must point
   at it.** `cctool header src/x.py::Thing::run --field title Run`
   writes it in the docstring, and the prose the docstring held becomes

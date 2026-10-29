@@ -511,11 +511,11 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
      'A rename keeps the type, so sch_concept must have the prefix of concept_concept.'),
     ({'rename': ['concept_concept', 'concept_relation']}, 'An item with the id concept_relation exists.'),
     ({'rename': ['pym_cctool.edit.edit', 'pym_x']},
-     'An item of type_python_module lives in the file it names, so move or remove the file '
-     'by hand.'),
+     'An item of type_python_module lives in the file it names, so move the file '
+     'with cctool move, or remove it by hand.'),
     ({'remove': 'pyf_cctool.check.check.check'},
-     'An item of type_python_function lives in the file it names, so move or remove the file '
-     'by hand.'),
+     'An item of type_python_function lives in the file it names, so move the file '
+     'with cctool move, or remove it by hand.'),
     ({'remove': 'concept_none'}, 'No item has the id concept_none.'),
     ({'remove': 'icm_cctool_check.failures'},
      'icm_cctool_check.failures is embedded in icd_cctool_check and is not one of '

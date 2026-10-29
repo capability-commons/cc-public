@@ -14,9 +14,11 @@
 # title:                  Pre-commit hook
 # brief:                  |
 #                         Refuse a commit whose staged content fails the
-#                         check, the lint or the tests. The tests run
-#                         only when code is staged, and leave out the
-#                         tests marked slow and prepush.
+#                         check, the lint or the tests. All the tests
+#                         run when code is staged, only those marked
+#                         reads_data when data alone is, and none for
+#                         decisions alone. They leave out the tests
+#                         marked slow, prepush and fuzz.
 # description:            |
 #                         git runs this hook before it records a commit,
 #                         once core.hooksPath names .githooks, which
