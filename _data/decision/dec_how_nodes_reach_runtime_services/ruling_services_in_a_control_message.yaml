@@ -19,6 +19,23 @@ brief:                  |
                         option was argued for a strong contrary take;
                         none was found that outweighs it.
 
+                        Three conditions, added by WTP on 2026-10-29
+                        from the arguments against: each node kind
+                        declares the fields of the control message it
+                        reads and is given only those
+                        (ann_every_node_sees_every_reading); the
+                        layout of the control message has a rule for
+                        growth, such as fields only appended behind a
+                        size or version field at the start, so that
+                        nodes built earlier stay safe to load
+                        (ann_growing_control_message_changes_every_node_interface);
+                        and services that act, such as setting a
+                        register or a clock, are reached through a
+                        sink node, an actor or a control block that
+                        takes commands, since the control message only
+                        reports
+                        (ann_control_message_reports_but_cannot_act).
+
 edge:
 
   - id_relation:        relation_upholds
