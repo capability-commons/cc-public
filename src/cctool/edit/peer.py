@@ -113,9 +113,14 @@ def init(root:      pathlib.Path,
         raise ErrorPeer('The file {file} exists.'.format(file = relative))
 
     text = '\n'.join(cctool.check.layout.dump(map_field, 0)) + '\n'
+    try:
+        text = cctool.check.layout.lay_out(text, pathlib.Path(relative))
+    except cctool.check.layout.Unsupported as error:
+        raise ErrorPeer('The segment item cannot be laid out: {error}. Give a brief '
+                        'whose first line does not start with a space.'.format(
+                            error = error)) from error
     path.parent.mkdir(parents = True, exist_ok = True)
-    path.write_text(cctool.check.layout.lay_out(text, pathlib.Path(relative)),
-                    encoding = 'utf-8')
+    path.write_text(text, encoding = 'utf-8')
     return relative
 
 

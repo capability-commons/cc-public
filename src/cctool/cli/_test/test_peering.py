@@ -86,6 +86,17 @@ def test_init_with_a_name_that_is_not_lower_case_words_is_an_error(tree, tmp_pat
     assert 'is not a name for a segment' in result.stderr
 
 
+def test_init_with_a_brief_that_starts_with_a_space_is_an_error(tree, tmp_path_factory,
+                                                                monkeypatch):
+    root   = tmp_path_factory.mktemp('peer')
+    result = _run(monkeypatch, tree, 'init', 'cc_patrol', *TUPLE_INIT, '--brief', ' A peer.',
+                  '--root', str(root))
+
+    assert result.exit_code == 2
+    assert 'does not start with a space' in result.stderr
+    assert not (root / FILE_PATROL).exists()
+
+
 def test_status_reports_the_pinned_release(tree, tmp_path_factory, monkeypatch):
     root = tmp_path_factory.mktemp('peer')
     _run(monkeypatch, tree, 'init', 'cc_patrol', *TUPLE_INIT, '--root', str(root))
