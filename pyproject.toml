@@ -103,7 +103,9 @@ channels                = ["conda-forge"]
 platforms               = ["osx-arm64", "osx-64", "linux-64"]
 
 # What only development needs: the test runner, coverage, the linter, the
-# browser driver, and the build backend that the wheel tests call. The
+# browser driver, the build backend that the wheel tests call, and the
+# C++ toolchain that the dataflow engine is built and tested with, so
+# that no test of the engine depends on a compiler of the system. The
 # environment tool leaves these out.
 #
 [tool.pixi.pypi-dependencies]
@@ -111,8 +113,11 @@ hatchling               = ">=1.32,<2"
 playwright              = ">=1.48,<2"
 
 [tool.pixi.dependencies]
+cmake                   = ">=3.28,<5"
 coverage                = ">=7.6,<8"
+cxx-compiler            = ">=1.11,<3"
 hypothesis              = ">=6.100,<7"
+ninja                   = ">=1.12,<2"
 pytest                  = ">=9.1.1,<10"
 pytest-xdist            = ">=3.8,<4"
 ruff                    = ">=0.16.6,<0.17"
