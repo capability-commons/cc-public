@@ -43,11 +43,13 @@ edge:                   []
 
 import ast
 import collections
+import contextlib
 import io
 import os
 import pathlib
 import posixpath
 import re
+import shutil
 import stat
 import tokenize
 import typing
@@ -85,6 +87,12 @@ KEY_REMOVE        = 'remove'
 KEY_RENAME        = 'rename'
 KEY_MOVE          = 'move'
 SUFFIX_STAGED     = '.cctool-staged'
+SUFFIX_BACKUP     = '.cctool-backup'
+
+# The file an edit makes in the root of the tree while it writes, so
+# that a second edit does not write at the same time.
+#
+FILE_LOCK         = '.cctool-edit.lock'
 COLUMN_LINE       = 'line'
 
 # The descriptive fields, in the order they are written. A new field
@@ -212,6 +220,7 @@ class Tree:
         """
 
         self.root         = root
+        self.map_stat     = _stats(root)
         self.map_original = cctool.check.segment.union(root)
         self.map_document = dict(self.map_original)
         self.edit         = {}
@@ -1638,8 +1647,13 @@ def _write(tree: Tree) -> None:
     """
     Write the edits of tree, all or none. Each new text is written
     beside its file first, and only once every one is written does any
-    take the place of its file, so that a write that fails leaves the
-    tree as it was. Raise ErrorEdit if one fails.
+    take the place of its file. Each file replaced or removed is kept
+    as a hard link until all are done, so that a write that fails is
+    undone and leaves the tree as it was. Raise ErrorEdit if one fails.
+
+    The edits are written under a lock, and refused if a file they
+    write changed after the tree was read, so that neither a second
+    edit nor a save in an editor is lost.
 
     A file the edits leave as it is is not written. A file that is
     written keeps the permissions of the file it replaces, or of the
@@ -1648,27 +1662,108 @@ def _write(tree: Tree) -> None:
 
     """
 
-    for (staged, path) in _stage(tree):
-        os.replace(staged, path)
+    with _locked(tree.root):
+        _refuse_changed(tree)
+        (list_staged, list_dir) = _stage(tree)
+        _replace(tree, list_staged, list_dir)
 
     for (relative, text) in tree.edit.items():
+        tree.map_stat[relative] = _stat(tree.root / relative)
         if text is None:
-            (tree.root / relative).unlink(missing_ok = True)
             _prune(tree.root, (tree.root / relative).parent)
 
 
 # -----------------------------------------------------------------------------
-def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
+@contextlib.contextmanager
+def _locked(root: pathlib.Path) -> typing.Iterator[None]:
+    """
+    Hold the lock of the tree at root while the body runs. Raise
+    ErrorEdit if another edit holds it.
+
+    """
+
+    path = root / FILE_LOCK
+
+    try:
+        os.close(os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+    except FileExistsError as error:
+        raise ErrorEdit('Another edit is writing the tree, as {lock} shows, so this one is '
+                        'not written. Run it again when that one ends, or remove {lock} if '
+                        'no edit is running.'.format(lock = FILE_LOCK)) from error
+
+    try:
+        yield
+    finally:
+        path.unlink(missing_ok = True)
+
+
+# -----------------------------------------------------------------------------
+def _refuse_changed(tree: Tree) -> None:
+    """
+    Raise ErrorEdit if a file that the edits of tree write or remove is
+    not as it was when the tree was read.
+
+    """
+
+    list_changed = [relative for relative in sorted(tree.edit)
+                    if _stat(tree.root / relative) != tree.map_stat.get(relative)]
+
+    if list_changed:
+        raise ErrorEdit('{files} changed while the edit ran, so nothing was written. Run it '
+                        'again.'.format(files = ', '.join(list_changed)))
+
+
+# -----------------------------------------------------------------------------
+def _stats(root: pathlib.Path) -> dict[str, tuple[int, int, int]]:
+    """
+    Return what _stat gives for each file of the tree under root, keyed
+    by its path relative to root, leaving out the folders the tree does
+    not read.
+
+    """
+
+    map_stat = {}
+
+    for (folder, list_dir, list_file) in os.walk(root):
+        list_dir[:] = [name for name in list_dir
+                       if name not in cctool.graph.extract.SET_DIR_SKIP]
+        for name in list_file:
+            path = pathlib.Path(folder, name)
+            map_stat[str(path.relative_to(root))] = _stat(path)
+
+    return map_stat
+
+
+# -----------------------------------------------------------------------------
+def _stat(path: pathlib.Path) -> tuple[int, int, int] | None:
+    """
+    Return the time the file at path was last changed, its size and its
+    inode, which a write or a replace of it changes, or None if there is
+    no file there.
+
+    """
+
+    try:
+        info = path.stat()
+    except FileNotFoundError:
+        return None
+
+    return (info.st_mtime_ns, info.st_size, info.st_ino)
+
+
+# -----------------------------------------------------------------------------
+def _stage(tree: Tree) -> tuple[list[tuple[pathlib.Path, pathlib.Path]], list[pathlib.Path]]:
     """
     Write each new text of the edits of tree beside its file, with the
     permissions it keeps, and return each staged file with the file it
-    is to replace. A file that holds its new text already is passed
-    over. Raise ErrorEdit, and leave no staged file, if one cannot be
-    written.
+    is to replace, and each folder made for one. A file that holds its
+    new text already is passed over. Raise ErrorEdit, and leave no
+    staged file or new folder, if one cannot be written.
 
     """
 
     list_staged = []
+    list_dir    = []
 
     for relative in tree.edit:
         inside(relative)
@@ -1680,7 +1775,7 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
                 continue
             staged = path.with_name(path.name + SUFFIX_STAGED)
             mode   = _mode(tree, relative)
-            path.parent.mkdir(parents = True, exist_ok = True)
+            _make_folder(path.parent, list_dir)
             list_staged.append((staged, path))
             if isinstance(text, bytes):
                 staged.write_bytes(text)
@@ -1689,12 +1784,121 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
             if mode is not None:
                 os.chmod(staged, mode)
     except OSError as error:
-        for (staged, _) in list_staged:
-            staged.unlink(missing_ok = True)
+        _undo([], list_staged, list_dir)
         raise ErrorEdit('The edit could not be written, so nothing was changed: '
                         '{error}'.format(error = error)) from error
 
-    return list_staged
+    return (list_staged, list_dir)
+
+
+# -----------------------------------------------------------------------------
+def _make_folder(path: pathlib.Path, list_dir: list[pathlib.Path]) -> None:
+    """
+    Make the folder at path and those above it that are missing, and
+    add each one made to list_dir, the highest first.
+
+    """
+
+    list_missing = []
+    folder       = path
+    while not folder.exists():
+        list_missing.append(folder)
+        folder = folder.parent
+
+    path.mkdir(parents = True, exist_ok = True)
+    list_dir.extend(reversed(list_missing))
+
+
+# -----------------------------------------------------------------------------
+def _replace(tree:        Tree,
+             list_staged: list[tuple[pathlib.Path, pathlib.Path]],
+             list_dir:    list[pathlib.Path]) -> None:
+    """
+    Put each staged file of list_staged in place of its file, and remove
+    each file that the edits of tree remove, keeping each file replaced
+    or removed as a backup until all are done. If one fails, undo what
+    was done, and raise ErrorEdit.
+
+    """
+
+    list_done = []
+
+    try:
+        for (staged, path) in list_staged:
+            list_done.append((path, _backup(path)))
+            os.replace(staged, path)
+        for (relative, text) in tree.edit.items():
+            path = tree.root / relative
+            if text is None and path.exists():
+                list_done.append((path, _backup(path)))
+                path.unlink()
+    except OSError as error:
+        list_left = _undo(list_done, list_staged, list_dir)
+        if list_left:
+            raise ErrorEdit('The edit could not be written, and {files} could not be put '
+                            'back as it was: restore it with git checkout -- {files}. '
+                            '{error}'.format(files = ' '.join(list_left),
+                                             error = error)) from error
+        raise ErrorEdit('The edit could not be written, so nothing was changed: '
+                        '{error}'.format(error = error)) from error
+
+    for (_, backup) in list_done:
+        if backup is not None:
+            backup.unlink(missing_ok = True)
+
+
+# -----------------------------------------------------------------------------
+def _backup(path: pathlib.Path) -> pathlib.Path | None:
+    """
+    Return a backup of the file at path, beside it: a hard link where
+    the file system allows one, or else a copy. Return None if there is
+    no file at path.
+
+    """
+
+    if not path.exists():
+        return None
+
+    backup = path.with_name(path.name + SUFFIX_BACKUP)
+    backup.unlink(missing_ok = True)
+    try:
+        os.link(path, backup)
+    except OSError:
+        shutil.copy2(path, backup)
+
+    return backup
+
+
+# -----------------------------------------------------------------------------
+def _undo(list_done:   list[tuple[pathlib.Path, pathlib.Path | None]],
+          list_staged: list[tuple[pathlib.Path, pathlib.Path]],
+          list_dir:    list[pathlib.Path]) -> list[str]:
+    """
+    Put back each file of list_done from its backup, or remove it if it
+    had none, then remove each staged file and each folder made, and
+    return the path of each file that could not be put back.
+
+    """
+
+    list_left = []
+
+    for (path, backup) in reversed(list_done):
+        try:
+            if backup is None:
+                path.unlink(missing_ok = True)
+            else:
+                os.replace(backup, path)
+        except OSError:
+            list_left.append(str(path))
+
+    for (staged, _) in list_staged:
+        staged.unlink(missing_ok = True)
+
+    for folder in reversed(list_dir):
+        with contextlib.suppress(OSError):
+            folder.rmdir()
+
+    return list_left
 
 
 # -----------------------------------------------------------------------------

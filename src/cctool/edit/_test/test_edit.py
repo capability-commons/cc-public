@@ -140,6 +140,74 @@ def test_an_edit_that_changes_nothing_writes_nothing(tree):
     assert (after.st_ino, after.st_mtime_ns) == (before.st_ino, before.st_mtime_ns)
 
 
+def test_an_edit_of_a_file_changed_after_the_tree_was_read_is_refused(tree):
+    hook   = tree / '.githooks/pre-commit'
+    edited = cctool.edit.edit.Tree(tree)
+    cctool.edit.edit.batch(edited, [{'set': ['shell_githooks_pre_commit', 'title', 'Hook']}])
+    text   = hook.read_text() + '# Saved in an editor meanwhile.\n'
+    hook.write_text(text)
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'changed while the edit ran'):
+        cctool.edit.edit.apply(edited)
+    assert hook.read_text() == text
+
+
+def test_of_two_edits_made_at_once_the_second_is_refused(tree):
+    list_edited = [cctool.edit.edit.Tree(tree), cctool.edit.edit.Tree(tree)]
+    for (edited, title) in zip(list_edited, ['First hook', 'Second hook'], strict = True):
+        cctool.edit.edit.batch(edited, [{'set': ['shell_githooks_pre_commit', 'title', title]}])
+    assert cctool.edit.edit.apply(list_edited[0]) == {}
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'changed while the edit ran'):
+        cctool.edit.edit.apply(list_edited[1])
+    assert '# title:                  First hook\n' in (tree / '.githooks/pre-commit').read_text()
+
+
+def test_an_edit_is_refused_while_another_holds_the_lock(tree):
+    lock = tree / cctool.edit.edit.FILE_LOCK
+    lock.touch()
+    text = (tree / '.githooks/pre-commit').read_text()
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'Another edit is writing'):
+        _edit(tree, {'set': ['shell_githooks_pre_commit', 'title', 'Hook']})
+    assert (tree / '.githooks/pre-commit').read_text() == text
+    assert lock.exists()
+
+
+def test_an_edit_whose_files_cannot_all_be_replaced_leaves_the_tree_as_it_was(tree,
+                                                                              monkeypatch):
+    replace     = cctool.edit.edit.os.replace
+    list_staged = []
+
+    def _refuse_third(source, target):
+        if str(source).endswith(cctool.edit.edit.SUFFIX_STAGED):
+            list_staged.append(source)
+            if len(list_staged) == 3:
+                raise OSError('No space left on device')
+        return replace(source, target)
+
+    (tree / '.githooks/pre-commit').chmod(0o755)
+    before = _snapshot(tree)
+    monkeypatch.setattr(cctool.edit.edit.os, 'replace', _refuse_third)
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'nothing was changed'):
+        _edit(tree, {'set': ['shell_githooks_pre_commit', 'title', 'Commit hook']},
+                    NEW_SUBJECT,
+                    {'new': 'dec_x', 'field': FIELD_ANN, 'link': [['relation_is_about', 'lco_x']]},
+                    {'new': 'opt_x', 'field': FIELD_ANN, 'link': [['relation_is_option_for', 'dec_x']]})
+    assert len(list_staged) == 3
+    assert _snapshot(tree) == before
+
+
+# -----------------------------------------------------------------------------
+def _snapshot(tree):
+    """
+    Return the folders of the tree, and the bytes and permissions of
+    each of its files.
+
+    """
+
+    return ({str(path.relative_to(tree)) for path in tree.rglob('*') if path.is_dir()},
+            {str(path.relative_to(tree)): (path.read_bytes(), path.stat().st_mode)
+             for path in tree.rglob('*') if path.is_file()})
+
+
 def test_a_new_standalone_item_is_written_in_a_file_of_its_own(tree, zero):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
