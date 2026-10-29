@@ -955,13 +955,46 @@ def test_two_prefixes_one_letter_apart_in_one_family_pass(tree):
     assert not any(row[1] in ('icd', 'icm') for row in _check(tree).get('prefix_near', []))
 
 
+ID_COPIED   = 'extdoc_dung_1995'
+PATH_COPIED = '_data/external_document/extdoc_dung_1995.yaml'
+PATH_COPY   = '_data/external_document/extdoc_dung_1995_copy.yaml'
+
+
+def _copied(tree):
+    """
+    Copy ID_COPIED to PATH_COPY with a new guid, so that its id names
+    two items, and return the guid of each.
+
+    """
+
+    text = (tree / PATH_COPIED).read_text()
+    one  = re.search('guid_self: *(extdoc_[0-9a-f]{32})', text).group(1)
+    two  = _guid('extdoc')
+    (tree / PATH_COPY).write_text(text.replace(one, two))
+    return (one, two)
+
+
 def test_an_id_given_to_two_items_is_reported(tree):
     list_edge = [_edge(tree, 'relation_is_about', ID_ABOUT)]
     (one, two) = (_guid('ann'), _guid('ann'))
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = one)
     _item(tree, 'src/x/_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = two)
-    assert _check(tree) == {'duplicate_id': sorted([('ann_x', one, two),
-                                                         ('ann_x', two, one)])}
+    assert _check(tree) == {'duplicate_id': [('ann_x', min(one, two), max(one, two))]}
+
+
+def test_a_reference_to_an_id_two_items_have_is_left_to_duplicate_id(tree):
+    (one, two) = _copied(tree)
+    assert _check(tree) == {'duplicate_id': [(ID_COPIED, min(one, two), max(one, two))],
+                            'misplaced_document': [(ID_COPIED, PATH_COPY, PATH_COPIED)]}
+
+
+def test_a_reference_with_the_guid_of_another_item_is_reported(tree):
+    edge = dict(_edge(tree, 'relation_is_about', ID_ABOUT),
+                guid_target = _guid_of(tree, 'concept_concept'))
+    location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [edge])
+    assert _check(tree) == {'guid_of_other_item': [('ann_x', 'target', ID_ABOUT,
+                                                    edge['guid_target'], 'concept_concept',
+                                                    location, LINE_TARGET)]}
 
 
 def test_a_guid_given_to_two_items_is_reported(tree):
@@ -969,8 +1002,7 @@ def test_a_guid_given_to_two_items_is_reported(tree):
     guid      = _guid('ann')
     _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', list_edge, guid = guid)
     _item(tree, '_data/annotation/ann_y.yaml', 'ann_y', list_edge, guid = guid)
-    assert _check(tree) == {'duplicate_guid': [(guid, 'ann_x', 'ann_y'),
-                                                    (guid, 'ann_y', 'ann_x')]}
+    assert _check(tree) == {'duplicate_guid': [(guid, 'ann_x', 'ann_y')]}
 
 
 def test_an_entry_held_under_another_key_is_reported(tree):

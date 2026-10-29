@@ -142,7 +142,9 @@ unfinished edits of another.
   document that names the id, moves the file of a standalone item, and
   keeps the old id in the `alias` list of a register entry. It lists
   any file, such as a test, that still names the old id outside a YAML
-  document; change those by hand.
+  document; change those by hand. Where one id names two items, as when
+  a file was copied, `--guid GUID` renames only the item with that guid
+  and the references that carry it.
 - Use the preferred term of a concept in `_data/register/reg_concept.yaml`
   in names and in prose. Never use a term it lists as deprecated. A term
   is held to its concept's sense where it is used as a term: in an id, a

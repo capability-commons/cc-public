@@ -29,6 +29,7 @@ edge:                   []
 import json
 import pathlib
 import re
+import uuid
 
 import pytest
 import ruamel.yaml
@@ -568,6 +569,54 @@ def test_rename_moves_the_file_of_a_standalone_item_and_its_references(tree):
     assert not (tree / '_data/decision/dec_x/opt_x.yaml').exists()
     assert 'id_self:                opt_y\n' in (tree / '_data/decision/dec_x/opt_y.yaml').read_text()
     assert 'id_target:          opt_y\n' in (tree / '_data/annotation/ann_x.yaml').read_text()
+
+
+PATH_COPIED   = '_data/external_document/extdoc_dung_1995.yaml'
+PATH_COPY     = '_data/external_document/extdoc_dung_1995_copy.yaml'
+PATH_CITING   = '_data/register/reg_concept.yaml'
+
+
+def _copied(tree):
+    """
+    Copy extdoc_dung_1995 to PATH_COPY with a new guid, so that its id
+    names two items, and give the first of the references in PATH_CITING
+    the new guid. Return the guid of the copy.
+
+    """
+
+    text = (tree / PATH_COPIED).read_text()
+    one  = re.search('guid_self: *(extdoc_[0-9a-f]{32})', text).group(1)
+    two  = 'extdoc_' + uuid.uuid4().hex
+    (tree / PATH_COPY).write_text(text.replace(one, two))
+    path = tree / PATH_CITING
+    path.write_text(path.read_text().replace(one, two, 1))
+    return two
+
+
+def test_rename_of_an_id_two_items_have_needs_a_guid(tree):
+    guid = _copied(tree)
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'names 2 items, with the guids '):
+        cctool.edit.edit.batch(cctool.edit.edit.Tree(tree),
+                               [{'rename': ['extdoc_dung_1995', 'extdoc_dung_1995_copy']}])
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'No item has the id extdoc_dung_1995 '
+                                                           'and the guid extdoc_0'):
+        cctool.edit.edit.batch(cctool.edit.edit.Tree(tree),
+                               [{'rename': ['extdoc_dung_1995', 'extdoc_dung_1995_copy',
+                                            'extdoc_' + HEX_ZERO]}])
+    assert guid in (tree / PATH_COPY).read_text()
+
+
+def test_rename_by_guid_renames_one_of_two_items_and_what_carries_its_guid(tree):
+    guid = _copied(tree)
+    assert _edit(tree, {'rename': ['extdoc_dung_1995', 'extdoc_dung_1995_copy', guid]}) == {}
+    assert cctool.check.check.check(tree) == {}
+    text = (tree / PATH_COPY).read_text()
+    assert 'id_self:                extdoc_dung_1995_copy\n' in text
+    assert 'id_self:                extdoc_dung_1995\n' in (tree / PATH_COPIED).read_text()
+    text_citing = (tree / PATH_CITING).read_text()
+    assert text_citing.count('id_target:      extdoc_dung_1995_copy\n') == 1
+    assert text_citing.count('id_target:      extdoc_dung_1995\n') == 1
+    assert 'alias' not in text
 
 
 ICD           = '_data/interface_control_document/icd_cctool_check.yaml'

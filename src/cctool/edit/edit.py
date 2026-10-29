@@ -1003,7 +1003,7 @@ def remove(tree: Tree, id_item: str) -> Edit:
 
 
 # -----------------------------------------------------------------------------
-def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
+def rename(tree: Tree, id_old: str, id_new: str, guid: str | None = None) -> Edit:
     """
     Return the edit that gives the item id_old the id id_new, and gives
     each item whose id is made from id_old an id made from id_new in the
@@ -1014,11 +1014,29 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     and a name, so they are renamed with it, and the members a
     member holds are renamed with that member. Each keeps its guid.
 
+    Where id_old names two items, as when one is a copy of the other,
+    guid says which of them to rename, as _rename_one does. Without it,
+    such a rename is refused, since it would rename both.
+
     """
 
     _refuse_source(tree, id_old)
     _Item(tree, id_old)
-    _refuse_consumed(tree.map_item[id_old][3])
+
+    set_guid = {row[1] for row in tree.facts['item'] if row[0] == id_old}
+    list_row = sorted(row for row in tree.facts['item']
+                      if row[0] == id_old and guid in (None, row[1]))
+    if not list_row:
+        raise ErrorEdit('No item has the id {old} and the guid {guid}.'.format(
+                                                                old = id_old, guid = guid))
+    if guid is None and len(set_guid) > 1:
+        raise ErrorEdit('The id {old} names {count} items, with the guids {guids}. Give the '
+                        'guid of the one to rename, as in cctool rename {old} {new} --guid '
+                        'GUID.'.format(old   = id_old,
+                                       count = len(set_guid),
+                                       guids = ' and '.join(sorted(set_guid)),
+                                       new   = id_new))
+    _refuse_consumed(list_row[0][3])
 
     if id_new.partition(DELIM_PREFIX)[0] != id_old.partition(DELIM_PREFIX)[0]:
         raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
@@ -1035,6 +1053,14 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
         if id_to in tree.map_item:
             raise ErrorEdit('An item with the id {id} exists.'.format(id = id_to))
 
+    if len(set_guid) > 1:
+        if len(list_pair) > 1:
+            raise ErrorEdit('{old} holds items named for it, such as {held}, whose ids the '
+                            'other item that has the id holds too, so a rename by guid cannot '
+                            'tell them apart. Rename the copy by hand, then run cctool '
+                            'format.'.format(old = id_old, held = list_pair[0][0]))
+        return _rename_one(tree, list_row[0], id_new)
+
     # The items held are renamed together, in one pass over the tree,
     # and then the item itself, whose file or folder may move. Each pass
     # leaves its edit in place in tree.
@@ -1043,6 +1069,47 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     edit.update(_rename_all(tree, {id_old: id_new}))
     _renamed(tree, dict(list_pair))
 
+    return edit
+
+
+# -----------------------------------------------------------------------------
+def _rename_one(tree: Tree, row: tuple[str, ...], id_new: str) -> Edit:
+    """
+    Return the edit that gives the item of the item fact row, whose id
+    another item has too, the id id_new: in its own id_self, in each
+    reference that carries its guid, and in the name of its file, if it
+    is named for it. A mention in prose, or a string of a logic program,
+    names the id and not the item, so each is left as it is, and no
+    alias is kept, since the other item keeps the id.
+
+    """
+
+    (id_old, guid, holder, relative, line) = row
+    regex    = re.compile(PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
+    map_line = {relative: {int(line)}}
+    edit     = {}
+
+    for (_, _, id_named, guid_named, file, line_named) in tree.facts['reference']:
+        if id_named == id_old and guid_named == guid:
+            map_line.setdefault(file, set()).add(int(line_named))
+
+    for (file, set_line) in sorted(map_line.items()):
+        list_line = tree.text(file).split('\n')
+        for index in sorted(set_line):
+            if not 0 < index <= len(list_line):
+                raise ErrorEdit('The place of {old} in {file} is not known, so it cannot '
+                                'be renamed by guid.'.format(old = id_old, file = file))
+            list_line[index - 1] = regex.sub(lambda _match: id_new, list_line[index - 1])
+        edit[file] = _format('\n'.join(list_line), file)
+
+    path = pathlib.Path(relative)
+    if not holder and path.stem == id_old:
+        relative_new                  = str(path.with_name(id_new + path.suffix))
+        edit[relative_new]            = edit.pop(relative)
+        edit[relative]                = None
+        tree.map_source[relative_new] = relative
+
+    tree.update(edit)
     return edit
 
 
@@ -1660,12 +1727,12 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
         if isinstance(list_arg, list) and len(list_arg) == 3:
             return set_field(tree, str(list_arg[0]), str(list_arg[1]), _plain(list_arg[2]))
 
-    for (key, function, count) in ((KEY_LINK, link, 3), (KEY_UNLINK, unlink, 3),
-                                   (KEY_UNSET, unset_field, 2), (KEY_RENAME, rename, 2),
-                                   (KEY_MOVE, move, 2)):
+    for (key, function, set_count) in ((KEY_LINK, link, {3}), (KEY_UNLINK, unlink, {3}),
+                                       (KEY_UNSET, unset_field, {2}),
+                                       (KEY_RENAME, rename, {2, 3}), (KEY_MOVE, move, {2})):
         if isinstance(operation, dict) and set(operation) == {key}:
             list_arg = operation[key]
-            if isinstance(list_arg, list) and len(list_arg) == count:
+            if isinstance(list_arg, list) and len(list_arg) in set_count:
                 return function(tree, *map(str, list_arg))
 
     raise ErrorEdit('An operation of a batch is not one of new, header, link, unlink, set, '

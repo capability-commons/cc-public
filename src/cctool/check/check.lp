@@ -411,8 +411,12 @@ prefix_family_shared(Type, Other) :-
 %                         The id {id} names two items, with the guids
 %                         {guid} and {other}.
 % fix:                    |
-%                         Rename one of the two with cctool rename. If
-%                         one is a copy of the other, remove the copy.
+%                         Give the one that is not meant to have the id
+%                         a new one with cctool rename OLD NEW --guid
+%                         GUID, which changes only the item with that
+%                         guid and the references that carry it. If one
+%                         is a copy of the other, remove the copy's
+%                         file.
 % edge:                   []
 %
 % ...
@@ -425,7 +429,7 @@ prefix_family_shared(Type, Other) :-
 duplicate_id(Id, Guid, Other) :-
     item(Id, Guid, _, _, _),
     item(Id, Other, _, _, _),
-    Guid != Other.
+    Guid < Other.
 
 
 % -----------------------------------------------------------------------------
@@ -463,7 +467,7 @@ duplicate_id(Id, Guid, Other) :-
 duplicate_guid(Guid, Id, Other) :-
     item(Id, Guid, _, _, _),
     item(Other, Guid, _, _, _),
-    Id != Other.
+    Id < Other.
 
 
 % -----------------------------------------------------------------------------
@@ -1340,8 +1344,8 @@ edge_without_relation(Holder, Id, File, Line) :-
 %                         it names.
 % did:                    |
 %                         {holder} names {id} in its {field} field with
-%                         the guid {guid}, which is not the guid of
-%                         {id}.
+%                         the guid {guid}, which is not the guid of {id}
+%                         or of any other item.
 % fix:                    |
 %                         Copy the guid of the item named, or write the
 %                         edge with cctool link, which copies it.
@@ -1359,8 +1363,66 @@ edge_without_relation(Holder, Id, File, Line) :-
 
 guid_mismatch(Holder, Field, Id, Guid, File, Line) :-
     reference(Holder, Field, Id, Guid, File, Line),
-    item(Id, Other, _, _, _),
-    Guid != Other.
+    item(Id, _, _, _, _),
+    not item(Id, Guid, _, _, _),
+    not item(_, Guid, _, _, _).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.guid_of_other_item
+% guid_self:              lpp_4701a579d4de4fcc9ad6c18dd47164ed
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Guid of another item
+% brief:                  |
+%                         A reference whose id names one item and whose
+%                         guid is that of another could mean either: the
+%                         id may have passed to a new item after the
+%                         item meant was renamed, or the guid may have
+%                         been copied from the wrong item. The id
+%                         resolves, as the ruling on the shape of an
+%                         edge has it, so the reference is read as
+%                         naming the item of its id, and the row names
+%                         the item that holds the guid, so that the
+%                         author can decide which is meant. Where two
+%                         items share the id, a guid of either is left
+%                         to duplicate_id.
+% did:                    |
+%                         {holder} names {id} in its {field} field with
+%                         the guid {guid}, which is the guid of {other}.
+% fix:                    |
+%                         Decide which of the two the reference means.
+%                         If it was written for the item that holds the
+%                         guid, before its id passed to another, name
+%                         that item by its id now. If it means the item
+%                         of its id, copy that item's guid, or write the
+%                         edge again with cctool link, which copies it.
+% edge:                   []
+%
+% ...
+%
+% decl guid_of_other_item(holder: symbol,
+%                         field:  symbol,
+%                         id:     symbol,
+%                         guid:   symbol,
+%                         other:  symbol,
+%                         file:   symbol,
+%                         line:   number)
+#show guid_of_other_item/7.
+
+guid_of_other_item(Holder, Field, Id, Guid, Other, File, Line) :-
+    reference(Holder, Field, Id, Guid, File, Line),
+    item(Id, _, _, _, _),
+    not item(Id, Guid, _, _, _),
+    item(Other, Guid, _, _, _).
 
 
 % -----------------------------------------------------------------------------

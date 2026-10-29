@@ -309,8 +309,12 @@ def remove(id_self, root, is_dry_run):
 @cctool.cli.group.main.command()
 @click.argument('id_old', metavar = 'OLD')
 @click.argument('id_new', metavar = 'NEW')
+@click.option('--guid', 'guid',
+              metavar = 'GUID',
+              default = None,
+              help    = 'Rename only the item with this guid, where OLD names two.')
 @_option
-def rename(id_old, id_new, root, is_dry_run):
+def rename(id_old, id_new, guid, root, is_dry_run):
     """
     Give the item OLD the id NEW, in every YAML document that names it,
     in the strings of the logic programs that the rules match it by, and
@@ -320,10 +324,15 @@ def rename(id_old, id_new, root, is_dry_run):
     a fixture of the tests, is not changed. Each file of text that still
     names OLD, or an item renamed with it, is listed afterwards.
 
+    Where OLD names two items, as when one is a copy of the other,
+    --guid says which to rename. Only its own id, the references that
+    carry its guid and the name of its file change, and no alias is
+    kept, since the other item keeps OLD.
+
     """
 
-    tree = _run(root, is_dry_run, [{'rename': [id_old, id_new]}])
-    if is_dry_run:
+    tree = _run(root, is_dry_run, [{'rename': [id_old, id_new] + ([guid] if guid else [])}])
+    if is_dry_run or not tree.map_renamed:
         return
 
     list_old  = sorted(tree.map_renamed, key = len, reverse = True)
