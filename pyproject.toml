@@ -150,7 +150,8 @@ check-full              = { cmd = "cctool check", env = { CCTOOL_SCHEMA_FULL = "
 #
 slow                    = { depends-on = [{ task = "test", environment = "py312" },
                                           { task = "test", environment = "py313" },
-                                          { task = "test", environment = "py314" }] }
+                                          { task = "test", environment = "py314" },
+                                          { task = "test", environment = "py315" }] }
 
 # The release gate, as ruling_release_gate says: the tests on every
 # Python, the full check of the tree, and then the smoke test, which
@@ -183,6 +184,9 @@ python                  = "3.13.*"
 [tool.pixi.feature.py314.dependencies]
 python                  = "3.14.*"
 
+[tool.pixi.feature.py315.dependencies]
+python                  = "3.15.*"
+
 # The default environment is the one to develop in: the tool and what
 # only development needs. The environment tool is the runtime alone,
 # the lock a release publishes. The two are solved together, so that
@@ -195,6 +199,7 @@ tool                    = { features = ["tool"], solve-group = "default", no-def
 py312                   = ["py312", "tool"]
 py313                   = ["py313", "tool"]
 py314                   = ["py314", "tool"]
+py315                   = ["py315", "tool"]
 
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and
