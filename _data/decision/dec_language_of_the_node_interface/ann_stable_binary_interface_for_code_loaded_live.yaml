@@ -1,0 +1,72 @@
+id_self:                ann_stable_binary_interface_for_code_loaded_live
+guid_self:              ann_bf20df694e3d4a1fa68d57e997e0efdf
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stable binary interface for code loaded live
+brief:                  |
+                        A live swap loads version n+1 of a node into
+                        the running process, on Linux by dlopen. The C
+                        binary interface is stable across compilers
+                        and their versions, while the C++ one depends
+                        on the compiler, its standard library and
+                        their settings, so a node built later or by a
+                        partner may not load safely beside the engine.
+                        A C contract makes a swapped node depend only
+                        on the struct layouts the generator wrote, and
+                        keeps the engine free of a binding tool.
+description:            |
+                        Sources:
+                        - Both live swaps need version n+1's code in
+                          the running process; on Linux that is
+                          dlopen.
+                          (_data/decision/dec_swap_of_a_node_version/ann_swap_live_needs_a_code_loader_on_target.yaml
+                          at brief)
+                        - A node version is swapped at a step, with
+                          its state upgraded.
+                          (_data/decision/dec_swap_of_a_node_version/ruling_swap_at_a_step_with_state_upgrade.yaml
+                          at brief) ASSUMPTION: C++ has no standard
+                          binary interface, and mixing standard
+                          libraries or compiler versions across a
+                          shared-library boundary is a known source of
+                          faults; this is common knowledge, not
+                          checked against a specific source here.
+                          Strength: strong wherever code is loaded at
+                          run time.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_language_of_the_node_interface
+    guid_target:        dec_bd44b00aa9b246afb4a6446276473e37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_calling_convention_for_every_node
+    guid_target:        opt_7f74367b05fd4a9db7ffe6ffba21d77d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_contract_with_direct_cpp_calls
+    guid_target:        opt_e0b2c128f7294aa7a148b5c59304f16f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cpp_interface_only
+    guid_target:        opt_fede65726eb84bab9610e988c8bf3c7a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

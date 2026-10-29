@@ -1,0 +1,56 @@
+id_self:                ann_plain_structs_already_follow_from_rulings
+guid_self:              ann_9b518f73e81d482eb9e233e62c8487c1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Plain structs that already follow from the rulings
+brief:                  |
+                        What crosses the interface is already plain
+                        data under the rulings: each message is a
+                        bounded array of fixed-size elements, the
+                        engine owns every buffer, and a node's state
+                        is typed data the engine holds. All of it maps
+                        directly onto C structs with no hidden
+                        pointers or ownership, so a C contract
+                        expresses everything a node needs and loses
+                        nothing a C++ interface would carry.
+description:            |
+                        Sources:
+                        - Each message on an edge is an array of
+                          elements of one fixed-size type, up to a
+                          capacity the port declares.
+                          (_data/decision/dec_how_values_of_varying_size_are_held/ruling_bounded_array_of_fixed_size_elements.yaml
+                          at brief)
+                        - The engine owns every buffer.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief)
+                        - A node's state is typed data.
+                          (_data/decision/dec_form_of_node_state/ruling_state_as_typed_data.yaml
+                          at brief) Strength: strong.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_language_of_the_node_interface
+    guid_target:        dec_bd44b00aa9b246afb4a6446276473e37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_calling_convention_for_every_node
+    guid_target:        opt_7f74367b05fd4a9db7ffe6ffba21d77d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_contract_with_direct_cpp_calls
+    guid_target:        opt_e0b2c128f7294aa7a148b5c59304f16f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

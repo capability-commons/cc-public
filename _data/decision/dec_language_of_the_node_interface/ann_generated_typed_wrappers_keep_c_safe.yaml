@@ -1,0 +1,56 @@
+id_self:                ann_generated_typed_wrappers_keep_c_safe
+guid_self:              ann_2f84a2b6e3854ccf8a4e214af37bf6f5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generated typed wrappers that keep the C interface safe
+brief:                  |
+                        A hand-written C interface tends toward
+                        untyped pointers and casts, which coding
+                        standards for safety-related software restrict
+                        and reviewers distrust. If the generator
+                        writes both sides of each node's interface
+                        from its declaration, the author never handles
+                        the raw C structs, and the types are checked
+                        on each side; a C++-only interface gets that
+                        typing from the language without generated
+                        code.
+description:            |
+                        Sources:
+                        - The ruling on memory ownership gives as a
+                          reason that reallocation clashes with coding
+                          standards such as MISRA C, where allocation
+                          is tightly controlled.
+                          (_data/decision/dec_who_owns_the_memory_of_a_value/ruling_engine_owns_every_buffer.yaml
+                          at brief) ASSUMPTION: MISRA C and MISRA C++
+                          restrict conversions from void pointers to
+                          object pointers. Strength: moderate; it
+                          makes generated wrappers a condition of the
+                          C options rather than a reason against them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_language_of_the_node_interface
+    guid_target:        dec_bd44b00aa9b246afb4a6446276473e37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cpp_interface_only
+    guid_target:        opt_fede65726eb84bab9610e988c8bf3c7a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_c_calling_convention_for_every_node
+    guid_target:        opt_7f74367b05fd4a9db7ffe6ffba21d77d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

@@ -1,0 +1,61 @@
+id_self:                ann_calls_through_c_entry_points_block_inlining
+guid_self:              ann_277d404ffb1f40128115a0ca37dd5ab6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Calls through C entry points that block inlining
+brief:                  |
+                        The static subgraph's schedule is generated as
+                        plain C++17 calls fixed at build time, so the
+                        compiler can inline small nodes into the
+                        schedule and optimize across them. A call
+                        through a C entry point in another translation
+                        unit cannot be inlined without link-time
+                        optimization, which costs little for a node
+                        that does real work and more for many tiny
+                        nodes. Direct C++ calls in the static subgraph
+                        keep that speed while the C contract stays the
+                        rule elsewhere.
+description:            |
+                        Sources:
+                        - The static subgraph's schedule is generated
+                          as plain C++17 calls and fixed at build
+                          time.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          at brief) ASSUMPTION: some graphs have many
+                          small nodes, such as unit conversions or
+                          gates, whose cost is comparable to a call.
+                          Strength: moderate; small for graphs of
+                          heavy nodes such as camera processing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_language_of_the_node_interface
+    guid_target:        dec_bd44b00aa9b246afb4a6446276473e37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_contract_with_direct_cpp_calls
+    guid_target:        opt_e0b2c128f7294aa7a148b5c59304f16f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_cpp_interface_only
+    guid_target:        opt_fede65726eb84bab9610e988c8bf3c7a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_c_calling_convention_for_every_node
+    guid_target:        opt_7f74367b05fd4a9db7ffe6ffba21d77d
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

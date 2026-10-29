@@ -1,0 +1,58 @@
+id_self:                ann_c_contract_lets_any_language_write_a_node
+guid_self:              ann_79317327515f44f49b0f0a2557ceb606
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  C contract that lets any language write a node
+brief:                  |
+                        Almost every language that can be compiled,
+                        and Python through ctypes or cffi, can call
+                        and expose functions with the C calling
+                        convention, so a C contract lets nodes in C,
+                        C++, Rust or Python sit in one graph without
+                        each author writing a binding. A C++ interface
+                        leaves each other language to wrap itself,
+                        which in practice means few nodes outside C++.
+description:            |
+                        Sources:
+                        - The nodes are also implemented in whatever
+                          language one wants (WTP, 2026-10-28).
+                          ASSUMPTION: the C calling convention is the
+                          one interface that every widely used systems
+                          language and Python can both call and
+                          expose; this is common knowledge, not
+                          checked against each language's
+                          documentation here. Strength: strong, given
+                          WTP's aim.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_language_of_the_node_interface
+    guid_target:        dec_bd44b00aa9b246afb4a6446276473e37
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_calling_convention_for_every_node
+    guid_target:        opt_7f74367b05fd4a9db7ffe6ffba21d77d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_c_contract_with_direct_cpp_calls
+    guid_target:        opt_e0b2c128f7294aa7a148b5c59304f16f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_cpp_interface_only
+    guid_target:        opt_fede65726eb84bab9610e988c8bf3c7a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
