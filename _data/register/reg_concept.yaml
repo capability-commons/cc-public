@@ -3285,7 +3285,9 @@ entries:
     description:        |
                         Every dataflow variant has a resolved dataflow
                         graph, and only that of a complete dataflow
-                        variant is run (WTP, 2026-10-25).
+                        variant is run (WTP, 2026-10-25), and the
+                        engine receives it after lowering
+                        (concept_lowering).
     note:               |
                         The resolved model of the Common Variability
                         Language.
@@ -4334,3 +4336,38 @@ entries:
         guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
         id_target:      concept_data_item
         guid_target:    concept_4fe42e5902bf4dbb855bce59a285da4d
+
+  # ---------------------------------------------------------------------------
+  # concept_lowering -- Lowering
+  #
+  concept_lowering:
+    id_self:            concept_lowering
+    guid_self:          concept_76c1d7b394e34bca87f0eb98231622c1
+    title:              Lowering
+    brief:              |
+                        The generated rewrites that turn a
+                        [[resolved dataflow graph]] into the
+                        [[dataflow graph]] the engine receives, such
+                        as inserting sender and receiver
+                        [[dataflow nodes]], delivery-policy adapters
+                        and recorder taps, written as
+                        [[variant operation]]s and applied after the
+                        authored ones.
+    description:        |
+                        The lowered graph is checked again, and each
+                        node or edge that lowering adds keeps an
+                        origin record naming the declaration behind
+                        it. Model refinement and model-to-model
+                        transformation are the nearest terms in
+                        model-driven engineering.
+    note:               |
+                        A term from compilers: translating a program
+                        step by step from a form that says what is
+                        wanted into a form closer to what the machine
+                        runs, as MLIR lowers one dialect into another
+                        (Lattner et al. 2021, MLIR: scaling compiler
+                        infrastructure for domain specific
+                        computation).
+    term_preferred:     lowering
+    alias:              []
+    edge:               []
