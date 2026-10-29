@@ -93,7 +93,20 @@ def test_init_with_a_brief_that_starts_with_a_space_is_an_error(tree, tmp_path_f
                   '--root', str(root))
 
     assert result.exit_code == 2
-    assert 'does not start with a space' in result.stderr
+    assert 'Prose whose first line starts with a space' in result.stderr
+    assert 'brief' not in result.stderr
+    assert not (root / FILE_PATROL).exists()
+
+
+def test_init_of_a_segment_item_that_would_fail_its_schema_is_an_error(tree, tmp_path_factory,
+                                                                       monkeypatch):
+    root   = tmp_path_factory.mktemp('peer')
+    result = _run(monkeypatch, tree, 'init', 'cc_patrol', *TUPLE_INIT, '--copyright', '',
+                  '--license', 'Not a license', '--root', str(root))
+
+    assert result.exit_code == 2
+    assert 'The segment item would fail the checks, so nothing is written' in result.stderr
+    assert 'schema_violation' in result.stderr
     assert not (root / FILE_PATROL).exists()
 
 

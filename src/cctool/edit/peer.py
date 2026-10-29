@@ -43,10 +43,12 @@ import pathlib
 import re
 import uuid
 
+import cctool.check.check
 import cctool.check.layout
 import cctool.check.release_record
 import cctool.check.segment
 import cctool.graph.extract
+import cctool.graph.logic
 
 
 PREFIX_SEGMENT    = 'segment'
@@ -116,12 +118,43 @@ def init(root:      pathlib.Path,
     try:
         text = cctool.check.layout.format_kept(text, pathlib.Path(relative))
     except cctool.check.layout.Unsupported as error:
-        raise ErrorPeer('The segment item cannot be laid out: {error}. Give a brief '
-                        'whose first line does not start with a space.'.format(
-                            error = error)) from error
+        raise ErrorPeer('The segment item cannot be laid out, so nothing is written: '
+                        '{error}'.format(error = error)) from error
+
+    _refuse_failing(root, map_own, relative, id_self, text)
     path.parent.mkdir(parents = True, exist_ok = True)
     path.write_text(text, encoding = 'utf-8')
     return relative
+
+
+# -----------------------------------------------------------------------------
+def _refuse_failing(root:     pathlib.Path,
+                    map_own:  cctool.graph.extract.Documents,
+                    relative: str,
+                    id_self:  str,
+                    text:     str) -> None:
+    """
+    Raise ErrorPeer if the segment item id_self, written at relative in
+    the tree at root with text, would fail a check, read with the tree
+    it consumes, whose schemas it is checked against.
+
+    """
+
+    map_new              = {**map_own,
+                            **cctool.graph.extract.parse_all(text, pathlib.Path(relative))}
+    (map_consumed, _, _) = cctool.check.segment.consumed(root, map_new)
+    failures             = cctool.check.check.check_documents({**map_new, **map_consumed},
+                                                              cctool.check.check.CACHE_SCHEMA)
+    failures             = {name: [row for row in list_row if relative in row or id_self in row]
+                            for (name, list_row) in failures.items()}
+    failures             = {name: list_row for (name, list_row) in failures.items() if list_row}
+
+    if failures:
+        list_line = cctool.graph.logic.described(failures,
+                                                 cctool.check.check.columns(),
+                                                 cctool.check.check.wording())
+        raise ErrorPeer('The segment item would fail the checks, so nothing is written:\n'
+                        + '\n'.join(list_line))
 
 
 # -----------------------------------------------------------------------------
