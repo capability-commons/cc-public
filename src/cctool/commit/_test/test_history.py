@@ -165,7 +165,7 @@ def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyrin
                                                 'It is short.'))
     [found] = cctool.commit.history.check(repo, 'HEAD')
     assert found == ('The commit is signed with the key {key}, which is the git_signing_key of '
-                     'no team member that reg_team_member holds.'.format(key = keyring[1]))
+                     'no team member that a team member register holds.'.format(key = keyring[1]))
 
 
 def test_a_tree_that_gives_no_signing_key_checks_no_signature(repo, keyring):

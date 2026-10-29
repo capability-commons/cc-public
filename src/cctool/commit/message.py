@@ -29,19 +29,25 @@ description:            |
 
                         A Contributor trailer names the team member
                         who supplied the content of the commit, by the
-                        guid of their entry in reg_team_member. The
-                        check fails a guid that the register in the
-                        tree does not hold.
+                        guid of their entry in a team member register.
+                        The check fails a guid that no team member
+                        register of the tree holds. The team member
+                        registers of a tree are reg_team_member, which
+                        type_team_member names, and each register that
+                        names type_team_member with the inverse of
+                        relation_has_items_held_in_register, as one in
+                        a peer does, in the tree or in a tree it
+                        consumes.
 
                         The author of a commit is the person
                         responsible for its being correct, so it must
-                        be a team member whose entry in
-                        reg_team_member gives that author as its
-                        git_author, name and email as git records
-                        them. An agent that helped says so in a
-                        trailer, and is never the author. A tree whose
-                        register gives no git_author predates the
-                        rule, and its commits are not checked for it.
+                        be a team member whose entry in a team member
+                        register gives that author as its git_author,
+                        name and email as git records them. An agent
+                        that helped says so in a trailer, and is never
+                        the author. A tree whose registers give no
+                        git_author predates the rule, and its commits
+                        are not checked for it.
 
                         git drafts the message of a merge or a revert
                         itself, with no item. draft turns such a draft
@@ -99,7 +105,11 @@ KEY_BRIEF       = 'brief'
 KEY_DESCRIPTION = 'description'
 KEY_EDGE        = 'edge'
 KEY_ENTRIES     = 'entries'
-ID_MEMBERS      = 'reg_team_member'
+ID_TYPE_MEMBER  = 'type_team_member'
+RELATION_HELD   = 'relation_has_items_held_in_register'
+KEY_INVERSE     = 'inverse'
+KEY_ID_RELATION = 'id_relation'
+KEY_ID_TARGET   = 'id_target'
 KEY_GIT_AUTHOR  = 'git_author'
 KEY_SIGNING_KEY = 'git_signing_key'
 
@@ -332,8 +342,8 @@ def violations(root: pathlib.Path, text: str) -> list[str]:
     set_member = _members(map_document)
     for guid in contributors(text):
         if guid not in set_member:
-            list_found.append('The Contributor trailer names {guid}, which {id} does not '
-                              'hold.'.format(guid = guid or 'no guid', id = ID_MEMBERS))
+            list_found.append('The Contributor trailer names {guid}, which no team member '
+                              'register holds.'.format(guid = guid or 'no guid'))
 
     return sorted(set(list_found), key = list_found.index)
 
@@ -343,8 +353,8 @@ def author_violations(root: pathlib.Path, ident: str) -> list[str]:
     """
     Return a sentence if ident, the author of a commit as git gives it,
     such as 'Name <email> 1767225600 +0000', is not the git_author of
-    a team member that the register in the tree at root holds. A
-    register that gives no git_author checks nothing.
+    a team member that a team member register of the tree at root
+    holds. Registers that give no git_author check nothing.
 
     """
 
@@ -356,20 +366,21 @@ def author_violations(root: pathlib.Path, ident: str) -> list[str]:
         return []
 
     return ['The commit is authored by {author}, who is not the git_author of a team member '
-            'that {id} holds. Commit as the member responsible for the change, and name an '
-            'agent that helped in a Co-Authored-By trailer.'.format(author = author or 'no one',
-                                                                   id     = ID_MEMBERS)]
+            'that a team member register holds. Commit as the member responsible for the '
+            'change, and name an agent that helped in a Co-Authored-By trailer.'.format(
+                author = author or 'no one')]
 
 
 # -----------------------------------------------------------------------------
 def signature_violations(root: pathlib.Path, status: str, list_key: list[str]) -> list[str]:
     """
     Return a sentence if a commit is not signed with the git_signing_key
-    of a team member that the register in the tree at root holds.
+    of a team member that a team member register of the tree at root
+    holds.
     status is the letter git gives for its signature, as %G? prints
     it, and list_key the ids and fingerprints of the key that made it,
-    as %GK, %GF and %GP print them. A register that gives no
-    git_signing_key checks nothing.
+    as %GK, %GF and %GP print them. Registers that give no
+    git_signing_key check nothing.
 
     git gives G for a good signature, and U for a good one by a key
     whose owner the keyring does not vouch for; either is a signature
@@ -383,18 +394,17 @@ def signature_violations(root: pathlib.Path, status: str, list_key: list[str]) -
     if not set_key:
         return []
     if status not in SET_STATUS_GOOD:
-        return ['The commit {state}, and a team member that {id} holds signs each commit with '
-                'their git_signing_key. Sign it with git commit --amend -S, or several with '
-                'git rebase --force-rebase -S.'.format(
-                    state = MAP_STATUS.get(status, 'has a signature git cannot verify'),
-                    id    = ID_MEMBERS)]
+        return ['The commit {state}, and a team member that a team member register holds signs '
+                'each commit with their git_signing_key. Sign it with git commit --amend -S, '
+                'or several with git rebase --force-rebase -S.'.format(
+                    state = MAP_STATUS.get(status, 'has a signature git cannot verify'))]
     if any(key.upper().endswith(member) for key in list_key if key for member in set_key):
         return []
 
     key = next((key for key in list_key if key), 'unknown')
 
     return ['The commit is signed with the key {key}, which is the git_signing_key of no team '
-            'member that {id} holds.'.format(key = key, id = ID_MEMBERS)]
+            'member that a team member register holds.'.format(key = key)]
 
 
 # -----------------------------------------------------------------------------
@@ -419,52 +429,91 @@ def contributors(text: str) -> list[str]:
 # -----------------------------------------------------------------------------
 def _members(map_document: dict) -> set[str]:
     """
-    Return the guid of each team member that the team member register
-    in map_document holds.
+    Return the guid of each team member that a team member register in
+    map_document holds.
 
     """
 
-    for (document, _) in map_document.values():
-        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
-            return {str(entry.get(KEY_GUID_SELF))
-                    for entry in (document.get(KEY_ENTRIES) or {}).values()
-                    if isinstance(entry, dict)}
-
-    return set()
+    return {str(entry.get(KEY_GUID_SELF)) for entry in _member_entries(map_document)}
 
 
 # -----------------------------------------------------------------------------
 def _authors(map_document: dict) -> set[str]:
     """
-    Return the git_author of each team member that the team member
+    Return the git_author of each team member that a team member
     register in map_document holds.
 
     """
 
-    for (document, _) in map_document.values():
-        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
-            return {str(entry[KEY_GIT_AUTHOR])
-                    for entry in (document.get(KEY_ENTRIES) or {}).values()
-                    if isinstance(entry, dict) and entry.get(KEY_GIT_AUTHOR)}
-
-    return set()
+    return {str(entry[KEY_GIT_AUTHOR]) for entry in _member_entries(map_document)
+            if entry.get(KEY_GIT_AUTHOR)}
 
 
 # -----------------------------------------------------------------------------
 def _signing_keys(map_document: dict) -> set[str]:
     """
-    Return the git_signing_key of each team member that the team member
+    Return the git_signing_key of each team member that a team member
     register in map_document holds, in capitals.
 
     """
 
-    for (document, _) in map_document.values():
-        if isinstance(document, dict) and document.get(KEY_ID_SELF) == ID_MEMBERS:
-            return {str(entry[KEY_SIGNING_KEY]).upper()
-                    for entry in (document.get(KEY_ENTRIES) or {}).values()
-                    if isinstance(entry, dict) and entry.get(KEY_SIGNING_KEY)}
+    return {str(entry[KEY_SIGNING_KEY]).upper() for entry in _member_entries(map_document)
+            if entry.get(KEY_SIGNING_KEY)}
 
-    return set()
+
+# -----------------------------------------------------------------------------
+def _member_entries(map_document: dict) -> list[dict]:
+    """
+    Return each team member entry that a team member register in
+    map_document holds: the register that type_team_member names with
+    relation_has_items_held_in_register, and each register that names
+    type_team_member with its inverse, as a register in a peer does.
+
+    """
+
+    list_document = [document for (document, _) in map_document.values()
+                     if isinstance(document, dict)]
+    list_entry    = [entry for document in list_document for entry in _entries(document)]
+    set_inverse   = {str(entry[KEY_INVERSE].get(KEY_ID_SELF)) for entry in list_entry
+                     if entry.get(KEY_ID_SELF) == RELATION_HELD
+                     and isinstance(entry.get(KEY_INVERSE), dict)}
+    set_register  = {str(edge.get(KEY_ID_TARGET)) for entry in list_entry
+                     if entry.get(KEY_ID_SELF) == ID_TYPE_MEMBER
+                     for edge in _edges(entry)
+                     if edge.get(KEY_ID_RELATION) == RELATION_HELD}
+
+    return [entry for document in list_document
+            if document.get(KEY_ID_SELF) in set_register
+            or any(edge.get(KEY_ID_RELATION) in set_inverse
+                   and edge.get(KEY_ID_TARGET) == ID_TYPE_MEMBER for edge in _edges(document))
+            for entry in _entries(document)]
+
+
+# -----------------------------------------------------------------------------
+def _entries(document: dict) -> list[dict]:
+    """
+    Return the entries that the register document holds, or none if it
+    is not a register.
+
+    """
+
+    map_entry = document.get(KEY_ENTRIES)
+    if not isinstance(map_entry, dict):
+        return []
+    return [entry for entry in map_entry.values() if isinstance(entry, dict)]
+
+
+# -----------------------------------------------------------------------------
+def _edges(item: dict) -> list[dict]:
+    """
+    Return the edges of item that are mappings.
+
+    """
+
+    list_edge = item.get(KEY_EDGE)
+    if not isinstance(list_edge, list):
+        return []
+    return [edge for edge in list_edge if isinstance(edge, dict)]
 
 
 # -----------------------------------------------------------------------------

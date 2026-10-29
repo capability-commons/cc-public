@@ -35,6 +35,7 @@ edge:                   []
 
 import pathlib
 import shutil
+import uuid
 
 import pytest
 
@@ -136,6 +137,62 @@ TEXT_HELD = """\
     guid_target:        type_f90804f7b03149fa9850883bd11b9a28
 """
 
+
+FILE_PEER_MEMBER = '_data/register/reg_peer_team_member.yaml'
+
+TEXT_PEER_MEMBER = """\
+id_self:                reg_peer_team_member
+guid_self:              {guid_register}
+copyright:              Copyright 2026 The Peer
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Peer team member register
+brief:                  |
+                        Register of the people who contribute to the
+                        peer.
+description:            |
+                        The peer team member register holds the team
+                        members of the peer.
+usage:                  |
+                        The peer names its own team members here.
+note:                   |
+                        It is made for a test.
+
+edge:
+
+  - id_relation:        relation_is_specified_by_schema
+    guid_relation:      relation_e4f6185af9254a649126e121cb4edf5f
+    id_target:          sch_reg_team_member
+    guid_target:        sch_375bc1031f934f1698f62fe826a52776
+
+  - id_relation:        relation_holds_items_of_type
+    guid_relation:      relation_ce28906bcbe94695821f8639d3b8e298
+    id_target:          type_team_member
+    guid_target:        type_13a7b952a2714ad5abe092f4b6956154
+
+entries:
+
+  # ---------------------------------------------------------------------------
+  # member_peer_person -- Peer Person
+  #
+  member_peer_person:
+    id_self:            member_peer_person
+    guid_self:          {guid_member}
+    title:              Peer Person
+    brief:              |
+                        A team member of the peer.
+    description:        |
+                        It is made for a test.
+    git_author:         Peer Person <peer@example.org>
+    git_signing_key:    ABCDEF0123456789
+    alias:              []
+    edge:               []
+"""
 
 ID_THIRD           = 'segment_third'
 FILE_THIRD         = '_data/federated_segment/segment_third.yaml'
@@ -717,3 +774,36 @@ def test_a_peer_checks_a_commit_message_against_the_consumed_schema(tree, tmp_pa
 
     assert cctool.commit.message.violations(root, text) == []
     assert cctool.commit.message.violations(root, text.replace('Add the peer', 'Peer')) != []
+
+
+# -----------------------------------------------------------------------------
+def test_a_member_of_a_peer_team_member_register_passes_the_commit_checks(tree, tmp_path_factory,
+                                                                          monkeypatch):
+    """
+    A team member that a register in the peer holds, by the inverse of
+    relation_has_items_held_in_register, may author and sign a commit
+    of the peer and be named in a Contributor trailer, as may a member
+    of the team member register of the tree it consumes.
+
+    """
+
+    _consume(monkeypatch, cctool.check.segment.PLACE_CHECKOUT, tree)
+    root   = _peer(tmp_path_factory)
+    guid   = 'member_' + uuid.uuid4().hex
+    path   = root / FILE_PEER_MEMBER
+    path.parent.mkdir(parents = True)
+    path.write_text(TEXT_PEER_MEMBER.format(guid_register = 'reg_' + uuid.uuid4().hex,
+                                            guid_member   = guid),
+                    encoding = 'utf-8')
+    text   = cctool.commit.message.compose('Add the peer', 'The first commit of the peer.')
+    author = 'Peer Person <peer@example.org> 1793091600 +0000'
+
+    assert _without_layout(cctool.check.check.review(root)[0]) == {}
+    assert cctool.commit.message.violations(
+               root, text + '\nContributor: {guid}\n'.format(guid = guid)) == []
+    assert cctool.commit.message.author_violations(root, author) == []
+    assert cctool.commit.message.author_violations(
+               root, 'William Payne <wtpayne@gmail.com> 1793091600 +0000') == []
+    assert cctool.commit.message.signature_violations(root, 'G', ['ABCDEF0123456789']) == []
+    assert cctool.commit.message.author_violations(
+               _peer(tmp_path_factory), author) != []

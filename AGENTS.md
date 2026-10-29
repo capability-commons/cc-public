@@ -89,8 +89,9 @@ unfinished edits of another.
   `git config user.email wtpayne@gmail.com` in a new clone or
   session; an agent says it helped in a `Co-Authored-By` trailer.
   The commit-msg hook refuses an author who is not the `git_author`
-  of an entry in reg_team_member, and `cctool history check` reports
-  one.
+  of an entry in a team member register (reg_team_member, or one of
+  a peer that names type_team_member), and `cctool history check`
+  reports one.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
   tests the staged content. The tests leave out those marked slow,
   prepush and fuzz; a commit of data with no code runs only the tests

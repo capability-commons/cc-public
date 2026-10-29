@@ -147,8 +147,8 @@ def test_a_contributor_trailer_that_names_a_team_member_passes():
 def test_a_contributor_trailer_that_names_no_team_member_is_reported():
     guid = 'member_' + '0' * 32
     assert _found(_message() + '\nContributor: {guid}\n'.format(guid = guid)) == [
-        'The Contributor trailer names {guid}, which reg_team_member does not '
-        'hold.'.format(guid = guid)]
+        'The Contributor trailer names {guid}, which no team member register '
+        'holds.'.format(guid = guid)]
 
 
 def test_a_contributor_line_inside_the_item_is_not_a_trailer():
@@ -168,7 +168,7 @@ def test_the_git_author_of_a_team_member_passes():
 def test_an_author_who_is_no_team_member_is_reported(ident):
     [found] = cctool.commit.message.author_violations(DIR_REPO, ident)
     assert found.startswith('The commit is authored by {author}, who is not the git_author '
-                            'of a team member that reg_team_member holds.'.format(
+                            'of a team member that a team member register holds.'.format(
                                 author = ident.rpartition('>')[0] + '>'))
 
 

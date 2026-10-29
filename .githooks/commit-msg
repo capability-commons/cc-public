@@ -37,7 +37,7 @@
 # ...
 
 if [ "$(git config --bool commit.gpgsign)" != true ] &&
-   grep -q '^ *git_signing_key:' _data/register/reg_team_member.yaml 2>/dev/null; then
+   grep -qs '^ *git_signing_key:' _data/register/*.yaml; then
     echo 'notice: git is not set to sign commits (commit.gpgsign), and a push refuses' \
          'a commit that is not signed. Sign it before you push, with git commit --amend -S.' >&2
 fi

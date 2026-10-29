@@ -142,12 +142,12 @@ def check(file, author: str | None, root: pathlib.Path) -> None:
 
     The message is checked against sch_commit as the staged content
     holds it, and the author, if given, against the git_author of each
-    member of reg_team_member as HEAD holds it, so that a commit cannot
-    admit its own author, nor an edit that is not staged admit one. If
-    they pass, the commit is checked against the graph before and after
-    it: nothing disappears or changes type unannounced, and the verb of
-    the title is true of the change. The exit status is 1 when any
-    fails.
+    member of the team member registers as HEAD holds them, so that a
+    commit cannot admit its own author, nor an edit that is not staged
+    admit one. If they pass, the commit is checked against the graph
+    before and after it: nothing disappears or changes type
+    unannounced, and the verb of the title is true of the change. The
+    exit status is 1 when any fails.
 
     """
 
