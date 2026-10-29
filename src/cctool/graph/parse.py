@@ -56,7 +56,6 @@ import ruamel.yaml.nodes
 import ruamel.yaml.resolver
 import ruamel.yaml.scalarstring
 import yaml
-import yaml.cyaml
 import yaml.nodes
 import yaml.resolver
 
@@ -67,6 +66,11 @@ import yaml.resolver
 #
 ERROR             = ruamel.yaml.YAMLError
 
+# Whether PyYAML was built with libyaml. A wheel built from source
+# where libyaml was missing, as on a Mac for a Python with no wheel,
+# has no yaml._yaml, so yaml.cyaml cannot be imported; yaml imports it
+# itself when it can.
+#
 IS_FAST           = getattr(yaml, '__with_libyaml__', False)
 TAG_STR           = 'tag:yaml.org,2002:str'
 

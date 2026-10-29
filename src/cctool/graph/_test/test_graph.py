@@ -25,7 +25,10 @@ edge:                   []
 """
 
 
+import os
 import sqlite3
+import subprocess
+import sys
 import threading
 
 import pytest
@@ -331,3 +334,19 @@ def test_parse_refuses_a_repeated_key_and_says_where():
 def test_parse_leaves_an_alias_or_a_tag_to_ruamel():
     assert cctool.graph.parse.load('a: &x [1]\nb: *x\n') == {'a': [1], 'b': [1]}
     assert cctool.graph.parse.load('a: !thing x\n')['a'].tag.value == '!thing'
+
+
+# -----------------------------------------------------------------------------
+def test_parse_reads_yaml_where_pyyaml_has_no_c_parser():
+    code   = ("import sys\n"
+              "sys.modules['yaml._yaml'] = None\n"
+              "import cctool.graph.parse\n"
+              "assert not cctool.graph.parse.IS_FAST\n"
+              "assert cctool.graph.parse.load('a: yes\\nb: 1\\n') == {'a': 'yes', 'b': 1}\n")
+    env    = dict(os.environ, PYTHONPATH = os.pathsep.join(sys.path))
+    result = subprocess.run([sys.executable, '-c', code],
+                            capture_output = True,
+                            text           = True,
+                            env            = env,
+                            check          = False)
+    assert result.returncode == 0, result.stderr
