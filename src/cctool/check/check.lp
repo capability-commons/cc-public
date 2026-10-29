@@ -4064,3 +4064,66 @@ maturity_above_import(Module, Level, Imported, Below, File, Line) :-
     Level > Below,
     item(Module, _, _, File, Line).
 
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.unstated_procedure
+% guid_self:              lpp_66b1095644864cefbdc7751bd174ff85
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unstated procedure
+% brief:                  |
+%                         A requirement at a criticality that a demand
+%                         of a maturity level names, realized by code at
+%                         that level or above, has a test case that
+%                         verifies it, so that its procedure and what
+%                         shows success are stated, as the demand that
+%                         names this check asks.
+% did:                    |
+%                         {requirement} is realized by {id}, at a
+%                         maturity whose demand asks for a stated
+%                         procedure at its criticality, and no test case
+%                         verifies it.
+% fix:                    |
+%                         Write a test case for the requirement, with
+%                         its preconditions, inputs and expected
+%                         results, and an edge of relation_verifies to
+%                         it.
+% edge:                   []
+%
+% ...
+%
+% decl unstated_procedure(requirement: symbol,
+%                         id:          symbol,
+%                         file:        symbol,
+%                         line:        number)
+#show unstated_procedure/4.
+
+unstated_procedure(Requirement, Id, File, Line) :-
+    demand_check(Maturity, Criticality, "lpp_cctool.check.check.unstated_procedure"),
+    maturity_level(Maturity, Floor),
+    responsible_for(Id, Requirement),
+    file_maturity(Id, Level),
+    Level >= Floor,
+    demanded_at(Criticality, Requirement),
+    not procedure_stated(Requirement),
+    item(Requirement, _, _, File, Line).
+
+demanded_at("", Requirement) :-
+    has_type(Requirement, "type_requirement").
+
+demanded_at(Criticality, Requirement) :-
+    criticality_level(Criticality, Level),
+    requirement_criticality(Requirement, Level).
+
+procedure_stated(Requirement) :-
+    primary_edge(Case, "relation_verifies", Requirement),
+    has_type(Case, "type_test_case").

@@ -317,6 +317,10 @@ PREDICATE         = {
                            'The maturity level id sets a floor of percent per cent on the '
                            'coverage of kind, line or branch, of a source file at that '
                            'level or above.'),
+    'demand_check':       (('id', 'criticality', 'check'),
+                           'A demand of the maturity level id, at the criticality, or '
+                           'at every criticality if criticality is empty, is enforced by '
+                           'check, the item of a predicate of a logic program.'),
     'measure':            (('id', 'quantity', 'bound', 'limit', 'unit', 'statistic',
                             'runs:number'),
                            'The requirement id bounds a measured quantity: the '
@@ -448,6 +452,8 @@ DELIM_MODULE      = '.'
 PREFIX_MATURITY   = cctool.graph.prefix.stem('type_maturity_level')
 KEY_LEVEL         = 'level'
 KEY_COVERAGE      = 'coverage'
+KEY_DEMAND        = 'demand'
+KEY_CRITICALITY   = 'criticality'
 
 # The predicate of the number of each level, by the start of its id.
 #
@@ -1923,17 +1929,26 @@ def _level(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
     """
     Add a fact for the number of the maturity level or criticality
     id_self, if node is the entry of one and gives it as a whole number,
-    and for each floor of coverage that a maturity level sets.
+    for each floor of coverage that a maturity level sets, and for each
+    check that enforces one of its demands.
 
     """
 
     for (prefix, name) in MAP_LEVEL.items():
         if id_self.startswith(prefix) and _is_whole(node.get(KEY_LEVEL)):
             facts[name].add((id_self, str(int(node[KEY_LEVEL]))))
-    floor = node.get(KEY_COVERAGE) if id_self.startswith(PREFIX_MATURITY) else None
+    if not id_self.startswith(PREFIX_MATURITY):
+        return
+    floor = node.get(KEY_COVERAGE)
     if isinstance(floor, dict):
         facts['coverage_floor'].update((id_self, str(kind), str(int(percent)))
                                        for (kind, percent) in floor.items() if _is_whole(percent))
+    list_demand = node.get(KEY_DEMAND) if isinstance(node.get(KEY_DEMAND), list) else []
+    for demand in list_demand:
+        if isinstance(demand, dict) and isinstance(demand.get(KEY_CHECK), str):
+            list_criticality = _list_str(demand.get(KEY_CRITICALITY)) or ['']
+            facts['demand_check'].update((id_self, criticality, demand[KEY_CHECK])
+                                         for criticality in list_criticality)
 
 
 # -----------------------------------------------------------------------------

@@ -316,6 +316,56 @@ def test_code_has_the_greatest_criticality_of_the_requirements_on_its_component(
     assert _criticality(tree, text) == [('pym_x.y', 80), ('pyp_x', 80)]
 
 
+def _critical(tree, maturity):
+    """
+    Write the package x, which realizes lco_x, and its module y at the
+    maturity level given, and make rqt_rename_keeps_guid a requirement
+    on lco_x at crit_90.
+
+    """
+
+    _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x')
+    _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
+    _module(tree, 'src/x/y.py', 'pym_x.y', [_edge(tree, 'relation_has_maturity', maturity)])
+    relative = '_data/requirement/rqt_rename_keeps_guid.yaml'
+    _replace(tree, relative, '  - id_relation:        relation_has_subject\n'
+             '    guid_relation:      ', '  - id_relation:        relation_has_criticality\n'
+             '    guid_relation:      {relation}\n'
+             '    id_target:          crit_90\n'
+             '    guid_target:        {guid}\n\n'
+             '  - id_relation:        relation_has_subject\n'
+             '    guid_relation:      '.format(relation = _guid_of(tree, 'relation_has_criticality'),
+                                               guid     = _guid_of(tree, 'crit_90')))
+    _replace(tree, relative,
+             'id_target:          lco_tooling\n    guid_target:        ' + _guid_of(tree, 'lco_tooling'),
+             'id_target:          lco_x\n    guid_target:        ' + _guid_of(tree, 'lco_x'))
+    return relative
+
+
+def test_a_critical_requirement_on_mature_code_without_a_test_case_is_reported(tree):
+    relative = _critical(tree, 'maturity_60')
+    assert _check(tree) == {'unstated_procedure': [('rqt_rename_keeps_guid', 'pym_x.y', relative,
+                                                    '1')]}
+
+
+def test_a_critical_requirement_on_immature_code_passes(tree):
+    _critical(tree, 'maturity_40')
+    assert _check(tree) == {}
+
+
+def test_a_test_case_beside_the_code_states_the_procedure(tree):
+    _critical(tree, 'maturity_60')
+    path = tree / 'src/x/_data/test_case/case_rename_keeps_guid.yaml'
+    path.parent.mkdir(parents = True)
+    path.write_text(_dump({**_fields(tree, 'case_rename_keeps_guid',
+                                     [_edge(tree, 'relation_verifies', 'rqt_rename_keeps_guid')]),
+                           'verification_method': 'test',
+                           'preconditions':       'A tree that passes every check.',
+                           'inputs':              ['Rename an item.'],
+                           'expected_results':    'The item keeps its guid.'}))
+    assert _check(tree) == {}
+
+
 def _components(tree, list_depend = (), relation = 'relation_may_depend_on'):
     """
     Write lco_x and lco_y, and an edge of relation from the first of
