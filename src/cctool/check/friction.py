@@ -58,7 +58,7 @@ def friction(root: pathlib.Path) -> Report:
     """
 
     map_document = cctool.graph.extract.documents(root)
-    (_, advice)  = cctool.check.check.review_documents(map_document,
+    (_, advice)  = cctool.check.check.do_review_documents(map_document,
                                                          cctool.check.check.CACHE_SCHEMA)
     rows         = cctool.graph.logic.run(cctool.graph.extract.facts_of(map_document),
                                           RULES.read_text(encoding = 'utf-8'))

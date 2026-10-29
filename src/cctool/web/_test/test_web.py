@@ -799,7 +799,7 @@ def test_interface_page_opens_with_its_contract(tree):
     text = body.decode()
     list_name = re.findall(r'<code class="name">([\w.]+)</code>', text)
     assert list_name == ['Failures', 'cctool.check.check', 'check', 'review',
-                         'check_documents', 'review_documents', 'columns', 'wording']
+                         'check_documents', 'do_review_documents', 'columns', 'wording']
     assert re.findall(r'<div class="label">(\w+)</div>', text) == ['Declarations', 'Modules',
                                                                    'Functions', 'All']
     assert text.count('class="verdict unrealized"') == 1

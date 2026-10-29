@@ -233,7 +233,7 @@ def review(root: pathlib.Path) -> tuple[Failures, Failures, Failures]:
     map_own                         = cctool.graph.extract.documents(root)
     (map_consumed, failing, noticed) = cctool.check.segment.consumed(root, map_own)
     map_document                    = {**map_own, **map_consumed}
-    (failures, advice)              = review_documents(map_document, CACHE_SCHEMA)
+    (failures, advice)              = do_review_documents(map_document, CACHE_SCHEMA)
     notices                         = {}
 
     if map_consumed:
@@ -348,16 +348,16 @@ def check_documents(map_document: cctool.graph.extract.Documents,
     ...
     """
 
-    return review_documents(map_document, cache)[0]
+    return do_review_documents(map_document, cache)[0]
 
 
 # -----------------------------------------------------------------------------
-def review_documents(map_document: cctool.graph.extract.Documents,
+def do_review_documents(map_document: cctool.graph.extract.Documents,
                      cache:        dict | None = None) -> tuple[Failures, Failures]:
     """
     ---
 
-    id_self:                pyf_cctool.check.check.review_documents
+    id_self:                pyf_cctool.check.check.do_review_documents
     guid_self:              pyf_eb7ba3af22ab416491c04825db3f855a
     copyright:              Copyright 2026 William Payne
     license:                Apache-2.0
@@ -381,7 +381,7 @@ def review_documents(map_document: cctool.graph.extract.Documents,
 
       - id_relation:        relation_realizes
         guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
-        id_target:          icm_cctool_check.review_documents
+        id_target:          icm_cctool_check.do_review_documents
         guid_target:        icm_b2c517792fd94ff598ebf76c7079f81c
 
     ...
@@ -413,7 +413,7 @@ def _review(map_document: cctool.graph.extract.Documents,
             text_advice:  str) -> tuple[Failures, Failures]:
     """
     Return the failures and the advice of the YAML documents, as
-    review_documents does, evaluated afresh.
+    do_review_documents does, evaluated afresh.
 
     """
 

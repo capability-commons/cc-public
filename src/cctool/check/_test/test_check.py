@@ -480,7 +480,7 @@ def test_a_review_keeps_the_documents_it_reviewed(tree):
     map_document.update(cctool.graph.extract.parse_all((tree / relative).read_text(),
                                                        pathlib.Path(relative)))
     reviewed     = weakref.ref(map_document[relative][0])
-    cctool.check.check.review_documents(map_document)
+    cctool.check.check.do_review_documents(map_document)
     del map_document
     gc.collect()
     assert reviewed() is not None
