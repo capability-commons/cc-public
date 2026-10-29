@@ -514,6 +514,27 @@ def test_rename_changes_an_entry_and_what_names_it_and_keeps_an_alias(tree):
         tree / '_data/register/reg_data_item_type.yaml').read_text()
 
 
+def test_rename_back_takes_the_old_id_out_of_the_aliases(tree):
+    path = tree / '_data/register/reg_concept.yaml'
+    text = path.read_text()
+    assert _edit(tree, {'rename': ['concept_annotation', 'concept_remark']}) == {}
+    assert '- concept_annotation\n' in path.read_text()
+    assert _edit(tree, {'rename': ['concept_remark', 'concept_annotation']}) == {}
+    assert path.read_text().count('concept_remark') == 1
+    assert '- concept_remark\n' in path.read_text()
+    after = path.read_text()
+    assert _edit(tree, {'rename': ['concept_annotation', 'concept_note']},
+                       {'rename': ['concept_note', 'concept_annotation']}) == {}
+    assert path.read_text() == after
+    assert 'concept_remark' not in text
+
+
+def test_removing_a_mark_that_items_carry_is_refused(tree):
+    with pytest.raises(cctool.edit.edit.ErrorEdit,
+                       match = '^mark_public is the protective mark of [0-9]+ items, such as '):
+        _edit(tree, {'remove': 'mark_public'})
+
+
 def test_rename_of_a_decision_moves_its_folder(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,

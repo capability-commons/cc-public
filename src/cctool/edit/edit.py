@@ -71,6 +71,10 @@ KEY_GUID_SELF     = 'guid_self'
 KEY_EDGE          = 'edge'
 KEY_ALIAS         = 'alias'
 KEY_ENTRIES       = 'entries'
+
+# The field of a reference to a protective mark, as the facts give it.
+#
+FIELD_MARK        = 'mark'
 KEY_ID_RELATION   = 'id_relation'
 KEY_GUID_RELATION = 'guid_relation'
 KEY_ID_TARGET     = 'id_target'
@@ -960,7 +964,20 @@ def remove(tree: Tree, id_item: str) -> Edit:
     _refuse_source(tree, id_item)
     _Item(tree, id_item)
 
-    (_, _, holder, relative, _) = tree.map_item[id_item]
+    (_, guid, holder, relative, _) = tree.map_item[id_item]
+
+    # A mark that a partner holds may be left unresolved, but a mark the
+    # tree itself holds is not taken out from under the items it marks.
+    #
+    list_marked = sorted({row[0] for row in tree.facts['reference']
+                          if row[1] == FIELD_MARK and (row[2] == id_item or row[3] == guid)})
+    if list_marked:
+        raise ErrorEdit('{id} is the protective mark of {count} {noun}, such as {first}, so it '
+                        'is not removed. Give each another mark first, in the same batch.'.format(
+                            id    = id_item,
+                            count = len(list_marked),
+                            noun  = 'item' if len(list_marked) == 1 else 'items',
+                            first = ', '.join(list_marked[:3])))
 
     if holder and not any(row[2] == id_item for row in tree.facts['register_entry_key']):
         raise ErrorEdit('{id} is embedded in {holder} and is not one of its entries, so '
@@ -1117,12 +1134,20 @@ def _rename_all(tree: Tree, map_id: dict[str, str]) -> Edit:
     # Each alias and each key is put in place on its own, since two may
     # be in one file.
     #
+    # A rename back to an old id takes that id out of the aliases, and an
+    # id that only an earlier rename of the same edit gave is not kept,
+    # since no commit held it.
+    #
+    set_original = ({row[0] for row in tree.facts_original['item']}
+                    | {row[1] for row in tree.facts_original['alias']})
     for id_old in sorted(set_entry):
         item          = _Item(tree, map_id[id_old])
         (start, end)  = item.extent(KEY_ALIAS)
-        list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []]
+        list_alias    = [str(alias) for alias in item.node.get(KEY_ALIAS) or []
+                         if str(alias) != map_id[id_old]]
+        list_kept     = [id_old] if id_old in set_original else []
         edit_alias    = item.replace(start, end, cctool.check.layout.dump(
-                                    {KEY_ALIAS: [*list_alias, id_old]}, item.column(KEY_ALIAS)))
+                                    {KEY_ALIAS: [*list_alias, *list_kept]}, item.column(KEY_ALIAS)))
         tree.update(edit_alias)
         edit.update(edit_alias)
 
