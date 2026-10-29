@@ -512,7 +512,8 @@ def format_(root, is_check):
     """
     Lay out every YAML document in the tree under --root, or the working
     directory: the YAML files under _data, the module docstrings of
-    python modules, and the comment headers of other files.
+    python modules, and the comment headers of other files. A file that
+    cannot be read or written is named, and the exit is 2.
 
     """
 
@@ -525,23 +526,32 @@ def format_(root, is_check):
             click.echo('{file}: {error}'.format(file = relative, error = document.error),
                        err = True)
 
+    list_error   = []
+
     for relative in cctool.graph.extract.files(map_document):
         path = root / relative
-        text = path.read_text(encoding = 'utf-8')
         try:
+            text     = path.read_text(encoding = 'utf-8')
             laid_out = cctool.check.layout.format_kept(text, pathlib.Path(relative))
+            if laid_out != text and not is_check:
+                path.write_text(laid_out, encoding = 'utf-8')
         except cctool.check.layout.Unsupported as error:
             click.echo('{file}: {error}'.format(file = relative, error = error), err = True)
             continue
+        except (OSError, UnicodeError) as error:
+            list_error.append('{file}: {error}'.format(file = relative, error = error))
+            continue
         if laid_out != text:
             list_changed.append(relative)
-            if not is_check:
-                path.write_text(laid_out, encoding = 'utf-8')
 
     for relative in list_changed:
         click.echo('{verb} {file}'.format(verb = 'Would change' if is_check else 'Changed',
                                           file = relative))
+    for line in list_error:
+        click.echo(line, err = True)
 
+    if list_error:
+        sys.exit(cctool.cli.group.EXIT_ERROR)
     sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if (is_check and list_changed)
              else cctool.cli.group.EXIT_OK)
 
@@ -562,6 +572,10 @@ def _run(root, is_dry_run, list_operation):
         added = cctool.edit.edit.apply(tree, is_written = not is_dry_run)
     except cctool.edit.edit.ErrorEdit as error:
         click.echo(str(error), err = True)
+        sys.exit(cctool.cli.group.EXIT_ERROR)
+    except (OSError, UnicodeError) as error:
+        click.echo('The edit could not be made, and nothing was written: {error}'.format(
+                       error = error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
 
     if is_dry_run:

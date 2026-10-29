@@ -683,6 +683,8 @@ def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
     ({'remove': 'icm_cctool_check.failures'},
      'icm_cctool_check.failures is embedded in icd_cctool_check and is not one of '
      'its entries, so take it out of icd_cctool_check with cctool unset.'),
+    ({'rename': ['concept_concept', 'concept_a/b']},
+     'concept_a/b is not an id of type_concept, which match ^concept_[a-z][a-z0-9_]*$.'),
 ])
 def test_a_rename_or_removal_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cctool.edit.edit.ErrorEdit) as info:
@@ -762,6 +764,16 @@ def test_a_moved_name_keeps_the_lines_aligned_inside_its_brackets():
      '../outside/pre-push is not a path in the tree, so nothing is written there.'),
     ({'move': ['.githooks/pre-push', '.git/hooks/pre-push']},
      '.git/hooks/pre-push is not a path in the tree, so nothing is written there.'),
+    ({'move': ['src/cctool/check/layout.py', 'src/cctool/check/layout']},
+     'A move keeps the suffix of a file, so that it stays the kind of file it is: '
+     'src/cctool/check/layout does not end in .py.'),
+    ({'move': ['src/cctool/check/layout.py', 'src/cctool/check/Layout.py']},
+     'src/cctool/check/layout.py and src/cctool/check/Layout.py differ only in case, which a '
+     'file system that ignores case takes for one file. Move it to another name first, then '
+     'to src/cctool/check/Layout.py.'),
+    ({'move': ['_data/logical_component/lco_chat.yaml', 'notes/lco_chat.yaml']},
+     'The move would take lco_chat out of the graph, since the tree reads no item at '
+     'notes/lco_chat.yaml. Move it where items of its kind are kept.'),
 ])
 def test_a_move_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cctool.edit.edit.ErrorEdit) as info:
@@ -1122,6 +1134,15 @@ def test_set_of_a_field_that_names_an_item_changes_its_guid(tree):
      '9 is not the index of an element of a list of 2.'),
     ({'set': ['concept_concept', 'title.x', 'x']},
      'The path goes into Concept, which has no fields.'),
+    ({'new': 'ann_x', 'field': 'Edits work'},
+     'The field of an operation is a mapping of names to values, as field: {title: T}, '
+     'not Edits work.'),
+    ({'new': 'ann_x', 'field': FIELD_ANN, 'link': [['relation_is_about']]},
+     'The link of an operation is a list of pairs of relation and target, as link: '
+     "[[relation_is_about, concept_concept]], not [['relation_is_about']]."),
+    ({'header': 'src/cctool/edit/x.sh', 'id': 'shell_x', 'field': 3},
+     'The field of an operation is a mapping of names to values, as field: {title: T}, '
+     'not 3.'),
 ])
 def test_an_edit_that_cannot_be_made_says_why(tree, operation, message):
     edited = cctool.edit.edit.Tree(tree)
@@ -1255,6 +1276,30 @@ def test_a_line_that_is_only_a_list_marker_opens_an_item():
                         '                        A list:\n'
                         '                        - one\n')
     assert cctool.check.layout.format(laid_out) == laid_out
+
+
+def test_an_operation_of_a_batch_that_cannot_be_made_is_named_by_its_place(tree):
+    with pytest.raises(cctool.edit.edit.ErrorEdit,
+                       match = '^Operation 2 of the batch: No item has the id concept_none.$'):
+        _edit(tree, {'set': ['concept_concept', 'note', 'A note.']},
+                    {'set': ['concept_none', 'note', 'x']})
+
+
+def test_a_move_of_an_item_to_a_name_it_does_not_have_is_refused(tree):
+    added = _edit(tree, {'move': ['_data/logical_component/lco_chat.yaml',
+                                  '_data/logical_component/lco_talk.yaml']})
+    assert list(added) == ['misplaced_document']
+    assert (tree / '_data/logical_component/lco_chat.yaml').exists()
+    assert not (tree / '_data/logical_component/lco_talk.yaml').exists()
+
+
+def test_an_edit_whose_text_cannot_be_written_as_utf8_changes_nothing(tree):
+    hook = tree / '.githooks/pre-commit'
+    text = hook.read_text()
+    with pytest.raises(cctool.edit.edit.ErrorEdit, match = 'cannot be written as UTF-8'):
+        _edit(tree, {'set': ['shell_githooks_pre_commit', 'brief', 'Runs the gate \udce9.']})
+    assert hook.read_text() == text
+    assert list(tree.rglob('*' + cctool.edit.edit.SUFFIX_STAGED)) == []
 
 
 def test_a_number_in_a_path_where_there_is_no_list_is_refused(tree):

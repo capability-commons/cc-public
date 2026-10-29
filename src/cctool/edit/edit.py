@@ -383,6 +383,10 @@ def header(tree:       Tree,
     elif id_self is None:
         raise ErrorEdit('Give the id of the item of {file}.'.format(file = relative))
 
+    if relative in tree.map_document and isinstance(tree.map_document[relative][0],
+                                                    cctool.graph.extract.Unreadable):
+        raise ErrorEdit('{file} cannot be read, so it cannot be given a header: {error}'.format(
+                            file = relative, error = tree.map_document[relative][0].error))
     if relative in tree.map_document and tree.map_document[relative][0] is not None:
         raise ErrorEdit('{file} already holds an item.'.format(file = relative))
     if relative not in tree.map_document and (tree.root / relative).exists():
@@ -1003,6 +1007,11 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
         raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
                                                                     new = id_new, old = id_old))
 
+    for (id_type, prefix, regex_id) in tree.facts['type_prefix']:
+        if prefix == id_new.partition(DELIM_PREFIX)[0] and not re.search(regex_id, id_new):
+            raise ErrorEdit('{new} is not an id of {type}, which match {regex}.'.format(
+                                                new = id_new, type = id_type, regex = regex_id))
+
     list_pair = [*_derived(tree, id_old, id_new), (id_old, id_new)]
 
     for (_, id_to) in list_pair:
@@ -1237,6 +1246,16 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
     set_file = {cctool.graph.extract.file_of(key) for key in tree.map_document}
     set_file = {file for file in set_file | set(tree.edit) if tree.edit.get(file, '') is not None}
     map_move = _moves(tree.root, set_file, old, new)
+
+    if old.suffix != new.suffix and str(old) in map_move:
+        raise ErrorEdit('A move keeps the suffix of a file, so that it stays the kind of '
+                        'file it is: {new} does not end in {suffix}.'.format(
+                                                        new = new, suffix = old.suffix or '""'))
+    if str(old).lower() == str(new).lower():
+        raise ErrorEdit('{old} and {new} differ only in case, which a file system that '
+                        'ignores case takes for one file. Move it to another name first, '
+                        'then to {new}.'.format(old = old, new = new))
+
     map_id   = _moved_ids(tree, map_move)
 
     for id_new in map_id.values():
@@ -1255,6 +1274,15 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
         edit_move[file_old]       = None
         tree.map_source[file_new] = file_old
     edit.update(edit_move)
+
+    list_moved = [row for row in tree.facts['item'] if row[3] in map_move]
+    tree.update(edit)
+    set_guid   = {row[1] for row in tree.facts['item']}
+    list_lost  = sorted(row[0] for row in list_moved if row[1] not in set_guid)
+    if list_lost:
+        raise ErrorEdit('The move would take {ids} out of the graph, since the tree reads no '
+                        'item at {path}. Move it where items of its kind are kept.'.format(
+                                                        ids = ', '.join(list_lost), path = new))
 
     return edit
 
@@ -1566,8 +1594,14 @@ def batch(tree: Tree, list_operation: list) -> None:
     if not isinstance(list_operation, list):
         raise ErrorEdit('A batch is a list of operations.')
 
-    for operation in list_operation:
-        tree.update(_operation(tree, operation))
+    for (index, operation) in enumerate(list_operation, 1):
+        try:
+            tree.update(_operation(tree, operation))
+        except ErrorEdit as error:
+            if len(list_operation) == 1:
+                raise
+            raise ErrorEdit('Operation {index} of the batch: {error}'.format(
+                                                    index = index, error = error)) from error
 
 
 # -----------------------------------------------------------------------------
@@ -1578,11 +1612,7 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
     """
 
     if isinstance(operation, dict) and isinstance(operation.get(KEY_NEW), str):
-        return new(tree,
-                   operation[KEY_NEW],
-                   [(str(key), _plain(value)) for (key, value)
-                    in (operation.get(KEY_FIELD) or {}).items()],
-                   [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
+        return new(tree, operation[KEY_NEW], _field_list(operation), _link_list(operation))
 
     # A header on a class or function, keyed as
     # cctool.graph.extract.file_of says, goes in its docstring.
@@ -1592,11 +1622,10 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
                     if cctool.graph.extract.DELIM_DEFINITION in operation[KEY_HEADER]
                     else header)
         return function(tree,
-                      operation[KEY_HEADER],
-                      None if operation.get(KEY_ID) is None else str(operation[KEY_ID]),
-                      [(str(key), _plain(value)) for (key, value)
-                       in (operation.get(KEY_FIELD) or {}).items()],
-                      [tuple(map(str, pair)) for pair in operation.get(KEY_LINK) or []])
+                        operation[KEY_HEADER],
+                        None if operation.get(KEY_ID) is None else str(operation[KEY_ID]),
+                        _field_list(operation),
+                        _link_list(operation))
 
     if isinstance(operation, dict) and set(operation) == {KEY_REMOVE}:
         return remove(tree, str(operation[KEY_REMOVE]))
@@ -1616,6 +1645,41 @@ def _operation(tree: Tree, operation: typing.Any) -> Edit:
 
     raise ErrorEdit('An operation of a batch is not one of new, header, link, unlink, set, '
                     'unset, remove, rename or move: {operation}'.format(operation = operation))
+
+
+# -----------------------------------------------------------------------------
+def _field_list(operation: dict) -> list[tuple[str, typing.Any]]:
+    """
+    Return the fields that the operation new or header gives, as pairs
+    of name and value. Raise ErrorEdit if they are not a mapping.
+
+    """
+
+    map_field = operation.get(KEY_FIELD) or {}
+    if not isinstance(map_field, dict):
+        raise ErrorEdit('The field of an operation is a mapping of names to values, as '
+                        'field: {{title: T}}, not {value}.'.format(value = map_field))
+
+    return [(str(key), _plain(value)) for (key, value) in map_field.items()]
+
+
+# -----------------------------------------------------------------------------
+def _link_list(operation: dict) -> list[tuple[str, str]]:
+    """
+    Return the edges that the operation new or header gives, as pairs
+    of relation and target. Raise ErrorEdit if they are not a list of
+    such pairs.
+
+    """
+
+    list_link = operation.get(KEY_LINK) or []
+    if not (isinstance(list_link, list)
+            and all(isinstance(pair, list) and len(pair) == 2 for pair in list_link)):
+        raise ErrorEdit('The link of an operation is a list of pairs of relation and target, '
+                        'as link: [[relation_is_about, concept_concept]], not {value}.'.format(
+                                                                        value = list_link))
+
+    return [tuple(map(str, pair)) for pair in list_link]
 
 
 # -----------------------------------------------------------------------------
@@ -1669,8 +1733,13 @@ def _place(tree: Tree, failures: cctool.check.check.Failures) -> bool:
 
     edit = {}
 
+    # A file that an edit moved from one the tree held is not new, but
+    # moved where it was asked to go, so it is left there for the check
+    # to refuse.
+    #
     for (_, relative, expected) in failures.get(NAME_MISPLACED, []):
-        is_new = relative not in tree.map_original and tree.edit.get(relative) is not None
+        is_new = (_origin(tree, relative) not in tree.map_original
+                  and tree.edit.get(relative) is not None)
         if is_new and expected not in tree.map_document:
             edit[expected]            = tree.edit.pop(relative)
             tree.map_source[expected] = relative
@@ -1823,7 +1892,7 @@ def _stage(tree: Tree) -> tuple[list[tuple[pathlib.Path, pathlib.Path]], list[pa
                 staged.write_text(text, encoding = 'utf-8')
             if mode is not None:
                 os.chmod(staged, mode)
-    except OSError as error:
+    except (OSError, UnicodeError) as error:
         _undo([], list_staged, list_dir)
         raise ErrorEdit('The edit could not be written, so nothing was changed: '
                         '{error}'.format(error = error)) from error
@@ -2020,21 +2089,31 @@ def _carried(tree:     Tree,
 
     """
 
-    map_file = {}
-    for (relative, text) in tree.edit.items():
-        if text is None or relative not in tree.map_source:
-            continue
-        (source, set_seen) = (tree.map_source[relative], {relative})
-        while source in tree.map_source and source not in set_seen:
-            set_seen.add(source)
-            source = tree.map_source[source]
-        map_file[source] = relative
+    map_file = {relative_old: relative for (relative, text) in tree.edit.items()
+                if text is not None
+                and (relative_old := _origin(tree, relative)) != relative}
 
     def carried(cell: str) -> str:
         return tree.map_renamed.get(cell, map_file.get(cell, cell))
 
     return {name: [tuple(carried(cell) for cell in row) for row in list_row]
             for (name, list_row) in failures.items()}
+
+
+# -----------------------------------------------------------------------------
+def _origin(tree: Tree, relative: str) -> str:
+    """
+    Return the file that the edits of tree moved to relative, through
+    every move between, or relative itself if they moved nothing there.
+
+    """
+
+    (source, set_seen) = (relative, set())
+    while source in tree.map_source and source not in set_seen:
+        set_seen.add(source)
+        source = tree.map_source[source]
+
+    return source
 
 
 # -----------------------------------------------------------------------------
@@ -2296,6 +2375,10 @@ def _format(text: str, relative: str) -> str:
         return cctool.check.layout.format_kept(text, pathlib.Path(relative))
     except cctool.check.layout.Unsupported as error:
         raise ErrorEdit('The edit leaves {file} unlaid: {error}'.format(
+                                                file = relative, error = error)) from error
+    except UnicodeError as error:
+        raise ErrorEdit('The edit gives {file} text that cannot be written as UTF-8, such as '
+                        'a lone surrogate, so nothing is written: {error}'.format(
                                                 file = relative, error = error)) from error
 
 
