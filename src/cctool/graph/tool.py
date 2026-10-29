@@ -70,14 +70,14 @@ def facts() -> dict[str, frozenset[tuple[str, ...]]]:
 
     """
 
-    return {**_command_line(),
+    return {**command_line(),
             'check_severity': frozenset(importlib.import_module(NAME_CHECK)
                                                   .severities().items())}
 
 
 # -----------------------------------------------------------------------------
 @functools.cache
-def _command_line() -> dict[str, frozenset[tuple[str, ...]]]:
+def command_line() -> dict[str, frozenset[tuple[str, ...]]]:
     """
     Return the facts of the command line of cctool, keyed by predicate,
     read once in each OS process.

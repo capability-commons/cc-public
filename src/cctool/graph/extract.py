@@ -848,7 +848,7 @@ def _facts_of_document(file:             str,
     _walk(document, '', (file, base), facts, terms)
     if isinstance(document, dict):
         _ports(document, facts)
-        _commands(document, facts)
+        commands(document, facts)
         _checks(document, facts)
         _measure(document, facts)
         _dataflow_graph(document, (file, base), facts)
@@ -1947,7 +1947,7 @@ def _ports(document: dict[str, typing.Any], facts: Facts) -> None:
 
 
 # -----------------------------------------------------------------------------
-def _commands(document: dict[str, typing.Any], facts: Facts) -> None:
+def commands(document: dict[str, typing.Any], facts: Facts) -> None:
     """
     Add a fact for each command and each parameter that a command line
     surface of document states.

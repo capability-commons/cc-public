@@ -1549,8 +1549,7 @@ def _interface_table(graph: Graph, list_item: list[Item]) -> typing.Any:
 
     def realized(item: Item) -> typing.Any:
         list_member = cctool.web.contract.members(item.node)
-        count       = sum(1 for id_member in list_member
-                          if graph.sources(cctool.web.contract.RELATION_REALIZES, id_member))
+        count       = len(cctool.web.contract.realized(graph, item))
         text        = '{count} of {total}'.format(count = count, total = len(list_member))
         return text if count == len(list_member) else htpy.span(class_ = 'gap')[text]
 
@@ -1648,7 +1647,7 @@ def _interface_facts(contract: Contract) -> typing.Any:
     list_stated = [htpy.span(class_ = 'line')['{key}: {stated} of {count} stated'.format(
                        key = surface.key, stated = surface.stated(),
                        count = len(surface.list_semantics))]
-                   for surface in contract.list_surface]
+                   for surface in contract.list_surface if surface.list_semantics]
 
     return htpy.table(class_ = 'facts')[htpy.tbody[
         row('Version',   str(contract.item.node.get('version_interface', ''))),
@@ -1725,7 +1724,9 @@ def _verdict(graph: Graph, member: Member, column: str) -> typing.Any:
                     title = graph.title(member.list_realizer[0]), location = member.location)
         return htpy.a(class_ = 'cell', href = _href(member.list_realizer[0]), title = title)[
             htpy.span(class_ = 'verdict ' + verdict)[title]]
-    if column == COLUMN_REALIZED:
+    if column == COLUMN_REALIZED and member.tool:
+        title = 'Realized by {tool}, as click describes it'.format(tool = member.tool)
+    elif column == COLUMN_REALIZED:
         title = 'Not realized: nothing records an edge relation_realizes to it'
     return htpy.span(class_ = 'verdict ' + verdict, title = title)[title]
 
@@ -1903,14 +1904,16 @@ def _interface_references(graph: Graph, contract: Contract) -> typing.Any:
 def _surface_section(graph: Graph, contract: Contract, surface: Surface) -> typing.Any:
     """
     Return the section of a surface that is not native: a dataflow step
-    drawn and its ports, or its artifacts; then each part of its
-    semantics.
+    drawn and its ports, its artifacts, or its commands; then each part
+    of its semantics.
 
     """
 
     if surface.form == cctool.web.contract.FORM_DATAFLOW:
         list_body = [cctool.web.step.figure(contract.item.title, surface),
                      _ports(graph, surface)]
+    elif surface.form == cctool.web.contract.FORM_COMMAND_LINE:
+        list_body = [_commands(graph, surface)]
     else:
         list_body = [_artifact(graph, member) for (_, list_member) in surface.list_group
                      for member in list_member]
@@ -1953,6 +1956,36 @@ def _ports(graph: Graph, surface: Surface) -> typing.Any:
 
 
 # -----------------------------------------------------------------------------
+def _commands(graph: Graph, surface: Surface) -> typing.Any:
+    """
+    Return the table of the members of a command line surface, by
+    group: the options of the program, its commands and its exit
+    statuses, each with its brief under its name, and the code that
+    realizes it, or else the command line of cctool that realizes it,
+    as click describes it.
+
+    """
+
+    list_row = []
+    for (group, list_member) in surface.list_group:
+        list_row.append(htpy.tr(class_ = 'group')[
+            htpy.th(colspan = '2')[cctool.web.contract.group_name(group) or 'Program']])
+        list_row += [
+            htpy.tr(id = 'command-' + member.id)[
+                htpy.td[htpy.code[member.name],
+                        htpy.span(class_ = 'statement')[_prose(_text(member.node.get('brief')))]],
+                htpy.td[[htpy.span(class_ = 'line')[_link(graph, id_item)]
+                         for id_item in member.list_realizer]
+                        or (htpy.code[member.tool] if member.tool else None)
+                        or htpy.span(class_ = 'gap')['Not realized']]]
+            for member in list_member]
+
+    return htpy.table(class_ = 'parameters commands')[
+        htpy.thead[htpy.tr[htpy.th['Member'], htpy.th['Realized by']]],
+        htpy.tbody[list_row]]
+
+
+# -----------------------------------------------------------------------------
 def _artifact(graph: Graph, member: Member) -> typing.Any:
     """
     Return the block of an artifact: what one instance carries, the
@@ -1991,9 +2024,13 @@ def _semantics(surface: Surface) -> typing.Any:
     Return the semantics of a surface: each part the schema names, with
     its question in the margin and what the surface states of it, or a
     hollow mark where it states nothing, since compatibility depends on
-    every part.
+    every part. A surface whose schema names no part of its semantics
+    has none.
 
     """
+
+    if not surface.list_semantics:
+        return None
 
     return htpy.div(class_ = 'semantics')[
         htpy.h3['Semantics ', htpy.span(class_ = 'note')[

@@ -51,6 +51,7 @@ import dataclasses
 import pathlib
 
 import cctool.graph.extract
+import cctool.graph.tool
 import cctool.web.argument
 import cctool.graph.prefix
 
@@ -74,13 +75,15 @@ REF_SEMANTICS     = '#/$defs/semantics'
 FORM_NATIVE       = 'native'
 FORM_DATAFLOW     = 'dataflow_step'
 FORM_ARTIFACT     = 'artifact'
+FORM_COMMAND_LINE = 'command_line'
 
 # The name of each form of surface, and the definition in the schema
 # that lists the parts of its semantics. A native surface is named by
 # its language instead.
 #
-MAP_FORM          = {FORM_DATAFLOW: ('Dataflow step', 'surface_dataflow_step'),
-                     FORM_ARTIFACT: ('Artifact',      'surface_artifact')}
+MAP_FORM          = {FORM_DATAFLOW:     ('Dataflow step', 'surface_dataflow_step'),
+                     FORM_ARTIFACT:     ('Artifact',      'surface_artifact'),
+                     FORM_COMMAND_LINE: ('Command line',  'surface_command_line')}
 
 AGREES            = 'agrees'
 DIFFERS           = 'differs'
@@ -118,7 +121,8 @@ MAP_GROUP         = {'declaration': 'Declarations',
                      'output':      'Outputs',
                      'state':       'State',
                      'settings':    'Settings',
-                     'artifact':    'Artifacts'}
+                     'artifact':    'Artifacts',
+                     'command':     'Commands'}
 
 Graph             = cctool.web.argument.Graph
 Item              = cctool.web.argument.Item
@@ -158,7 +162,9 @@ class Parameter:
 class Member:
     """
     A member of an interface control document, with the code that
-    realizes it and how that code agrees with what it states.
+    realizes it and how that code agrees with what it states. tool is
+    the command line of cctool that realizes a member of a command line
+    surface, as click describes it, or empty.
 
     """
 
@@ -169,6 +175,7 @@ class Member:
     list_parameter: list[Parameter]
     list_realizer:  list[str]
     location:       str
+    tool:           str
     returns:        str | None
     returns_code:   str | None
     list_extra:     list[str]
@@ -190,7 +197,7 @@ class Member:
 class Surface:
     """
     A surface of an interface control document that is not native: a
-    dataflow step or artifacts. Its members by group (the ports of a
+    dataflow step, artifacts or a command line. Its members by group (the ports of a
     step, by direction, or the artifacts), and each part of its
     semantics that the schema names, with what the surface states of
     it, or empty if it states nothing.
@@ -268,6 +275,44 @@ def interfaces(graph: Graph) -> list[Item]:
     return sorted((item for item in graph.map_item.values()
                    if item.id.startswith(PREFIX_INTERFACE)),
                   key = lambda item: item.title or item.id)
+
+
+# -----------------------------------------------------------------------------
+def realized(graph: Graph, item: Item) -> list[str]:
+    """
+    Return the ids of the members held in the interface control
+    document item that are realized: by code with an edge
+    relation_realizes to the member, or, on a command line surface, by
+    a command or parameter of cctool that click describes.
+
+    """
+
+    facts = collections.defaultdict(set, cctool.graph.tool.command_line())
+    cctool.graph.extract.commands(item.node, facts)
+    map_tool = _tool(facts)
+
+    return [id_member for id_member in members(item.node)
+            if graph.sources(RELATION_REALIZES, id_member) or id_member in map_tool]
+
+
+# -----------------------------------------------------------------------------
+def _tool(facts: Facts) -> dict[str, str]:
+    """
+    Return the command line that realizes each member of a command line
+    surface in facts that click describes: its program and command, and
+    the name of the parameter for a parameter.
+
+    """
+
+    set_command   = set(facts.get('click_command', ()))
+    set_parameter = {(program, command, name)
+                     for (program, command, name, part, _) in facts.get('click_parameter', ())
+                     if part == 'kind'}
+
+    return {id_member: ' '.join(filter(None, (program, command, name)))
+            for (id_member, program, command, name) in facts.get('command_member', ())
+            if (program, command, name) in set_parameter
+            or (not name and (program, command) in set_command)}
 
 
 # -----------------------------------------------------------------------------
@@ -380,8 +425,9 @@ def group_name(group: str) -> str:
 # -----------------------------------------------------------------------------
 class _Code:
     """
-    What the code says of each python function, and where each item is
-    written, read from the facts of a tree.
+    What the code says of each python function, where each item is
+    written, and which command line of cctool realizes each member of a
+    command line surface, read from the facts of a tree.
 
     """
 
@@ -397,6 +443,7 @@ class _Code:
         self.map_returns  = {}
         self.map_stated   = collections.defaultdict(dict)
         self.map_location = {}
+        self.map_tool     = _tool(facts)
 
         for (id_item, position, name) in facts.get('python_parameter', ()):
             self.map_name[id_item][int(position)] = name
@@ -485,6 +532,7 @@ def _member(graph: Graph, code: _Code, group: str, name: str, node: dict) -> Mem
                     list_realizer  = list_realizer,
                     location       = code.map_location.get(list_realizer[0], '')
                                      if list_realizer else '',
+                    tool           = code.map_tool.get(id_self, ''),
                     returns        = stated.get(KEY_RETURNS),
                     returns_code   = code.map_returns.get(id_function) if id_function else None,
                     list_extra     = list_extra,
@@ -502,7 +550,8 @@ def _verdicts(member: Member, has_code: bool) -> dict[str, str | None]:
 
     """
 
-    map_verdict = {COLUMN_REALIZED: AGREES if member.list_realizer else UNREALIZED}
+    map_verdict = {COLUMN_REALIZED: AGREES if member.list_realizer or member.tool
+                   else UNREALIZED}
     if not member.is_function():
         return map_verdict | {column: None for (column, _, _) in LIST_COLUMN[1:]}
     if not has_code:

@@ -19,7 +19,23 @@ description:            |
                         This module holds the group and the exit
                         statuses. A command module imports it and
                         registers its commands on main.
-edge:                   []
+
+edge:
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          icm_cctool_command_line.ok
+    guid_target:        icm_6afb43665f5f4005ba5d45e2168ef344
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          icm_cctool_command_line.nonconformity
+    guid_target:        icm_c5cee6fae5ac41878976d6113072557c
+
+  - id_relation:        relation_realizes
+    guid_relation:      relation_c1f1f5ffece0495981ab2b6ebb32a92f
+    id_target:          icm_cctool_command_line.error
+    guid_target:        icm_b548d2385f9b4a62a587d93acbe7478f
 
 ...
 """

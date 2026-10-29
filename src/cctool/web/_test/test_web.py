@@ -34,6 +34,7 @@ import urllib.parse
 import htpy
 import pytest
 
+import cctool.conftest
 import cctool.web.argument
 import cctool.web.catalog
 import cctool.web.description
@@ -838,6 +839,33 @@ def test_dataflow_interface_page_draws_the_step_and_its_semantics(tree):
     assert text.count('class="block part unstated"') == 13
     assert re.findall(r'<span class="column">(\w+)</span>', text) == ['Realized']
     assert '<span class="run-in artifact-name">detection file</span>' in text
+
+
+def test_command_line_interface_page_lists_what_click_and_the_code_realize():
+    (status, _, body) = cctool.web.server.respond(cctool.conftest.DIR_REPO,
+                                                  '/interface/icd_cctool_command_line')
+    assert status == http.HTTPStatus.OK
+    text  = body.decode()
+    total = len(re.findall(r'<tr id="command-icm_', text))
+    assert total > 3
+    assert '<th scope="row">Realized</th><td>{n} of {n}</td>'.format(n = total) in text
+    assert '<code>cctool batch</code>' in text
+    assert 'href="/item/pym_cctool.cli.group"' in text
+    assert 'Not realized' not in text and 'Semantics' not in text
+    (_, _, body) = cctool.web.server.respond(cctool.conftest.DIR_REPO, '/interfaces')
+    assert re.search(r'<td>Command line</td>\s*<td class="number">{n} of {n}<'.format(n = total),
+                     body.decode())
+
+
+def test_a_command_that_click_does_not_describe_is_not_realized(tree):
+    path = tree / '_data/interface_control_document/icd_cctool_command_line.yaml'
+    path.write_text(path.read_text().replace('name:         batch\n', 'name:         batches\n', 1))
+    (_, _, body) = cctool.web.server.respond(tree, '/interface/icd_cctool_command_line')
+    text = body.decode()
+    row  = re.search(r'<tr id="command-icm_cctool_command_line.batch">.*?</tr>', text).group(0)
+    assert '<span class="gap">Not realized</span>' in row
+    row  = re.search(r'<tr id="command-icm_cctool_command_line.check">.*?</tr>', text).group(0)
+    assert '<code>cctool check</code>' in row
 
 
 @pytest.mark.parametrize('path', ['/interface/icd_missing',
