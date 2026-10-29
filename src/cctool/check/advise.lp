@@ -550,3 +550,45 @@ test_module(Module) :-
 test_module(Module) :-
     module_name(Module, _),
     @match(".*\\.conftest", Module) = 1.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.advise.stale_review
+% guid_self:              lpp_3dc69c1f6d0e4921968f497357593619
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Stale review
+% brief:                  |
+%                         A review no longer covers an item it reviewed:
+%                         the file that holds the item has changed since
+%                         the review saw it, or the review gives no blob
+%                         id for that file.
+% did:                    |
+%                         {review} reviewed {item}, and {file} is not as
+%                         the review saw it.
+% fix:                    |
+%                         Review the item again and record a new review
+%                         with the blob id of the file now, from git
+%                         hash-object, or leave it until the next stage
+%                         asks for a review.
+% edge:                   []
+%
+% ...
+%
+% decl stale_review(review: symbol,
+%                   item:   symbol,
+%                   file:   symbol)
+#show stale_review/3.
+
+stale_review(Review, Item, File) :-
+    primary_edge(Review, "relation_reviews", Item),
+    item(Item, _, _, File, _),
+    not fresh_review(Review, Item).

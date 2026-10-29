@@ -1,0 +1,102 @@
+$schema:                https://json-schema.org/draft/2020-12/schema
+$id:                    https://capability-commons.org/schema/sch_review.yaml
+id_self:                sch_review
+guid_self:              sch_4a227d4f57944867a35160c3a553f9e4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Review schema
+brief:                  |
+                        The shape of a review: who reviewed which
+                        items for which maturity level, and the
+                        content of each file as they saw it.
+description:            |
+                        Identity, the descriptive fields and rights
+                        come from sch_standalone. The edges come from
+                        sch_trait_edge: an edge of relation_reviews to
+                        each item reviewed, and one of
+                        relation_is_for_maturity to the maturity level
+                        the review was for.
+
+                        reviewer says who reviewed, by the initials of
+                        a team member or the name of an agent, since
+                        every commit is authored by the maintainer and
+                        so cannot tell them apart. seen gives, for
+                        each file that holds an item reviewed, its
+                        path from the root of the tree and the git
+                        blob id of its content as it was reviewed,
+                        which git hash-object prints. A review covers
+                        an item while the file that holds it still has
+                        that blob id, so whether a review is fresh is
+                        found from the tree alone, and git cat-file
+                        shows what was seen.
+
+                        A review is recorded when the items pass it.
+                        What a review finds is written as annotations
+                        about the items, and a revision after it
+                        leaves the review stale until the next.
+usage:                  |
+                        Named by type_review as the schema of every
+                        review, each in a folder review of the _data
+                        folder of the root, or of a _data folder
+                        beside what it reviews.
+type:                   object
+
+allOf:
+  - $ref:               https://capability-commons.org/schema/sch_standalone.yaml
+  - $ref:               https://capability-commons.org/schema/sch_trait_edge.yaml
+
+  - type:               object
+
+    required:
+      - reviewer
+      - seen
+
+    properties:
+
+      reviewer:
+        type:           string
+        minLength:      1
+        description:    |
+                        Who reviewed: the initials of a team member,
+                        or the name of an agent and its model.
+
+      seen:
+        type:           array
+        minItems:       1
+        description:    |
+                        Each file that holds an item reviewed, with
+                        the git blob id of its content as it was
+                        reviewed.
+
+        items:
+          type:         object
+          additionalProperties:  false
+
+          required:
+            - path
+            - blob
+
+          properties:
+
+            path:
+              type:     string
+              minLength:  1
+              description:  |
+                        The path of the file from the root of the
+                        tree.
+
+            blob:
+              type:     string
+              pattern:  ^[0-9a-f]{40}$
+              description:  |
+                        The git blob id of the content of the file as
+                        it was reviewed.
+
+unevaluatedProperties:  false
+edge:                   []

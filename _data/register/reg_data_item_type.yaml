@@ -2000,3 +2000,54 @@ entries:
         guid_relation:  relation_3d73697611024b13ae6633e0e7727983
         id_target:      rol_verifier
         guid_target:    rol_6b9d3ac50d77473e9f6a071b5e910ce7
+
+  # ---------------------------------------------------------------------------
+  # type_review -- Review type
+  #
+  type_review:
+    id_self:            type_review
+    guid_self:          type_36572e2068574d469190859a4d8ac2b1
+    title:              Review type
+    brief:              |
+                        Type of review data items.
+    description:        |
+                        Each review data item records that [[items]]
+                        passed a review for one maturity level: who
+                        reviewed them, and the git blob id of each
+                        file that holds them as it was seen.
+    usage:              |
+                        A review names each item it reviewed by an
+                        edge of relation_reviews and its maturity
+                        level by an edge of relation_is_for_maturity.
+                        A demand of a maturity level may ask that the
+                        requirements on code at that level have a
+                        fresh review for it.
+    note:               |
+                        Each review has a file of its own, in
+                        _data/review/ at the root of the tree or in a
+                        review folder of a _data folder beside what it
+                        reviews.
+
+                        The ruling on how a review is recorded chose a
+                        type of its own over an annotation, a commit
+                        item or the reports of the scheduled reviews.
+
+                        The shape of review data items is defined by
+                        the sch_review schema.
+    prefix:             review
+    regex_id:           ^review_[a-z][a-z0-9_]*$
+    id_concept:         concept_review
+    guid_concept:       concept_13ea6ddf82ed4adca9b65a088efa5e27
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_has_items_specified_by_schema
+        guid_relation:  relation_9aeeadc7fb3b4257b0c588d24a203b64
+        id_target:      sch_review
+        guid_target:    sch_4a227d4f57944867a35160c3a553f9e4
+
+      - id_relation:    relation_has_items_that_play
+        guid_relation:  relation_3d73697611024b13ae6633e0e7727983
+        id_target:      rol_review
+        guid_target:    rol_c19ad49d0f9b430caf2a5cf04ce5bffc

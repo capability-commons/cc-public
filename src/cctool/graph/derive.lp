@@ -523,3 +523,17 @@ effective_entry(Segment, Type, Id, Register) :-
     effective_register(Segment, Type, Register),
     register_entry_key(Register, _, Id),
     has_type(Id, Type).
+
+
+% -----------------------------------------------------------------------------
+% The review covers the item: it reviews the item, and saw the file that
+% holds it with the content that the file has now.
+%
+% decl fresh_review(review: symbol,
+%                   item:   symbol)
+
+fresh_review(Review, Item) :-
+    primary_edge(Review, "relation_reviews", Item),
+    item(Item, _, _, File, _),
+    seen_in_review(Review, File, Blob),
+    file_blob(File, Blob).

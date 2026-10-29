@@ -4375,3 +4375,60 @@ demanded_at(Criticality, Requirement) :-
 procedure_stated(Requirement) :-
     primary_edge(Case, "relation_verifies", Requirement),
     has_type(Case, "type_test_case").
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.unreviewed_requirement
+% guid_self:              lpp_60bd776b3bf64252b5e550f46cd60b33
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unreviewed requirement
+% brief:                  |
+%                         A requirement on code at a maturity level
+%                         whose demands, at that level or a lower one,
+%                         name this check has a fresh review for a level
+%                         at least as high as each such demand, so that
+%                         each stage of the requirement is reviewed as
+%                         it is now.
+% did:                    |
+%                         {requirement} is realized by {id}, at a
+%                         maturity whose demands ask for a review of its
+%                         requirements, and no fresh review covers it.
+% fix:                    |
+%                         Review the requirement and record a review for
+%                         the maturity of the code, with the blob id of
+%                         its file from git hash-object.
+% edge:                   []
+%
+% ...
+%
+% decl unreviewed_requirement(requirement: symbol,
+%                             id:          symbol,
+%                             file:        symbol,
+%                             line:        number)
+#show unreviewed_requirement/4.
+
+unreviewed_requirement(Requirement, Id, File, Line) :-
+    demand_check(Maturity, Criticality, "lpp_cctool.check.check.unreviewed_requirement"),
+    maturity_level(Maturity, Floor),
+    responsible_for(Id, Requirement),
+    file_maturity(Id, Level),
+    Level >= Floor,
+    demanded_at(Criticality, Requirement),
+    not reviewed_for(Requirement, Floor),
+    item(Requirement, _, _, File, Line).
+
+reviewed_for(Requirement, Floor) :-
+    fresh_review(Review, Requirement),
+    primary_edge(Review, "relation_is_for_maturity", Maturity),
+    maturity_level(Maturity, Level),
+    maturity_level(_, Floor),
+    Level >= Floor.

@@ -353,19 +353,69 @@ def _critical(tree, maturity):
     return relative
 
 
+def _review(tree, relative, id_item, maturity):
+    """
+    Write a review of id_item, held in the file at relative, for the
+    maturity level given, that saw that file as it is now.
+
+    """
+
+    blob = cctool.graph.extract.blob_id((tree / relative).read_bytes())
+    path = tree / '_data/review/review_{id}.yaml'.format(id = id_item)
+    path.parent.mkdir(parents = True, exist_ok = True)
+    path.write_text(_dump({**_fields(tree, 'review_' + id_item,
+                                     [_edge(tree, 'relation_reviews', id_item),
+                                      _edge(tree, 'relation_is_for_maturity', maturity)]),
+                           'reviewer': 'WTP',
+                           'seen':     [{'path': relative, 'blob': blob}]}))
+
+
+def test_a_requirement_on_code_at_a_level_that_asks_for_a_review_is_reported(tree):
+    relative = _critical(tree, 'maturity_20')
+    assert _check(tree) == {'unreviewed_requirement': [('rqt_rename_keeps_guid', 'pym_x.y',
+                                                        relative, '1')]}
+
+
+def test_a_fresh_review_for_the_level_of_the_code_passes(tree):
+    relative = _critical(tree, 'maturity_40')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_40')
+    assert _check(tree) == {}
+
+
+def test_a_review_for_a_lower_level_than_the_code_is_reported(tree):
+    relative = _critical(tree, 'maturity_40')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_20')
+    assert _check(tree) == {'unreviewed_requirement': [('rqt_rename_keeps_guid', 'pym_x.y',
+                                                        relative, '1')]}
+
+
+def test_a_review_of_a_file_changed_since_is_stale(tree):
+    relative = _critical(tree, 'maturity_20')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_20')
+    _replace(tree, relative, 'title:                  ', 'title:                  Changed, ')
+    (failures, advice, _) = cctool.check.check.review(tree)
+    assert failures['unreviewed_requirement'] == [('rqt_rename_keeps_guid', 'pym_x.y',
+                                                   relative, '1')]
+    assert advice['stale_review'] == [('review_rqt_rename_keeps_guid', 'rqt_rename_keeps_guid',
+                                       relative)]
+
+
 def test_a_critical_requirement_on_mature_code_without_a_test_case_is_reported(tree):
     relative = _critical(tree, 'maturity_60')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_60')
     assert _check(tree) == {'unstated_procedure': [('rqt_rename_keeps_guid', 'pym_x.y', relative,
                                                     '1')]}
 
 
 def test_a_critical_requirement_on_immature_code_passes(tree):
-    _critical(tree, 'maturity_40')
+    relative = _critical(tree, 'maturity_40')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_40')
     assert _check(tree) == {}
 
 
 def test_a_test_case_beside_the_code_states_the_procedure(tree):
-    _critical(tree, 'maturity_60')
+    relative = _critical(tree, 'maturity_60')
+    _review(tree, relative, 'rqt_rename_keeps_guid', 'maturity_60')
     path = tree / 'src/x/_data/test_case/case_rename_keeps_guid.yaml'
     path.parent.mkdir(parents = True)
     path.write_text(_dump({**_fields(tree, 'case_rename_keeps_guid',

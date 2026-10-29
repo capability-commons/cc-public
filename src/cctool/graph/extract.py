@@ -206,10 +206,10 @@ COUNT_READ        = 32768
 #
 MAP_LATEST        = {}
 
-# The digest of the file that each YAML document read from a YAML file
-# or python module was read from, keyed by the id of the document, which
-# is kept with it so that the id is not reused. It is emptied with
-# MAP_READ.
+# The digest and the git blob id of the file that each YAML document
+# read from a YAML file or python module was read from, keyed by the id
+# of the document, which is kept with it so that the id is not reused.
+# It is emptied with MAP_READ.
 #
 MAP_DIGEST        = {}
 
@@ -340,6 +340,12 @@ PREDICATE         = {
                            'A demand of the maturity level id, at the criticality, or '
                            'at every criticality if criticality is empty, is enforced by '
                            'check, the item of a predicate of a logic program.'),
+    'seen_in_review':        (('id', 'file', 'blob'),
+                           'The review id saw the file at the path file with the content '
+                           'whose git blob id is blob.'),
+    'file_blob':          (('file', 'blob'),
+                           'The file at the path file, which a review names, now has the '
+                           'content whose git blob id is blob.'),
     'measure':            (('id', 'quantity', 'bound', 'limit', 'unit', 'statistic',
                             'runs:number'),
                            'The requirement id bounds a measured quantity: the '
@@ -541,6 +547,14 @@ KEY_SEVERITY      = 'severity'
 # of runs, and the parts its fact holds before the runs, in order.
 #
 KEY_MEASURE       = 'measure'
+
+# The start of the id of a review, and the fields that give each file it
+# saw and the content it saw there.
+#
+PREFIX_REVIEW     = cctool.graph.prefix.stem('type_review')
+KEY_SEEN          = 'seen'
+KEY_PATH          = 'path'
+KEY_BLOB          = 'blob'
 KEY_RUNS          = 'runs'
 TUPLE_MEASURE     = ('quantity', 'bound', 'limit', 'unit', 'statistic')
 
@@ -769,6 +783,9 @@ def facts_of(map_document: Documents, with_tool: bool = True) -> Facts:
     facts['consumed_file'] = {(file,) for (file,) in facts['tree_file']
                               if consumer(file) is not None}
     facts['shadow']        = {(row[0], row[3]) for row in facts['item'] if is_shadow(row[3])}
+    set_seen               = {row[1] for row in facts['seen_in_review']}
+    facts['file_blob']     = {(file, blob) for (file, (document, _)) in map_document.items()
+                              if file in set_seen and (blob := blob_of(document)) is not None}
 
     for (name, set_row) in (cctool.graph.tool.facts() if with_tool else {}).items():
         facts[name].update(set_row)
@@ -861,6 +878,7 @@ def _facts_of_document(file:             str,
         commands(document, facts)
         _checks(document, facts)
         _measure(document, facts)
+        _seen(document, facts)
         _dataflow_graph(document, (file, base), facts)
         (held, definition) = MAP_DEFINITION.get(id(document), (None, None))
         if held is not None and held() is document:
@@ -1093,9 +1111,10 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
                 raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
                                 data.count(b'\n', 0, error.start) + 1) from error
             _keep(key, parse_all(text, relative))
+            blob = blob_id(data)
             for (document, _) in MAP_READ[key].values():
                 if isinstance(document, dict):
-                    MAP_DIGEST[id(document)] = (document, key[1].hex())
+                    MAP_DIGEST[id(document)] = (document, key[1].hex(), blob)
         MAP_LATEST[key[0]] = key
         return MAP_READ[key]
 
@@ -1143,11 +1162,13 @@ def remember(relative: str, text: str, map_document: Documents) -> None:
     if path.suffix not in (SUFFIX_YAML, SUFFIX_PYTHON, SUFFIX_PROGRAM):
         return
 
-    key = (str(path), hashlib.blake2b(text.encode('utf-8'), digest_size = 16).digest())
+    data = text.encode('utf-8')
+    key  = (str(path), hashlib.blake2b(data, digest_size = 16).digest())
+    blob = blob_id(data)
     _keep(key, map_document)
     for (document, _) in map_document.values():
         if isinstance(document, dict):
-            MAP_DIGEST[id(document)] = (document, key[1].hex())
+            MAP_DIGEST[id(document)] = (document, key[1].hex(), blob)
 
 
 # -----------------------------------------------------------------------------
@@ -1181,8 +1202,32 @@ def digest_of(document: typing.Any) -> str | None:
 
     """
 
-    (held, digest) = MAP_DIGEST.get(id(document), (None, None))
+    (held, digest, _) = MAP_DIGEST.get(id(document), (None, None, None))
     return digest if held is document else None
+
+
+# -----------------------------------------------------------------------------
+def blob_id(data: bytes) -> str:
+    """
+    Return the git blob id of a file whose content is data, as git
+    hash-object prints it. git names content by it, not to secure it.
+
+    """
+
+    return hashlib.sha1(b'blob %d\0' % len(data) + data, usedforsecurity = False).hexdigest()
+
+
+# -----------------------------------------------------------------------------
+def blob_of(document: typing.Any) -> str | None:
+    """
+    Return the git blob id of the file that read gave document from, as
+    git hash-object prints it, or None if read did not give it from a
+    YAML file or python module.
+
+    """
+
+    (held, _, blob) = MAP_DIGEST.get(id(document), (None, None, None))
+    return blob if held is document else None
 
 
 # -----------------------------------------------------------------------------
@@ -2135,6 +2180,24 @@ def _measure(document: dict[str, typing.Any], facts: Facts) -> None:
     facts['measure'].add((str(document.get(KEY_ID_SELF)),
                           *(str(value) for value in list_value),
                           str(measure[KEY_RUNS])))
+
+
+# -----------------------------------------------------------------------------
+def _seen(document: dict[str, typing.Any], facts: Facts) -> None:
+    """
+    Add a fact for each file that document, if it is a review, says it
+    saw, with the git blob id of the content it saw.
+
+    """
+
+    if not str(document.get(KEY_ID_SELF)).startswith(PREFIX_REVIEW):
+        return
+    list_seen = document.get(KEY_SEEN) if isinstance(document.get(KEY_SEEN), list) else []
+    facts['seen_in_review'].update((document[KEY_ID_SELF], seen[KEY_PATH], seen[KEY_BLOB])
+                                for seen in list_seen
+                                if isinstance(seen, dict)
+                                and isinstance(seen.get(KEY_PATH), str)
+                                and isinstance(seen.get(KEY_BLOB), str))
 
 
 # -----------------------------------------------------------------------------

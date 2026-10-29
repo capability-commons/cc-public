@@ -1798,3 +1798,55 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_ruling
         guid_target:    relcon_4036530375554a17996915bdd942558b
+
+  # ---------------------------------------------------------------------------
+  # relation_reviews -- Reviews relation
+  #
+  relation_reviews:
+    id_self:            relation_reviews
+    guid_self:          relation_cb5d5964047b465d96134ca08773d551
+    title:              Reviews relation
+    brief:              |
+                        SOURCE reviews TARGET
+    description:        |
+                        The review identified by SOURCE found that the
+                        item identified by TARGET, as held in the file
+                        whose content the review records, passed the
+                        review.
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_review
+        guid_target:    relcon_7ef1185acaa649319e587a4375add0b4
+
+  # ---------------------------------------------------------------------------
+  # relation_is_for_maturity -- Is-for-maturity relation
+  #
+  relation_is_for_maturity:
+    id_self:            relation_is_for_maturity
+    guid_self:          relation_40a35733bd094698827cb1b448ca7bfb
+    title:              Is-for-maturity relation
+    brief:              |
+                        SOURCE is for TARGET
+    description:        |
+                        The review identified by SOURCE reviewed its
+                        items for the maturity level identified by
+                        TARGET, so that it meets the demands of that
+                        level, and of any lower one, for a review of
+                        them.
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_review
+        guid_target:    relcon_7ef1185acaa649319e587a4375add0b4
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_maturity_level
+        guid_target:    relcon_7a0ee8ec1d06409ea4a4db6511c608d4
