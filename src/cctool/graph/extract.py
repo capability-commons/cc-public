@@ -192,10 +192,19 @@ LINE_BLOCK_CLOSE  = ' */'
 SET_DIR_SKIP      = {'.git', '.pixi', '.venv', '__pycache__', '_tools', '_fixture'}
 
 # The YAML documents read so far, keyed by the path and the digest of
-# the file that holds each. It is emptied when it holds this many.
+# the file that holds each. Only the latest read of a path is kept, so
+# that it holds about one entry for each file of the tree, however
+# often the files change. It is emptied when it holds this many, which
+# is several times the files of the tree: were it fewer, each read of
+# the tree would empty it, and every document would be parsed and
+# checked afresh each time.
 #
 MAP_READ          = {}
-COUNT_READ        = 4096
+COUNT_READ        = 32768
+
+# The key in MAP_READ of the latest read of each path.
+#
+MAP_LATEST        = {}
 
 # The digest of the file that each YAML document read from a YAML file
 # or python module was read from, keyed by the id of the document, which
@@ -208,10 +217,11 @@ MAP_DIGEST        = {}
 # the line its first line is on, and the words that prose avoids and the
 # terms that text is searched for, with the document, so that a document
 # read again as the same object is not walked again. It is emptied when
-# it holds COUNT_FACTS.
+# it holds COUNT_FACTS, which is several times the documents of the
+# tree, for the reason COUNT_READ is.
 #
 MAP_FACTS         = {}
-COUNT_FACTS       = 8192
+COUNT_FACTS       = 32768
 
 # How much of the head of a file that is not YAML or python is read to
 # tell whether it has changed. A comment header is far shorter.
@@ -1077,18 +1087,16 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
         data = _bytes(path)
         key  = (str(relative), hashlib.blake2b(data, digest_size = 16).digest())
         if key not in MAP_READ:
-            if len(MAP_READ) >= COUNT_READ:
-                MAP_READ.clear()
-                MAP_DIGEST.clear()
             try:
                 text = data.decode('utf-8')
             except UnicodeDecodeError as error:
                 raise ErrorRead('The file is not UTF-8: {error}'.format(error = error),
                                 data.count(b'\n', 0, error.start) + 1) from error
-            MAP_READ[key] = parse_all(text, relative)
+            _keep(key, parse_all(text, relative))
             for (document, _) in MAP_READ[key].values():
                 if isinstance(document, dict):
                     MAP_DIGEST[id(document)] = (document, key[1].hex())
+        MAP_LATEST[key[0]] = key
         return MAP_READ[key]
 
     # Any other file may be large, or not text, so only its head is
@@ -1098,9 +1106,8 @@ def read(path: pathlib.Path, relative: pathlib.Path) -> Documents:
     head = _bytes(path, SIZE_HEAD)
     key  = (str(relative), path.stat().st_size, hashlib.blake2b(head, digest_size = 16).digest())
     if key not in MAP_READ:
-        if len(MAP_READ) >= COUNT_READ:
-            MAP_READ.clear()
-        MAP_READ[key] = {str(relative): _header(_line_of_file(path), mark_comment(relative))}
+        _keep(key, {str(relative): _header(_line_of_file(path), mark_comment(relative))})
+    MAP_LATEST[key[0]] = key
     return MAP_READ[key]
 
 
@@ -1119,6 +1126,29 @@ def _bytes(path: pathlib.Path, size: int = -1) -> bytes:
     except OSError as error:
         raise ErrorRead('The file cannot be read: {error}'.format(
                             error = error.strerror or error), 1) from error
+
+
+# -----------------------------------------------------------------------------
+def _keep(key: tuple, map_document: Documents) -> None:
+    """
+    Keep map_document in MAP_READ at key, in place of the latest read
+    of the same path, which is dropped with the digests of its
+    documents.
+
+    """
+
+    latest = MAP_LATEST.pop(key[0], None)
+    if latest is not None and latest != key:
+        for (document, _) in MAP_READ.pop(latest, {}).values():
+            MAP_DIGEST.pop(id(document), None)
+
+    if len(MAP_READ) >= COUNT_READ:
+        MAP_READ.clear()
+        MAP_DIGEST.clear()
+        MAP_LATEST.clear()
+
+    MAP_READ[key]      = map_document
+    MAP_LATEST[key[0]] = key
 
 
 # -----------------------------------------------------------------------------

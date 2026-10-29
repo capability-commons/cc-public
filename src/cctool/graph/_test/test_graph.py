@@ -350,3 +350,16 @@ def test_parse_reads_yaml_where_pyyaml_has_no_c_parser():
                             env            = env,
                             check          = False)
     assert result.returncode == 0, result.stderr
+
+
+def test_a_file_read_again_after_a_change_keeps_one_entry(tmp_path):
+    path = tmp_path / '_data' / 'concern' / 'concern_x.yaml'
+    path.parent.mkdir(parents = True)
+    for title in ('A', 'B', 'C'):
+        path.write_text('id_self: concern_x\ntitle: {title}\n'.format(title = title))
+        map_document = cctool.graph.extract.documents(tmp_path)
+    relative = '_data/concern/concern_x.yaml'
+    assert map_document[relative][0]['title'] == 'C'
+    assert [key for key in cctool.graph.extract.MAP_READ if key[0] == relative] == [
+        cctool.graph.extract.MAP_LATEST[relative]]
+    assert cctool.graph.extract.documents(tmp_path)[relative][0] is map_document[relative][0]

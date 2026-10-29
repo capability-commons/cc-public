@@ -112,10 +112,17 @@ MESSAGE_LAYOUT    = 'Not laid out as cctool format lays it out.'
 
 # What the layout check found for a file, by its path and the digest of
 # its text, so that a file unchanged since the last check is not laid
-# out again. Cleared when it holds COUNT_VIOLATION entries.
+# out again. Only the latest text of a path is kept, so that it holds
+# about one entry for each file of the tree. Cleared when it holds
+# COUNT_VIOLATION entries, several times the files of the tree, so that
+# a check of the whole tree never clears it as it goes.
 #
 MAP_VIOLATION     = {}
-COUNT_VIOLATION   = 4096
+COUNT_VIOLATION   = 32768
+
+# The key in MAP_VIOLATION of the latest text of each path.
+#
+MAP_LATEST        = {}
 
 # The kind of verdict that the store of the checker keeps for the layout
 # check.
@@ -186,14 +193,18 @@ def violations(root: pathlib.Path, map_document: cctool.graph.extract.Documents)
         text = (root / relative).read_text(encoding = 'utf-8')
         key  = cctool.check.store.key(relative, cctool.check.store.digest(text))
         if key not in MAP_VIOLATION:
+            if MAP_LATEST.get(relative, key) != key:
+                MAP_VIOLATION.pop(MAP_LATEST[relative], None)
             if len(MAP_VIOLATION) >= COUNT_VIOLATION:
                 MAP_VIOLATION.clear()
+                MAP_LATEST.clear()
             if key in map_stored:
                 row = map_stored[key]
                 MAP_VIOLATION[key] = None if row is None else tuple(row)
             else:
                 MAP_VIOLATION[key] = _violation(relative, text)
-        map_used[key] = None if MAP_VIOLATION[key] is None else list(MAP_VIOLATION[key])
+        MAP_LATEST[relative] = key
+        map_used[key]        = None if MAP_VIOLATION[key] is None else list(MAP_VIOLATION[key])
         if MAP_VIOLATION[key] is not None:
             list_row.append(MAP_VIOLATION[key])
 
