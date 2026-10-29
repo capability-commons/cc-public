@@ -1,0 +1,74 @@
+id_self:                ann_control_blocks_hold_the_only_platform_code
+guid_self:              ann_cec755c904f04690b34c64ea3789ae91
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control blocks that hold the only platform code
+brief:                  |
+                        Only the control block of each execution unit
+                        and each host reads the clock, the queues and
+                        the hardware sensors, so the code that differs
+                        between a laptop, an Orin and a Raspberry Pi
+                        sits in those blocks, which a variant can swap
+                        per target. Node code depends on a struct, not
+                        an engine API, and a review of what can reach
+                        the platform reads a few control blocks rather
+                        than every node.
+description:            |
+                        Sources:
+                        - The per-execution-unit and per-host control
+                          blocks are the only nodes privileged to read
+                          time and runtime services.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_services_in_a_control_message.yaml
+                          at brief)
+                        - A runtime parameter is an engine API that
+                          every target must implement in full, and
+                          every node that calls it is bound to it.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_runtime_api_binds_node_code_to_each_target.yaml
+                          at brief)
+                        - Target platforms range from an Ubuntu
+                          workstation to a Raspberry Pi 5 (WTP,
+                          2026-10-29). Strength: moderate; it grows
+                          with the number of targets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_services_in_a_control_message
+    guid_target:        opt_d61ba58fae864074a0e25d9e5482719a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,56 @@
+id_self:                ann_control_message_reports_but_cannot_act
+guid_self:              ann_c520d8ebc0534824aa8efa0c2619b5f2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control message that reports but cannot act
+brief:                  |
+                        The control message carries readings into a
+                        node, so it does nothing for services that
+                        act, such as setting a clock frequency or a
+                        hardware register, or that answer a request
+                        within the step. Those still need a sink node,
+                        an actor, or a privileged control block that
+                        takes commands, as under source ports, so this
+                        option shares the source-port option's real
+                        cost and settles only the reporting half of
+                        the question.
+description:            |
+                        Sources:
+                        - Some services act rather than report, and a
+                          source port cannot carry them.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_services_that_act_fit_a_parameter_better_than_a_port.yaml
+                          at brief)
+                        - The control message carries the time, the
+                          mode flag, application states and modes, and
+                          readings of runtime services.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/opt_services_in_a_control_message.yaml
+                          at brief) Strength: moderate; it depends on
+                          how many acting services Patrol needs.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_services_in_a_control_message
+    guid_target:        opt_d61ba58fae864074a0e25d9e5482719a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,57 @@
+id_self:                ann_control_message_cost_is_one_small_struct_per_step
+guid_self:              ann_c7e5b07b60cf4bb0b5c4296f2f0f655c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control message that costs one small struct per step
+brief:                  |
+                        The control block writes one struct per
+                        execution unit per step, and nodes in the unit
+                        can read it in place, so the cost does not
+                        grow with the number of services a node uses
+                        or the number of nodes that use them. It is
+                        cheaper than one source node and edge per
+                        service, and close to a runtime call. Sharing
+                        it read-only is one of the memory-token
+                        exceptions the ruling on carrying values
+                        expects.
+description:            |
+                        Sources:
+                        - A service as a source node produces a
+                          message every step, so its cost is paid each
+                          step even when no reader uses the value.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_service_source_runs_each_step_whether_read_or_not.yaml
+                          at brief)
+                        - Memory tokens are expected as exceptions,
+                          for example to support shared read-only
+                          memory.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/ruling_value_copied_into_each_queue.yaml
+                          at brief) Strength: weak; the costs of all
+                          options are small against a 33 ms step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_services_in_a_control_message
+    guid_target:        opt_d61ba58fae864074a0e25d9e5482719a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

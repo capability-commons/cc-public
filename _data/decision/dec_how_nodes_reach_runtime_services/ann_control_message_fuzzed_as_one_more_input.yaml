@@ -1,0 +1,60 @@
+id_self:                ann_control_message_fuzzed_as_one_more_input
+guid_self:              ann_24153bbfbed7478f8ae59da45ad4fd2a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control message fuzzed as one more input
+brief:                  |
+                        The generated fuzz harness can fill the
+                        control message like any other input, so a
+                        node is fuzzed with clock jumps, a wall clock
+                        that goes backward, sudden mode changes and
+                        full queues. A runtime parameter hides these
+                        from the harness, and source ports give the
+                        same reach at the cost of a port per service.
+description:            |
+                        Sources:
+                        - The generator writes a fuzz harness for each
+                          node kind from its declared interface.
+                          (_data/decision/dec_fuzzing_of_a_single_node/ruling_harness_generated_from_the_node_interface.yaml
+                          at brief)
+                        - A runtime service reached through an
+                          undeclared parameter is an input the harness
+                          cannot generate.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_hidden_runtime_inputs_escape_the_fuzz_harness.yaml
+                          at brief) ASSUMPTION: the harness is told
+                          which ranges each field of the control
+                          message may take, such as a monotonic clock
+                          that never decreases. Strength: moderate.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_services_in_a_control_message
+    guid_target:        opt_d61ba58fae864074a0e25d9e5482719a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_runtime_parameter_undeclared
+    guid_target:        opt_5a487566197847ccbe0f255c320cc0a7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

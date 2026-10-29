@@ -1,0 +1,69 @@
+id_self:                ann_every_node_sees_every_reading
+guid_self:              ann_3863125c82fe4272a26470671bb8aad0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every node that sees every reading
+brief:                  |
+                        If every node receives the whole control
+                        message, nothing outside a node's code shows
+                        which readings it depends on, which is the
+                        fault the decision set out to remove from the
+                        runtime parameter, moved into a struct. Checks
+                        and replay still see the values, but cctool
+                        cannot tell which nodes a change of mode or a
+                        temperature reading can affect, and a node
+                        from a partner can read the host's state
+                        without asking. Declaring per node kind which
+                        fields it reads, and giving it only those,
+                        removes the objection at the cost of one line
+                        per field.
+description:            |
+                        Sources:
+                        - A node that reads the runtime directly hides
+                          an input from checks and replay.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/dec_how_nodes_reach_runtime_services.yaml
+                          at description)
+                        - Declared capabilities let cctool confine
+                          access to the nodes that need it.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_undeclared_runtime_reach_to_hardware_from_any_node.yaml
+                          at brief) Strength: moderate; it is a
+                          condition on how the option is built rather
+                          than a reason against it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_services_in_a_control_message
+    guid_target:        opt_d61ba58fae864074a0e25d9e5482719a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_services_as_source_ports
+    guid_target:        opt_89b932081a74499bad56e0f07de859e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_runtime_parameter_with_declared_capabilities
+    guid_target:        opt_03e80b38f2044138aeea289fbfeee1e9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
