@@ -26,7 +26,16 @@ brief:                  |
                         dataflow step surface names no language and is
                         not covered. Whether cc-patrol records its
                         first native document only after a cc-public
-                        tag that carries the check is left open.
+                        tag that carries the check is left open. On
+                        2026-10-29 WTP chose tree-sitter in place of
+                        libclang as the parser of the extractor: it
+                        reads the source text alone, with no compiler
+                        flags or include paths, marks what it cannot
+                        parse instead of failing, and parses a header
+                        in milliseconds, so the check compares
+                        signatures as the code writes them, as the
+                        Python check does. Macros are not expanded, so
+                        the extractor knows API macros by name.
 
 edge:
 
