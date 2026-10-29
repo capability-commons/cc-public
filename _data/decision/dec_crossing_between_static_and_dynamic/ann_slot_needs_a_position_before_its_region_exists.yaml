@@ -1,0 +1,111 @@
+id_self:                ann_slot_needs_a_position_before_its_region_exists
+guid_self:              ann_4e8c1dbf77974e5d835bfc2731c6244b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Slot position needed before its dynamic region exists
+brief:                  |
+                        The upheld option places each fixed slot by
+                        the static edges at the boundary, but the
+                        static schedule is generated at build time,
+                        while a region's boundary edges may arrive
+                        later by change set, and a build may carry the
+                        dynamic machinery with no dynamic node yet.
+                        The trial's generator, with no rule for this,
+                        put one slot for the whole dynamic subgraph
+                        after every static node, the only position
+                        from which a dynamic node can read every
+                        static output, and so delivered every dynamic
+                        value to static inputs a local step late: the
+                        rejected option, logged as invented. No
+                        requirement carries the ruling to prevent
+                        that. If the ruling stands, it needs a
+                        requirement and a case saying what a region
+                        is, how a slot's position is fixed when the
+                        build does not yet show the region's edges,
+                        and that a change set needing another position
+                        is refused; the node ICD's rule that a node
+                        runs after every node it reads from in the
+                        same local step then orders the static nodes
+                        around each slot. The delay option needs no
+                        such rule.
+description:            |
+                        Sources:
+                        - The static schedule holds a fixed call slot
+                          for each dynamic
+                          region, placed by the static edges at the boundary, and a change
+                          set that would need a region at another point in the static
+                          order is refused.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/opt_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - A build with no dynamic node leaves out the
+                          dynamic machinery
+                          unless its user has asked for it.
+                          (_data/requirement/rqt_generator_omits_dynamic.yaml at
+                          condition and object)
+                        - The generated step calls every static node
+                          and then the one
+                          dynamic slot. (trial 2c777ab9, src/cctool/dataflow/generate.py,
+                          function step; src/cctool/dataflow/engine/src/dynamic.cpp,
+                          function dynamic_slot)
+                        - The trial log lists it as invented: a
+                          dynamic node may read any
+                          static output and write any optional static input, and runs
+                          after the unit's static nodes. (trial process log,
+                          /mnt/project-files/notes/dataflow-trial/process-log.md, phase 3)
+                        - Measured: the static sink read at each step
+                          the dynamic node's
+                          output of the step before. (review of 2026-10-29, CC-014)
+                        - The ruling gives rise to no requirement.
+                          (review of 2026-10-29,
+                          CC-056) The change-set ICD refuses a change that would close a
+                          loop through the static subgraph, but not one that would need a
+                          slot elsewhere.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml
+                          at surface.data.artifact.failure)
+                        - A node is invoked after every node it reads
+                          from in the same
+                          local step.
+                          (_data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.invocation)
+                        - The review recommends implementing the
+                          ruling if same-step
+                          reading matters to a planned graph, and otherwise amending it
+                          with the reason. (review of 2026-10-29, section 7, W-T4)
+                        Strength: strong as evidence of how the ruling
+                        must be specified; it says nothing against the
+                        merit of crossing in the same step, only that
+                        a generator left without the rule falls back
+                        to the delay.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_step_delay_into_static
+    guid_target:        opt_34ce1dd2eb1b43a090618f0864875450
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

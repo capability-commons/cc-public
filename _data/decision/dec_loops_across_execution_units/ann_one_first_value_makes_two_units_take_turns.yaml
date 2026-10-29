@@ -1,0 +1,83 @@
+id_self:                ann_one_first_value_makes_two_units_take_turns
+guid_self:              ann_cc5796033835460bae11f7af954476fc
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One first value that makes the two units of a loop take turns
+brief:                  |
+                        A loop split over two units with one first
+                        value cannot run its two halves at once: the
+                        controller's step k+1 needs the plant's output
+                        of step k, which needs the controller's output
+                        of step k, so the units alternate, and each
+                        crossing adds its transport time to every
+                        turn. Putting a controller and a plant on two
+                        cores then gains nothing for the loop itself
+                        and costs two crossings a step. The halves
+                        overlap only if the loop holds more first
+                        values, which delays what each side sees by a
+                        step and so changes the control law. The gain
+                        is real only for work in either unit that lies
+                        off the loop, which placement can spread
+                        without splitting the loop.
+description:            |
+                        Sources:
+                        - Where a scheduler runs one tag at a time,
+                          pipeline parallelism
+                          needs an explicit delay between stages. (Menard et al. 2023,
+                          High-performance deterministic concurrency using Lingua Franca,
+                          section 4.3)
+                        - Pipelining over processing elements puts
+                          extra first values on
+                          the forward edges between stages. (Lattuada and Ferrandi 2013,
+                          Modeling pipelined applications with synchronous dataflow
+                          graphs, section IV-B)
+                        - First values are part of the state that
+                          throughput analysis
+                          starts from, and changing their number on a loop changes its
+                          throughput. (Stuijk, Geilen and Basten 2006, Exploring
+                          trade-offs in buffer requirements and throughput constraints
+                          for synchronous dataflow graphs, sections 3 and 4)
+                        - Across processing elements, the cost of
+                          communication
+                          outweighed the parallel gain for light kernels. (Nadezhkin et
+                          al. 2009, Realizing FIFO communication when mapping Kahn
+                          process networks onto the Cell, section on other experiments)
+                        - The review names a controller and a plant on
+                          two cores as the
+                          obvious multi-core case. (review of 2026-10-29, CC-003)
+                        ASSUMPTION: the standard bound of dataflow
+                        analysis, that a loop's period is at least the
+                        time around it divided by its first values,
+                        applies to execution units as it does to
+                        actors. Strength: moderate; it holds for the
+                        loop's own nodes at any scale, and weakens
+                        where each unit carries heavy work off the
+                        loop.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_loops_across_execution_units
+    guid_target:        dec_9b1682186ba74c0e8c25f5787e679959
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_loops_across_units_refused
+    guid_target:        opt_e5a90ee443944600b9113e05fba795f2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_feedback_default_sent_before_the_first_step
+    guid_target:        opt_780f4d37101f457da0fcedbf6d3e9e42
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

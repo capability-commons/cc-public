@@ -1,0 +1,87 @@
+id_self:                ann_host_stop_gives_a_link_attacker_a_stop_button
+guid_self:              ann_759be6788d364318a1ede90cb8f1b426
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host stop that gives whoever can delay a link a stop button
+brief:                  |
+                        Where a receiver reads over a network a third
+                        party can reach, whoever can delay that link
+                        past the timeout can, under the host-stop
+                        option, stop the receiving host at will, and a
+                        brief drop on a radio link stops it by
+                        accident. Under waiting without limit the same
+                        delay freezes every unit downstream for as
+                        long as it lasts. Under a timeout with a
+                        fail-safe the attacker can force the declared
+                        fail-safe, but the units run on and each fault
+                        is reported, which bounds the harm and leaves
+                        a trace.
+description:            |
+                        Sources:
+                        - Whoever can delay or flood a link between
+                          hosts can stretch
+                          every step on the consumer, and the transport still needs a
+                          timeout and a fail-safe.
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml
+                          at brief)
+                        - A receiver that times out, or whose link
+                          closes, stops every
+                          unit on its host.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_stops_the_host.yaml
+                          at brief)
+                        - On a timeout or a closed link the engine
+                          reports a fault event,
+                          applies the fail-safe, and the unit runs on.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_applies_a_declared_fail_safe.yaml
+                          at brief)
+                        - Security asks what an attacker can reach and
+                          what it would
+                          cost; reliability is measured by availability in percent of
+                          scheduled time. (_data/register/reg_concern.yaml at
+                          entries.concern_security.question and
+                          entries.concern_reliability.measure)
+                        ASSUMPTION: some deployments join hosts over a
+                        network a third party can reach, such as a
+                        robot's radio link to a base station; Patrol
+                        on one Orin may have none. Strength: moderate;
+                        it applies only to crossings between hosts,
+                        and a stop may still be right where the safe
+                        state is a halted robot.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_receiver_timeout_applies_a_declared_fail_safe
+    guid_target:        opt_38afb4a7e0f049aeb499c5cf95016706
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_timeout_stops_the_host
+    guid_target:        opt_3f4044f96d404dbbb6932e138560fdc2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_waits_without_limit
+    guid_target:        opt_103675ef4819412da9899f4ca2c78db7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

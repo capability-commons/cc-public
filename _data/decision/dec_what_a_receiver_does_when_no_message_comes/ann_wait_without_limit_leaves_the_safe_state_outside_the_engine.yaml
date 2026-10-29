@@ -1,0 +1,104 @@
+id_self:                ann_wait_without_limit_leaves_the_safe_state_outside_the_engine
+guid_self:              ann_e4cf6811668a4c7cb4daaf0ff13c2ca8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Safe state that waiting without limit leaves outside the engine
+brief:                  |
+                        If a receiver waits without limit, a stalled
+                        sender freezes every unit that reads from it,
+                        their safety functions included, and only
+                        something outside the engine can notice and
+                        act; if a timeout stops the host, something
+                        outside must restart it. On Patrol's Orin that
+                        could be a supervisor process or a hardware
+                        watchdog, a further dependency on each
+                        platform that the safety case then rests on,
+                        and on a core with no operating system there
+                        is no supervisor process at all. A timeout
+                        with a declared fail-safe bounds the time to
+                        the fail-safe within the engine, by the
+                        timeout plus one local step, and keeps that
+                        bound in the records where checks can see it.
+description:            |
+                        Sources:
+                        - A stalled or lost sender stops every unit
+                          that reads from it,
+                          and an operator or a supervisor outside the engine notices and
+                          acts.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_waits_without_limit.yaml
+                          at brief)
+                        - A deployment that must keep running restarts
+                          the host from
+                          outside.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_stops_the_host.yaml
+                          at brief)
+                        - An execution unit may be a core with no
+                          operating system, so
+                          the same graph can be placed on a desktop or an embedded
+                          target.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Safety is measured by the time to reach a
+                          safe state after a
+                          failure, and dependency risk by the dependencies taken.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure and
+                          entries.concern_dependency_risk.measure)
+                        - Lingua Franca pairs a deadline with a
+                          handler that, when the
+                          deadline is missed, can raise an alarm or switch the system to
+                          a safe degraded mode: a stated bound with a declared reaction
+                          inside the program. (Lohstroh et al. 2021, Toward a Lingua
+                          Franca for deterministic concurrent systems, section 3.7)
+                        - Patrol runs on an NVIDIA Orin. (WTP,
+                          2026-10-28) ASSUMPTION: a core with no
+                          operating system has no supervisor process.
+                          No supervisor or watchdog outside the engine
+                          is named in the records, so neither its
+                          detection time nor the platforms it runs on
+                          are checked. Strength: moderate; it would
+                          weaken if the records named a watchdog for
+                          each platform with a stated detection time.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_receiver_timeout_applies_a_declared_fail_safe
+    guid_target:        opt_38afb4a7e0f049aeb499c5cf95016706
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_waits_without_limit
+    guid_target:        opt_103675ef4819412da9899f4ca2c78db7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_timeout_stops_the_host
+    guid_target:        opt_3f4044f96d404dbbb6932e138560fdc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

@@ -1,0 +1,84 @@
+id_self:                ann_removed_dynamic_node_left_its_value_in_a_static_input
+guid_self:              ann_f461ebfa459f433b917a7bd27e926b51
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Removed dynamic node that left its last value in a static input
+brief:                  |
+                        In the trial, after a change set removed the
+                        dynamic node feeding a static sink, the sink
+                        read that node's last value at every later
+                        step, 13129682 for ever, and could not tell
+                        that its producer was gone. The ruled slots
+                        carry an optional default, but the ruling does
+                        not say what a static input reads in a local
+                        step its slot does not fill, whether the
+                        region was removed, has not run yet, or was
+                        put back after a failed swap. The ruled option
+                        needs that rule stated: the slot's default
+                        when it has one, otherwise a message marked
+                        absent, never a value held from an earlier
+                        step. Without it a static safety function can
+                        act on a stale picture with no fault raised.
+description:            |
+                        Sources:
+                        - Measured: after the removal at step 5 the
+                          sink gave 13129682 at
+                          steps 5 to 10. (review of 2026-10-29, CC-014, and area report
+                          trial-engine, TE-12)
+                        - Nothing resets a static input when its
+                          feeding edge or node is
+                          removed. (review of 2026-10-29, CC-014; trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, functions build,
+                          install and dynamic_slot)
+                        - Values cross in the same step through fixed
+                          slots, each with an
+                          optional default value.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ruling_same_step_through_fixed_slots.yaml
+                          at brief)
+                        - Every input carries exactly one message in
+                          each local step, and
+                          a message with no items means nothing arrived.
+                          (_data/interface_control_document/icd_dataflow_node.yaml at
+                          surface.step.dataflow_step.availability)
+                        - How a reader tells an absent message from an
+                          empty one is open.
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/dec_how_a_reader_tells_absent_from_empty.yaml
+                          at brief)
+                        - An earlier argument on this decision found
+                          that the fixed-slot
+                          option does not say what a static input sees when its region
+                          does not run; the trial now shows the consequence.
+                          (_data/decision/dec_crossing_between_static_and_dynamic/ann_crossing_defined_value_when_dynamic_side_is_absent.yaml
+                          at brief)
+                        Strength: strong for safety and reliability;
+                        it is a gap in the wording of the ruled
+                        option, closed by one stated rule, not a
+                        reason to reverse it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_crossing_between_static_and_dynamic
+    guid_target:        dec_f61aec822eb64801bb54bc7ee2ca7ba6
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_same_step_through_fixed_slots
+    guid_target:        opt_023b0997333040db88ce72a54a8df2a5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,105 @@
+id_self:                ann_queue_primed_with_the_default_is_the_sdf_delay
+guid_self:              ann_0f458238997142f88fb72b30f8486a59
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Feedback default in the queue as the delay of synchronous dataflow
+brief:                  |
+                        In synchronous dataflow a delay is the arc
+                        buffer filled with first values before the
+                        run, and every directed loop needs one. When a
+                        feedback edge crosses units its buffer is the
+                        queue, so putting the port's default in the
+                        queue before local step 0 is that delay in its
+                        plain form, and the ruled rule on defaults
+                        already lets the source emit a first token and
+                        has the engine prime the edge. The trial wrote
+                        the default into the target's input instead,
+                        behind the waiting receiver, and the loop
+                        deadlocked; the same graph in one unit ran.
+                        With the queue primed, each local step reads
+                        what it reads in one unit, so the feedback
+                        requirement holds across the split. The gain
+                        has a limit: a split is allowed only where the
+                        cut falls on the loop's feedback edge.
+description:            |
+                        Sources:
+                        - A delay of d samples is the arc buffer
+                          initialized with d
+                          samples, and every directed loop must hold at least one. (Lee
+                          and Messerschmitt 1987, Synchronous data flow, section I and
+                          the section on the formalism)
+                        - A feedback edge needs an end that can supply
+                          a default: the
+                          source emits a first token, or the destination uses its
+                          default when nothing has arrived, and the engine primes the
+                          edge again after a rewire or a version swap.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The trial wrote the default into the
+                          target's input before the
+                          first step and never into the queue, and ordered the receiver
+                          before the sender, so both units waited for ever; the graph in
+                          one unit ran. (trial 2c777ab9, src/cctool/dataflow/generate.py,
+                          functions defaults and unit_order; review of 2026-10-29,
+                          CC-003)
+                        - In the first local step the feedback edge
+                          carries the default
+                          of the port that supplies one, and then the previous step's
+                          message. (_data/requirement/rqt_executor_feedback_previous.yaml
+                          at object)
+                        - Variants for a number of cores are generated
+                          by allocating
+                          nodes to processes and processes to cores.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - A loop may cross units when one of its
+                          crossing edges is a
+                          feedback edge, and one with no feedback edge is refused.
+                          (_data/decision/dec_loops_across_execution_units/opt_feedback_default_sent_before_the_first_step.yaml
+                          at brief)
+                        That each step then reads what one unit reads
+                        follows from the k-th message of the forward
+                        crossing being read in local step k and the
+                        feedback crossing being one message ahead. The
+                        review's acceptance for this fix is that the
+                        variant then runs with x.out = 1, 2, 3 and so
+                        on (review of 2026-10-29, CC-003); that run
+                        has not been made. Strength: strong on
+                        correctness, by reasoning not yet run, and on
+                        keeping placement free of loop constraints
+                        where the cut falls on the feedback edge; a
+                        placement that cuts a loop only on forward
+                        edges is refused under both options.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_loops_across_execution_units
+    guid_target:        dec_9b1682186ba74c0e8c25f5787e679959
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_feedback_default_sent_before_the_first_step
+    guid_target:        opt_780f4d37101f457da0fcedbf6d3e9e42
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_loops_across_units_refused
+    guid_target:        opt_e5a90ee443944600b9113e05fba795f2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

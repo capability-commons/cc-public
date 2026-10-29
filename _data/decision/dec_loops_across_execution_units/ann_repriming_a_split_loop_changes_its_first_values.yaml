@@ -1,0 +1,99 @@
+id_self:                ann_repriming_a_split_loop_changes_its_first_values
+guid_self:              ann_5126eeeee4b0491aa70e3cba207a7f15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Second first value that priming after a swap adds to a split loop
+brief:                  |
+                        The ruled rule on defaults has the engine
+                        prime a feedback edge again after a rewire or
+                        a version swap. Within one unit that
+                        overwrites one input buffer, and the loop
+                        still holds one first value. Across units the
+                        queue may already hold the other unit's
+                        message when the change lands, since their
+                        steps do not align, so pushing the default
+                        adds a second first value, and the loop runs a
+                        step further apart for the rest of the run,
+                        unless both units drain the queue at an agreed
+                        step, the barrier the trial declined to build.
+                        The literature warns against letting the
+                        number of first values vary. Priming is also
+                        new work for every sender kind, the code that
+                        holds a third-party transport library.
+                        Refusing loops across units avoids all of it.
+description:            |
+                        Sources:
+                        - The engine primes the edge again after a
+                          rewire or a version
+                          swap.
+                          (_data/decision/dec_default_values_on_feedback_edges/opt_default_from_a_port_that_declares_it.yaml
+                          at brief)
+                        - The queue between units holds two messages
+                          where the writer and
+                          reader of a step overlap.
+                          (_data/decision/dec_messages_on_a_kahn_edge_per_step/opt_one_message_per_kahn_edge_per_step.yaml
+                          at brief) The trial's in-process queue held four. (trial
+                          2c777ab9, src/cctool/dataflow/engine/nodes/transport.cpp,
+                          function transport_open)
+                        - A change set takes effect at the start of
+                          one local step
+                          (_data/requirement/rqt_dynamic_atomic.yaml at object), which
+                          across unaligned units is not one instant. (review of
+                          2026-10-29, CC-063)
+                        - A change set across units needs a barrier
+                          between threads or
+                          hosts, and the trial refused any change set that touched more
+                          than one unit. (trial process log,
+                          /mnt/project-files/notes/dataflow-trial/process-log.md, phase 3)
+                        - The semantics of a varying number of initial
+                          tokens is
+                          ambiguous, and a channel shared between scenarios must keep the
+                          same number in each. (Bouakaz, Fradet and Girault 2017, A
+                          survey of parametric dataflow models of computation, sections
+                          4.1 and 9)
+                        - Transport libraries are used only in the
+                          sender and the
+                          receiver. (_data/requirement/rqt_transport_confines_library.yaml
+                          at object)
+                        Strength: moderate; it binds only where a node
+                        on a split loop can be swapped or rewired
+                        while running, which the dynamic subgraph
+                        allows.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_loops_across_execution_units
+    guid_target:        dec_9b1682186ba74c0e8c25f5787e679959
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_loops_across_units_refused
+    guid_target:        opt_e5a90ee443944600b9113e05fba795f2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_feedback_default_sent_before_the_first_step
+    guid_target:        opt_780f4d37101f457da0fcedbf6d3e9e42
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

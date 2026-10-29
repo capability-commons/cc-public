@@ -1,0 +1,85 @@
+id_self:                ann_step_number_reveals_a_failed_step_only_at_the_next_send
+guid_self:              ann_4b0a84a99f594c95870ee3c5ed72e0be
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Failed step that a step number reveals only at the next send
+brief:                  |
+                        Under the step-number option a failed step
+                        sends nothing, so a receiver learns of it only
+                        when the sender's next message arrives with a
+                        higher number, a full period of the sending
+                        unit later, and not at all while the sender
+                        keeps failing. Until then the receiving unit
+                        waits, and so do the units after it. A message
+                        marked invalid reaches the receiver at its
+                        usual time, in the step the failure happened,
+                        so every reader applies its fail-safe at once
+                        and no unit waits longer than in normal
+                        running. On a safety path that difference is
+                        part of the time to a safe state.
+description:            |
+                        Sources:
+                        - A failed step sends nothing, and a receiver
+                          that gets an
+                          unexpected number applies its fail-safe for the missing step.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_messages_carry_their_local_step.yaml
+                          at brief)
+                        - A unit whose local step fails still runs its
+                          senders, each
+                          sending a message marked as not valid.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_failed_step_sends_messages_marked_invalid.yaml
+                          at brief)
+                        - Between units each unit reads exactly one
+                          message per input
+                          edge per local step, waiting for it.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_reading_derived_by_placement.yaml
+                          at brief)
+                        - Every producer has a stated maximum rate
+                          from which capacity
+                          is derived, and overflow is a broken requirement.
+                          (WTP, 2026-10-28) ASSUMPTION: a broken maximum stays broken
+                          until it is fixed, so a port whose fail-safe fails the step can
+                          fail many steps in a row.
+                        - Safety is measured by the time to reach a
+                          safe state after a
+                          failure. (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure)
+                        - The review recommended that a failed step
+                          still send a message
+                          flagged invalid. (review of 2026-10-29, section 7, W-T1)
+                        Strength: strong where a reader is on a safety
+                        path or its sender can fail repeatedly; weak
+                        where failures are rare and isolated.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_failed_local_step_sends_downstream
+    guid_target:        dec_cfcda7419cf443f8ab0c72524c775f63
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_failed_step_sends_messages_marked_invalid
+    guid_target:        opt_40f8a09db42a45ae8e747aa1f81ceb8f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_messages_carry_their_local_step
+    guid_target:        opt_b5706db53e6f48fea3ac4a0384312445
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

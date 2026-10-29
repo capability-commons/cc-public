@@ -1,0 +1,77 @@
+id_self:                ann_refused_loop_moves_to_an_actor_and_an_open_rule
+guid_self:              ann_ed6f0edfff8b4951aeae4ae077418d15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refused loop that moves to an actor and an unsettled rule
+brief:                  |
+                        If loops across units are refused, an author
+                        who needs a controller and a plant on two
+                        cores must route the loop through an actor.
+                        That changes its model, not only its
+                        placement: an actor runs in the gap after the
+                        static schedule and admits what was waiting
+                        when the gap opened, so what the controller
+                        sees depends on timing and lags by a gap,
+                        where a primed Kahn loop gives the one-unit
+                        values exactly. The loop also becomes a mixed
+                        loop of Kahn nodes and actors, whose rule for
+                        a first value is itself open and whose
+                        requirement today exempts it. A choice of
+                        placement then spreads into the graph's
+                        semantics, its checks and its tests.
+description:            |
+                        Sources:
+                        - A controller and a plant that must run on
+                          two cores meet
+                          through an actor or through edges that form no loop.
+                          (_data/decision/dec_loops_across_execution_units/opt_loops_across_units_refused.yaml
+                          at brief)
+                        - Actors run in the gaps between steps.
+                          (_data/decision/dec_how_actors_are_run/ruling_actors_between_steps.yaml
+                          at brief) A gap admits the messages waiting when it opens.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ruling_messages_waiting_when_the_gap_opens.yaml
+                          at brief)
+                        - The trial passed what an actor wrote in a
+                          gap to its Kahn
+                          reader in the next local step. (review of 2026-10-29, area
+                          report trial-engine, section 3)
+                        - Whether a loop of Kahn nodes and actors
+                          needs a default is
+                          open, and rqt_checks_feedback_default applies only to a loop
+                          that holds no actor.
+                          (_data/decision/dec_first_value_of_a_loop_of_kahn_nodes_and_actors/dec_first_value_of_a_loop_of_kahn_nodes_and_actors.yaml
+                          at description; review of 2026-10-29, CC-054)
+                        ASSUMPTION: edges that form no loop cannot
+                        close a control loop, so the actor is the only
+                        route the option leaves for a loop that must
+                        span two cores. Strength: moderate; it bites
+                        only for loops that must span cores, and
+                        placement can keep most loops in one unit.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_loops_across_execution_units
+    guid_target:        dec_9b1682186ba74c0e8c25f5787e679959
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_feedback_default_sent_before_the_first_step
+    guid_target:        opt_780f4d37101f457da0fcedbf6d3e9e42
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_loops_across_units_refused
+    guid_target:        opt_e5a90ee443944600b9113e05fba795f2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

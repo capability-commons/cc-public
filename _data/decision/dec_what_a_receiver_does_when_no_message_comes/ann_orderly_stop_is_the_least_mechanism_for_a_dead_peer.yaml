@@ -1,0 +1,76 @@
+id_self:                ann_orderly_stop_is_the_least_mechanism_for_a_dead_peer
+guid_self:              ann_ff523a167493482bb03f670cc34c2549
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Orderly stop as the least mechanism for a dead peer
+brief:                  |
+                        Stopping the host when a receiver times out
+                        needs no per-port declaration, no new entry on
+                        the fail-safe list, and no reasoning about how
+                        each reader handles a message that never came:
+                        one event, one stop, a flushed recording. A
+                        halted host is one known state to argue in a
+                        safety case, where running on means arguing
+                        the fail-safe of every crossing port. The
+                        review's own acceptance for the TCP finding
+                        asks for an event and an orderly stop, though
+                        on the policy it recommends the fail-safe. For
+                        a first engine and early Patrol work this is
+                        the simplest answer, and a safe one if the
+                        robot comes to rest when commands cease; it is
+                        weak where the host must keep running.
+description:            |
+                        Sources:
+                        - A receiver that times out or whose link
+                          closes reports a fault
+                          event and stops every unit on its host at the end of the local
+                          step.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_stops_the_host.yaml
+                          at brief)
+                        - Killing either peer should give an event and
+                          an orderly stop,
+                          with the recording flushed. (review of 2026-10-29, CC-016) On
+                          the policy itself the review recommends a fault event and the
+                          receiver's fail-safe instead of a stop. (review of 2026-10-29,
+                          section 7, W-T7)
+                        - WTP wants the approach pragmatic and as
+                          simple as feasible.
+                          (WTP, 2026-10-28)
+                        - Safety asks what state the design falls back
+                          to when it fails.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question)
+                        ASSUMPTION: Patrol's actuators stop when
+                        commands cease, so a halted host leaves the
+                        robot at rest. Strength: moderate; it rests on
+                        the assumption about actuators, and loses
+                        force once the robot must keep a function
+                        running through a lost link.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_receiver_timeout_stops_the_host
+    guid_target:        opt_3f4044f96d404dbbb6932e138560fdc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

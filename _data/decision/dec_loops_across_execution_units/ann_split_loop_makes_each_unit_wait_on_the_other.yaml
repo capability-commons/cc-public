@@ -1,0 +1,98 @@
+id_self:                ann_split_loop_makes_each_unit_wait_on_the_other
+guid_self:              ann_20a11deb493d4f029bdb7c934a3d204e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Split loop that makes each unit wait on the other
+brief:                  |
+                        A waiting crossing that only feeds forward
+                        holds the downstream unit to a stall upstream
+                        at once, and the upstream unit to a stall
+                        downstream only once the queue between them
+                        fills, a few local steps later. A loop split
+                        over two units removes that slack: each waits
+                        on the other's reply in every local step, so a
+                        stall, an overrun or a lost link on either
+                        side freezes both at once, and a controller in
+                        one unit cannot command a safe state while it
+                        waits on the plant in the other. Over a link
+                        between hosts, whoever can delay it in either
+                        direction holds both hosts. Refusing the loop
+                        keeps it in one unit, and two cores then meet
+                        through an actor, which never waits within a
+                        step, or through edges that form no loop,
+                        where neither side waits for the other's
+                        reply.
+description:            |
+                        Sources:
+                        - Across units each receiver waits for its
+                          message.
+                          (_data/decision/dec_loops_across_execution_units/dec_loops_across_execution_units.yaml
+                          at description)
+                        - The queue between units is bounded, and a
+                          lossless sender
+                          waits when it is full.
+                          (_data/interface_control_document/icd_dataflow_transport.yaml
+                          at surface.sender.dataflow_step.back_pressure) In the trial a
+                          forward crossing held a 10 ms sender to a 50 ms reader this
+                          way. (review of 2026-10-29, CC-011, and area report
+                          trial-engine, TE-11)
+                        - A controller and a plant on two cores meet
+                          through an actor or
+                          through edges that form no loop.
+                          (_data/decision/dec_loops_across_execution_units/opt_loops_across_units_refused.yaml
+                          at brief)
+                        - A gap admits only the messages waiting when
+                          it opens, so an
+                          actor never waits for a message within a step.
+                          (_data/decision/dec_messages_handled_in_an_actor_gap/ruling_messages_waiting_when_the_gap_opens.yaml
+                          at brief)
+                        - Whoever can delay or flood a link between
+                          hosts can stretch
+                          every step of a consumer that waits on it.
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml
+                          at brief)
+                        - Safety is measured by the time to reach a
+                          safe state after a
+                          failure. (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure)
+                        ASSUMPTION: the mutual wait remains whatever a
+                        receiver does when no message comes; a timeout
+                        bounds it, but then both units apply their
+                        fail-safes together. Strength: moderate to
+                        weak; a forward crossing that waits is already
+                        bound both ways, so what the loop adds is the
+                        loss of a few steps of slack, and the point
+                        weakens further if crossings stop waiting.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_loops_across_execution_units
+    guid_target:        dec_9b1682186ba74c0e8c25f5787e679959
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_loops_across_units_refused
+    guid_target:        opt_e5a90ee443944600b9113e05fba795f2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_feedback_default_sent_before_the_first_step
+    guid_target:        opt_780f4d37101f457da0fcedbf6d3e9e42
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

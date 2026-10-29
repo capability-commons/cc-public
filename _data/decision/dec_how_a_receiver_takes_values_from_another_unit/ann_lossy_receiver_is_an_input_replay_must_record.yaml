@@ -1,0 +1,86 @@
+id_self:                ann_lossy_receiver_is_an_input_replay_must_record
+guid_self:              ann_1ac438d784ad4f00932827f92d0ccfbb
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lossy receiver that replay must record as an input
+brief:                  |
+                        A receiver that turns whatever has arrived
+                        into a step's token gives values that depend
+                        on timing, so for replay and for comparing
+                        runs it is an input, like a sensor: its output
+                        must be recorded in each local step and played
+                        back in its place. The trial recorded for
+                        replay only the outputs of sources and control
+                        blocks, which is enough only while every
+                        crossing waits. Under the delivery-policy
+                        option the recording must also take every
+                        lossy receiver, a cost in proportion to the
+                        lossy crossings an author declares. With no
+                        waiting at all it must take every receiver,
+                        and a run is repeatable only given its
+                        recording.
+description:            |
+                        Sources:
+                        - Kahn and MacQueen left out any test of
+                          whether input is
+                          available, on purpose, to keep input and output free of
+                          timing. (Kahn and MacQueen 1977, Coroutines and networks of
+                          parallel processes, section 2.3)
+                        - The time at which an outside event is taken
+                          in counts as part
+                          of the program's input, and making a system nondeterministic
+                          should be the designer's choice. (Lohstroh et al. 2021, Toward
+                          a Lingua Franca for deterministic concurrent systems, sections
+                          5 and 6)
+                        - For replay the trial records every output of
+                          a source node and
+                          of a unit's control block, and nothing at receivers.
+                          (trial 2c777ab9, src/cctool/dataflow/lower.py, function
+                          _ends_recorded)
+                        - A player delivers in each local step exactly
+                          what was recorded
+                          for it. (_data/requirement/rqt_player_replays_exactly.yaml at
+                          object)
+                        - What one unit reads from another depends on
+                          timing, and only
+                          the recording of arrivals makes a run repeatable.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_no_crossing_waits.yaml
+                          at brief)
+                        Strength: moderate; the cost is real code in
+                        lowering, the recorder and the player, but
+                        under the delivery-policy option it is bounded
+                        by the lossy crossings, and none of it arises
+                        where every crossing waits.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_receiver_takes_values_from_another_unit
+    guid_target:        dec_ecb10f74764a419c951f53bf447f49d3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_every_crossing_waits_for_one_message
+    guid_target:        opt_fa53d647d4e44f3dac349f50bc0ac12f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_no_crossing_waits
+    guid_target:        opt_302b6a5ef39d4f5bb2114ba9e3daa06b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

@@ -1,0 +1,100 @@
+id_self:                ann_host_stop_turns_a_port_overflow_into_a_host_outage
+guid_self:              ann_ecdbfc4d1ca44a7aa2ff43572873c598
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host stop that turns one port's overflow into a host outage
+brief:                  |
+                        Failing the local step is one entry of the
+                        fail-safe list each port declares, one that
+                        suits a port whose partial message is worse
+                        than none, and in one unit it costs that local
+                        step only. Under the host-stop option the same
+                        declaration stops every unit of the host, its
+                        safety functions included, until something
+                        outside restarts it. Read as written it does
+                        so even on a host of one unit; read as
+                        applying only where other units read from it,
+                        a port's declaration means different things by
+                        placement. Either way an overflow, which WTP
+                        treats as a broken requirement met by a
+                        declared fail-safe, becomes an outage. The
+                        option's real strengths are that it is the
+                        least mechanism and no unit can ever read a
+                        value out of line; it also needs a stop that
+                        reaches every kind of unit, including a core
+                        with no operating system.
+description:            |
+                        Sources:
+                        - Each port declares its fail-safe from a
+                          fixed list: drop the
+                          excess, drop the message, or fail the step; which suits a port
+                          depends on its data.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief and description)
+                        - For a port whose partial message reads as a
+                          falsehood, an
+                          empty message with a fault, or a failed step, leads the
+                          consumer to a safe state.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/ann_truncated_obstacle_list_reads_as_free_space.yaml
+                          at brief)
+                        - Overflow is a broken requirement with a
+                          declared fail-safe.
+                          (WTP, 2026-10-28)
+                        - Within one unit the trial skips the rest of
+                          a failed local step
+                          and carries on, and the fail-safes there behave as the test
+                          case says. (review of 2026-10-29, area report trial-engine,
+                          sections 3 and 5)
+                        - A failed local step in any unit stops every
+                          unit on the host.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_failed_step_stops_the_host.yaml
+                          at brief)
+                        - An execution unit may be an OS process, a
+                          thread, or a core
+                          with no operating system.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/opt_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - In the trial, stopping one unit stalled its
+                          neighbor while it
+                          reported running, and start could not restart the stopped unit.
+                          (review of 2026-10-29, CC-047)
+                        ASSUMPTION: a host stop halts the nodes that
+                        would command a safe state on that host, so
+                        the safe state then rests on actuators that
+                        stop by themselves when commands cease.
+                        Strength: moderate; strong for availability,
+                        weaker for safety where every actuator does
+                        fail safe on silence.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_failed_local_step_sends_downstream
+    guid_target:        dec_cfcda7419cf443f8ab0c72524c775f63
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_failed_step_stops_the_host
+    guid_target:        opt_ca208d39691c4775a985952a11d0ff57
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

@@ -1,0 +1,78 @@
+id_self:                ann_step_number_in_the_message_outlives_a_transport_library
+guid_self:              ann_0ae8d702b32f4439b830de9223ec155a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Step number in the message that outlives a transport library
+brief:                  |
+                        A step number carried in each message lets a
+                        receiver find a lost, repeated or reordered
+                        message whatever the link does. A lossless
+                        queue within one OS process never needs it,
+                        but a network link that drops or reconnects
+                        does, and the review's fix for the trial's TCP
+                        transport already adds a header with a step,
+                        so the number costs little. Carried as a field
+                        of the edge message rather than in each
+                        library's framing, the check is the engine's
+                        own and survives a change of transport
+                        library. It detects faults, not attacks:
+                        whoever can write to the link can write the
+                        number, so security still needs an
+                        authenticated transport. An invalid mark alone
+                        detects none of these, and the two can be
+                        combined.
+description:            |
+                        Sources:
+                        - The trial's TCP framing is a bare host-order
+                          count with no
+                          magic, step or size, and the review's fix frames each message
+                          with magic, channel, step and size. (review of 2026-10-29,
+                          CC-016)
+                        - Transport libraries change: libzmq changed
+                          its license in
+                          4.3.5, and the classic iceoryx line is in maintenance.
+                          (_data/decision/dec_how_values_cross_execution_units/ann_transport_library_held_only_by_transport_nodes.yaml
+                          at brief)
+                        - Every message across units carries the
+                          number of the sender's
+                          local step.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_messages_carry_their_local_step.yaml
+                          at brief)
+                        - Who can change what, and what an attacker
+                          can reach, are the
+                          questions of security. (_data/register/reg_concern.yaml at
+                          entries.concern_security.question)
+                        ASSUMPTION: some deployments join hosts by a
+                        network that drops or reconnects; Patrol on
+                        one Orin may have no such link. Strength:
+                        moderate for faults on links between hosts,
+                        weak for security, and nil within one OS
+                        process.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_failed_local_step_sends_downstream
+    guid_target:        dec_cfcda7419cf443f8ab0c72524c775f63
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_messages_carry_their_local_step
+    guid_target:        opt_b5706db53e6f48fea3ac4a0384312445
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

@@ -1,0 +1,105 @@
+id_self:                ann_trial_left_dead_peers_to_each_transport
+guid_self:              ann_b0a5fd005ac94e778143188f72eef4f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dead peer handled a different way by each transport of the trial
+brief:                  |
+                        With no failure clause in the transport ICD,
+                        the trial's transports each did something
+                        different, and none reported it. Over TCP a
+                        dead sender left the receiver running on empty
+                        messages for 100 local steps while status
+                        showed nothing wrong, and a dead receiver
+                        killed the sender's process by SIGPIPE before
+                        its recording was flushed. The in-process
+                        queue waits for ever unless it is closed, a
+                        stopped receiver left its sender blocked on a
+                        full queue, and at start a missing peer blocks
+                        the engine before runtime control can stop it.
+                        Whatever is chosen must be written as the
+                        ICD's failure clause, cover the sender's wait
+                        as well as the receiver's, and be tested by
+                        killing each peer. The timeout option is the
+                        only one whose text already asks the engine to
+                        keep the unit running and report.
+description:            |
+                        Sources:
+                        - The transport ICD gives the receiver no
+                          timeout and has no
+                          failure clause.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/dec_what_a_receiver_does_when_no_message_comes.yaml
+                          at description;
+                          _data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.receiver.dataflow_step.availability)
+                        - Over TCP an end of file or an interrupted
+                          read gives a count of
+                          0 with no event, and writes have no guard against SIGPIPE.
+                          (trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/transport.cpp, functions
+                          read_all, write_all and Engine::receive)
+                        - Measured: a killed receiver killed the
+                          sender with exit status
+                          -13, its recording unflushed; after the sender was killed the
+                          receiver ran 100 more local steps on empty messages and status
+                          showed nothing wrong. (review of 2026-10-29, CC-016)
+                        - The in-process queue waits until a message
+                          comes or the queue
+                          is closed. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, function
+                          Channel::pop)
+                        - Before runtime control starts, the receiver
+                          blocks in accept
+                          and the sender retries its connection for ever. (trial
+                          2c777ab9, src/cctool/dataflow/engine/nodes/transport.cpp,
+                          function transport_open)
+                        - Stopping u2 left u1 blocked in a lossless
+                          send at step 7 while
+                          status said it was running. (review of 2026-10-29, CC-047, and
+                          area report trial-engine, TE-18)
+                        - On a timeout or a closed link the engine
+                          reports a fault event,
+                          applies the fail-safe, and the unit runs on.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_applies_a_declared_fail_safe.yaml
+                          at brief)
+                        - The review asks that killing either peer
+                          give an event and an
+                          orderly stop with the recording flushed, and leaves stop or
+                          degrade to WTP. (review of 2026-10-29, CC-016)
+                        Strength: strong as evidence that the failure
+                        clause must be written for both ends; the
+                        host-stop option also reports an event, so the
+                        point weighs most against waiting without
+                        limit, which reports nothing.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_receiver_timeout_applies_a_declared_fail_safe
+    guid_target:        opt_38afb4a7e0f049aeb499c5cf95016706
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_waits_without_limit
+    guid_target:        opt_103675ef4819412da9899f4ca2c78db7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

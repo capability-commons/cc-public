@@ -1,0 +1,101 @@
+id_self:                ann_host_readings_chain_every_unit_of_a_host
+guid_self:              ann_3690e61dc7b8403eae6eb490cced87ed
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host readings that chain every unit of a host to one unit
+brief:                  |
+                        Lowering joins the host's control block,
+                        placed in the first unit of the host, to the
+                        control block of every other unit. If every
+                        crossing waits, that edge alone binds every
+                        unit to the first: in the trial a 10 ms unit
+                        with no user edge to its neighbor was held to
+                        about 45 ms by a 50 ms unit, with 38 overruns
+                        in 44 local steps. A unit that runs a safety
+                        function then inherits every stall and overrun
+                        of an unrelated unit, and a delay injected on
+                        a waiting crossing into the first unit spreads
+                        to every unit of the host. Under the
+                        delivery-policy option host readings cross as
+                        keep latest and never hold a unit back; with
+                        no waiting at all, no crossing does.
+description:            |
+                        Sources:
+                        - Lowering puts the host block in the first
+                          unit of the host and
+                          joins its readings to each unit's block. (trial 2c777ab9,
+                          src/cctool/dataflow/lower.py, function _control_blocks)
+                        - The block of a host passes its readings to
+                          the blocks of its
+                          execution units.
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at description)
+                        - Measured: u1 at 10 ms and u2 at 50 ms with
+                          no user edge between
+                          them; after 2 s u1 had run 44 local steps with 38 overruns.
+                          (review of 2026-10-29, CC-011, and area report trial-engine,
+                          TE-11)
+                        - Host readings cross as keep latest, so they
+                          never hold a unit
+                          back.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_delivery_policy_decides_whether_a_receiver_waits.yaml
+                          at brief)
+                        - Whoever can delay or flood a link between
+                          hosts can stretch
+                          every step of a consumer that waits on it.
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml
+                          at brief)
+                        - Safety is measured by the time to reach a
+                          safe state after a
+                          failure. (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure)
+                        ASSUMPTION: Patrol will place a safety
+                        function, such as an obstacle stop, in a unit
+                        other than the one that holds the host block.
+                        Strength: strong for reliability and safety on
+                        any host with more than one unit; for security
+                        it matters only where the first unit waits on
+                        a link a third party can reach.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_receiver_takes_values_from_another_unit
+    guid_target:        dec_ecb10f74764a419c951f53bf447f49d3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_delivery_policy_decides_whether_a_receiver_waits
+    guid_target:        opt_b620abad8a614e948444ac8c481b2a58
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_crossing_waits
+    guid_target:        opt_302b6a5ef39d4f5bb2114ba9e3daa06b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_crossing_waits_for_one_message
+    guid_target:        opt_fa53d647d4e44f3dac349f50bc0ac12f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

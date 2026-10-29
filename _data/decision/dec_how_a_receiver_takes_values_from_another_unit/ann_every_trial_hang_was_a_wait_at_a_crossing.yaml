@@ -1,0 +1,77 @@
+id_self:                ann_every_trial_hang_was_a_wait_at_a_crossing
+guid_self:              ann_c7a4e784f753490c97686f66a7fd1912
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hangs of the trial that were each a wait at a crossing
+brief:                  |
+                        The hangs the review reproduced in the trial's
+                        runs over two units were each a wait at a
+                        crossing: the receivers of a loop across two
+                        units at local step 0, a receiver at the end
+                        of a bounded run that never ended after a
+                        failed local step, and a sender left blocked
+                        on a full queue when its reader's unit was
+                        stopped. A crossing that never waits cannot
+                        hang, so no waiting at all removes this class
+                        by construction, and the delivery-policy
+                        option removes it on lossy edges. Where every
+                        crossing waits all of them remain, and each
+                        then needs its own rule, such as priming, a
+                        timeout or a mark on a failed step. The price
+                        of never waiting is that results depend on
+                        timing.
+description:            |
+                        Sources:
+                        - A loop across units passed every check and
+                          deadlocked at local
+                          step 0 in the receivers' wait. (review of 2026-10-29, CC-003)
+                        - After a failed local step a run bounded to 8
+                          steps never ended,
+                          because the last receiver waited for a message never sent.
+                          (review of 2026-10-29, CC-004)
+                        - Stopping u2 left u1 blocked in a lossless
+                          send while status
+                          said it was running. (review of 2026-10-29, CC-047, and area
+                          report trial-engine, TE-18)
+                        - No receiver waits, so units never hold each
+                          other back.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_no_crossing_waits.yaml
+                          at brief)
+                        - In a Kahn network with bounded queues a
+                          stall in one part need
+                          not stop the rest, and a check for global deadlock misses it.
+                          (Geilen and Basten 2003, Requirements on the execution of Kahn
+                          process networks, section 2)
+                        Strength: moderate; the hangs are reproduced,
+                        but each also has a fix that keeps the wait,
+                        argued on the decisions about loops across
+                        units, failed local steps and missing
+                        messages.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_receiver_takes_values_from_another_unit
+    guid_target:        dec_ecb10f74764a419c951f53bf447f49d3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_no_crossing_waits
+    guid_target:        opt_302b6a5ef39d4f5bb2114ba9e3daa06b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_crossing_waits_for_one_message
+    guid_target:        opt_fa53d647d4e44f3dac349f50bc0ac12f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,100 @@
+id_self:                ann_timeout_from_the_receiver_period_fires_under_lockstep
+guid_self:              ann_e14c1178c8054397a55fb3a4248a182f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Timeout from the receiver's own period that fires under lockstep
+brief:                  |
+                        The timeout option derives each receiver's
+                        timeout from the period of its own unit. Where
+                        the sending unit is slower and the crossing
+                        waits, the receiver legitimately waits longer
+                        than its own period in every local step, since
+                        connected units advance at the pace of the
+                        slowest; in the trial a 10 ms unit took about
+                        45 ms per local step, held by a 50 ms unit,
+                        there through a full queue at its sender. A
+                        timeout of a few of the receiver's periods
+                        would then fire every step and apply its
+                        fail-safe to data that was only late, while
+                        too long a timeout delays the fail-safe when a
+                        sender really dies. The timeout must come from
+                        the sender's period plus the jitter margin WTP
+                        expects may need to be generous, and so from
+                        the placed graph. The host-stop option, which
+                        states no derivation, needs the same.
+description:            |
+                        Sources:
+                        - Each receiving port has a timeout derived
+                          from the period of
+                          its unit.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_applies_a_declared_fail_safe.yaml
+                          at brief)
+                        - A receiver waits for exactly one message in
+                          each local step.
+                          (_data/interface_control_document/icd_dataflow_transport.yaml
+                          at surface.receiver.dataflow_step.availability) Where every
+                          crossing waits, connected units advance at the pace of the
+                          slowest.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_every_crossing_waits_for_one_message.yaml
+                          at brief)
+                        - u1 at 10 ms ran 44 local steps in 2 s, about
+                          45 ms each, held
+                          by u2 at 50 ms; u1 at 2 ms ran 104 in 2 s, held by u2 at 20 ms.
+                          In both the fast unit was the sender, held by a full queue, so
+                          the trial measured the wait at a sender, not at a receiver.
+                          (review of 2026-10-29, CC-011, and area report trial-engine,
+                          TE-11)
+                        - The jitter margin on an edge between units
+                          may need to be
+                          generous, since it depends on how fast or slow each unit runs.
+                          (_data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml
+                          at description)
+                        - Timing and capacity checks run on the placed
+                          graph.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_reading_derived_by_placement.yaml
+                          at brief) Analysis that ignored placement was off by 1.5 times.
+                          (Lattuada and Ferrandi 2013, Modeling pipelined applications
+                          with synchronous dataflow graphs, section V)
+                        - Each unit's control block declares its own
+                          period.
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at surface.unit.dataflow_step.settings.period)
+                        Strength: strong where connected units differ
+                        in period and the crossing waits, though the
+                        wait at a receiver is reasoned from the
+                        records, the trial having measured it at a
+                        sender; it falls away for crossings that never
+                        wait and for units that share a period.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_timeout_applies_a_declared_fail_safe
+    guid_target:        opt_38afb4a7e0f049aeb499c5cf95016706
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_receiver_timeout_stops_the_host
+    guid_target:        opt_3f4044f96d404dbbb6932e138560fdc2
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,109 @@
+id_self:                ann_lossy_adapter_cannot_free_a_unit_held_in_lockstep
+guid_self:              ann_abda9145ddce4021b2edf764f3e9a214
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lossy adapter that cannot free a unit held in lockstep
+brief:                  |
+                        When every crossing waits for one message, a
+                        keep-latest or fold adapter placed before the
+                        sender or after the receiver sees exactly one
+                        message per local step, so it has nothing to
+                        choose among, and the faster unit is held to
+                        the slower one's period. The trial built this
+                        arrangement and measured it: a 2 ms unit
+                        feeding a 20 ms unit through a keep-latest
+                        edge ran 104 local steps in 2 s with 99
+                        overruns, and the reader got every value in
+                        order. Those false overruns can drive the mode
+                        controller into the ruled degraded mode with
+                        no fault, and a placement variant that puts a
+                        source's reader in a slower unit silently
+                        changes the source's sampling rate. Letting
+                        the delivery policy decide whether a receiver
+                        waits removes all three effects on the edges
+                        whose policy allows loss.
+description:            |
+                        Sources:
+                        - The option on every crossing confines a
+                          lossy policy to an
+                          adapter before the sender or after the receiver.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_every_crossing_waits_for_one_message.yaml
+                          at brief)
+                        - The trial's lowering placed the keep-latest
+                          adapter in the unit
+                          of the target and then made the crossing lossless, so the
+                          adapter sat after a waiting receiver. (trial 2c777ab9,
+                          src/cctool/dataflow/lower.py, functions _adapt and _transports)
+                        - Measured: u1 at 2 ms ran 104 local steps
+                          with 99 overruns in
+                          2 s, and u2 at 20 ms read 30, 33, 36 and so on, one value per
+                          local step, in order. (review of 2026-10-29, CC-011, and its
+                          area report trial-engine, TE-11)
+                        - In another variant u1 at 10 ms was held
+                          close to the 100 ms
+                          period of u2, 24 local steps in 2 s, its sensor was in effect
+                          sampled at that period, and no check warned. (review of
+                          2026-10-29, area report trial-model, TM-14)
+                        - The overruns can drive the mode controller
+                          into degraded mode
+                          with no fault. (review of 2026-10-29, CC-011)
+                        - Degraded mode is for steps consistently over
+                          their period,
+                          triggered by a control node that watches queue sizes or
+                          temperature. (WTP, 2026-10-28) The mode controller raises it
+                          when local steps consistently overrun their period.
+                          (_data/interface_control_document/icd_dataflow_mode_controller.yaml
+                          at brief)
+                        - A latest-value edge gives the reader only
+                          the value that
+                          arrived last when several arrive in one local step.
+                          (_data/requirement/rqt_adapter_latest_value.yaml at condition
+                          and object) Under lockstep no more than one ever arrives.
+                        - Variants for a number of cores are generated
+                          by allocating
+                          nodes to processes and processes to cores.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        Strength: strong; it is reproduced, and it
+                        holds for any graph whose connected units
+                        differ in period. It weakens only if every set
+                        of connected units must share one period, as
+                        the argument on a shared period asks.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_receiver_takes_values_from_another_unit
+    guid_target:        dec_ecb10f74764a419c951f53bf447f49d3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_delivery_policy_decides_whether_a_receiver_waits
+    guid_target:        opt_b620abad8a614e948444ac8c481b2a58
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_every_crossing_waits_for_one_message
+    guid_target:        opt_fa53d647d4e44f3dac349f50bc0ac12f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

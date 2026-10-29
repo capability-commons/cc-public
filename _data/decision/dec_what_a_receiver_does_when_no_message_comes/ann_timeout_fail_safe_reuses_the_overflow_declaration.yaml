@@ -1,0 +1,81 @@
+id_self:                ann_timeout_fail_safe_reuses_the_overflow_declaration
+guid_self:              ann_1d0a7e7b988c475d909f30b1e949edc1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Timeout fail-safe that reuses the declaration made for overflow
+brief:                  |
+                        The timeout option answers a missing message
+                        with the mechanism already ruled for overflow:
+                        a fail-safe declared per port from a fixed
+                        list, a fault event, and the same pattern of
+                        test. That is one rule for authors and
+                        reviewers, not two. Three things are left to
+                        say. Holding the last value is not on the
+                        ruled list, and it needs its own argument,
+                        since a held list repeats a stale picture. The
+                        receiving port is inserted by lowering, so the
+                        declaration must come from the edge or the
+                        variant, not from a node author who cannot
+                        know where the port will be placed. And
+                        failing the local step on a timeout brings
+                        back the question of what a failed step sends
+                        downstream.
+description:            |
+                        Sources:
+                        - Each receiving port has a timeout and a
+                          declared fail-safe, as
+                          a capacity has: drop the message, hold the last value, or fail
+                          the local step.
+                          (_data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_applies_a_declared_fail_safe.yaml
+                          at brief)
+                        - The ruled list is drop the excess, drop the
+                          message, or fail
+                          the step, and every overflow raises a fault.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/opt_fail_safe_declared_per_port.yaml
+                          at brief;
+                          _data/decision/dec_behavior_when_a_capacity_is_exceeded/ruling_fail_safe_declared_per_port.yaml
+                          at brief; _data/requirement/rqt_executor_fail_safe.yaml at
+                          brief)
+                        - The fail-safe is verified by overflowing a
+                          port under each
+                          entry. (_data/requirement/rqt_executor_fail_safe.yaml at
+                          verification_approach)
+                        - Lowering inserts the receiver in the unit of
+                          the target
+                          wherever placement puts the ends of an edge apart.
+                          (_data/interface_control_document/icd_dataflow_transport.yaml
+                          at description)
+                        - WTP wants the approach as simple as
+                          feasible, avoiding
+                          mechanisms that burden node authors. (WTP, 2026-10-28)
+                        - For a dead transport peer the review
+                          recommends raising a
+                          fault event and applying the receiver's fail-safe, the same
+                          mechanism as the declared timeout it recommends for every
+                          receiver. (review of 2026-10-29, section 7, W-T7 and W-T1)
+                        Strength: moderate; the reuse is real, and the
+                        three gaps are wording, not a change of
+                        option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_what_a_receiver_does_when_no_message_comes
+    guid_target:        dec_99f318a58bfb41e69020ded575332498
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_receiver_timeout_applies_a_declared_fail_safe
+    guid_target:        opt_38afb4a7e0f049aeb499c5cf95016706
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
