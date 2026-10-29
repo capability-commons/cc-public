@@ -34,6 +34,7 @@ import pytest
 
 import cctool.commit.message
 import cctool.commit.repo
+import cctool.edit.edit
 
 
 pytestmark = pytest.mark.prepush
@@ -80,7 +81,7 @@ def test_land_replays_signs_and_checks_the_commits_of_a_bundle(topic):
     assert len(cctool.commit.repo.bundle(topic, 'topic', base, path)) == 1
     _git(topic, 'branch', '--quiet', '-D', 'topic')
 
-    [landed] = cctool.commit.repo.land(topic, path)
+    [landed] = cctool.commit.repo.land(topic, path, is_gated = False)
     assert landed.endswith(' Change AGENTS.md so that it ends with notes')
     assert _git(topic, 'log', '--format=%s', 'main').splitlines() == [
         'Change AGENTS.md so that it ends with notes', 'Change README.md so that it is short', 'Add the first version of cc-public']
@@ -106,7 +107,7 @@ def test_land_of_commits_that_fail_their_checks_leaves_the_branch(topic):
     cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
 
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'fail their checks'):
-        cctool.commit.repo.land(topic, path)
+        cctool.commit.repo.land(topic, path, is_gated = False)
     assert _git(topic, 'rev-parse', 'main') == head
     assert _git(topic, 'branch', '--show-current').strip() == 'main'
 
@@ -124,8 +125,8 @@ def test_land_with_reset_author_makes_the_maintainer_the_author(topic):
     cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
 
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'fail their checks'):
-        cctool.commit.repo.land(topic, path)
-    assert len(cctool.commit.repo.land(topic, path, reset_author = True)) == 2
+        cctool.commit.repo.land(topic, path, is_gated = False)
+    assert len(cctool.commit.repo.land(topic, path, reset_author = True, is_gated = False)) == 2
     assert _git(topic, 'log', '-2', '--format=%an <%ae> %G?', 'main').splitlines() == [
         'William Payne <wtpayne@gmail.com> G', 'William Payne <wtpayne@gmail.com> G']
 
@@ -144,7 +145,7 @@ def test_land_checks_the_commits_with_the_code_they_hold(topic):
     cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
 
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'checks of the landed code ran'):
-        cctool.commit.repo.land(topic, path)
+        cctool.commit.repo.land(topic, path, is_gated = False)
     assert _git(topic, 'rev-parse', 'main') == head
     assert _git(topic, 'branch', '--show-current').strip() == 'main'
 
@@ -160,9 +161,47 @@ def test_land_of_commits_that_conflict_leaves_the_branch(topic):
     cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
 
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'cannot be replayed'):
-        cctool.commit.repo.land(topic, path)
+        cctool.commit.repo.land(topic, path, is_gated = False)
     assert _git(topic, 'rev-parse', 'main') == head
     assert _git(topic, 'status', '--porcelain', '--untracked-files=no') == ''
+
+
+def test_land_of_a_bundle_made_on_a_commit_the_branch_does_not_hold_leaves_the_branch(topic):
+    _git(topic, 'checkout', '--quiet', '-b', 'old', 'main~1')
+    (topic / 'README.md').write_text('Old.\n')
+    _commit(topic, 'Change README.md so that it is old', 'It is old.')
+    old  = _git(topic, 'rev-parse', 'HEAD').strip()
+    _git(topic, 'checkout', '--quiet', '-b', 'later')
+    path = topic / 'AGENTS.md'
+    path.write_text(path.read_text() + '\nLater.\n')
+    _commit(topic, 'Change AGENTS.md so that it ends later', 'It ends later.', is_signed = False)
+    _git(topic, 'checkout', '--quiet', 'main')
+    head = _git(topic, 'rev-parse', 'main')
+    path = topic.parent / 'later.bundle'
+    cctool.commit.repo.bundle(topic, 'later', 'old', path)
+
+    with pytest.raises(cctool.commit.repo.ErrorRepo,
+                       match = 'The bundle starts after {old} Change README.md so that it is '
+                               'old, which main does not hold'.format(old = old[:7])):
+        cctool.commit.repo.land(topic, path, is_gated = False)
+    assert _git(topic, 'rev-parse', 'main') == head
+
+
+def test_land_of_commits_whose_tree_together_fails_the_gate_leaves_the_branch(topic):
+    _git(topic, 'checkout', '--quiet', 'topic')
+    _annotate(topic, 'dec_cross_item_checks_engine')
+    _commit(topic, 'Add ann_land_twice', 'It is added on topic.', is_signed = False)
+    _git(topic, 'checkout', '--quiet', 'main')
+    _annotate(topic, 'dec_tooling_language')
+    _commit(topic, 'Add ann_land_twice', 'It is added on main.')
+    head = _git(topic, 'rev-parse', 'main')
+    path = topic.parent / 'topic.bundle'
+    cctool.commit.repo.bundle(topic, 'topic', 'main~2', path)
+
+    with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'duplicate_id'):
+        cctool.commit.repo.land(topic, path)
+    assert _git(topic, 'rev-parse', 'main') == head
+    assert _git(topic, 'branch', '--show-current').strip() == 'main'
 
 
 def test_land_refuses_changes_that_no_commit_holds(topic):
@@ -170,7 +209,7 @@ def test_land_refuses_changes_that_no_commit_holds(topic):
     cctool.commit.repo.bundle(topic, 'topic', 'main~1', path)
     (topic / 'README.md').write_text('Unsaved.\n')
     with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'commit or stash them first'):
-        cctool.commit.repo.land(topic, path)
+        cctool.commit.repo.land(topic, path, is_gated = False)
 
 
 def test_push_refuses_a_commit_that_is_not_signed_until_it_is_signed(topic, tmp_path_factory):
@@ -201,6 +240,22 @@ def _git(root, *list_arg):
 
     return subprocess.run(['git', *list_arg],
                           cwd = root, check = True, capture_output = True, text = True).stdout
+
+
+# -----------------------------------------------------------------------------
+def _annotate(root, id_decision):
+    """
+    Add the annotation ann_land_twice about the decision id_decision to
+    the tree at root.
+
+    """
+
+    tree = cctool.edit.edit.Tree(root)
+    cctool.edit.edit.batch(tree, [{'new':   'ann_land_twice',
+                                   'field': {'title': 'Landed twice',
+                                             'brief': 'It is added on each side.'},
+                                   'link':  [['relation_is_about', id_decision]]}])
+    assert cctool.edit.edit.apply(tree) == {}
 
 
 # -----------------------------------------------------------------------------

@@ -87,9 +87,11 @@ def land(path: pathlib.Path, branch: str | None, reset_author: bool, root: pathl
     branch.
 
     The commits are replayed onto the current branch, each signed as it
-    is replayed, and checked as cctool history check checks them. Only
-    if all of that succeeds is the current branch moved forward to
-    them. With --reset-author, whoever lands them also becomes their
+    is replayed, and checked as cctool history check --gate checks
+    them, so the tree they come to is checked, linted and tested too.
+    Only if all of that succeeds is the current branch moved forward to
+    them. A bundle made on a commit the current branch does not hold is
+    refused. With --reset-author, whoever lands them also becomes their
     author. Push them with cctool repo push.
 
     """

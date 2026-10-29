@@ -95,21 +95,25 @@ class ErrorRepo(Exception):
 def land(root:         pathlib.Path,
          path:         pathlib.Path,
          branch:       str | None = None,
-         reset_author: bool       = False) -> list[str]:
+         reset_author: bool       = False,
+         is_gated:     bool       = True) -> list[str]:
     """
     Return the commits, as short hashes and subjects, that the bundle at
     path holds beyond the current branch, once they are signed and the
     current branch is moved forward to them.
 
     The bundle's branch is the one it holds, or branch if it holds
-    more. Its commits are replayed onto the current branch, so that a
-    branch made on an older base lands as if made on this one, and each
-    is signed as it is replayed. If reset_author is true, whoever
-    replays them also becomes their author. They are then checked as
-    cctool history check checks them. A replay that conflicts, or a
-    check that fails, leaves the current branch where it was. The
-    check runs in a fresh process with the code the commits hold,
-    since they may change the checks themselves.
+    more. A bundle made on a commit that the current branch does not
+    hold is refused, since replaying it would replay that commit too.
+    Its commits are replayed onto the current branch, so that a branch
+    made on an older base lands as if made on this one, and each is
+    signed as it is replayed. If reset_author is true, whoever replays
+    them also becomes their author. They are then checked as cctool
+    history check --gate checks them, which also checks, lints and
+    tests the tree they come to, unless is_gated is false. A replay
+    that conflicts, or a check that fails, leaves the current branch
+    where it was. The check runs in a fresh process with the code the
+    commits hold, since they may change the checks themselves.
 
     """
 
@@ -117,6 +121,13 @@ def land(root:         pathlib.Path,
     _refuse_changes(root)
 
     _git(root, 'bundle', 'verify', '--quiet', str(path))
+    for commit in prerequisites(path):
+        if _run(root, 'merge-base', '--is-ancestor', commit, base).returncode != 0:
+            raise ErrorRepo('The bundle starts after {commit}, which {base} does not hold, so '
+                            'nothing is landed. Rebase the branch onto {base} where it was '
+                            'made, and bundle it again.'.format(
+                                commit = cctool.commit.history.short(root, commit),
+                                base   = base))
     list_head = [line.split()[1].removeprefix(PREFIX_HEAD)
                  for line in _git(root, 'bundle', 'list-heads', str(path)).splitlines()
                  if line.split()[1].startswith(PREFIX_HEAD)]
@@ -144,7 +155,7 @@ def land(root:         pathlib.Path,
     tip         = _git(root, 'rev-parse', 'HEAD').strip()
     list_commit = cctool.commit.history.commits(root, [base + '..' + tip])
     try:
-        done = _checked(root, base + '..' + tip)
+        done = _checked(root, base + '..' + tip, is_gated)
     finally:
         _run(root, 'checkout', '--quiet', base)
     if done.returncode != 0:
@@ -160,13 +171,37 @@ def land(root:         pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
-def _checked(root: pathlib.Path, rev_range: str) -> subprocess.CompletedProcess:
+def prerequisites(path: pathlib.Path) -> list[str]:
     """
-    Return the run of cctool history check over rev_range, in a fresh
-    process whose python path starts at the source checked out at root.
-    The commits that land may change the extractor and the rules
-    together, so they are checked with their own code, never with the
-    modules this process imported before they were checked out.
+    Return the commits that the bundle at path is made on, which it
+    needs and does not hold, as its header lists them.
+
+    """
+
+    list_commit = []
+
+    with path.open('rb') as file:
+        file.readline()
+        for line in file:
+            if line == b'\n':
+                break
+            if line.startswith(b'-'):
+                list_commit.append(line[1:].split()[0].decode())
+
+    return list_commit
+
+
+# -----------------------------------------------------------------------------
+def _checked(root:      pathlib.Path,
+             rev_range: str,
+             is_gated:  bool) -> subprocess.CompletedProcess:
+    """
+    Return the run of cctool history check over rev_range, with --gate
+    if is_gated, in a fresh process whose python path starts at the
+    source checked out at root. The commits that land may change the
+    extractor and the rules together, so they are checked with their
+    own code, never with the modules this process imported before they
+    were checked out.
 
     """
 
@@ -175,7 +210,8 @@ def _checked(root: pathlib.Path, rev_range: str) -> subprocess.CompletedProcess:
     env['PYTHONPATH'] = os.pathsep.join(path for path in list_path if path)
 
     return subprocess.run([sys.executable, '-m', MODULE_COMMAND,
-                           'history', 'check', rev_range, '--root', str(root)],
+                           'history', 'check', rev_range, '--root', str(root),
+                           *(['--gate'] if is_gated else [])],
                           cwd = root, env = env, capture_output = True, text = True,
                           check = False)
 
