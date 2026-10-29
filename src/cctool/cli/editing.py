@@ -57,20 +57,31 @@ edge:                   []
 
 
 import difflib
+import os
 import pathlib
 import re
 import sys
+import typing
 
 import click
 import ruamel.yaml
 
 import cctool.check.check
+import cctool.check.citation
 import cctool.check.layout
 import cctool.cli.group
 import cctool.edit.edit
 import cctool.edit.ontology
 import cctool.graph.extract
 import cctool.graph.logic
+
+
+# The folders, and the files, that rename and move do not look in for a
+# file that still names what they changed: git, including the file that
+# stands for it in a worktree, and the folders that tools make, as
+# citations leave them out.
+#
+SET_NAME_UNREAD   = cctool.check.citation.SET_DIR_SKIPPED | {'.hypothesis', '.venv'}
 
 
 # -----------------------------------------------------------------------------
@@ -305,25 +316,25 @@ def rename(id_old, id_new, root, is_dry_run):
     in the strings of the logic programs that the rules match it by, and
     in the name of its file. A register entry keeps OLD as an alias.
 
-    Other text outside YAML documents, such as python code, is not
-    changed. Each file that still names OLD is listed afterwards.
+    Other text outside YAML documents, such as python code, a guide or
+    a fixture of the tests, is not changed. Each file of text that still
+    names OLD, or an item renamed with it, is listed afterwards.
 
     """
 
-    _run(root, is_dry_run, [{'rename': [id_old, id_new]}])
+    tree = _run(root, is_dry_run, [{'rename': [id_old, id_new]}])
     if is_dry_run:
         return
 
-    regex = re.compile(cctool.edit.edit.PATTERN_WHOLE_ID.format(id = re.escape(id_old)))
-    for relative in cctool.graph.extract.files(
-                            cctool.graph.extract.documents(root.resolve())):
-        try:
-            text = (root / relative).read_text(encoding = 'utf-8')
-        except UnicodeDecodeError:
-            continue
-        if any(regex.search(line) and line.strip() != '- ' + id_old
-               for line in text.splitlines()):
-            click.echo('Still names {id}: {file}'.format(id = id_old, file = relative),
+    list_old  = sorted(tree.map_renamed, key = len, reverse = True)
+    regex     = re.compile(cctool.edit.edit.PATTERN_WHOLE_ID.format(
+                               id = '(?:' + '|'.join(map(re.escape, list_old)) + ')'))
+    set_alias = {'- ' + id_each for id_each in list_old}
+    for (relative, text) in _texts(tree.root):
+        set_found = {match.group(0) for line in text.splitlines()
+                     if line.strip() not in set_alias for match in regex.finditer(line)}
+        for id_found in sorted(set_found):
+            click.echo('Still names {id}: {file}'.format(id = id_found, file = relative),
                        err = True)
 
 
@@ -357,15 +368,34 @@ def move(path_old, path_new, root, is_dry_run):
     if dotted:
         list_pattern.append(cctool.edit.edit.PATTERN_DOTTED.format(name = re.escape(dotted)))
     regex = re.compile('|'.join(list_pattern))
-    for relative in sorted({cctool.graph.extract.file_of(key) for key
-                            in cctool.graph.extract.documents(root.resolve())}):
-        try:
-            text = (root / relative).read_text(encoding = 'utf-8')
-        except UnicodeDecodeError:
-            continue
+    for (relative, text) in _texts(root.resolve()):
         if regex.search(text):
             click.echo('Still names {path}: {file}'.format(path = path_old, file = relative),
                        err = True)
+
+
+# -----------------------------------------------------------------------------
+def _texts(root: pathlib.Path) -> typing.Iterator[tuple[str, str]]:
+    """
+    Yield the path relative to root and the text of each file of text
+    under root, in order, leaving out git and the folders that tools
+    make, as citations leave them out. The fixtures of the tests are
+    kept, since they hold ids as the tree does.
+
+    """
+
+    list_file = []
+    for (dir_here, list_dir, list_name) in os.walk(root):
+        list_dir[:] = [name for name in list_dir if name not in SET_NAME_UNREAD]
+        list_file.extend(pathlib.Path(dir_here, name) for name in list_name
+                         if name not in SET_NAME_UNREAD)
+
+    for path in sorted(list_file):
+        try:
+            text = path.read_text(encoding = 'utf-8')
+        except (OSError, UnicodeDecodeError):
+            continue
+        yield (str(path.relative_to(root)), text)
 
 
 # -----------------------------------------------------------------------------
@@ -520,8 +550,9 @@ def format_(root, is_check):
 def _run(root, is_dry_run, list_operation):
     """
     Make the operations of list_operation over the tree under root as
-    one edit, check it, and write it, or print it with --dry-run. Exit
-    with 1 if it adds a failure, and with 2 if it cannot be made.
+    one edit, check it, and write it, or print it with --dry-run, and
+    return the tree edited. Exit with 1 if it adds a failure, and with 2
+    if it cannot be made.
 
     """
 
@@ -563,6 +594,8 @@ def _run(root, is_dry_run, list_operation):
         for (relative, text) in tree.edit.items():
             click.echo('{verb} {file}'.format(verb = 'Removed' if text is None else 'Wrote',
                                               file = relative))
+
+    return tree
 
 
 # -----------------------------------------------------------------------------

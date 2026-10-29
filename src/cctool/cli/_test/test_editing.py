@@ -147,6 +147,17 @@ def test_rename_lists_the_files_that_still_name_the_old_id(tree):
             in result.stderr)
 
 
+def test_rename_lists_a_guide_and_a_fixture_that_still_name_the_old_id(tree):
+    (tree / 'notes.md').write_text('See concept_annotation.\n')
+    fixture = tree / 'src/cctool/_test/_fixture/x.yaml'
+    fixture.parent.mkdir(parents = True, exist_ok = True)
+    fixture.write_text('id_target: concept_annotation\n')
+    result = _run(tree, 'rename', 'concept_annotation', 'concept_remark')
+    assert result.exit_code == 0
+    assert 'Still names concept_annotation: notes.md\n' in result.stderr
+    assert 'Still names concept_annotation: src/cctool/_test/_fixture/x.yaml\n' in result.stderr
+
+
 def test_format_names_the_files_it_would_change_and_then_changes_them(tree):
     path = tree / '_data/register/reg_concern.yaml'
     path.write_text(path.read_text().replace('title:                  Concern register',
