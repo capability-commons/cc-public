@@ -1,0 +1,43 @@
+id_self:                dec_where_the_dataflow_code_lives
+guid_self:              dec_06af631b3a254753ba773c7dbddbf11f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Where the dataflow code lives
+brief:                  |
+                        The layout ruling, the module names in the
+                        dataflow ICDs and the dependency edges of the
+                        dataflow components disagree. Where do the
+                        model, the generator, the checks and the
+                        engine live, and which may import which?
+description:            |
+                        ruling_source_layout_for_two_languages puts
+                        the engine in dataflow_engine with its
+                        generator, one folder for each component under
+                        src. icd_dataflow_generator names the module
+                        cctool.dataflow.generate, and
+                        icd_dataflow_checks names
+                        cctool.dataflow.checks, while
+                        lco_dataflow_model_checks says it is to be
+                        realized under cctool.check.
+                        icd_dataflow_checks checks a resolved or
+                        lowered graph, but its parameter type is the
+                        resolved one. The dependency edges forbid the
+                        checks and the generator from depending on
+                        lowering, which they must read: the trial
+                        implementation of 2026-10-29 followed the
+                        ICDs, and cctool check gave six
+                        import_not_allowed advisories on it (review of
+                        2026-10-29, CC-060).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_tooling
+    guid_target:        lco_10147b22f69f495789103cec049b2c6a

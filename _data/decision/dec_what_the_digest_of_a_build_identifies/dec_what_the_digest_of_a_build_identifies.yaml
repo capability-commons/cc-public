@@ -1,0 +1,43 @@
+id_self:                dec_what_the_digest_of_a_build_identifies
+guid_self:              dec_c9aefb3b7c6e4fd795bcd3d3290ffad6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What the digest of a build identifies
+brief:                  |
+                        An engine reports the content digest of the
+                        graph it runs. Does that digest identify only
+                        the graph, or also the node types, node
+                        sources and dictionary entries the build
+                        binds?
+description:            |
+                        rqt_generator_names_digest has the build carry
+                        the lowered digest.
+                        rqt_control_refuses_wrong_digest and
+                        icd_dataflow_runtime_control speak of the
+                        digest of the graph running, while
+                        icd_dataflow_change_set and
+                        rqt_deployment_records use resolved digests,
+                        and the records nowhere say which an engine
+                        compares (review of 2026-10-29, CC-055). In
+                        the trial implementation the lowered digest
+                        covered the resolved digest and the lowering
+                        version only: a change to a node type's
+                        fail-safe changed the generated code but not
+                        the digest, so two engines that behave
+                        differently reported the same digest (CC-008).
+                        Whichever option is upheld, each digest field
+                        in the ICDs is to name its graph, resolved or
+                        lowered.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_model
+    guid_target:        lco_1beb844211c848e6b89d9cec5c6daa70

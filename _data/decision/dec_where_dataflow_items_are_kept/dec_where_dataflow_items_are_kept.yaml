@@ -1,0 +1,41 @@
+id_self:                dec_where_dataflow_items_are_kept
+guid_self:              dec_f8584aa17bef47949086266077377d2d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Where dataflow graphs, variants and node types are kept
+brief:                  |
+                        Are dataflow graphs, variants, node types and
+                        dictionary entries data items under _data,
+                        checked by cctool check, or files of their own
+                        that the dataflow model reads and checks?
+description:            |
+                        dev holds sch_dataflow_graph,
+                        sch_dataflow_node and the graph
+                        dfg_stableflow_smoketest under _data, and
+                        check.lp judges them. A graph is configuration
+                        data (dec_how_a_dataflow_graph_is_written),
+                        and variants are a type with operations
+                        (dec_how_variants_are_held). The trial
+                        implementation of 2026-10-29 invented a YAML
+                        of its own, outside _data, with the same
+                        prefix and folder names, hand-written guids,
+                        and its standard node types and dictionary
+                        inside the package. It could not read
+                        dfg_stableflow_smoketest, and cctool check
+                        read none of it (review of 2026-10-29, CC-024
+                        and CC-026). sch_dataflow_graph also lacks the
+                        merge keys that rqt_dataflow_schema_merge_keys
+                        demands (CC-058).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_model
+    guid_target:        lco_1beb844211c848e6b89d9cec5c6daa70

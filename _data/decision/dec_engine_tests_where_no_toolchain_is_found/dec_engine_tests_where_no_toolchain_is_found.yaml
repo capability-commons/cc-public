@@ -1,0 +1,32 @@
+id_self:                dec_engine_tests_where_no_toolchain_is_found
+guid_self:              dec_06047ba5a02043e89a62b22668425af2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine tests where no C++ toolchain is found
+brief:                  |
+                        When the tests that build and run a C++ engine
+                        find no compiler, cmake or ninja, do they
+                        skip, or does the run fail?
+description:            |
+                        ruling_cpp_built_when_staged has the gate
+                        build and test the C++ when a commit stages
+                        it, and puts the compiler in the default pixi
+                        environment. pyproject.toml does not yet
+                        declare a compiler, cmake or ninja. In the
+                        trial implementation of 2026-10-29 the engine
+                        tests skipped silently without them: 37 of its
+                        67 tests skipped, and the run still passed
+                        (review of 2026-10-29, CC-043).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_tooling
+    guid_target:        lco_10147b22f69f495789103cec049b2c6a
