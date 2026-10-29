@@ -728,6 +728,30 @@ def test_new_writes_the_items_of_a_decision_in_its_folder(tree):
         'ann_x.yaml', 'dec_x.yaml', 'opt_x.yaml', 'ruling_x.yaml']
 
 
+def test_new_writes_an_item_of_a_decision_in_its_folder_at_once(tree):
+    edit_tree = cctool.edit.edit.Tree(tree)
+    for (id_new, list_link, folder) in (
+            ('ann_x', [('relation_is_about', 'dec_cross_item_checks_engine')],
+             'dec_cross_item_checks_engine'),
+            ('ruling_x', [('relation_rejects', 'opt_cross_item_checks_in_souffle')],
+             'dec_cross_item_checks_engine'),
+            ('ann_y', [('relation_is_about', 'lco_tooling')], None)):
+        [relative] = cctool.edit.edit.new(edit_tree, id_new, list(FIELD_ANN.items()), list_link)
+        assert relative == ('_data/decision/{folder}/{id}.yaml'.format(folder = folder, id = id_new)
+                            if folder else '_data/annotation/{id}.yaml'.format(id = id_new))
+
+
+def test_an_edit_after_an_edit_checks_the_tree_once(tree, monkeypatch):
+    _edit(tree, NEW_SUBJECT)
+    list_review = []
+    review      = cctool.check.check._review
+    monkeypatch.setattr(cctool.check.check, '_review',
+                        lambda *list_arg: list_review.append(1) or review(*list_arg))
+    assert _edit(tree, {'new': 'ann_x', 'field': FIELD_ANN,
+                        'link': [['relation_is_about', 'lco_x']]}) == {}
+    assert len(list_review) == 1
+
+
 def test_new_follows_an_edge_to_a_decision_made_later_in_the_batch(tree):
     assert _edit(tree, NEW_SUBJECT,
                        {'new': 'dec_x', 'field': FIELD_ANN,

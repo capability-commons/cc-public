@@ -153,11 +153,16 @@ QUOTE_DOCSTRING   = '"""'
 #
 LINE_RULE         = '-----'
 
-# A new file is first written in the folder of its type. Where the
-# check says it belongs elsewhere, as an item of a decision belongs in
-# the folder of the decision, apply moves it there.
+# A new file is written in the folder of its type, or in the folder of
+# its decision if its edges make it part of one, as decision_of in
+# derive.lp says. Where the check still says it belongs elsewhere, apply
+# moves it there, at the cost of a second check.
 #
 NAME_MISPLACED    = 'misplaced_document'
+FOLDER_DECISION   = 'decision'
+MAP_DECISION_EDGE = {'type_option':     ({'relation_is_option_for'}, 'type_decision'),
+                     'type_annotation': ({'relation_is_about'},      'type_decision'),
+                     'type_ruling':     ({'relation_upholds', 'relation_rejects'}, 'type_option')}
 
 DIR_DATA          = '_data'
 SUFFIX_YAML       = '.yaml'
@@ -313,6 +318,41 @@ def _refuse_consumed(relative: str) -> None:
 
 
 # -----------------------------------------------------------------------------
+def _folder(tree:      Tree,
+            id_self:   str,
+            id_type:   str,
+            list_link: list[tuple[str, str]],
+            map_type:  dict[str, str]) -> str:
+    """
+    Return the folder under _data of a new item id_self of the type
+    id_type, with an edge for each relation and target in list_link:
+    that of the decision it is part of, if it is a decision or one of
+    its edges makes it part of one, and otherwise that of its type.
+
+    """
+
+    if id_type == 'type_decision':
+        return '{folder}/{id}'.format(folder = FOLDER_DECISION, id = id_self)
+
+    (set_relation, type_target) = MAP_DECISION_EDGE.get(id_type, (set(), None))
+
+    for (id_relation, id_target) in list_link:
+        is_part = (id_relation in set_relation
+                   and map_type.get(id_target.partition(DELIM_PREFIX)[0]) == type_target)
+        if not is_part:
+            continue
+        if type_target == 'type_decision':
+            return '{folder}/{id}'.format(folder = FOLDER_DECISION, id = id_target)
+        row = tree.map_item.get(id_target)
+        if row is not None:
+            list_part = pathlib.PurePosixPath(row[3]).parts
+            if list_part[:2] == (DIR_DATA, FOLDER_DECISION) and len(list_part) == 4:
+                return '{folder}/{id}'.format(folder = FOLDER_DECISION, id = list_part[2])
+
+    return id_type.partition(DELIM_PREFIX)[2]
+
+
+# -----------------------------------------------------------------------------
 def new(tree:       Tree,
         id_self:    str,
         list_field: list[tuple[str, typing.Any]],
@@ -342,7 +382,7 @@ def new(tree:       Tree,
     if register is None:
         relative = '{dir}/{folder}/{id}{suffix}'.format(
                                     dir    = DIR_DATA,
-                                    folder = id_type.partition(DELIM_PREFIX)[2],
+                                    folder = _folder(tree, id_self, id_type, list_link, map_type),
                                     id     = id_self,
                                     suffix = SUFFIX_YAML)
         if relative in tree.map_document:
@@ -1814,6 +1854,7 @@ def apply(tree: Tree, is_written: bool = True) -> cctool.check.check.Failures:
 
     if is_written and not added:
         _write(tree)
+        _remember(tree)
 
     return added
 
@@ -2139,6 +2180,22 @@ def _mode(tree: Tree, relative: str) -> int | None:
         relative = tree.map_source.get(relative)
 
     return None
+
+
+# -----------------------------------------------------------------------------
+def _remember(tree: Tree) -> None:
+    """
+    Make the documents that each file written by the edits of tree was
+    checked with what a read of the file gives next, so that the next
+    edit finds the tree before it already checked.
+
+    """
+
+    for (relative, text) in tree.edit.items():
+        if isinstance(text, str):
+            cctool.graph.extract.remember(relative, text,
+                                          {key: value for (key, value) in tree.map_document.items()
+                                           if cctool.graph.extract.file_of(key) == relative})
 
 
 # -----------------------------------------------------------------------------

@@ -1129,6 +1129,28 @@ def _bytes(path: pathlib.Path, size: int = -1) -> bytes:
 
 
 # -----------------------------------------------------------------------------
+def remember(relative: str, text: str, map_document: Documents) -> None:
+    """
+    Keep map_document, the YAML documents of text, as what read gives
+    for the file at relative while it holds text. An edit that writes a
+    file calls it with the documents it was checked with, so that a
+    read of the tree just written gives those same objects, and what
+    was found by checking them is not found again.
+
+    """
+
+    path = pathlib.PurePosixPath(relative)
+    if path.suffix not in (SUFFIX_YAML, SUFFIX_PYTHON, SUFFIX_PROGRAM):
+        return
+
+    key = (str(path), hashlib.blake2b(text.encode('utf-8'), digest_size = 16).digest())
+    _keep(key, map_document)
+    for (document, _) in map_document.values():
+        if isinstance(document, dict):
+            MAP_DIGEST[id(document)] = (document, key[1].hex())
+
+
+# -----------------------------------------------------------------------------
 def _keep(key: tuple, map_document: Documents) -> None:
     """
     Keep map_document in MAP_READ at key, in place of the latest read
