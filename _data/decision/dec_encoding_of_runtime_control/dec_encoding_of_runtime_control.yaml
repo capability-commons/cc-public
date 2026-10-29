@@ -1,0 +1,38 @@
+id_self:                dec_encoding_of_runtime_control
+guid_self:              dec_912f20c08cca4401a0da6478bfe44cc5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Encoding of runtime control
+brief:                  |
+                        Requests and replies between deployment and a
+                        running engine carry content digests, a
+                        lowered graph and change sets. How are they
+                        encoded, and over what channel?
+description:            |
+                        icd_dataflow_runtime_control fixes what each
+                        request carries, and leaves its encoding to
+                        the first host that needs it. The trial
+                        implementation of 2026-10-29 sent one JSON
+                        object per line on standard input and output
+                        (trial process log, phase 2). The review found
+                        that one line of 200 KB crashed its JSON
+                        reader (review of 2026-10-29, CC-046), that
+                        runtime control raced with the dynamic
+                        subgraph (CC-017), and that a request taken as
+                        a run ended read a freed engine (CC-006).
+                        Transport libraries are confined to the
+                        transport nodes
+                        (rqt_transport_confines_library).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

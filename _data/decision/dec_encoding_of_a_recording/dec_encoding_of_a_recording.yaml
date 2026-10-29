@@ -1,0 +1,41 @@
+id_self:                dec_encoding_of_a_recording
+guid_self:              dec_78c59e787e51419797bb2a78e39c0599
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Encoding of a recording
+brief:                  |
+                        A recording holds, for each local step, the
+                        values from outside, the control messages and
+                        the engine events, with the content digest of
+                        the graph that ran. How is it written?
+description:            |
+                        icd_dataflow_recorder states the content and
+                        leaves the encoding to the first host that
+                        needs it. ruling_replay_from_a_recorded_log
+                        has recording nodes write the log,
+                        rqt_recorder_off_step_path keeps their writes
+                        off the local step, and
+                        rqt_player_replays_exactly has a player feed a
+                        recording back. A run item names its input
+                        data by digest (ruling_run_item_in_the_tree).
+                        The trial implementation of 2026-10-29 wrote
+                        one JSON line per recorded end per local step,
+                        with the message in hex (trial process log,
+                        phase 2), and its readers over-read and
+                        accepted the recording of any graph (review of
+                        2026-10-29, CC-045). What happens when a
+                        recording overflows is open in
+                        dec_overflow_of_events_and_recordings.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

@@ -1,0 +1,43 @@
+id_self:                dec_form_of_a_change_set_the_engine_receives
+guid_self:              dec_aafed8761e74408b96ba8a287ea02c1b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Form of a change set the engine receives
+brief:                  |
+                        cctool computes a change set from two resolved
+                        dataflow graphs, and the engine never sees
+                        variant operations. What form of change set
+                        does the engine receive?
+description:            |
+                        icd_dataflow_change_set states its content:
+                        the digests before and after, the nodes and
+                        edges to add with their placement and
+                        declarations, those to remove, and the swaps
+                        with their upgrade mappings.
+                        ruling_change_set_checked_by_both has cctool
+                        check a change set in full and the engine
+                        repeat the checks that keep it safe; there WTP
+                        expects the Python side to turn a change from
+                        its canonical form into a materialized form,
+                        or a sequence of calls, that better fits what
+                        the engine can receive.
+                        ruling_any_change_set_checked_against_the_running_graph
+                        and ruling_swap_at_a_step_with_state_upgrade
+                        also apply. The trial implementation of
+                        2026-10-29 sent one JSON document of nodes and
+                        edges to add, remove or swap, and its engine
+                        checked less than cctool did (review of
+                        2026-10-29, CC-029).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

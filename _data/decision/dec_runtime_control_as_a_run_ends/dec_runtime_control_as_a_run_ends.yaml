@@ -1,0 +1,33 @@
+id_self:                dec_runtime_control_as_a_run_ends
+guid_self:              dec_9568446562344eb19ebb341910cccff9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Runtime control as a run ends
+brief:                  |
+                        A run ends when its execution units stop, at a
+                        limit on local steps or on a stop. What does
+                        runtime control do with a request that comes
+                        as the run ends, or after it has ended?
+description:            |
+                        icd_dataflow_runtime_control does not say. The
+                        trial implementation of 2026-10-29 answered
+                        such a request from an engine already
+                        destroyed (review of 2026-10-29, CC-006). Its
+                        fix, at 2c777ab9, ends the run under a lock,
+                        answers a request already taken, and then
+                        exits without answering a later one. Whether a
+                        stop ends the run is open in
+                        dec_scope_of_stop_and_start.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
