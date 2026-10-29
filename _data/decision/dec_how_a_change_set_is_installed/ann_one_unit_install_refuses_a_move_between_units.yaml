@@ -1,0 +1,102 @@
+id_self:                ann_one_unit_install_refuses_a_move_between_units
+guid_self:              ann_9f988519ef73482cb0fd6773410a38db
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Refusal of every change set that spans two execution units
+brief:                  |
+                        Installing at the next step of one unit only
+                        works if a change set touches one unit. Any
+                        change to an edge between dynamic nodes of two
+                        units touches both, because such an edge is a
+                        sender in one unit and a receiver in the
+                        other. So a change set that adds a node fed
+                        from another unit, or moves a node between
+                        units to spread load, is refused, which
+                        narrows the ruling that any change set that
+                        checks against the running graph may be
+                        applied. Where cctool splits a change set
+                        instead, the host runs an intermediate graph
+                        between the two installs that no variant names
+                        and that the checks must also cover. The other
+                        two options install across units by design.
+description:            |
+                        Sources:
+                        - A deployment may apply any change set that
+                          checks against the
+                          resolved graph it is running; WTP ruled this against the
+                          recommendation of no switching at first.
+                          (_data/decision/dec_runtime_mode_set/ruling_any_change_set_checked_against_the_running_graph.yaml at brief)
+                        - A change set adds, moves or removes nodes
+                          and edges, with their
+                          placement.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml at brief, and at surface.data.artifact.artifact.change_set.content)
+                        - The engine carries values only within one
+                          execution unit, and a
+                          transform inserts a sender and a receiver where an edge's ends
+                          are in different units.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml at brief)
+                        - Kahn steps are spread by placing nodes on
+                          hosts and execution
+                          units, and much of the dynamism goes into rewriting the
+                          dataflow graph.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml at brief)
+                        - The option refuses a change set that touches
+                          two units, or has
+                          cctool split it where no edge between them changes.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_install_on_each_unit_at_its_next_step.yaml at description)
+                        - The trial refused every change set that
+                          touched more than one
+                          unit, and its log asked for a ruling, since atomicity across
+                          units needs a barrier between threads or hosts. (trial process
+                          log, phase 3; trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function build)
+                        - A change set names the digest of the graph
+                          it applies to and of
+                          the one it gives, and every complete variant is checked.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml at surface.data.artifact.artifact.change_set.content;
+                          _data/decision/dec_which_resolved_graphs_are_checked/ruling_every_complete_variant_checked.yaml at brief)
+                        ASSUMPTION: "moved" in the change-set ICD
+                        includes a move from one execution unit to
+                        another; if moves stay within a unit, only the
+                        new edges between units are lost. Strength:
+                        moderate; weak if WTP is content that a change
+                        across units needs a new deployment rather
+                        than a change set.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_install_on_each_unit_at_its_next_step
+    guid_target:        opt_eb4fa64c12d74ca7b4c740eb16d69462
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

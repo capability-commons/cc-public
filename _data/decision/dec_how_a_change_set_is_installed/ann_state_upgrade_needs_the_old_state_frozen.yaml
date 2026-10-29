@@ -1,0 +1,91 @@
+id_self:                ann_state_upgrade_needs_the_old_state_frozen
+guid_self:              ann_8034ee4361f4420e8e332e7d4a1801e2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State upgrade computed from an old state that is still changing
+brief:                  |
+                        Installing at the next step computes each
+                        upgraded state off the unit, before the
+                        install, and prepare-then-commit does the
+                        same. But the old version keeps running, and
+                        changing its state, until the step at which
+                        the swap takes effect, so a state upgraded
+                        early misses the last steps. In the trial,
+                        reading the old state from the control thread
+                        while the node ran was one of the data races
+                        TSan found. The upgrade has to be made from a
+                        frozen state, which only quiescing gives off
+                        the unit. The other two options must make it
+                        on the unit at the swap step, into state
+                        allocated beforehand, as the trial's install
+                        did.
+description:            |
+                        Sources:
+                        - Runtime control computes each upgraded state
+                          off the execution
+                          unit, before handing the part over.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_install_on_each_unit_at_its_next_step.yaml at description, step 1;
+                          _data/decision/dec_how_a_change_set_is_installed/opt_prepare_then_commit_on_each_unit.yaml at description, step 1)
+                        - The old state and version of a swapped node
+                          are kept until the
+                          new version completes a local step.
+                          (_data/requirement/rqt_dynamic_swap_keeps_old_state.yaml at object)
+                        - The trial's probe of the upgrade read the
+                          old state on the
+                          control thread while the node ran; TSan reported the race, and
+                          the review's fix is to probe on a copy the unit thread makes.
+                          (review of 2026-10-29, CC-017; area report trial-engine, TE-15)
+                        - The trial's install upgraded the state on
+                          the unit thread at the
+                          start of the step, from the state the last step left. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/dynamic.cpp, function
+                          install)
+                        - A generated upgrade copies unchanged fields
+                          and gives added
+                          fields their default, and a failed transformer leaves the old
+                          state untouched. (Hicks et al. 2001, Dynamic software updating,
+                          sections 3.3.2 and 4.1)
+                        - Quiescing installs every part, upgrading
+                          states, while the
+                          touched units wait.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_quiesce_the_units_it_touches.yaml at description, step 3)
+                        ASSUMPTION: a generated upgrade of field
+                        copies and defaults costs little against a 33
+                        ms step, so doing it on the unit is
+                        affordable. Strength: strong on the premise of
+                        the two options as written; weak on the
+                        choice, since the fix is small and already ran
+                        in the trial.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_install_on_each_unit_at_its_next_step
+    guid_target:        opt_eb4fa64c12d74ca7b4c740eb16d69462
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

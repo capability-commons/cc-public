@@ -1,0 +1,86 @@
+id_self:                ann_per_unit_gap_is_the_trial_gap_with_its_buffer_split
+guid_self:              ann_15907cd73b9c4867b813bd1ce9809103
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap of each unit as the trial's gap with its buffer made per unit
+brief:                  |
+                        A gap after each local step of its own unit is
+                        what the trial ran. In one unit the review
+                        found it correct: it admitted only what
+                        waited, ordered by a total key, and replay
+                        admitted at the recorded gap. Its one
+                        high-severity defect, actors in two units
+                        corrupting each other's gap, came from a
+                        snapshot buffer shared by every unit, and the
+                        review's fix, one buffer per unit, is part of
+                        this option. The event ICD names a gap by the
+                        local step it follows, which fits this option
+                        directly, fits a unit of actors if its tick
+                        counts as a local step, and does not fit a gap
+                        that follows a step of every unit on the host.
+                        One rule must be added: what the gap does
+                        after a failed local step.
+description:            |
+                        Sources:
+                        - The trial ran a unit's actors in a gap at
+                          the end of its
+                          generated step. (trial 2c777ab9, src/cctool/dataflow/generate.py,
+                          method step; src/cctool/dataflow/engine/src/actors.cpp, function
+                          actors_gap)
+                        - In one unit the gap admitted only what
+                          waited, the order key was
+                          total and deterministic, and replay admitted at the recorded gap.
+                          (area report trial-engine, section 5)
+                        - Actors in two units corrupted each other's
+                          gap through one global
+                          snapshot buffer; the fix is a buffer per unit allocated before
+                          the first step, with no dependency on other work. (review of
+                          2026-10-29, CC-002)
+                        - Each unit has its own gap, queues and record
+                          of admissions, and
+                          reports each admission with the step the gap follows.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_after_each_local_step_of_its_unit.yaml at brief and description)
+                        - A gap is named by the local step it follows.
+                          (_data/interface_control_document/icd_dataflow_engine_event.yaml at surface.data.artifact.artifact.admission.convention)
+                        - The trial skipped the gap after a failed
+                          step, so actor output
+                          reached its Kahn reader twice. (review of 2026-10-29, CC-013;
+                          trial 2c777ab9, src/cctool/dataflow/generate.py, method
+                          Unit.step)
+                        Strength: strong; it is the smallest change
+                        from code that ran, and the open rule on a
+                        failed step is a line in each option that ties
+                        a gap to a Kahn step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gap_shared_by_the_units_of_a_host
+    guid_target:        opt_52a2c7478589420f901b4315e753786b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

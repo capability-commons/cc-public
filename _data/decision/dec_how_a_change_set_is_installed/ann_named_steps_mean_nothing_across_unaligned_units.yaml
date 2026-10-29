@@ -1,0 +1,91 @@
+id_self:                ann_named_steps_mean_nothing_across_unaligned_units
+guid_self:              ann_a95bdbc1b77f48d09a12ff289732ed34
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Step numbers of two units that no common step lines up
+brief:                  |
+                        Prepare-then-commit names a local step for
+                        each unit and joins an edge between two
+                        changed units from the later of the two steps.
+                        Steps are local with no common step, so step n
+                        of one unit and step n of another carry the
+                        same message only where every crossing waits
+                        for one message per step and no step has
+                        failed. In the trial a single failed step put
+                        a downstream unit one step out of line for the
+                        rest of the run. The option also does not say
+                        what becomes of messages already queued on an
+                        edge it cuts or retypes. Its join rule is
+                        sound only under lockstep crossings, or when
+                        messages carry their sender's step.
+description:            |
+                        Sources:
+                        - Steps are local to an execution unit;
+                          between units an edge is a
+                          bounded queue with no common step.
+                          (_data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml at brief)
+                        - The commit names, for each unit, a step far
+                          enough ahead, and an
+                          edge between two changed units is joined from the later of the
+                          two steps.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_prepare_then_commit_on_each_unit.yaml at description)
+                        - Whether a receiver waits for one message in
+                          each local step is
+                          open; two of its options let units run apart.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_delivery_policy_decides_whether_a_receiver_waits.yaml at brief;
+                          _data/decision/dec_how_a_receiver_takes_values_from_another_unit/opt_no_crossing_waits.yaml at brief)
+                        - After a failed step in u1, step k of u2 read
+                          the message of step
+                          k+1 of u1 for the rest of the run. (review of 2026-10-29,
+                          CC-004)
+                        - Messages that carry the sender's local step
+                          are one open option
+                          for failed steps.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_messages_carry_their_local_step.yaml at brief)
+                        - For atomic replacement of several
+                          components, messages in transit
+                          on a connector are the hazard; draining them is preferred to
+                          converting them, which needs domain knowledge. (Vandewoude et al.
+                          2007, Tranquility, sections 6.4.1 and 6.4.2)
+                        - Quiescing waits until the messages in flight
+                          between the units
+                          it touches have arrived, and names no step for any unit, so it
+                          needs no mapping between their step numbers.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_quiesce_the_units_it_touches.yaml at description, step 2)
+                        Strength: strong if the delivery-policy option
+                        or the no-wait option is upheld for crossings;
+                        weak under lockstep crossings with a rule for
+                        failed steps.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

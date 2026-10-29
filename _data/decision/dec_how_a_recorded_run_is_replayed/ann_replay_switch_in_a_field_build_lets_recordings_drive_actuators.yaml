@@ -1,0 +1,85 @@
+id_self:                ann_replay_switch_in_a_field_build_lets_recordings_drive_actuators
+guid_self:              ann_db9b739fb73e4126b9110ca40065ce5e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay switch in a field build that lets a recording drive a robot
+brief:                  |
+                        With a replay mode, every engine shipped to a
+                        robot can be started so that recorded values,
+                        or crafted ones, stand in for its sensors. In
+                        the trial this was one command-line argument,
+                        and a live change set was not refused during a
+                        replay. A replay variant made by a transform
+                        has players where the sensors were, and the
+                        field build carries no replay path at all,
+                        provided the control block's replay setting is
+                        bound at build. Neither option says what
+                        becomes of nodes that act on the world during
+                        a replay. A transform can replace them by
+                        their declared role, while an engine mode
+                        would have to know them itself.
+description:            |
+                        Sources:
+                        - The trial's engine took a recording to
+                          replay as a command-line
+                          argument, and its control blocks wrote recorded values whenever
+                          the engine replayed. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, function run;
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step)
+                        - A live apply during a replay was not
+                          refused. (area report
+                          trial-engine, section 3, determinism and replay)
+                        - The control block has a setting that makes
+                          it write recorded
+                          control messages instead of reading the platform.
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml at surface.unit.dataflow_step.settings.replay.brief)
+                        - Each setting declares the latest time it may
+                          be bound, and a
+                          check fails a variant that binds it later.
+                          (_data/decision/dec_binding_time_of_a_variation/ruling_latest_binding_time_per_setting.yaml at brief)
+                        - A node type declaring a role such as sink is
+                          one open option.
+                          (_data/decision/dec_which_nodes_may_reach_the_outside_world/opt_privileged_roles_declared_by_the_node_type.yaml at brief)
+                        - Safety asks what harm the design could cause
+                          and how each hazard
+                          is limited. (_data/register/reg_concern.yaml at entries.concern_safety.question)
+                        ASSUMPTION: whoever can start or restart an
+                        engine on the robot could pass it a recording.
+                        Strength: strong for the field build; it does
+                        not apply to a replay mode compiled only into
+                        bench builds, which is close to a transform
+                        anyway.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_mode_in_the_engine
+    guid_target:        opt_754eb0643fda484a8ae071971e1594d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_by_a_transform_and_a_replay_controller
+    guid_target:        opt_e73deda417f94c5aabd433b7c9f61027
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

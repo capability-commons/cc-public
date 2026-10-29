@@ -1,0 +1,80 @@
+id_self:                ann_host_barrier_restores_a_common_step_between_units
+guid_self:              ann_68d5df1dc3ba473385e258ba3f183881
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host barrier that brings back a common step the ruling excludes
+brief:                  |
+                        A gap shared by the units of a host opens only
+                        when every unit on the host has finished a
+                        step, so every unit waits for the slowest and
+                        for the actors of all the others. That is a
+                        common step for the host, which the ruling on
+                        reading by placement excludes. In the trial,
+                        lockstep through the channel of host readings
+                        alone held a 10 ms unit to 50 ms, and through
+                        one lossless crossing a 2 ms unit reported 99
+                        overruns in 104 steps. A gap per unit, or a
+                        unit of actors, leaves each unit at its own
+                        period.
+description:            |
+                        Sources:
+                        - Steps are local to an execution unit, and
+                          between units there is
+                          no common step; WTP expects nodes to be moved between units
+                          until they run smoothly.
+                          (_data/decision/dec_same_step_or_next_step_reading/ruling_reading_derived_by_placement.yaml at brief and description)
+                        - Kahn steps are spread by placing nodes on
+                          hosts and execution
+                          units.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml at brief)
+                        - Each unit waits at the host's barrier, and
+                          one thread runs every
+                          actor of the host before the units are released together.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_shared_by_the_units_of_a_host.yaml at description)
+                        - Host readings alone held a 10 ms unit to 50
+                          ms, and a 2 ms unit
+                          feeding a 20 ms unit through a lossless crossing had 99 overruns
+                          in 104 steps. (review of 2026-10-29, CC-011)
+                        ASSUMPTION: a barrier binds the units of a
+                        host at least as tightly as those lossless
+                        crossings did. Strength: strong; the barrier
+                        is the option's mechanism, not a defect of an
+                        implementation.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gap_shared_by_the_units_of_a_host
+    guid_target:        opt_52a2c7478589420f901b4315e753786b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_in_a_unit_of_their_own
+    guid_target:        opt_87d93c457db14f28adc2e98f152932f5
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

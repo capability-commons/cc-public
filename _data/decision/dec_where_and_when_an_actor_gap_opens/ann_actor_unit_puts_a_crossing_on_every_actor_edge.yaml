@@ -1,0 +1,77 @@
+id_self:                ann_actor_unit_puts_a_crossing_on_every_actor_edge
+guid_self:              ann_2893703c23bc4f55af1d30a95e083bb5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Crossing, copy and step of latency on every edge of an actor unit
+brief:                  |
+                        In a unit of their own, actors reach Kahn
+                        nodes only through a sender and receiver pair,
+                        so each edge between a Kahn node and an actor
+                        becomes a crossing, with a copy into its
+                        queue. A Kahn output reaches the actor at the
+                        actor unit's next tick, and the answer reaches
+                        its Kahn reader at that reader's next step
+                        after it arrives. That can be as much as one
+                        actor period and one Kahn step later than a
+                        gap in the same unit, where the actor sees the
+                        output of the step just finished and its
+                        reader gets the answer at the next local step.
+                        At 30 Hz a Kahn step is 33 ms. The gain is
+                        that actors can be placed and paced apart from
+                        the Kahn units.
+description:            |
+                        Sources:
+                        - Messages between the actor unit and Kahn
+                          units go through a
+                          sender and receiver.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_actors_in_a_unit_of_their_own.yaml at description, step 3)
+                        - A transform inserts a sender and receiver
+                          wherever placement puts
+                          the ends of an edge in different units, and a value is copied
+                          into each queue it passes through.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml at brief;
+                          _data/decision/dec_how_a_value_is_carried_along_an_edge/ruling_value_copied_into_each_queue.yaml at brief)
+                        - In the per-unit gap the unit takes the
+                          messages after its step,
+                          and what an actor writes toward a Kahn node is held for the next
+                          local step.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_after_each_local_step_of_its_unit.yaml at description)
+                        - When each stage reads what its producer
+                          wrote in the step
+                          before, latency grows by a step for each level.
+                          (Bamakhrama and Stefanov 2012, Managing latency in embedded
+                          streaming applications under hard-real-time scheduling, Theorem 4)
+                        - Patrol's camera runs at 30 Hz. (WTP,
+                          2026-10-28) Strength: moderate; it matters
+                          for actors in a control path, such as a
+                          planner answering a perception step, and
+                          little for actors that handle operator
+                          commands.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_in_a_unit_of_their_own
+    guid_target:        opt_87d93c457db14f28adc2e98f152932f5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

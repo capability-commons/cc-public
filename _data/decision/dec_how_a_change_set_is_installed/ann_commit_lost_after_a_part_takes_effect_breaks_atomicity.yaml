@@ -1,0 +1,98 @@
+id_self:                ann_commit_lost_after_a_part_takes_effect_breaks_atomicity
+guid_self:              ann_8e33b4fee7ee44b2969a3abfb730f196
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Atomicity lost when a commit misses a unit's named step
+brief:                  |
+                        Prepare-then-commit is atomic only if every
+                        unit reaches its named step after its part is
+                        in place. A unit that is stopped, slow, or on
+                        a host whose commit arrives late never
+                        installs while the others already have, and a
+                        part that has taken effect cannot be withdrawn
+                        except by a swap's put-back, so the change set
+                        stays half applied unless the named step
+                        carries declared bounds on delivery and a
+                        fault when they are broken. Both cross-unit
+                        options also widen what runtime control
+                        exposes: a prepared part holds memory until a
+                        commit that may never come, and quiescing lets
+                        every accepted change set stop the units it
+                        touches, a lever on units that drive
+                        actuators. Installing at one unit's next step
+                        has one request and one handover.
+description:            |
+                        Sources:
+                        - Parts are prepared, a failure before the
+                          commit discards them
+                          all, and the commit names for each unit a step far enough
+                          ahead, through each host's runtime control.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_prepare_then_commit_on_each_unit.yaml at description)
+                        - No local step ever sees half a change set.
+                          (_data/requirement/rqt_dynamic_atomic.yaml at brief)
+                        - A swapped node keeps its old state and
+                          version until its new
+                          version completes a local step, so that the swap can be undone.
+                          (_data/requirement/rqt_dynamic_swap_keeps_old_state.yaml at object and qualifier)
+                          The option itself discards parts only before the commit, and
+                          says nothing of withdrawing one after it.
+                        - Stopping and starting one unit at a time is
+                          an open option.
+                          (_data/decision/dec_scope_of_stop_and_start/opt_stop_and_start_act_on_one_unit.yaml at brief)
+                          A unit stopped under it does not step, so it cannot reach a
+                          named step until it is started again.
+                        - In distributed reactors a receiver waits
+                          until a time stamp plus
+                          bounds on clock error and latency, and a broken bound is
+                          detected as a fault. (Lohstroh et al. 2019, Reactors, section 4)
+                        - The only allocation after start is for nodes
+                          and edges a change
+                          set adds. (_data/requirement/rqt_memory_only_for_change_sets.yaml at brief)
+                        - Whoever can delay a link between hosts can
+                          stretch the steps
+                          that wait on it.
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml at brief)
+                        ASSUMPTION: runtime control may in time be
+                        reachable from a network a third party can
+                        reach; on one Orin it may not be. Strength:
+                        moderate; within one host and with no unit
+                        stopped, a generous lead removes most of the
+                        risk.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_install_on_each_unit_at_its_next_step
+    guid_target:        opt_eb4fa64c12d74ca7b4c740eb16d69462
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

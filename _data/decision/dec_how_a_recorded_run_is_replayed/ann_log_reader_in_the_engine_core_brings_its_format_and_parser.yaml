@@ -1,0 +1,86 @@
+id_self:                ann_log_reader_in_the_engine_core_brings_its_format_and_parser
+guid_self:              ann_0c8c43bfdc244c29a38c5f4e126b373d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Log reader in the engine core, with its format and parser
+brief:                  |
+                        A replay mode puts the reader of the recording
+                        into every engine, so the engine depends on
+                        the recording's format. If the open decision
+                        on encoding chooses MCAP, every engine depends
+                        on that library too, where the records confine
+                        transport libraries to the nodes that need
+                        them. The trial read its recording with the
+                        engine's own JSON parser, which one deeply
+                        nested line of runtime control crashed, and
+                        its replay reader over-read on a bad count and
+                        accepted the recording of any graph. Under the
+                        transform the log is read by players and by
+                        the replay controller, which exist only in the
+                        replay variant. The field engine then has
+                        neither the parser nor the format library.
+description:            |
+                        Sources:
+                        - The trial's engine loaded the whole
+                          recording with its own JSON
+                          reader. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, function
+                          Replay::load)
+                        - One 200 KB line of runtime control crashed
+                          the engine through
+                          the JSON reader that also parses recordings; Replay::fill
+                          over-read on a bad count; any graph's recording was accepted.
+                          (area report trial-engine, TE-16 and TE-17; review of
+                          2026-10-29, CC-045 and CC-046)
+                        - MCAP is an open option for the encoding of a
+                          recording.
+                          (_data/decision/dec_encoding_of_a_recording/opt_mcap_container.yaml at brief)
+                        - MCAP has libraries for C++, Python and other
+                          languages, under the
+                          MIT license (https://github.com/foxglove/mcap, checked
+                          2026-10-29).
+                        - Transport libraries are confined to the
+                          sender and the receiver,
+                          so a target without transport need not build them.
+                          (_data/requirement/rqt_transport_confines_library.yaml at object and rationale)
+                        - Players stand in for sources and control
+                          blocks in a replay
+                          variant, which also gets a replay controller, and the engine has
+                          no replay mode.
+                          (_data/decision/dec_how_a_recorded_run_is_replayed/opt_replay_by_a_transform_and_a_replay_controller.yaml at brief)
+                        Strength: moderate; with the own binary log
+                        the dependency is our own reader, and the
+                        security point remains.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_mode_in_the_engine
+    guid_target:        opt_754eb0643fda484a8ae071971e1594d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_by_a_transform_and_a_replay_controller
+    guid_target:        opt_e73deda417f94c5aabd433b7c9f61027
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

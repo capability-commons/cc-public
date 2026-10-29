@@ -1,0 +1,85 @@
+id_self:                ann_replay_on_the_field_build_reproduces_faults_of_the_build
+guid_self:              ann_1dd49a30ec31408e91fbf4606a8c63b7
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay on the field build, which keeps faults of that build
+brief:                  |
+                        Replay exists to reproduce faults found in the
+                        field. A replay mode runs the very binary that
+                        ran in the field, as the trial did. A replay
+                        by transform builds another variant, with
+                        players in place of sources and control blocks
+                        and a controller added, so the generated
+                        schedule and buffer layout can differ. Several
+                        of the trial's faults lived there, or had
+                        effects that hang on the layout: the control
+                        block's place in the generated order, a
+                        default that overwrote the next buffer
+                        descriptor, and an adapter that overflowed the
+                        heap. A replay build might not reproduce such
+                        a fault, and its digest differs from the
+                        recorded one.
+description:            |
+                        Sources:
+                        - Replay is how faults found in the field are
+                          reproduced and how
+                          evidence is checked.
+                          (_data/requirement/rqt_engine_replays_live_changes.yaml at rationale)
+                        - A replay is a variant made by a transform
+                          that puts players in
+                          place of sources and control blocks and adds a replay
+                          controller.
+                          (_data/decision/dec_how_a_recorded_run_is_replayed/opt_replay_by_a_transform_and_a_replay_controller.yaml at brief)
+                        - The trial replayed with the same engine
+                          binary given a recording.
+                          (trial 2c777ab9, src/cctool/dataflow/_test/test_dynamic.py,
+                          test_a_run_with_live_changes_replays_exactly)
+                        - Faults in the generated schedule and layout:
+                          the control block
+                          after ordinary nodes, and a feedback default writing into the
+                          next buffer descriptor; and the fold adapter's heap overflow,
+                          which corrupts whatever lies next in the heap. (review of
+                          2026-10-29, CC-001, CC-018 and CC-010)
+                        - A separate digest of the build is one open
+                          option.
+                          (_data/decision/dec_what_the_digest_of_a_build_identifies/opt_separate_digest_of_the_build.yaml at brief)
+                        ASSUMPTION: a transform that puts a player in
+                        a source's slot, with the same ports and
+                        buffers, keeps the schedule and layout and
+                        differs only in the function called there,
+                        which would close most of the gap. Strength:
+                        moderate; it falls to weak if the replay
+                        transform is held to that rule.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_mode_in_the_engine
+    guid_target:        opt_754eb0643fda484a8ae071971e1594d5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_by_a_transform_and_a_replay_controller
+    guid_target:        opt_e73deda417f94c5aabd433b7c9f61027
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

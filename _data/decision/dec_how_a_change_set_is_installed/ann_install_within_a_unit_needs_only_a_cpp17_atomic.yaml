@@ -1,0 +1,84 @@
+id_self:                ann_install_within_a_unit_needs_only_a_cpp17_atomic
+guid_self:              ann_838d379bcb804ef790e849190fa6c2e5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Install within a unit on a C++17 atomic, not a protocol across hosts
+brief:                  |
+                        Installing at a unit's next step needs nothing
+                        beyond a C++17 atomic pointer and a step
+                        counter, the same from one unit on a small
+                        target to many on the Orin. Preparing and
+                        committing across hosts, or quiescing units on
+                        several hosts, needs a coordination protocol
+                        carried by each host's runtime control.
+                        Whether runtime control uses an outside
+                        messaging library is still open, so the
+                        atomicity of a change set across hosts could
+                        come to rest on that library's delivery and
+                        ordering. The cost falls only on change sets
+                        that span hosts.
+description:            |
+                        Sources:
+                        - The engine is a new C++17 engine targeting
+                          embedded reach.
+                          (WTP, 2026-10-28)
+                        - The trial's handover was one atomic pointer
+                          per unit and an
+                          atomic flag for the install. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, functions hook_apply
+                          and dynamic_begin)
+                        - A part for another host is prepared through
+                          that host's runtime
+                          control.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_prepare_then_commit_on_each_unit.yaml at description, step 1)
+                        - One open option carries runtime control on
+                          an existing messaging
+                          library.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_an_existing_messaging_library.yaml at brief)
+                        - Transport libraries are confined to sender
+                          and receiver nodes,
+                          so a target without them need not build them.
+                          (_data/requirement/rqt_transport_confines_library.yaml at object and rationale)
+                        ASSUMPTION: a lock-free atomic pointer store
+                        is available on the embedded targets in reach.
+                        Strength: weak; it bites only for change sets
+                        that span hosts, and only if an outside
+                        library carries runtime control.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_install_on_each_unit_at_its_next_step
+    guid_target:        opt_eb4fa64c12d74ca7b4c740eb16d69462
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

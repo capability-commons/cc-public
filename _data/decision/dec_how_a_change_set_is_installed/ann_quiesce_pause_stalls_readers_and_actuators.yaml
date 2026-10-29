@@ -1,0 +1,94 @@
+id_self:                ann_quiesce_pause_stalls_readers_and_actuators
+guid_self:              ann_43ccea90c17440b08ac610609f98d682
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Pause of quiesced units and of the units that wait on them
+brief:                  |
+                        Quiescing stops the units a change set touches
+                        for at least the rest of the longest step
+                        among them plus the install. Where crossings
+                        wait, the units that read from or write to a
+                        stopped unit stall as well. The trial showed
+                        this when stopping one unit blocked another
+                        while its status still said running. On Patrol
+                        a camera step is 33 ms, so one pause can cost
+                        a frame and delay any node that drives an
+                        actuator. Installing at the start of a unit's
+                        next step costs that unit only the swap
+                        itself, and the step boundary already gives
+                        every Kahn node of the unit the quiescence the
+                        1990 paper asks for, in bounded time.
+description:            |
+                        Sources:
+                        - The touched units finish their step and wait
+                          while runtime
+                          control installs every part, so they do not step for as long as
+                          the install takes.
+                          (_data/decision/dec_how_a_change_set_is_installed/opt_quiesce_the_units_it_touches.yaml at brief and description)
+                        - Stopping u2 left u1 blocked in a lossless
+                          send while its status
+                          said it was running. (review of 2026-10-29, CC-047; area report
+                          trial-engine, TE-18)
+                        - In an IEC 61499 plant updated through
+                          Erlang, a suspension took
+                          about 20 ms of a 100 ms cycle, and the authors warn that
+                          suspending a process that drives an actuator can delay a
+                          time-critical answer such as stopping a motor. (Prenzel and
+                          Provost 2017, Dynamic software updating of IEC 61499
+                          implementation using Erlang runtime system, section 4.4)
+                        - Patrol runs on an Orin with a camera at 30
+                          Hz. (WTP, 2026-10-28)
+                        - The trial's install at the start of a step
+                          was a pointer
+                          exchange plus a copy or upgrade of each swapped state. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/dynamic.cpp, functions
+                          dynamic_begin and install)
+                        - A node is quiescent when no transaction is
+                          in progress at it and
+                          none will start. (Kramer and Magee 1990, The evolving
+                          philosophers problem, section on node quiescence) The
+                          literature note on the paper reads a step boundary as such a
+                          point for every Kahn node at once, though not for actor
+                          exchanges that span steps.
+                        Strength: strong for units that drive
+                        actuators; weaker if quiescing were kept for
+                        change sets that span units, with the rest
+                        installed at the next step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_quiesce_the_units_it_touches
+    guid_target:        opt_f50eab32def44286b47373ef7337deb7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_install_on_each_unit_at_its_next_step
+    guid_target:        opt_eb4fa64c12d74ca7b4c740eb16d69462
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_prepare_then_commit_on_each_unit
+    guid_target:        opt_12b545eb61b24285a7c82f521750e371
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,95 @@
+id_self:                ann_admission_of_messages_across_units_depends_on_timing
+guid_self:              ann_dc4217d76f57426c8e46abf8518a5f17
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap that admits a message from another unit, set by timing
+brief:                  |
+                        A message that reaches an actor from another
+                        unit is not outside the graph, so the ruled
+                        log does not record the gap that admitted it.
+                        Yet which gap admits it depends on timing
+                        unless the crossing waits for one message in
+                        each step. The shared host gap has no such
+                        message within a host; a gap per unit has it
+                        only on edges into an actor from a node, actor
+                        or Kahn, in another unit; a unit of actors has
+                        it on every edge between a Kahn node and an
+                        actor, in both directions. For an exact
+                        replay, those crossings must then be lockstep,
+                        which ties the actor unit to the Kahn units'
+                        pace and empties its own period of meaning, or
+                        their arrivals must be recorded too.
+description:            |
+                        Sources:
+                        - The log holds the values from outside, the
+                          gap that admitted
+                          each outside message, and the step of each change set and swap.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml at brief)
+                        - Replay gives the same messages on every edge
+                          as the recorded run.
+                          (_data/requirement/rqt_engine_replays_live_changes.yaml at object)
+                        - In-order delivery between two actors is not
+                          transitive, so a
+                          proxy in between can reorder messages (Menard et al. 2023,
+                          High-performance deterministic concurrency using Lingua Franca,
+                          section 2); the literature note on the paper reads a transport
+                          inserted on an actor edge as such a proxy. The tags given to
+                          events from outside count as part of the input, and given them
+                          the program stays deterministic (same paper, section 3.3).
+                        - A receiver whose token depends on arrival
+                          time is an input that
+                          replay must record.
+                          (_data/decision/dec_how_a_receiver_takes_values_from_another_unit/ann_lossy_receiver_is_an_input_replay_must_record.yaml at brief)
+                        - Messages between the actor unit and Kahn
+                          units cross through a
+                          sender and receiver, and the actor unit runs at its own period.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_actors_in_a_unit_of_their_own.yaml at brief and description)
+                        - Under the per-unit gap, a message between
+                          actors in two units
+                          crosses like any edge between units, and so does an edge from a
+                          Kahn node in another unit, through an inserted sender and
+                          receiver.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_after_each_local_step_of_its_unit.yaml at description, step 4;
+                          _data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml at brief)
+                        Strength: moderate; strong against the actor
+                        unit, weak against the per-unit gap, where a
+                        check could refuse actor edges between units
+                        or lowering could record them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_shared_by_the_units_of_a_host
+    guid_target:        opt_52a2c7478589420f901b4315e753786b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_in_a_unit_of_their_own
+    guid_target:        opt_87d93c457db14f28adc2e98f152932f5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

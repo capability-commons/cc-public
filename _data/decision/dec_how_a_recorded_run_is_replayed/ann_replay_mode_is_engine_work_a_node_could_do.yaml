@@ -1,0 +1,106 @@
+id_self:                ann_replay_mode_is_engine_work_a_node_could_do
+guid_self:              ann_c59347c32f734f7fbe6cf2aec6642626
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay mode as engine work that inserted nodes could do
+brief:                  |
+                        The engine does nothing a node could do unless
+                        a recorded decision measures the need; the
+                        replay ruling was rephrased so that the engine
+                        records nothing itself, and the requirements
+                        already name a player that stands in for the
+                        outside world. A replay mode in the engine
+                        conflicts with the first ruling unless a
+                        decision records why no inserted node can do
+                        the work, and runs against the second, which
+                        put recording in nodes. The trial shows the
+                        cost: replay ran through a second path beside
+                        each live one, in the core, the dynamic
+                        subgraph, the actor gap and the control block.
+                        Its replayed change sets were built on the
+                        unit thread and allocated there, and a missing
+                        row passed with no fault. The transform still
+                        needs the engine to hold a change set until a
+                        named step, but that is not replay's alone.
+description:            |
+                        Sources:
+                        - The engine does nothing that a node could
+                          do, unless a recorded
+                          decision shows no inserted node can, within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml at brief)
+                        - The engine records nothing itself; recording
+                          nodes write the log.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml at brief)
+                        - A player stands in for the outside world,
+                          local step by local
+                          step. (_data/requirement/rqt_player_replays_exactly.yaml at brief;
+                          _data/interface_control_document/icd_dataflow_recorder.yaml at brief)
+                        - The trial's replay mode lived in the core,
+                          the dynamic subgraph,
+                          the actor gap and the control block. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, class Replay and
+                          function run; src/cctool/dataflow/engine/src/dynamic.cpp,
+                          function dynamic_begin; src/cctool/dataflow/engine/src/actors.cpp,
+                          function actors_gap;
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step)
+                        - Replayed change sets were built on the unit
+                          thread and allocated
+                          there. (area report trial-engine, TE-09)
+                        - On a missing row the reader gave a count of
+                          0 and the control
+                          block kept the last control message, so a run with a failed
+                          step did not replay. (review of 2026-10-29, CC-012; trial
+                          2c777ab9, src/cctool/dataflow/engine/src/runtime.cpp, function
+                          Replay::fill) As read from the code, the control block ignored
+                          the reader's result and reported nothing. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/control_block.cpp, function
+                          control_block_unit_step)
+                        - The controller sends each change set ahead,
+                          marked with its
+                          step, and the engine holds it until then.
+                          (_data/decision/dec_how_a_recorded_run_is_replayed/opt_replay_by_a_transform_and_a_replay_controller.yaml at description, step 3)
+                        ASSUMPTION: deployment could use the same hold
+                        for a change set scheduled at a step, so the
+                        hold is a general engine capability. Strength:
+                        strong; it rests on a ruling and on the
+                        trial's defects, and no measurement has been
+                        recorded that would justify the exception.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_replay_mode_in_the_engine
+    guid_target:        opt_754eb0643fda484a8ae071971e1594d5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_by_a_transform_and_a_replay_controller
+    guid_target:        opt_e73deda417f94c5aabd433b7c9f61027
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_record_every_edge_and_replay_any_part
+    guid_target:        opt_194c38a5d9564725b32a3e97c96fd16a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

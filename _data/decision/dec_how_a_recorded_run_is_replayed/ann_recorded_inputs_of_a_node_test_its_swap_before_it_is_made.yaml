@@ -1,0 +1,87 @@
+id_self:                ann_recorded_inputs_of_a_node_test_its_swap_before_it_is_made
+guid_self:              ann_d09491c4e4684a218f5bdd283c590cef
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorded inputs of a node that test its swap before it is made
+brief:                  |
+                        With every edge recorded, one node or subgraph
+                        can be run alone on the inputs it really saw,
+                        on a bench host rather than the robot. A new
+                        version can then be shown to give the same
+                        outputs before it is swapped in, and a replay
+                        that diverges names the first node and step
+                        that differ. The trial's replay test already
+                        compared every recorded edge. The failed-step
+                        divergence showed up only as one output wrong
+                        on every later step. One limit: a part
+                        replayed alone from the middle of a run needs
+                        its nodes' state at the start, and no recorder
+                        holds it, so such replays begin at step 0.
+description:            |
+                        Sources:
+                        - Patches tested offline still shipped with a
+                          mistake, a flag not
+                          set. (Hicks et al. 2001, Dynamic software updating, section 5.2)
+                          The literature note on the paper reads this as support for
+                          replaying real recorded inputs against the patched graph before
+                          commit.
+                        - A replacement that realizes the same history
+                          function is
+                          invisible to the rest of the network. (Vayssiere, Webb and
+                          Wendelborn 1999, Kahn process networks: reconfiguration and
+                          distribution, slide on formal semantics)
+                        - The trial's live replay test compared every
+                          end the replay
+                          recorded with the run. Its docstring says every edge was
+                          recorded, but the run recorded only the ends the graph named,
+                          the outputs of sources and control blocks, and the outputs of
+                          dynamic nodes, not every edge. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/test_dynamic.py,
+                          test_a_run_with_live_changes_replays_exactly;
+                          src/cctool/dataflow/lower.py, function _ends_recorded;
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function
+                          dynamic_slot)
+                        - After a failed step was replayed, the
+                          accumulator's output
+                          differed on every later step. (review of 2026-10-29, CC-012)
+                        - Any part can be replayed alone, and outputs
+                          are compared edge by
+                          edge to find the first node that differs.
+                          (_data/decision/dec_how_a_recorded_run_is_replayed/opt_record_every_edge_and_replay_any_part.yaml at brief and description)
+                        - A log that restart can replay holds state
+                          changes together with
+                          the outputs. (Akidau et al. 2013, MillWheel, section 6.1.2)
+                        ASSUMPTION: a part cut out by a transform is a
+                        variant like any other, so it can be built for
+                        a bench host as well as the robot. Strength:
+                        moderate; the same use is open to the
+                        transform option for any part whose inputs a
+                        variant chooses to record.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_record_every_edge_and_replay_any_part
+    guid_target:        opt_194c38a5d9564725b32a3e97c96fd16a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

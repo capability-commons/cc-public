@@ -1,0 +1,80 @@
+id_self:                ann_recording_every_edge_multiplies_what_may_overflow
+guid_self:              ann_66f61674eba04922ad217cb80cae5126
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording of every edge that multiplies what can overflow
+brief:                  |
+                        Memory is fixed before the first step, and the
+                        recorder must keep its writes off the step.
+                        The trial already lost change and admission
+                        rows without a count when its buffer or a row
+                        filled, and the review found that fixed memory
+                        and recording every value cannot both hold. A
+                        recorder on every edge multiplies the rows of
+                        each step by the number of edges, adds a copy
+                        of every value, and at 30 Hz turns a large
+                        recording into a much larger one. Recording
+                        what comes from outside, as the ruling asks,
+                        keeps the volume to what replay needs.
+description:            |
+                        Sources:
+                        - A recorder goes on every edge, at a cost in
+                          storage and in work
+                          off the local step.
+                          (_data/decision/dec_how_a_recorded_run_is_replayed/opt_record_every_edge_and_replay_any_part.yaml at description, step 1)
+                        - Change and admission rows the recorder could
+                          not take were
+                          dropped with no count, and replay diverged. (review of
+                          2026-10-29, CC-015)
+                        - No event lost and every value recorded
+                          cannot both hold with
+                          fixed memory. (review of 2026-10-29, CC-052;
+                          _data/decision/dec_overflow_of_events_and_recordings/dec_overflow_of_events_and_recordings.yaml at brief)
+                        - The trial's recording ring reserved 4096
+                          rows of 64 KiB, and the
+                          file held one row for each end and step, as JSON with the
+                          message in hex. (area report trial-engine, TE-19; trial process
+                          log, phase 2)
+                        - A value is copied into each queue it passes
+                          through.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/ruling_value_copied_into_each_queue.yaml at brief)
+                        - Recorders capture every value from outside,
+                          every control message
+                          and every engine event. (_data/requirement/rqt_recorder_records_outside.yaml at object)
+                        - Patrol's camera runs at 30 Hz. (WTP,
+                          2026-10-28) Strength: strong for a deployed
+                          robot; weak for a short bench run, where a
+                          variant could record every edge on purpose.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_record_every_edge_and_replay_any_part
+    guid_target:        opt_194c38a5d9564725b32a3e97c96fd16a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_replay_by_a_transform_and_a_replay_controller
+    guid_target:        opt_e73deda417f94c5aabd433b7c9f61027
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

@@ -1,0 +1,84 @@
+id_self:                ann_host_barrier_grows_with_every_unit_on_the_host
+guid_self:              ann_f9edf70e92d64ec9beae516b401ada79
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Host barrier that grows with every unit placed on the host
+brief:                  |
+                        Placement may give a host as many units as it
+                        has cores, and with a shared gap every one of
+                        them joins the host's barrier. More cores then
+                        mean more units waiting for the slowest.
+                        C++17, the engine's language, has no barrier,
+                        since std::barrier came with C++20, and POSIX
+                        barriers are missing on macOS, so the barrier
+                        is written in-house or taken from a library,
+                        while the other two options need only a lock
+                        per queue. On a target with a single thread, a
+                        gap per unit runs the actors on the one unit
+                        there is, while a unit of actors needs a
+                        second unit.
+description:            |
+                        Sources:
+                        - A variant can be generated with as many
+                          processes on a host as
+                          it has cores.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml at brief)
+                        - Each unit, after its local step, waits at
+                          the host's barrier.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_shared_by_the_units_of_a_host.yaml at description, step 1)
+                        - The engine is a new C++17 engine targeting
+                          embedded reach.
+                          (WTP, 2026-10-28)
+                        - std::barrier is defined in the header
+                          barrier since C++20
+                          (cppreference, https://cppreference.com/cpp/thread/barrier,
+                          checked 2026-10-29).
+                        - PostgreSQL supplies its own
+                          pthread_barrier_t for macOS, which
+                          lacks one (PostgreSQL source, src/include/port/pg_pthread.h,
+                          https://doxygen.postgresql.org/pg__pthread_8h_source.html,
+                          checked 2026-10-29).
+                        - The actor unit is an execution unit of its
+                          own.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_actors_in_a_unit_of_their_own.yaml at brief)
+                        Strength: weak on dependency, since a barrier
+                        is a few lines over a mutex and a condition
+                        variable; moderate on scaling.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gap_shared_by_the_units_of_a_host
+    guid_target:        opt_52a2c7478589420f901b4315e753786b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_actors_in_a_unit_of_their_own
+    guid_target:        opt_87d93c457db14f28adc2e98f152932f5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

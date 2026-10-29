@@ -1,0 +1,81 @@
+id_self:                ann_queue_per_unit_confines_a_flood_of_outside_messages
+guid_self:              ann_f57fdaf7861d4104ba7e6a57afbcbd62
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Flood of outside messages confined to the unit it targets
+brief:                  |
+                        The trial kept one queue of 1024 messages for
+                        every actor of every unit. Once it was full,
+                        an outside message to any actor was refused,
+                        so whoever can send to one actor could starve
+                        all of them. When actors in two units shared
+                        its snapshot, one handled only 240 of its own
+                        400 messages. With a gap and queues per unit,
+                        a flood fills only the queue of the unit it
+                        targets, and with a unit of actors it stays
+                        out of the Kahn units. In a shared host gap, a
+                        flood to any actor lengthens the one gap that
+                        every unit of the host waits for.
+description:            |
+                        Sources:
+                        - One queue and one snapshot of 1024 messages
+                          served all actors,
+                          and an outside send beyond it was refused for any actor, as read
+                          from the code. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/actors.cpp, functions enqueue
+                          and hook_send)
+                        - Messages routed beyond the queue were
+                          dropped with no event.
+                          (area report trial-engine, TE-19)
+                        - With actors in two units, relay2 handled 240
+                          of its 400 messages.
+                          (review of 2026-10-29, CC-002)
+                        - Outside messages enter through runtime
+                          control. (trial process
+                          log, phase 4)
+                        - Each unit has its own queues; in the shared
+                          option one gap of the
+                          host runs every actor while the units wait.
+                          (_data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_after_each_local_step_of_its_unit.yaml at brief;
+                          _data/decision/dec_where_and_when_an_actor_gap_opens/opt_gap_shared_by_the_units_of_a_host.yaml at description)
+                        Strength: moderate; a declared capacity per
+                        actor would confine a flood further under any
+                        option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_gap_after_each_local_step_of_its_unit
+    guid_target:        opt_39c5f9a0961e486798c89cb4d8ad45cd
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_actors_in_a_unit_of_their_own
+    guid_target:        opt_87d93c457db14f28adc2e98f152932f5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_gap_shared_by_the_units_of_a_host
+    guid_target:        opt_52a2c7478589420f901b4315e753786b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
