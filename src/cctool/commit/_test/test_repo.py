@@ -87,6 +87,13 @@ def test_land_replays_signs_and_checks_the_commits_of_a_bundle(topic):
     assert _git(topic, 'log', '-1', '--format=%G?', 'main').strip() == 'G'
 
 
+def test_the_default_bundle_of_a_branch_with_a_slash_sits_beside_the_repository():
+    root = pathlib.Path('/work/cc-public')
+    assert cctool.commit.repo.bundle_path(root, 'claude/fix-x') == pathlib.Path(
+                                                                    '/work/claude-fix-x.bundle')
+    assert cctool.commit.repo.bundle_path(root, 'topic') == pathlib.Path('/work/topic.bundle')
+
+
 def test_land_of_commits_that_fail_their_checks_leaves_the_branch(topic):
     _git(topic, 'checkout', '--quiet', 'topic')
     (topic / 'AGENTS.md').write_text((topic / 'AGENTS.md').read_text() + 'Tidied.\n')

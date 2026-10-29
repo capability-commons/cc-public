@@ -170,7 +170,7 @@ def push(remote: str, root: pathlib.Path) -> None:
               default = None,
               type    = click.Path(dir_okay = False, path_type = pathlib.Path),
               help    = 'The bundle to write. Defaults to BRANCH.bundle beside the '
-                        'repository.')
+                        'repository, with each slash of BRANCH written as a hyphen.')
 @OPTION_ROOT
 def bundle(branch: str, base: str, path: pathlib.Path | None, root: pathlib.Path) -> None:
     """
@@ -180,7 +180,7 @@ def bundle(branch: str, base: str, path: pathlib.Path | None, root: pathlib.Path
     """
 
     root = root.resolve()
-    path = path or root.parent / (branch + '.bundle')
+    path = path or cctool.commit.repo.bundle_path(root, branch)
     _report('Bundled into {path}'.format(path = path),
             lambda: cctool.commit.repo.bundle(root, branch, base, path))
 

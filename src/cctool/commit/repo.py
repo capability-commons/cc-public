@@ -68,6 +68,14 @@ PREFIX_HEAD = 'refs/heads/'
 #
 PREFIX_HINT = 'hint:'
 
+# The suffix of a bundle file, and what stands in its name for each
+# slash of a branch name, such as claude/fix, so that the file is not
+# looked for in a folder that does not exist.
+#
+SUFFIX_BUNDLE = '.bundle'
+DELIM_BRANCH  = '/'
+DELIM_FILE    = '-'
+
 # The command a replay runs after each commit it makes when the author
 # is reset, so that whoever replays the commits becomes their author,
 # as when an agent's commits are landed by the maintainer.
@@ -252,6 +260,18 @@ def push(root: pathlib.Path, remote: str) -> int:
 
     return subprocess.run(['git', 'push', remote, _branch(root)], cwd = root,
                           check = False).returncode
+
+
+# -----------------------------------------------------------------------------
+def bundle_path(root: pathlib.Path, branch: str) -> pathlib.Path:
+    """
+    Return the bundle file that cctool repo bundle writes for branch by
+    default: beside the repository at root, named for the branch with
+    each slash written as a hyphen.
+
+    """
+
+    return root.parent / (branch.replace(DELIM_BRANCH, DELIM_FILE) + SUFFIX_BUNDLE)
 
 
 # -----------------------------------------------------------------------------
