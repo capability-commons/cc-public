@@ -187,6 +187,25 @@ def test_land_of_a_bundle_made_on_a_commit_the_branch_does_not_hold_leaves_the_b
     assert _git(topic, 'rev-parse', 'main') == head
 
 
+def test_land_of_a_bundle_made_on_one_already_landed_lands_only_its_own_commits(topic):
+    _git(topic, 'checkout', '--quiet', '-b', 'later', 'topic')
+    path = topic / 'AGENTS.md'
+    path.write_text(path.read_text() + 'Later.\n')
+    _commit(topic, 'Change AGENTS.md so that it ends later', 'It ends later.', is_signed = False)
+    _git(topic, 'checkout', '--quiet', 'main')
+    path_first = topic.parent / 'topic.bundle'
+    path_later = topic.parent / 'later.bundle'
+    cctool.commit.repo.bundle(topic, 'topic', 'main~1', path_first)
+    cctool.commit.repo.bundle(topic, 'later', 'topic', path_later)
+    cctool.commit.repo.land(topic, path_first, is_gated = False)
+
+    [landed] = cctool.commit.repo.land(topic, path_later, is_gated = False)
+    assert landed.endswith(' Change AGENTS.md so that it ends later')
+    assert _git(topic, 'log', '--format=%s', 'main').splitlines() == [
+        'Change AGENTS.md so that it ends later', 'Change AGENTS.md so that it ends with notes',
+        'Change README.md so that it is short', 'Add the first version of cc-public']
+
+
 def test_land_of_commits_whose_tree_together_fails_the_gate_leaves_the_branch(topic):
     _git(topic, 'checkout', '--quiet', 'topic')
     _annotate(topic, 'dec_cross_item_checks_engine')

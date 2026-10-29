@@ -91,8 +91,9 @@ def land(path: pathlib.Path, branch: str | None, reset_author: bool, root: pathl
     them, so the tree they come to is checked, linted and tested too.
     Only if all of that succeeds is the current branch moved forward to
     them. A bundle made on a commit the current branch does not hold is
-    refused. With --reset-author, whoever lands them also becomes their
-    author. Push them with cctool repo push.
+    refused, unless the branch holds the same change, as when the bundle
+    that commit came in has landed. With --reset-author, whoever lands
+    them also becomes their author. Push them with cctool repo push.
 
     """
 

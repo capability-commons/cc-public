@@ -104,7 +104,10 @@ def land(root:         pathlib.Path,
 
     The bundle's branch is the one it holds, or branch if it holds
     more. A bundle made on a commit that the current branch does not
-    hold is refused, since replaying it would replay that commit too.
+    hold is refused, since replaying it would replay that commit too,
+    unless the branch holds the same change of it and of each commit
+    before it, as when the bundle it came in has landed: a replay
+    leaves out a change the branch already holds.
     Its commits are replayed onto the current branch, so that a branch
     made on an older base lands as if made on this one, and each is
     signed as it is replayed. If reset_author is true, whoever replays
@@ -122,7 +125,7 @@ def land(root:         pathlib.Path,
 
     _git(root, 'bundle', 'verify', '--quiet', str(path))
     for commit in prerequisites(path):
-        if _run(root, 'merge-base', '--is-ancestor', commit, base).returncode != 0:
+        if not _is_held(root, commit, base):
             raise ErrorRepo('The bundle starts after {commit}, which {base} does not hold, so '
                             'nothing is landed. Rebase the branch onto {base} where it was '
                             'made, and bundle it again.'.format(
@@ -189,6 +192,23 @@ def prerequisites(path: pathlib.Path) -> list[str]:
                 list_commit.append(line[1:].split()[0].decode())
 
     return list_commit
+
+
+# -----------------------------------------------------------------------------
+def _is_held(root: pathlib.Path, commit: str, base: str) -> bool:
+    """
+    Return whether the branch base holds commit, or the same change of
+    it and of each commit before it that base does not hold, as git
+    cherry finds them, so that a replay onto base replays none of them.
+
+    """
+
+    if _run(root, 'merge-base', '--is-ancestor', commit, base).returncode == 0:
+        return True
+
+    process = _run(root, 'cherry', base, commit)
+    return process.returncode == 0 and not any(line.startswith('+')
+                                               for line in process.stdout.splitlines())
 
 
 # -----------------------------------------------------------------------------
