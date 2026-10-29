@@ -26,6 +26,8 @@ edge:                   []
 
 
 import datetime
+import os
+import subprocess
 
 import click.testing
 import pytest
@@ -45,6 +47,24 @@ BRIEF = 'Each commit message holds a commit item.'
 # The guid of the maintainer's entry in reg_team_member.
 #
 GUID_MAINTAINER = 'member_f17345eec9064b44bacc60ddff63a697'
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def staged(tree, monkeypatch):
+    """
+    Return the root of a copy of the repository in a repository of its
+    own, with all of it staged and nothing committed, since message
+    check checks the commit of what is staged, and the repository the
+    tests run in may be a copy that git does not hold, as in the gate.
+
+    """
+
+    for key_env in [key_env for key_env in os.environ if key_env.startswith('GIT_')]:
+        monkeypatch.delenv(key_env)
+    for list_arg in (['init', '--quiet'], ['add', '--all']):
+        subprocess.run(['git', *list_arg], cwd = tree, check = True, capture_output = True)
+    return tree
 
 
 # -----------------------------------------------------------------------------
@@ -176,10 +196,10 @@ def test_a_register_with_no_git_author_checks_no_author(tmp_path):
     assert cctool.commit.message.author_violations(tmp_path, 'Claude <noreply@anthropic.com>') == []
 
 
-def test_check_refuses_an_author_who_is_no_team_member():
+def test_check_refuses_an_author_who_is_no_team_member(staged):
     result = click.testing.CliRunner().invoke(
                     cctool.cli.command.main,
-                    ['message', 'check', '-', '--root', str(DIR_REPO),
+                    ['message', 'check', '-', '--root', str(staged),
                      '--author', 'Claude <noreply@anthropic.com> 1793091600 +0000'],
                     input = _message())
     assert result.exit_code == 1
@@ -196,10 +216,10 @@ def test_a_message_without_an_item_is_reported():
         'opened by ---.']
 
 
-def test_check_exits_with_1_and_says_why():
+def test_check_exits_with_1_and_says_why(staged):
     result = click.testing.CliRunner().invoke(
                     cctool.cli.command.main,
-                    ['message', 'check', '-', '--root', str(DIR_REPO)],
+                    ['message', 'check', '-', '--root', str(staged)],
                     input = 'Commit-msg hook\n')
     assert result.exit_code == 1
     assert result.stderr.startswith('A commit message is a subject line')
