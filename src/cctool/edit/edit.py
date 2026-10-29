@@ -155,7 +155,7 @@ MARK_COMMENT      = '#'
 DELIM_PATH        = '.'
 
 # An embedded item, such as an interface member, has the id of what
-# holds it, a full stop and a name of its own.
+# holds it, a period and a name of its own.
 #
 DELIM_NAME        = '.'
 
@@ -964,8 +964,8 @@ def rename(tree: Tree, id_old: str, id_new: str) -> Edit:
     same way.
 
     An interface control document or a dataflow graph holds members or
-    nodes whose ids are its own name after a prefix of theirs, a full
-    stop and a name, so they are renamed with it, and the members a
+    nodes whose ids are its own name after a prefix of theirs, a period
+    and a name, so they are renamed with it, and the members a
     member holds are renamed with that member. Each keeps its guid.
 
     """
@@ -999,7 +999,7 @@ def _derived(tree: Tree, id_old: str, id_new: str) -> list[tuple[str, str]]:
     """
     Return each item that id_old holds, at any depth, whose id is made
     from id_old: a prefix of its own, the name of id_old after its
-    prefix, a full stop and a name. Each is paired with the id made the
+    prefix, a period and a name. Each is paired with the id made the
     same way from id_new, the longest ids first, so that no id is
     renamed after a shorter one that it starts with.
 
@@ -1342,7 +1342,7 @@ def _moved_ids(tree: Tree, map_move: dict[str, str]) -> dict[str, str]:
     Return the new id of each item that takes its id from the place of
     a file map_move moves, keyed by its old id: the item of a python
     module or logic program file, and each item it holds whose id is
-    the name of the module, a full stop and a name of its own.
+    the name of the module, a period and a name of its own.
 
     """
 

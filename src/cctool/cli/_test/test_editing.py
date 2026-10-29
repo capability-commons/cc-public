@@ -223,7 +223,7 @@ def test_import_of_a_new_release_changes_only_what_differs(tree):
 def test_import_refuses_a_class_the_release_lacks(tree):
     result = _import(tree, list_arg = [*LIST_IMPORT[:4], 'https://example.org/x/missing'])
     assert result.exit_code == 2
-    assert 'The release has no labelled class or relation https://example.org/x/missing.' in result.stderr
+    assert 'The release has no labeled class or relation https://example.org/x/missing.' in result.stderr
 
 
 def test_import_refuses_a_class_no_namespace_covers(tree):

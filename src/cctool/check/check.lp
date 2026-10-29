@@ -766,7 +766,7 @@ unrecorded_module(File) :-
 
 % -----------------------------------------------------------------------------
 % An interface member sits in an interface control document, and its
-% id is the id of what it sits in, then a full stop and a name of its
+% id is the id of what it sits in, then a period and a name of its
 % own. The member prefix takes the place of the prefix of the document.
 %
 % decl member_stem(holder: symbol,
@@ -797,15 +797,15 @@ member_stem(Holder, Holder) :-
 % title:                  Misnamed member
 % brief:                  |
 %                         The id of an interface member is the stem of
-%                         what it sits in, a full stop and a name of its
+%                         what it sits in, a period and a name of its
 %                         own.
 % did:                    |
 %                         The id of {id} is not the stem of {holder}, a
-%                         full stop and a name.
+%                         period and a name.
 % fix:                    |
 %                         Rename the member with cctool rename to the
-%                         stem of what it sits in, a full stop, and its
-%                         own name. To rename the interface control
+%                         stem of what it sits in, a period, and its own
+%                         name. To rename the interface control
 %                         document, use cctool rename, which renames its
 %                         members with it.
 % edge:                   []
@@ -3255,7 +3255,7 @@ unused_concept(Id) :-
 %                         A node is named for the dataflow graph that
 %                         holds it and the key it is filed under: the
 %                         stem of the dataflow graph, with dfn in place
-%                         of dfg, a full stop and the key.
+%                         of dfg, a period and the key.
 % did:                    |
 %                         The node {node} is not named for the dataflow
 %                         graph that holds it and its key. Its id is

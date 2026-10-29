@@ -253,7 +253,7 @@ class Ontology:
             return
         if iri not in self.map_label:
             raise cctool.edit.edit.ErrorEdit(
-                'The release has no labelled class or relation {iri}. Give the IRI of a '
+                'The release has no labeled class or relation {iri}. Give the IRI of a '
                 'class or relation it defines.'.format(iri = iri))
         set_seen.add(iri)
         for depend in self.depends(iri):

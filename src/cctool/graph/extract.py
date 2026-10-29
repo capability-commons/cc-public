@@ -314,7 +314,7 @@ PREDICATE         = {
     'criticality_level':  (('id', 'level:number'),
                            'The criticality id has the number level on the scale.'),
     'coverage_floor':     (('id', 'kind', 'percent:number'),
-                           'The maturity level id sets a floor of percent per cent on the '
+                           'The maturity level id sets a floor of percent percent on the '
                            'coverage of kind, line or branch, of a source file at that '
                            'level or above.'),
     'demand_check':       (('id', 'criticality', 'check'),
@@ -1285,7 +1285,7 @@ def predicate_id(relative: pathlib.Path, name: str) -> str:
     """
     Return the id of the item of the predicate name of the logic program
     at relative: the prefix of a predicate, the name of its file and
-    name, in lower case and separated by full stops.
+    name, in lower case and separated by periods.
 
     """
 
@@ -1367,7 +1367,7 @@ def definition_id(relative: pathlib.Path, list_name: list[str], node: ast.AST) -
     Return the id of the item of the class or function node, named by
     list_name down from the top of the python module at relative: the
     prefix of its kind, the name of its module, and list_name, in lower
-    case and separated by full stops.
+    case and separated by periods.
 
     """
 

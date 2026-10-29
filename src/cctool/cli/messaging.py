@@ -92,7 +92,7 @@ def new(title: str, brief: str, description: str | None, root: pathlib.Path) -> 
     if any(found.startswith(PREFIX_TEMPLATE) for found in list_found):
         templates = _templates(root.resolve())
         if templates:
-            click.echo('Build the title from one of these templates, with no full stop: '
+            click.echo('Build the title from one of these templates, with no period: '
                        '{templates}'.format(templates = templates), err = True)
     if list_found:
         sys.exit(cctool.cli.group.EXIT_ERROR)
