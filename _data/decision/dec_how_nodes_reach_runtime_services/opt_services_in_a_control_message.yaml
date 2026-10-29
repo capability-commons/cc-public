@@ -1,0 +1,45 @@
+id_self:                opt_services_in_a_control_message
+guid_self:              opt_d61ba58fae864074a0e25d9e5482719a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Services, states, modes and time in a control message
+brief:                  |
+                        A node reaches runtime services through one
+                        control message it receives at each step,
+                        which carries the current time, monotonic and
+                        wall-clock, the mode flag, other
+                        application-specific states and modes, and the
+                        readings of runtime services such as queue
+                        occupancy or processor temperature. The
+                        message is written by a control block for each
+                        execution unit and each host, the only nodes
+                        privileged to read time and runtime services,
+                        so services do not multiply edges, and every
+                        value a node sees from outside arrives as data
+                        that the replay log records.
+description:            |
+                        WTP's proposal: limit the proliferation of
+                        edges by bundling services together with the
+                        mode parameter, time stamps and
+                        application-specific states and modes in the
+                        control signal; the per-execution-unit and
+                        per-host control blocks then need to be
+                        special or privileged to access time and
+                        runtime service data, which is not much
+                        different from data appearing on an edge
+                        controlled by the engine (WTP, 2026-10-29).
+                        The decision stays open for discussion (WTP,
+                        2026-10-29).
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_nodes_reach_runtime_services
+    guid_target:        dec_51efc17d43bc4aad9a92efdd2f72707a
