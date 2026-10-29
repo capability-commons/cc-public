@@ -172,7 +172,7 @@ def consumed(root:         pathlib.Path,
     ...
     """
 
-    list_consumes = _consumes(map_document)
+    list_consumes = consumes(map_document)
     map_consumed  = {}
     list_failure  = []
     list_notice   = []
@@ -198,7 +198,7 @@ def consumed(root:         pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
-def _consumes(map_document: cctool.graph.extract.Documents) -> list[tuple[str, int, str, str]]:
+def consumes(map_document: cctool.graph.extract.Documents) -> list[tuple[str, int, str, str]]:
     """
     Return the file and line of each segment item of the documents,
     its id, and the release item that each of its edges of RELATION
@@ -209,7 +209,7 @@ def _consumes(map_document: cctool.graph.extract.Documents) -> list[tuple[str, i
     list_consumes = []
 
     for (key, (document, line)) in map_document.items():
-        id_self = _segment_id(document)
+        id_self = segment_id(document)
         if id_self is None:
             continue
         for edge in document.get(KEY_EDGE) or []:
@@ -246,12 +246,12 @@ def segment_of(map_document: cctool.graph.extract.Documents) -> str | None:
     ...
     """
 
-    set_id = {_segment_id(document) for (document, _) in map_document.values()} - {None}
+    set_id = {segment_id(document) for (document, _) in map_document.values()} - {None}
     return next(iter(set_id)) if len(set_id) == 1 else None
 
 
 # -----------------------------------------------------------------------------
-def _segment_id(document: object) -> str | None:
+def segment_id(document: object) -> str | None:
     """
     Return the id of document if it is a segment item, or else None.
 
