@@ -106,8 +106,9 @@ def land(path: pathlib.Path, branch: str | None, reset_author: bool, root: pathl
 @click.option('--since',
               metavar = 'REF',
               default = None,
-              help    = 'Sign the commits after REF. Defaults to the branch of the same name '
-                        'on origin, so that the commits not yet pushed are signed.')
+              help    = 'Sign the commits after REF. Defaults to the commits not yet pushed '
+                        'to origin: those after the branch of the same name there or, for a '
+                        'branch origin does not have, those on none of its branches.')
 @OPTION_RESET_AUTHOR
 @OPTION_ROOT
 def sign(since: str | None, reset_author: bool, root: pathlib.Path) -> None:

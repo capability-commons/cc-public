@@ -250,6 +250,27 @@ def test_push_refuses_a_commit_that_is_not_signed_until_it_is_signed(topic, tmp_
     assert cctool.commit.repo.push(topic, 'origin') == 0
 
 
+def test_push_of_a_branch_new_to_the_remote_signs_only_what_it_lacks(topic, tmp_path_factory):
+    remote = tmp_path_factory.mktemp('remote')
+    _git(remote, 'init', '--quiet', '--bare')
+    _git(topic, 'remote', 'add', 'origin', str(remote))
+    _git(topic, 'push', '--quiet', 'origin', 'main')
+    _git(topic, 'checkout', '--quiet', '-b', 'trial')
+    (topic / 'README.md').write_text('Shorter.\n')
+    _commit(topic, 'Change README.md so that it is shorter', 'It is shorter.', is_signed = False)
+
+    [unsigned] = cctool.commit.repo.unsigned(topic, 'origin')
+    assert unsigned.endswith(' Change README.md so that it is shorter')
+    with pytest.raises(cctool.commit.repo.ErrorRepo, match = 'not signed'):
+        cctool.commit.repo.push(topic, 'origin')
+    ([signed], _) = cctool.commit.repo.sign(topic)
+    assert signed.endswith(' Change README.md so that it is shorter')
+    assert _git(topic, 'rev-parse', 'HEAD~1') == _git(topic, 'rev-parse', 'main')
+    assert cctool.commit.repo.unsigned(topic, 'origin') == []
+    assert cctool.commit.repo.push(topic, 'origin') == 0
+    assert _git(remote, 'branch', '--format=%(refname:short)').split() == ['main', 'trial']
+
+
 # -----------------------------------------------------------------------------
 def _git(root, *list_arg):
     """

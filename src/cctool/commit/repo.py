@@ -76,6 +76,11 @@ SUFFIX_BUNDLE = '.bundle'
 DELIM_BRANCH  = '/'
 DELIM_FILE    = '-'
 
+# The remote whose branches sign takes as pushed when it is given no
+# commit to start after.
+#
+REMOTE_DEFAULT = 'origin'
+
 # The command a replay runs after each commit it makes when the author
 # is reset, so that whoever replays the commits becomes their author,
 # as when an agent's commits are landed by the maintainer.
@@ -244,10 +249,11 @@ def sign(root:         pathlib.Path,
     Return the commits, as short hashes and subjects, that the current
     branch holds beyond since, once each is signed again, and the other
     branches removed because they ended at a commit that was replaced.
-    since is the branch of the same name on origin if not given, so the
-    commits signed are those not yet pushed. They are replayed onto
-    since in a line, as dev keeps them. If reset_author is true,
-    whoever signs them also becomes their author.
+    If since is not given, the commits signed are those not yet pushed
+    to origin, as unsigned selects them, and since is the parent of the
+    oldest. They are replayed onto since in a line, as dev keeps them.
+    If reset_author is true, whoever signs them also becomes their
+    author.
 
     A branch that ends at one of the commits replaced holds nothing the
     current branch does not now hold, signed, so it would be left
@@ -255,13 +261,15 @@ def sign(root:         pathlib.Path,
 
     """
 
-    base  = _branch(root)
-    since = since or 'origin/' + base
+    base = _branch(root)
     _refuse_changes(root)
 
-    set_old = set(cctool.commit.history.commits(root, [since + '..HEAD']))
-    if not set_old:
+    list_arg = [since + '..HEAD'] if since else _unpushed(root, REMOTE_DEFAULT)
+    list_old = cctool.commit.history.commits(root, list_arg)
+    if not list_old:
         return ([], [])
+    since   = since or list_old[0] + '^'
+    set_old = set(list_old)
     try:
         _git(root, *_replay(reset_author), since)
     except ErrorRepo as error:
@@ -286,17 +294,32 @@ def sign(root:         pathlib.Path,
 def unsigned(root: pathlib.Path, remote: str) -> list[str]:
     """
     Return the commits, as short hashes and subjects, that the current
-    branch holds beyond the branch of the same name on remote and that
-    no good signature signs.
+    branch holds and remote does not, as _unpushed selects them, and
+    that no good signature signs.
 
     """
 
-    since = '{remote}/{branch}'.format(remote = remote, branch = _branch(root))
-    list_commit = cctool.commit.history.commits(root, [since + '..HEAD'])
+    list_commit = cctool.commit.history.commits(root, _unpushed(root, remote))
 
     return [cctool.commit.history.short(root, commit) for commit in list_commit
             if _git(root, 'log', '-1', '--format=%G?', commit).strip()
             not in cctool.commit.message.SET_STATUS_GOOD]
+
+
+# -----------------------------------------------------------------------------
+def _unpushed(root: pathlib.Path, remote: str) -> list[str]:
+    """
+    Return the arguments of git rev-list that select the commits the
+    current branch holds and remote does not: those beyond the branch
+    of the same name on remote or, where remote has no such branch yet,
+    those on none of its branches, as the pre-push hook selects them.
+
+    """
+
+    since = '{remote}/{branch}'.format(remote = remote, branch = _branch(root))
+    if _run(root, 'rev-parse', '--verify', '--quiet', 'refs/remotes/' + since).returncode:
+        return ['HEAD', '--not', '--remotes=' + remote]
+    return [since + '..HEAD']
 
 
 # -----------------------------------------------------------------------------
