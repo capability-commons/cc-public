@@ -60,6 +60,7 @@ MARK_FIELD    = '\x00'
 LENGTH_SHORT  = 7
 ZERO          = '0' * 40
 PREFIX_TAG    = 'refs/tags/'
+MARK_RELEASE  = 'v'
 
 # git am ends a commit message at its first --- line, so a commit
 # copied from another machine with format-patch and am loses its item.
@@ -80,28 +81,43 @@ def commits(root: pathlib.Path, list_arg: list[str]) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
-def pushed(root: pathlib.Path, remote: str, text: str) -> tuple[list[str], list[str]]:
+def pushed(root:   pathlib.Path,
+           remote: str,
+           text:   str) -> tuple[list[str], list[str], list[tuple[str, str]]]:
     """
     Return the commits that a push to remote would send, oldest first,
-    and the tip of each ref it updates, from text, the lines that git
-    gives a pre-push hook. A commit any ref of remote already has is
-    not sent. A tag is passed over, since it names history already made.
+    the tip of each ref it updates, and each release tag it sets, as
+    the name of the tag and the commit it names, from text, the lines
+    that git gives a pre-push hook. A commit any ref of remote already
+    has is not sent.
+
+    What a line updates is told by the ref of the remote, since a local
+    tag may be pushed to a branch. A tag of the remote names history
+    already made, so its commits are passed over, but a release tag,
+    one whose name starts with v, is returned to be verified.
 
     """
 
     list_commit = []
     list_tip    = []
+    list_tag    = []
 
     for line in text.splitlines():
         list_part = line.split()
-        if len(list_part) != 4 or list_part[1] == ZERO or list_part[0].startswith(PREFIX_TAG):
+        if len(list_part) != 4 or list_part[1] == ZERO:
+            continue
+        if list_part[2].startswith(PREFIX_TAG):
+            tag = list_part[2].removeprefix(PREFIX_TAG)
+            if tag.startswith(MARK_RELEASE):
+                list_tag.append((tag, _git(root, 'rev-parse',
+                                           list_part[1] + '^{commit}').strip()))
             continue
         list_tip.append(list_part[1])
         for commit in commits(root, [list_part[1], '--not', '--remotes=' + remote]):
             if commit not in list_commit:
                 list_commit.append(commit)
 
-    return (list_commit, list_tip)
+    return (list_commit, list_tip, list_tag)
 
 
 # -----------------------------------------------------------------------------
@@ -109,8 +125,11 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
     """
     Return a sentence for each way the commit fails: its message,
     checked against sch_commit as its own tree holds it, its author and
-    its signature, checked against the team members that tree holds,
-    and its change, checked against its first parent.
+    its signature, checked against the team members that its first
+    parent holds, or its own tree if it has none, and its change,
+    checked against its first parent. A commit that changes the team
+    member register is judged by the register as it was, so that it
+    cannot admit its own author or key.
 
     """
 
@@ -125,12 +144,14 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
         dir_before.mkdir()
         dir_after.mkdir()
         cctool.gate.gate.copy_commit(root, commit, dir_after)
+        dir_judge = dir_after
         if cctool.commit.change.is_commit(root, commit + '^'):
             cctool.gate.gate.copy_commit(root, commit + '^', dir_before)
+            dir_judge = dir_before
 
         list_found = (cctool.commit.message.violations(dir_after, text)
-                      + cctool.commit.message.author_violations(dir_after, author)
-                      + cctool.commit.message.signature_violations(dir_after, status, list_key))
+                      + cctool.commit.message.author_violations(dir_judge, author)
+                      + cctool.commit.message.signature_violations(dir_judge, status, list_key))
         if list_found and cctool.commit.message.LINE_OPEN not in text.split('\n'):
             return ['{found} {hint}'.format(found = list_found[0], hint = HINT_CUT),
                     *list_found[1:]]
@@ -138,7 +159,9 @@ def check(root: pathlib.Path, commit: str) -> list[str]:
             return list_found
 
         (_, item) = cctool.commit.message.parse(text)
-        failures  = cctool.commit.change.check_trees(dir_before, dir_after, item)
+        failures  = cctool.commit.change.check_trees(
+                        dir_before, dir_after, item,
+                        cctool.commit.change.reverted(root, item, commit + '^'))
 
     return cctool.commit.change.described(failures)
 

@@ -27,6 +27,7 @@ edge:                   []
 
 import os
 import subprocess
+import uuid
 
 import pytest
 
@@ -143,8 +144,43 @@ def test_a_renamed_entry_without_its_old_id_as_alias_is_reported(repo):
 
 
 def test_a_revert_of_a_rename_needs_no_alias(repo):
+    head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd = repo, check = True,
+                          capture_output = True, text = True).stdout.strip()
     _replace(repo, REGISTER, ID_STYLE, 'style_commit_titles')
-    assert _check(repo, 'Revert "Rename {id} to style_commit_titles"'.format(id = ID_STYLE)) == {}
+    assert _check(repo, 'Revert "Rename {id} to style_commit_titles"'.format(id = ID_STYLE),
+                  'This reverts commit {head}.'.format(head = head)) == {}
+
+
+@pytest.mark.parametrize('brief', ['A change.', 'This reverts commit {zero}.'.format(zero = '0' * 40)])
+def test_a_revert_that_names_no_earlier_commit_needs_an_alias(repo, brief):
+    _replace(repo, REGISTER, ID_STYLE, 'style_commit_titles')
+    assert _check(repo, 'Revert "Rename {id} to style_commit_titles"'.format(id = ID_STYLE),
+                  brief) == {'rename_without_alias': [(ID_STYLE, 'style_commit_titles')]}
+
+
+def test_an_item_that_keeps_its_id_and_takes_a_new_guid_is_reported(repo):
+    guid = 'shell_' + uuid.uuid4().hex
+    _replace(repo, HOOK, GUID_HOOK, guid)
+    assert _check(repo, 'Change the hook so that its guid is new', 'Changes ' + ID_HOOK + '.') == {
+        'reguided_item': [(ID_HOOK, GUID_HOOK, guid)]}
+
+
+def test_a_file_that_holds_no_item_is_removed_only_by_its_path(repo):
+    (repo / 'NOTICE').unlink()
+    title = 'Change the notices so that there are none'
+    assert _check(repo, title) == {'unannounced_file_removal': [('NOTICE',)]}
+    assert _check(repo, title, 'Removes NOTICE.') == {}
+    assert _check(repo, 'Add nothing', 'Removes NOTICE.') == {
+        'verb_contradicted': [('Add', 'remove', 'NOTICE')]}
+
+
+def test_a_file_that_holds_no_item_moved_elsewhere_is_not_removed(repo):
+    path = repo / 'src/cctool/_test/_fixture/x.json'
+    path.parent.mkdir(parents = True, exist_ok = True)
+    path.write_text('{}\n')
+    _commit(repo)
+    path.rename(path.with_name('y.json'))
+    assert _check(repo, 'Move the fixture x.json to y.json') == {}
 
 
 def test_an_unannounced_rename_is_reported(repo):

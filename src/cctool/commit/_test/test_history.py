@@ -159,6 +159,10 @@ def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyrin
     _replace(repo, cctool.conftest.FILE_MEMBERS, keyring[1], 'ABCDEF0123456789')
     _commit(repo, cctool.commit.message.compose('Change the team member register so that it is '
                                                 'wrong', 'It is wrong.'))
+    assert cctool.commit.history.check(repo, 'HEAD') == []
+    (repo / 'README.md').write_text('Changed.\n')
+    _commit(repo, cctool.commit.message.compose('Change README.md so that it is short',
+                                                'It is short.'))
     [found] = cctool.commit.history.check(repo, 'HEAD')
     assert found == ('The commit is signed with the key {key}, which is the git_signing_key of '
                      'no team member that reg_team_member holds.'.format(key = keyring[1]))
@@ -166,11 +170,27 @@ def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyrin
 
 def test_a_tree_that_gives_no_signing_key_checks_no_signature(repo, keyring):
     _replace(repo, cctool.conftest.FILE_MEMBERS, '    ' + cctool.conftest.LINE_KEY.replace(cctool.conftest.KEY_MAINTAINER, keyring[1]), '')
+    _commit(repo, cctool.commit.message.compose('Change the team member register so that it '
+                                                'gives no key', 'It gives no key.'))
+    (repo / 'README.md').write_text('Changed.\n')
     _git(repo, 'add', '--all')
     _git(repo, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--no-verify', '--message',
-         cctool.commit.message.compose('Change the team member register so that it gives no '
-                                       'key', 'It gives no key.'))
+         cctool.commit.message.compose('Change README.md so that it is short', 'It is short.'))
     assert cctool.commit.history.check(repo, 'HEAD') == []
+
+
+def test_a_commit_cannot_admit_its_own_author_or_drop_its_own_key(repo, keyring):
+    _replace(repo, cctool.conftest.FILE_MEMBERS, 'wtpayne@gmail.com', 'noreply@anthropic.com')
+    _replace(repo, cctool.conftest.FILE_MEMBERS, '    ' + cctool.conftest.LINE_KEY.replace(cctool.conftest.KEY_MAINTAINER, keyring[1]), '')
+    _git(repo, 'add', '--all')
+    _git(repo, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--no-verify',
+         '--author', 'William Payne <noreply@anthropic.com>',
+         '--message', cctool.commit.message.compose('Change the team member register so that '
+                                                    'it admits another', 'It admits another.'))
+    list_found = cctool.commit.history.check(repo, 'HEAD')
+    assert [found.split(',')[0] for found in list_found] == [
+        'The commit is authored by William Payne <noreply@anthropic.com>',
+        'The commit is not signed']
 
 
 def test_a_commit_copied_with_git_am_is_reported_with_the_cause(repo):
@@ -206,7 +226,7 @@ def test_a_push_sends_only_what_the_remote_does_not_have(repo):
             'refs/heads/old {zero} refs/heads/old {head}\n'
             'refs/tags/old {tip} refs/tags/old {zero}\n').format(
                 tip = tip, head = head, zero = cctool.commit.history.ZERO)
-    assert cctool.commit.history.pushed(repo, 'origin', text) == ([tip], [tip])
+    assert cctool.commit.history.pushed(repo, 'origin', text) == ([tip], [tip], [])
 
 
 def test_a_pushed_tag_is_not_checked(repo):
@@ -214,4 +234,27 @@ def test_a_pushed_tag_is_not_checked(repo):
     tip  = _git(repo, 'rev-parse', 'HEAD').strip()
     text = 'refs/tags/old {tip} refs/tags/old {zero}\n'.format(
                tip = tip, zero = cctool.commit.history.ZERO)
-    assert cctool.commit.history.pushed(repo, 'origin', text) == ([], [])
+    assert cctool.commit.history.pushed(repo, 'origin', text) == ([], [], [])
+
+
+def test_a_tag_pushed_to_a_branch_is_checked_as_the_branch(repo):
+    _commit(repo, 'An old message with no item')
+    tip  = _git(repo, 'rev-parse', 'HEAD').strip()
+    text = 'refs/tags/old {tip} refs/heads/dev {zero}\n'.format(
+               tip = tip, zero = cctool.commit.history.ZERO)
+    (list_commit, list_tip, list_tag) = cctool.commit.history.pushed(repo, 'origin', text)
+    assert (list_commit[-1], list_tip, list_tag) == (tip, [tip], [])
+
+
+def test_a_pushed_release_tag_is_verified(repo):
+    _git(repo, 'tag', '--annotate', '--message', 'A release', 'v9.9.9')
+    head = _git(repo, 'rev-parse', 'HEAD').strip()
+    tag  = _git(repo, 'rev-parse', 'v9.9.9').strip()
+    text = 'refs/tags/v9.9.9 {tag} refs/tags/v9.9.9 {zero}\n'.format(
+               tag = tag, zero = cctool.commit.history.ZERO)
+    assert cctool.commit.history.pushed(repo, 'origin', text) == ([], [], [('v9.9.9', head)])
+    result = click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                              ['history', 'check', '--pre-push', 'origin',
+                                               '--root', str(repo)], input = text)
+    assert result.exit_code == 1
+    assert result.stdout.startswith('v9.9.9: The tree at ')

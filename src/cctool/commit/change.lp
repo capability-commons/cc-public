@@ -70,6 +70,24 @@
 
 
 % -----------------------------------------------------------------------------
+% Each earlier commit that the commit item says, as git's revert writes
+% it, that the commit reverts, where that commit is an ancestor of the
+% first parent.
+%
+% decl reverted_ancestor(commit: symbol)
+
+
+% -----------------------------------------------------------------------------
+% Each file that the commit removes which held no item before it, and
+% whose content is in no file the commit adds, which would make it a
+% move; and each of those that the commit item names by its path.
+%
+% decl removed_file(file: symbol)
+
+% decl named_file(file: symbol)
+
+
+% -----------------------------------------------------------------------------
 % The guids of the graph before the commit, and after it.
 %
 % decl before_guid(guid: symbol)
@@ -168,6 +186,54 @@ retyped_guid(Guid, Other) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.commit.change.reguided_item
+% guid_self:              lpp_d6d98f5f515f45d593cac248c06cf55a
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Reguided item
+% brief:                  |
+%                         An item that keeps its id keeps its guid. A
+%                         new guid under an id that is kept makes
+%                         another item of the one that was there, and
+%                         leaves each reference that carries the old
+%                         guid naming nothing, so an item is never
+%                         removed and another added with its id in one
+%                         commit. A guid whose digits stay and whose
+%                         prefix changes is left to retyped_guid.
+% did:                    |
+%                         {id} keeps its id, and its guid {guid} becomes
+%                         {other}.
+% fix:                    |
+%                         Keep the guid of an item that keeps its id. If
+%                         a new item is meant, give it an id of its own,
+%                         and remove the old item in a commit of its own
+%                         that names it.
+% edge:                   []
+%
+% ...
+%
+% decl reguided_item(id:    symbol,
+%                    guid:  symbol,
+%                    other: symbol)
+#show reguided_item/3.
+
+reguided_item(Id, Guid, Other) :-
+    before_item(Id, Guid),
+    item(Id, Other, _, _, _),
+    not before_guid(Other),
+    not after_guid(Guid),
+    not retyped_guid(Guid, Other).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.commit.change.unannounced_removal
 % guid_self:              lpp_98b05af0d0c948c68b2d3acbad5b8c65
 % copyright:              Copyright 2026 William Payne
@@ -199,6 +265,48 @@ retyped_guid(Guid, Other) :-
 unannounced_removal(Id, Guid) :-
     removed(Id, Guid),
     not commit_mention(Id).
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.commit.change.unannounced_file_removal
+% guid_self:              lpp_425c9c9ac73743718d5f2cda2df35423
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unannounced file removal
+% brief:                  |
+%                         Nothing disappears without the commit saying
+%                         so, a file that holds no item included, such
+%                         as LICENSE, NOTICE or the license of a font,
+%                         which must travel with what it covers. The
+%                         commit item names by its path each such file
+%                         that the commit removes. A file whose content
+%                         the commit adds elsewhere is moved, not
+%                         removed.
+% did:                    |
+%                         The commit removes {file}, which holds no
+%                         item, and does not name it.
+% fix:                    |
+%                         Name the path of the file in the brief or
+%                         description of the commit item, or keep the
+%                         file.
+% edge:                   []
+%
+% ...
+%
+% decl unannounced_file_removal(file: symbol)
+#show unannounced_file_removal/1.
+
+unannounced_file_removal(File) :-
+    removed_file(File),
+    not named_file(File).
 
 
 % -----------------------------------------------------------------------------
@@ -279,10 +387,13 @@ unannounced_rename(Id, Other) :-
 %                         embedded in another, such as an interface
 %                         member or a dataflow node, is not a register
 %                         entry: its schema allows no alias, and what
-%                         refers to it carries its guid. A revert is the
-%                         exception: it restores an entry as it was,
-%                         with the id and the aliases it had then, and
-%                         that content passed when it was first
+%                         refers to it carries its guid. A revert of an
+%                         earlier commit is the exception: one titled as
+%                         git titles a revert, whose item says, as git
+%                         writes it, that it reverts a commit that is an
+%                         ancestor of it. It restores an entry as it
+%                         was, with the id and the aliases it had then,
+%                         and that content passed when it was first
 %                         committed.
 % did:                    |
 %                         The register entry {other}, renamed from {id},
@@ -302,8 +413,20 @@ rename_without_alias(Id, Other) :-
     renamed(_, Id, Other),
     register_entry_key(_, _, Other),
     not alias(Other, Id),
-    not commit_verb("Revert"),
-    not commit_verb("Reapply").
+    not verified_revert(_).
+
+% A commit titled as git titles a revert, or a revert of a revert, that
+% says which earlier commit it reverts, that commit being an ancestor.
+%
+% decl verified_revert(commit: symbol)
+
+verified_revert(Commit) :-
+    commit_verb("Revert"),
+    reverted_ancestor(Commit).
+
+verified_revert(Commit) :-
+    commit_verb("Reapply"),
+    reverted_ancestor(Commit).
 
 
 % -----------------------------------------------------------------------------
@@ -334,6 +457,9 @@ item_change("remove", Id) :-
 
 item_change("rename", Other) :-
     renamed(_, _, Other).
+
+item_change("remove", File) :-
+    removed_file(File).
 
 
 % -----------------------------------------------------------------------------

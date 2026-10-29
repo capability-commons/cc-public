@@ -43,6 +43,7 @@ import cctool.commit.history
 import cctool.commit.impact
 import cctool.gate.gate
 import cctool.graph.logic
+import cctool.release.release
 
 
 # -----------------------------------------------------------------------------
@@ -81,25 +82,33 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
     HEAD, the whole history, if left out. A RANGE that selects no
     commit is an error, not a pass. Each commit is checked as the
     commit-msg hook checks one: its message against sch_commit as its
-    own tree holds it, and its change against its first parent. A
-    commit item whose id another commit's item has, as a cherry-pick
-    makes, is reported too. The exit status is 1 when any check fails.
+    own tree holds it, its author and signature against the team
+    members of its first parent, so that no commit admits its own
+    author, and its change against its first parent. A commit item
+    whose id another commit's item has, as a cherry-pick makes, is
+    reported too. With --pre-push, each release tag the push sets is
+    verified as cctool release check verifies it. The exit status is 1
+    when any check fails.
 
     """
 
     root = root.resolve()
     try:
         if remote is not None:
-            (list_commit, list_tip) = cctool.commit.history.pushed(root, remote,
-                                                                       sys.stdin.read())
+            (list_commit, list_tip, list_tag) = cctool.commit.history.pushed(root, remote,
+                                                                                 sys.stdin.read())
         else:
             list_commit = cctool.commit.history.commits(root, list(list_arg) or ['HEAD'])
             list_tip    = list_commit[-1:]
+            list_tag    = []
             if not list_commit:
                 click.echo('{range} selects no commit, so there is nothing to check.'.format(
                                range = ' '.join(list_arg) or 'HEAD'), err = True)
                 sys.exit(cctool.cli.group.EXIT_ERROR)
         list_found = cctool.commit.history.failures(root, list_commit)
+        list_found += ['{tag}: {found}'.format(tag = tag, found = found)
+                       for (tag, rev) in list_tag
+                       for found in cctool.release.release.verify(root, tag, rev)]
         if is_gate:
             list_found += _gated(root, list_tip)
     except (cctool.gate.gate.ErrorGate, cctool.graph.logic.ErrorLogic) as error:

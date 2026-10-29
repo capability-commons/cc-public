@@ -38,9 +38,12 @@ edge:                   []
 """
 
 
+import contextlib
 import pathlib
+import re
 import subprocess
 import tempfile
+import typing
 
 import cctool.check.layout
 import cctool.gate.gate
@@ -51,6 +54,11 @@ import cctool.graph.logic
 RULES           = pathlib.Path(__file__).with_name('change.lp')
 TUPLE_KEY_TEXT  = ('title', 'brief', 'description')
 KEY_TITLE       = 'title'
+
+# The sentence that git's revert writes in the message, naming the
+# commit reverted.
+#
+REGEX_REVERTS   = re.compile(r'This reverts commit ([0-9a-f]{7,40})\.')
 
 Failures        = dict[str, list[tuple[str, ...]]]
 
@@ -63,26 +71,66 @@ def check(root: pathlib.Path, item: dict) -> Failures:
 
     """
 
+    with staged_trees(root) as (dir_before, dir_after, _):
+        return check_trees(dir_before, dir_after, item, reverted(root, item, 'HEAD'))
+
+
+# -----------------------------------------------------------------------------
+@contextlib.contextmanager
+def staged_trees(root: pathlib.Path) -> typing.Iterator[tuple[pathlib.Path, pathlib.Path, bool]]:
+    """
+    Yield a copy of the HEAD of the repository at root and a copy of its
+    staged content, the trees before and after a commit of what is
+    staged, and whether HEAD is a commit. An empty tree stands for HEAD
+    before the first commit. Both are removed afterwards.
+
+    """
+
     with tempfile.TemporaryDirectory() as name:
         dir_before = pathlib.Path(name, 'before')
         dir_after  = pathlib.Path(name, 'after')
         dir_before.mkdir()
         dir_after.mkdir()
-        if is_commit(root, 'HEAD'):
+        is_head    = is_commit(root, 'HEAD')
+        if is_head:
             cctool.gate.gate.copy_commit(root, 'HEAD', dir_before)
         cctool.gate.gate.copy_staged(root, dir_after)
-        return check_trees(dir_before, dir_after, item)
+        yield (dir_before, dir_after, is_head)
 
 
 # -----------------------------------------------------------------------------
-def check_trees(dir_before: pathlib.Path, dir_after: pathlib.Path, item: dict) -> Failures:
+def reverted(root: pathlib.Path, item: dict, base: str) -> set[str]:
+    """
+    Return each commit that item says, as git's revert writes, that the
+    commit it records reverts, if that commit is base or an ancestor of
+    it, in the repository at root.
+
+    """
+
+    text = ' '.join(' '.join(str(item.get(key, '')) for key in TUPLE_KEY_TEXT).split())
+    if not is_commit(root, base):
+        return set()
+
+    return {commit for commit in REGEX_REVERTS.findall(text)
+            if subprocess.run(['git', 'merge-base', '--is-ancestor', commit, base],
+                              cwd            = root,
+                              capture_output = True,
+                              check          = False).returncode == 0}
+
+
+# -----------------------------------------------------------------------------
+def check_trees(dir_before:   pathlib.Path,
+                dir_after:    pathlib.Path,
+                item:         dict,
+                set_reverted: set[str] | None = None) -> Failures:
     """
     Return the failures of the commit that item records, as the change
-    from the tree in dir_before to the tree in dir_after.
+    from the tree in dir_before to the tree in dir_after. set_reverted
+    holds each earlier commit that the commit is known to revert.
 
     """
 
-    facts = facts_of(dir_before, dir_after, item)
+    facts = facts_of(dir_before, dir_after, item, set_reverted)
     rows  = cctool.graph.logic.run(facts, RULES.read_text(encoding = 'utf-8'))
 
     return {name: list_row for (name, list_row) in rows.items() if list_row}
@@ -118,28 +166,65 @@ def is_commit(root: pathlib.Path, rev: str) -> bool:
 
 
 # -----------------------------------------------------------------------------
-def facts_of(dir_before: pathlib.Path,
-             dir_after:  pathlib.Path,
-             item:       dict) -> cctool.graph.extract.Facts:
+def facts_of(dir_before:   pathlib.Path,
+             dir_after:    pathlib.Path,
+             item:         dict,
+             set_reverted: set[str] | None = None) -> cctool.graph.extract.Facts:
     """
     Return the facts that change.lp is evaluated over: those of the
     tree in dir_after, the items and edges of the tree in dir_before,
-    and the facts of the commit item.
+    the facts of the commit item, each commit of set_reverted, and each
+    file that the commit removes which held no item.
 
     """
 
-    facts  = cctool.graph.extract.extract(dir_after)
-    before = cctool.graph.extract.extract(dir_before)
-    text   = ' '.join(str(item.get(key, '')) for key in TUPLE_KEY_TEXT)
+    facts        = cctool.graph.extract.extract(dir_after)
+    before       = cctool.graph.extract.extract(dir_before)
+    text         = ' '.join(str(item.get(key, '')) for key in TUPLE_KEY_TEXT)
+    list_removed = _removed_files(dir_before, dir_after,
+                                  {cctool.graph.extract.file_of(row[3]) for row in before['item']})
 
-    facts['before_item']    = {(row[0], row[1]) for row in before['item']}
-    facts['before_edge']    = before['edge']
-    facts['commit_verb']    = {(str(item.get(KEY_TITLE, '')).partition(' ')[0],)}
-    facts['commit_mention'] = {(id_item,) for id_item
-                               in cctool.graph.extract.REGEX_MENTION.findall(text)}
-    facts['content_change'] = {(file,) for file in _changed(dir_before, dir_after)}
+    facts['before_item']       = {(row[0], row[1]) for row in before['item']}
+    facts['before_edge']       = before['edge']
+    facts['commit_verb']       = {(str(item.get(KEY_TITLE, '')).partition(' ')[0],)}
+    facts['commit_mention']    = {(id_item,) for id_item
+                                  in cctool.graph.extract.REGEX_MENTION.findall(text)}
+    facts['content_change']    = {(file,) for file in _changed(dir_before, dir_after)}
+    facts['reverted_ancestor'] = {(commit,) for commit in set_reverted or ()}
+    facts['removed_file']      = {(file,) for file in list_removed}
+    facts['named_file']        = {(file,) for file in list_removed if file in text}
 
     return facts
+
+
+# -----------------------------------------------------------------------------
+def _files(root: pathlib.Path) -> set[str]:
+    """
+    Return each file of the tree at root, relative to it.
+
+    """
+
+    return {str(path.relative_to(root)) for path in root.rglob('*') if path.is_file()}
+
+
+# -----------------------------------------------------------------------------
+def _removed_files(dir_before: pathlib.Path,
+                   dir_after:  pathlib.Path,
+                   set_held:   set[str]) -> list[str]:
+    """
+    Return each file of the tree in dir_before that the tree in
+    dir_after lacks, and that holds no item, by set_held, the files that
+    hold items. A file whose content the tree after holds in a file it
+    adds is moved, not removed.
+
+    """
+
+    set_before = _files(dir_before)
+    set_after  = _files(dir_after)
+    set_moved  = {_read(dir_after, file) for file in set_after - set_before}
+
+    return sorted(file for file in set_before - set_after
+                  if file not in set_held and _read(dir_before, file) not in set_moved)
 
 
 # -----------------------------------------------------------------------------
@@ -150,9 +235,7 @@ def _changed(dir_before: pathlib.Path, dir_after: pathlib.Path) -> list[str]:
 
     """
 
-    set_file = {str(path.relative_to(root))
-                for root in (dir_before, dir_after)
-                for path in root.rglob('*') if path.is_file()}
+    set_file = _files(dir_before) | _files(dir_after)
 
     # Laying a file out is slow, and most files are the same byte for
     # byte, so only those that differ are laid out.

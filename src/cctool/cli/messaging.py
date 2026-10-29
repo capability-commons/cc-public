@@ -140,23 +140,29 @@ def check(file, author: str | None, root: pathlib.Path) -> None:
     Check the commit message in FILEPATH, or - for stdin, and the commit of
     the staged content that it records.
 
-    The message is checked against sch_commit, and the author, if
-    given, against the git_author of each member of reg_team_member.
-    If they pass, the commit is checked against the graph before and
-    after it: nothing disappears or changes type unannounced, and the
-    verb of the title is true of the change. The exit status is 1 when
-    any fails.
+    The message is checked against sch_commit as the staged content
+    holds it, and the author, if given, against the git_author of each
+    member of reg_team_member as HEAD holds it, so that a commit cannot
+    admit its own author, nor an edit that is not staged admit one. If
+    they pass, the commit is checked against the graph before and after
+    it: nothing disappears or changes type unannounced, and the verb of
+    the title is true of the change. The exit status is 1 when any
+    fails.
 
     """
 
     text = file.read()
-    _report(cctool.commit.message.violations(root.resolve(), text)
-            + ([] if author is None
-               else cctool.commit.message.author_violations(root.resolve(), author)))
-
-    (_, item) = cctool.commit.message.parse(text)
+    root = root.resolve()
     try:
-        failures = cctool.commit.change.check(root.resolve(), item)
+        with cctool.commit.change.staged_trees(root) as (dir_before, dir_after, is_head):
+            _report(cctool.commit.message.violations(dir_after, text)
+                    + ([] if author is None
+                       else cctool.commit.message.author_violations(
+                                dir_before if is_head else dir_after, author)))
+            (_, item) = cctool.commit.message.parse(text)
+            failures  = cctool.commit.change.check_trees(
+                            dir_before, dir_after, item,
+                            cctool.commit.change.reverted(root, item, 'HEAD'))
     except (cctool.gate.gate.ErrorGate, cctool.graph.logic.ErrorLogic) as error:
         click.echo(str(error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
