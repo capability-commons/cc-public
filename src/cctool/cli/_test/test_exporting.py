@@ -132,3 +132,15 @@ def test_a_folder_that_cannot_be_made_is_an_error(tree, tmp_path):
     assert result.exit_code == 2
     assert 'The pages cannot be written to' in result.stderr
     assert 'Traceback' not in result.output
+
+
+def test_a_page_whose_id_leads_out_of_the_folder_is_refused(tree, tmp_path):
+    path = tree / '_data' / 'decision' / 'dec_tooling_language' / 'dec_tooling_language.yaml'
+    path.write_text(path.read_text().replace('id_self:                dec_tooling_language',
+                                             'id_self:                dec_x/../../../outside'))
+    dir_out = tmp_path / 'deep' / 'vault'
+    result  = _run(tree, 'obsidian', str(dir_out))
+    assert result.exit_code == 2
+    assert 'would be written outside' in result.stderr
+    assert not (tmp_path / 'outside.md').exists()
+    assert not dir_out.exists()

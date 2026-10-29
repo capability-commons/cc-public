@@ -42,6 +42,7 @@ edge:                   []
 """
 
 
+import string
 import typing
 
 import htpy
@@ -62,6 +63,12 @@ PREFIX_LIT        = 'lit-'
 PREFIX_SHOW       = 'show-'
 DELIM_ROLE        = '--'
 KEY_UNPIN         = 'unpin'
+
+# The characters a name keeps in a style rule. Any other is written as
+# a CSS escape of its code point, so that no id can end the rule, the
+# style element, or a format of the rule.
+#
+SET_PLAIN         = frozenset(string.ascii_letters + string.digits + '-_')
 
 
 # -----------------------------------------------------------------------------
@@ -170,23 +177,38 @@ def style(list_name: list[str]) -> typing.Any:
 
     list_rule = []
     for name in list_name:
-        when = (':root:is(:has(.{prefix}{name}:hover), '
-                ':has(#{name}:target):not(:has(.{show}:hover)))').format(prefix = PREFIX_SHOW,
-                                                                         name   = name,
-                                                                         show   = CSS_SHOW)
-        list_nested = ['& .{lit}{name} {{ --lit-on: 1; }}',
-                       '& .{region}:has(.{lit}{name}) {{ --lit-away: 1; }}',
-                       '& .{prefix}{name} {{ --lit-at: 1; }}']
-        list_nested += ['& .{shade} {{{{ --lit: var(--net-{sign}); '
-                        '--lit-ink: var(--ink-{sign}); }}}}'.format(shade = _shade(sign, name),
-                                                                    sign  = sign)
+        ident       = _escaped(name)
+        when        = (':root:is(:has(.{prefix}{name}:hover), '
+                       ':has(#{name}:target):not(:has(.{show}:hover)))').format(
+                           prefix = PREFIX_SHOW,
+                           name   = ident,
+                           show   = CSS_SHOW)
+        list_nested = ['& .{lit}{name} {{ --lit-on: 1; }}'.format(lit = PREFIX_LIT, name = ident),
+                       '& .{region}:has(.{lit}{name}) {{ --lit-away: 1; }}'.format(
+                           region = CSS_REGION,
+                           lit    = PREFIX_LIT,
+                           name   = ident),
+                       '& .{prefix}{name} {{ --lit-at: 1; }}'.format(prefix = PREFIX_SHOW,
+                                                                     name   = ident)]
+        list_nested += ['& .{shade} {{ --lit: var(--net-{sign}); '
+                        '--lit-ink: var(--ink-{sign}); }}'.format(
+                            shade = _escaped(_shade(sign, name)),
+                            sign  = sign)
                         for sign in (ROLE_FOR, ROLE_AGAINST, SIGN_MIXED)]
-        body = ' '.join(nested.format(lit    = PREFIX_LIT,
-                                      region = CSS_REGION,
-                                      prefix = PREFIX_SHOW,
-                                      name   = name) for nested in list_nested)
-        list_rule.append('{when} {{ {body} }}'.format(when = when, body = body))
+        list_rule.append('{when} {{ {body} }}'.format(when = when, body = ' '.join(list_nested)))
     return htpy.style[_Css('\n'.join(list_rule))]
+
+
+# -----------------------------------------------------------------------------
+def _escaped(name: str) -> str:
+    """
+    Return name as a style rule writes it: each character but a letter,
+    a digit, - and _ as the CSS escape of its code point.
+
+    """
+
+    return ''.join(char if char in SET_PLAIN else '\\{code:x} '.format(code = ord(char))
+                   for char in name)
 
 
 # -----------------------------------------------------------------------------

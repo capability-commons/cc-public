@@ -29,6 +29,8 @@ edge:                   []
 """
 
 
+import urllib.parse
+
 import pyoxigraph
 
 import cctool.graph.extract
@@ -169,9 +171,9 @@ def value(term: pyoxigraph.NamedNode | pyoxigraph.Literal | None) -> Value:
     if isinstance(term, pyoxigraph.NamedNode):
         iri = term.value
         if iri.startswith(NS_FIELD):
-            return 'f:' + iri[len(NS_FIELD):]
+            return 'f:' + urllib.parse.unquote(iri[len(NS_FIELD):])
         if iri.startswith(NS_ITEM):
-            return iri[len(NS_ITEM):]
+            return urllib.parse.unquote(iri[len(NS_ITEM):])
         return '<{iri}>'.format(iri = iri)
 
     if isinstance(term, pyoxigraph.Literal):
@@ -184,21 +186,25 @@ def value(term: pyoxigraph.NamedNode | pyoxigraph.Literal | None) -> Value:
 # -----------------------------------------------------------------------------
 def _item(id_item: str) -> pyoxigraph.NamedNode:
     """
-    Return the node of the item id_item.
+    Return the node of the item id_item. Each character of the id but a
+    letter, a digit, -, ., _ and ~ is percent-encoded, as an IRI cannot
+    hold a space and some others, and value decodes it; the ids that
+    cctool check passes hold no other.
 
     """
 
-    return pyoxigraph.NamedNode(NS_ITEM + id_item)
+    return pyoxigraph.NamedNode(NS_ITEM + urllib.parse.quote(id_item, safe = ''))
 
 
 # -----------------------------------------------------------------------------
 def _field(name: str) -> pyoxigraph.NamedNode:
     """
-    Return the predicate of the field name.
+    Return the predicate of the field name, encoded as _item encodes an
+    id.
 
     """
 
-    return pyoxigraph.NamedNode(NS_FIELD + name)
+    return pyoxigraph.NamedNode(NS_FIELD + urllib.parse.quote(name, safe = ''))
 
 
 # -----------------------------------------------------------------------------

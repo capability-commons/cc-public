@@ -439,6 +439,19 @@ def test_graph_option_lights_its_chains_through_concerns(tree):
     assert body.count('href="#ann_graphs_will_grow" class="pick') == 2
 
 
+
+def test_an_id_that_a_style_rule_cannot_hold_is_escaped_in_the_page(tree):
+    folder = tree / '_data' / 'decision' / 'dec_tooling_language'
+    bad    = 'opt_{}</style><script>alert(1)</script>'
+    for path in folder.glob('*.yaml'):
+        path.write_text(path.read_text(encoding = 'utf-8').replace('opt_tooling_in_python', bad),
+                        encoding = 'utf-8')
+    (status, _, body) = cctool.web.server.respond(tree, '/decision/dec_tooling_language')
+    assert status == http.HTTPStatus.OK
+    assert b'<script>alert' not in body
+    assert b'.show-opt_\\7b \\7d \\3c ' in body
+
+
 def test_a_concern_lights_its_chains_in_the_matrix_and_both_diagrams(tree):
     graph   = cctool.web.argument.Graph(tree)
     outline = cctool.web.sankey.Outline(graph, graph.decision('dec_tooling_language'))

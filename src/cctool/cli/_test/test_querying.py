@@ -168,6 +168,17 @@ def test_sparql_ask_prints_true_or_false(tree):
     assert result.stdout == 'true\n'
 
 
+
+def test_sparql_answers_over_an_id_that_an_iri_cannot_hold(tree):
+    path = tree / '_data' / 'decision' / 'dec_tooling_language' / 'dec_tooling_language.yaml'
+    path.write_text(path.read_text().replace('id_target:          lco_tooling',
+                                             'id_target:          lco tooling', 1))
+    result = _run(tree, 'sparql', 'SELECT ?lc WHERE { cc:dec_tooling_language '
+                                  'cc:relation_is_about ?lc }', '--json')
+    assert result.exit_code == 0
+    assert json.loads(result.stdout) == {'columns': ['lc'], 'rows': [['lco tooling']],
+                                         'count': 1}
+
 def test_sparql_error_is_refused_with_an_example(tree):
     result = _run(tree, 'sparql', 'SELECT ?x WHERE {')
     assert result.exit_code == 2

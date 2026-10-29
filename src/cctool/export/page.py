@@ -213,12 +213,21 @@ def write(dir_out: pathlib.Path, map_text: dict[str, str], is_replace: bool) -> 
     names. dir_out must be empty or absent, unless is_replace is True:
     then every page under it is removed first, with each folder left
     empty, and any other file, such as the settings of a viewer, is
-    kept.
+    kept. Nothing is written if a key names a file outside dir_out.
 
     """
 
     if dir_out.exists() and not dir_out.is_dir():
         raise ErrorExport('{dir} is a file, not a folder.'.format(dir = dir_out))
+
+    dir_resolved = dir_out.resolve()
+    for name in map_text:
+        if not (dir_out / name).resolve().is_relative_to(dir_resolved):
+            raise ErrorExport('The page {name} would be written outside {dir}, as the id it is '
+                              'named for holds a / or a .. that leads out. Correct the id, '
+                              'which cctool check reports, and export again.'.format(
+                                  name = name,
+                                  dir  = dir_out))
 
     if dir_out.is_dir() and any(dir_out.iterdir()):
         if not is_replace:
