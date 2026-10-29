@@ -33,11 +33,13 @@ edge:                   []
 """
 
 
+import pathlib
 import shutil
 
 import pytest
 
 import cctool.check.check
+import cctool.check.layout
 import cctool.check.segment
 import cctool.commit.message
 import cctool.edit.edit
@@ -135,6 +137,55 @@ TEXT_HELD = """\
 """
 
 
+ID_THIRD           = 'segment_third'
+FILE_THIRD         = '_data/federated_segment/segment_third.yaml'
+FILE_THIRD_RELEASE = '_data/release/release_third_0_1_0.yaml'
+FILE_THIRD_CONCEPT = '_data/register/reg_third_concept.yaml'
+GUID_THIRD_RELEASE = 'release_f7371d12049f400c9206b9cadeb4fa7b'
+
+TEXT_THIRD         = TEXT_PEER.format(release = 'release_cc_public_0_1_0',
+                                      guid    = 'release_b9909b2c09ac45e08e9e4fd466d0ded3',
+                                      widget  = ', and concept_third_gizmo,\n'
+                                                '                        which it holds')
+
+TEXT_THIRD_RELEASE = """\
+id_self:                release_third_0_1_0
+guid_self:              {guid}
+copyright:              Copyright 2026 The Third
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Release 0.1.0
+brief:                  |
+                        The first release of the third segment.
+version:                0.1.0
+dependency:             []
+edge:                   []
+""".format(guid = GUID_THIRD_RELEASE)
+
+# Each id, guid and word of the peer that the third segment holds as its
+# own in place of them, so that no id or guid is held by both.
+#
+MAP_THIRD          = {'segment_peer':                            ID_THIRD,
+                      'segment_5d1ae0c6bd3a4d4c9bd2b8e2a5c0f7e1': 'segment_c47da76808254dff900d35d9057a702b',
+                      'reg_peer_concept':                        'reg_third_concept',
+                      'reg_3c1f0a7e2b5d4c6e8f9a0b1c2d3e4f50':     'reg_6140d0cbb32f4407919ff827cb32a7d6',
+                      'concept_peer_widget':                     'concept_third_gizmo',
+                      'concept_7d2e4f6a8b0c4d1e9f3a5b7c9d1e3f50': 'concept_01866cd22cf948aca106375a3bc866d2',
+                      'The Peer':                                'The Third',
+                      'The peer segment':                        'The third segment',
+                      'A peer of cc-public':                     'A third segment',
+                      'Peer concept register':                   'Third concept register',
+                      'the peer':                                'the third segment',
+                      'Peer widget':                             'Third gizmo',
+                      'peer widget':                             'third gizmo',
+                      'A widget':                                'A gizmo'}
+
+
 # -----------------------------------------------------------------------------
 def _peer(tmp_path_factory,
           release = 'release_cc_public_0_1_0',
@@ -158,6 +209,30 @@ def _peer(tmp_path_factory,
         path = root / FILE_PEER_CONCEPT
         path.parent.mkdir(parents = True)
         path.write_text(TEXT_PEER_CONCEPT.format(held = held), encoding = 'utf-8')
+    return root
+
+
+# -----------------------------------------------------------------------------
+def _third(tmp_path_factory):
+    """
+    Return the root of a third segment, a checkout that consumes
+    release_cc_public_0_1_0 and holds a release of its own and a concept
+    register, made from those of the peer, whose entry its segment item
+    names.
+
+    """
+
+    root = tmp_path_factory.mktemp('third')
+    for (relative, text_peer) in ((FILE_THIRD,         TEXT_THIRD),
+                                  (FILE_THIRD_RELEASE, TEXT_THIRD_RELEASE),
+                                  (FILE_THIRD_CONCEPT, TEXT_PEER_CONCEPT.format(held = TEXT_HELD))):
+        text = text_peer
+        for (old, new) in MAP_THIRD.items():
+            text = text.replace(old, new)
+        path = root / relative
+        path.parent.mkdir(parents = True, exist_ok = True)
+        path.write_text(cctool.check.layout.lay_out(text, pathlib.PurePosixPath(relative)),
+                        encoding = 'utf-8')
     return root
 
 
@@ -391,6 +466,56 @@ def test_a_fault_in_the_consumed_tree_is_a_notice(tree, tmp_path_factory, monkey
     assert notices == {'dangling_mention': [
         ('segment_cc_public', 'concept_nowhere',
          '_consumed/segment_cc_public/_data/federated_segment/segment_cc_public.yaml', '14')]}
+
+
+# -----------------------------------------------------------------------------
+def test_a_peer_that_names_a_segment_it_does_not_consume_fails(tree, tmp_path_factory,
+                                                               monkeypatch):
+    """
+    A reference into a segment that is read beside the peer, but that the
+    peer does not consume, fails.
+
+    """
+
+    third = _third(tmp_path_factory)
+    monkeypatch.setattr(cctool.check.segment, 'trees',
+                        lambda: [(cctool.check.segment.PLACE_CHECKOUT, tree),
+                                 (cctool.check.segment.PLACE_CHECKOUT, third)])
+    root  = _peer(tmp_path_factory)
+    path  = root / FILE_PEER
+    path.write_text(path.read_text(encoding = 'utf-8')
+                        .replace('cc-public holds.', 'cc-public holds, and concept_third_gizmo.'),
+                    encoding = 'utf-8')
+    (failures, _, notices) = cctool.check.check.review(root)
+
+    assert _without_layout(failures) == {'unconsumed_reference': [
+        (ID_PEER, 'concept_third_gizmo', ID_PEER, ID_THIRD, FILE_PEER, '15')]}
+    assert notices == {}
+
+
+# -----------------------------------------------------------------------------
+def test_a_peer_reads_each_segment_along_its_chain(tree, tmp_path_factory, monkeypatch):
+    """
+    A peer that consumes the third segment, which consumes cc-public,
+    may name the items of both, and its effective register of a type is
+    the union of the registers of all three.
+
+    """
+
+    third = _third(tmp_path_factory)
+    monkeypatch.setattr(cctool.check.segment, 'trees',
+                        lambda: [(cctool.check.segment.PLACE_CHECKOUT, tree),
+                                 (cctool.check.segment.PLACE_CHECKOUT, third)])
+    root  = _peer(tmp_path_factory, 'release_third_0_1_0', GUID_THIRD_RELEASE, TEXT_HELD)
+    (failures, _, notices) = cctool.check.check.review(root)
+    facts = cctool.graph.extract.facts_of(cctool.check.segment.union(root))
+    text  = ("SELECT register FROM effective_register "
+             "WHERE segment = 'segment_peer' AND type = 'type_concept' ORDER BY register")
+
+    assert failures == {}
+    assert notices  == {}
+    assert cctool.graph.sql.query(facts, text)[1] == [
+        ('reg_concept',), ('reg_peer_concept',), ('reg_third_concept',)]
 
 
 # -----------------------------------------------------------------------------

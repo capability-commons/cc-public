@@ -3887,7 +3887,11 @@ unheld_claim(Rule, Mechanism, File, Line) :-
 
 % -----------------------------------------------------------------------------
 % The segment consumes the segment consumed: it has an edge of
-% relation_consumes to a release item that consumed holds.
+% relation_consumes to a release item that consumed holds, or it
+% consumes a segment that consumes it. A segment reads every segment
+% along its chain back to cc-public, as its effective register does, so
+% it may name what any of them holds, as every item names the marks and
+% relations of cc-public.
 %
 % decl segment_consumes(segment:  symbol,
 %                       consumed: symbol)
@@ -3896,6 +3900,10 @@ segment_consumes(Segment, Consumed) :-
     edge(Segment, "relation_consumes", Release),
     item(Release, _, _, File, _),
     segment_of(File, Consumed).
+
+segment_consumes(Segment, Consumed) :-
+    segment_consumes(Segment, Middle),
+    segment_consumes(Middle, Consumed).
 
 
 % -----------------------------------------------------------------------------
