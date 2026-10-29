@@ -65,6 +65,12 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
     add. Forms are taken only from the pages of this server, on this
     computer.
 
+    Pages are served to a browser that names the server by a name of
+    this computer or by an IP address, and not under any other name, so
+    that a site cannot read them by pointing a name of its own at this
+    computer. With --host 0.0.0.0, every computer that can reach the
+    port can read the pages, by its address.
+
     """
 
     click.echo('Serving {root} at http://{host}:{port}/'.format(root = root.resolve(),

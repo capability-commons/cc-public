@@ -26,11 +26,17 @@ edge:                   []
 """
 
 
+import contextlib
 import http
+import http.client
+import threading
 import urllib.parse
+
+import pytest
 
 import cctool.edit.edit
 import cctool.web.argument
+import cctool.web.page
 import cctool.web.request
 import cctool.web.server
 
@@ -134,6 +140,57 @@ def test_a_form_from_another_site_is_refused(tree):
         (status, _, _, _) = cctool.web.server.submit(tree, host, origin, b'kind=option')
         assert status == http.HTTPStatus.FORBIDDEN
 
+
+
+@contextlib.contextmanager
+def _serving(tree):
+    """
+    Serve the pages of tree on a free port of this computer while the
+    block runs, and give a function that sends a request there and
+    returns the status of the response.
+
+    """
+
+    server = cctool.web.server.server(tree, '127.0.0.1', 0)
+    port   = server.server_address[1]
+    thread = threading.Thread(target = server.serve_forever, daemon = True)
+    thread.start()
+
+    def send(method, path, map_header, body = None):
+        connection = http.client.HTTPConnection('127.0.0.1', port, timeout = 120)
+        try:
+            connection.putrequest(method, path, skip_host = True, skip_accept_encoding = True)
+            for (name, value) in map_header.items():
+                connection.putheader(name, value)
+            connection.endheaders(body)
+            return connection.getresponse().status
+        finally:
+            connection.close()
+
+    try:
+        yield send
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+@pytest.mark.parametrize(('host', 'status'), [('127.0.0.1:{port}',    http.HTTPStatus.OK),
+                                              ('localhost',           http.HTTPStatus.OK),
+                                              ('[::1]:{port}',        http.HTTPStatus.OK),
+                                              ('192.168.1.20:{port}', http.HTTPStatus.OK),
+                                              ('rebound.example.com', http.HTTPStatus.FORBIDDEN),
+                                              ('[bad',                http.HTTPStatus.FORBIDDEN),
+                                              ('',                    http.HTTPStatus.FORBIDDEN)])
+def test_a_page_is_served_only_under_a_name_of_this_computer_or_an_address(tree, host, status):
+    with _serving(tree) as send:
+        assert send('GET', cctool.web.page.PATH_STATIC + 'review.css', {'Host': host.format(port = 8100)}) == status
+
+
+@pytest.mark.parametrize('length', ['many', '-1', '²'])
+def test_a_form_with_a_length_that_is_no_number_is_refused(tree, length):
+    with _serving(tree) as send:
+        assert send('POST', '/edit', {'Host': HOST, 'Content-Length': length}, b'kind=option') \
+            == http.HTTPStatus.BAD_REQUEST
 
 def test_an_option_sent_is_written_in_its_decision(tree):
     (status, _, _, location) = _submit(tree, 'http://' + HOST, kind = 'option',

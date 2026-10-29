@@ -28,6 +28,13 @@ description:            |
                         requests with respond, until interrupted. It
                         uses the HTTP server of the standard library.
 
+                        A page is served only to a request that names
+                        the server by a name of this computer or by an
+                        IP address. A site that points a name of its
+                        own at this computer, and so has a browser
+                        that views it ask for a page under that name,
+                        is refused, so that it cannot read the tree.
+
                         submit answers the forms of the pages that
                         change the data. It turns a form into a batch
                         with pym_cctool.web.request and makes it with
@@ -46,6 +53,7 @@ edge:                   []
 
 import http
 import http.server
+import ipaddress
 import mimetypes
 import pathlib
 import threading
@@ -185,6 +193,40 @@ def submit(root:   pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
+def is_readable(host: str) -> bool:
+    """
+    Return True if a page may be served to a request to the server named
+    host: by a name of this computer, or by an IP address, which no
+    other site can stand for. Any other name may be that of a site that
+    points it at this computer.
+
+    """
+
+    name = _name(host)
+    if name in SET_HOST_LOCAL or '[{name}]'.format(name = name) in SET_HOST_LOCAL:
+        return True
+    try:
+        ipaddress.ip_address(name)
+    except ValueError:
+        return False
+    return True
+
+
+# -----------------------------------------------------------------------------
+def _name(host: str) -> str:
+    """
+    Return the name of the server in host, the Host header of a
+    request, without its port, or '' if host is not a host.
+
+    """
+
+    try:
+        return urllib.parse.urlsplit('//' + host).hostname or ''
+    except ValueError:
+        return ''
+
+
+# -----------------------------------------------------------------------------
 def _is_local(host: str, origin: str | None) -> bool:
     """
     Return True if host names this computer, and origin, if a browser
@@ -192,7 +234,7 @@ def _is_local(host: str, origin: str | None) -> bool:
 
     """
 
-    name = urllib.parse.urlsplit('//' + host).hostname or ''
+    name = _name(host)
     if name not in SET_HOST_LOCAL and '[{name}]'.format(name = name) not in SET_HOST_LOCAL:
         return False
     return origin is None or origin == 'http://' + host
@@ -301,6 +343,20 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
 
     """
 
+    threading.Thread(target = _warm, args = (root,), daemon = True).start()
+
+    with server(root, host, port) as each:
+        each.serve_forever()
+
+
+# -----------------------------------------------------------------------------
+def server(root: pathlib.Path, host: str, port: int) -> http.server.ThreadingHTTPServer:
+    """
+    Return a server of the pages of the tree under root, bound to host
+    and port, that is not yet serving.
+
+    """
+
     # -------------------------------------------------------------------------
     class Handler(http.server.BaseHTTPRequestHandler):
         """
@@ -312,9 +368,16 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
         # ---------------------------------------------------------------------
         def do_GET(self) -> None:
             """
-            Send the response to the request.
+            Send the response to the request, unless it names the
+            server by a name that is_readable refuses.
 
             """
+
+            if not is_readable(self.headers.get('Host') or ''):
+                self.send_error(http.HTTPStatus.FORBIDDEN,
+                                'Pages are served only under a name of this computer, or '
+                                'an IP address.')
+                return
 
             (status, type_content, body) = respond(root, self.path)
             self.send_response(status)
@@ -334,11 +397,16 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
                 self.send_error(http.HTTPStatus.NOT_FOUND)
                 return
 
-            length = int(self.headers.get('Content-Length') or 0)
+            text = self.headers.get('Content-Length') or '0'
+            if not (text.isascii() and text.isdigit()):
+                self.send_error(http.HTTPStatus.BAD_REQUEST,
+                                'The Content-Length is not a number of bytes.')
+                return
+
             (status, type_content, body, location) = submit(root,
                                                             self.headers.get('Host') or '',
                                                             self.headers.get('Origin'),
-                                                            self.rfile.read(length))
+                                                            self.rfile.read(int(text)))
             self.send_response(status)
             if location:
                 self.send_header('Location', location)
@@ -347,10 +415,7 @@ def serve(root: pathlib.Path, host: str, port: int) -> None:
             self.end_headers()
             self.wfile.write(body)
 
-    threading.Thread(target = _warm, args = (root,), daemon = True).start()
-
-    with http.server.ThreadingHTTPServer((host, port), Handler) as server:
-        server.serve_forever()
+    return http.server.ThreadingHTTPServer((host, port), Handler)
 
 
 # -----------------------------------------------------------------------------

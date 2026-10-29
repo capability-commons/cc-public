@@ -24,7 +24,9 @@ description:            |
                         derive.lp, so they are defined once, for both
                         languages. The prose of each item is in
                         item_text, a full-text table. A query changes
-                        nothing outside the database it runs in.
+                        nothing outside the database it runs in: one
+                        that would attach a database, as ATTACH and
+                        VACUUM INTO do, is refused.
 edge:                   []
 
 ...
@@ -46,6 +48,12 @@ MAP_TYPE          = {'symbol': 'TEXT', 'number': 'INTEGER'}
 #
 SQL_TEXT          = ('CREATE VIRTUAL TABLE item_text USING fts5('
                      "id UNINDEXED, field UNINDEXED, text, tokenize = 'porter unicode61')")
+
+# Why a query that would attach a database, and so make or change a
+# file, is refused.
+#
+TEXT_ATTACH       = ('A query cannot attach a database, as ATTACH and VACUUM INTO do, since it '
+                     'changes nothing outside the database it runs in.')
 
 
 # -----------------------------------------------------------------------------
@@ -94,15 +102,34 @@ def query(facts:     cctool.graph.extract.Facts,
     """
     Return the columns and the rows of the query text, evaluated over
     facts and the prose in list_text. Raise sqlite3.Error if it cannot
-    be evaluated.
+    be evaluated, or if it would attach a database.
 
     """
 
-    connection = connect(facts, list_text)
+    connection  = connect(facts, list_text)
+    list_denied = []
+
+    # -------------------------------------------------------------------------
+    def authorize(action: int, *_) -> int:
+        """
+        Deny the attachment of a database, and allow anything else.
+
+        """
+
+        if action == sqlite3.SQLITE_ATTACH:
+            list_denied.append(action)
+            return sqlite3.SQLITE_DENY
+        return sqlite3.SQLITE_OK
+
+    connection.set_authorizer(authorize)
 
     try:
         cursor       = connection.execute(text)
         tuple_column = tuple(each[0] for each in cursor.description or ())
         return (tuple_column, cursor.fetchall())
+    except sqlite3.DatabaseError as error:
+        if list_denied:
+            raise sqlite3.DatabaseError(TEXT_ATTACH) from error
+        raise
     finally:
         connection.close()

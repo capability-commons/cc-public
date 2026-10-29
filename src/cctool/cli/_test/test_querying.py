@@ -92,6 +92,14 @@ def test_sql_prints_json_with_the_count_of_all_rows(tree):
                                          'count':   20}
 
 
+
+def test_sql_that_would_write_a_file_is_refused(tree, tmp_path):
+    path   = tmp_path / 'x.db'
+    result = _run(tree, 'sql', "ATTACH DATABASE '{path}' AS w".format(path = path))
+    assert result.exit_code == 2
+    assert result.stderr.startswith('SQL error: A query cannot attach a database')
+    assert not path.exists()
+
 def test_logic_prints_each_output_predicate(tree):
     result = _run(tree, 'logic', '% decl o(t: symbol)\n#show o/1. o(T) :- has_type("concern_cost", T).')
     assert result.exit_code == 0
