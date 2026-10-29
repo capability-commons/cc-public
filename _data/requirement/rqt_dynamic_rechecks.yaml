@@ -1,0 +1,45 @@
+id_self:                rqt_dynamic_rechecks
+guid_self:              rqt_8ca04f9bdcf542e58ca1ae4e4e10506e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine repeats the safety checks
+brief:                  |
+                        The engine does not trust a change set because
+                        cctool checked it.
+condition_kind:         logic
+condition:              a change set would join ports that carry different values, leave an input unfed, touch a static [[dataflow node]], or name a [[dataflow graph]] other than the one running
+modal_verb:             shall
+activity:               autonomous
+object:                 the whole change set
+qualifier:              with its reason in an event
+rationale:              A change set could be stale or corrupted in transit; the checks that keep the engine safe are cheap to repeat.
+verification_method:    test
+verification_approach:  Each kind of unsafe change set is sent to a running engine.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_dynamic
+    guid_target:        lco_b00ac1d1b9e84bd3982481911d0866fd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

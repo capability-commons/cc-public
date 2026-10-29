@@ -1,0 +1,42 @@
+id_self:                rqt_checks_every_complete_variant
+guid_self:              rqt_1f6f133239f84376ac296ed1380cbd00
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every complete variant checked twice
+brief:                  |
+                        Each complete variant is checked as resolved
+                        and as lowered.
+modal_verb:             shall
+activity:               autonomous
+object:                 the dataflow rules on every [[complete dataflow variant]], on its [[resolved dataflow graph]] and again on its lowered form
+rationale:              Lowering adds machinery that can itself be wrong; checking only the resolved graph would miss it.
+verification_method:    test
+verification_approach:  A variant whose lowering would leave a crossing edge without transport is checked.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_checks
+    guid_target:        lco_76b030d3c977418fa3f3764d37c58150
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_enforce
+    guid_target:        concept_cc232d69bd174a53bc141ca3da22aa10
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_complete_dataflow_variant
+    guid_target:        concept_c73fdf802424410cab7f57b760669dcd
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7

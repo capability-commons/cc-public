@@ -1,0 +1,49 @@
+id_self:                rqt_deployment_records
+guid_self:              rqt_33fad51c57d1465fba2ebd1d86f4ed5e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Record of every deployment
+brief:                  |
+                        Every deployment leaves a record of exactly
+                        what went where.
+condition_kind:         event
+condition:              a deployment to a host completes
+modal_verb:             shall
+activity:               autonomous
+object:                 the host, the [[dataflow variant]], the [[commit]] and the content digest of the [[resolved dataflow graph]]
+rationale:              Knowing what runs on each host is needed to compute a change set and to trust evidence from that host.
+verification_method:    test
+verification_approach:  A variant is deployed to a test host and the record read.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_deployment
+    guid_target:        lco_ed0b259255d44eb1a38a1c7b742aec14
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_capture
+    guid_target:        concept_d08dc8741c8f42fc9bb006f2c6d43bbb
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_variant
+    guid_target:        concept_ea664695cb894e15aa3e3cbcb3853cc1
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7

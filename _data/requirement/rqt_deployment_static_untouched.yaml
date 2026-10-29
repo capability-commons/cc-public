@@ -1,0 +1,41 @@
+id_self:                rqt_deployment_static_untouched
+guid_self:              rqt_389e950f881346ca8cb4bbd75dd3832a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  No change set for the static subgraph
+brief:                  |
+                        A change set may touch only the dynamic
+                        subgraph; a change to the static part needs a
+                        new build.
+condition_kind:         logic
+condition:              the running and the wanted [[resolved dataflow graph]] differ in their static subgraph
+modal_verb:             shall
+activity:               autonomous
+object:                 to compute a change set between them
+qualifier:              and name the static parts that differ
+rationale:              The static schedule is fixed at build time.
+verification_method:    test
+verification_approach:  Two resolved graphs that differ in a static node are given to deployment.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_deployment
+    guid_target:        lco_ed0b259255d44eb1a38a1c7b742aec14
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7

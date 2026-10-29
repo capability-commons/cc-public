@@ -1,0 +1,39 @@
+id_self:                rqt_actors_replay_admission
+guid_self:              rqt_2ffa8a3e03554a7ea9be1fb5aa80c593
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay admits at the recorded gap
+brief:                  |
+                        On replay, outside messages enter at the same
+                        gap they did on the recorded run.
+condition_kind:         logic
+condition:              a recording is replayed
+modal_verb:             shall
+activity:               autonomous
+object:                 each message from outside the [[dataflow graph]] at the gap the recording names
+rationale:              A message admitted one gap later would change what the Kahn part sees.
+verification_method:    test
+verification_approach:  A run with outside messages is recorded and replayed.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_actors
+    guid_target:        lco_c3ccf3604d88495a8c79bf6a04882b50
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_admit
+    guid_target:        concept_c3240b8ea5614db195668970e6be36c2
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

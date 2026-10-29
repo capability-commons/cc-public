@@ -1,0 +1,49 @@
+id_self:                rqt_checks_data_loss
+guid_self:              rqt_5c8eab6f59e44c8fa1fac98699a43cf4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loss where a requirement forbids it
+brief:                  |
+                        A lossy delivery policy on an edge that must
+                        not lose data fails the check.
+condition_kind:         logic
+condition:              a delivery policy that can lose values is on a [[dataflow edge]] that a [[requirement]] forbids to lose any
+modal_verb:             shall
+activity:               autonomous
+object:                 a [[failure]] that names the [[dataflow edge]] and the [[requirement]]
+rationale:              Each policy declares whether it can lose data so that this can be found before a system runs.
+verification_method:    test
+verification_approach:  A latest-value policy is put on an edge whose requirement forbids loss.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_checks
+    guid_target:        lco_76b030d3c977418fa3f3764d37c58150
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_emit
+    guid_target:        concept_a6fda36e598343aea3cc4da2dbae43a8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_requirement
+    guid_target:        concept_d556c2dba87a402daf54bfd892f432b8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_failure
+    guid_target:        concept_b386c31aebf44fa8a8d6f1814d1d3c1b

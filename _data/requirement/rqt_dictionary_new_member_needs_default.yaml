@@ -1,0 +1,35 @@
+id_self:                rqt_dictionary_new_member_needs_default
+guid_self:              rqt_04478c590abd4b5cb48013329df62aa9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  New member of a dictionary version needs a default
+brief:                  |
+                        A new version that adds a member with no
+                        default cannot upgrade an old value, so it is
+                        refused.
+condition_kind:         logic
+condition:              a new version in the dictionary adds a member that has no default and is not converted from an older one
+modal_verb:             shall
+activity:               autonomous
+object:                 the new version
+rationale:              State upgrades during a swap rely on every new member getting a value; one with no default would leave it undefined.
+verification_method:    test
+verification_approach:  A dictionary version that adds a member with no default is written and checked.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_dictionary
+    guid_target:        lco_680827af37054cdcb1b42817602788aa
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c

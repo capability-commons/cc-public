@@ -1,0 +1,40 @@
+id_self:                rqt_transport_waits_when_full
+guid_self:              rqt_02d231d27dd24143bfcee544f7fd069b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Sender waits rather than drop
+brief:                  |
+                        A lossless edge never drops a message because
+                        the receiver is slow.
+condition_kind:         logic
+condition:              the queue to the receiver is full and the delivery policy of the [[dataflow edge]] allows no loss
+modal_verb:             shall
+activity:               autonomous
+object:                 each further message
+qualifier:              until the queue has room
+rationale:              Loss is allowed only where a delivery policy declares it.
+verification_method:    test
+verification_approach:  A slow receiver is fed by a fast sender.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_transport
+    guid_target:        lco_bce618955a564a86b253576be2e9a9f7
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_defer
+    guid_target:        concept_ce25d0b9b4424d09a9cf7ee67a91347e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a

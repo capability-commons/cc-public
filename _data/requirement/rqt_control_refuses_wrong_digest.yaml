@@ -1,0 +1,40 @@
+id_self:                rqt_control_refuses_wrong_digest
+guid_self:              rqt_5ffa07b209d44a1e86ff0fcde40f0a6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Request for another graph refused
+brief:                  |
+                        Requests carry digests so cctool and the
+                        engine always mean the same graph.
+condition_kind:         logic
+condition:              a request names a content digest other than that of the [[dataflow graph]] running
+modal_verb:             shall
+activity:               autonomous
+object:                 the request
+qualifier:              and change nothing
+rationale:              A change set meant for one graph applied to another could do anything.
+verification_method:    test
+verification_approach:  A request naming a stale digest is sent.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_control
+    guid_target:        lco_99af493f4215406d9e7ea9d6b70083d7
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

@@ -1,0 +1,49 @@
+id_self:                rqt_engine_replays_live_changes
+guid_self:              rqt_09583da2ddd345149679e413fe4c5c87
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay of a run with live changes
+brief:                  |
+                        A run in which the graph changed while it ran
+                        can be replayed exactly.
+condition_kind:         logic
+condition:              a [[dataflow run]] with live changes is replayed from its recording and every [[dataflow node]] is deterministic
+modal_verb:             shall
+activity:               autonomous
+object:                 the same messages on every [[dataflow edge]] as in the recorded run
+rationale:              Replay is how faults found in the field are reproduced and how evidence is checked.
+verification_method:    test
+verification_approach:  A run with a change set, a swap and outside messages is recorded and replayed.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_deliver
+    guid_target:        concept_e513ff5908bd4bd6b3cd18bf36b6bdc9
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_run
+    guid_target:        concept_d068df3fbf2240d19a060fde90d4405b
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a

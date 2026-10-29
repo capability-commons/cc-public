@@ -1,0 +1,44 @@
+id_self:                rqt_memory_only_for_change_sets
+guid_self:              rqt_57844980301a4de4879d6ddba0f1c279
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Allocation while running only for change sets
+brief:                  |
+                        The only allocation after start is for nodes
+                        and edges a change set adds.
+condition_kind:         time
+condition:              the execution units run
+modal_verb:             shall
+activity:               autonomous
+object:                 memory only for a change set that adds a [[dataflow edge]] or a [[dataflow node]]
+rationale:              The dynamic subgraph must grow at run time; nothing else may.
+verification_method:    test
+verification_approach:  A change set adding one edge is applied and allocation counted.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_allocate
+    guid_target:        concept_ae193d1e67bb4ad5a5ddd263f4fc8973
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7

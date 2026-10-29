@@ -1,0 +1,37 @@
+id_self:                rqt_node_reads_outside_only_through_control
+guid_self:              rqt_411b1c87c06d4ec1b3492c14956f07c0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outside world only through the control message
+brief:                  |
+                        Ordinary nodes never call clocks, sensors or
+                        the engine directly.
+modal_verb:             shall
+activity:               autonomous
+object:                 everything a [[dataflow node]] learns from outside its ports and its state to the control message
+rationale:              Every value from outside then arrives as a recordable value, which makes replay possible.
+verification_method:    analysis
+verification_approach:  The source of each node is analyzed for calls to clocks, the platform layer or the engine.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_confine
+    guid_target:        concept_a1188d3ddf5c4eb699f08cdc30fe4a05
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7

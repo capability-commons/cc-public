@@ -1,0 +1,40 @@
+id_self:                rqt_resolver_stops_at_failed_precondition
+guid_self:              rqt_3cd9881f1a714d8ea85103d5eb5f6f37
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resolution stops at a failed precondition
+brief:                  |
+                        An operation whose preconditions do not hold
+                        stops resolution and is named in the report.
+condition_kind:         logic
+condition:              a [[variant operation]] finds absent what it needs, or present what it adds
+modal_verb:             shall
+activity:               autonomous
+object:                 the resolution
+qualifier:              with a report that names that [[variant operation]]
+rationale:              Removing a node that is not there, or adding one that is, means the base changed under the variant; going on would hide it.
+verification_method:    test
+verification_approach:  A variant removes a node its base does not hold, and is resolved.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_resolver
+    guid_target:        lco_6db83d1d2feb4666b62de3ae475123ca
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_variant_operation
+    guid_target:        concept_8c4884eebd444315809afb0ea4c5488e

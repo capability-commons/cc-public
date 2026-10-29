@@ -1,0 +1,32 @@
+id_self:                rqt_memory_copies_into_each_queue
+guid_self:              rqt_f4f4e8672572416dad384b013d9a528a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Each queue gets its own copy
+brief:                  |
+                        Values are copied, not shared, between nodes.
+modal_verb:             shall
+activity:               autonomous
+object:                 each value into each queue it enters
+qualifier:              so that no two readers share a buffer
+rationale:              Copying removes shared mutable memory between nodes, the simplest rule to reason about; memory tokens may come later as recorded exceptions.
+verification_method:    test
+verification_approach:  One output feeds two readers; one reader writes into its input.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_copy
+    guid_target:        concept_12a223b7978e49adaa3dbdad96c79605

@@ -1,0 +1,39 @@
+id_self:                rqt_deployment_checks_before_send
+guid_self:              rqt_cd202be3ef674a7f9f2ba39a6f92bec8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change set checked before it is sent
+brief:                  |
+                        A change set is checked in full by cctool
+                        before any of it reaches a host.
+condition_kind:         logic
+condition:              a change set fails a dataflow rule against the [[resolved dataflow graph]] the host runs
+modal_verb:             shall
+activity:               autonomous
+object:                 to send the change set
+rationale:              The engine repeats only the checks that keep it safe; the full check belongs to the toolchain.
+verification_method:    test
+verification_approach:  A change set that joins two ports of different declarations is offered for sending.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_deployment
+    guid_target:        lco_ed0b259255d44eb1a38a1c7b742aec14
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_refuse
+    guid_target:        concept_b4290101525f44089b04d7d6f590f51c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7

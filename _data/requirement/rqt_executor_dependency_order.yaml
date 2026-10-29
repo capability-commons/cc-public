@@ -1,0 +1,43 @@
+id_self:                rqt_executor_dependency_order
+guid_self:              rqt_0ac0c2c114d34e13a1fa10ca7f560a82
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Kahn nodes in dependency order
+brief:                  |
+                        Within one execution unit, a reader runs after
+                        its writers, once per local step.
+modal_verb:             shall
+activity:               autonomous
+object:                 each Kahn [[dataflow node]] of its execution unit once in each [[local step]]
+qualifier:              after every [[dataflow node]] it takes input from in that [[local step]]
+rationale:              Reading in dependency order gives same-step reading without anyone declaring it.
+verification_method:    test
+verification_approach:  A chain of three nodes records the order of invocation.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_invoke
+    guid_target:        concept_32731e753feb4a9581b389870c27d60c
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

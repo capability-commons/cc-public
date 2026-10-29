@@ -1,0 +1,44 @@
+id_self:                rqt_checks_port_types
+guid_self:              rqt_e7bb54b453b449f3a4edc90f9eb85b1f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ends of an edge disagree on the value
+brief:                  |
+                        An edge joins ports that carry the same
+                        declared value, or the check fails.
+condition_kind:         logic
+condition:              the two ends of a [[dataflow edge]] name different declarations in the dictionary
+modal_verb:             shall
+activity:               autonomous
+object:                 a [[failure]] that names the [[dataflow edge]] and both declarations
+rationale:              A mismatch would let a node read memory as the wrong shape.
+verification_method:    test
+verification_approach:  An edge joins an output of one declaration to an input of another.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_checks
+    guid_target:        lco_76b030d3c977418fa3f3764d37c58150
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_emit
+    guid_target:        concept_a6fda36e598343aea3cc4da2dbae43a8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_failure
+    guid_target:        concept_b386c31aebf44fa8a8d6f1814d1d3c1b

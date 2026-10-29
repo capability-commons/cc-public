@@ -1,0 +1,39 @@
+id_self:                rqt_recorder_off_step_path
+guid_self:              rqt_484c3e142a454c5ca58b3ce046adfc01
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording does not slow the local step
+brief:                  |
+                        A recorder hands its writes to storage to
+                        another thread and reports a fault if it falls
+                        behind.
+modal_verb:             shall
+activity:               autonomous
+object:                 their traffic to storage off the path of the [[local step]]
+qualifier:              so that a slow store does not lengthen a [[local step]]
+rationale:              A recorder that slowed the local step would change the system it records.
+verification_method:    test
+verification_approach:  A recorder writes to a deliberately slow store.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_recording
+    guid_target:        lco_9a7992bfe09741d88f91eddad2cec5e3
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_keep
+    guid_target:        concept_67873c78ec204ec58f2a0c1214628ceb
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

@@ -1,0 +1,38 @@
+id_self:                rqt_lowering_derives_capacity
+guid_self:              rqt_d4dbcf24c6df4ebca8bfb205f84ca44b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Capacity from producer rates
+brief:                  |
+                        Port capacities are worked out, not written by
+                        hand.
+modal_verb:             shall
+activity:               autonomous
+object:                 the capacity of every port from the maximum rates of its producers and the period of the [[local step]]
+qualifier:              plus a margin for jitter
+rationale:              A hand-written capacity goes stale when a producer or a period changes; one derived per variant does not.
+verification_method:    test
+verification_approach:  A camera with a stated maximum rate feeds a detector; the graph is lowered for two periods.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_lowering
+    guid_target:        lco_6c086a1ee8d54bcf827b3d12cd1d5a5d
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_derive
+    guid_target:        concept_fab42d44f4cb41fa8dc916e30919853b
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

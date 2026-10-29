@@ -1,0 +1,32 @@
+id_self:                rqt_transport_confines_library
+guid_self:              rqt_6ea7b6469a2b4e7cae12b18d1543e2f3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport libraries only in transport nodes
+brief:                  |
+                        Nothing else in the engine depends on ZeroMQ,
+                        sockets or shared memory libraries.
+modal_verb:             shall
+activity:               autonomous
+object:                 every use of a transport library to the sender and the receiver
+rationale:              A target without a transport need not build it.
+verification_method:    inspection
+verification_approach:  The dependencies of every package of the engine are listed.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_transport
+    guid_target:        lco_bce618955a564a86b253576be2e9a9f7
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_confine
+    guid_target:        concept_a1188d3ddf5c4eb699f08cdc30fe4a05

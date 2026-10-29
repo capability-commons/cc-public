@@ -1,0 +1,33 @@
+id_self:                rqt_generator_plain_schedule
+guid_self:              rqt_280b11a0b46f4ac4926e58aed9a5d604
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Static schedule as plain calls
+brief:                  |
+                        The static part of a build is straight-line
+                        calls the compiler can see through.
+modal_verb:             shall
+activity:               autonomous
+object:                 the static schedule of each execution unit as plain C++17 calls
+qualifier:              with no allocation of memory and no indirect calls
+rationale:              Plain calls keep the speed and the reviewability that make the static subgraph suitable for embedded and high-integrity targets.
+verification_method:    inspection
+verification_approach:  The generated schedule is read, and checked with a static analyzer for allocations and indirect calls.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_generator
+    guid_target:        lco_50ea3ba630cc4dadb9b2d9fb9754cb46
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_generate
+    guid_target:        concept_80e8496b06fd43e4afd727047c704091

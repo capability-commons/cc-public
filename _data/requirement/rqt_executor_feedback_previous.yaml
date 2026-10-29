@@ -1,0 +1,42 @@
+id_self:                rqt_executor_feedback_previous
+guid_self:              rqt_cff4a67931ea44c097df4d1ea6e88831
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Feedback edge carries the previous local step
+brief:                  |
+                        Each loop is broken by one edge that is read
+                        one local step late.
+modal_verb:             shall
+activity:               autonomous
+object:                 the message of the previous [[local step]] on the one feedback [[dataflow edge]] of each loop, or in the first [[local step]] the default value of the port that supplies one
+rationale:              Without that, a loop would have no order in which to run.
+verification_method:    test
+verification_approach:  A two-node loop with a counter is run.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_deliver
+    guid_target:        concept_e513ff5908bd4bd6b3cd18bf36b6bdc9
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a

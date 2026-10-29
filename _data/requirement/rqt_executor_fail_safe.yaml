@@ -1,0 +1,35 @@
+id_self:                rqt_executor_fail_safe
+guid_self:              rqt_f867abfea7b14c8b9226a29944a62e81
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared fail-safe on overflow
+brief:                  |
+                        An overflow is handled as the port says: drop
+                        the excess, drop the message, or fail the
+                        local step.
+condition_kind:         logic
+condition:              a port is written beyond its capacity
+modal_verb:             shall
+activity:               autonomous
+object:                 the fail-safe of the port
+rationale:              Overflow is a broken requirement, and the right response depends on the port.
+verification_method:    test
+verification_approach:  A node writes more items than its port holds, under each fail-safe.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_enforce
+    guid_target:        concept_cc232d69bd174a53bc141ca3da22aa10

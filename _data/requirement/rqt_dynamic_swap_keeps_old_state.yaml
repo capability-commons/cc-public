@@ -1,0 +1,44 @@
+id_self:                rqt_dynamic_swap_keeps_old_state
+guid_self:              rqt_2ee49e5d220749ddb0eac505a8ec4b50
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Swap can go back
+brief:                  |
+                        A new node version that fails its first local
+                        step is replaced by the old one with its old
+                        state.
+modal_verb:             shall
+activity:               autonomous
+object:                 the old state and version of a swapped [[dataflow node]] until its new version completes a [[local step]]
+qualifier:              so that the swap can be undone
+rationale:              A swap at run time must not be able to take a system down.
+verification_method:    test
+verification_approach:  A swap to a version that fails at once is made.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_dynamic
+    guid_target:        lco_b00ac1d1b9e84bd3982481911d0866fd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_keep
+    guid_target:        concept_67873c78ec204ec58f2a0c1214628ceb
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

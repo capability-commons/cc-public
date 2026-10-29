@@ -1,0 +1,32 @@
+id_self:                rqt_platform_confines_services
+guid_self:              rqt_d7d3cf8609cd4f0e996cb6ada9a511f1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Time and services only for the core and control blocks
+brief:                  |
+                        Only privileged code can read clocks and
+                        services.
+modal_verb:             shall
+activity:               autonomous
+object:                 the reading of time and runtime services to the engine core and the control blocks
+rationale:              This is the mechanism that makes the control message the only door to the outside.
+verification_method:    inspection
+verification_approach:  The headers of the platform layer are read for who may include them.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_platform
+    guid_target:        lco_366f01e0f9934fffba9ff3469845aaa0
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_confine
+    guid_target:        concept_a1188d3ddf5c4eb699f08cdc30fe4a05

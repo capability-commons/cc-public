@@ -1,0 +1,38 @@
+id_self:                rqt_dynamic_reports_changes
+guid_self:              rqt_cb6535099ef648479290f8a62a8f4a13
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Changes reported for replay
+brief:                  |
+                        Every change to the running graph is reported,
+                        so that a replay can make it at the same local
+                        step.
+modal_verb:             shall
+activity:               autonomous
+object:                 for each change set applied or refused and for each swap an event that names the [[local step]] at which it took effect
+rationale:              Replay of a run with live changes needs the step of each change.
+verification_method:    test
+verification_approach:  A change set and a swap are made and the events read.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_dynamic
+    guid_target:        lco_b00ac1d1b9e84bd3982481911d0866fd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_emit
+    guid_target:        concept_a6fda36e598343aea3cc4da2dbae43a8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

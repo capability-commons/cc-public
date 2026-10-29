@@ -1,0 +1,42 @@
+id_self:                rqt_transport_one_message_per_step
+guid_self:              rqt_79c5ab1fb2c34108a0185b6f081e57fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One message per local step across units
+brief:                  |
+                        A receiver waits for its message, so results
+                        do not depend on timing.
+modal_verb:             shall
+activity:               autonomous
+object:                 the messages of the [[dataflow edge]], exactly one in each [[local step]] of the receiver, in the order the sender sent them
+rationale:              This is what makes a split across units behave as a Kahn process network.
+verification_method:    test
+verification_approach:  A sender and receiver run with random delays.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_transport
+    guid_target:        lco_bce618955a564a86b253576be2e9a9f7
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_deliver
+    guid_target:        concept_e513ff5908bd4bd6b3cd18bf36b6bdc9
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

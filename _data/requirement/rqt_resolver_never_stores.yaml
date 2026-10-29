@@ -1,0 +1,37 @@
+id_self:                rqt_resolver_never_stores
+guid_self:              rqt_287d0439988d4fb59065acdf1d710074
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Resolved graphs only in caches
+brief:                  |
+                        A resolved graph is never written into the
+                        tree as a second copy of a variant.
+modal_verb:             shall
+activity:               autonomous
+object:                 every [[resolved dataflow graph]] it holds to caches that can be dropped and rebuilt
+rationale:              A stored copy would drift from its variant and confuse design exploration.
+verification_method:    inspection
+verification_approach:  The resolver is read for every place it writes.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_resolver
+    guid_target:        lco_6db83d1d2feb4666b62de3ae475123ca
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_confine
+    guid_target:        concept_a1188d3ddf5c4eb699f08cdc30fe4a05
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_resolved_dataflow_graph
+    guid_target:        concept_9748e2401bed4ce3a81fc36c3b4745d7

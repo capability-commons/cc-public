@@ -1,0 +1,33 @@
+id_self:                rqt_node_interface_direct_cpp
+guid_self:              rqt_90abc54547ee4b92ac72c205770c3408
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Direct C++ call from the static schedule
+brief:                  |
+                        C++ nodes in the static subgraph are called
+                        directly, so the compiler can inline them.
+modal_verb:             shall
+activity:               autonomous
+object:                 a C++ form of the invocation function beside its C form
+qualifier:              so that the static schedule can call a C++ implementation directly
+rationale:              The C entry point is kept for other languages, code loaded at run time and fuzzing; the direct call keeps the static path fast.
+verification_method:    inspection
+verification_approach:  The generated schedule of a C++ node is read for the call it makes.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_expose
+    guid_target:        concept_d5cbb8975a6b434b9e0bacd564e48475

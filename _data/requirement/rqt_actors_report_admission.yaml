@@ -1,0 +1,37 @@
+id_self:                rqt_actors_report_admission
+guid_self:              rqt_6564e43edd1b4c02a5146f73c02c0b8f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Admission of outside messages reported
+brief:                  |
+                        Which gap took in each outside message is
+                        reported, so it can be recorded.
+modal_verb:             shall
+activity:               autonomous
+object:                 an event that names the gap for each message from outside the [[dataflow graph]] that enters a gap
+rationale:              Replay needs it, and the engine records nothing itself.
+verification_method:    test
+verification_approach:  An outside message is sent and the events read.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_actors
+    guid_target:        lco_c3ccf3604d88495a8c79bf6a04882b50
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_emit
+    guid_target:        concept_a6fda36e598343aea3cc4da2dbae43a8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_graph
+    guid_target:        concept_269cf965b22a4a168e33b3b3e4c37f9d

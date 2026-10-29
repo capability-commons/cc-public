@@ -1,0 +1,43 @@
+id_self:                rqt_control_block_writes_first
+guid_self:              rqt_456a593449f94bdbb0cb1f3da4014a7d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control message written first
+brief:                  |
+                        Every node of a unit sees the control message
+                        of the current local step.
+modal_verb:             shall
+activity:               autonomous
+object:                 the control message of each [[local step]]
+qualifier:              before any other [[dataflow node]] of its execution unit is invoked
+rationale:              A node invoked before the control message would see stale time and modes.
+verification_method:    test
+verification_approach:  Nodes log the time they read; the control block logs the time it wrote.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_control_block
+    guid_target:        lco_b3618c5c094344aaa4dbee4996cc555a
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_publish
+    guid_target:        concept_7f4afdcb0bf54523915649821369c013
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_node
+    guid_target:        concept_47a87aafdcaa4281982ae0d00c299aa7

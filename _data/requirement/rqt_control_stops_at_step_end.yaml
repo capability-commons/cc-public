@@ -1,0 +1,39 @@
+id_self:                rqt_control_stops_at_step_end
+guid_self:              rqt_dd0dced7fcf44baba44a762cbc7a027d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Stop only between local steps
+brief:                  |
+                        An execution unit never stops part way through
+                        a local step.
+condition_kind:         event
+condition:              a stop request arrives
+modal_verb:             shall
+activity:               autonomous
+object:                 each execution unit it names at the end of its current [[local step]]
+rationale:              Stopping mid-step would leave messages half written.
+verification_method:    test
+verification_approach:  A stop is sent while a slow node runs.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_control
+    guid_target:        lco_99af493f4215406d9e7ea9d6b70083d7
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_halt
+    guid_target:        concept_fdbb4eb3cb40462b8683adff2289a56a
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

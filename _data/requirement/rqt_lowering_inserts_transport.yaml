@@ -1,0 +1,39 @@
+id_self:                rqt_lowering_inserts_transport
+guid_self:              rqt_e0066d6f77d74f9daba925f2583ccc80
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Transport where an edge crosses execution units
+brief:                  |
+                        Wherever placement splits an edge, lowering
+                        puts a sender and a receiver on it.
+condition_kind:         logic
+condition:              the two ends of a [[dataflow edge]] are placed in different execution units
+modal_verb:             shall
+activity:               autonomous
+object:                 a sender in the execution unit of the source and a receiver in the execution unit of the target
+rationale:              The engine carries values only within one execution unit.
+verification_method:    test
+verification_approach:  A graph with one edge crossing from one execution unit to another is lowered.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_model_lowering
+    guid_target:        lco_6c086a1ee8d54bcf827b3d12cd1d5a5d
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_insert
+    guid_target:        concept_f24aff5faa044a7ab3a25cda7fd7be6f
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a

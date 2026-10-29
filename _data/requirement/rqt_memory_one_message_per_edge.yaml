@@ -1,0 +1,37 @@
+id_self:                rqt_memory_one_message_per_edge
+guid_self:              rqt_191384eeed0e43eeb5e8ad9678c9f7e9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One message per Kahn edge
+brief:                  |
+                        Each Kahn edge holds one message at a time,
+                        sized to its capacity.
+modal_verb:             shall
+activity:               autonomous
+object:                 one message for each Kahn [[dataflow edge]], or two where its writer and its reader overlap in time
+rationale:              One message per edge per local step makes memory use a sum the generator can compute.
+verification_method:    inspection
+verification_approach:  The buffer declarations of a generated build are read.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_allocate
+    guid_target:        concept_ae193d1e67bb4ad5a5ddd263f4fc8973
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a

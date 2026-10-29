@@ -1,0 +1,40 @@
+id_self:                rqt_executor_reports_faults
+guid_self:              rqt_ff9e06deb1e44b2787eedafdba93f7d8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflows and overruns reported
+brief:                  |
+                        The engine records nothing itself; it reports
+                        faults so that nodes can record them.
+condition_kind:         logic
+condition:              a port overflows or a [[local step]] takes longer than its period
+modal_verb:             shall
+activity:               autonomous
+object:                 an event to the control block of the execution unit
+qualifier:              and drop no event
+rationale:              Recording by nodes keeps the engine minimal (WTP, 2026-10-29).
+verification_method:    test
+verification_approach:  An overflow and an overrun are caused and the events read by the control block.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_emit
+    guid_target:        concept_a6fda36e598343aea3cc4da2dbae43a8
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_local_step
+    guid_target:        concept_95c657daee944ec09ba92c726598e655

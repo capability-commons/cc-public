@@ -1,0 +1,38 @@
+id_self:                rqt_adapter_all_in_order
+guid_self:              rqt_cfc7970de8e845e1a47729895fbf1594
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every value in order
+brief:                  |
+                        An in-order edge gives the reader every value.
+condition_kind:         logic
+condition:              the delivery policy of a [[dataflow edge]] is every value in order
+modal_verb:             shall
+activity:               autonomous
+object:                 every value that arrived up to the capacity of the port, in the order it arrived
+rationale:              Some readers, such as a tracker, must see every detection.
+verification_method:    test
+verification_approach:  Values arrive in one local step under the capacity.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_dataflow_engine_nodes_adapter
+    guid_target:        lco_a4832b5f8fa242e993304f75c4226372
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_deliver
+    guid_target:        concept_e513ff5908bd4bd6b3cd18bf36b6bdc9
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_dataflow_edge
+    guid_target:        concept_afe0cae85ddb44768f912d8411b2809a
