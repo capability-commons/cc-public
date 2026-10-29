@@ -1,0 +1,141 @@
+id_self:                icd_dataflow_deployment
+guid_self:              icd_9b9fb86a51774fed93a8558cb73b3620
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deployment interface
+brief:                  |
+                        How cctool puts a dataflow variant onto a host
+                        and changes it while it runs.
+description:            |
+                        Deployment talks to the engine through
+                        icd_dataflow_runtime_control.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_deployment.module
+          guid_self:    icm_eeb5207e2d9742ffa2aa6928d93bca08
+          name:         cctool.dataflow.deploy
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        deploy:
+          id_self:      icm_dataflow_deployment.deploy
+          guid_self:    icm_2bd1b5db5a2b493c94fb1555398df9a8
+          name:         deploy
+          brief:        |
+                        Put a built engine and its lowered graph onto
+                        a host, and record the deployment.
+
+          parameter:
+
+            - id_self:  icm_dataflow_deployment.deploy.root
+              guid_self:  icm_4b737efa3d7e4734aa51ef13c8986dc6
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_deployment.deploy.id_variant
+              guid_self:  icm_5f21f37916c1457c861dc62df54cd98c
+              name:     id_variant
+              brief:    |
+                        The id of the dataflow variant.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_dataflow_deployment.deploy.host
+              guid_self:  icm_c7098d95fcc244759af92991611784d9
+              name:     host
+              brief:    |
+                        The host.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  str
+
+            brief:      |
+                        The id of the deployment record written.
+
+        change_set:
+          id_self:      icm_dataflow_deployment.change_set
+          guid_self:    icm_763146a5e1ff4d2bae04f8075d1e53da
+          name:         change_set
+          brief:        |
+                        Return the change set that takes a host from
+                        one resolved dataflow graph to another.
+          guarantee:    |
+                        Raises an error when the two differ in the
+                        static subgraph, which no change set may
+                        touch.
+
+          parameter:
+
+            - id_self:  icm_dataflow_deployment.change_set.running
+              guid_self:  icm_3be51ef5239a41c4ade530584b7e8fa2
+              name:     running
+              brief:    |
+                        The resolved dataflow graph the host runs.
+
+              type:
+                spelling:  ResolvedGraph
+
+              mode:     input
+
+            - id_self:  icm_dataflow_deployment.change_set.wanted
+              guid_self:  icm_25400a227ee74d17baa500b10718ad2e
+              name:     wanted
+              brief:    |
+                        The resolved dataflow graph it is to run.
+
+              type:
+                spelling:  ResolvedGraph
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  ChangeSet
+
+            brief:      |
+                        The change set.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_deployment
+    guid_target:        lco_ed0b259255d44eb1a38a1c7b742aec14

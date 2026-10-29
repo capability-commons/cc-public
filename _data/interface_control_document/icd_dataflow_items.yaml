@@ -1,0 +1,141 @@
+id_self:                icd_dataflow_items
+guid_self:              icd_d753106c5ea24464b9eaf83c5483a19a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow items
+brief:                  |
+                        The items an author writes to describe a
+                        family of dataflow systems, as the other parts
+                        of the toolchain read them.
+description:            |
+                        A dataflow graph is configuration data that
+                        any wrapper language can produce, as was ruled
+                        on 2026-10-29; there is no coordination
+                        language. Every list in these items declares a
+                        merge key, so that a variant operation can
+                        name one element.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        graph:
+          id_self:      icm_dataflow_items.graph
+          guid_self:    icm_ed1c29d987db4d56bbdf005063f42ca9
+          name:         graph
+          brief:        |
+                        A dataflow graph.
+          content:      |
+                        Hosts, execution units, dataflow nodes with
+                        their settings and dataflow tags, and dataflow
+                        edges with their delivery policies.
+          encoding:     |
+                        YAML or JSON, in a file under _data.
+          convention:   |
+                        An edge is named by its two ends.
+
+          payload:
+            spelling:   sch_dataflow_graph
+
+        variant:
+          id_self:      icm_dataflow_items.variant
+          guid_self:    icm_a915ac79477f4e98ba36f399ede62af3
+          name:         variant
+          brief:        |
+                        A dataflow variant.
+          content:      |
+                        A base, which is a dataflow graph or another
+                        dataflow variant, an ordered set of variant
+                        operations, each with an id and a guid, and
+                        whether it is abstract or superset.
+          encoding:     |
+                        YAML, in a file under _data.
+          convention:   |
+                        The resolved dataflow graph is derived, never
+                        stored.
+
+        delta_module:
+          id_self:      icm_dataflow_items.delta_module
+          guid_self:    icm_fb57e07ef69a4accab612c4ea214c1e6
+          name:         delta_module
+          brief:        |
+                        A delta module.
+          content:      |
+                        A named subgraph of variant operations with
+                        declared inputs and parameters.
+          encoding:     |
+                        YAML, in a file under _data.
+          convention:   |
+                        Applied like one variant operation.
+
+        sweep:
+          id_self:      icm_dataflow_items.sweep
+          guid_self:    icm_c9c1aadc362b499d8088a0e1571f3173
+          name:         sweep
+          brief:        |
+                        A sweep.
+          content:      |
+                        A dataflow variant with declared parameters,
+                        and the values to try.
+          encoding:     |
+                        YAML, in a file under _data.
+          convention:   |
+                        The dataflow variants it generates are not
+                        stored.
+
+        run:
+          id_self:      icm_dataflow_items.run
+          guid_self:    icm_bcaf1a7227854b82a527d3645dbb87cb
+          name:         run
+          brief:        |
+                        The record of a dataflow run.
+          content:      |
+                        The dataflow variant and the content digest of
+                        its resolved graph, the parameter bindings,
+                        the input data by digest, the seeds, the host
+                        and the build of the engine, and the outputs
+                        as named measures.
+          encoding:     |
+                        YAML, in a file under _data.
+          convention:   |
+                        In the style of a SED-ML experiment record.
+
+        deployment:
+          id_self:      icm_dataflow_items.deployment
+          guid_self:    icm_40f82fa9c46340c885d6146472b6225a
+          name:         deployment
+          brief:        |
+                        The record of a deployment.
+          content:      |
+                        The host, the dataflow variant, the commit and
+                        the content digest of the resolved graph.
+          encoding:     |
+                        YAML, in a file under _data.
+          convention:   |
+                        Shaped like the record of a run.
+
+      production:       |
+                        By an author, by hand or by a wrapper
+                        language, and by deployment for its records.
+      compatibility:    |
+                        The schemas of these items follow the versions
+                        of the tree.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_items
+    guid_target:        lco_5867e444cc474a6bafe207f1532663b9

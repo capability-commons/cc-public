@@ -1,0 +1,149 @@
+id_self:                icd_dataflow_engine_event
+guid_self:              icd_3115dce9e0ef4c228a515afa92e99849
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow engine event
+brief:                  |
+                        The events the engine core reports to the
+                        control blocks as runtime service readings, so
+                        that nodes, not the engine, record them.
+description:            |
+                        The engine records nothing itself. What a
+                        replay needs to know of the engine, and what
+                        an operator needs to know of its faults, it
+                        reports to the control block of the execution
+                        unit, which passes it to recording nodes (WTP,
+                        2026-10-29). The step executor reports faults
+                        and overruns, actor gaps report admissions,
+                        and the dynamic subgraph reports change sets
+                        and swaps.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        overflow:
+          id_self:      icm_dataflow_engine_event.overflow
+          guid_self:    icm_93193c94a1e54b14bade4250f3dfc0b8
+          name:         overflow
+          brief:        |
+                        A port wrote more items than its capacity.
+          content:      |
+                        The node and port, the local step, the number
+                        of items beyond the capacity, and the
+                        fail-safe applied.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        One event for each overflow, whichever
+                        fail-safe the port declares.
+
+        overrun:
+          id_self:      icm_dataflow_engine_event.overrun
+          guid_self:    icm_9feed3e78ad94e478e0eddba576347a2
+          name:         overrun
+          brief:        |
+                        A local step took longer than its period.
+          content:      |
+                        The execution unit, the local step, its period
+                        and how long it took.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Durations in the unit the data dictionary
+                        declares for time.
+
+        admission:
+          id_self:      icm_dataflow_engine_event.admission
+          guid_self:    icm_c9e2822445414403b319704322c3d373
+          name:         admission
+          brief:        |
+                        A gap admitted a message from outside the
+                        dataflow graph.
+          content:      |
+                        The actor, the source of the message, its
+                        sequence number from that source, and the gap
+                        that admitted it.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        A gap is named by the local step it follows.
+
+        change:
+          id_self:      icm_dataflow_engine_event.change
+          guid_self:    icm_01f1a5548c7447efa09dbdd1770b2b58
+          name:         change
+          brief:        |
+                        A change set took effect.
+          content:      |
+                        The digest of the change set, and the local
+                        step at whose start it took effect, or that it
+                        was refused and why.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Digests as the resolved dataflow graph names
+                        them.
+
+        swap:
+          id_self:      icm_dataflow_engine_event.swap
+          guid_self:    icm_1a89e7d249724ae581dc648511c0f24f
+          name:         swap
+          brief:        |
+                        A node version was swapped.
+          content:      |
+                        The node, the old and new versions, the local
+                        step of the swap, and whether the new version
+                        kept its place or the old one was put back.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Versions as the interface control document of
+                        the node states them.
+
+      production:       |
+                        When the event happens, by the part of the
+                        engine core that saw it, for the control block
+                        of the execution unit to read at the next
+                        local step.
+      ordering:         |
+                        In the order they happened within one
+                        execution unit. Events of different execution
+                        units are not ordered against each other.
+      availability:     |
+                        An event is never dropped: the engine holds
+                        them until the control block has read them.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd

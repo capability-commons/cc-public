@@ -1,0 +1,83 @@
+id_self:                icd_dataflow_control_message
+guid_self:              icd_f075fee2b3614b8595167838251cdac0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow control message
+brief:                  |
+                        The one message each node receives at each
+                        local step, which carries all it may know of
+                        time, modes and runtime services.
+description:            |
+                        It is written by the control block of the
+                        execution unit, the only node allowed to read
+                        time and runtime services, as was ruled on
+                        2026-10-29. Because every value a node sees
+                        from outside arrives in it, a recording of it
+                        is enough to replay what the nodes saw.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        control_message:
+          id_self:      icm_dataflow_control_message.control_message
+          guid_self:    icm_18b65c4755f34db3bf0c6918dfb38157
+          name:         control_message
+          brief:        |
+                        The control message of one local step.
+          content:      |
+                        The monotonic time and the wall-clock time of
+                        the local step; the mode flag; the
+                        application-specific states and modes; and the
+                        readings of runtime services that a node is
+                        allowed, such as the occupancy of a queue or
+                        the temperature of a processor.
+          encoding:     |
+                        A value of one type of the data dictionary, of
+                        fixed size, in the buffer the engine allocates
+                        for it.
+          convention:   |
+                        Times are given, never read by the node. The
+                        units and origins of each time and reading are
+                        those its entry in the data dictionary
+                        declares. A reading a node is not allowed is
+                        absent from its copy.
+
+          payload:
+            spelling:   control message
+
+      production:       |
+                        Once in each local step, by the control block
+                        of the execution unit, before any other node
+                        of the execution unit is invoked.
+      cardinality:      |
+                        Exactly one for each local step of each
+                        execution unit.
+      ordering:         |
+                        In the order of the local steps.
+      determinism:      |
+                        On replay, the control block writes the
+                        recorded message, so that every node sees what
+                        it saw on the run that was recorded.
+      availability:     |
+                        Always present. A node is never invoked
+                        without one.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3

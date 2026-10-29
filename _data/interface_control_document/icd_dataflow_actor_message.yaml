@@ -1,0 +1,74 @@
+id_self:                icd_dataflow_actor_message
+guid_self:              icd_1b3a8c0f4b4144db97806686aaa6ad00
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow actor message
+brief:                  |
+                        The one-way message an actor receives, and the
+                        order in which a gap hands them over.
+description:            |
+                        An actor sends only one-way messages, and a
+                        reply is an ordinary message, so the engine
+                        has no notion of a request waiting for its
+                        reply (WTP, 2026-10-29).
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        message:
+          id_self:      icm_dataflow_actor_message.message
+          guid_self:    icm_2784cf60486341e189d558e76e610272
+          name:         message
+          brief:        |
+                        One message to one actor.
+          content:      |
+                        The source of the message, its sequence number
+                        from that source, and a value of the type the
+                        input port of the actor declares.
+          encoding:     |
+                        A value of a type of the data dictionary,
+                        copied into the queue of the actor.
+          convention:   |
+                        Sequence numbers count up from 0 for each
+                        source.
+
+      production:       |
+                        When a node, an actor or a source outside the
+                        dataflow graph sends one.
+      ordering:         |
+                        A gap admits the messages waiting when it
+                        opens, and only those. The actor handles them
+                        by source, in an order its configuration
+                        declares, and then by sequence number within a
+                        source. A message sent during a gap waits for
+                        the next gap.
+      batching:         |
+                        The messages admitted by one gap are handled
+                        together, before the next local step begins.
+                        An edge from actors to a Kahn node turns them
+                        into the one message the next local step
+                        reads, by its delivery policy.
+      determinism:      |
+                        On replay, each message from outside is
+                        admitted at the gap the recording names, so
+                        the order is the same.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_actors
+    guid_target:        lco_c3ccf3604d88495a8c79bf6a04882b50

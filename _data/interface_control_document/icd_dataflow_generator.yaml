@@ -1,0 +1,132 @@
+id_self:                icd_dataflow_generator
+guid_self:              icd_057ef46bb900482ab71e880ef8fc610f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Generator interface
+brief:                  |
+                        How a lowered graph becomes C++17 source that
+                        builds the engine for one host.
+description:            |
+                        The static schedule is generated as plain
+                        C++17 calls, fixed at build time, as was ruled
+                        on 2026-10-24.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_generator.module
+          guid_self:    icm_d7152d3277544055b146faae290ad260
+          name:         cctool.dataflow.generate
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        generate:
+          id_self:      icm_dataflow_generator.generate
+          guid_self:    icm_aa295b93e2fc46d7a451e623bc8312fa
+          name:         generate
+          brief:        |
+                        Write the C++17 source for the execution units
+                        of one host.
+          guarantee:    |
+                        Only dir_out is written.
+
+          parameter:
+
+            - id_self:  icm_dataflow_generator.generate.lowered
+              guid_self:  icm_8f17f9f00b994f099b3dc10f3a2256d8
+              name:     lowered
+              brief:    |
+                        The lowered graph.
+
+              type:
+                spelling:  LoweredGraph
+
+              mode:     input
+
+            - id_self:  icm_dataflow_generator.generate.host
+              guid_self:  icm_19aceb2ffb8e4e618a8c3ce97d4c250b
+              name:     host
+              brief:    |
+                        The host to generate for.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_dataflow_generator.generate.dir_out
+              guid_self:  icm_88f51ef7ca664b02ac88da4282faa39e
+              name:     dir_out
+              brief:    |
+                        The folder to write the source to.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  list[pathlib.Path]
+
+            brief:      |
+                        The files written.
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        generated_source:
+          id_self:      icm_dataflow_generator.generated_source
+          guid_self:    icm_edc6fca2875e442495c46099ac7f79d0
+          name:         generated_source
+          brief:        |
+                        The generated source of one host.
+          content:      |
+                        For each execution unit, the static schedule
+                        as plain calls; the declarations of every
+                        buffer and every state; the structs and
+                        upgrade functions of the data dictionary
+                        entries it uses; the C entry points of the
+                        node types; and a fuzz harness for each node
+                        type.
+          encoding:     |
+                        C++17 source files.
+          convention:   |
+                        The source names the content digest of the
+                        lowered graph it came from.
+
+      production:       |
+                        By the generator, at build time.
+      determinism:      |
+                        The same lowered graph and version of the
+                        generator give the same files, byte for byte.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_generator
+    guid_target:        lco_50ea3ba630cc4dadb9b2d9fb9754cb46

@@ -1,0 +1,167 @@
+id_self:                icd_dataflow_dictionary
+guid_self:              icd_76d77f473cac4bf3ae2b04f407abe166
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Data dictionary interface
+brief:                  |
+                        How the toolchain finds the type of a port or
+                        of node state, and the upgrade from one
+                        version of a type to the next.
+description:            |
+                        Each type is an item with a version. A new
+                        version names the version it upgrades and a
+                        mapping for each field: kept, renamed,
+                        converted, or new with a default.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_dictionary.module
+          guid_self:    icm_44ea86ddfbab498ab8ee07323db86a76
+          name:         cctool.dataflow.dictionary
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        entry:
+          id_self:      icm_dataflow_dictionary.entry
+          guid_self:    icm_f17367af4a6548bf89e486d13b150c38
+          name:         entry
+          brief:        |
+                        Return the type of the data dictionary with
+                        the given name and version.
+          guarantee:    |
+                        The tree is read and nothing in it is written.
+
+          parameter:
+
+            - id_self:  icm_dataflow_dictionary.entry.root
+              guid_self:  icm_29da169d1cf1478d9927f02c778e80b4
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_dictionary.entry.name
+              guid_self:  icm_939b7128ed1346999299be2ebaf9c0e8
+              name:     name
+              brief:    |
+                        The name of the type.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_dataflow_dictionary.entry.version
+              guid_self:  icm_45992c8bbab34d0a865270483b36f3dc
+              name:     version
+              brief:    |
+                        The version of the type.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  DictionaryType
+
+            brief:      |
+                        The type, with its fields.
+
+        upgrade_path:
+          id_self:      icm_dataflow_dictionary.upgrade_path
+          guid_self:    icm_788bbd33b1dc4cdb9f29357e98fa17af
+          name:         upgrade_path
+          brief:        |
+                        Return the mappings that take a value from one
+                        version of a type to another.
+          guarantee:    |
+                        Raises an error when no chain of upgrades
+                        joins the two versions.
+
+          parameter:
+
+            - id_self:  icm_dataflow_dictionary.upgrade_path.root
+              guid_self:  icm_559d395fcd4742d9b6490d966060d22a
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_dictionary.upgrade_path.name
+              guid_self:  icm_b6195da920c94119a98e91ab7c7b31ab
+              name:     name
+              brief:    |
+                        The name of the type.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_dataflow_dictionary.upgrade_path.version_from
+              guid_self:  icm_527955e39fbd41f68eaa7cdde53fc638
+              name:     version_from
+              brief:    |
+                        The version of the value.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+            - id_self:  icm_dataflow_dictionary.upgrade_path.version_to
+              guid_self:  icm_3323f4700d7045668bad3ca66b5c100f
+              name:     version_to
+              brief:    |
+                        The version it is to have.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  list[FieldMapping]
+
+            brief:      |
+                        The mappings, in the order they apply.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_dictionary
+    guid_target:        lco_680827af37054cdcb1b42817602788aa

@@ -1,0 +1,121 @@
+id_self:                icd_dataflow_lowering
+guid_self:              icd_f4eaf187447d43bcba62296a311cf42d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lowering interface
+brief:                  |
+                        How a resolved dataflow graph becomes the
+                        lowered graph the engine receives.
+description:            |
+                        The generated transforms are variant
+                        operations, applied by the same interpreter as
+                        authored ones, and the lowered graph is
+                        checked again, as was ruled on 2026-10-29.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_lowering.module
+          guid_self:    icm_23e7ae214aa8480590397962c04cb21b
+          name:         cctool.dataflow.lower
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        lower:
+          id_self:      icm_dataflow_lowering.lower
+          guid_self:    icm_4493e90c98ea4972ab3f0372e84af00b
+          name:         lower
+          brief:        |
+                        Return the lowered graph of a resolved
+                        dataflow graph.
+
+          parameter:
+
+            - id_self:  icm_dataflow_lowering.lower.root
+              guid_self:  icm_998dd46c8ff740399ca3e2d8eaebf8a5
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_lowering.lower.resolved
+              guid_self:  icm_0a6da2b5248a45a4abf3bedebe860a44
+              name:     resolved
+              brief:    |
+                        The resolved dataflow graph.
+
+              type:
+                spelling:  ResolvedGraph
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  LoweredGraph
+
+            brief:      |
+                        The lowered graph, with its own digests and
+                        origin trace.
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        lowered_graph:
+          id_self:      icm_dataflow_lowering.lowered_graph
+          guid_self:    icm_4d75ed03b3b04eb4a0db5e2f3105577d
+          name:         lowered_graph
+          brief:        |
+                        A lowered graph.
+          content:      |
+                        The resolved dataflow graph with the nodes
+                        lowering adds: a sender and a receiver
+                        wherever an edge crosses execution units, a
+                        delivery adapter for each delivery policy that
+                        needs one, a control block for each execution
+                        unit and each host, recording nodes where
+                        asked, and the capacity of every port.
+          encoding:     |
+                        The canonical form of a dataflow graph.
+          convention:   |
+                        Every added node has an origin record naming
+                        the edge or declaration behind it.
+
+      production:       |
+                        By lowering, from a resolved dataflow graph.
+      determinism:      |
+                        The same resolved graph and version of
+                        lowering always give the same lowered graph.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_lowering
+    guid_target:        lco_6c086a1ee8d54bcf827b3d12cd1d5a5d

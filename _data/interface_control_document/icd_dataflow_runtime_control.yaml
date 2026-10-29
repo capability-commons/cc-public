@@ -1,0 +1,135 @@
+id_self:                icd_dataflow_runtime_control
+guid_self:              icd_0dd7d9bf0476447bbb3c39d0dcd4a505
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow runtime control
+brief:                  |
+                        The requests deployment sends to the engine on
+                        a host, and the replies it gets.
+description:            |
+                        One end of the boundary between cctool and a
+                        running engine; deployment is the other.
+                        Requests carry content digests, so the engine
+                        and cctool always agree which graph is meant.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        load:
+          id_self:      icm_dataflow_runtime_control.load
+          guid_self:    icm_2214a61c0e314c7b932a3122a5783eb4
+          name:         load
+          brief:        |
+                        Load a lowered graph.
+          content:      |
+                        The lowered graph, or the content digest of
+                        one already on the host.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Refused if the engine was built for another
+                        lowered graph and the difference is not in the
+                        dynamic subgraph.
+
+        start:
+          id_self:      icm_dataflow_runtime_control.start
+          guid_self:    icm_2a75d252aad7411a940b8aa22afdfd9f
+          name:         start
+          brief:        |
+                        Start the execution units.
+          content:      |
+                        Which execution units to start, or all of
+                        them.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Execution units start at their first local
+                        step.
+
+        stop:
+          id_self:      icm_dataflow_runtime_control.stop
+          guid_self:    icm_28cfd80b15464f959deb8eae5eff9687
+          name:         stop
+          brief:        |
+                        Stop the execution units.
+          content:      |
+                        Which execution units to stop, or all of them.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        An execution unit stops at the end of a local
+                        step, never part way through one.
+
+        apply:
+          id_self:      icm_dataflow_runtime_control.apply
+          guid_self:    icm_b14bc3b288c74f919509724d0fc9e065
+          name:         apply
+          brief:        |
+                        Apply a change set.
+          content:      |
+                        A change set, as icd_dataflow_change_set
+                        states it.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        The reply says at which local step it took
+                        effect, or why it was refused.
+
+        status:
+          id_self:      icm_dataflow_runtime_control.status
+          guid_self:    icm_e381f16e5f9343d8b06665313b347eb3
+          name:         status
+          brief:        |
+                        Report the state of the engine.
+          content:      |
+                        The content digest of the graph running, the
+                        execution units and whether each runs, and its
+                        current local step.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Read only; it changes nothing.
+
+      production:       |
+                        By deployment, one request at a time, each
+                        answered by one reply.
+      ordering:         |
+                        Requests are handled in the order they arrive.
+      failure:          |
+                        A request that cannot be carried out changes
+                        nothing and gets a reply that says why.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_control
+    guid_target:        lco_99af493f4215406d9e7ea9d6b70083d7

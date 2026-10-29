@@ -1,0 +1,143 @@
+id_self:                icd_dataflow_checks
+guid_self:              icd_102afe24c63c4e1eb0917f9023eed4de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow checks interface
+brief:                  |
+                        How the toolchain asks whether a resolved or
+                        lowered graph, or a change set, is right.
+description:            |
+                        The checks are reported by cctool check like
+                        any other once they exist; this surface is
+                        what the resolver, lowering and deployment
+                        call.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_checks.module
+          guid_self:    icm_62ec783755a544998b4df0ebb521d507
+          name:         cctool.dataflow.checks
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        check_graph:
+          id_self:      icm_dataflow_checks.check_graph
+          guid_self:    icm_ffc71138563944798df24ae47707e739
+          name:         check_graph
+          brief:        |
+                        Return the failures of a resolved or lowered
+                        dataflow graph.
+          guarantee:    |
+                        The graph is read and nothing is written.
+
+          parameter:
+
+            - id_self:  icm_dataflow_checks.check_graph.root
+              guid_self:  icm_e1e29c08448e42a8aba468758d62dfa2
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_checks.check_graph.graph
+              guid_self:  icm_715c2cba004348de92db228fbb7ba92b
+              name:     graph
+              brief:    |
+                        The graph to check.
+
+              type:
+                spelling:  ResolvedGraph
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  Failures
+
+            brief:      |
+                        The failures, keyed by check.
+
+        check_change_set:
+          id_self:      icm_dataflow_checks.check_change_set
+          guid_self:    icm_c2df1b0c834842a3819769a81e939ca1
+          name:         check_change_set
+          brief:        |
+                        Return the failures of a change set against
+                        the graph it is to change.
+          guarantee:    |
+                        Nothing is written.
+
+          parameter:
+
+            - id_self:  icm_dataflow_checks.check_change_set.root
+              guid_self:  icm_e24decd284d6423da2ec410fa90a1536
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_checks.check_change_set.running
+              guid_self:  icm_d14a99145c3f40c7a2245253082e3ee6
+              name:     running
+              brief:    |
+                        The resolved dataflow graph the host runs.
+
+              type:
+                spelling:  ResolvedGraph
+
+              mode:     input
+
+            - id_self:  icm_dataflow_checks.check_change_set.change_set
+              guid_self:  icm_64696a52470b4b3ab6325ec27009ef83
+              name:     change_set
+              brief:    |
+                        The change set.
+
+              type:
+                spelling:  ChangeSet
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  Failures
+
+            brief:      |
+                        The failures, keyed by check.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_checks
+    guid_target:        lco_76b030d3c977418fa3f3764d37c58150

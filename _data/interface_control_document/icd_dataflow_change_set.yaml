@@ -1,0 +1,81 @@
+id_self:                icd_dataflow_change_set
+guid_self:              icd_965c0dc735a943508a1efe935cafb70b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow change set
+brief:                  |
+                        A change to the dynamic subgraph of a running
+                        engine: nodes and edges added, moved or
+                        removed, and node versions swapped.
+description:            |
+                        cctool checks a change set in full before it
+                        sends one, and the engine repeats the checks
+                        that keep it safe before it applies it, as was
+                        ruled on 2026-10-26. The engine receives a
+                        change set in a form computed for it from two
+                        resolved dataflow graphs; it never sees
+                        variant operations.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        change_set:
+          id_self:      icm_dataflow_change_set.change_set
+          guid_self:    icm_ed70d5df26b04cd7ab7a460d21e37c46
+          name:         change_set
+          brief:        |
+                        One change set.
+          content:      |
+                        The content digest of the resolved dataflow
+                        graph it applies to and of the one it gives;
+                        the nodes and edges to add, with their
+                        placement and declarations; those to remove;
+                        and each node version to swap, with the
+                        mapping that upgrades its state.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Nodes and edges are named as in the lowered
+                        graph, an edge by its two ends.
+
+      production:       |
+                        By deployment, from the resolved dataflow
+                        graph a host is running and the one it is to
+                        run.
+      atomicity:        |
+                        All of a change set takes effect at the start
+                        of one local step, or none of it does.
+      failure:          |
+                        A change set that fails the checks of the
+                        engine, that names a static node, that would
+                        close a loop through the static subgraph
+                        within a local step, or that applies to a
+                        graph other than the one running, is refused
+                        whole, and the refusal is reported as an
+                        event.
+      compatibility:    |
+                        A swap whose state cannot be upgraded is
+                        refused by cctool before it is sent.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_dynamic
+    guid_target:        lco_b00ac1d1b9e84bd3982481911d0866fd

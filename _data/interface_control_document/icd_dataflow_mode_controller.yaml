@@ -1,0 +1,118 @@
+id_self:                icd_dataflow_mode_controller
+guid_self:              icd_e8a513ab0b4446e5a3fa18afaec2dbf5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow mode controller
+brief:                  |
+                        The control node that raises and lowers the
+                        degraded mode when local steps consistently
+                        overrun their period.
+description:            |
+                        Each mode flag has one writer. The flag
+                        changes only between local steps and travels
+                        with the data, so each node samples it at its
+                        own local step, as was ruled on 2026-10-28.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        control:
+          id_self:      icm_dataflow_mode_controller.control
+          guid_self:    icm_5e93d93122d2436c8e8e6d0e19cc6a17
+          name:         control
+          brief:        |
+                        The control message, which carries queue
+                        occupancy, processor temperature and overruns.
+
+          type:
+            spelling:   control message
+
+      output:
+
+        mode:
+          id_self:      icm_dataflow_mode_controller.mode
+          guid_self:    icm_980746be59da4d74b6819827078ec362
+          name:         mode
+          brief:        |
+                        The mode flag.
+
+          type:
+            spelling:   mode flag
+
+      state:
+
+        state:
+          id_self:      icm_dataflow_mode_controller.state
+          guid_self:    icm_ef74a4a0d1824bddb7e8413241e7b4a9
+          name:         state
+          brief:        |
+                        The current mode and how long the condition
+                        for a change has held.
+
+          type:
+            spelling:   mode controller state
+
+      settings:
+
+        enter:
+          id_self:      icm_dataflow_mode_controller.enter
+          guid_self:    icm_925dd0ef533f4b21babc02f00c8baf1c
+          name:         enter
+          brief:        |
+                        The condition on the readings that, held long
+                        enough, raises the degraded mode.
+
+          type:
+            spelling:   condition
+
+        leave:
+          id_self:      icm_dataflow_mode_controller.leave
+          guid_self:    icm_76de94b7f85d47b1a8bc3c34c551d4e8
+          name:         leave
+          brief:        |
+                        The condition on the readings that, held long
+                        enough, lowers it.
+
+          type:
+            spelling:   condition
+
+        hold:
+          id_self:      icm_dataflow_mode_controller.hold
+          guid_self:    icm_0d1f2805fb9d4757826778247037d28c
+          name:         hold
+          brief:        |
+                        How many local steps a condition must hold
+                        before the mode changes.
+
+          type:
+            spelling:   count
+
+      invocation:       |
+                        Once in each local step.
+      determinism:      |
+                        Its output depends only on its inputs and
+                        state.
+      ordering:         |
+                        With hysteresis: the mode changes only after a
+                        condition has held for the number of local
+                        steps hold names, so it does not flap.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes_control_block
+    guid_target:        lco_b3618c5c094344aaa4dbee4996cc555a

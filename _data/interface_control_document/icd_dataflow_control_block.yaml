@@ -1,0 +1,173 @@
+id_self:                icd_dataflow_control_block
+guid_self:              icd_0e22017794a24666b0136cb4a4ac9ca3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow control block
+brief:                  |
+                        The nodes that alone may read time and runtime
+                        services: one for each host and one for each
+                        execution unit.
+description:            |
+                        Lowering inserts them. The block of a host
+                        reads what belongs to the host, such as
+                        processor temperature, and passes it to the
+                        blocks of its execution units. The block of an
+                        execution unit writes the control message
+                        every other node of the unit reads, and passes
+                        on the events the engine reports. This
+                        interface supersedes the system and process
+                        controllers ported from Stableflow.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  host:
+
+    dataflow_step:
+
+      output:
+
+        host_readings:
+          id_self:      icm_dataflow_control_block.host_readings
+          guid_self:    icm_1ccaf7db2d9642f4bcf3bdaf846b0831
+          name:         host_readings
+          brief:        |
+                        The readings of the host, for the blocks of
+                        its execution units.
+
+          type:
+            spelling:   host readings
+
+      settings:
+
+        readings:
+          id_self:      icm_dataflow_control_block.readings
+          guid_self:    icm_e1bb31736c5749298cdaad56c8669c70
+          name:         readings
+          brief:        |
+                        Which runtime services of the host to read.
+
+          type:
+            spelling:   names of runtime services
+
+      invocation:       |
+                        Once in each local step of the execution unit
+                        it is placed in.
+      determinism:      |
+                        It reads the platform layer, so its outputs
+                        are not determined by its inputs. On replay it
+                        writes the recorded readings instead.
+
+  unit:
+
+    dataflow_step:
+
+      input:
+
+        host_readings_in:
+          id_self:      icm_dataflow_control_block.host_readings_in
+          guid_self:    icm_6fa73abb8507418d8f281c6e43cbaacd
+          name:         host_readings_in
+          brief:        |
+                        The readings of the host, from the block of
+                        the host.
+
+          type:
+            spelling:   host readings
+
+          optional:     true
+
+        mode_in:
+          id_self:      icm_dataflow_control_block.mode_in
+          guid_self:    icm_d12786d294ad4e56a534c3b9cdf09445
+          name:         mode_in
+          brief:        |
+                        The mode flag, from the mode controller.
+
+          type:
+            spelling:   mode flag
+
+          optional:     true
+
+      output:
+
+        control:
+          id_self:      icm_dataflow_control_block.control
+          guid_self:    icm_aef7dae3fed8476fad3d3044648a9236
+          name:         control
+          brief:        |
+                        The control message of this local step, for
+                        every node of the execution unit.
+
+          type:
+            spelling:   control message
+
+        events:
+          id_self:      icm_dataflow_control_block.events
+          guid_self:    icm_35cca41bf72e45ca9c56a71ae3dae2f8
+          name:         events
+          brief:        |
+                        The events the engine reported since the last
+                        local step.
+
+          type:
+            spelling:   engine events
+
+      settings:
+
+        period:
+          id_self:      icm_dataflow_control_block.period
+          guid_self:    icm_2ab8041c1c924bbb84aff573e338b991
+          name:         period
+          brief:        |
+                        The period of a local step of the execution
+                        unit.
+
+          type:
+            spelling:   duration
+
+        replay:
+          id_self:      icm_dataflow_control_block.replay
+          guid_self:    icm_413a0ceb29f84c48a2252652f82884cf
+          name:         replay
+          brief:        |
+                        Whether to write recorded control messages
+                        instead of reading the platform.
+
+          type:
+            spelling:   bool
+
+          default:      'false'
+
+      invocation:       |
+                        First in each local step of its execution
+                        unit.
+      determinism:      |
+                        It alone reads time and runtime services, so
+                        it alone is not determined by its inputs. On
+                        replay it writes the recorded control
+                        messages.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes_control_block
+    guid_target:        lco_b3618c5c094344aaa4dbee4996cc555a
+
+  - id_relation:        relation_supersedes
+    guid_relation:      relation_fdfaf0116c27448cb5cb6203644bbb1d
+    id_target:          icd_system_controller
+    guid_target:        icd_c9560f82750f479eaeb8c7e4834a05a1
+
+  - id_relation:        relation_supersedes
+    guid_relation:      relation_fdfaf0116c27448cb5cb6203644bbb1d
+    id_target:          icd_process_controller
+    guid_target:        icd_71142c599d1f4fcb990108c0d7b0a26a

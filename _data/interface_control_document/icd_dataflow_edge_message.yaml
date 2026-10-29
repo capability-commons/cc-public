@@ -1,0 +1,91 @@
+id_self:                icd_dataflow_edge_message
+guid_self:              icd_022b110aa696428382132542b27190ce
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow edge message
+brief:                  |
+                        The one message a Kahn edge carries in each
+                        local step: a bounded array of items of one
+                        fixed-size type.
+description:            |
+                        Engine memory allocates the buffer for every
+                        edge from the port types and capacities, as
+                        was ruled on 2026-10-26 and 2026-10-27. A
+                        varying data rate becomes a varying number of
+                        items, not a varying number of messages.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        message:
+          id_self:      icm_dataflow_edge_message.message
+          guid_self:    icm_fb42641cba9f4eb38a5e1d5d4a009386
+          name:         message
+          brief:        |
+                        The message on one Kahn edge in one local
+                        step.
+          content:      |
+                        A count of items, and that many items of the
+                        type the port declares, at most the capacity
+                        of the port. It may also carry an enable flag
+                        and a mode flag, so that parts of the dataflow
+                        graph run conditionally.
+          encoding:     |
+                        Items of one fixed-size type, laid out as an
+                        array, in a buffer the engine allocates for
+                        the whole capacity.
+          convention:   |
+                        A count of 0 means nothing arrived. A nested
+                        or text value is itself written as such an
+                        array. The capacity is derived during lowering
+                        from the maximum rates of the producers, and
+                        is part of the lowered graph.
+
+          payload:
+            spelling:   bounded array of a type of the data dictionary
+
+      production:       |
+                        Once in each local step, by the invocation of
+                        the node that writes the port.
+      cardinality:      |
+                        Exactly one message on each Kahn edge in each
+                        local step.
+      ordering:         |
+                        In the order of the local steps of the
+                        execution unit that writes it.
+      atomicity:        |
+                        A reader sees the message only once the
+                        writing invocation has finished. Within an
+                        execution unit the reader runs after the
+                        writer in the dependency order, except on the
+                        one feedback edge of each loop, which carries
+                        the message of the previous local step.
+      retention:        |
+                        Until the writer writes the message of the
+                        next local step. A value is copied into each
+                        queue it enters, so no message is shared
+                        between readers.
+      failure:          |
+                        Items beyond the capacity are handled by the
+                        fail-safe the port declares, and the engine
+                        reports a fault.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9

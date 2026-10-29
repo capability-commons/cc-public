@@ -1,0 +1,149 @@
+id_self:                icd_dataflow_recorder
+guid_self:              icd_4390d85505344336bd6f70a7faf4442c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow recorder and player
+brief:                  |
+                        The nodes that record what a run receives from
+                        outside and what the engine reports, and the
+                        players that feed a recording back in.
+description:            |
+                        A run with live changes is replayed from a
+                        recording of the values from outside, the gap
+                        that admitted each message from outside, and
+                        the local step of each change set and swap, as
+                        was ruled on 2026-10-29. Nodes make that
+                        recording; the engine only reports the events.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  recorder:
+
+    dataflow_step:
+
+      input:
+
+        recorded:
+          id_self:      icm_dataflow_recorder.recorded
+          guid_self:    icm_2e13a10d8ec744e28fc98ed2209f1320
+          name:         recorded
+          brief:        |
+                        What to record: values from outside, control
+                        messages and engine events.
+
+          type:
+            spelling:   values of one type
+
+        control_rec:
+          id_self:      icm_dataflow_recorder.control_rec
+          guid_self:    icm_de08a24b9ad64fb29f1a10416ce40e52
+          name:         control_rec
+          brief:        |
+                        The control message.
+
+          type:
+            spelling:   control message
+
+      settings:
+
+        sink:
+          id_self:      icm_dataflow_recorder.sink
+          guid_self:    icm_e992a32189d44cf992bc241ba820aaa0
+          name:         sink
+          brief:        |
+                        Where the recording is written.
+
+          type:
+            spelling:   path or endpoint
+
+      invocation:       |
+                        Once in each local step.
+      back_pressure:    |
+                        Writes to storage are kept off the path of the
+                        local step where the budget demands it; a
+                        recorder that cannot keep up reports a fault
+                        and does not slow the local step.
+
+  player:
+
+    dataflow_step:
+
+      output:
+
+        played:
+          id_self:      icm_dataflow_recorder.played
+          guid_self:    icm_5e104efbd8d248a8a52a7d88c0ae3310
+          name:         played
+          brief:        |
+                        The recorded values, in the local step at
+                        which they were recorded.
+
+          type:
+            spelling:   values of one type
+
+      settings:
+
+        source:
+          id_self:      icm_dataflow_recorder.source
+          guid_self:    icm_7ade415dd0f94db8a7328d34243f66d2
+          name:         source
+          brief:        |
+                        Where the recording is read from.
+
+          type:
+            spelling:   path
+
+      invocation:       |
+                        Once in each local step.
+      determinism:      |
+                        It writes, in each local step, exactly what
+                        was recorded for that local step.
+
+  recording:
+
+    artifact:
+
+      artifact:
+
+        recording_file:
+          id_self:      icm_dataflow_recorder.recording_file
+          guid_self:    icm_a09704ee6e4941128516841bf764eb6d
+          name:         recording_file
+          brief:        |
+                        One recording of a run.
+          content:      |
+                        For each local step: the values from outside,
+                        the control messages, and the engine events,
+                        with the content digest of the resolved
+                        dataflow graph that ran.
+          encoding:     |
+                        Not yet decided. This version fixes what is
+                        carried, not how it is written down; the
+                        encoding is chosen with the first host that
+                        needs it.
+          convention:   |
+                        Local steps are counted from 0 for each
+                        execution unit.
+
+      production:       |
+                        By recorders, while a run goes on.
+      ordering:         |
+                        In the order of the local steps of each
+                        execution unit.
+      retention:        |
+                        Kept with the run item that names it.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes_recording
+    guid_target:        lco_9a7992bfe09741d88f91eddad2cec5e3

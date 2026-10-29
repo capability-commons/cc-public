@@ -1,0 +1,128 @@
+id_self:                icd_dataflow_transport
+guid_self:              icd_d47ba9a515a34e76af29904804ddb499
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow transport
+brief:                  |
+                        The sender and receiver nodes that carry the
+                        messages of one edge between execution units
+                        or hosts.
+description:            |
+                        Lowering inserts a sender in the execution
+                        unit of the source and a receiver in that of
+                        the target wherever placement puts the ends of
+                        an edge apart. They are the only nodes that
+                        depend on a transport library.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  sender:
+
+    dataflow_step:
+
+      input:
+
+        value:
+          id_self:      icm_dataflow_transport.value
+          guid_self:    icm_ec8140bf108d4f1183afe574b3e48e54
+          name:         value
+          brief:        |
+                        The message of the edge, from its source.
+
+          type:
+            spelling:   message of the edge
+
+      settings:
+
+        transport:
+          id_self:      icm_dataflow_transport.transport
+          guid_self:    icm_9b71d04d53d449f396df7462f9528735
+          name:         transport
+          brief:        |
+                        The transport: a shared-memory queue, ZeroMQ
+                        or TCP.
+
+          type:
+            spelling:   transport name
+
+        endpoint:
+          id_self:      icm_dataflow_transport.endpoint
+          guid_self:    icm_eddcf7c2a39a448eac6b1cd67c47786f
+          name:         endpoint
+          brief:        |
+                        Where the receiver is reached.
+
+          type:
+            spelling:   endpoint
+
+      invocation:       |
+                        Once in each local step of its execution unit.
+      back_pressure:    |
+                        The queue between sender and receiver is
+                        bounded. When it is full, the sender waits, so
+                        that no message is lost, unless the delivery
+                        policy of the edge allows loss.
+
+  receiver:
+
+    dataflow_step:
+
+      output:
+
+        value_out:
+          id_self:      icm_dataflow_transport.value_out
+          guid_self:    icm_45fa1217ad9e43d6ae33e75acac28d41
+          name:         value_out
+          brief:        |
+                        The message of the edge, for its target.
+
+          type:
+            spelling:   message of the edge
+
+      settings:
+
+        transport_in:
+          id_self:      icm_dataflow_transport.transport_in
+          guid_self:    icm_311eebad51f44f42a5d04c694f6bee56
+          name:         transport_in
+          brief:        |
+                        The transport, as the sender names it.
+
+          type:
+            spelling:   transport name
+
+        endpoint_in:
+          id_self:      icm_dataflow_transport.endpoint_in
+          guid_self:    icm_3f94546a96914dc5a87d67867340ad8f
+          name:         endpoint_in
+          brief:        |
+                        Where the sender is reached.
+
+          type:
+            spelling:   endpoint
+
+      invocation:       |
+                        Once in each local step of its execution unit.
+      availability:     |
+                        It waits for exactly one message from the
+                        sender in each local step, so that results do
+                        not depend on timing.
+      determinism:      |
+                        It delivers the messages of the edge in the
+                        order the sender sent them, one for each local
+                        step.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes_transport
+    guid_target:        lco_bce618955a564a86b253576be2e9a9f7

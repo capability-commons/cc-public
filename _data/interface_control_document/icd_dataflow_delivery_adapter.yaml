@@ -1,0 +1,156 @@
+id_self:                icd_dataflow_delivery_adapter
+guid_self:              icd_ca60ea9a1db843d4af5519f23bf37492
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow delivery adapter
+brief:                  |
+                        The nodes that give an edge the behavior its
+                        delivery policy names.
+description:            |
+                        There is one fixed set of delivery policies,
+                        and the crossing from actors to Kahn nodes
+                        uses the same set. Each policy declares
+                        whether it can lose data, so the checks can
+                        find where data is lost.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  keep_latest:
+
+    dataflow_step:
+
+      input:
+
+        latest_in:
+          id_self:      icm_dataflow_delivery_adapter.latest_in
+          guid_self:    icm_93e73548078340b38334a6ed029c1a0a
+          name:         latest_in
+          brief:        |
+                        The values that arrived since the last local
+                        step.
+
+          type:
+            spelling:   values of one type
+
+      output:
+
+        latest_out:
+          id_self:      icm_dataflow_delivery_adapter.latest_out
+          guid_self:    icm_f55830a02f2c4bc3a25c620b5b224890
+          name:         latest_out
+          brief:        |
+                        The latest of them, or none.
+
+          type:
+            spelling:   bounded array of at most one item
+
+      invocation:       |
+                        Once in each local step of the reader.
+      cardinality:      |
+                        At most one item: the value that arrived last.
+      failure:          |
+                        Loses data: every value but the last is
+                        dropped, by design.
+
+  all_in_order:
+
+    dataflow_step:
+
+      input:
+
+        all_in:
+          id_self:      icm_dataflow_delivery_adapter.all_in
+          guid_self:    icm_2c6aa570483840dbaba6ecfd500342cd
+          name:         all_in
+          brief:        |
+                        The values that arrived since the last local
+                        step.
+
+          type:
+            spelling:   values of one type
+
+      output:
+
+        all_out:
+          id_self:      icm_dataflow_delivery_adapter.all_out
+          guid_self:    icm_92e4b6603f604d5cb3b135f3c4c978a3
+          name:         all_out
+          brief:        |
+                        All of them, in the order they arrived.
+
+          type:
+            spelling:   bounded array
+
+      invocation:       |
+                        Once in each local step of the reader.
+      cardinality:      |
+                        As many items as arrived, up to the capacity
+                        of the port.
+      failure:          |
+                        Loses no data within the capacity. Beyond it,
+                        the fail-safe of the port applies and a fault
+                        is reported.
+
+  fold:
+
+    dataflow_step:
+
+      input:
+
+        fold_in:
+          id_self:      icm_dataflow_delivery_adapter.fold_in
+          guid_self:    icm_0dd3b8c59632477294077ed1d778e047
+          name:         fold_in
+          brief:        |
+                        The values that arrived since the last local
+                        step.
+
+          type:
+            spelling:   values of one type
+
+      output:
+
+        fold_out:
+          id_self:      icm_dataflow_delivery_adapter.fold_out
+          guid_self:    icm_ec395139376444629d7f266f143a1a73
+          name:         fold_out
+          brief:        |
+                        One value that folds them.
+
+          type:
+            spelling:   bounded array of at most one item
+
+      settings:
+
+        function:
+          id_self:      icm_dataflow_delivery_adapter.function
+          guid_self:    icm_09a61ebaf1164312af22c340a21abc3b
+          name:         function
+          brief:        |
+                        How two values are folded into one.
+
+          type:
+            spelling:   fold function
+
+      invocation:       |
+                        Once in each local step of the reader.
+      cardinality:      |
+                        At most one item.
+      failure:          |
+                        Loses data as the fold does: it is declared
+                        with the fold function.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes_adapter
+    guid_target:        lco_a4832b5f8fa242e993304f75c4226372

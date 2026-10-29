@@ -1,0 +1,130 @@
+id_self:                icd_dataflow_resolver
+guid_self:              icd_a2400d39da2d4774980b02b004372534
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Variant resolver interface
+brief:                  |
+                        How a dataflow variant becomes the resolved
+                        dataflow graph it means.
+description:            |
+                        Only cctool interprets variant operations, as
+                        was ruled on 2026-10-26.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  python:
+
+    native:
+      language:         python
+      dialect:          python3.12
+
+      module:
+
+        module:
+          id_self:      icm_dataflow_resolver.module
+          guid_self:    icm_b1accffa86274b8f8422a5369003e195
+          name:         cctool.dataflow.resolve
+          brief:        |
+                        The module that presents this surface, once
+                        written.
+
+      function:
+
+        resolve:
+          id_self:      icm_dataflow_resolver.resolve
+          guid_self:    icm_987e142f6db849d58be4c4f4ef4a17eb
+          name:         resolve
+          brief:        |
+                        Return the resolved dataflow graph of a
+                        dataflow variant.
+          guarantee:    |
+                        Each variant operation is checked against its
+                        preconditions, and the first that fails stops
+                        resolution with a report that names it.
+
+          parameter:
+
+            - id_self:  icm_dataflow_resolver.resolve.root
+              guid_self:  icm_73511a82f0694fd49ddf5d49f852dd8c
+              name:     root
+              brief:    |
+                        The root of the tree.
+
+              type:
+                spelling:  pathlib.Path
+
+              mode:     input
+
+            - id_self:  icm_dataflow_resolver.resolve.id_variant
+              guid_self:  icm_01ea9b7035be48f58493ad20a3f2ad89
+              name:     id_variant
+              brief:    |
+                        The id of the dataflow variant.
+
+              type:
+                spelling:  str
+
+              mode:     input
+
+          returns:
+
+            type:
+              spelling:  ResolvedGraph
+
+            brief:      |
+                        The resolved dataflow graph, with its digests
+                        and origin trace.
+
+  data:
+
+    artifact:
+
+      artifact:
+
+        resolved_graph:
+          id_self:      icm_dataflow_resolver.resolved_graph
+          guid_self:    icm_0cec256036124aa08c0b256101011d8f
+          name:         resolved_graph
+          brief:        |
+                        A resolved dataflow graph.
+          content:      |
+                        The dataflow graph a dataflow variant means,
+                        every node placed; its input digest and
+                        content digest; and, for each part, the base
+                        item and every variant operation that touched
+                        it, in order.
+          encoding:     |
+                        The canonical form of a dataflow graph, from
+                        which the content digest is taken.
+          convention:   |
+                        The input digest covers the chain of bases,
+                        the variant operations, the versions of the
+                        data dictionary and interface control
+                        documents they name, and the version of the
+                        resolver.
+
+      production:       |
+                        On demand, by resolving; a cache keyed by the
+                        input digest may hold one.
+      determinism:      |
+                        The same input digest always gives the same
+                        content digest.
+      retention:        |
+                        Never stored in the tree as a second copy of a
+                        dataflow variant; caches can be dropped and
+                        rebuilt.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model_resolver
+    guid_target:        lco_6db83d1d2feb4666b62de3ae475123ca

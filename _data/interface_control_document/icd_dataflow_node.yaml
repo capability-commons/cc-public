@@ -1,0 +1,120 @@
+id_self:                icd_dataflow_node
+guid_self:              icd_9e68a71313c04579ba483237a65ef6ac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow node interface
+brief:                  |
+                        What every dataflow node presents to the
+                        engine, whatever it computes and whatever
+                        language it is written in.
+description:            |
+                        The ports a node reads and writes are its own,
+                        and its own interface control document names
+                        them. This document states what every node
+                        shares: the control message it reads, the
+                        state the engine holds for it, and the
+                        semantics of an invocation. The calling
+                        convention in C, and the direct C++ call that
+                        the static schedule makes, are a native
+                        surface that is held back until a check of C
+                        and C++ surfaces exists, as was ruled on
+                        2026-10-24.
+version_interface:      '0.1'
+support:                unsupported
+
+surface:
+
+  step:
+
+    dataflow_step:
+
+      input:
+
+        control:
+          id_self:      icm_dataflow_node.control
+          guid_self:    icm_f9b6e2126d96476389429fb37ac84307
+          name:         control
+          brief:        |
+                        The control message of the execution unit,
+                        written by its control block for this local
+                        step.
+
+          type:
+            spelling:   control message
+
+      state:
+
+        state:
+          id_self:      icm_dataflow_node.state
+          guid_self:    icm_d7a7437a9bcf41bfb50c1cda1b75a9c9
+          name:         state
+          brief:        |
+                        The state of the node, a value of a type in
+                        the data dictionary, held by the engine and
+                        handed to the node at each invocation.
+
+          type:
+            spelling:   a type of the data dictionary
+
+          optional:     true
+
+      invocation:       |
+                        Once in each local step of the execution unit,
+                        after every node it reads from in the same
+                        local step, and before every node that reads
+                        from it. An actor is invoked instead once for
+                        each message admitted to it in the gap between
+                        two local steps.
+      initialization:   |
+                        The engine allocates the buffers of every port
+                        and the state of the node from their
+                        declarations, and hands the node its state,
+                        before the first invocation. A node allocates
+                        no memory of its own while the system runs.
+      availability:     |
+                        Every input carries exactly one message in
+                        each local step, which may hold no items. A
+                        node treats a message with no items as nothing
+                        arrived. An input on a feedback edge carries,
+                        in the first local step, the default value of
+                        the port that supplies one.
+      cardinality:      |
+                        An invocation writes exactly one message to
+                        each output port, holding at most as many
+                        items as the port declares.
+      ordering:         |
+                        Invocations of one node follow the order of
+                        the local steps of its execution unit.
+      concurrency:      |
+                        One invocation of a node at a time. Nodes in
+                        different execution units run at the same
+                        time.
+      determinism:      |
+                        A node reads time, modes and runtime services
+                        only from its control message, and nothing
+                        else from outside its ports and state, so that
+                        the same inputs and state give the same
+                        outputs.
+      persistence:      |
+                        The state handed to the next invocation is the
+                        state this invocation left. When a node
+                        version is swapped, the state is upgraded by
+                        the mapping of the data dictionary.
+      failure:          |
+                        A node that writes more items to a port than
+                        the port declares has the excess handled by
+                        the fail-safe the port declares, and the
+                        engine reports a fault.
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3
