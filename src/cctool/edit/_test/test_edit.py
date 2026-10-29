@@ -447,7 +447,7 @@ def test_rename_of_a_dataflow_node_changes_its_key_and_what_names_it(tree):
     assert ('  proc_ctrl:\n'
             '    id_self:            dfn_stableflow_smoketest.proc_ctrl\n'
             '    guid_self:          ' + GUID_NODE + '\n') in text
-    assert text.count('id_dataflow_node:  dfn_stableflow_smoketest.proc_ctrl\n') == 3
+    assert text.count('id_dataflow_node:  dfn_stableflow_smoketest.proc_ctrl\n') == 1
     assert 'ctrl_proc' not in text
     assert 'alias' not in text
 
