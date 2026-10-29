@@ -1,0 +1,62 @@
+id_self:                lco_dataflow_engine_nodes_control_block
+guid_self:              lco_b3618c5c094344aaa4dbee4996cc555a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control blocks
+brief:                  |
+                        The nodes that alone may read time and runtime
+                        services, one for each execution unit and one
+                        for each host, which write the control message
+                        every other node receives, and pass on the
+                        events the engine reports.
+description:            |
+                        The mode controller that raises degraded mode
+                        is one of them. The engine reports its own
+                        events to them as runtime service readings,
+                        and they pass them to recording nodes, so that
+                        the engine records nothing itself (WTP,
+                        2026-10-29). They answer the question: who may
+                        look at the outside world?
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine_nodes
+    guid_target:        lco_ebdb8ec023a2488aa46e73a6a6bfb719
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_platform
+    guid_target:        lco_366f01e0f9934fffba9ff3469845aaa0
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_executor
+    guid_target:        lco_1089b552f6904b199c6786784cc62dbd
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_actors
+    guid_target:        lco_c3ccf3604d88495a8c79bf6a04882b50
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_dynamic
+    guid_target:        lco_b00ac1d1b9e84bd3982481911d0866fd

@@ -1,0 +1,44 @@
+id_self:                lco_dataflow_engine_executor
+guid_self:              lco_1089b552f6904b199c6786784cc62dbd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Step executor
+brief:                  |
+                        The part of the dataflow engine that runs the
+                        Kahn nodes of one execution unit, once each in
+                        dependency order at each local step, and
+                        applies the fail-safe of a port that
+                        overflows.
+description:            |
+                        It never looks past its own execution unit: a
+                        value bound for another one leaves through a
+                        transport node. It answers the question: who
+                        runs the Kahn nodes, and when?
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_node_interface
+    guid_target:        lco_f417e8c32fe94d2c97d1cf58b282d9a3
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_memory
+    guid_target:        lco_13d124a260994c878700ea88b24bd2d9
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_platform
+    guid_target:        lco_366f01e0f9934fffba9ff3469845aaa0

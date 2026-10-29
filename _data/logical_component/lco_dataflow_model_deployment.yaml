@@ -1,0 +1,55 @@
+id_self:                lco_dataflow_model_deployment
+guid_self:              lco_ed0b259255d44eb1a38a1c7b742aec14
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Deployment
+brief:                  |
+                        The part of the dataflow model that sends a
+                        built engine and a lowered graph to a host,
+                        computes and sends the change set between two
+                        resolved graphs, and writes the records of
+                        deployments and runs.
+description:            |
+                        To be realized by a package
+                        cctool.dataflow.deploy. It is one end of the
+                        interface whose other end is runtime control.
+                        It answers the question: how does the graph
+                        get onto a host, and how is it changed later?
+
+edge:
+
+  - id_relation:        relation_is_part_of
+    guid_relation:      relation_7053d805ba7444e6a5cd70192b04f3b6
+    id_target:          lco_dataflow_model
+    guid_target:        lco_1beb844211c848e6b89d9cec5c6daa70
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_model_resolver
+    guid_target:        lco_6db83d1d2feb4666b62de3ae475123ca
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_model_lowering
+    guid_target:        lco_6c086a1ee8d54bcf827b3d12cd1d5a5d
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_model_checks
+    guid_target:        lco_76b030d3c977418fa3f3764d37c58150
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_generator
+    guid_target:        lco_50ea3ba630cc4dadb9b2d9fb9754cb46
+
+  - id_relation:        relation_may_depend_on
+    guid_relation:      relation_bccd56de6534443fa3f357505b271dad
+    id_target:          lco_dataflow_engine_control
+    guid_target:        lco_99af493f4215406d9e7ea9d6b70083d7
