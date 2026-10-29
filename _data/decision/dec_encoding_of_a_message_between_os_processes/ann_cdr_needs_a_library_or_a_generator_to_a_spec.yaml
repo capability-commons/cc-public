@@ -1,0 +1,79 @@
+id_self:                ann_cdr_needs_a_library_or_a_generator_to_a_spec
+guid_self:              ann_8f08143e73b447e9977ecd159f39f11d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  CDR library, or a generator written to an OMG specification
+brief:                  |
+                        The standard option takes its encoding from a
+                        specification that cc-public does not control,
+                        through either a library such as eProsima's
+                        Fast CDR under the Apache-2.0 license, or a
+                        generator of ours that follows the OMG rules
+                        for alignment and byte order, in whichever of
+                        the two versions, XCDR1 and XCDR2, ROS 2 tools
+                        expect. The canonical and memory options need
+                        neither, only code generated for each type
+                        from the dictionary that the generator already
+                        reads. A CDR library kept to the sender and
+                        receiver, as the requirement keeps transport
+                        libraries, would reach no other node, so the
+                        exposure is small, but it is the only option
+                        with any.
+description:            |
+                        Sources:
+                        - Fast CDR is eProsima's C++ library for CDR
+                          serialization, under
+                          the Apache-2.0 license (https://github.com/eProsima/Fast-CDR).
+                        - The cdr message encoding of ROS 2 is a
+                          stream in XCDR1 or XCDR2
+                          with RTPS SerializedPayload framing (MCAP Format Registry,
+                          https://mcap.dev/spec/registry).
+                        - CDR fixes alignment on natural boundaries
+                          and lets the receiver
+                          translate byte order (OMG CORBA specification, section 15.3.1,
+                          CDR primitive types,
+                          https://www.site.uottawa.ca/~tcl/gradtheses/mnojoumian/ThesisFiles/FinalSpec/CORBA/15.3.1.html).
+                        - Every use of a transport library is confined
+                          to the sender and
+                          the receiver (_data/requirement/rqt_transport_confines_library.yaml
+                          at object).
+                        - Dependency risk counts direct and indirect
+                          dependencies
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.measure.0).
+                        Strength: moderate on dependency risk alone;
+                        it weighs little if a standard encoding is
+                        wanted for other reasons.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_message_between_os_processes
+    guid_target:        dec_df52cae8b13f4a90a4193f06ddae614b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_standard_serialization
+    guid_target:        opt_c9e06fd553c04e82b6aa5a9c238b4db0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_canonical_layout_from_the_dictionary
+    guid_target:        opt_7d5669a164404a84a0f2fa8364bf0bbc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_memory_layout_on_the_wire
+    guid_target:        opt_f38a84afb04f43dc9cdabc36961d5fbc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

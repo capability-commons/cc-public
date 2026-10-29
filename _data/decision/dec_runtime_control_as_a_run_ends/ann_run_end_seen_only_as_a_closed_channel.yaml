@@ -1,0 +1,92 @@
+id_self:                ann_run_end_seen_only_as_a_closed_channel
+guid_self:              ann_333c0e26c45b4349a83564eb9b158dca
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  End of a run that deployment sees only as a closed channel
+brief:                  |
+                        Under the trial's fix, a request sent as the
+                        run ends gets no reply: in 200 runs polled
+                        with status, every one ended with the channel
+                        closed and no answer. By reading the code, the
+                        deployer turns that into the same error a
+                        crash gives, and the engine exits with status
+                        0 whether the run met its step limit, was
+                        stopped, or lost runtime control. The exit
+                        status tells a crash from an end only to a
+                        parent process, so for an engine reached over
+                        a socket, as JSON lines allow, deployment
+                        learns nothing of how the run ended. A notice
+                        and an engine that waits both tell it.
+description:            |
+                        Sources:
+                        - After the fix, a loop of 200 runs polled
+                          with status as they ended
+                          gave no garbled reply and 200 closed without a reply. (review of
+                          2026-10-29, CC-006)
+                        - The deployer raises an error that the engine
+                          closed runtime
+                          control when no reply line comes. (trial 2c777ab9,
+                          src/cctool/dataflow/deploy.py, class Engine, function request)
+                        - The engine returns 0 at the end of every
+                          run, by reading the code;
+                          200 runs ended by a stop and a close all exited with 0. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/runtime.cpp, function
+                          run; review of 2026-10-29, CC-006)
+                        - JSON lines run on a socket for a remote
+                          engine.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_json_lines_on_a_stream.yaml
+                          at brief)
+                        - A request taken before the run ended is
+                          answered, and a later
+                          request finds the channel closed.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_late_request_unanswered_and_channel_closed.yaml
+                          at brief)
+                        - Functional suitability asks whether every
+                          function that is needed
+                          is present; flexibility asks on which environments the design
+                          runs. (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question.1 and
+                          entries.concern_flexibility.question.0)
+                        Strength: moderate; it bears on remote engines
+                        and on diagnosis, and weakens if the engine
+                        writes why it ended to its standard error
+                        before it closes, which a local deployer
+                        already reads.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_late_request_unanswered_and_channel_closed
+    guid_target:        opt_07c7a3dff2a24ddbbf16709774a79ae9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_waits_after_the_run
+    guid_target:        opt_e7bc70f7f6d0400da91dc3493a02c5c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

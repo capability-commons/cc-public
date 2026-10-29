@@ -1,0 +1,113 @@
+id_self:                ann_parsing_each_control_request_allocates
+guid_self:              ann_ccada8469d0f415e85e8e3a2bf167f78
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Allocation for every control request while the units run
+brief:                  |
+                        rqt_memory_only_for_change_sets lets the
+                        engine take memory while its units run only
+                        for the nodes and edges a change set adds. By
+                        reading its code, the trial's runtime control
+                        takes memory for every request, a status poll
+                        included: it reads each line into a string,
+                        parses it into maps and lists and joins
+                        strings for the reply. No test counted it,
+                        since the trial's counter sees only the units'
+                        threads: its log records a conflict between
+                        the requirement and adding nodes at run time,
+                        and settles it by allocating only in the
+                        control thread. A frame of a fixed dictionary
+                        type can be read into a buffer set aside
+                        before the first step and answered from
+                        another, with no allocation at all. JSON lines
+                        can do the same only with a reader written not
+                        to allocate, and ZeroMQ runs an I/O thread of
+                        its own and manages its own message buffers.
+description:            |
+                        Sources:
+                        - Memory is taken while the units run only for
+                          a change set that
+                          adds an edge or a node; buffers and state are set aside before the
+                          first local step because allocation while a system runs is
+                          forbidden by MISRA-style rules for high-integrity code and causes
+                          jitter. (_data/requirement/rqt_memory_only_for_change_sets.yaml at
+                          condition and object;
+                          _data/requirement/rqt_memory_before_first_step.yaml at object and
+                          rationale)
+                        - Runtime control reads each request into a
+                          string, parses it into
+                          a value held in maps and vectors, and builds each reply by joining
+                          strings; this is read from the code, not measured. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/control.cpp, functions
+                          control_start, handle and status;
+                          src/cctool/dataflow/engine/include/df/json.hpp, struct Value)
+                        - The process log says the trial allocates in
+                          the thread of runtime
+                          control and never on a unit's thread, and asks that the
+                          requirement be reworded to say which (trial process log, phase 3,
+                          the conflict on allocation); the review found unit threads
+                          allocating too on the deploy path (review of 2026-10-29, CC-009).
+                        - The test allocator counts only what the
+                          threads of execution
+                          units allocate. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/test/count_new.cpp)
+                        - The test case for status asks for status
+                          every local step.
+                          (_data/test_case/case_control_status_reads_only.yaml at inputs)
+                        - A ZeroMQ context runs a pool of I/O threads,
+                          one by default
+                          (libzmq API, zmq_ctx_set, ZMQ_IO_THREADS,
+                          https://libzmq.readthedocs.io/en/latest/zmq_ctx_set.html).
+                        - Performance efficiency asks what resources
+                          the design consumes;
+                          safety asks how it avoids each hazard.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.question.1 and
+                          entries.concern_safety.question.1)
+                        ASSUMPTION: libzmq allocates storage for any
+                        message larger than a small size it holds
+                        inline; a JSON reader can be written to fill a
+                        fixed table of tokens instead of maps, at the
+                        cost of the trial's simple reader. Strength:
+                        moderate; if the requirement is reworded as
+                        the trial log proposes, to bind only the
+                        execution units, the point shrinks to jitter
+                        from a busy control thread that shares a core.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_types_in_length_prefixed_frames
+    guid_target:        opt_872f7f11f2c24b72b63e11ecc8e6cb7b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_json_lines_on_a_stream
+    guid_target:        opt_ad999a8cf3f3487081c44d45786406ee
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_an_existing_messaging_library
+    guid_target:        opt_aad9dc3233334877b7e96691ec5d955b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

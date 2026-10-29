@@ -1,0 +1,90 @@
+id_self:                ann_slot_for_the_largest_payload_grows_with_a_kind
+guid_self:              ann_c9e9ba1709134a6d93208a2c4682678e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Slot sized for the largest payload, which a new kind can enlarge
+brief:                  |
+                        Events are readings of a runtime service that
+                        the control block passes on, and the ruling on
+                        services asks that the control message grow by
+                        a rule that keeps nodes built earlier,
+                        possibly by a partner and loaded in a live
+                        swap, safe to load; the decision names that
+                        rule, and the same reasoning holds for a
+                        layout of events that nodes read. Under the
+                        header option every slot is as large as the
+                        largest payload, so a new kind with a larger
+                        payload changes the size of every slot and the
+                        layout that every reader of events was built
+                        against, partners' binaries included. Under a
+                        type for each kind, a new kind is a new type
+                        that no earlier node declared, and earlier
+                        nodes are untouched; the fixed struct never
+                        changes its layout, though a new meaning for
+                        its integers is invisible to an old reader.
+                        Slots with headroom fixed in the first
+                        version, or a size field in the header, would
+                        meet the rule.
+description:            |
+                        Sources:
+                        - The engine reports events to the control
+                          block as readings of a
+                          runtime service, and the decision names the rule by which the
+                          control message grows
+                          (_data/decision/dec_encoding_of_an_engine_event/dec_encoding_of_an_engine_event.yaml
+                          at brief and description).
+                        - The layout of the control message has a rule
+                          for growth, so that
+                          nodes built earlier stay safe to load
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief).
+                        - A node built earlier, or by a partner, and
+                          loaded in a live swap
+                          may read fields at the wrong offsets when a shared struct grows
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_growing_control_message_changes_every_node_interface.yaml
+                          at brief).
+                        - The header option keeps one queue of slots
+                          large enough for the
+                          largest payload
+                          (_data/decision/dec_encoding_of_an_engine_event/opt_fixed_header_with_a_typed_payload.yaml
+                          at brief).
+                        - Dependency risk asks what happens if a part
+                          taken from a third
+                          party is changed or withdrawn (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question.1).
+                        ASSUMPTION: some node kinds that read events
+                        will come as binaries from partners, which
+                        cctool cannot rebuild, so a grown slot leaves
+                        the engine waiting on a partner who may no
+                        longer rebuild them. Strength: weak to
+                        moderate; it depends on partners' nodes
+                        reading events, and a slot size stated in the
+                        header removes it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_an_engine_event
+    guid_target:        dec_c477c1b323c24bc3861cba33bbf937c0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fixed_header_with_a_typed_payload
+    guid_target:        opt_5cea17fe12c94fcb8a02a89a02f6fed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_dictionary_type_for_each_kind_of_event
+    guid_target:        opt_eefc536ebb95467ebac570ec9201c64e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

@@ -1,0 +1,87 @@
+id_self:                ann_smallest_reader_where_replay_feeds_the_engine
+guid_self:              ann_2fab84885c0340539ca5095c678f0aa0
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Smallest reader to harden where a replay feeds the engine
+brief:                  |
+                        On replay a recording is input to the engine,
+                        and recordings travel between hosts, from a
+                        robot to the host that replays its run. The
+                        trial's replay took the count of each row on
+                        trust and over-read the heap, and its JSON
+                        reader, shared with runtime control, crashed
+                        on one deeply nested line. A row of fixed
+                        layout whose count is checked against a
+                        capacity that the header names is the smallest
+                        reader to fuzz, much as a harness is generated
+                        for each node; JSON lines keep a text parser
+                        and a hex decoder in that path, and MCAP adds
+                        a third-party parser and two decompressors.
+                        None of the options protects a recording
+                        against tampering, and MCAP's checksums detect
+                        only corruption.
+description:            |
+                        Sources:
+                        - A recording is replayed a day later on
+                          another host
+                          (_data/test_case/case_control_block_replay.yaml at inputs).
+                        - Replay copied as many items as a row's count
+                          said, past the bytes
+                          the row held: an ASan heap-buffer-overflow (review of 2026-10-29,
+                          CC-045; areas/trial-engine.md, TE-17).
+                        - The JSON reader that served runtime control
+                          and recordings had
+                          unbounded recursion, and one line of 200 KB killed the engine
+                          (review of 2026-10-29, CC-046; areas/trial-engine.md, TE-16).
+                        - The generator writes a fuzz harness for each
+                          node kind from its
+                          declared interface
+                          (_data/decision/dec_fuzzing_of_a_single_node/ruling_harness_generated_from_the_node_interface.yaml
+                          at brief).
+                        - Each MCAP chunk carries a CRC32 of its
+                          records, or zero for none
+                          (MCAP Format Specification, https://mcap.dev/spec, Chunk record).
+                        - Security asks what an attacker can reach and
+                          what it would cost
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question.2).
+                        ASSUMPTION: decompressors are a frequent place
+                        for memory-safety faults; how far MCAP's C++
+                        reader is fuzzed was not checked. Strength:
+                        moderate; a library fuzzed by many users may
+                        be safer than new code, so this favors the
+                        binary log only if its reader is fuzzed from
+                        the start.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_own_binary_log_with_an_index
+    guid_target:        opt_b61a54847bc74bdcb7a21699ebcc003a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_json_lines_with_hex_messages
+    guid_target:        opt_db6d1813e33d4108806f2c053333dcaa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

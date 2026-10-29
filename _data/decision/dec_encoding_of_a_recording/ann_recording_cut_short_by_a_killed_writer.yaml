@@ -1,0 +1,92 @@
+id_self:                ann_recording_cut_short_by_a_killed_writer
+guid_self:              ann_f68e269ccd10473aafe1661b60ea8b0f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recording cut short by a killed writer, and what stays readable
+brief:                  |
+                        In the trial a dead peer killed the sender's
+                        process before its recording was flushed, so a
+                        recording cut short is a case to design for.
+                        JSON lines lose at most the last partial line,
+                        though the trial's reader skipped broken rows
+                        anywhere, not only the last, and rows of fixed
+                        layout can be read up to the last whole row,
+                        with the index rebuilt by a scan if it is not
+                        the only way in. MCAP writes its summary and
+                        chunk indexes after the data and makes them
+                        optional, so a killed writer loses the index
+                        and the chunk it was still filling, and a
+                        writer that keeps a chunk index for each chunk
+                        until it closes holds more the longer a patrol
+                        runs. Each option needs a reader that takes
+                        what is whole and reports the rest, and files
+                        that close and start again during a run with
+                        no natural end.
+description:            |
+                        Sources:
+                        - Killing the receiver killed the sender's
+                          process by SIGPIPE, and
+                          its recording was not flushed (review of 2026-10-29, CC-016).
+                        - The trial's Python reader leaves out a row
+                          that is not whole
+                          (trial 2c777ab9, src/cctool/dataflow/recording.py, function
+                          read), and it skipped broken rows anywhere in a file (review of
+                          2026-10-29, areas/trial-model.md, TM-17).
+                        - The summary and summary offset sections are
+                          optional, the footer
+                          marks a missing summary with zero, a Data End record closes the
+                          data section, each chunk may carry a CRC, and the chunk indexes,
+                          one for every chunk, sit in the summary (MCAP Format
+                          Specification, https://mcap.dev/spec).
+                        - A robot on patrol has no natural end to its
+                          run
+                          (_data/decision/dec_overflow_of_events_and_recordings/ann_recorder_reserve_grows_with_the_run.yaml
+                          at brief).
+                        - Reliability asks whether the design recovers
+                          without losing or
+                          corrupting data (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question.2).
+                        ASSUMPTION: a writer that compresses holds a
+                        whole chunk in memory until it writes it, and
+                        a writer keeps the index of every chunk in
+                        memory until it writes the summary at close;
+                        the specification says nothing of recovering a
+                        file with no footer, and whether existing MCAP
+                        readers accept one was not checked. Strength:
+                        moderate; small chunks and files closed at
+                        intervals shrink it for MCAP, and a binary log
+                        with its only index at the end would share the
+                        weakness.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_json_lines_with_hex_messages
+    guid_target:        opt_db6d1813e33d4108806f2c053333dcaa
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_own_binary_log_with_an_index
+    guid_target:        opt_b61a54847bc74bdcb7a21699ebcc003a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

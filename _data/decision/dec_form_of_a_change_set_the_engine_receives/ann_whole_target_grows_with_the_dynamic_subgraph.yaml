@@ -1,0 +1,101 @@
+id_self:                ann_whole_target_grows_with_the_dynamic_subgraph
+guid_self:              ann_6f1bb90d7fbd437083d6342bc9cde75c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Request and recording row that grow with the whole dynamic subgraph
+brief:                  |
+                        A whole target carries every dynamic node and
+                        edge on every change, a one-node swap
+                        included, and the engine compares each with
+                        what runs. The trial recorded each change set
+                        at its step as one row of the request's text,
+                        rows of at most 64 KiB, and a change of 900
+                        nodes in 79 KB went unrecorded without a
+                        count, so its replay diverged. Under the whole
+                        target those limits bind on the size of the
+                        subgraph, not of the change. The ruling on the
+                        first engine names logging, data recording and
+                        telemetry nodes as examples of what the
+                        dynamic subgraph may add later, which suggests
+                        a small subgraph for now. The comparison falls
+                        on the thread of runtime control, though the
+                        trial built the row, a copy of the whole
+                        request, on the unit's thread at the step of
+                        the change.
+description:            |
+                        Sources:
+                        - cctool sends the whole dynamic subgraph that
+                          the engine is to run.
+                          (_data/decision/dec_form_of_a_change_set_the_engine_receives/opt_whole_target_dynamic_subgraph.yaml
+                          at brief)
+                        - Each change set is recorded at its step as
+                          one row holding the
+                          request's text, the recording's rows hold at most 64 KiB, and the
+                          change set is built in the thread of runtime control. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/dynamic.cpp, functions
+                          install and hook_apply; src/cctool/dataflow/engine/src/runtime.cpp,
+                          function run)
+                        - The record line of a change set is built on
+                          the unit's thread
+                          when it is installed. (review of 2026-10-29, CC-009;
+                          areas/trial-engine.md, TE-09)
+                        - A change set of 900 nodes, 79 KB, was
+                          applied but not recorded,
+                          the count of dropped rows stayed at zero, and the replay differed.
+                          (review of 2026-10-29, CC-015; areas/trial-engine.md, TE-13)
+                        - A build with no dynamic nodes leaves out the
+                          dynamic machinery
+                          unless its user asks for it, for example to add logging, data
+                          recording or telemetry nodes later.
+                          (_data/decision/dec_first_engine/ruling_one_engine_with_static_and_dynamic_subgraphs.yaml
+                          at brief)
+                        - A run with live changes is replayed from a
+                          recorded log that holds
+                          the step of each change set and swap.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief)
+                        ASSUMPTION: the dynamic subgraphs of the first
+                        systems hold a few nodes, as the ruling's
+                        examples suggest. Strength: weak to moderate;
+                        it grows with the dynamic subgraph, which is
+                        likely small for now, and a recording that
+                        holds only digests would not carry the target
+                        at all.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_a_change_set_the_engine_receives
+    guid_target:        dec_aafed8761e74408b96ba8a287ea02c1b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_whole_target_dynamic_subgraph
+    guid_target:        opt_2504091c71da4a238bc720a62dcf5b7b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_document_of_additions_removals_and_swaps
+    guid_target:        opt_33a7aee440674d5aa1f6bf154ad8f8a7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ordered_list_of_engine_calls
+    guid_target:        opt_bef3312d0ec14c86aeb7b2778da61dec
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

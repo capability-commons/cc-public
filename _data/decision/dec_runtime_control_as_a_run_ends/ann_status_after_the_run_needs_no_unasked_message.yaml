@@ -1,0 +1,90 @@
+id_self:                ann_status_after_the_run_needs_no_unasked_message
+guid_self:              ann_c783e985eab84b9181eb5ca68f5c7562
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Status after the run with no message sent unasked
+brief:                  |
+                        A waiting engine answers the status request
+                        the ICD already has, with the graph, each
+                        unit, whether it runs and its local step, so
+                        deployment reads where each unit stopped with
+                        no new message, and the rule of one reply for
+                        each request holds. An end notice is a message
+                        the engine sends unasked, outside that rule: a
+                        reply socket of the messaging option cannot
+                        carry it, and the trial's deployer, which by
+                        its code reads one line for each request,
+                        would take it as the reply to the next. The
+                        review's own correction for the run-end race
+                        answers a late request with a fixed reply
+                        saying that the run has ended.
+description:            |
+                        Sources:
+                        - Status reports the digest of the graph
+                          running, the execution
+                          units and whether each runs, and its current local step; requests
+                          come from deployment one at a time, each answered by one reply.
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.artifact.status.content and
+                          surface.data.artifact.production)
+                        - The engine stays up and answers status until
+                          deployment tells it
+                          to exit or closes runtime control.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_engine_waits_after_the_run.yaml
+                          at brief)
+                        - The engine sends one notice that the run has
+                          ended.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_end_announced_before_close.yaml
+                          at brief)
+                        - The deployer writes a request and reads the
+                          next line as its
+                          reply. (trial 2c777ab9, src/cctool/dataflow/deploy.py, class
+                          Engine, function request)
+                        - The smallest correction for the run-end race
+                          gives the engine a
+                          static lifetime or joins the control thread, makes the end of
+                          input do nothing once the run has ended, and answers late requests
+                          with a fixed reply that the run ended. (review of 2026-10-29,
+                          areas/trial-engine.md, TE-07)
+                        - A reply socket allows only an alternating
+                          sequence of receiving a
+                          request and sending its reply (libzmq API, zmq_socket, ZMQ_REP,
+                          https://libzmq.readthedocs.io/en/zeromq4-x/zmq_socket.html).
+                        Strength: moderate; a notice framed apart from
+                        replies, as a tagged message on a stream,
+                        costs little, so this weighs most if the
+                        encoding is a pair of request and reply
+                        sockets.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_waits_after_the_run
+    guid_target:        opt_e7bc70f7f6d0400da91dc3493a02c5c0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

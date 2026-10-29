@@ -1,0 +1,108 @@
+id_self:                ann_change_sets_by_digest_keep_rows_bounded
+guid_self:              ann_9010a1f1dea140c5900f3719ac55d9c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Change sets named by digest, so that every row stays bounded
+brief:                  |
+                        The trial's code has the engine write each
+                        applied change set into the recording as one
+                        JSON line, and in the review a change set of
+                        900 nodes, 79 KB, did not fit the 64 KiB row,
+                        was dropped without a count, and replay
+                        diverged. The ICD's change event carries the
+                        digest of the change set, not its content, and
+                        a run item names its input data by digest, so
+                        a change set can be kept once with the run and
+                        the recording can hold its digest. Every row
+                        then has a size known from the lowered graph,
+                        since an admitted outside message is a value
+                        of the type the actor's input declares; rows
+                        of fixed layout need that, and so does a
+                        recorder whose memory is set aside before the
+                        first local step, whatever the encoding. JSON
+                        lines and MCAP accept rows of any size, so
+                        neither format by itself stops a row, like the
+                        trial's, that outgrows a reserve fixed in
+                        advance.
+description:            |
+                        Sources:
+                        - The engine writes the text of each change
+                          set into the recording
+                          itself, read from the code (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function install);
+                          the review's runs replayed change rows from recordings, and found
+                          the string of each built on the unit thread (review of
+                          2026-10-29, areas/trial-engine.md, section 3 and TE-09).
+                        - A change set of 900 nodes, 79 KB, was
+                          applied with no row and no
+                          count of the drop, and replay differed (review of 2026-10-29,
+                          CC-015; areas/trial-engine.md, TE-13).
+                        - A change event carries the digest of the
+                          change set and the local
+                          step at which it took effect
+                          (_data/interface_control_document/icd_dataflow_engine_event.yaml
+                          at surface.data.artifact.artifact.change.content).
+                        - A run item names its input data by digest
+                          (_data/decision/dec_encoding_of_a_recording/dec_encoding_of_a_recording.yaml
+                          at description), as the upheld option has it
+                          (_data/decision/dec_shape_of_a_dataflow_run/opt_run_item_in_the_tree.yaml
+                          at brief).
+                        - A message to an actor carries a value of the
+                          type its input port
+                          declares
+                          (_data/interface_control_document/icd_dataflow_actor_message.yaml
+                          at surface.data.artifact.artifact.message.content).
+                        - The engine records nothing itself; recording
+                          nodes write the log
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief).
+                        - Rows of the binary log have a fixed layout
+                          (_data/decision/dec_encoding_of_a_recording/opt_own_binary_log_with_an_index.yaml
+                          at brief); the trial's code sets its recording ring aside before
+                          the first local step (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, functions run and
+                          Recording::open), as the memory requirement asks of buffers
+                          (_data/requirement/rqt_memory_before_first_step.yaml at object).
+                        Strength: moderate to strong; it holds if
+                        change sets are kept with the run item, which
+                        dec_where_dataflow_items_are_kept may settle,
+                        and it shapes the replay that
+                        dec_how_a_recorded_run_is_replayed chooses.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_own_binary_log_with_an_index
+    guid_target:        opt_b61a54847bc74bdcb7a21699ebcc003a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_json_lines_with_hex_messages
+    guid_target:        opt_db6d1813e33d4108806f2c053333dcaa
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

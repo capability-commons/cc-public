@@ -1,0 +1,83 @@
+id_self:                ann_wire_bytes_copied_straight_into_typed_buffers
+guid_self:              ann_c6c49db8f5c84f04a6db299e3ca5f874
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Bytes from the link copied straight into typed buffers
+brief:                  |
+                        The trial's receiver read a bare count in host
+                        order and that many items, with no magic, step
+                        or size, and its code reads any items beyond
+                        the capacity into a vector it allocates on the
+                        unit thread, for whatever count the link
+                        sends. Under the memory option the bytes from
+                        the link land in a typed buffer that nodes
+                        read as they are, so a boolean byte that is
+                        neither 0 nor 1, or a NaN where a node expects
+                        a number, comes from whoever can write to the
+                        link. A deserializer that reads field by
+                        field, as CDR's does, is a natural place to
+                        check each value against its declared type,
+                        and so is the canonical option's converter
+                        where it runs, though on hosts of one layout
+                        it copies straight through as well. Whatever
+                        is chosen, each frame needs a header with
+                        magic, channel, step and size, and its count
+                        checked against the capacity.
+description:            |
+                        Sources:
+                        - The framing is a bare host-order count, with
+                          no magic, step or
+                          size (review of 2026-10-29, CC-016).
+                        - Items beyond the capacity are read into a
+                          vector resized on the
+                          unit thread to the count the link sent, read from the code (trial
+                          2c777ab9, src/cctool/dataflow/engine/nodes/transport.cpp,
+                          function Engine::receive), where the memory requirement sets
+                          memory aside before the first local step, since allocation while
+                          a system runs is forbidden by MISRA-style rules
+                          (_data/requirement/rqt_memory_before_first_step.yaml at object
+                          and rationale).
+                        - Another argument assumes, as this one does,
+                          that some
+                          deployments place nodes on hosts joined by a network a third
+                          party can reach
+                          (_data/decision/dec_same_step_or_next_step_reading/ann_cross_host_wait_within_a_step_as_an_attack_path.yaml
+                          at description).
+                        - Security asks what an attacker can reach
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question.2).
+                        ASSUMPTION: reading a bool whose byte is
+                        neither 0 nor 1 is undefined behavior in C++;
+                        some links will be reachable by a third party.
+                        Strength: weak to moderate; it applies only to
+                        links that others can reach, and a check of
+                        values generated from the dictionary could run
+                        under any option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_message_between_os_processes
+    guid_target:        dec_df52cae8b13f4a90a4193f06ddae614b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_standard_serialization
+    guid_target:        opt_c9e06fd553c04e82b6aa5a9c238b4db0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_layout_on_the_wire
+    guid_target:        opt_f38a84afb04f43dc9cdabc36961d5fbc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

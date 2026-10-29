@@ -1,0 +1,89 @@
+id_self:                ann_payload_typed_by_kind_needs_its_own_converter
+guid_self:              ann_564867d072a94ee6b21c6eb17a533354
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Payload typed by kind that needs a converter of its own between hosts
+brief:                  |
+                        Hosts may differ, as a workstation that
+                        simulates and an embedded target do, and
+                        events leave their host whenever a recording
+                        is replayed on another, as the replay case
+                        does a day later. A type for each kind, like
+                        the fixed struct, is a plain struct that
+                        whatever encoding is chosen between OS
+                        processes converts field by field like any
+                        other type of the dictionary. A slot whose
+                        payload type depends on its kind is the one
+                        shape such a converter cannot handle without
+                        reading the kind first, and nothing ruled so
+                        far gives the dictionary a union, nor did the
+                        trial's have one, so the canonical layout
+                        would need a union added to the dictionary and
+                        its generator. The fixed struct is also the
+                        least code to carry to a small target.
+description:            |
+                        Sources:
+                        - Hosts may differ, as a workstation that
+                          simulates and an embedded
+                          target do
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/dec_encoding_of_a_message_between_os_processes.yaml
+                          at description).
+                        - A recording is replayed a day later on
+                          another host
+                          (_data/test_case/case_control_block_replay.yaml at inputs).
+                        - The canonical option converts at the sender
+                          and receiver where a
+                          host's own layout differs
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/opt_canonical_layout_from_the_dictionary.yaml
+                          at brief).
+                        - A new version of a type maps each field
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml
+                          at brief); the trial's dictionary had fields of primitive or
+                          nested types only (trial 2c777ab9,
+                          src/cctool/dataflow/dictionary.py, function size_of).
+                        - Flexibility asks what it takes to install
+                          the design on a new
+                          platform (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question.1).
+                        ASSUMPTION: OMG IDL and CDR have unions, so a
+                        standard serialization could carry the payload
+                        as one; a few lines generated for each kind
+                        would serve the canonical layout too; the
+                        fixed struct needs the least code on a small
+                        target. Strength: weak to moderate; it falls
+                        away if events never leave their host except
+                        in recordings read on hosts of the same
+                        layout.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_an_engine_event
+    guid_target:        dec_c477c1b323c24bc3861cba33bbf937c0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fixed_header_with_a_typed_payload
+    guid_target:        opt_5cea17fe12c94fcb8a02a89a02f6fed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_dictionary_type_for_each_kind_of_event
+    guid_target:        opt_eefc536ebb95467ebac570ec9201c64e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_fixed_event_struct
+    guid_target:        opt_51e373f1c98e4dfa9df03785922f5d06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

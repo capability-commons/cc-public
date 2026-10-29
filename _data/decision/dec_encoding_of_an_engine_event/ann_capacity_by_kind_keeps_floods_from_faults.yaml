@@ -1,0 +1,105 @@
+id_self:                ann_capacity_by_kind_keeps_floods_from_faults
+guid_self:              ann_2dca084d7b6f4acdbc236c0a855fa9e2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Capacity by kind that keeps outside floods from crowding out faults
+brief:                  |
+                        Overflows and overruns are bounded by the
+                        graph, at most one for each port and one for
+                        each local step, but two kinds of event come
+                        at a rate an outsider sets: admissions of
+                        outside messages, and change events, which the
+                        trial's code raises for every apply request
+                        that names another graph. In one shared queue,
+                        as the header option and the fixed struct
+                        have, a flood of these fills the slots a fault
+                        needs, and the trial's queue, when full,
+                        counts the newest event as lost. Arrays by
+                        kind give each kind its own capacity, derived
+                        from the lowered graph as
+                        ann_events_per_step_bounded_by_graph_and_door
+                        proposes for one queue, so an admission can
+                        never displace an overflow, and each array
+                        holds items of its own size rather than slots
+                        as large as the largest payload. A shared
+                        queue gets the same protection only with a
+                        quota for each kind, which neither of those
+                        options states.
+description:            |
+                        Sources:
+                        - Events per local step are bounded by the
+                          graph, apart from
+                          change requests and outside messages, which runtime control can
+                          limit at its door
+                          (_data/decision/dec_overflow_of_events_and_recordings/ann_events_per_step_bounded_by_graph_and_door.yaml
+                          at brief).
+                        - Runtime control reports a refused change
+                          event for every apply
+                          request that names another graph (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/control.cpp, function handle),
+                          read from the code.
+                        - Each unit has one ring of 4096 events, and
+                          an event that finds
+                          it full is counted as lost (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, functions run and
+                          EventQueue::push), read from the code.
+                        - An event is never dropped
+                          (_data/interface_control_document/icd_dataflow_engine_event.yaml
+                          at surface.data.artifact.availability).
+                        - Capacities are derived by a transform
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/ruling_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief).
+                        - Security asks what an attacker can reach;
+                          performance counts
+                          peak memory (_data/register/reg_concern.yaml at
+                          entries.concern_security.question.2 and
+                          entries.concern_performance_efficiency.measure.2).
+                        ASSUMPTION: runtime control or the sources of
+                        outside messages may be reachable by parties
+                        that are not trusted. Strength: moderate; a
+                        limit at the door of runtime control narrows
+                        it under any option, and quotas in one queue
+                        would match it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_an_engine_event
+    guid_target:        dec_c477c1b323c24bc3861cba33bbf937c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_dictionary_type_for_each_kind_of_event
+    guid_target:        opt_eefc536ebb95467ebac570ec9201c64e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_fixed_header_with_a_typed_payload
+    guid_target:        opt_5cea17fe12c94fcb8a02a89a02f6fed3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_fixed_event_struct
+    guid_target:        opt_51e373f1c98e4dfa9df03785922f5d06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

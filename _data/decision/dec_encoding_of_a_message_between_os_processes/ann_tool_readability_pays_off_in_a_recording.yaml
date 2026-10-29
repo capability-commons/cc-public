@@ -1,0 +1,77 @@
+id_self:                ann_tool_readability_pays_off_in_a_recording
+guid_self:              ann_48e5ead0f71f46f6ae2a892c612584a8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tool readability that pays off in a recording, not on the wire
+brief:                  |
+                        Between OS processes the messages travel in a
+                        framing of the engine's own, over a
+                        shared-memory queue, ZeroMQ or TCP, which DDS
+                        and ROS 2 tools do not join, so CDR on the
+                        wire does not by itself make a message
+                        readable to them. Where readability counts is
+                        a recording: MCAP's registry lists CDR as a
+                        message encoding with ROS 2 and OMG IDL
+                        schemas, so items in CDR inside an MCAP
+                        recording open in existing viewers, where
+                        items in a layout of our own do not. The
+                        standard option therefore pays off only if
+                        dec_encoding_of_a_recording upholds
+                        opt_mcap_container and items are recorded in
+                        the encoding they cross in; with a binary log
+                        of our own its gain is small.
+description:            |
+                        Sources:
+                        - The transport is a shared-memory queue,
+                          ZeroMQ or TCP
+                          (_data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.sender.dataflow_step.settings.transport).
+                        - The standard option is meant to let other
+                          tools read the
+                          messages
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/opt_standard_serialization.yaml
+                          at brief).
+                        - MCAP's registry lists cdr as a message
+                          encoding, and ros2msg,
+                          ros2idl and omgidl as schema encodings (MCAP Format Registry,
+                          https://mcap.dev/spec/registry).
+                        - The MCAP option promises readability by
+                          existing tools
+                          (_data/decision/dec_encoding_of_a_recording/opt_mcap_container.yaml
+                          at brief).
+                        - Flexibility asks on which platforms and
+                          environments the design
+                          runs (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question.0).
+                        ASSUMPTION: DDS and ROS 2 tools find and read
+                        messages through RTPS discovery, not from a
+                        TCP stream or a ZeroMQ socket framed another
+                        way; viewers of MCAP files decode cdr channels
+                        that have those schemas. Strength: moderate;
+                        it ties the two decisions together more than
+                        it settles either, and turns into support for
+                        the standard option if MCAP is upheld for
+                        recordings.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_message_between_os_processes
+    guid_target:        dec_df52cae8b13f4a90a4193f06ddae614b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_standard_serialization
+    guid_target:        opt_c9e06fd553c04e82b6aa5a9c238b4db0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

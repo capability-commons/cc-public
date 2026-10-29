@@ -1,0 +1,86 @@
+id_self:                ann_waiting_engine_holds_memory_after_the_run
+guid_self:              ann_d8aef2cd484940268955a279ab17758f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Memory held by an engine that waits after its run
+brief:                  |
+                        An engine that waits keeps what it set aside
+                        before the first step until deployment closes
+                        it, and in a recorded run of the trial that
+                        includes a recording ring that reserves 256
+                        MiB by default, which the end of the run
+                        closes but, by reading the code, does not
+                        free. A deployer slow to close, or one that
+                        starts the next run first, holds two engines'
+                        memory on one host. An engine could free its
+                        buffers once its units end, but that is the
+                        lifetime the run-end race got wrong; the two
+                        options that close let the process exit and
+                        the system reclaim everything at once.
+description:            |
+                        Sources:
+                        - The default recording ring reserves 4096
+                          rows of 64 KiB, 256 MiB.
+                          (review of 2026-10-29, areas/trial-engine.md, TE-19)
+                        - At the end of the run the recording's writer
+                          is joined and its
+                          file closed while its rows stay allocated, and the engine object is
+                          never freed so that the control thread can still read it. (trial
+                          2c777ab9, src/cctool/dataflow/engine/src/runtime.cpp, functions
+                          run and Recording::close)
+                        - Runtime control read a destroyed engine as a
+                          run ended, and the
+                          fix keeps the engine allocated. (review of 2026-10-29, CC-006)
+                        - The engine stays up after its execution
+                          units end until deployment
+                          tells it to exit or closes runtime control.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_engine_waits_after_the_run.yaml
+                          at brief)
+                        - Patrol runs on an NVIDIA Orin (WTP,
+                          2026-10-28).
+                        - Performance efficiency counts peak memory.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure.2)
+                        ASSUMPTION: the Orin's processor and GPU share
+                        one memory, so what an idle engine holds is
+                        memory that inference cannot use; a ring taken
+                        with calloc on Linux is mapped lazily, so what
+                        stays resident is the part the run touched,
+                        less than the 256 MiB reserved. Strength:
+                        weak; the window is short when deployment
+                        closes promptly, and a smaller ring, or
+                        freeing it at the end of the run, removes most
+                        of the cost.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_waits_after_the_run
+    guid_target:        opt_e7bc70f7f6d0400da91dc3493a02c5c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_late_request_unanswered_and_channel_closed
+    guid_target:        opt_07c7a3dff2a24ddbbf16709774a79ae9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

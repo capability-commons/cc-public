@@ -1,0 +1,96 @@
+id_self:                ann_waiting_engine_exits_only_on_a_seen_close
+guid_self:              ann_5a0ac807de3b40ff9ef711047fb2f497
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Waiting engine whose exit rests on seeing the channel close
+brief:                  |
+                        A waiting engine exits when deployment tells
+                        it to or closes runtime control. Over a pipe
+                        the close is all but certain, since a deployer
+                        that dies closes standard input, and the trial
+                        stopped its engine on that, having learned
+                        that otherwise a crashed deployer leaves
+                        orphan engines. ZeroMQ reconnects peers
+                        silently, so seeing a vanished deployer takes
+                        heartbeats, and a socket whose peer vanished
+                        without closing may give no end of file. On
+                        such a channel a waiting engine can wait
+                        forever and hold its host, while the other two
+                        options exit on their own when the run ends.
+description:            |
+                        Sources:
+                        - The engine must stop when its control input
+                          closes, or a crashed
+                          deployer leaves orphan engines. (trial process log, phase 3)
+                        - At the end of standard input, runtime
+                          control marks itself closed
+                          and stops every unit. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/control.cpp, function
+                          control_start)
+                        - ZeroMQ reconnects peers silently, and the
+                          Paranoid Pirate pattern
+                          adds heartbeats so that each side can detect that the other has
+                          gone (ZeroMQ guide, chapter 4, sections Designing Reliability and
+                          Robust Reliable Queuing (Paranoid Pirate Pattern),
+                          https://zguide.zeromq.org/docs/chapter4/).
+                        - The messaging option sends requests and
+                          replies through an
+                          existing library such as ZeroMQ.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_an_existing_messaging_library.yaml
+                          at brief)
+                        - The engine waits until deployment tells it
+                          to exit or closes
+                          runtime control.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_engine_waits_after_the_run.yaml
+                          at brief)
+                        - Dependency risk asks what the design takes
+                          from third parties;
+                          reliability asks how often the design fails, and for how long.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question.0 and
+                          entries.concern_reliability.question.0)
+                        ASSUMPTION: a TCP connection whose peer host
+                        loses power gives no end of file until a
+                        keepalive or a write fails; a pipe gives one
+                        when the last process holding its write end
+                        exits. Strength: moderate on a socket or with
+                        a messaging library, weak over a pipe; a limit
+                        on how long the engine waits would close it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_waits_after_the_run
+    guid_target:        opt_e7bc70f7f6d0400da91dc3493a02c5c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_late_request_unanswered_and_channel_closed
+    guid_target:        opt_07c7a3dff2a24ddbbf16709774a79ae9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

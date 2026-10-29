@@ -1,0 +1,98 @@
+id_self:                ann_one_copy_on_every_planned_host
+guid_self:              ann_b81c5ae4cf744dbba65aab7107c8d842
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One copy on every host planned so far, canonical layout included
+brief:                  |
+                        The trial generated every dictionary type
+                        packed, with a check at compile time that its
+                        size equals the size the dictionary counts,
+                        and its Python reader decoded recorded items
+                        as packed little-endian values. On the x86-64
+                        host where it was reviewed, memory layout and
+                        canonical layout were therefore the same
+                        bytes, and copying straight through was the
+                        canonical option's whole cost. Patrol's Orin
+                        is 64-bit Arm, which Linux runs little-endian,
+                        so the same would hold on every host now
+                        planned, and on a shared-memory queue between
+                        processes of one host either option is one
+                        copy, which the memory tokens the ruling
+                        expects may later remove. A CDR encoder, as
+                        usually generated, writes field after field
+                        with its own alignment even between processes
+                        of one host, at camera rate on the Orin.
+description:            |
+                        Sources:
+                        - Every type of the dictionary is generated
+                          packed, with a static
+                          check that its size is the sum of its fields (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, function _types;
+                          src/cctool/dataflow/dictionary.py, function size_of); the reader
+                          decodes items little-endian and packed
+                          (src/cctool/dataflow/recording.py, function decode); both read
+                          from the code.
+                        - The generated types are packed, and every
+                          current type is
+                          naturally aligned (review of 2026-10-29, areas/trial-engine.md,
+                          section 5); the review's builds ran on x86-64
+                          (areas/trial-engine-logs/asan_replay_overread.txt).
+                        - Patrol runs on an NVIDIA Orin with a camera
+                          at 30 Hz (WTP,
+                          2026-10-28); the Orin modules have 64-bit Arm cores, Cortex-A78AE
+                          on Armv8.2 (Nvidia Jetson, https://en.wikipedia.org/wiki/Nvidia_Jetson).
+                        - A transport may be a shared-memory queue
+                          (_data/interface_control_document/icd_dataflow_transport.yaml at
+                          surface.sender.dataflow_step.settings.transport); memory tokens
+                          for shared read-only memory are expected as exceptions
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/ruling_value_copied_into_each_queue.yaml
+                          at brief).
+                        - CDR aligns each primitive on its natural
+                          boundary, with gaps
+                          between (OMG CORBA specification, section 15.3.1, CDR primitive
+                          types,
+                          https://www.site.uottawa.ca/~tcl/gradtheses/mnojoumian/ThesisFiles/FinalSpec/CORBA/15.3.1.html).
+                        ASSUMPTION: Linux on AArch64 and on x86-64
+                        runs little-endian; a generated CDR encoder
+                        writes field by field; for a struct of
+                        naturally aligned fields, CDR in little-endian
+                        order may equal the memory layout, which a
+                        generator could exploit to copy instead.
+                        Strength: moderate; it depends on the
+                        generator keeping types packed, or ordered so
+                        that the compiler adds no padding, and
+                        otherwise the canonical option converts on
+                        every host.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_message_between_os_processes
+    guid_target:        dec_df52cae8b13f4a90a4193f06ddae614b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_canonical_layout_from_the_dictionary
+    guid_target:        opt_7d5669a164404a84a0f2fa8364bf0bbc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_memory_layout_on_the_wire
+    guid_target:        opt_f38a84afb04f43dc9cdabc36961d5fbc
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_standard_serialization
+    guid_target:        opt_c9e06fd553c04e82b6aa5a9c238b4db0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

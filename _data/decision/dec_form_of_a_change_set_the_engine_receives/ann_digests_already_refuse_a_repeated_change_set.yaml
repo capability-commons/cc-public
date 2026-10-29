@@ -1,0 +1,95 @@
+id_self:                ann_digests_already_refuse_a_repeated_change_set
+guid_self:              ann_d68d2c7d69dc4a71a235b38be9409007
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Repeated change set already refused by the digest it names
+brief:                  |
+                        The whole-target option claims that a lost or
+                        repeated request changes nothing, but a
+                        document gets that from its digests: it names
+                        the graph it applies to, the engine refuses
+                        whole one meant for another graph, and once
+                        installed the engine runs the graph the change
+                        set gives. A repeat is then refused, and the
+                        refusal names the graph that runs, so
+                        deployment learns that the first one took
+                        effect. A whole target gains more only by
+                        being accepted whatever graph runs, which
+                        rqt_control_refuses_wrong_digest forbids as
+                        written. By reading its code, the trial left
+                        one hole that any form must close: while a
+                        change set waits to be installed, a second one
+                        naming the same graph passes and silently
+                        replaces it.
+description:            |
+                        Sources:
+                        - A change set carries the digest of the graph
+                          it applies to and of
+                          the one it gives, and one that applies to a graph other than the
+                          one running is refused whole.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml at
+                          surface.data.artifact.artifact.change_set.content and
+                          surface.data.artifact.failure)
+                        - A request naming a content digest other than
+                          that of the graph
+                          running is refused and changes nothing.
+                          (_data/requirement/rqt_control_refuses_wrong_digest.yaml at
+                          condition and qualifier)
+                        - The deployer sends a change set under the
+                          digest of the graph it
+                          applies to; runtime control refuses a request naming another
+                          digest, with a reason that names the graph running; install sets
+                          the running digest to the one the change set gives. (trial
+                          2c777ab9, src/cctool/dataflow/deploy.py, function send;
+                          src/cctool/dataflow/engine/src/control.cpp, function handle;
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function install)
+                        - An apply not installed within 2 s is
+                          answered ok and pending, and
+                          a later apply silently replaces it, the replacement found by
+                          reading the code; the digest a request is checked against changes
+                          only when a change set is installed. (review of 2026-10-29,
+                          areas/trial-engine.md, TE-18; trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, functions hook_apply
+                          and install)
+                        - With the whole target, a lost or repeated
+                          request changes nothing.
+                          (_data/decision/dec_form_of_a_change_set_the_engine_receives/opt_whole_target_dynamic_subgraph.yaml
+                          at brief)
+                        Strength: strong on the digest rule as
+                        written; the hole while a change set is
+                        pending belongs to
+                        dec_how_a_change_set_is_installed, whichever
+                        form is chosen.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_a_change_set_the_engine_receives
+    guid_target:        dec_aafed8761e74408b96ba8a287ea02c1b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_document_of_additions_removals_and_swaps
+    guid_target:        opt_33a7aee440674d5aa1f6bf154ad8f8a7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_whole_target_dynamic_subgraph
+    guid_target:        opt_2504091c71da4a238bc720a62dcf5b7b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

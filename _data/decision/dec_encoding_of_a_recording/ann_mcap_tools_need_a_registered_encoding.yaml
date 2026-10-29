@@ -1,0 +1,99 @@
+id_self:                ann_mcap_tools_need_a_registered_encoding
+guid_self:              ann_d539b01319d84fde97e7c3892164f1db
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Readability by MCAP tools that needs a registered encoding
+brief:                  |
+                        Tools that read MCAP decode a message only
+                        when its channel names an encoding they know,
+                        and the registry lists such encodings as CDR
+                        with a ROS 2 or OMG IDL schema, Protocol
+                        Buffers, FlatBuffers, or JSON, which may have
+                        a JSON Schema; a type of the data dictionary
+                        in the engine's own layout is none of these. A
+                        viewer would then list channels and times but
+                        show no field, unless items are recorded in
+                        CDR, as opt_standard_serialization would carry
+                        them between OS processes, or converted to a
+                        registered encoding as they are written. For
+                        that conditional gain MCAP brings third-party
+                        code: a header-only C++ library under the MIT
+                        license that uses lz4 and zstd, each of which
+                        a macro can leave out, maintained by one
+                        company but widely used, as rosbag2's default
+                        storage. Kept to the recorder and player node
+                        kinds, as transport libraries are kept to the
+                        transport nodes, it need not reach a target
+                        that does not record.
+description:            |
+                        Sources:
+                        - The registry lists the well-known message
+                          encodings (ros1, cdr,
+                          protobuf, flatbuffer, capnproto, cbor, msgpack, json) and schema
+                          encodings (protobuf, flatbuffer, capnproto, ros1msg, ros2msg,
+                          ros2idl, omgidl, jsonschema), and allows an empty schema
+                          encoding only for self-describing messages (MCAP Format
+                          Registry, https://mcap.dev/spec/registry).
+                        - The specification prefers the well-known
+                          encodings for schemas
+                          and channels (MCAP Format Specification, https://mcap.dev/spec,
+                          Schema and Channel records).
+                        - The option promises readability by existing
+                          tools, with the
+                          dictionary type as the schema of each channel
+                          (_data/decision/dec_encoding_of_a_recording/opt_mcap_container.yaml
+                          at brief).
+                        - MCAP is under the MIT license, with
+                          libraries in C++, Go,
+                          Python, JavaScript, Swift and Rust, from Foxglove
+                          (https://github.com/foxglove/mcap); the C++ library is
+                          header-only and depends on lz4 and zstd, each of which a macro
+                          can disable (https://github.com/foxglove/mcap/blob/main/cpp/README.md).
+                        - rosbag2 records to MCAP by default (rosbag2
+                          README,
+                          https://github.com/ros2/rosbag2).
+                        - Transport libraries stay in the sender and
+                          receiver so that a
+                          target without a transport need not build them
+                          (_data/requirement/rqt_transport_confines_library.yaml at
+                          object and rationale).
+                        - Dependency risk asks what happens if a third
+                          party changes or
+                          withdraws what the design takes (_data/register/reg_concern.yaml
+                          at entries.concern_dependency_risk.question.1).
+                        ASSUMPTION: viewers such as Foxglove decode
+                        only registered encodings without a plugin of
+                        our own; the MIT license of MCAP and the BSD
+                        licenses of lz4 and zstd are compatible with
+                        Apache-2.0. Strength: moderate; it does not
+                        count against MCAP as a container, only
+                        against readability by existing tools as the
+                        option words it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

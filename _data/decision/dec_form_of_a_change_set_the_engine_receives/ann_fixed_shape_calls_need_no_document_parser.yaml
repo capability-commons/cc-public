@@ -1,0 +1,103 @@
+id_self:                ann_fixed_shape_calls_need_no_document_parser
+guid_self:              ann_a16f06c98ff145ff918f2bc182c0028b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Calls of fixed shape read without a parser of nested data
+brief:                  |
+                        A call to make a node, bind, join, cut, swap
+                        or commit has a fixed set of fields, so each
+                        fits one frame of a fixed dictionary type and
+                        one C function the engine exports. The engine
+                        then needs no reader of nested data of varying
+                        size, the part of the trial that one deeply
+                        nested line of 200 KB crashed, and an
+                        orchestrator on the target, where cctool is
+                        absent, could call the same functions in
+                        process. A document or a whole target, lists
+                        of nodes each with settings of its own kind,
+                        needs such a reader, taken from others or kept
+                        in house. The point weakens if the document is
+                        itself a dictionary type whose lists have
+                        declared capacities.
+description:            |
+                        Sources:
+                        - cctool turns the change into an ordered list
+                          of small engine
+                          calls.
+                          (_data/decision/dec_form_of_a_change_set_the_engine_receives/opt_ordered_list_of_engine_calls.yaml
+                          at brief)
+                        - In frames, a request is a type of the data
+                          dictionary, read as
+                          values of fixed size with no text parser.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_dictionary_types_in_length_prefixed_frames.yaml
+                          at brief)
+                        - The trial's change set held a map of nodes
+                          to add, each with its
+                          kind, unit and map of settings, and lists of nodes to remove,
+                          edges to join and cut, and swaps, read by an in-house JSON reader.
+                          (trial 2c777ab9, src/cctool/dataflow/deploy.py, function send;
+                          src/cctool/dataflow/engine/include/df/json.hpp)
+                        - That reader recursed without a limit, and
+                          one deeply nested line
+                          of 200 KB crashed the engine. (review of 2026-10-29, CC-046)
+                        - A target could take change sets made where
+                          cctool is absent, such
+                          as from another orchestrator joining at run time, a need future
+                          rather than present.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_made_where_cctool_is_absent.yaml
+                          at brief)
+                        - Dependency risk counts direct and indirect
+                          dependencies.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.measure.0)
+                        ASSUMPTION: the settings of a node to make,
+                        whose shape depends on its kind, can travel as
+                        the bytes of that kind's settings laid out
+                        from the dictionary, so this call too has a
+                        bounded size. Strength: moderate; it rests on
+                        the encoding chosen for runtime control, and a
+                        bounded document type would also be read
+                        without a general parser.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_a_change_set_the_engine_receives
+    guid_target:        dec_aafed8761e74408b96ba8a287ea02c1b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ordered_list_of_engine_calls
+    guid_target:        opt_bef3312d0ec14c86aeb7b2778da61dec
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_document_of_additions_removals_and_swaps
+    guid_target:        opt_33a7aee440674d5aa1f6bf154ad8f8a7
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_whole_target_dynamic_subgraph
+    guid_target:        opt_2504091c71da4a238bc720a62dcf5b7b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

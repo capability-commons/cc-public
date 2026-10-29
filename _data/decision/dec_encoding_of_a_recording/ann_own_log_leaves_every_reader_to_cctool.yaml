@@ -1,0 +1,74 @@
+id_self:                ann_own_log_leaves_every_reader_to_cctool
+guid_self:              ann_77b80947822249f8bea2f6770c431862
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Binary log of our own that leaves every reader to cctool
+brief:                  |
+                        The binary log of our own adds no third-party
+                        code, but everything that reads it is ours to
+                        write, test, fuzz and keep in step with each
+                        version of the format: the player in C++, the
+                        reader in Python, and any tool that lists,
+                        slices or compares a file. The review found
+                        faults in both of the trial's readers, an
+                        over-read in one and rows skipped without
+                        notice in the other. MCAP comes with
+                        maintained libraries in C++ and Python, and
+                        JSON lines can at least be opened in any text
+                        tool. The binary format is small, so its
+                        readers would be short, but each new use of
+                        recordings falls on cctool.
+description:            |
+                        Sources:
+                        - The binary log is read by readers that
+                          cctool provides
+                          (_data/decision/dec_encoding_of_a_recording/opt_own_binary_log_with_an_index.yaml
+                          at brief).
+                        - The trial's replay over-read the heap on a
+                          bad count, and its
+                          Python reader skipped a broken row anywhere in a file, so that a
+                          local step vanished with no error (review of 2026-10-29, CC-045;
+                          areas/trial-model.md, TM-17).
+                        - MCAP has maintained libraries in six
+                          languages, Python and C++
+                          among them, and a command-line tool that inspects, merges and
+                          splits files (https://github.com/foxglove/mcap).
+                        - Maintainability counts the parts a
+                          representative change touches
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure.1).
+                        ASSUMPTION: MCAP's command-line tool and
+                        viewers can also filter a file by channel and
+                        time, which would serve the comparisons of
+                        recordings that the tests make. Strength:
+                        moderate; it is the other side of the
+                        dependency that MCAP adds, and it weighs more
+                        as more tools read recordings.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_own_binary_log_with_an_index
+    guid_target:        opt_b61a54847bc74bdcb7a21699ebcc003a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

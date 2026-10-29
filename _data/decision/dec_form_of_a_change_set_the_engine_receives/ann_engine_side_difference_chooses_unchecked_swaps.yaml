@@ -1,0 +1,103 @@
+id_self:                ann_engine_side_difference_chooses_unchecked_swaps
+guid_self:              ann_564fedd937b846d29cc220ee4bd41e4b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Swaps chosen by the engine that cctool can only predict
+brief:                  |
+                        Computing the difference decides, for each
+                        node in both graphs, whether it is swapped,
+                        keeping and upgrading its state, or removed
+                        and added, losing it; the trial's deployer
+                        made that choice in Python. Under the whole
+                        target the engine makes it in C++, while
+                        cctool must still refuse, before sending
+                        anything, a swap whose state cannot be
+                        upgraded, so it can check only the swaps it
+                        predicts the engine will choose. Two copies of
+                        one rule must then agree, and the trial's two
+                        validators already did not. The ruling on
+                        checking a change set expects the Python side
+                        to turn a change into a materialized form, or
+                        a sequence of calls, that fits the engine; a
+                        document or a list of calls leaves the choice
+                        of swaps there, while a whole target, though
+                        itself a materialized form, moves that choice
+                        into the engine.
+description:            |
+                        Sources:
+                        - The deployer's change set removes and adds a
+                          node whose unit or
+                          family of kind differs, and swaps one whose kind or settings
+                          differ. (trial 2c777ab9, src/cctool/dataflow/deploy.py, function
+                          change_set)
+                        - A swap whose state cannot be upgraded is
+                          refused by cctool before
+                          it is sent.
+                          (_data/interface_control_document/icd_dataflow_change_set.yaml at
+                          surface.data.artifact.compatibility)
+                        - A node version is swapped at a step, with
+                          its state upgraded.
+                          (_data/decision/dec_swap_of_a_node_version/ruling_swap_at_a_step_with_state_upgrade.yaml
+                          at brief)
+                        - WTP expects the Python side to turn a change
+                          from its canonical
+                          form into a materialized form, or a sequence of API calls, that
+                          better fits what the C++ runtime can receive.
+                          (_data/decision/dec_change_set_at_a_step/ruling_change_set_checked_by_both.yaml
+                          at brief)
+                        - The change-set check was weaker than the
+                          engine, and the fix is
+                          one validator shared with the engine's reasons. (review of
+                          2026-10-29, CC-029)
+                        - Checking graph rules in the runtime as well
+                          means two copies in
+                          two languages, kept in step with tests that they agree.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_rules_kept_in_one_copy.yaml
+                          at brief)
+                        ASSUMPTION: a node that is removed and added
+                        instead of swapped starts again from its
+                        initial state, so a filter or the integrator
+                        of a controller restarts in service. Strength:
+                        moderate; a parity test over pairs of graphs
+                        could hold the two copies together, and the
+                        ruling on where variants are resolved admits a
+                        whole resolved graph as what a target
+                        receives.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_form_of_a_change_set_the_engine_receives
+    guid_target:        dec_aafed8761e74408b96ba8a287ea02c1b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_whole_target_dynamic_subgraph
+    guid_target:        opt_2504091c71da4a238bc720a62dcf5b7b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_document_of_additions_removals_and_swaps
+    guid_target:        opt_33a7aee440674d5aa1f6bf154ad8f8a7
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_ordered_list_of_engine_calls
+    guid_target:        opt_bef3312d0ec14c86aeb7b2778da61dec
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

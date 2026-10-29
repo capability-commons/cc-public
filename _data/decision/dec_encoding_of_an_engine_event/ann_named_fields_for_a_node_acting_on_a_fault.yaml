@@ -1,0 +1,99 @@
+id_self:                ann_named_fields_for_a_node_acting_on_a_fault
+guid_self:              ann_3c3b817f84144ce3a3486dffcb456277
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Named fields for a node that must act on a reported fault
+brief:                  |
+                        If a reader that must tell a dropped message
+                        from an empty one learns of the drop from the
+                        faults reported to it, as
+                        opt_fault_read_from_the_control_message
+                        proposes, and those faults are engine events
+                        in the encoding chosen here, the author of an
+                        ordinary node writes code that reads an
+                        overflow event and reaches a safe state. In
+                        the fixed struct the excess and the fail-safe
+                        are the fields a and b, whose meanings the
+                        trial stated only in a comment of its
+                        dictionary entry, and there for overflows and
+                        overruns alone, so reading them the wrong way
+                        round compiles and looks right. A typed
+                        payload or a type for each kind gives named
+                        fields from the data dictionary, which the
+                        compiler checks and whose changes the upgrade
+                        check of the dictionary sees. WTP asked that
+                        node authors not carry clever mechanisms.
+description:            |
+                        Sources:
+                        - A reader that must tell absent from empty
+                          reads the faults of its
+                          inputs in the control message
+                          (_data/decision/dec_how_a_reader_tells_absent_from_empty/opt_fault_read_from_the_control_message.yaml
+                          at brief); a dropped obstacle list read as empty reads as free
+                          space
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/ann_truncated_obstacle_list_reads_as_free_space.yaml
+                          at brief; review of 2026-10-29, CC-061).
+                        - The meanings of a and b were stated in a
+                          comment of the trial's
+                          dictionary entry for the engine event, for overflows and overruns
+                          only (trial 2c777ab9,
+                          src/cctool/dataflow/standard/data_dictionary/engine_event_v1.yaml);
+                          those for change and swap events are in its process log (trial
+                          process log, phase 3), and its reader repeats only the numbers
+                          of the kinds, in a table (src/cctool/dataflow/recording.py,
+                          function events).
+                        - Each type is a versioned item, with a
+                          mapping for each field when
+                          it is upgraded
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml
+                          at brief).
+                        - WTP wants no clever mechanisms that burden
+                          node authors (WTP,
+                          2026-10-28).
+                        - Safety asks how the design avoids or limits
+                          each hazard
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question.1).
+                        ASSUMPTION: no check compares how a node reads
+                        a and b with the meaning stated for each kind.
+                        Strength: moderate; it matters where ordinary
+                        nodes read events, not where only control
+                        blocks and recorders do.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_an_engine_event
+    guid_target:        dec_c477c1b323c24bc3861cba33bbf937c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_header_with_a_typed_payload
+    guid_target:        opt_5cea17fe12c94fcb8a02a89a02f6fed3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_dictionary_type_for_each_kind_of_event
+    guid_target:        opt_eefc536ebb95467ebac570ec9201c64e
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_fixed_event_struct
+    guid_target:        opt_51e373f1c98e4dfa9df03785922f5d06
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

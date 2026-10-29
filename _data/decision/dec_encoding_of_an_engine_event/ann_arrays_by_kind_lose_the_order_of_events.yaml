@@ -1,0 +1,87 @@
+id_self:                ann_arrays_by_kind_lose_the_order_of_events
+guid_self:              ann_028e601f28c442adb54bff7f980b3b49
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Arrays by kind that lose the order of events within a unit
+brief:                  |
+                        The ICD orders events as they happened within
+                        an execution unit, and the trial's code kept
+                        that order at no cost in a single queue.
+                        Arrays by kind keep it only within a kind: a
+                        swap, and an overflow raised by the new
+                        version in the same local step, which the
+                        trial's code reports in that order, arrive in
+                        different arrays, and a reader cannot tell
+                        which came first unless each event also
+                        carries a sequence number of its unit. The
+                        control block has one events output, a
+                        recorder takes values of one type, and a port
+                        group must share one type, so arrays by kind
+                        also mean an output and a recorder for each
+                        kind, and a new kind of event adds both. A
+                        fixed header with a typed payload in one queue
+                        keeps the order and the one port.
+description:            |
+                        Sources:
+                        - Events are ordered as they happened within
+                          one execution unit
+                          (_data/interface_control_document/icd_dataflow_engine_event.yaml
+                          at surface.data.artifact.ordering).
+                        - The trial held the events of a unit in one
+                          ring and drained them
+                          in order (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, functions
+                          EventQueue::push and EventQueue::drain); a swapped node that
+                          overflows in its first local step is reported as a swap, then an
+                          overflow (src/cctool/dataflow/engine/src/dynamic.cpp, function
+                          dynamic_slot), both read from the code.
+                        - The control block of a unit has one output
+                          of engine events
+                          (_data/interface_control_document/icd_dataflow_control_block.yaml
+                          at surface.unit.dataflow_step.output.events), and a recorder
+                          records values of one type
+                          (_data/interface_control_document/icd_dataflow_recorder.yaml at
+                          surface.recorder.dataflow_step.input.recorded).
+                        - The ports of a group share one data type
+                          (_data/decision/dec_ports_whose_count_comes_from_configuration/ruling_port_groups_sharing_a_type.yaml
+                          at brief).
+                        - The trial's lowering inserted one recorder
+                          for each recorded end
+                          (trial 2c777ab9, src/cctool/dataflow/lower.py, function
+                          _recorders).
+                        Strength: moderate; a sequence number in each
+                        event restores the order for eight bytes, but
+                        the extra ports and recorders remain.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_an_engine_event
+    guid_target:        dec_c477c1b323c24bc3861cba33bbf937c0
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_dictionary_type_for_each_kind_of_event
+    guid_target:        opt_eefc536ebb95467ebac570ec9201c64e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_fixed_header_with_a_typed_payload
+    guid_target:        opt_5cea17fe12c94fcb8a02a89a02f6fed3
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,97 @@
+id_self:                ann_messaging_library_in_runtime_control_breaks_confinement
+guid_self:              ann_88bddd7f82df45b388e8e22ee24ce7d1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Messaging library in runtime control, outside the transport nodes
+brief:                  |
+                        rqt_transport_confines_library allows ZeroMQ,
+                        sockets and shared-memory libraries only in
+                        the sender and receiver nodes, so that a
+                        target without a transport need not build one.
+                        Runtime control is part of the engine and is
+                        compiled into every build, so ZeroMQ request
+                        and reply sockets there would put the library
+                        into every engine, one with no transport
+                        included, where the trial's engines linked no
+                        third-party library at all. The library has
+                        also changed its license once, from LGPL-3.0
+                        with exceptions to MPL-2.0 in 2023, terms that
+                        are not ours to fix. JSON lines or frames read
+                        by the engine's own code keep that count at
+                        zero, though either one carried on a socket
+                        meets the same requirement for the socket.
+description:            |
+                        Sources:
+                        - Nothing else in the engine depends on
+                          ZeroMQ, sockets or shared
+                          memory libraries, since a target without a transport need not
+                          build it.
+                          (_data/requirement/rqt_transport_confines_library.yaml at brief
+                          and rationale)
+                        - Runtime control is part of the dataflow
+                          engine.
+                          (_data/logical_component/lco_dataflow_engine_control.yaml at edge)
+                        - The messaging option sends requests and
+                          replies through a library
+                          such as ZeroMQ request and reply sockets carrying JSON.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_an_existing_messaging_library.yaml
+                          at brief)
+                        - The generated build compiles every source of
+                          the engine core,
+                          runtime control among them, leaving out only the actors and the
+                          dynamic subgraph when unused, and links each engine with its node
+                          library and the threads library only. (trial 2c777ab9,
+                          src/cctool/dataflow/generate.py, function _cmake and the text
+                          CMAKE_HEAD)
+                        - libzmq was licensed under LGPL-3.0 with a
+                          static-link exception
+                          and is now under MPL-2.0, the relicensing completed in release
+                          4.3.5 of 2023-10-09 (ZeroMQ, License,
+                          https://zeromq.org/license/; libzmq 4.3.5 release notes,
+                          https://newreleases.io/project/github/zeromq/libzmq/release/v4.3.5).
+                        - Dependency risk asks what the design takes
+                          from third parties and
+                          whether their licenses are compatible with ours.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question.0 and question.2)
+                        ASSUMPTION: MPL-2.0, a copyleft on each file,
+                        can be linked into an Apache-2.0 engine, so
+                        the license is a duty to track rather than a
+                        bar. Strength: strong while the requirement
+                        stands as written; it falls away if WTP lets
+                        runtime control share the transport library,
+                        or puts runtime control in a process of its
+                        own beside the engine.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_an_existing_messaging_library
+    guid_target:        opt_aad9dc3233334877b7e96691ec5d955b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_types_in_length_prefixed_frames
+    guid_target:        opt_872f7f11f2c24b72b63e11ecc8e6cb7b
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_json_lines_on_a_stream
+    guid_target:        opt_ad999a8cf3f3487081c44d45786406ee
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

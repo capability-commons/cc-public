@@ -1,0 +1,91 @@
+id_self:                ann_remote_control_channel_needs_an_authenticated_sender
+guid_self:              ann_0fbc456de69b4900822593de950a2f83
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Authenticated sender on a control channel that leaves the host
+brief:                  |
+                        Whoever can write to runtime control can stop
+                        units or rewire the dynamic subgraph. Over
+                        standard input and output only the process
+                        that started the engine holds the pipe, which
+                        is all the trial needed. Over a socket, as
+                        JSON lines allow for a remote engine, anyone
+                        who reaches the port can send a stop or an
+                        apply, and the digest a request carries proves
+                        nothing about its sender, since the graph is
+                        public. ZeroMQ's CURVE mechanism can
+                        authenticate a client by its public key and
+                        encrypts the link, while JSON lines, or frames
+                        sent on a socket, must get the same from TLS,
+                        a secure shell or a code of their own.
+description:            |
+                        Sources:
+                        - The engine has no safety or security
+                          requirements of its own, but
+                          must let the systems it runs meet theirs.
+                          (_data/logical_component/lco_dataflow_engine.yaml at description)
+                        - No option on checking a change set says who
+                          may send one, and the
+                          engine should let a system require an authenticated sender.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_sender_and_its_record_unstated.yaml
+                          at brief)
+                        - A digest match shows which graph was meant,
+                          not who sent the
+                          request, since anyone can compute the digest of a public graph.
+                          (_data/decision/dec_change_set_at_a_step/ann_change_set_digest_proves_neither_content_nor_sender.yaml
+                          at brief)
+                        - A stop of one unit can stall a safety
+                          function in a neighbor while
+                          it is reported as running, and whoever can send runtime control
+                          requests gains a quiet way to cause that.
+                          (_data/decision/dec_scope_of_stop_and_start/ann_stopped_unit_stalls_readers_and_writers_alike.yaml
+                          at brief)
+                        - CURVE gives secure authentication and
+                          confidentiality between a
+                          client and a server, authenticating clients by their long-term
+                          public keys when the server chooses to (libzmq API, zmq_curve,
+                          https://libzmq.readthedocs.io/en/latest/zmq_curve.html).
+                        - The trial's deployer reached the engine only
+                          through the pipes of
+                          a child process. (trial 2c777ab9, src/cctool/dataflow/deploy.py,
+                          class Engine)
+                        ASSUMPTION: a pipe is open only to the
+                        processes that hold its descriptors, so a
+                        local engine needs no authentication of its
+                        own. Strength: moderate; it bears only on an
+                        engine controlled from another host, and falls
+                        away if remote control always runs through the
+                        pipe of a secure shell.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_an_existing_messaging_library
+    guid_target:        opt_aad9dc3233334877b7e96691ec5d955b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_json_lines_on_a_stream
+    guid_target:        opt_ad999a8cf3f3487081c44d45786406ee
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

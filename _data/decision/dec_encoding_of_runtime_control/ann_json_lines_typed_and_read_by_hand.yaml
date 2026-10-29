@@ -1,0 +1,85 @@
+id_self:                ann_json_lines_typed_and_read_by_hand
+guid_self:              ann_4b04469340404c82aa3c24f4844db145
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Control requests typed, read and recorded as plain text
+brief:                  |
+                        The trial's tests and the review's
+                        reproductions all drove the engine by writing
+                        request lines and reading reply lines: status
+                        polls at the end of a run, a stop followed by
+                        a close, 75 changes under a race detector, and
+                        the 200 KB line that found the reader's crash.
+                        The recording kept each change set as the
+                        request's own text, readable as it stands, and
+                        an engine started from a terminal can be asked
+                        for its status by typing a line. The tests
+                        state change sets as Python maps, which a
+                        generated encoder of frames could take as
+                        well, but binary frames need a decoder for
+                        every look at the channel or the recording,
+                        which the generator could write from the same
+                        dictionary but which does not exist yet.
+description:            |
+                        Sources:
+                        - The tests send status, stop, start and apply
+                          requests through the
+                          deployer, with change sets written inline. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/test_engine.py and test_dynamic.py)
+                        - The review's scripts wrote request lines and
+                          read reply lines for
+                          the run-end loop, the stop and close loop and the stress run of
+                          changes. (review of 2026-10-29, areas/trial-engine.md, section 2,
+                          and trial-engine-logs/repro/scripts/runend.py)
+                        - Each change set is recorded at its step as
+                          the text of its
+                          request. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/dynamic.cpp, function install)
+                        - JSON lines are readable in a terminal and in
+                          a log, with a small
+                          parser in the engine.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_json_lines_on_a_stream.yaml
+                          at brief)
+                        - The process log reports that the trial's
+                          JSON lines choices
+                          worked, though its recording was large. (trial process log,
+                          suggestion 2, an encodings phase)
+                        - Maintainability asks how readily a newcomer
+                          can understand the
+                          design and how readily a change can be checked before it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.0 and question.2)
+                        ASSUMPTION: a decoder that prints frames as
+                        text can be generated from the dictionary
+                        types alongside the code that reads and writes
+                        them. Strength: moderate; it weighs most in
+                        development and less on a fielded robot, and a
+                        generated decoder would close most of the gap.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_json_lines_on_a_stream
+    guid_target:        opt_ad999a8cf3f3487081c44d45786406ee
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dictionary_types_in_length_prefixed_frames
+    guid_target:        opt_872f7f11f2c24b72b63e11ecc8e6cb7b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

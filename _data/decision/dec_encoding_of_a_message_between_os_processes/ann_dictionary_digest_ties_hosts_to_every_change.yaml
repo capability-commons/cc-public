@@ -1,0 +1,87 @@
+id_self:                ann_dictionary_digest_ties_hosts_to_every_change
+guid_self:              ann_cb7634fab03749aabe50655a236ae30b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Whole-dictionary digest that makes hosts move together
+brief:                  |
+                        The memory option checks that both ends were
+                        built from the same dictionary digest. If that
+                        is a digest of the whole dictionary, as the
+                        wording suggests, it changes whenever any type
+                        is added or upgraded, so a host rebuilt for a
+                        change that touches none of the edges it
+                        shares can no longer talk to the others, and
+                        every host must be rebuilt and deployed
+                        together. The option also refuses, rather than
+                        converts, a pair of hosts whose compilers lay
+                        a type out differently, though hosts may
+                        differ. The check needed is narrower, the
+                        name, version and layout of the one type on
+                        each crossing edge, and the canonical layout
+                        converts where layouts differ and checks no
+                        digest, so a host rebuilt for a change
+                        elsewhere keeps talking to the others.
+description:            |
+                        Sources:
+                        - The memory option checks that both ends were
+                          built from the same
+                          dictionary digest for the same byte order, alignment and sizes
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/opt_memory_layout_on_the_wire.yaml
+                          at brief).
+                        - Each type is an item with a version, and a
+                          new version names the
+                          one it upgrades
+                          (_data/decision/dec_form_of_the_data_dictionary/ruling_dictionary_items_with_upgrades.yaml
+                          at brief).
+                        - Hosts may differ, as a workstation that
+                          simulates and an embedded
+                          target do
+                          (_data/decision/dec_encoding_of_a_message_between_os_processes/dec_encoding_of_a_message_between_os_processes.yaml
+                          at description).
+                        - Maintainability counts the parts a
+                          representative change touches;
+                          flexibility asks what it takes to install on a new platform
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure.1 and
+                          entries.concern_flexibility.question.1).
+                        ASSUMPTION: the option means one digest over
+                        the whole dictionary; on 32-bit x86 Linux a
+                        64-bit integer inside a struct is aligned to 4
+                        bytes where AArch64 aligns it to 8, so one
+                        type can have two layouts. Strength: moderate;
+                        a digest for each edge type removes most of
+                        it, and then the two options differ little on
+                        hosts of one layout.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_message_between_os_processes
+    guid_target:        dec_df52cae8b13f4a90a4193f06ddae614b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_memory_layout_on_the_wire
+    guid_target:        opt_f38a84afb04f43dc9cdabc36961d5fbc
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_canonical_layout_from_the_dictionary
+    guid_target:        opt_7d5669a164404a84a0f2fa8364bf0bbc
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

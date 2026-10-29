@@ -1,0 +1,99 @@
+id_self:                ann_end_notice_says_why_each_unit_stopped
+guid_self:              ann_2a8d51ae327b4a4295b8b4cf3e112024
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  End notice that says why each unit stopped
+brief:                  |
+                        The end notice carries the last local step of
+                        each unit and why it stopped, which status
+                        does not: status says whether a unit runs, not
+                        why it no longer does. In the trial, by
+                        reading its code, a run ended at a step limit,
+                        on a stop or when runtime control closed, each
+                        with exit status 0, while a failed local step
+                        was only an event, and in the review's run it
+                        left a bounded run never ending. If a failed
+                        step or a silent sender comes to stop the
+                        host, as two open options propose, a fault
+                        becomes one more way a run ends, and a
+                        supervisor that must bring the robot to a safe
+                        state needs to tell it from a planned end. A
+                        waiting engine gives the same only if status
+                        grows a field for it.
+description:            |
+                        Sources:
+                        - The notice carries the last local step of
+                          each execution unit and
+                          why it stopped.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_end_announced_before_close.yaml
+                          at brief)
+                        - Status carries whether each unit runs and
+                          its current local step.
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.artifact.status.content)
+                        - A unit ends at its step limit or on a stop,
+                          every unit is stopped
+                          when runtime control closes, and the run returns 0 in each case; a
+                          failed step is reported as an event and the unit carries on.
+                          (trial 2c777ab9, src/cctool/dataflow/engine/src/runtime.cpp,
+                          functions run_unit and run;
+                          src/cctool/dataflow/engine/src/control.cpp, function
+                          control_start)
+                        - A failed local step shifts downstream units
+                          for the rest of the
+                          run, and a bounded run never ends. (review of 2026-10-29, CC-004)
+                        - A failed local step may stop every unit on
+                          the host, and so may a
+                          receiver that times out.
+                          (_data/decision/dec_what_a_failed_local_step_sends_downstream/opt_failed_step_stops_the_host.yaml
+                          at brief;
+                          _data/decision/dec_what_a_receiver_does_when_no_message_comes/opt_receiver_timeout_stops_the_host.yaml
+                          at brief)
+                        - The engine must let the systems it runs meet
+                          their safety
+                          requirements. (_data/logical_component/lco_dataflow_engine.yaml at
+                          description)
+                        - Safety asks what state the design falls back
+                          to when it fails.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question.2)
+                        ASSUMPTION: a supervisor of the robot, not the
+                        engine, brings the actuators to a safe state,
+                        and acts differently on a fault than on a
+                        planned end. Strength: moderate; it grows if
+                        either option that stops the host is upheld,
+                        and falls if the reason travels in an event to
+                        a recorder instead.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_late_request_unanswered_and_channel_closed
+    guid_target:        opt_07c7a3dff2a24ddbbf16709774a79ae9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

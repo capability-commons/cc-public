@@ -1,0 +1,94 @@
+id_self:                ann_waiting_engine_must_refuse_late_changes
+guid_self:              ann_8f393b005e46417b88e43004b556d48a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requests a waiting engine must refuse once its run has ended
+brief:                  |
+                        An engine that waits stays reachable with no
+                        unit running, so every request but status and
+                        exit needs a defined refusal, or a late change
+                        set may be reported as taking effect. In the
+                        trial an apply sent to a stopped unit was
+                        answered ok and pending, a later one silently
+                        replaced it, as the review found by reading
+                        the code, and start did not restart the unit.
+                        The open option in which a stop ends the run
+                        already has start begin only a run not yet
+                        started. Closing runtime control, with or
+                        without a notice, leaves no late request to
+                        misread and no channel open to other senders
+                        after the run.
+description:            |
+                        Sources:
+                        - After a stop of one unit, an apply was
+                          answered ok and pending, a
+                          later apply replaced it, the replacement by source inspection, and
+                          start left the unit stopped. (review of 2026-10-29, CC-047;
+                          areas/trial-engine.md, TE-18)
+                        - A stop ends the run of the whole host for
+                          good, and start only
+                          begins a run that has not started.
+                          (_data/decision/dec_scope_of_stop_and_start/opt_stop_ends_the_run.yaml
+                          at brief)
+                        - The engine stays up after the run and
+                          answers status.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_engine_waits_after_the_run.yaml
+                          at brief)
+                        - A request that cannot be carried out changes
+                          nothing and gets a
+                          reply that says why.
+                          (_data/interface_control_document/icd_dataflow_runtime_control.yaml
+                          at surface.data.artifact.failure)
+                        - Whoever can send runtime control requests
+                          can quietly stall a
+                          unit.
+                          (_data/decision/dec_scope_of_stop_and_start/ann_stopped_unit_stalls_readers_and_writers_alike.yaml
+                          at brief)
+                        - Safety asks how the design avoids each
+                          hazard; security asks what
+                          an attacker can reach. (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question.1 and
+                          entries.concern_security.question.2)
+                        Strength: weak to moderate; one test of
+                        whether the run has ended, at the head of each
+                        request, closes it, so the cost is states to
+                        specify and test rather than a hazard that
+                        remains.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_runtime_control_as_a_run_ends
+    guid_target:        dec_9568446562344eb19ebb341910cccff9
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_waits_after_the_run
+    guid_target:        opt_e7bc70f7f6d0400da91dc3493a02c5c0
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_end_announced_before_close
+    guid_target:        opt_163dbec26b3d4907ae50a91919d08022
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_late_request_unanswered_and_channel_closed
+    guid_target:        opt_07c7a3dff2a24ddbbf16709774a79ae9
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

@@ -1,0 +1,88 @@
+id_self:                ann_byte_stream_control_runs_without_a_socket_library
+guid_self:              ann_9961bec1fde748d0bc7e0c6ab5a0265c
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Byte stream for runtime control on targets a library may not reach
+brief:                  |
+                        JSON lines and length-prefixed frames both
+                        need only a byte stream: a pipe to a local
+                        engine, the pipe of a remote shell, a socket,
+                        or a serial line on a board with no network
+                        stack. Moving runtime control to a new target
+                        is then a read and a write in the engine's
+                        platform layer. ZeroMQ needs a build of the
+                        library for each target and one of its own
+                        transports, and pays most where it is not yet
+                        needed, across a network. WTP plans the engine
+                        for embedded reach, and the records already
+                        name small high-integrity targets.
+description:            |
+                        Sources:
+                        - The engine is a new C++17 engine targeting
+                          embedded reach, and
+                          Patrol, on an NVIDIA Orin, is its first user (WTP, 2026-10-28).
+                        - Small and high-integrity targets such as the
+                          Raspberry Pi 5
+                          should not carry code they never use.
+                          (_data/requirement/rqt_generator_omits_dynamic.yaml at rationale)
+                        - JSON lines run on standard input and output
+                          for a local engine or
+                          on a socket for a remote one.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_json_lines_on_a_stream.yaml
+                          at brief)
+                        - The trial's runtime control reads standard
+                          input and writes
+                          standard output, and the deployer starts the engine as a child
+                          process with pipes. (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/control.cpp, function
+                          control_start; src/cctool/dataflow/deploy.py, class Engine)
+                        - Runtime control may depend on the engine's
+                          platform component.
+                          (_data/logical_component/lco_dataflow_engine_control.yaml at edge)
+                        - Flexibility asks on which platforms the
+                          design runs and what it
+                          takes to install it on a new one.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question.0 and question.1)
+                        ASSUMPTION: libzmq's transports, such as TCP,
+                        interprocess, in-process and multicast, are
+                        network and interprocess ones, none of them a
+                        serial line, and libzmq needs an operating
+                        system with threads and sockets. Strength:
+                        moderate; it matters once a target without a
+                        full operating system is in view, while on
+                        Patrol's Orin, which runs Linux, all three
+                        options work.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_json_lines_on_a_stream
+    guid_target:        opt_ad999a8cf3f3487081c44d45786406ee
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dictionary_types_in_length_prefixed_frames
+    guid_target:        opt_872f7f11f2c24b72b63e11ecc8e6cb7b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_an_existing_messaging_library
+    guid_target:        opt_aad9dc3233334877b7e96691ec5d955b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

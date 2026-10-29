@@ -1,0 +1,101 @@
+id_self:                ann_request_reply_socket_leaves_timeouts_to_deployment
+guid_self:              ann_e8034ef522c946d6b9d86b10c70a07a2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Request and reply sockets that leave timeouts to the caller
+brief:                  |
+                        The messaging option counts timeouts and
+                        reconnection among what the library supplies.
+                        The ZeroMQ guide shows that for the request
+                        and reply pair the library supplies only the
+                        reconnection, and does it silently: a plain
+                        client hangs forever if the server dies
+                        mid-request or a message is lost, so the
+                        client must poll with a timeout, close and
+                        reopen its socket and send again. Deployment
+                        then writes the timeout and the retry itself,
+                        as it must over a stream, where the trial's
+                        deployer waited for a reply with no timeout.
+                        And a reply socket sends only in answer to a
+                        request, so it cannot carry a notice the
+                        engine sends unasked, such as the end of a
+                        run.
+description:            |
+                        Sources:
+                        - Framing, reconnection and timeouts come from
+                          the library.
+                          (_data/decision/dec_encoding_of_runtime_control/opt_an_existing_messaging_library.yaml
+                          at brief)
+                        - A basic request and reply client hangs
+                          forever if the server
+                          crashes mid-request or the network loses the request or the
+                          reply, and ZeroMQ reconnects peers silently (ZeroMQ guide,
+                          chapter 4, section Designing Reliability,
+                          https://zguide.zeromq.org/docs/chapter4/).
+                        - The Lazy Pirate client polls with a timeout,
+                          then closes and
+                          reopens its socket and resends, since a request socket imposes a
+                          strict cycle of send and receive; the Paranoid Pirate pattern
+                          adds heartbeats so that each side can detect that the other has
+                          gone (ZeroMQ guide, chapter 4, sections Client-Side Reliability
+                          (Lazy Pirate Pattern) and Robust Reliable Queuing (Paranoid
+                          Pirate Pattern)).
+                        - A reply socket allows only an alternating
+                          sequence of receiving a
+                          request and sending its reply (libzmq API, zmq_socket, ZMQ_REP,
+                          https://libzmq.readthedocs.io/en/zeromq4-x/zmq_socket.html).
+                        - The trial's deployer reads a reply line with
+                          no timeout; its only
+                          timeout is on closing the engine. (trial 2c777ab9,
+                          src/cctool/dataflow/deploy.py, class Engine, functions request and
+                          close)
+                        - The review notes that a hung engine would
+                          hang the caller, as an
+                          unresolved concern it did not reproduce. (review of 2026-10-29,
+                          areas/trial-model.md, section 5, subprocesses)
+                        - One option for the end of a run has the
+                          engine send a notice
+                          before it closes runtime control.
+                          (_data/decision/dec_runtime_control_as_a_run_ends/opt_end_announced_before_close.yaml
+                          at brief)
+                        - Reliability asks what happens when a part or
+                          an input is faulty;
+                          functional suitability asks whether every function that is needed
+                          is present. (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question.1 and
+                          entries.concern_functional_suitability.question.1)
+                        ASSUMPTION: other ZeroMQ socket types, such as
+                        dealer and router, lift both limits at the
+                        cost of more code on both sides. Strength:
+                        moderate; it removes a claimed strength of the
+                        option rather than showing a fault in it, and
+                        the network case, where reconnection pays, is
+                        not yet needed.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_runtime_control
+    guid_target:        dec_912f20c08cca4401a0da6478bfe44cc5
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_an_existing_messaging_library
+    guid_target:        opt_aad9dc3233334877b7e96691ec5d955b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

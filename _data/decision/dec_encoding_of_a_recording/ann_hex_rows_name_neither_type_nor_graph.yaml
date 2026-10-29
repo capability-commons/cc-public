@@ -1,0 +1,104 @@
+id_self:                ann_hex_rows_name_neither_type_nor_graph
+guid_self:              ann_a0ab1c79554b4102a35c6afc693b1187
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Hex rows that name neither the type of a value nor the graph
+brief:                  |
+                        The readability of JSON lines covers the
+                        envelope of a row, its end, local step and
+                        count, but the value is hex, so reading it
+                        still takes the data dictionary and a decoder
+                        from cctool. The trial's reader learned no
+                        type from the file: its caller named the type,
+                        and two of its functions fixed one in code.
+                        Its replay accepted the recording of another
+                        graph, since nothing in the file named one,
+                        though the ICD asks for the content digest of
+                        the graph that ran. The binary log's header
+                        names that digest and the types of the
+                        dictionary, so its reader learns from the file
+                        what it holds and which graph it belongs to;
+                        MCAP gives each channel a schema, and could
+                        carry the digest in a metadata record, which
+                        the option does not mention. JSON lines would
+                        need a header row, which the option does not
+                        mention either.
+description:            |
+                        Sources:
+                        - A recording holds, for each local step, the
+                          values from outside,
+                          the control messages and the engine events, with the content
+                          digest of the resolved graph that ran
+                          (_data/interface_control_document/icd_dataflow_recorder.yaml at
+                          surface.recording.artifact.artifact.recording_file.content).
+                        - The trial's reader decodes items by a type
+                          its caller names, and
+                          two of its functions fix the type in code: the values of an end
+                          as the sample type, little-endian 64-bit integers, and the events
+                          as version 1 of the engine event type (trial 2c777ab9,
+                          src/cctool/dataflow/recording.py, functions decode, values and
+                          events).
+                        - Replay accepted a recording of one variant
+                          for another and
+                          exited 0, and it over-read the heap on a bad count, since the
+                          recording holds no digest and counts are not checked (review of
+                          2026-10-29, CC-045; areas/trial-engine.md, TE-17).
+                        - A run record names the content digest of the
+                          resolved graph and
+                          the build (_data/requirement/rqt_dataflow_run_names_its_graph.yaml
+                          at object).
+                        - The binary log's header names the content
+                          digest of the graph
+                          and the types of the dictionary
+                          (_data/decision/dec_encoding_of_a_recording/opt_own_binary_log_with_an_index.yaml
+                          at brief); MCAP has the dictionary type as the schema of each
+                          channel
+                          (_data/decision/dec_encoding_of_a_recording/opt_mcap_container.yaml
+                          at brief); MCAP has a metadata record of key-value pairs (MCAP
+                          Format Specification, https://mcap.dev/spec, Metadata record).
+                        - Maintainability asks how readily a newcomer
+                          can understand the
+                          design (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question.0).
+                        Strength: moderate; a first row naming the
+                        digest, as the review proposed, and the types
+                        removes most of it, after which JSON lines
+                        keep only the readability of the envelope.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_encoding_of_a_recording
+    guid_target:        dec_78c59e787e51419797bb2a78e39c0599
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_own_binary_log_with_an_index
+    guid_target:        opt_b61a54847bc74bdcb7a21699ebcc003a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_mcap_container
+    guid_target:        opt_149b722edac6424a999928cbea00768c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_json_lines_with_hex_messages
+    guid_target:        opt_db6d1813e33d4108806f2c053333dcaa
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
