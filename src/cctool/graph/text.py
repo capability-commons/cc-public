@@ -111,6 +111,18 @@ FROM item_text
 WHERE item_text MATCH ?
 """
 
+# What SQL_FOUND looks up for each hit, kept apart and indexed so that
+# each lookup is one probe of an index, not a scan of item_text, and a
+# common word that matches thousands of items is found in a fraction of
+# a second.
+#
+TUPLE_SQL_LOOKUP  = ("CREATE TEMP TABLE title AS SELECT id, text FROM item_text "
+                     "WHERE field = 'title'",
+                     'CREATE INDEX temp.title_of_id ON title(id)',
+                     'CREATE INDEX type_of_id ON has_type(id)',
+                     'CREATE INDEX decision_of_id ON decision_of(id)',
+                     'CREATE INDEX edge_of_source ON primary_edge(source, relation)')
+
 SQL_FOUND         = """
 CREATE TEMP TABLE described AS
 WITH best AS (
@@ -132,8 +144,7 @@ found AS MATERIALIZED (
            round(-best.score, 3) AS score,
            best.score AS bm25,
            best.field,
-           coalesce((SELECT text FROM item_text
-                     WHERE item_text.id = best.id AND item_text.field = 'title'), '') AS title,
+           coalesce((SELECT text FROM title WHERE title.id = best.id), '') AS title,
            coalesce((SELECT min(decision) FROM decision_of
                      WHERE decision_of.id = best.id), '') AS decision
     FROM best
@@ -166,8 +177,7 @@ ORDER BY bm25, id
 
 SQL_DECISION         = """
 SELECT round(-min(bm25), 3) AS score, decision, count(*) AS hits,
-       (SELECT text FROM item_text
-        WHERE item_text.id = described.decision AND item_text.field = 'title') AS title,
+       (SELECT text FROM title WHERE title.id = described.decision) AS title,
        ruling, upheld
 FROM described
 WHERE decision != ''
@@ -207,7 +217,10 @@ def rows(map_document: cctool.graph.extract.Documents) -> list[tuple[str, str, s
 def _walk(node: typing.Any, holder: str, key: str, set_row: set) -> None:
     """
     Add to set_row a row for each string of prose in node, which is
-    the value of the field key of the item holder.
+    the value of the field key of the item holder. Every mapping and
+    list is walked, whatever its key, since an item may be held under
+    a field that is not prose, such as the new of a command; only a
+    string is left out for the field it is the value of.
 
     """
 
@@ -215,12 +228,11 @@ def _walk(node: typing.Any, holder: str, key: str, set_row: set) -> None:
         id_self = node.get(cctool.graph.extract.KEY_ID_SELF)
         holder  = id_self if isinstance(id_self, str) else holder
         for (key_child, value) in node.items():
-            if isinstance(key_child, str) and _is_prose(key_child):
-                _walk(value, holder, key_child, set_row)
+            _walk(value, holder, key_child if isinstance(key_child, str) else '', set_row)
     elif isinstance(node, list):
         for each in node:
             _walk(each, holder, key, set_row)
-    elif isinstance(node, str) and holder and key:
+    elif isinstance(node, str) and holder and key and _is_prose(key):
         set_row.add((holder, key, str(node)))
 
 
@@ -367,6 +379,8 @@ def search(facts:        cctool.graph.extract.Facts,
 
     try:
         connection.execute(SQL_HIT, (expression,))
+        for sql in TUPLE_SQL_LOOKUP:
+            connection.execute(sql)
         connection.execute(SQL_FOUND)
         cursor = connection.execute(SQL_DECISION if is_decision else SQL_ITEM)
         return (tuple(each[0] for each in cursor.description), cursor.fetchall())

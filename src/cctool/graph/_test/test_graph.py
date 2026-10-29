@@ -174,6 +174,31 @@ def test_text_rows_hold_the_prose_of_each_item_and_no_names(tree):
                 if row[1].startswith(('id_', 'guid_', '$')) or row[1] == 'copyright']
 
 
+def test_text_rows_hold_the_prose_of_items_held_under_any_field(tree):
+    map_document = cctool.graph.extract.documents(tree)
+    facts        = cctool.graph.extract.facts_of(map_document)
+    set_id       = {row[0] for row in cctool.graph.text.rows(map_document)}
+    assert {row[0] for row in facts['item']} <= set_id
+    (_, rows)    = cctool.graph.text.search(facts, map_document,
+                                            'Every reference carries the guid of the item '
+                                            'it names.')
+    assert 'icm_cctool_check.guid_mismatch' in [row[1] for row in rows[:3]]
+
+
+def test_text_looks_up_each_hit_through_an_index(tree):
+    map_document = cctool.graph.extract.documents(tree)
+    facts        = cctool.graph.extract.facts_of(map_document)
+    connection   = cctool.graph.sql.connect(facts, cctool.graph.text.rows(map_document))
+    connection.execute(cctool.graph.text.SQL_HIT, (cctool.graph.text.match('the'),))
+    for sql in cctool.graph.text.TUPLE_SQL_LOOKUP:
+        connection.execute(sql)
+    select       = cctool.graph.text.SQL_FOUND.split(' AS\n', 1)[1]
+    list_scan    = [row[3] for row in connection.execute('EXPLAIN QUERY PLAN ' + select)
+                    if row[3].startswith('SCAN')]
+    connection.close()
+    assert sorted(list_scan) == ['SCAN best', 'SCAN edge', 'SCAN found', 'SCAN hit']
+
+
 def test_text_names_the_decision_and_standing_of_each_option_it_finds(tree):
     map_document          = cctool.graph.extract.documents(tree)
     facts                 = cctool.graph.extract.facts_of(map_document)
