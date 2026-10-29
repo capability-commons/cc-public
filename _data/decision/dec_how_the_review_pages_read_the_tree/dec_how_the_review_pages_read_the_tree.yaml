@@ -1,0 +1,42 @@
+id_self:                dec_how_the_review_pages_read_the_tree
+guid_self:              dec_09cba856c8244804a1aa6a84babc9c5a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How the review pages read the tree
+brief:                  |
+                        Should cctool serve read the tree afresh for
+                        every page, as it does now, or keep what it
+                        read and use it again until the tree changes,
+                        and if so, where should it keep it?
+description:            |
+                        Measured on 2026-10-29 in a cloud container,
+                        on dev at bbaeeba, with the timing that cctool
+                        serve now logs for each request. The tree
+                        holds about 4,100 files and 4,900 items.
+                        Reading the tree into a graph takes 420 to 850
+                        ms of every page; making the page takes 15 to
+                        200 ms. The decision list (550 kB) takes about
+                        570 ms in all, a decision page 480 to 550 ms,
+                        the item list of type_annotation (1.6 MB,
+                        17,000 elements) about 1 s, and an interface
+                        page about 970 ms, since it also reads the
+                        facts of the interfaces (450 ms). In the
+                        browser, laying out a page adds 20 to 300 ms
+                        beyond the response. A form submit now takes
+                        about 4.5 s, most of it the one check of the
+                        whole tree; that check is outside this
+                        decision. The first page after the server
+                        starts waits for the warm-up, about 10 s.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_tooling_web
+    guid_target:        lco_a6e9915337994ec082212cf219206eca

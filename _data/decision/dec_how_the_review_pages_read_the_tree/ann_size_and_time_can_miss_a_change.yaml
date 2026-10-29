@@ -1,0 +1,47 @@
+id_self:                ann_size_and_time_can_miss_a_change
+guid_self:              ann_7cd094d805984caeb2f42fd66ac5e55a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Size and time can miss a change
+brief:                  |
+                        A file rewritten with the same size and the
+                        same time of change looks unchanged, so a page
+                        could show the tree as it was. Times are kept
+                        to the nanosecond on the file systems used, so
+                        this needs two writes within one tick of the
+                        clock.
+description:            |
+                        Editors, git and cctool all set the time of
+                        change when they write. Assumption: a shared
+                        folder of the device VM keeps times finer than
+                        a second; not checked. A digest of each file
+                        would not miss, but costs about what the read
+                        does now. Strength: weak.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_the_review_pages_read_the_tree
+    guid_target:        dec_09cba856c8244804a1aa6a84babc9c5a
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_keep_the_graph_until_a_file_changes
+    guid_target:        opt_848151802cf142469d39188c891ffa4e
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_read_the_tree_for_each_page
+    guid_target:        opt_532c4c37175340d1ae6c4bc6baaf9329
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
