@@ -1,0 +1,76 @@
+id_self:                ann_versioned_package_carries_standard_items_to_peers
+guid_self:              ann_f6dadf10266e4ebdb065bf41dc19e87a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Standard items reaching peers in the versioned package already ruled
+brief:                  |
+                        Peers take cc-public as one versioned package
+                        that holds its tooling, its shared data and
+                        its engine, so standard node types and
+                        dictionary entries kept as items in
+                        cc-public's _data reach every peer at the
+                        release version with no library of their own.
+                        A peer's graph then names them by id and guid,
+                        which the rename maps each release ships carry
+                        into the peer. A reference by name and version
+                        into a packaged library is a second form that
+                        the rename maps do not cover, so renaming a
+                        standard node type would break the references
+                        of every peer unless it had a mechanism of its
+                        own.
+description:            |
+                        Sources:
+                        - Each release of cc-public is built into one
+                          package holding the
+                          tooling, the shared data and the engine, which a peer pins.
+                          (_data/decision/dec_how_peers_get_cc_public/opt_peers_take_a_versioned_package.yaml
+                          at brief, upheld by ruling_peers_take_a_versioned_package)
+                        - Each release ships its renames as an old id,
+                          a new id and the
+                          guid, and a command in the peer rewrites each reference.
+                          (_data/decision/dec_how_peers_absorb_renames/ruling_upgrade_by_rename_maps.yaml
+                          at brief)
+                        - An item names a standard node type by its
+                          name and version.
+                          (_data/decision/dec_where_dataflow_items_are_kept/opt_project_items_under_data_with_a_packaged_library.yaml
+                          at brief)
+                        - Where a peer finds the trees it consumes is
+                          still open, and today
+                          cctool reads only the tree it was installed from.
+                          (_data/decision/dec_where_a_peer_finds_consumed_trees/dec_where_a_peer_finds_consumed_trees.yaml
+                          at brief)
+                        - Patrol is the engine's first user. (WTP,
+                          2026-10-28) ASSUMPTION: Patrol's graphs live
+                          in a tree of its own that consumes cc-public
+                          as a peer does. Strength: moderate; it rests
+                          on two rulings, but how a peer resolves a
+                          reference into a consumed tree is still
+                          open.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_items_are_kept
+    guid_target:        dec_f8584aa17bef47949086266077377d2d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_items_under_data
+    guid_target:        opt_060d29682ed14753bfe19bac12fe141f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_project_items_under_data_with_a_packaged_library
+    guid_target:        opt_5748ce3b0a0f4ded84e513b3062f347b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

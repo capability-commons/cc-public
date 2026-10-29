@@ -1,0 +1,88 @@
+id_self:                ann_ends_in_a_requirement_change_with_each_rewire
+guid_self:              ann_e64d511b74bc445e97f5f6ecb10a8d38
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ends held in a requirement that must change with each rewire
+brief:                  |
+                        An end names a node and a port, and the port
+                        is a member of the interface the node
+                        presents, so a new version of that interface,
+                        which is a new interface control document with
+                        members of its own, changes the ends of every
+                        edge at its ports. A requirement that holds
+                        those ends must then be edited with the graph,
+                        and so must one whose edge a later base splits
+                        or rewires. A tag carried by the edge, or an
+                        id on the edge, leaves the requirement as
+                        written, so the change stays in the graph. A
+                        plain rename is not the problem, since cctool
+                        rename rewrites every YAML document that names
+                        the id.
+description:            |
+                        Sources:
+                        - An end names the node and one of the ports
+                          of the interface that
+                          node presents, by id and guid.
+                          (_data/schema/sch_dataflow_graph.yaml at description and
+                          $defs.end)
+                        - The port at an end is named by the id of a
+                          member of the
+                          interface, as the value port of icd_printer is in the smoketest
+                          graph. (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at
+                          dataflow_edge)
+                        - A new version of an interface is a new
+                          interface control
+                          document that supersedes the last.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_supersedes.description)
+                        - If an edge is its ends, an operation that
+                          rewires one end makes a
+                          different edge, and insert-on-edge replaces one edge with two.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_rewired_edge_loses_its_trace_under_ends.yaml
+                          at brief)
+                        - cctool rename changes every YAML document
+                          that names the id.
+                          (AGENTS.md, on renaming an id)
+                        - One maintainability question asks how far a
+                          change in one part
+                          spreads to others. (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question)
+                        ASSUMPTION: a no-loss requirement states a
+                        need on a stream, such as camera frames
+                        reaching the recorder, which outlives a change
+                        of node version. Strength: moderate; it grows
+                        with interface versions and rewires, and is
+                        void for a graph that never changes.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_requirement_names_a_dataflow_edge
+    guid_target:        dec_ea8f7952d2ef4415bf2024ebe72a19ed
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_reached_through_a_dataflow_tag
+    guid_target:        opt_9da93d99d6604306ae34017fdfafcebe
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_given_an_id_and_a_guid
+    guid_target:        opt_aaf823ebd6d048049273849d64ffb640
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_named_by_its_ends_in_the_requirement
+    guid_target:        opt_30b78d2c012e406ebac6b457ffebae29
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

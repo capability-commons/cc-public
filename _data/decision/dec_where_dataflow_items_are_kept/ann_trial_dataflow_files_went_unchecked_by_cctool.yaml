@@ -1,0 +1,108 @@
+id_self:                ann_trial_dataflow_files_went_unchecked_by_cctool
+guid_self:              ann_33e1d7bc518043f8a6bf76e19b139eb3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Trial dataflow files that no check of the tree ever read
+brief:                  |
+                        The trial kept its graphs, variants, node
+                        types and dictionary in YAML of its own
+                        outside _data, and cctool check read none of
+                        it: it reported 0 failures with no dataflow
+                        rule run, a variant naming an unknown node
+                        type surfaced as a crash in lowering, and,
+                        with no rule of its own on an input fed twice,
+                        the trial let the last edge win where check.lp
+                        fails such an input. Items under _data are
+                        already validated against their schema, judged
+                        by the dataflow rules of check.lp, and kept
+                        through renames by their id references. Files
+                        of their own need a reader, a discovery and a
+                        wiring into cctool check of their own, and it
+                        was that second reader that drifted.
+description:            |
+                        Sources:
+                        - The trial reads folders of its own outside
+                          _data, its keys and
+                          ends differ from sch_dataflow_graph, and it cannot read
+                          dfg_stableflow_smoketest. (review of 2026-10-29, CC-026)
+                        - cctool check on the trial gives 0 failures
+                          and runs no dataflow
+                          rule; check_variant and the dictionary failures are called only
+                          from tests; a variant with an unknown node type gives a KeyError
+                          from lowering instead of a named failure. (review of 2026-10-29,
+                          CC-024;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model.md,
+                          TM-07)
+                        - dev fails an input fed by two edges, while
+                          the trial has no such
+                          check and lets the last edge win silently. (review of 2026-10-29,
+                          CC-028; src/cctool/check/check.lp within input_fed_twice)
+                        - check.lp already holds dataflow rules over
+                          items, such as
+                          foreign_node and unknown_port, which name the file and line, and
+                          input_fed_twice and misnamed_node. (src/cctool/check/check.lp)
+                        - The trial kept its merge keys in a Python
+                          map over example data,
+                          with three arrays exempt and two empty keys, not in a schema the
+                          tree checks. (review of 2026-10-29, CC-058)
+                        - Both ends of a dataflow edge are references,
+                          so a rename keeps
+                          the edge; the trial wrote ends as node and port names and called
+                          the keys it built from them fragile under a rename.
+                          (_data/schema/sch_dataflow_graph.yaml at description;
+                          /mnt/project-files/notes/dataflow-trial/process-log.md, the
+                          INVENTED entry on origin trace keys)
+                        - A YAML file under _data that holds no item
+                          is never checked, and
+                          the reviewer recommends that no such file sit under _data, so
+                          files of their own would stay outside it. (review of 2026-10-29,
+                          CC-066 and section 7, W-D5)
+                        - WTP will regenerate the trial from the
+                          lessons of the review,
+                          helped by the records being clear. (WTP, 2026-10-29)
+                        ASSUMPTION: a regenerated model told only to
+                        run its checks from cctool check would again
+                        write a reader and rules of its own for a
+                        format of its own. Strength: strong on what
+                        the trial did; moderate as a prediction, since
+                        the folder option could be wired into cctool
+                        check, though it would not inherit the rules
+                        check.lp already holds.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_items_are_kept
+    guid_target:        dec_f8584aa17bef47949086266077377d2d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_items_under_data
+    guid_target:        opt_060d29682ed14753bfe19bac12fe141f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_project_items_under_data_with_a_packaged_library
+    guid_target:        opt_5748ce3b0a0f4ded84e513b3062f347b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dataflow_files_in_a_folder_of_their_own
+    guid_target:        opt_958b4b2e67e248b2a1de6d9dc5bbbbf1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

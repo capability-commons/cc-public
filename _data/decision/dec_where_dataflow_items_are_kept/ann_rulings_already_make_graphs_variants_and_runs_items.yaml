@@ -1,0 +1,100 @@
+id_self:                ann_rulings_already_make_graphs_variants_and_runs_items
+guid_self:              ann_49ecc19810d549b1b6c8a3e55a1ef399
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Graphs, variants and runs that rulings already make items
+brief:                  |
+                        Upheld options make a dataflow graph a data
+                        item whose shape one schema defines, a
+                        dataflow variant an item of a new type, and a
+                        run an item in _data that names its variant,
+                        and a dataflow variant is the source of the
+                        edge by which it takes an option, which two
+                        checks read. The interface for these items
+                        puts each in a file under _data. Under the
+                        folder option, which gives an item only to
+                        what an item must point at, every variant a
+                        run names and every graph a decision is about
+                        would get an item, and every variant that
+                        takes an option must be one to hold that edge,
+                        so each of those would be held twice, as a
+                        file and as an item. Items under _data hold
+                        each once, in the graph that traces it.
+description:            |
+                        Sources:
+                        - A dataflow graph is a data item whose shape
+                          one schema defines.
+                          (_data/decision/dec_how_a_dataflow_graph_is_written/opt_graph_as_configuration_data.yaml
+                          at brief, upheld by ruling_graph_as_configuration_data)
+                        - A new type, added when the first variant is
+                          ported, holds a base
+                          and an ordered list of operations.
+                          (_data/decision/dec_how_variants_are_held/opt_variant_type_with_operations.yaml
+                          at brief, upheld by ruling_variant_type_with_operations)
+                        - A dataflow run is an item in _data naming
+                          its variant.
+                          (_data/decision/dec_shape_of_a_dataflow_run/opt_run_item_in_the_tree.yaml
+                          at brief, upheld by ruling_run_item_in_the_tree)
+                        - relation_takes_option runs from a dataflow
+                          variant to an option,
+                          and the checks option_taken_but_not_upheld and two_options_taken
+                          read it. (_data/register/reg_relation.yaml at
+                          entries.relation_takes_option.description;
+                          src/cctool/check/check.lp)
+                        - A dataflow graph is in the graph of items so
+                          that rules can
+                          follow data from node to node and a decision can be about one
+                          arrangement of a model. (_data/register/reg_data_item_type.yaml
+                          at entries.type_dataflow_graph.usage)
+                        - Graph, variant, delta module, sweep, run and
+                          deployment are each
+                          YAML in a file under _data.
+                          (_data/interface_control_document/icd_dataflow_items.yaml at
+                          surface)
+                        - Only what an item must point at, such as a
+                          graph a requirement
+                          names, gets an item.
+                          (_data/decision/dec_where_dataflow_items_are_kept/opt_dataflow_files_in_a_folder_of_their_own.yaml
+                          at brief)
+                        Strength: strong; it rests on three rulings, a
+                        registered relation and an interface already
+                        recorded, and weakens if those are amended or
+                        if few variants are run or take an option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_items_are_kept
+    guid_target:        dec_f8584aa17bef47949086266077377d2d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_items_under_data
+    guid_target:        opt_060d29682ed14753bfe19bac12fe141f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_project_items_under_data_with_a_packaged_library
+    guid_target:        opt_5748ce3b0a0f4ded84e513b3062f347b
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dataflow_files_in_a_folder_of_their_own
+    guid_target:        opt_958b4b2e67e248b2a1de6d9dc5bbbbf1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_traceability
+    guid_target:        concern_56ade060661647b791ba21265e30daac
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

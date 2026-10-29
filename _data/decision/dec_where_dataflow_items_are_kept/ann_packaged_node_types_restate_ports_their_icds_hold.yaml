@@ -1,0 +1,105 @@
+id_self:                ann_packaged_node_types_restate_ports_their_icds_hold
+guid_self:              ann_27cbc2605b654ccbbd075796fcddb70d
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Packaged node types that restate ports their interfaces hold
+brief:                  |
+                        Every standard node already has an interface
+                        control document under _data, and a node in a
+                        graph names that interface with
+                        relation_realizes and its ports by member ids
+                        with guids, which the checks resolve. The
+                        trial's packaged node type files restated
+                        those port lists by name beside the
+                        interfaces, found a type by its bare name, let
+                        a file of the project silently hide a standard
+                        file of the same name, and left the version
+                        out of the reference and the node type out of
+                        the digest. A library in the package adds a
+                        second home for each standard node type and a
+                        second way to name one, by name and version,
+                        beside ids with guids; standard types kept as
+                        items keep one of each.
+description:            |
+                        Sources:
+                        - Each standard node is an ordinary node with
+                          an interface control
+                          document of its own.
+                          (_data/requirement/rqt_standard_nodes_have_interfaces.yaml at
+                          brief)
+                        - Each of the ten standard node types of the
+                          trial has a dataflow
+                          step surface in icd_dataflow_delivery_adapter,
+                          icd_dataflow_control_block, icd_dataflow_mode_controller,
+                          icd_dataflow_recorder or icd_dataflow_transport. (those files
+                          under _data/interface_control_document at surface; trial
+                          2c777ab9, src/cctool/dataflow/standard/node_kind/)
+                        - A node names the interface it presents by
+                          relation_realizes, and
+                          each end names a port by id and guid.
+                          (_data/dataflow_graph/dfg_stableflow_smoketest.yaml at
+                          dataflow_node and dataflow_edge;
+                          _data/schema/sch_dataflow_graph.yaml at $defs.end)
+                        - icd_dataflow_delivery_adapter declares the
+                          all_in_order surface
+                          with its all_in and all_out ports, and the trial's file for the
+                          same node type restates them by name.
+                          (_data/interface_control_document/icd_dataflow_delivery_adapter.yaml
+                          at surface; trial 2c777ab9,
+                          src/cctool/dataflow/standard/node_kind/all_in_order.yaml)
+                        - The trial looks for an item in the tree
+                          first and then in the
+                          package, and an item of the tree hides a standard item of the
+                          same name. (trial 2c777ab9, src/cctool/dataflow/items.py,
+                          functions find and all_of)
+                        - Nodes name a node type by bare name with no
+                          version, and the
+                          digest a build names covers neither the node types nor the
+                          dictionary. (review of 2026-10-29, CC-008;
+                          /mnt/project-files/notes/reviews/2026-10-29-full-review/areas/trial-model.md,
+                          TM-09)
+                        - A new version of an interface is a new
+                          interface control
+                          document that supersedes the last.
+                          (_data/register/reg_relation.yaml at
+                          entries.relation_supersedes.description)
+                        ASSUMPTION: the packaged library would also
+                        carry the binding of a node type to its code,
+                        the function and source the trial invented,
+                        which an item for the node type could carry as
+                        well. Strength: moderate; the duplication is
+                        certain, while the shadowing and the lost
+                        version are what one generator made of it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_dataflow_items_are_kept
+    guid_target:        dec_f8584aa17bef47949086266077377d2d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_items_under_data
+    guid_target:        opt_060d29682ed14753bfe19bac12fe141f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_project_items_under_data_with_a_packaged_library
+    guid_target:        opt_5748ce3b0a0f4ded84e513b3062f347b
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

@@ -1,0 +1,73 @@
+id_self:                ann_ends_survive_partner_formats_that_ids_do_not
+guid_self:              ann_85f6d9ffa2374829901b467f03fe5583
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Ends that SSP keeps where edge ids are lost
+brief:                  |
+                        SSP names a connection by its two ends and
+                        lists no key, while DIF gives each edge an id
+                        of its own but joins it node to node, so the
+                        port at each end is lost, and lets a graph
+                        carry attributes of the user's choosing. A
+                        requirement that holds an edge's ends finds
+                        the edge again after a round trip through SSP,
+                        where an id must be invented on import and is
+                        lost on export; through DIF an id survives
+                        while the ports of the ends do not, and a tag
+                        survives only where a format has a free
+                        attribute to carry it. Compatibility with SSP
+                        therefore leans toward naming the ends and
+                        against an edge id, while DIF leans the other
+                        way until its edges name ports.
+description:            |
+                        Sources:
+                        - An SSP connection names its start and end
+                          element and connector,
+                          and its attribute table lists no key.
+                          (_data/decision/dec_identity_of_a_dataflow_edge/ann_partner_formats_name_connections_by_ends.yaml
+                          at description)
+                        - In DIF, nodes and edges carry unique ids,
+                          edges are specified by
+                          their source and sink node identifiers, and graphs carry
+                          user-defined attributes. (Hsu et al. 2004, DIF: an interchange
+                          format for dataflow-based design tools, sections 2 and 2.1, as
+                          summarized in
+                          /mnt/project-files/notes/literature/part-2/2004-dif-dataflow-interchange-format.md)
+                        - DIF joins edges node to node, which loses
+                          which port of a
+                          multi-port node an edge meets. (same note, on item 9)
+                        ASSUMPTION: no partner exchange is planned
+                        yet, and an SSP file from a partner tool
+                        carries no tag on a connection. Strength:
+                        weak; it counts only if an SSP or DIF exchange
+                        is built, and the two formats pull opposite
+                        ways, so the lean holds only for SSP until
+                        DIF's node-to-node edges gain port names.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_requirement_names_a_dataflow_edge
+    guid_target:        dec_ea8f7952d2ef4415bf2024ebe72a19ed
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_named_by_its_ends_in_the_requirement
+    guid_target:        opt_30b78d2c012e406ebac6b457ffebae29
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_given_an_id_and_a_guid
+    guid_target:        opt_aaf823ebd6d048049273849d64ffb640
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_compatibility
+    guid_target:        concern_787f6c2b26ad4848b703c8d4224b9a06

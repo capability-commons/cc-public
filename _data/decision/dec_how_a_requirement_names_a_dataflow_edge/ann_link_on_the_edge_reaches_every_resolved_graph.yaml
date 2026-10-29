@@ -1,0 +1,85 @@
+id_self:                ann_link_on_the_edge_reaches_every_resolved_graph
+guid_self:              ann_636a4f3104ee4b18a856bcada72d0f5e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Link carried on the edge into every resolved graph
+brief:                  |
+                        Resolved graphs are never stored, and an edge
+                        that a variant joins exists only in them, as
+                        the edge in the trial's data-loss test did; a
+                        requirement that holds a graph and two ends
+                        can name only a stored graph, so it must also
+                        say in which variants it holds. Left to
+                        choose, the trial put the link on the edge
+                        itself, carried by the join, and its check
+                        found the edge in the graph it checked. A tag
+                        on the edge travels the same way into every
+                        complete variant that has the edge, as the
+                        check of every complete variant needs. The tag
+                        route still lacks one thing: the check must
+                        know which tags forbid loss, and a tag's
+                        meaning is today only a link a check cannot
+                        read as a rule.
+description:            |
+                        Sources:
+                        - The resolved graph is derived, never stored.
+                          (_data/decision/dec_how_variants_are_held/ruling_variant_type_with_operations.yaml
+                          at brief)
+                        - Each complete variant is checked as resolved
+                          and as lowered.
+                          (_data/requirement/rqt_checks_every_complete_variant.yaml at
+                          brief)
+                        - The trial's test makes the edge with a join
+                          in a variant and
+                          carries the requirement on the edge, and its docstring says the
+                          edge names the requirement that forbids loss; the requirement id
+                          it uses names nothing in any tree. (trial 2c777ab9,
+                          src/cctool/dataflow/_test/test_lowering.py,
+                          test_latest_value_on_an_edge_that_must_lose_nothing_fails)
+                        - The trial's check reads a field on the edge
+                          and reports the edge
+                          by its ends. (trial 2c777ab9, src/cctool/dataflow/checks.py,
+                          function _check_loss)
+                        - A requirement holds the graph and the two
+                          port names of the edge.
+                          (_data/decision/dec_how_a_requirement_names_a_dataflow_edge/opt_edge_named_by_its_ends_in_the_requirement.yaml
+                          at brief)
+                        - A dataflow tag labels a group of parts so
+                          that operations and
+                          views can select it, and records its meaning by an edge to what it
+                          stands for. (_data/register/reg_concept.yaml at
+                          entries.concept_dataflow_tag)
+                        ASSUMPTION: an operation that splits an edge,
+                        such as insert-on-edge, copies the edge's tags
+                        to both parts; no record says so. Strength:
+                        moderate; the trial shows the shape a
+                        generator reaches for, and the gap on what a
+                        tag means to a check is small but real.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_a_requirement_names_a_dataflow_edge
+    guid_target:        dec_ea8f7952d2ef4415bf2024ebe72a19ed
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_edge_reached_through_a_dataflow_tag
+    guid_target:        opt_9da93d99d6604306ae34017fdfafcebe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_edge_named_by_its_ends_in_the_requirement
+    guid_target:        opt_30b78d2c012e406ebac6b457ffebae29
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
