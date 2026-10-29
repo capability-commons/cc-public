@@ -31,10 +31,21 @@ description:            |
                         that found it is unchanged too. The gate of a
                         push uses no store.
 
+                        Each file is copied as git stores it, from its
+                        blob, so that no attribute of the repository,
+                        such as export-ignore, export-subst, eol or
+                        filter, can change what the stages see. A link
+                        is copied as a link, and one that leads out of
+                        the tree is refused.
+
                         A stage runs without the git environment of
                         the hook that started it, so that a test which
                         makes a repository of its own cannot touch the
-                        index of the commit.
+                        index of the commit. It runs without the
+                        variables that steer pytest, cctool or python
+                        too, other than the python path it is given,
+                        so that the verdict does not depend on the
+                        shell that started it.
 
                         A commit that stages no code, only data, runs
                         only the tests that read the data of the
@@ -70,14 +81,12 @@ edge:                   []
 
 import concurrent.futures
 import datetime
-import io
 import os
 import pathlib
 import platform
 import resource
 import subprocess
 import sys
-import tarfile
 import tempfile
 import time
 import uuid
@@ -133,7 +142,22 @@ TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/', '.agents/s
 #
 TUPLE_UNREAD  = ('_data/decision/',)
 
-PREFIX_GIT    = 'GIT_'
+# The variables a stage runs without: those git sets for its hooks, and
+# those that would change what pytest, cctool or python does. The python
+# path is set for the stage afresh.
+#
+TUPLE_UNSET   = ('GIT_', 'PYTEST_', 'CCTOOL_', 'PYTHON')
+ENV_PATH      = 'PYTHONPATH'
+
+# The modes of the entries of a git tree or index: a file, one that may
+# be run, and a link. An entry of a submodule, a commit, holds no
+# content in this repository and is passed over.
+#
+MAP_MODE      = {'100644': 0o644, '100755': 0o755}
+MODE_LINK     = '120000'
+MODE_MODULE   = '160000'
+STAGE_MERGED  = '0'
+
 PREFIX_COPY   = 'cc_gate_'
 PREFIX_REPORT = 'cc_gate_report_'
 FILE_REPORT   = 'junit.xml'
@@ -334,7 +358,7 @@ def staged(root: pathlib.Path) -> list[str] | None:
     """
 
     try:
-        text = subprocess.run(['git', 'diff', '--cached', '--name-only', '--no-renames',
+        text = subprocess.run(['git', 'diff', '--cached', '--name-only', '--no-renames', '-z',
                                'HEAD'],
                               cwd            = root,
                               capture_output = True,
@@ -343,7 +367,7 @@ def staged(root: pathlib.Path) -> list[str] | None:
     except subprocess.CalledProcessError:
         return None
 
-    return text.splitlines()
+    return [path for path in text.split('\0') if path]
 
 
 # -----------------------------------------------------------------------------
@@ -428,56 +452,183 @@ def _run(list_arg: list[str],
 # -----------------------------------------------------------------------------
 def copy_staged(root: pathlib.Path, dir_copy: pathlib.Path) -> None:
     """
-    Write the staged content of the repository at root into dir_copy.
+    Write the staged content of the repository at root into dir_copy,
+    each file as git stores it.
 
     """
 
-    try:
-        subprocess.run(['git', 'checkout-index', '--all',
-                        '--prefix={dir}{sep}'.format(dir = dir_copy, sep = os.sep)],
-                       cwd            = root,
-                       capture_output = True,
-                       text           = True,
-                       check          = True)
-    except subprocess.CalledProcessError as error:
-        raise ErrorGate('The staged content cannot be copied: {text}'.format(
-                                                text = error.stderr.strip())) from error
+    what       = 'The staged content'
+    list_entry = []
+
+    for record in _listed(root, ['ls-files', '--stage', '-z'], what):
+        (info, path)        = record.split(b'\t', 1)
+        (mode, name, stage) = info.decode().split()
+        if stage != STAGE_MERGED:
+            raise ErrorGate('{what} cannot be copied, as {path} is unmerged.'.format(
+                                what = what, path = os.fsdecode(path)))
+        list_entry.append((mode, name, os.fsdecode(path)))
+
+    _write(root, list_entry, dir_copy, what)
 
 
 # -----------------------------------------------------------------------------
 def copy_commit(root: pathlib.Path, rev: str, dir_copy: pathlib.Path) -> None:
     """
     Write the content of the commit rev of the repository at root into
-    dir_copy.
+    dir_copy, each file as git stores it.
+
+    """
+
+    what       = 'The commit {rev}'.format(rev = rev)
+    list_entry = []
+
+    for record in _listed(root, ['ls-tree', '-r', '-z', '--full-tree', rev], what):
+        (info, path)   = record.split(b'\t', 1)
+        (mode, _, name) = info.decode().split()
+        list_entry.append((mode, name, os.fsdecode(path)))
+
+    _write(root, list_entry, dir_copy, what)
+
+
+# -----------------------------------------------------------------------------
+def _listed(root: pathlib.Path, list_arg: list[str], what: str) -> list[bytes]:
+    """
+    Return the records, ended by NUL, that git prints for list_arg in
+    the repository at root. what names the content being copied.
 
     """
 
     try:
-        archive = subprocess.run(['git', 'archive', '--format=tar', rev],
-                                 cwd            = root,
-                                 capture_output = True,
-                                 check          = True).stdout
+        text = subprocess.run(['git', *list_arg],
+                              cwd            = root,
+                              capture_output = True,
+                              check          = True).stdout
     except subprocess.CalledProcessError as error:
-        raise ErrorGate('The commit {rev} cannot be copied: {text}'.format(
-                            rev = rev, text = error.stderr.decode().strip())) from error
+        raise ErrorGate('{what} cannot be copied: {text}'.format(
+                            what = what, text = error.stderr.decode().strip())) from error
 
-    with tarfile.open(fileobj = io.BytesIO(archive)) as file:
-        file.extractall(dir_copy, filter = 'data')
+    return [record for record in text.split(b'\0') if record]
+
+
+# -----------------------------------------------------------------------------
+def _write(root:       pathlib.Path,
+           list_entry: list[tuple[str, str, str]],
+           dir_copy:   pathlib.Path,
+           what:       str) -> None:
+    """
+    Write each entry of list_entry, its mode, object name and path, into
+    dir_copy from the object git holds for it. The links are written
+    last, so that no file is written through one, and a link that leads
+    out of dir_copy is refused.
+
+    """
+
+    list_entry = [entry for entry in list_entry if entry[0] != MODE_MODULE]
+    list_blob  = _blobs(root, [name for (_, name, _) in list_entry], what)
+    list_link  = []
+
+    for ((mode, _, path), blob) in zip(list_entry, list_blob, strict = True):
+        target = dir_copy / path
+        if _is_outside(path):
+            raise ErrorGate('{what} cannot be copied, as it holds the path {path}, outside '
+                            'the tree.'.format(what = what, path = path))
+        if mode == MODE_LINK:
+            list_link.append((path, os.fsdecode(blob)))
+            continue
+        if mode not in MAP_MODE:
+            raise ErrorGate('{what} cannot be copied, as {path} has the mode {mode}, which '
+                            'is not that of a file.'.format(what = what, path = path,
+                                                              mode = mode))
+        try:
+            target.parent.mkdir(parents = True, exist_ok = True)
+            target.write_bytes(blob)
+            os.chmod(target, MAP_MODE[mode])
+        except OSError as error:
+            raise _unwritten(what, path, error) from error
+
+    for (path, link) in list_link:
+        if _is_outside(os.path.join(os.path.dirname(path), link)):
+            raise ErrorGate('{what} cannot be copied, as it holds a link at {path} to {link}, '
+                            'outside the tree.'.format(what = what, path = path, link = link))
+        target = dir_copy / path
+        try:
+            target.parent.mkdir(parents = True, exist_ok = True)
+            os.symlink(link, target)
+        except OSError as error:
+            raise _unwritten(what, path, error) from error
+
+
+# -----------------------------------------------------------------------------
+def _is_outside(path: str) -> bool:
+    """
+    Return whether path, read from the root of a copy, leads out of it.
+
+    """
+
+    normal = os.path.normpath(path)
+    return (os.path.isabs(path)
+            or normal == os.pardir
+            or normal.startswith(os.pardir + os.sep))
+
+
+# -----------------------------------------------------------------------------
+def _unwritten(what: str, path: str, error: OSError) -> ErrorGate:
+    """
+    Return the error that says path, of the content what names, cannot
+    be written, as error says.
+
+    """
+
+    return ErrorGate('{what} cannot be copied, as {path} cannot be written: {reason}.'.format(
+                         what = what, path = path, reason = error.strerror or error))
+
+
+# -----------------------------------------------------------------------------
+def _blobs(root: pathlib.Path, list_name: list[str], what: str) -> list[bytes]:
+    """
+    Return the content of each object of list_name, in order, as git
+    cat-file gives it.
+
+    """
+
+    try:
+        data = subprocess.run(['git', 'cat-file', '--batch'],
+                              cwd            = root,
+                              input          = ''.join(name + '\n' for name in list_name).encode(),
+                              capture_output = True,
+                              check          = True).stdout
+    except subprocess.CalledProcessError as error:
+        raise ErrorGate('{what} cannot be copied: {text}'.format(
+                            what = what, text = error.stderr.decode().strip())) from error
+
+    list_blob = []
+    index     = 0
+    for name in list_name:
+        end    = data.index(b'\n', index)
+        header = data[index:end].split()
+        if len(header) != 3:
+            raise ErrorGate('{what} cannot be copied, as git holds no object {name}.'.format(
+                                what = what, name = name))
+        size  = int(header[2])
+        list_blob.append(data[end + 1:end + 1 + size])
+        index = end + 1 + size + 1
+
+    return list_blob
 
 
 # -----------------------------------------------------------------------------
 def _environment(dir_copy: pathlib.Path) -> dict[str, str]:
     """
     Return the environment that a stage runs in: this one, without the
-    variables git sets for its hooks, and with the source of the copy
-    first on the python path.
+    variables of TUPLE_UNSET, and with the source of the copy first on
+    the python path, ahead of the python path of this one.
 
     """
 
     env = {key: value for (key, value) in os.environ.items()
-           if not key.startswith(PREFIX_GIT)}
+           if not key.startswith(TUPLE_UNSET)}
 
-    list_path         = [str(dir_copy / DIR_SOURCE), os.environ.get('PYTHONPATH', '')]
-    env['PYTHONPATH'] = os.pathsep.join(path for path in list_path if path)
+    list_path     = [str(dir_copy / DIR_SOURCE), os.environ.get(ENV_PATH, '')]
+    env[ENV_PATH] = os.pathsep.join(path for path in list_path if path)
 
     return env

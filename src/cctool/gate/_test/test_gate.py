@@ -135,6 +135,77 @@ def test_a_stage_runs_without_the_git_environment_of_the_hook(repo, monkeypatch)
     assert output.startswith('None\n')
 
 
+def test_the_copy_of_a_commit_holds_each_file_as_git_stores_it(repo, tmp_path_factory):
+    (repo / '.gitattributes').write_text('a.yaml export-ignore\nb.txt export-subst\n')
+    (repo / 'a.yaml').write_text('kept: true\n')
+    (repo / 'b.txt').write_text('$Format:%H$\n')
+    _git(repo, 'add', '--all')
+    _commit(repo)
+    dir_copy = tmp_path_factory.mktemp('copy')
+    cctool.gate.gate.copy_commit(repo, 'HEAD', dir_copy)
+    assert (dir_copy / 'a.yaml').read_text() == 'kept: true\n'
+    assert (dir_copy / 'b.txt').read_text() == '$Format:%H$\n'
+
+
+def test_the_copy_of_the_index_holds_each_file_as_git_stores_it(repo, tmp_path_factory):
+    (repo / '.gitattributes').write_text('c.txt ident\nd.txt text eol=crlf\n')
+    (repo / 'c.txt').write_text('$Id$\n')
+    (repo / 'd.txt').write_bytes(b'one\ntwo\n')
+    _git(repo, 'add', '.gitattributes', 'c.txt', 'd.txt')
+    dir_copy = tmp_path_factory.mktemp('copy')
+    cctool.gate.gate.copy_staged(repo, dir_copy)
+    assert (dir_copy / 'c.txt').read_text() == '$Id$\n'
+    assert (dir_copy / 'd.txt').read_bytes() == b'one\ntwo\n'
+
+
+@pytest.mark.parametrize('is_commit', [False, True])
+def test_a_copy_keeps_the_mode_of_each_file_and_each_link(repo, tmp_path_factory, is_commit):
+    path = repo / 'run.sh'
+    path.write_text('#!/bin/sh\n')
+    path.chmod(0o755)
+    (repo / 'link').symlink_to('src/marker.py')
+    _git(repo, 'add', 'run.sh', 'link')
+    dir_copy = tmp_path_factory.mktemp('copy')
+    if is_commit:
+        _commit(repo)
+        cctool.gate.gate.copy_commit(repo, 'HEAD', dir_copy)
+    else:
+        cctool.gate.gate.copy_staged(repo, dir_copy)
+    assert (dir_copy / 'run.sh').stat().st_mode & 0o777 == 0o755
+    assert (dir_copy / 'src/marker.py').stat().st_mode & 0o777 == 0o644
+    assert os.readlink(dir_copy / 'link') == 'src/marker.py'
+
+
+@pytest.mark.parametrize('link', ['/etc/hostname', '../outside', 'src/../../outside'])
+def test_a_link_out_of_the_tree_cannot_be_copied(repo, link):
+    (repo / 'link').symlink_to(link)
+    _git(repo, 'add', 'link')
+    result = click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                              ['gate', '--root', str(repo)])
+    assert result.exit_code == 2
+    assert result.stderr == ('The staged content cannot be copied, as it holds a link at link '
+                             'to {link}, outside the tree.\n'.format(link = link))
+
+
+def test_a_stage_runs_without_the_variables_that_steer_pytest_cctool_or_python(repo,
+                                                                              monkeypatch):
+    monkeypatch.setenv('PYTEST_ADDOPTS', '--collect-only')
+    monkeypatch.setenv('CCTOOL_SCHEMA_FULL', '1')
+    monkeypatch.setenv('PYTHONUTF8', '1')
+    stage = _stage('env', 'import os; print(sorted(key for key in os.environ '
+                          'if key.startswith(("PYTEST_", "CCTOOL_", "PYTHON"))))')
+    [(_, _, output)] = cctool.gate.gate.gate(repo, (stage,))
+    assert output.startswith("['PYTHONPATH']\n")
+
+
+def test_a_staged_path_that_git_would_quote_is_read_as_it_is(repo):
+    _commit(repo)
+    (repo / 'src/caf\u00e9.py').write_text('TEXT = 1\n')
+    _git(repo, 'add', 'src/caf\u00e9.py')
+    assert cctool.gate.gate.staged(repo) == ['src/caf\u00e9.py']
+    assert cctool.gate.gate.is_code_staged(repo)
+
+
 def test_a_tree_that_is_not_a_repository_cannot_be_gated(tmp_path):
     with pytest.raises(cctool.gate.gate.ErrorGate) as info:
         cctool.gate.gate.gate(tmp_path, (_stage('pass', 'pass'),))

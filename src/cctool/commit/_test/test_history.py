@@ -27,8 +27,10 @@ edge:                   []
 
 import subprocess
 
+import click.testing
 import pytest
 
+import cctool.cli.command
 import cctool.commit.history
 import cctool.commit.message
 import cctool.conftest
@@ -128,6 +130,29 @@ def test_a_commit_that_is_not_signed_is_reported(repo):
          cctool.commit.message.compose('Change README.md so that it is short', 'It is short.'))
     [found] = cctool.commit.history.check(repo, 'HEAD')
     assert found.startswith('The commit is not signed, and a team member')
+
+
+def test_an_attribute_of_the_clone_does_not_change_the_verdict(repo):
+    (repo / 'README.md').write_text('Changed.\n')
+    _git(repo, 'add', '--all')
+    _git(repo, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--no-verify', '--message',
+         cctool.commit.message.compose('Change README.md so that it is short', 'It is short.'))
+    (repo / '.git/info').mkdir(exist_ok = True)
+    (repo / '.git/info/attributes').write_text(
+        '{path} export-ignore\n'.format(path = cctool.conftest.FILE_MEMBERS))
+    [found] = cctool.commit.history.check(repo, 'HEAD')
+    assert found.startswith('The commit is not signed, and a team member')
+
+
+def test_a_range_that_selects_no_commit_is_an_error(tmp_path):
+    subprocess.run(['git', 'init', '--quiet'], cwd = tmp_path, check = True)
+    _git(tmp_path, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--allow-empty',
+         '--no-verify', '--message', 'Start')
+    result = click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                              ['history', 'check', 'HEAD..HEAD',
+                                               '--gate', '--root', str(tmp_path)])
+    assert result.exit_code == 2
+    assert result.stderr == 'HEAD..HEAD selects no commit, so there is nothing to check.\n'
 
 
 def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyring):

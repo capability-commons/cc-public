@@ -78,7 +78,8 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
     Check each commit in RANGE, oldest first, however it was made.
 
     RANGE is what git rev-list takes, such as dev..HEAD, and is
-    HEAD, the whole history, if left out. Each commit is checked as the
+    HEAD, the whole history, if left out. A RANGE that selects no
+    commit is an error, not a pass. Each commit is checked as the
     commit-msg hook checks one: its message against sch_commit as its
     own tree holds it, and its change against its first parent. A
     commit item whose id another commit's item has, as a cherry-pick
@@ -94,6 +95,10 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
         else:
             list_commit = cctool.commit.history.commits(root, list(list_arg) or ['HEAD'])
             list_tip    = list_commit[-1:]
+            if not list_commit:
+                click.echo('{range} selects no commit, so there is nothing to check.'.format(
+                               range = ' '.join(list_arg) or 'HEAD'), err = True)
+                sys.exit(cctool.cli.group.EXIT_ERROR)
         list_found = cctool.commit.history.failures(root, list_commit)
         if is_gate:
             list_found += _gated(root, list_tip)
