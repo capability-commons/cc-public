@@ -182,10 +182,12 @@ class Context:
 
 
 # -----------------------------------------------------------------------------
-@functools.lru_cache(maxsize = 1024)
+@functools.cache
 def _compiled(regex: str) -> re.Pattern:
     """
-    Return regex, compiled.
+    Return regex, compiled. Every regex is kept: some rules build one
+    for each item, about 4000 in all, and a bounded cache that held
+    fewer compiled them all again at every check.
 
     """
 
