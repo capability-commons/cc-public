@@ -1,0 +1,50 @@
+id_self:                dec_how_a_receiver_takes_values_from_another_unit
+guid_self:              dec_ecb10f74764a419c951f53bf447f49d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How a receiver takes values from another execution unit
+brief:                  |
+                        When a dataflow edge crosses between execution
+                        units, does the receiver wait for one message
+                        in each local step, or does the delivery
+                        policy of the edge decide whether it waits?
+description:            |
+                        Two upheld options answer this differently.
+                        The option on reading derived by placement
+                        says that each unit reads exactly one message
+                        per input edge per local step, waiting for it
+                        (opt_reading_derived_by_placement). The option
+                        on transport nodes says that the delivery
+                        policy on the edge says how arrivals at the
+                        receiver become the token of a local step
+                        (opt_transport_nodes_inserted_by_a_transform),
+                        and rqt_transport_waits_when_full presumes
+                        that a crossing may allow loss. The depth of
+                        the queue is two in
+                        opt_one_message_per_kahn_edge_per_step and "a
+                        bounded queue" in icd_dataflow_transport.
+
+                        The trial implementation of 2026-10-29 made
+                        every crossing lossless. Its full review found
+                        that units on one host then ran in lockstep: a
+                        keep-latest edge from a 2 ms unit to a 20 ms
+                        unit became a queue read in order, the fast
+                        unit reported 99 overruns in 104 local steps,
+                        and host readings alone held a 10 ms unit to
+                        the 50 ms period of another (review of
+                        2026-10-29, CC-011). What a receiver does when
+                        no message comes, and what a failed local step
+                        sends, are separate decisions.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

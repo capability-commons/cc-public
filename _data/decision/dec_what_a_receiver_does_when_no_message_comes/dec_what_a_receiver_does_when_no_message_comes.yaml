@@ -1,0 +1,36 @@
+id_self:                dec_what_a_receiver_does_when_no_message_comes
+guid_self:              dec_99f318a58bfb41e69020ded575332498
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What a receiver does when no message comes
+brief:                  |
+                        When a receiver waits for a message from
+                        another execution unit or host and none comes,
+                        because the sender stalled, crashed or lost
+                        its link, what does the receiver do?
+description:            |
+                        The transport ICD (icd_dataflow_transport)
+                        gives the receiver no timeout and has no
+                        failure clause, so a missing message blocks
+                        the receiver for ever. The argument
+                        ann_cross_host_wait_within_a_step_as_an_attack_path
+                        says the transport still needs a timeout and a
+                        fail-safe. In the trial implementation of
+                        2026-10-29, killing a TCP receiver killed the
+                        sender's process through SIGPIPE, and killing
+                        a sender left the receiver running for 100
+                        local steps on empty messages with nothing
+                        reported (review of 2026-10-29, CC-016).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

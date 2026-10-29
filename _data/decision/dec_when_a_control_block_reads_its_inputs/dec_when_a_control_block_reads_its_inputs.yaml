@@ -1,0 +1,42 @@
+id_self:                dec_when_a_control_block_reads_its_inputs
+guid_self:              dec_de7ae722f41c47d3a2407a0ac930da19
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  When a control block reads its own inputs
+brief:                  |
+                        A control block writes the control message
+                        before any other node of its unit runs, yet it
+                        reads inputs such as the mode and the host
+                        readings. Which local step's values does it
+                        read?
+description:            |
+                        rqt_control_block_writes_first puts the block
+                        first in each local step.
+                        icd_dataflow_control_block gives it the inputs
+                        mode_in and host_readings_in, and
+                        icd_dataflow_mode_controller reads the control
+                        message and writes the mode. Wired as the ICDs
+                        describe, control block, mode controller and
+                        mode_in form a loop. With feedforward edges
+                        check.lp refuses it as a feedforward loop;
+                        with a feedback edge,
+                        rqt_checks_feedback_default needs a default
+                        that neither port declares (review of
+                        2026-10-29, CC-053, reproduced). In the trial
+                        implementation no graph with a mode controller
+                        could be built (CC-023), and in every unit but
+                        the first on a host the block ran after the
+                        ordinary nodes (CC-001).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

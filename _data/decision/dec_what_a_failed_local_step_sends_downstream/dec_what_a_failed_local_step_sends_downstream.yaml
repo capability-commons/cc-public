@@ -1,0 +1,35 @@
+id_self:                dec_what_a_failed_local_step_sends_downstream
+guid_self:              dec_cfcda7419cf443f8ab0c72524c775f63
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  What a failed local step sends to other units
+brief:                  |
+                        When a local step fails in one execution unit,
+                        what do the units that read from it receive
+                        for that step?
+description:            |
+                        The fail-safe fail_step ends a local step
+                        early
+                        (dec_behavior_when_a_capacity_is_exceeded). In
+                        the trial implementation of 2026-10-29 the
+                        senders after the failing node did not run, so
+                        a receiver in another unit took the next local
+                        step's message as this one's: every downstream
+                        unit stayed one step out of line for the rest
+                        of the run, and a bounded run never ended
+                        (review of 2026-10-29, CC-004). The transport
+                        ICD (icd_dataflow_transport) does not say what
+                        a failed step sends.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

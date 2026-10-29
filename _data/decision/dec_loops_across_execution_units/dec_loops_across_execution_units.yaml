@@ -1,0 +1,36 @@
+id_self:                dec_loops_across_execution_units
+guid_self:              dec_9b1682186ba74c0e8c25f5787e679959
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Loops across execution units
+brief:                  |
+                        May a loop of Kahn nodes cross between
+                        execution units, and if so how does its first
+                        local step start?
+description:            |
+                        Within one unit a feedback edge carries the
+                        previous local step's value, with the default
+                        of its port in the first
+                        (rqt_executor_feedback_previous,
+                        rqt_checks_feedback_default). Across units,
+                        each receiver waits for its message. In the
+                        trial implementation of 2026-10-29 a
+                        controller in one unit and a plant in another,
+                        joined by a feedback edge with a default,
+                        passed every check and then deadlocked at
+                        local step 0, since nothing put the default in
+                        the queue (review of 2026-10-29, CC-003). The
+                        same graph in one unit ran.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
