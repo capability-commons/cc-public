@@ -1,0 +1,41 @@
+id_self:                ruling_value_copied_into_each_queue
+guid_self:              ruling_359934c52a5d4ab893d115bea05e4421
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Value copied into each queue
+brief:                  |
+                        A value is copied into each queue it passes
+                        through. Ruled by WTP on 2026-10-29, as
+                        recommended, with a note: various sorts of
+                        memory tokens are expected as exceptions, for
+                        example to support shared read-only memory or
+                        one writer at a time, with the exact
+                        mechanisms to be discussed later.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_value_copied_into_each_queue
+    guid_target:        opt_bd2f0852e8284ff28ea7f83ddb794ae2
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_memory_token_read_only_or_moved
+    guid_target:        opt_6a14dbf3c42a4f689ef5e47f05859efe
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_memory_token_with_shared_write
+    guid_target:        opt_42121c6874a2446cb99186efafc5534a
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_windows_in_engine_owned_ring_buffers
+    guid_target:        opt_74bcfc8ce69a4cdf9eed8b286e98ce29

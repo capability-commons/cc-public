@@ -1,0 +1,41 @@
+id_self:                ruling_outstanding_requests_carried_in_state
+guid_self:              ruling_2cc6d14703ce4a0eaee3ca7492458487
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outstanding requests carried in state
+brief:                  |
+                        An actor waiting for a reply is swapped like
+                        any other node, and what it expects is carried
+                        in its state through the state upgrade. Ruled
+                        by WTP on 2026-10-29, as recommended: an actor
+                        only sends one-way messages, a reply is an
+                        ordinary message, and the engine has no notion
+                        of an outstanding request.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_outstanding_requests_carried_in_state
+    guid_target:        opt_42ec5a3eb73749b8837cf87cf502f1ac
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_drain_outstanding_requests_first
+    guid_target:        opt_514faf8b6c8e41079a702d9710c16341
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_fence_replies_by_epoch
+    guid_target:        opt_bfc6863da23e474a877824bf0d32cc70
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_swap_only_actors_with_nothing_outstanding
+    guid_target:        opt_6dd27e11f9ef4af9bff084df1e5b348d
