@@ -1,0 +1,40 @@
+id_self:                dec_how_a_reader_tells_absent_from_empty
+guid_self:              dec_3f3fb9cbeed44b9f9589fd8be4817b59
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How a reader tells an absent message from an empty one
+brief:                  |
+                        A message with no items can mean that nothing
+                        arrived, that a message was dropped on
+                        overflow, that the sender was switched off, or
+                        that it detected nothing. How does a reader
+                        tell these apart?
+description:            |
+                        icd_dataflow_edge_message says a count of 0
+                        means nothing arrived, and mentions an enable
+                        flag that may be carried, with no field
+                        defined. icd_dataflow_node treats a message
+                        with no items as nothing arrived.
+                        case_executor_fail_safe drops a message as an
+                        empty one, and
+                        opt_degraded_mode_through_a_mode_port has a
+                        node switched off send an empty list. The
+                        fail-safe ruling rests on
+                        ann_truncated_obstacle_list_reads_as_free_space,
+                        which warns that a dropped obstacle list read
+                        as empty reads as free space. The fault
+                        reaches only the control block, one local step
+                        later (review of 2026-10-29, CC-061).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

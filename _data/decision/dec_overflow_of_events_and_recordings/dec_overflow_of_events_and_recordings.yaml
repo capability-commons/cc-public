@@ -1,0 +1,43 @@
+id_self:                dec_overflow_of_events_and_recordings
+guid_self:              dec_8249bce12c5843f5a263b84a06c0ad14
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Overflow of events and recordings
+brief:                  |
+                        Memory is fixed before the first local step,
+                        yet the records ask that no event be dropped
+                        and every value be recorded. What happens when
+                        the event queue or a recorder's buffer is
+                        full?
+description:            |
+                        rqt_executor_reports_faults and
+                        rqt_control_block_passes_events drop no event,
+                        and icd_dataflow_engine_event says an event is
+                        never dropped. rqt_recorder_records_outside
+                        records every value, control message and
+                        event, and rqt_recorder_off_step_path keeps
+                        writes off the local step, while
+                        icd_dataflow_recorder does so only where the
+                        budget demands it.
+                        rqt_memory_before_first_step forbids growth. A
+                        burst of faults, or a store slower than the
+                        recording rate, must break one of them;
+                        case_recorder_off_step_path itself pairs a 200
+                        ms store with a 50 ms period (review of
+                        2026-10-29, CC-052). The trial implementation
+                        of 2026-10-29 dropped change and admission
+                        rows without a count, and its replay then
+                        diverged (CC-015).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

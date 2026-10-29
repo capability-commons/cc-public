@@ -1,0 +1,44 @@
+id_self:                dec_which_nodes_may_reach_the_outside_world
+guid_self:              dec_d451928f13474c4688938575a3b548de
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Which nodes may reach the outside world
+brief:                  |
+                        Which dataflow nodes may read from or act on
+                        the world outside the engine, such as a
+                        sensor, a file, a socket or the clock, and
+                        what must each report so that a run can be
+                        replayed?
+description:            |
+                        rqt_node_reads_outside_only_through_control
+                        and rqt_platform_confines_services confine
+                        every outside access to the control blocks and
+                        the engine core. Yet the records give the
+                        recording and transport nodes a dependency on
+                        the engine platform
+                        (lco_dataflow_nodes_recording,
+                        lco_dataflow_nodes_transport), require a
+                        recorder to write storage and a sender to use
+                        sockets, and speak of source nodes and a
+                        camera source. Condition 3 of
+                        ruling_services_in_a_control_message lets
+                        services that act go through a sink node, an
+                        actor or a control block that takes commands,
+                        and opt_services_in_a_control_message says
+                        that the decision stays open for discussion.
+                        The trial implementation of 2026-10-29
+                        invented a source role (review of 2026-10-29,
+                        CC-050).
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422
