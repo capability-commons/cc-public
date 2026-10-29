@@ -1,0 +1,48 @@
+id_self:                dec_how_a_recorded_run_is_replayed
+guid_self:              dec_88ac6e6858f04cb8be8fa9dd69af3987
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How a recorded run is replayed
+brief:                  |
+                        A run is replayed from a log of the values
+                        from outside, the gap that admitted each
+                        message from outside, and the step of each
+                        change set and swap, which recording nodes
+                        write from what the engine reports. How is the
+                        replay run?
+description:            |
+                        The rulings are
+                        ruling_replay_from_a_recorded_log and
+                        ruling_minimal_engine_with_recorded_exceptions,
+                        and the requirements
+                        rqt_engine_replays_live_changes,
+                        rqt_player_replays_exactly,
+                        rqt_control_block_replay and
+                        rqt_recorder_records_outside. No algorithm for
+                        replay is written down. The trial
+                        implementation of 2026-10-29 marked a graph as
+                        replayable with a field, recorded the output
+                        of every source and the control message and
+                        events of each unit, and replayed through an
+                        option of the engine that fed players and
+                        applied changes and admissions from the log
+                        (trial process log, phases 1 and 2). A run
+                        with a failed local step did not replay
+                        (review of 2026-10-29, CC-012), and its
+                        recorder dropped rows of changes and
+                        admissions without saying so (CC-015).
+                        Overflow of a recording is open in
+                        dec_overflow_of_events_and_recordings.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_dataflow_engine
+    guid_target:        lco_8cf2c4cd67cb43c0a4df6a97cda79422

@@ -1,0 +1,41 @@
+id_self:                opt_replay_by_a_transform_and_a_replay_controller
+guid_self:              opt_e73deda417f94c5aabd433b7c9f61027
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Replay by a transform and a replay controller
+brief:                  |
+                        A replay is a variant. A transform puts a
+                        player that reads the log in place of each
+                        node that reads the outside world and of each
+                        control block, and adds a replay controller
+                        that hands the recorded change sets and
+                        outside messages to runtime control, each
+                        marked with the step or gap at which the
+                        engine must apply or admit it. The engine has
+                        no replay mode.
+description:            |
+                        1. Resolve the variant the recording names, by
+                          its digest.
+                        2. Apply the replay transform: players for
+                          sources and control blocks, and a replay
+                          controller.
+                        3. Run. The players emit the recorded values
+                          at each local step; the controller sends
+                          each change set and outside message ahead of
+                          time, marked with its recorded step or gap,
+                          and the engine holds it until then.
+                        4. Record the replay as any run, and compare
+                          the two recordings.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_a_recorded_run_is_replayed
+    guid_target:        dec_88ac6e6858f04cb8be8fa9dd69af3987

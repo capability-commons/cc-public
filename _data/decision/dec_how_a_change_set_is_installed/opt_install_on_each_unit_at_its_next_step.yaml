@@ -1,0 +1,46 @@
+id_self:                opt_install_on_each_unit_at_its_next_step
+guid_self:              opt_eb4fa64c12d74ca7b4c740eb16d69462
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Install on each unit at its next step
+brief:                  |
+                        The thread of runtime control checks the
+                        change set and prepares all it needs, then
+                        hands each execution unit its part through one
+                        atomic pointer, and the unit installs the part
+                        at the start of its next local step. A change
+                        set touches one unit. What it takes out is
+                        freed once the unit has completed a local step
+                        after the install.
+description:            |
+                        1. Runtime control checks the change set
+                          against the graph that runs, allocates the
+                          nodes, state and buffers it adds, and
+                          computes each upgraded state, all off the
+                          execution unit.
+                        2. It publishes the prepared part with one
+                          atomic store.
+                        3. At the start of its next local step, the
+                          unit swaps the part in, keeps each old
+                          version's state, runs the step, and puts the
+                          old version back if the new one fails that
+                          step.
+                        4. When the unit reports a completed step
+                          after the install, runtime control frees
+                          what was taken out. A change set that
+                          touches two units is refused, or split by
+                          cctool into one change set per unit where no
+                          edge between them changes.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a

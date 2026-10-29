@@ -1,0 +1,41 @@
+id_self:                opt_prepare_then_commit_on_each_unit
+guid_self:              opt_12b545eb61b24285a7c82f521750e371
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Prepare, then commit on each unit
+brief:                  |
+                        Two phases. Runtime control prepares the part
+                        of every execution unit that the change set
+                        touches. Once all are prepared, a commit
+                        names, for each unit, the first local step at
+                        which its part takes effect, and each unit
+                        installs it at that step. A failure before the
+                        commit discards every part.
+description:            |
+                        1. Prepare each unit's part as in installing
+                          at the next step, and on another host
+                          through that host's runtime control.
+                        2. If any part fails its check, discard all of
+                          them, and refuse the change set.
+                        3. Read each unit's current local step, and
+                          commit by naming for each a step far enough
+                          ahead that every part is in place first.
+                        4. Each unit installs its part at the start of
+                          its named step; an edge between two changed
+                          units is joined from the later of the two
+                          steps.
+                        5. Free what was taken out as in installing at
+                          the next step.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_how_a_change_set_is_installed
+    guid_target:        dec_5b4fb5a6ebce4b50b7275299caf1724a

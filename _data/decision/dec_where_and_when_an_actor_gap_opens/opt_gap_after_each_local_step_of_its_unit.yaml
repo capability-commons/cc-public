@@ -1,0 +1,40 @@
+id_self:                opt_gap_after_each_local_step_of_its_unit
+guid_self:              opt_39c5f9a0961e486798c89cb4d8ad45cd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap after each local step of its unit
+brief:                  |
+                        Each actor is placed in one execution unit,
+                        and that unit opens a gap after each of its
+                        local steps. Each unit has its own gap, its
+                        own queues and its own record of admissions.
+description:            |
+                        1. After its local step, the unit takes the
+                          messages waiting for its own actors, and
+                          only those.
+                        2. It runs each actor once for each message,
+                          in the fixed order: by source in the
+                          declared order, then by sequence within a
+                          source.
+                        3. What an actor writes to another actor waits
+                          for the next gap; what it writes toward a
+                          Kahn node is held for the next local step,
+                          where the crossing policy of the edge makes
+                          it a token.
+                        4. The unit reports each admission with the
+                          step the gap follows. A message between
+                          actors in two units crosses like any edge
+                          between units.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3

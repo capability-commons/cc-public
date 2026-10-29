@@ -1,0 +1,35 @@
+id_self:                opt_gap_shared_by_the_units_of_a_host
+guid_self:              opt_52a2c7478589420f901b4315e753786b
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Gap shared by the units of a host
+brief:                  |
+                        One gap for each host, which opens when every
+                        execution unit on the host has completed a
+                        local step, so that all actors on the host see
+                        one consistent set of messages, at the cost of
+                        a barrier across the units of the host.
+description:            |
+                        1. Each unit, after its local step, waits at
+                          the host's barrier.
+                        2. When all have arrived, one thread takes the
+                          messages waiting for every actor on the
+                          host, runs them in the fixed order, and
+                          holds their writes for the next local step
+                          of each reader.
+                        3. The units are released together, and each
+                          admission is reported with the local step of
+                          every unit on the host.
+
+edge:
+
+  - id_relation:        relation_is_option_for
+    guid_relation:      relation_9f4bbfdcc3814a55b3b4e07d86ad0f26
+    id_target:          dec_where_and_when_an_actor_gap_opens
+    guid_target:        dec_0b3589fbbcf64c628b4a0f42beb771e3
