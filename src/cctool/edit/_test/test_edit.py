@@ -129,12 +129,15 @@ def test_a_move_keeps_the_permissions_of_the_file_it_moves(tree):
 
 
 def test_an_edit_that_changes_nothing_writes_nothing(tree):
+    path   = tree / '.githooks/pre-commit'
+    before = path.stat()
     edited = cctool.edit.edit.Tree(tree)
     cctool.edit.edit.batch(edited, [{'set': ['shell_githooks_pre_commit',
                                              'title',
                                              'Pre-commit hook']}])
     assert cctool.edit.edit.apply(edited) == {}
-    assert edited.edit == {}
+    after  = path.stat()
+    assert (after.st_ino, after.st_mtime_ns) == (before.st_ino, before.st_mtime_ns)
 
 
 def test_a_new_standalone_item_is_written_in_a_file_of_its_own(tree, zero):

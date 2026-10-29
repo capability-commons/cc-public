@@ -1612,16 +1612,12 @@ def _write(tree: Tree) -> None:
     take the place of its file, so that a write that fails leaves the
     tree as it was. Raise ErrorEdit if one fails.
 
-    A file the edits leave as it is is not written, and is taken out of
-    them. A file that is written keeps the permissions of the file it
-    replaces, or of the file it was moved from, so that an edit of a
-    hook or a script leaves it executable.
+    A file the edits leave as it is is not written. A file that is
+    written keeps the permissions of the file it replaces, or of the
+    file it was moved from, so that an edit of a hook or a script
+    leaves it executable.
 
     """
-
-    for relative in [relative for (relative, text) in tree.edit.items()
-                     if _is_unchanged(tree.root / relative, text)]:
-        del tree.edit[relative]
 
     for (staged, path) in _stage(tree):
         os.replace(staged, path)
@@ -1637,8 +1633,9 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
     """
     Write each new text of the edits of tree beside its file, with the
     permissions it keeps, and return each staged file with the file it
-    is to replace. Raise ErrorEdit, and leave no staged file, if one
-    cannot be written.
+    is to replace. A file that holds its new text already is passed
+    over. Raise ErrorEdit, and leave no staged file, if one cannot be
+    written.
 
     """
 
@@ -1646,9 +1643,9 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
 
     try:
         for (relative, text) in tree.edit.items():
-            if text is None:
-                continue
             path   = tree.root / relative
+            if text is None or _is_unchanged(path, text):
+                continue
             staged = path.with_name(path.name + SUFFIX_STAGED)
             mode   = _mode(tree, relative)
             path.parent.mkdir(parents = True, exist_ok = True)
@@ -1669,13 +1666,13 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
 
 
 # -----------------------------------------------------------------------------
-def _is_unchanged(path: pathlib.Path, text: str | bytes | None) -> bool:
+def _is_unchanged(path: pathlib.Path, text: str | bytes) -> bool:
     """
     Return True if the file at path holds text already.
 
     """
 
-    if text is None or not path.is_file():
+    if not path.is_file():
         return False
     if isinstance(text, str):
         text = text.encode('utf-8')
