@@ -1,0 +1,92 @@
+id_self:                ann_outside_reach_confined_to_engine_shipped_blocks
+guid_self:              ann_1d7e3eda5b9a438ab1211f752ad0a37a
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Outside reach confined to blocks shipped with the engine
+brief:                  |
+                        If only control blocks reach the outside, the
+                        code that can touch clocks, devices, files and
+                        sockets is a short list of standard nodes
+                        shipped and reviewed with the engine, and no
+                        author's node kind can join it. A privileged
+                        role opens that reach to any node kind that
+                        declares the role, and a declared service port
+                        opens it to every node kind. The trial shows
+                        how wide a role can be in practice: each node
+                        of a privileged role was handed the whole
+                        engine and its unit, and the guard on the
+                        platform header was passed by including
+                        another header. Since C++ in one address space
+                        cannot be fenced, the reach is bounded by the
+                        code a review must read.
+description:            |
+                        Sources:
+                        - The standard nodes ship with the dataflow
+                          engine, and the
+                          control blocks are among them.
+                          (_data/logical_component/lco_dataflow_nodes.yaml at brief and
+                          description)
+                        - The generated schedule passes every node
+                          whose role is not
+                          ordinary a handle that holds the Engine and its unit runtime,
+                          and the example source node reads the replay store through it
+                          (trial 2c777ab9, src/cctool/dataflow/generate.py, method
+                          invocation of class Unit;
+                          src/cctool/dataflow/engine/include/df/runtime.hpp, struct
+                          df_privileged;
+                          src/cctool/dataflow/_test/_example/node_src/sensor.cpp,
+                          function sensor_step).
+                        - Including runtime.hpp defines the privilege
+                          macro and passes
+                          the guard of platform.h (review of 2026-10-29, CC-048; area
+                          report trial-gen, TRIAL-GEN-12).
+                        - In C++, processes in one address space can
+                          modify each other's
+                          state, and there is no way of preventing it (Vrba et al. 2009,
+                          The Nornir run-time system, section on message transport, as
+                          noted in round 2).
+                        - Security asks who can read or change what,
+                          and how that is
+                          enforced.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question)
+                        Strength: moderate; it weakens if privileged
+                        kinds get a build target of their own that
+                        alone sees the platform headers, as the review
+                        proposes, and if each role is handed something
+                        narrower than the whole engine, and it says
+                        nothing of what the confinement costs
+                        elsewhere.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_only_control_blocks_reach_the_outside
+    guid_target:        opt_e4179b7b510246e980949020ab2496e3
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_any_node_through_a_declared_service_port
+    guid_target:        opt_eb0c2212562847eab296e50ab11a0e0a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83

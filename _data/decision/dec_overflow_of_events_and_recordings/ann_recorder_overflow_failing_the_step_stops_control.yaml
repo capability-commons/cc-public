@@ -1,0 +1,90 @@
+id_self:                ann_recorder_overflow_failing_the_step_stops_control
+guid_self:              ann_3e7acea29cd2449696fcf66bc878f128
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorder overflow that fails the local step of control nodes
+brief:                  |
+                        Under the failing option a slow store fails
+                        the local step of the unit the recorder sits
+                        in, and a failed step ends the step for every
+                        node after the failing one, safety functions
+                        included. The recorder is an observer, and the
+                        requirement keeps its storage off the step
+                        path so that a slow store does not change the
+                        system it records; failing the step changes it
+                        more than slowing it would. In the trial a
+                        failed step also shifted every downstream unit
+                        by one step and left the run unreplayable, so
+                        the recording the fail-safe guards was of no
+                        use past the fault. A burst of faults that
+                        fills the event queue would fail the step that
+                        raised them, which raises more.
+description:            |
+                        Sources:
+                        - A full event queue or recorder buffer is a
+                          fault of the local
+                          step that fills it, handled by the step's fail-safe.
+                          (_data/decision/dec_overflow_of_events_and_recordings/opt_overflow_fails_the_local_step.yaml
+                          at brief)
+                        - Failing the step ends it for every node
+                          after the failing one,
+                          safety functions included, so it should be allowed only where
+                          the failure itself leads to a safe state.
+                          (_data/decision/dec_behavior_when_a_capacity_is_exceeded/ann_overflow_fault_as_data_for_the_control_node.yaml
+                          at brief)
+                        - A recording node that fails could stop
+                          functional nodes.
+                          (_data/decision/dec_where_engine_behavior_lives/ann_failing_observer_node_can_end_the_step.yaml
+                          at brief)
+                        - Recorders keep their storage traffic off the
+                          path of the local
+                          step, so that a slow store does not lengthen it, since a
+                          recorder that slowed the step would change the system it
+                          records.
+                          (_data/requirement/rqt_recorder_off_step_path.yaml at qualifier
+                          and rationale)
+                        - In the trial a failed local step shifted
+                          every downstream unit
+                          by one step for the rest of the run, a run with a failed step
+                          did not replay, and each failed step was itself reported as an
+                          event, twice (review of 2026-10-29, CC-004, CC-012 and CC-048).
+                        - Safety asks what state the design falls back
+                          to when it fails.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.question)
+                        Strength: strong for recorders; weaker for the
+                        event queue, whose overflow is itself a sign
+                        that the unit is in trouble.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_fails_the_local_step
+    guid_target:        opt_bbf8597749f1450699b55ebbf865c197
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

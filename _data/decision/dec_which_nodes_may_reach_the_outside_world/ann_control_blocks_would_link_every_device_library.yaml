@@ -1,0 +1,114 @@
+id_self:                ann_control_blocks_would_link_every_device_library
+guid_self:              ann_3c296ebad9a24378874c83a8ef5f28a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every device and transport library linked into the control blocks
+brief:                  |
+                        If only control blocks reach the outside, the
+                        control block of a unit must drive the camera,
+                        write the recorder's store and run the sockets
+                        and queues of every crossing edge, so it links
+                        every device and transport library the graph
+                        uses. That breaks the requirement that
+                        confines transport libraries to the sender and
+                        the receiver, whose rationale is that a target
+                        without a transport need not build it, and the
+                        upheld option that makes transport libraries
+                        dependencies of those node kinds only.
+                        Privileged roles leave each library with the
+                        one node kind that uses it, which a variant
+                        can leave out or swap per target, and declared
+                        service ports can do the same if the node kind
+                        that declares a port is the one that links the
+                        library behind it.
+description:            |
+                        Sources:
+                        - Only the control blocks and the engine core
+                          reach the outside;
+                          sensors, recorders, transports and acting sinks give what they
+                          produce to the control block, which carries out the action.
+                          (_data/decision/dec_which_nodes_may_reach_the_outside_world/opt_only_control_blocks_reach_the_outside.yaml
+                          at brief)
+                        - Every use of a transport library is confined
+                          to the sender and
+                          the receiver, so that a target without a transport need not
+                          build it.
+                          (_data/requirement/rqt_transport_confines_library.yaml at
+                          object and rationale)
+                        - Transport libraries are dependencies of the
+                          sender and receiver
+                          node kinds only.
+                          (_data/decision/dec_how_values_cross_execution_units/opt_transport_nodes_inserted_by_a_transform.yaml
+                          at brief)
+                        - Transport nodes are the only nodes that
+                          depend on a transport
+                          library.
+                          (_data/logical_component/lco_dataflow_nodes_transport.yaml at
+                          description)
+                        - The platform layer hides threads, core
+                          pinning, clocks, shared
+                          memory and readings such as processor temperature; it names no
+                          camera, store or network.
+                          (_data/logical_component/lco_dataflow_engine_platform.yaml at
+                          brief)
+                        - A shared object such as a file is best
+                          managed by one process
+                          responsible for all accesses to it, reached through channels
+                          (Kahn and MacQueen 1977, Coroutines and networks of parallel
+                          processes, section 2.2, as noted in round 2).
+                        - Dependency risk counts direct and indirect
+                          dependencies, and
+                          flexibility measures the effort to install on a new platform.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.measure and
+                          entries.concern_flexibility.measure)
+                        ASSUMPTION: Patrol's camera on the Orin is
+                        reached through a vendor library that a laptop
+                        or a Raspberry Pi target lacks. ASSUMPTION:
+                        under declared service ports the service is
+                        linked into the node kind that declares the
+                        port, not into the engine; the option does not
+                        say which. Strength: strong; the option
+                        conflicts with a requirement and an upheld
+                        option as they stand, and it would weaken only
+                        if the control block were split into one block
+                        per device, which is a privileged role by
+                        another name.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_only_control_blocks_reach_the_outside
+    guid_target:        opt_e4179b7b510246e980949020ab2496e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_any_node_through_a_declared_service_port
+    guid_target:        opt_eb0c2212562847eab296e50ab11a0e0a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

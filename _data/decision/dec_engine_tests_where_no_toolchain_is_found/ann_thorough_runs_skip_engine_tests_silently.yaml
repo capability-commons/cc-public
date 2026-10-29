@@ -1,0 +1,82 @@
+id_self:                ann_thorough_runs_skip_engine_tests_silently
+guid_self:              ann_92b85f84aa9240ea96223edf430995dd
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Silent skips in the runs meant to be the most thorough
+brief:                  |
+                        Skipping unless the gate asked still lets
+                        engine tests skip in every run that the commit
+                        and push gates do not drive: the overnight
+                        coverage run, the slow run on each Python, a
+                        plain pixi run test, and the full gate before
+                        a release, which runs every test on each
+                        Python that requires-python admits. Those are
+                        the runs a reviewer reads as the fullest
+                        evidence, and the review found that the
+                        requirement table already overstates what the
+                        tests prove. A test that fails without a
+                        toolchain makes a green run mean that the
+                        engine was built and run, at the cost of the
+                        toolchain in every environment those runs use.
+description:            |
+                        Sources:
+                        - The slow task runs the tests in the py312,
+                          py313 and py314
+                          environments, and the coverage task runs them once under
+                          coverage (pyproject.toml at tool.pixi.tasks).
+                        - Before a release, every check and test runs
+                          with no cached
+                          verdicts on each Python that requires-python admits.
+                          (_data/decision/dec_release_gate/ruling_release_gate.yaml at
+                          brief)
+                        - The requirement table overstates what the
+                          tests prove, and the
+                          review's task asks that a skip of engine tests fail the gate or
+                          be declared (review of 2026-10-29, CC-040 and task D14).
+                        - Reviewability asks whether a person can read
+                          a change in full
+                          and judge it.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reviewability.question)
+                        ASSUMPTION: a toolchain added to the default
+                        feature also reaches the py312 to py314
+                        environments, which do not leave out the
+                        default feature as the tool environment does.
+                        Strength: moderate; it bears on runs outside
+                        the gate, where a reader may still notice the
+                        count of skips, and it would fall if those
+                        runs reported skipped engine tests as a
+                        failure of their own.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_engine_tests_where_no_toolchain_is_found
+    guid_target:        dec_06047ba5a02043e89a62b22668425af2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_tests_skip_unless_cpp_is_staged
+    guid_target:        opt_4684202da49e4a06b6ceccc4a60b5584
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_tests_skip_without_a_toolchain
+    guid_target:        opt_5cba11621817464b917c636c96bfb56a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_test_without_a_toolchain_fails
+    guid_target:        opt_a1bf19269a94485fb3f960e2f3ba440a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

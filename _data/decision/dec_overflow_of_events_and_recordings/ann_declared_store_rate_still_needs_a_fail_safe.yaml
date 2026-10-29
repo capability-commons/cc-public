@@ -1,0 +1,98 @@
+id_self:                ann_declared_store_rate_still_needs_a_fail_safe
+guid_self:              ann_a8c4c98557bb45fdbb1f1919e8948fd8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared store rate that still needs a fail-safe
+brief:                  |
+                        A capacity derived from a declared store rate
+                        holds only while the store keeps that rate,
+                        and the rate depends on hardware and on
+                        storage software from third parties, which
+                        differ between an Orin, a laptop and a
+                        Raspberry Pi and change with an update. For
+                        ports the same derivation was ruled together
+                        with a declared fail-safe, because an overflow
+                        means a stated bound was wrong, not that it
+                        cannot happen. Sizing for a declared run says
+                        nothing of what happens when the store falls
+                        behind its declaration; counting the loss, or
+                        failing the step, at least states it.
+description:            |
+                        Sources:
+                        - Each port's capacity is derived from stated
+                          maximum rates, and
+                          each port still declares its fail-safe on overflow, every
+                          overflow raising a fault.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/ruling_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief;
+                          _data/decision/dec_behavior_when_a_capacity_is_exceeded/ruling_fail_safe_declared_per_port.yaml
+                          at brief)
+                        - Overflow is a broken requirement with a
+                          declared fail-safe
+                          (WTP, 2026-10-28).
+                        - Target platforms range from an Ubuntu
+                          workstation to a
+                          Raspberry Pi 5.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_control_blocks_hold_the_only_platform_code.yaml
+                          at description)
+                        - The sizing option states the declaration and
+                          the refusal, and
+                          no behavior on overflow.
+                          (_data/decision/dec_overflow_of_events_and_recordings/opt_capacity_sized_for_a_declared_run.yaml
+                          at brief)
+                        - Dependency risk asks what happens if a part
+                          taken from a third
+                          party is changed.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question)
+                        ASSUMPTION: the write rate of flash storage
+                        varies with wear, temperature and the file
+                        system's housekeeping, so a declared rate is
+                        an estimate. Strength: strong as a gap in the
+                        option as written; it goes away if the option
+                        is read as a derived capacity with one of the
+                        other two as a backstop, which would be a
+                        fourth option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_sized_for_a_declared_run
+    guid_target:        opt_eaec2c394a2f442cb4b14011a86c8cb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overflow_fails_the_local_step
+    guid_target:        opt_bbf8597749f1450699b55ebbf865c197
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

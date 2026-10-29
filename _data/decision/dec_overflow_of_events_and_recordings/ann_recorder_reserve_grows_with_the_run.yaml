@@ -1,0 +1,87 @@
+id_self:                ann_recorder_reserve_grows_with_the_run
+guid_self:              ann_984567fdc7a74c74967401ab139b73f1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Recorder reserve that grows with the length of the run
+brief:                  |
+                        When the store is slower than the recording
+                        rate, the backlog grows by the difference
+                        every second, so sizing a recorder for a
+                        declared run reserves memory in proportion to
+                        the run's length. The case for the requirement
+                        already pairs a 200 ms store with a 50 ms
+                        period, 15 rows a second more than the store
+                        takes, or 7,500 rows over the review's
+                        10,000-step regression. A robot on patrol has
+                        no natural end to its run, so the option
+                        either reserves for a guessed length or
+                        refuses to run because its recorder is slow.
+                        Counting the loss and marking the recording
+                        keeps memory fixed and lets the robot run, at
+                        the price of a recording that cannot be
+                        replayed.
+description:            |
+                        Sources:
+                        - A deployment declares its longest run and
+                          the rate of its
+                          store, and one whose store cannot keep up is refused before it
+                          runs.
+                          (_data/decision/dec_overflow_of_events_and_recordings/opt_capacity_sized_for_a_declared_run.yaml
+                          at brief)
+                        - A recorder writes to a store that takes 200
+                          ms per write, in a
+                          unit with a 50 ms period.
+                          (_data/test_case/case_recorder_off_step_path.yaml at
+                          preconditions)
+                        - The proposed regression runs a store 4x too
+                          slow for 10,000
+                          steps (review of 2026-10-29, CC-052).
+                        - The trial's default recording ring already
+                          reserved 4096 rows
+                          of 64 KiB, 256 MiB (review of 2026-10-29, area report
+                          trial-engine, TE-19).
+                        - Peak memory is one measure of performance
+                          efficiency.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure)
+                        ASSUMPTION: one row per local step; a camera
+                        end of a few megabytes a row would make the
+                        reserve gigabytes within minutes. ASSUMPTION:
+                        Patrol's runs are open-ended. Strength: strong
+                        for long runs with a slow store; weak where
+                        the store keeps up on average and only bursts
+                        need absorbing, which a derived capacity
+                        handles well.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_capacity_sized_for_a_declared_run
+    guid_target:        opt_eaec2c394a2f442cb4b14011a86c8cb1
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

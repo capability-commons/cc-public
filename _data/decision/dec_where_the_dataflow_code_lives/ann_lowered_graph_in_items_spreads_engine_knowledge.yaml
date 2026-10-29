@@ -1,0 +1,110 @@
+id_self:                ann_lowered_graph_in_items_spreads_engine_knowledge
+guid_self:              ann_aa03a01f7ab94b5685f6c31ceaefe2f6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Lowered graph moved into the component of what the author wrote
+brief:                  |
+                        The items component answers what the author
+                        wrote, and every other part of the model but
+                        deployment, and the generator, may depend on
+                        it. A lowered graph is never written by an
+                        author: lowering makes it, with transports,
+                        adapters, control blocks and capacities that
+                        only the engine needs. Moving its form into
+                        items lets the checks and the generator read
+                        it without an edge to lowering, but it puts
+                        engine knowledge into the one component the
+                        rest of the model reads, so a change to what
+                        lowering inserts reaches the base of the whole
+                        model. An edge from the checks and the
+                        generator to lowering, as the other two
+                        options add, states what is true: they read
+                        what lowering makes.
+description:            |
+                        Sources:
+                        - Items defines the items an author writes and
+                          owns their
+                          schemas; it answers the question of what the author wrote.
+                          (_data/logical_component/lco_dataflow_model_items.yaml at brief
+                          and description)
+                        - The resolver, the dictionary, lowering, the
+                          checks and the
+                          generator may each depend on items.
+                          (_data/logical_component/lco_dataflow_model_resolver.yaml,
+                          _data/logical_component/lco_dataflow_model_dictionary.yaml,
+                          _data/logical_component/lco_dataflow_model_lowering.yaml,
+                          _data/logical_component/lco_dataflow_model_checks.yaml and
+                          _data/logical_component/lco_dataflow_engine_generator.yaml at
+                          edge)
+                        - Lowering turns a resolved graph into the
+                          lowered graph that the
+                          engine receives, inserting transports, adapters, control blocks
+                          and recording taps.
+                          (_data/logical_component/lco_dataflow_model_lowering.yaml at
+                          brief and description)
+                        - The resolver knows nothing of transports or
+                          of the engine, and
+                          that knowledge is kept in lowering.
+                          (_data/logical_component/lco_dataflow_model_resolver.yaml at
+                          description)
+                        - Lowering returns a LoweredGraph, and the
+                          generator takes one as
+                          its parameter.
+                          (_data/interface_control_document/icd_dataflow_lowering.yaml at
+                          surface.python.native.function.lower.returns;
+                          _data/interface_control_document/icd_dataflow_generator.yaml at
+                          surface.python.native.function.generate.parameter)
+                        - A shared form, such as the lowered graph,
+                          moves into the items
+                          component.
+                          (_data/decision/dec_where_the_dataflow_code_lives/opt_one_folder_for_each_dataflow_component.yaml
+                          at brief)
+                        - Maintainability counts the parts that a
+                          representative change
+                          touches; simplicity asks whether the design follows from
+                          decisions already made.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure and
+                          entries.concern_simplicity.question)
+                        Strength: moderate; it weakens if only a bare
+                        type, with no lowering logic, moves into
+                        items, though even the type carries the
+                        engine's vocabulary.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_dataflow_code_lives
+    guid_target:        dec_06af631b3a254753ba773c7dbddbf11f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_one_folder_for_each_dataflow_component
+    guid_target:        opt_a0c79ce742b949ccbd6e6ad1c6dcdc80
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_code_as_the_layout_ruling_says
+    guid_target:        opt_1cb1b82780c14b19b4ffe2dad2ecffe8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_code_under_cctool_dataflow
+    guid_target:        opt_26eb6a007c9d4d97b9fe15c33ff62955
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

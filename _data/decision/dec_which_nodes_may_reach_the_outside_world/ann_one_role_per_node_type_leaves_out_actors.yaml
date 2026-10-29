@@ -1,0 +1,84 @@
+id_self:                ann_one_role_per_node_type_leaves_out_actors
+guid_self:              ann_53cff9d66ef54705bf2dc3389ad4f4c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One role per node type, with actors left off the list
+brief:                  |
+                        The privileged roles option lets a node type
+                        declare one role from a fixed list of five,
+                        yet the ruling on services lets a service that
+                        acts be reached through an actor, and an actor
+                        is not on the list. A device that is both read
+                        and commanded, such as a camera whose exposure
+                        a node sets, needs two roles or two node
+                        types. Declared service ports have no list to
+                        outgrow: each node type declares what it
+                        reaches. Lingua Franca shows that shape,
+                        treating the time of an outside event as an
+                        input and failing in the target compiler on a
+                        port used but not declared.
+description:            |
+                        Sources:
+                        - A node type may declare one privileged role:
+                          control block,
+                          source, sink, recorder or player, or transport.
+                          (_data/decision/dec_which_nodes_may_reach_the_outside_world/opt_privileged_roles_declared_by_the_node_type.yaml
+                          at brief)
+                        - Services that act are reached through a sink
+                          node, an actor or
+                          a control block that takes commands.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief)
+                        - The trial's role field also says what a node
+                          is, with actor and
+                          adapter among its values beside source, recorder and transport
+                          (trial 2c777ab9, src/cctool/dataflow/lower.py, the role
+                          constants; src/cctool/dataflow/standard/node_kind/fold.yaml and
+                          recorder.yaml, at role).
+                        - In Lingua Franca the timestamp of a physical
+                          action counts as an
+                          external input to the program, and a port used in reaction code
+                          but not declared is an error in the target compiler (Lohstroh
+                          et al. 2021, Toward a Lingua Franca for deterministic concurrent
+                          systems, sections 3.8 and 6, as noted in part 2).
+                        - Functional suitability asks whether every
+                          function that is
+                          needed is present.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question)
+                        ASSUMPTION: Patrol will have at least one
+                        device that is both read and commanded, such
+                        as a camera with a set exposure or a motor
+                        driver that reports its encoder. Strength:
+                        moderate; putting actor on the list, and
+                        letting one role cover both reading and
+                        commanding one device, would answer most of
+                        it.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_any_node_through_a_declared_service_port
+    guid_target:        opt_eb0c2212562847eab296e50ab11a0e0a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1

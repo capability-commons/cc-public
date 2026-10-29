@@ -1,0 +1,78 @@
+id_self:                ann_dataflow_engine_as_a_second_top_level_name
+guid_self:              ann_ad87369f5bd543baad9cecc4a888490e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A second top-level import name in environments shared with peers
+brief:                  |
+                        If the ruled layout ships the Python generator
+                        as a package named dataflow_engine beside
+                        cctool in the same wheel, every install adds a
+                        second, generic import name to each
+                        environment it enters, including environments
+                        shared with a partner's products. Python has
+                        no guard against two distributions that ship
+                        the same top-level name, and the later install
+                        overwrites the earlier. Under cctool.dataflow
+                        every import stays inside the one name the
+                        project already owns. No PyPI project of that
+                        name existed on 2026-10-29, but a module's
+                        name need not match its project's.
+description:            |
+                        Sources:
+                        - The engine lives in dataflow_engine with its
+                          generator, shipped
+                          in the same package that peers install.
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml
+                          at brief)
+                        - The wheel ships the single package
+                          src/cctool today
+                          (pyproject.toml at tool.hatch.build.targets.wheel.packages).
+                        - An install into a fresh environment is the
+                          first sign of a
+                          clash in an environment shared with a partner's products.
+                          (_data/decision/dec_release_gate/ann_fresh_install_tests_the_published_ranges.yaml
+                          at brief)
+                        - https://pypi.org/pypi/dataflow-engine/json
+                          and
+                          https://pypi.org/pypi/dataflow_engine/json returned 404 on
+                          2026-10-29.
+                        - Dependency risk is exposure to third-party
+                          code, services and
+                          licenses.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.brief)
+                        ASSUMPTION: pip installs two distributions
+                        that ship the same top-level package without
+                        refusing, the second overwriting the files of
+                        the first. Strength: weak; the name is free on
+                        PyPI today, and the wheel could map the folder
+                        under cctool at build time while the source
+                        stays in src/dataflow_engine.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_dataflow_code_lives
+    guid_target:        dec_06af631b3a254753ba773c7dbddbf11f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dataflow_code_as_the_layout_ruling_says
+    guid_target:        opt_1cb1b82780c14b19b4ffe2dad2ecffe8
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_code_under_cctool_dataflow
+    guid_target:        opt_26eb6a007c9d4d97b9fe15c33ff62955
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

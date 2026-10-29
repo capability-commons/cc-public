@@ -1,0 +1,98 @@
+id_self:                ann_skip_passes_a_gate_asked_to_build_cpp
+guid_self:              ann_c15a79ca8df94728a6271261fdb878b6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Skip in a gate that the ruling asks to build the C++
+brief:                  |
+                        The ruling has the gate build and test the C++
+                        whenever a commit stages the engine's C++, the
+                        generator, pyproject.toml or pixi.lock, and at
+                        every push. A test that skips when it finds no
+                        toolchain lets exactly those gates pass
+                        without building anything, as the review
+                        reproduced: 30 passed, 37 skipped, exit
+                        0. The relock is the sharpest case, since the
+                          ruling builds on a staged pixi.lock so that
+                          a change to the compiler is caught next to
+                          its cause, and a relock that lost cmake or
+                          the compiler would pass by skipping. Both
+                          other options fail such a gate.
+description:            |
+                        Sources:
+                        - The gate builds and tests the C++ when a
+                          commit stages the
+                          engine's C++, the generator, pyproject.toml or pixi.lock, the
+                          gate of a push always builds it, and the compiler goes in the
+                          default pixi environment.
+                          (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml
+                          at brief)
+                        - An upstream change to the compiler arrives
+                          in a commit that
+                          stages only pixi.lock or pyproject.toml.
+                          (_data/decision/dec_when_the_gate_builds_cpp/ann_relock_changes_compiler_without_cpp.yaml
+                          at brief)
+                        - With cmake, ninja and c++ off the path, the
+                          dataflow tests gave
+                          30 passed, 37 skipped and exit 0 (review of 2026-10-29, CC-043;
+                          trial 2c777ab9, src/cctool/dataflow/_test/conftest.py, fixture
+                          built).
+                        - The environment is pinned by version and
+                          hash in a committed
+                          lock, which ended the silent faults of a rule engine taken from
+                          the path.
+                          (_data/decision/dec_environment_manager/ruling_environment_manager.yaml
+                          at brief)
+                        - Functional suitability asks whether the
+                          design does anything it
+                          should not; dependency risk asks what happens if a part taken
+                          from a third party is changed or withdrawn.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_functional_suitability.question and
+                          entries.concern_dependency_risk.question)
+                        Strength: strong; the skip option contradicts
+                        the ruling, unless it is read as applying only
+                        outside the gate, which is the
+                        skip-unless-staged option.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_engine_tests_where_no_toolchain_is_found
+    guid_target:        dec_06047ba5a02043e89a62b22668425af2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_tests_skip_without_a_toolchain
+    guid_target:        opt_5cba11621817464b917c636c96bfb56a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_test_without_a_toolchain_fails
+    guid_target:        opt_a1bf19269a94485fb3f960e2f3ba440a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_tests_skip_unless_cpp_is_staged
+    guid_target:        opt_4684202da49e4a06b6ceccc4a60b5584
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

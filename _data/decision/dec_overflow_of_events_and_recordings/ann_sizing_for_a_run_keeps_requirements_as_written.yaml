@@ -1,0 +1,79 @@
+id_self:                ann_sizing_for_a_run_keeps_requirements_as_written
+guid_self:              ann_387e78952ce4485da48f1fb38691ce6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Requirements on events and recording kept as written
+brief:                  |
+                        Sizing for a declared run lets "drop no
+                        event", "with none dropped" and the recording
+                        of every value stand as written, true within
+                        any run the deployment accepts. Counting the
+                        loss means rewording those records to carry a
+                        capacity and a clause on counted loss, and
+                        qualifying the two replay requirements for a
+                        recording marked incomplete. The failing
+                        option rewords them as well, to a recording
+                        that ends at the fault. Fewer records change
+                        under the sizing option, though each of the
+                        others says plainly what it gives up.
+description:            |
+                        Sources:
+                        - The engine reports each overflow and overrun
+                          and drops no
+                          event; control blocks pass every event with none dropped; an
+                          event is never dropped; recorders record every value from
+                          outside, every control message and every engine event.
+                          (_data/requirement/rqt_executor_reports_faults.yaml at
+                          qualifier; _data/requirement/rqt_control_block_passes_events.yaml
+                          at object;
+                          _data/interface_control_document/icd_dataflow_engine_event.yaml
+                          at surface.data.artifact.availability;
+                          _data/requirement/rqt_recorder_records_outside.yaml at object)
+                        - The review's fix gives the requirements a
+                          capacity and a clause
+                          that loss is counted and marks the recording (review of
+                          2026-10-29, CC-052).
+                        - A run with live changes replays the same
+                          messages on every edge,
+                          and a player delivers exactly what was recorded for each local
+                          step, with no condition on whether the recording is complete.
+                          (_data/requirement/rqt_engine_replays_live_changes.yaml at
+                          object; _data/requirement/rqt_player_replays_exactly.yaml at
+                          object)
+                        - Maintainability counts the parts that a
+                          representative change
+                          touches.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure)
+                        Strength: weak; rewording is a one-time cost
+                        to the records, and a requirement true only
+                        within a declared run still needs the run
+                        declared and checked.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_sized_for_a_declared_run
+    guid_target:        opt_eaec2c394a2f442cb4b14011a86c8cb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

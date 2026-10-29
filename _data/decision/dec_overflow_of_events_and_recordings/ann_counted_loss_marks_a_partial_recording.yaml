@@ -1,0 +1,79 @@
+id_self:                ann_counted_loss_marks_a_partial_recording
+guid_self:              ann_939e5010f2b743919aa0095de4520aa9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Counted loss that keeps a partial recording from passing as whole
+brief:                  |
+                        The trial dropped change and admission rows
+                        without a count, so a recording that lacked
+                        them looked complete, and its replay diverged
+                        with no sign of why. Its recorder also raised
+                        one event for every row it could not take,
+                        into the event queue whose events the
+                        recording itself holds, while what that queue
+                        lost showed only in a status reply. One
+                        counted event and a mark on the recording, as
+                        the counting option asks, put the loss where
+                        the control block and replay look. Zeitgeist,
+                        built on MillWheel, ran the same pattern at
+                        scale, dropping late data while keeping count
+                        of it.
+description:            |
+                        Sources:
+                        - Change and admission rows the writer could
+                          not take were
+                          dropped without a count, the drop counter stayed at 0, and
+                          replay diverged (review of 2026-10-29, CC-015).
+                        - The recorder node reports a recorder-behind
+                          event for each row
+                          it cannot push, and events lost from the queue appear only as a
+                          count in the status reply (trial 2c777ab9,
+                          src/cctool/dataflow/engine/nodes/recording.cpp, function
+                          recorder_step; src/cctool/dataflow/engine/src/runtime.cpp,
+                          function EventQueue::push;
+                          src/cctool/dataflow/engine/src/control.cpp).
+                        - What does not fit is dropped and counted,
+                          the count reaches the
+                          control block as one event, and a recording that lost anything
+                          is marked as not replayable.
+                          (_data/decision/dec_overflow_of_events_and_recordings/opt_overflow_counted_and_recording_marked.yaml
+                          at brief)
+                        - Zeitgeist drops late data while keeping
+                          track of how much it
+                          dropped (Akidau et al. 2013, MillWheel, section 4.5, as noted in
+                          round 2).
+                        - The trial's replay accepted any recording,
+                          and the review's fix
+                          adds a header row that replay verifies, where a mark could also
+                          go (review of 2026-10-29, CC-045).
+                        - Reliability asks whether the design can
+                          recover without losing
+                          or corrupting data.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question)
+                        Strength: strong against silent loss; the
+                        failing option also makes loss visible, by
+                        ending the recording at the fault.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

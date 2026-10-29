@@ -1,0 +1,105 @@
+id_self:                ann_device_reads_at_the_head_of_every_local_step
+guid_self:              ann_04a2a009d43847b187956d33d1c682f8
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Device reads and frames at the head of every local step
+brief:                  |
+                        The control block runs before every other node
+                        of its unit, so if it alone reads the camera,
+                        each frame is read at the head of the local
+                        step and handed on inside the control message
+                        that every node of the unit waits for. An
+                        argument for the ruling on services counted on
+                        that message being one small struct read in
+                        place, and a camera frame at 30 Hz is not one.
+                        The trial shows the risk on a smaller scale:
+                        its host control block read one sysfs file
+                        every step, which allocated on the unit thread
+                        and broke the memory requirement. A source
+                        node can be scheduled where its readers need
+                        it, or placed in a unit of its own, so that a
+                        slow device holds back only what reads it.
+description:            |
+                        Sources:
+                        - The control message of each local step is
+                          written before any
+                          other node of the unit is invoked.
+                          (_data/requirement/rqt_control_block_writes_first.yaml at object
+                          and qualifier)
+                        - The case for a complete recording names a
+                          camera source and
+                          expects each frame in the recording.
+                          (_data/test_case/case_recorder_records_outside.yaml at
+                          preconditions and expected_results)
+                        - The control block writes one struct per
+                          execution unit per
+                          step, which nodes read in place.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ann_control_message_cost_is_one_small_struct_per_step.yaml
+                          at brief)
+                        - Patrol runs on an NVIDIA Orin with a camera
+                          at 30 Hz (WTP,
+                          2026-10-28).
+                        - The trial's host control block opened and
+                          read the processor
+                          temperature file on every step, one malloc of 472 bytes per
+                          step on the unit thread (review of 2026-10-29, CC-009; trial
+                          2c777ab9, src/cctool/dataflow/engine/src/platform_posix.cpp,
+                          function df_platform_cpu_temp_mc).
+                        - Nodes are spread by placing them on hosts
+                          and execution units.
+                          (_data/decision/dec_spread_of_kahn_steps_across_cores/ruling_placement_on_hosts_and_execution_units.yaml
+                          at brief)
+                        - Memory tokens are expected as exceptions to
+                          copying, for
+                          example to support shared read-only memory.
+                          (_data/decision/dec_how_a_value_is_carried_along_an_edge/ruling_value_copied_into_each_queue.yaml
+                          at brief)
+                        - Performance efficiency asks how quickly the
+                          design responds
+                          under expected load; reliability asks what happens when a part
+                          or an input is faulty.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.question and
+                          entries.concern_reliability.question)
+                        ASSUMPTION: a 1280 by 720 RGB frame is about
+                        2.8 MB, so the control message would grow from
+                        a few numbers to megabytes, and a device read
+                        that stalls would hold every node of the unit.
+                        Strength: moderate; a frame could travel as a
+                        shared read-only memory token rather than a
+                        copy, an exception the ruling on carrying
+                        values expects, but the read itself would
+                        still sit at the head of the step.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_only_control_blocks_reach_the_outside
+    guid_target:        opt_e4179b7b510246e980949020ab2496e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

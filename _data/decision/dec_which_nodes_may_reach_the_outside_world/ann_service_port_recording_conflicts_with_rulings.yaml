@@ -1,0 +1,107 @@
+id_self:                ann_service_port_recording_conflicts_with_rulings
+guid_self:              ann_afab9d45f68247dbb54fd44a3a6a9eac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Engine-side recording at every service port against the rulings
+brief:                  |
+                        Declared service ports on any node have the
+                        engine record what crosses each port and feed
+                        it back on replay. That conflicts with two
+                        rulings and needs a recorded exception under a
+                        third: the engine records nothing itself and
+                        recording nodes write the log, the control
+                        blocks are the only nodes privileged to read
+                        time and runtime services, and a behavior
+                        moves into the engine only with a measured
+                        budget. Privileged roles keep all three, since
+                        the control block, the recorder and player,
+                        the transport and the sink each match a role
+                        that the rulings, or the requirements they
+                        give rise to, already name, and the one new
+                        role, the source, is one the records already
+                        presume. Its cost is two requirements reworded
+                        and a role field in the interface schema.
+description:            |
+                        Sources:
+                        - Any node type may use a runtime service
+                          declared as a port, and
+                          the engine records what crosses each such port.
+                          (_data/decision/dec_which_nodes_may_reach_the_outside_world/opt_any_node_through_a_declared_service_port.yaml
+                          at brief)
+                        - The engine records nothing itself; it
+                          reports events to the
+                          control block, and recording nodes write the log.
+                          (_data/decision/dec_replay_of_a_run_with_live_changes/ruling_replay_from_a_recorded_log.yaml
+                          at brief; _data/requirement/rqt_executor_reports_faults.yaml at
+                          brief)
+                        - The replay ruling gives rise to a
+                          requirement on the player,
+                          which stands in for the outside world on replay.
+                          (_data/requirement/rqt_player_replays_exactly.yaml at brief)
+                        - The control blocks are the only nodes
+                          privileged to read time,
+                          modes, application states and runtime service readings, and
+                          services that act go through a sink node, an actor or a control
+                          block that takes commands.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief)
+                        - A behavior moves into the engine only when a
+                          recorded decision
+                          shows that no inserted node can do it within a measured budget.
+                          (_data/decision/dec_where_engine_behavior_lives/ruling_minimal_engine_with_recorded_exceptions.yaml
+                          at brief)
+                        - A transform inserts sender and receiver
+                          nodes, and the records
+                          speak of a node that is not a source and of a camera source.
+                          (_data/decision/dec_how_values_cross_execution_units/ruling_transport_nodes_inserted_by_a_transform.yaml
+                          at brief;
+                          _data/decision/dec_how_the_capacity_of_a_port_is_set/opt_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief; _data/test_case/case_recorder_records_outside.yaml at
+                          preconditions)
+                        - The trial, left to itself, invented a source
+                          role beside the
+                          control role; the review's fix names the privileged roles,
+                          rewords the two requirements and adds the role to the ICD
+                          schema (review of 2026-10-29, CC-050).
+                        - Lowering already inserts recording taps.
+                          (_data/logical_component/lco_dataflow_model_lowering.yaml at
+                          description)
+                        ASSUMPTION: an inserted tap on each service
+                        port could do the recording in place of the
+                        engine, which would remove the conflict with
+                        the replay ruling but not the one with the
+                        services ruling. Strength: strong while those
+                        rulings stand.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_any_node_through_a_declared_service_port
+    guid_target:        opt_eb0c2212562847eab296e50ab11a0e0a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

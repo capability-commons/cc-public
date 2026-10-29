@@ -1,0 +1,103 @@
+id_self:                ann_setting_range_doubles_as_binding_check
+guid_self:              ann_006c750c12b34144a5680217361dc48e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Declared setting range that doubles as the check at binding
+brief:                  |
+                        A fault found within a declared range is one a
+                        graph could reach only if no value outside the
+                        range can be bound, and in the trial the model
+                        checks never looked at a setting's value: a
+                        string compiled to 24930, and 1e20 compiled to
+                        a wrapped integer. A setting bound at build is
+                        written in an item of the tree, but one bound
+                        at deployment or startup comes from outside
+                        the build, where whoever controls it can
+                        choose any value. A declared range gives the
+                        model checks and the engine the bound to
+                        refuse at each binding time, and with that
+                        refusal in place the fuzzed space and the
+                        reachable space are the same. Without it, raw
+                        bytes are the honest model for settings bound
+                        late, and holding settings at example values
+                        says nothing about them.
+description:            |
+                        Sources:
+                        - Setting values were emitted unchecked: 'ab'
+                          became 24930 at run
+                          time, and 100000000000000000000 compiled on gcc to
+                          7766279631452241920 (review of 2026-10-29, CC-019; area report
+                          trial-gen, TRIAL-GEN-04).
+                        - A setting may be bound at authoring, build,
+                          deployment, startup
+                          or run time, and each declares the latest time it may be bound.
+                          (_data/decision/dec_binding_time_of_a_variation/dec_binding_time_of_a_variation.yaml
+                          at brief;
+                          _data/decision/dec_binding_time_of_a_variation/ruling_latest_binding_time_per_setting.yaml
+                          at brief)
+                        - Dataflow variants are items an author
+                          writes.
+                          (_data/logical_component/lco_dataflow_model_items.yaml at brief)
+                        - Most of the trial's settings bind at build,
+                          but the mode
+                          controller's hold and the control blocks' settings bind at
+                          startup, and both settings of the second accumulator, a bool
+                          among them, bind at run time (trial 2c777ab9,
+                          src/cctool/dataflow/standard/node_kind/mode_controller.yaml,
+                          control_block_unit.yaml and control_block_host.yaml, and
+                          src/cctool/dataflow/_test/_example/node_kind/accumulate_v2.yaml,
+                          at binding).
+                        - The interface schema gives a setting a type,
+                          whether it is
+                          optional and a default, and no range.
+                          (_data/schema/sch_interface_control_document.yaml at
+                          $defs.setting)
+                        - Security asks what an attacker can reach and
+                          what it would
+                          cost; reliability asks what happens when an input is faulty.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question and
+                          entries.concern_reliability.question)
+                        ASSUMPTION: a setting bound at deployment or
+                        startup is read from a file or a request on
+                        the host, outside the review of the tree.
+                        Strength: strong for settings bound after
+                        build, as the trial's mode controller, control
+                        blocks and second accumulator have; for
+                        build-bound settings, which most of the
+                        trial's are, the gain is mainly in
+                        reliability, since only an item in the tree
+                        can bind them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settings_a_fuzz_harness_varies
+    guid_target:        dec_a49c3be75e4a49a188fa63b6f65cb01d
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_varies_settings_within_declared_ranges
+    guid_target:        opt_eba4a302ad824143af9da36631fe378f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_harness_varies_inputs_only
+    guid_target:        opt_a3fd28ccc55e47708c62220a9e158202
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

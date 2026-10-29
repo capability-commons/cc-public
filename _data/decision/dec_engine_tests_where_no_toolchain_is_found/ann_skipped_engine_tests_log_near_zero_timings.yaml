@@ -1,0 +1,77 @@
+id_self:                ann_skipped_engine_tests_log_near_zero_timings
+guid_self:              ann_734d6c377a4b47aab5e2a17014f16e25
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Near-zero timings recorded for skipped engine tests
+brief:                  |
+                        The ruling asks that every build and test run
+                        be timed and the timings kept, and it defers
+                        both a compiler cache and a build on every
+                        code commit until those baselines exist. The
+                        gate takes each test's seconds from pytest's
+                        JUnit report, which lists a skipped test like
+                        any other, with the few milliseconds its skip
+                        took, so a gate on a host without the
+                        toolchain logs the engine tests as nearly
+                        free. The baseline the ruling waits for would
+                        then argue for building on every commit from
+                        numbers that measured nothing. A test that
+                        fails leaves a stage the log records as
+                        failed.
+description:            |
+                        Sources:
+                        - Every build and test run should be timed and
+                          the timings
+                          recorded; a compiler cache waits for baseline timings, and
+                          building on every code commit is revisited if clean builds take
+                          only seconds.
+                          (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml
+                          at brief)
+                        - The gate logs the wall seconds and the
+                          outcome of each stage,
+                          and each test's seconds from the JUnit XML that pytest writes,
+                          with nothing that marks a skip (src/cctool/gate/timing.py within
+                          durations and the module description).
+                        - The trial's 67 dataflow tests, which build
+                          and run C++
+                          engines, take about 67 s of wall time on 4 CPUs (review of
+                          2026-10-29, CC-089).
+                        - Response time and throughput are measures of
+                          performance
+                          efficiency.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_performance_efficiency.measure)
+                        ASSUMPTION: pytest's JUnit report lists a test
+                        skipped in its setup as a test case with a
+                        skipped element and the time its setup took.
+                        Strength: moderate; a timing summary that left
+                        out skipped tests would remove the fault, but
+                        none does today.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_engine_tests_where_no_toolchain_is_found
+    guid_target:        dec_06047ba5a02043e89a62b22668425af2
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_tests_skip_without_a_toolchain
+    guid_target:        opt_5cba11621817464b917c636c96bfb56a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_test_without_a_toolchain_fails
+    guid_target:        opt_a1bf19269a94485fb3f960e2f3ba440a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

@@ -1,0 +1,81 @@
+id_self:                ann_setting_range_is_a_new_declaration_per_setting
+guid_self:              ann_89f6e4318fd14d83a1d6f517ee3c44d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A range to declare for every setting of every node type
+brief:                  |
+                        The interface schema gives a setting a type,
+                        an optional flag and a default, and no range,
+                        and neither the trial's node types nor its
+                        dictionary declare one. Varying settings
+                        within declared ranges therefore needs a new
+                        field, and a value in it for each setting of
+                        each node type, kept in step with the code
+                        that reads the setting, which is the kind of
+                        burden on node authors WTP wants kept small.
+                        Holding settings at bound values needs no new
+                        declaration. A default softens the cost:
+                        decode by type alone, a bool from one bit and
+                        an enumeration from its members, and read a
+                        missing range as the whole of the type.
+description:            |
+                        Sources:
+                        - A setting has a type, whether a
+                          configuration may leave it out,
+                          and a default.
+                          (_data/schema/sch_interface_control_document.yaml at
+                          $defs.setting)
+                        - No node type or dictionary entry of the
+                          trial declares a range
+                          (trial 2c777ab9, src/cctool/dataflow/standard/,
+                          src/cctool/dataflow/_test/_example/node_kind/ and
+                          src/cctool/dataflow/_test/_example/data_dictionary/).
+                        - WTP wants the approach as simple as
+                          feasible, avoiding clever
+                          mechanisms that burden node authors (WTP, 2026-10-28).
+                        - The review's smallest correction decodes a
+                          bool from one bit,
+                          and clamps integers to a range for each setting or fixes them
+                          at their defaults where they are bound at build (review of
+                          2026-10-29, area report trial-gen, TRIAL-GEN-07).
+                        - BPDF asks the programmer to state a maximal
+                          value for each
+                          integer parameter of its rates, so declared bounds are a known
+                          cost in parametric dataflow (Bebelis et al. 2013, BPDF, section
+                          2.2, as noted in round 2).
+                        - Maintainability is measured by the time to
+                          make a
+                          representative change.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.measure)
+                        Strength: moderate; it falls if a range is
+                        optional, with a typed default, and rises with
+                        the number of node types written by others.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settings_a_fuzz_harness_varies
+    guid_target:        dec_a49c3be75e4a49a188fa63b6f65cb01d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_harness_varies_settings_within_declared_ranges
+    guid_target:        opt_eba4a302ad824143af9da36631fe378f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_varies_inputs_only
+    guid_target:        opt_a3fd28ccc55e47708c62220a9e158202
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

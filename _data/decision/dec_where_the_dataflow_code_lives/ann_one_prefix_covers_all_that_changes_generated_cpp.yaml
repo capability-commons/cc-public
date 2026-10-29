@@ -1,0 +1,97 @@
+id_self:                ann_one_prefix_covers_all_that_changes_generated_cpp
+guid_self:              ann_fa00da33f32740a790cda1861f44c813
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One path prefix for everything that changes the generated C++
+brief:                  |
+                        The generated C++ changes not only with the
+                        engine and the generator but with the
+                        dictionary, from which the generator makes
+                        structs and upgrade functions, and with
+                        lowering, which inserts transports, adapters,
+                        control blocks and recording taps and sets
+                        every capacity. Under cctool.dataflow all of
+                        these sit under one prefix,
+                        src/cctool/dataflow/, which the review
+                        proposed as the trigger of the engine tests.
+                        Under the ruled layout the prefix that matches
+                        the ruling's words, src/dataflow_engine/,
+                        holds the engine and the generator only, so a
+                        change to the dictionary or to lowering goes
+                        unbuilt unless the trigger also names the
+                        model's tree. Either broad trigger also builds
+                        on changes to the checks or to deployment,
+                        which cannot change the C++, at about a minute
+                        a gate.
+description:            |
+                        Sources:
+                        - The gate builds and tests the C++ when a
+                          commit stages the
+                          engine's C++ or the generator that writes it.
+                          (_data/decision/dec_when_the_gate_builds_cpp/ruling_cpp_built_when_staged.yaml
+                          at brief)
+                        - The generator makes the C++ structs and the
+                          state upgrade
+                          functions from the dictionary.
+                          (_data/logical_component/lco_dataflow_model_dictionary.yaml at
+                          description)
+                        - Lowering inserts transport nodes, delivery
+                          adapters, control
+                          blocks and recording taps, and sets each capacity.
+                          (_data/logical_component/lco_dataflow_model_lowering.yaml at
+                          description)
+                        - The engine lives with its generator in
+                          dataflow_engine, one
+                          folder per component under src.
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml
+                          at brief)
+                        - The review proposed engine tests in a marked
+                          stage that runs
+                          when src/cctool/dataflow changes, and the trial's 67 dataflow
+                          tests take about 67 s on 4 CPUs (review of 2026-10-29, W-T11
+                          and CC-089).
+                        - The gate chooses its stages by path prefix
+                          (src/cctool/gate/gate.py within TUPLE_CODE and stages).
+                        - Reliability asks how often the design fails;
+                          response time is a
+                          measure of performance efficiency.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_reliability.question and
+                          entries.concern_performance_efficiency.measure)
+                        Strength: weak; a trigger of two prefixes
+                        serves the ruled layout as well, so the gain
+                        is only that one prefix cannot forget a
+                        module.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_dataflow_code_lives
+    guid_target:        dec_06af631b3a254753ba773c7dbddbf11f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_dataflow_code_under_cctool_dataflow
+    guid_target:        opt_26eb6a007c9d4d97b9fe15c33ff62955
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dataflow_code_as_the_layout_ruling_says
+    guid_target:        opt_1cb1b82780c14b19b4ffe2dad2ecffe8
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_performance_efficiency
+    guid_target:        concern_ddd0eb5942824a0e944f2fde58b485c0

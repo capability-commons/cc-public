@@ -1,0 +1,84 @@
+id_self:                ann_one_package_per_dataflow_component
+guid_self:              ann_65a8cbcf3d4a441e9ec7d627870d3c12
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One package for each dataflow component, as in cctool today
+brief:                  |
+                        Every package of cctool realizes exactly one
+                        component, and the import rule takes a
+                        module's component from the innermost package
+                        that realizes one. The trial put the model,
+                        the engine and the standard nodes in one
+                        package that realized three components, and a
+                        module with no component of its own, the
+                        recording reader, inherited all three and drew
+                        import advice for reading the dictionary. A
+                        folder for each dataflow component keeps the
+                        convention cctool already follows, so the
+                        component of each module, and what it may
+                        import, can be read from its path and reviewed
+                        there.
+description:            |
+                        Sources:
+                        - cctool.check realizes lco_tooling_check and
+                          cctool.gate
+                          realizes lco_tooling_gate, and each other package of cctool
+                          realizes one component in the same way (the edge list in the
+                          docstring of src/cctool/check/__init__.py, and the same in
+                          src/cctool/gate/__init__.py).
+                        - A module's component is the one that the
+                          module itself
+                          realizes, or else the one that the innermost package around it
+                          realizes (src/cctool/graph/derive.lp within python_component).
+                        - The trial's dataflow package realizes
+                          lco_dataflow_model,
+                          lco_dataflow_engine and lco_dataflow_nodes, and its recording
+                          reader, which three components hold, drew import_not_allowed
+                          for importing the dictionary (trial 2c777ab9,
+                          src/cctool/dataflow/__init__.py at edge; review of 2026-10-29,
+                          CC-060).
+                        - An import is checked against the components
+                          of its modules and
+                          their dependency edges.
+                          (_data/decision/dec_check_of_import_layering/ruling_check_of_import_layering.yaml
+                          at brief)
+                        - Maintainability asks how readily a newcomer
+                          understands the
+                          design; reviewability asks whether a person can read a change
+                          and judge it.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question and
+                          entries.concern_reviewability.question)
+                        Strength: moderate; a cctool.dataflow package
+                        whose subpackages each realize one component
+                        gets the same result, so the point is against
+                        one package holding several components, not
+                        against either top-level place.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_dataflow_code_lives
+    guid_target:        dec_06af631b3a254753ba773c7dbddbf11f
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_one_folder_for_each_dataflow_component
+    guid_target:        opt_a0c79ce742b949ccbd6e6ad1c6dcdc80
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reviewability
+    guid_target:        concern_452361f6b58a4d7f8bdb90de9f96590b

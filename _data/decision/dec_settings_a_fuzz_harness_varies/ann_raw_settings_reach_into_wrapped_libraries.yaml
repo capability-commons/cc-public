@@ -1,0 +1,70 @@
+id_self:                ann_raw_settings_reach_into_wrapped_libraries
+guid_self:              ann_30f9f6f21f8f477580548c3894f3c5b1
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Faults inside wrapped third-party code at settings no graph binds
+brief:                  |
+                        A node type that wraps a library, such as an
+                        inference runtime or a camera SDK, passes some
+                        settings straight into it. Fed raw bytes, its
+                        harness reports faults deep inside that
+                        library for values no graph can bind, which
+                        the project cannot fix and must triage by
+                        hand, and which bury the faults in the
+                        wrapper's own checks. Within a declared range
+                        the harness reaches the library only with
+                        values a graph could send, so what it finds is
+                        either the wrapper's fault or a vendor fault
+                        that matters. Raw bytes keep one real use
+                        there: they show whether the wrapper validates
+                        what it passes on.
+description:            |
+                        Sources:
+                        - A raw-bytes harness reports a fault even
+                          where no graph could
+                          bind the value.
+                          (_data/decision/dec_settings_a_fuzz_harness_varies/opt_harness_varies_settings_as_raw_bytes.yaml
+                          at brief)
+                        - The engine is a new C++ engine targeting
+                          embedded reach, and
+                          Patrol, on an NVIDIA Orin, is its first user (WTP, 2026-10-28).
+                        - Dependency risk asks what the design takes
+                          from third parties.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_dependency_risk.question)
+                        ASSUMPTION: Patrol will have node types that
+                        wrap third-party libraries, such as an
+                        inference runtime on the Orin's GPU, and pass
+                        settings such as a model path, a batch size or
+                        a thread count into them. Strength: weak; it
+                        rests on how many node types wrap libraries,
+                        and on whether their settings reach the
+                        library unchecked.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settings_a_fuzz_harness_varies
+    guid_target:        dec_a49c3be75e4a49a188fa63b6f65cb01d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_harness_varies_settings_as_raw_bytes
+    guid_target:        opt_3bf44a1a04e24c85a0496436e5057119
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_varies_settings_within_declared_ranges
+    guid_target:        opt_eba4a302ad824143af9da36631fe378f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_dependency_risk
+    guid_target:        concern_4ed3af08871f47c9af5d63a1b75d6a9e

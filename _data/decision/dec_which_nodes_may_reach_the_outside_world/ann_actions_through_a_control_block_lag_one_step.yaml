@@ -1,0 +1,90 @@
+id_self:                ann_actions_through_a_control_block_lag_one_step
+guid_self:              ann_e810f5a80eb749f495658c9a4fe1fd15
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  One local step of lag on each action a control block carries out
+brief:                  |
+                        A control block runs first in its local step,
+                        so a command that another node computes in
+                        that step can reach it only as the previous
+                        step's value, as the reproduced loop between
+                        the control block and the mode controller
+                        showed. If only control blocks act on the
+                        outside, every actuation, a stop command
+                        included, waits one more period, 33 ms if
+                        Patrol steps at its camera's 30 Hz. A sink
+                        node scheduled after its producer acts in the
+                        same local step. The lag adds directly to the
+                        time to reach a safe state, one of the two
+                        measures of safety.
+description:            |
+                        Sources:
+                        - The control message is written before any
+                          other node of the
+                          unit is invoked.
+                          (_data/requirement/rqt_control_block_writes_first.yaml at
+                          qualifier)
+                        - A control block cannot run first and also
+                          read its own inputs
+                          in that step: wired as the ICDs describe, it forms a loop that
+                          the checks refuse, reproduced; the recommended fix reads those
+                          inputs as the previous step's value (review of 2026-10-29,
+                          CC-053 and W-T3).
+                        - Services that act are reached through a sink
+                          node, an actor or
+                          a control block that takes commands.
+                          (_data/decision/dec_how_nodes_reach_runtime_services/ruling_services_in_a_control_message.yaml
+                          at brief)
+                        - Within a unit, a consumer that runs after
+                          its producer reads
+                          the message of the same local step.
+                          (_data/decision/dec_same_step_or_next_step_reading/opt_reading_derived_by_placement.yaml
+                          at brief)
+                        - Safety is measured by the time to reach a
+                          safe state after a
+                          failure, in ms.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_safety.measure)
+                        - Patrol's camera runs at 30 Hz (WTP,
+                          2026-10-28). ASSUMPTION: the control block
+                          carries out commands in its own invocation
+                          at the start of the step. A second block run
+                          last in the step would remove the lag, but
+                          the option describes none. ASSUMPTION: the
+                          local step of the unit that acts runs at the
+                          camera's rate. Strength: strong for
+                          actuators on a safety path; weak for slow
+                          actions such as writing a file.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_which_nodes_may_reach_the_outside_world
+    guid_target:        dec_d451928f13474c4688938575a3b548de
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_only_control_blocks_reach_the_outside
+    guid_target:        opt_e4179b7b510246e980949020ab2496e3
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_privileged_roles_declared_by_the_node_type
+    guid_target:        opt_8f0f21886e124869a66af1d172c84a8c
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_any_node_through_a_declared_service_port
+    guid_target:        opt_eb0c2212562847eab296e50ab11a0e0a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e

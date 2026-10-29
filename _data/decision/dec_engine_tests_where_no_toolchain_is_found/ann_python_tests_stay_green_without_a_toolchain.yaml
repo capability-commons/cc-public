@@ -1,0 +1,80 @@
+id_self:                ann_python_tests_stay_green_without_a_toolchain
+guid_self:              ann_6836644bf0fe4a00b1282cd9360ff6e2
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Python tests kept green on a host without the toolchain
+brief:                  |
+                        The skip options keep a full run green on a
+                        host where the toolchain is missing or broken,
+                        so a change to the Python alone can still be
+                        checked there with one command. Under the
+                        failing option such a host shows 37 failures
+                        beside the 30 Python passes, and a contributor
+                        must know to leave out the engine tests by
+                        marker. The case is rare once the toolchain is
+                        in the locked environment for every platform
+                        the workspace names, and a device session on
+                        atlas, with 2 CPUs and calls cut at 180 s, is
+                        better served by leaving the engine tests out
+                        on purpose than by a skip it did not ask for.
+description:            |
+                        Sources:
+                        - A host without the toolchain can still run
+                          every other test.
+                          (_data/decision/dec_engine_tests_where_no_toolchain_is_found/opt_engine_tests_skip_without_a_toolchain.yaml
+                          at brief)
+                        - The trial's dataflow tests split into 30
+                          that need no toolchain
+                          and 37 that build an engine (review of 2026-10-29, CC-043).
+                        - The workspace names the platforms osx-arm64,
+                          osx-64 and
+                          linux-64, with packages from conda-forge (pyproject.toml at
+                          tool.pixi.workspace).
+                        - atlas's VM sees 2 CPUs, device tool calls
+                          die at 180 s, and the
+                          trial adds about a minute to the gate (review of 2026-10-29,
+                          CC-089).
+                        - Maintainability asks how readily a change
+                          can be checked before
+                          it ships.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_maintainability.question)
+                        ASSUMPTION: conda-forge's compiler packages
+                        work on each of those platforms, though on
+                        macOS they may still need Apple's SDK from the
+                        command line tools. Strength: weak; it is a
+                        convenience on hosts that the ruling has made
+                        rare.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_engine_tests_where_no_toolchain_is_found
+    guid_target:        dec_06047ba5a02043e89a62b22668425af2
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_tests_skip_without_a_toolchain
+    guid_target:        opt_5cba11621817464b917c636c96bfb56a
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_engine_tests_skip_unless_cpp_is_staged
+    guid_target:        opt_4684202da49e4a06b6ceccc4a60b5584
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_engine_test_without_a_toolchain_fails
+    guid_target:        opt_a1bf19269a94485fb3f960e2f3ba440a
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_maintainability
+    guid_target:        concern_a507a1fac6d94fe79a4c2a76413270f4

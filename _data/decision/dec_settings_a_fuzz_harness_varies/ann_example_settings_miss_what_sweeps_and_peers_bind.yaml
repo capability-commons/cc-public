@@ -1,0 +1,92 @@
+id_self:                ann_example_settings_miss_what_sweeps_and_peers_bind
+guid_self:              ann_eaf2960796c542dbabce067d0cbb0084
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Settings held at example values that sweeps and peers move
+brief:                  |
+                        Holding settings at the values an example
+                        variant binds tests a node only where those
+                        variants put it. Sweep items generate variants
+                        over declared values, and the standard nodes
+                        ship to peers who bind their own, so the
+                        values in the field are not the examples'; a
+                        node kind that no example uses has only its
+                        defaults to hold, where it declares any. A
+                        fault at a legal value nobody tried, such as a
+                        threshold or a gain at the end of its range,
+                        then surfaces in a deployed graph. Varying
+                        settings within a declared range reaches those
+                        values from the node's own interface, as the
+                        requirement asks.
+description:            |
+                        Sources:
+                        - The harness holds the settings at values
+                          that a graph binds,
+                          such as each example variant's.
+                          (_data/decision/dec_settings_a_fuzz_harness_varies/opt_harness_varies_inputs_only.yaml
+                          at brief)
+                        - A sweep item holds a variant with declared
+                          parameters and the
+                          values to try, and generates one resolved graph per point.
+                          (_data/decision/dec_parameters_of_a_variant/opt_sweep_items_generate_unstored_variants.yaml
+                          at brief)
+                        - The engine ships, with its generator, in the
+                          package that peers
+                          install.
+                          (_data/decision/dec_source_layout_for_two_languages/ruling_source_layout_for_two_languages.yaml
+                          at brief)
+                        - Every node implementation can be fuzzed on
+                          its own, from its
+                          declared interface.
+                          (_data/requirement/rqt_generator_fuzz_harness.yaml at brief)
+                        - DIF gives a parameter a declared domain that
+                          is an enumerated
+                          set, an interval or both, which the note reads as the range a
+                          sweep explores (Hsu et al. 2004, DIF: an interchange format for
+                          dataflow-based design tools, section 2.4, as noted in part 2).
+                        - Flexibility asks on which platforms and
+                          environments the design
+                          runs; safety asks how it avoids or limits each hazard.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_flexibility.question and
+                          entries.concern_safety.question)
+                        ASSUMPTION: Patrol's nodes will have
+                        safety-relevant settings, such as a stop
+                        distance or a speed limit, and the ends of
+                        their ranges are where a node divides by zero
+                        or saturates. Strength: moderate; it grows
+                        with the number of peers and sweeps, and falls
+                        where a setting has few legal values.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_settings_a_fuzz_harness_varies
+    guid_target:        dec_a49c3be75e4a49a188fa63b6f65cb01d
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_harness_varies_inputs_only
+    guid_target:        opt_a3fd28ccc55e47708c62220a9e158202
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_harness_varies_settings_within_declared_ranges
+    guid_target:        opt_eba4a302ad824143af9da36631fe378f
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_safety
+    guid_target:        concern_d604c77c736a4e738e8e3056193c331e
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_flexibility
+    guid_target:        concern_ea02f00a8cb74bb4b4d41bbd3ae7e1b1

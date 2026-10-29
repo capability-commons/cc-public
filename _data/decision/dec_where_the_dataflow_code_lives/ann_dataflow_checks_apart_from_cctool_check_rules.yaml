@@ -1,0 +1,81 @@
+id_self:                ann_dataflow_checks_apart_from_cctool_check_rules
+guid_self:              ann_991abb8d8cf146079b3f77976a75e6c6
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dataflow checks apart from the rules cctool check already runs
+brief:                  |
+                        The checks component is to be realized under
+                        cctool.check and reported by cctool check, and
+                        dev's check.lp already holds dataflow rules
+                        for loops, fan-in and port types. Placing the
+                        checks in a cctool.dataflow package, as the
+                        ICD names it and the option of code under
+                        cctool.dataflow says, made a second checker in
+                        the trial: cctool check ran none of its
+                        dataflow checks, and it let through fan-in
+                        that dev's rules refuse. None of the three
+                        options places the checks where their
+                        component says, so whichever is chosen should
+                        say whether the dataflow checks join
+                        cctool.check.
+description:            |
+                        Sources:
+                        - The checks are to be realized by rules and
+                          python under
+                          cctool.check, as the other checks are, and reported by cctool
+                          check.
+                          (_data/logical_component/lco_dataflow_model_checks.yaml at
+                          description)
+                        - The checks ICD names the module
+                          cctool.dataflow.checks.
+                          (_data/interface_control_document/icd_dataflow_checks.yaml at
+                          surface.python.native.module.module.name)
+                        - The model, the checks and the generator are
+                          packages of
+                          cctool.dataflow.
+                          (_data/decision/dec_where_the_dataflow_code_lives/opt_dataflow_code_under_cctool_dataflow.yaml
+                          at brief)
+                        - dev's check.lp holds feedforward_loop,
+                          input_fed_twice and
+                          port_type_mismatch; in the trial cctool check gave 0 failures
+                          and ran no dataflow rule, and fan-in was overwritten silently
+                          where dev forbids it (review of 2026-10-29, CC-024, CC-026 and
+                          CC-028).
+                        - Simplicity counts the jobs done by more than
+                          one mechanism;
+                          functional suitability asks whether each function gives the
+                          right result.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_simplicity.measure and
+                          entries.concern_functional_suitability.question)
+                        Strength: strong for one checker; it bears on
+                        where the checks go within any of the options
+                        more than on the choice between them.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_where_the_dataflow_code_lives
+    guid_target:        dec_06af631b3a254753ba773c7dbddbf11f
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_dataflow_code_under_cctool_dataflow
+    guid_target:        opt_26eb6a007c9d4d97b9fe15c33ff62955
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_simplicity
+    guid_target:        concern_f0ae400f8e794889b26e28a580ce7b27

@@ -1,0 +1,106 @@
+id_self:                ann_events_per_step_bounded_by_graph_and_door
+guid_self:              ann_6571e30addb34c9ab326574e4e5a2e5f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Events per local step bounded by the graph and by the door
+brief:                  |
+                        In one local step a unit raises at most one
+                        overflow event per port, one overrun, no more
+                        admissions than its actor queues hold and no
+                        more swaps than a change set names, so an
+                        event queue sized from the lowered graph, and
+                        drained by the control block every step,
+                        cannot fill from faults inside the graph. Only
+                        change requests and outside messages arrive at
+                        a rate an outsider sets, and runtime control
+                        can refuse those beyond a fixed number per
+                        step, as the trial already refused sends
+                        beyond its limit. With that door, the sizing
+                        option holds for the event queue with no event
+                        dropped, and without even a run length to
+                        declare. A queue that drops, or that fails the
+                        step when full, hands whoever floods runtime
+                        control a way to erase the record or to stop
+                        the step.
+description:            |
+                        Sources:
+                        - One event is raised for each overflow,
+                          whichever fail-safe the
+                          port declares; the control block reads events at the next local
+                          step, and an event is never dropped.
+                          (_data/interface_control_document/icd_dataflow_engine_event.yaml
+                          at surface.data.artifact.artifact.overflow.convention,
+                          surface.data.artifact.production and
+                          surface.data.artifact.availability)
+                        - The capacity of each port is derived by a
+                          transform from stated
+                          maximum rates.
+                          (_data/decision/dec_how_the_capacity_of_a_port_is_set/ruling_capacity_derived_from_maximum_producer_rates.yaml
+                          at brief)
+                        - The trial fixed the event queue at 4096 per
+                          unit, counted what
+                          did not fit only in the status reply, and refused an outside
+                          send once 1024 messages were waiting (trial 2c777ab9,
+                          src/cctool/dataflow/engine/src/runtime.cpp, functions run and
+                          EventQueue::push; src/cctool/dataflow/engine/src/control.cpp,
+                          the status reply; src/cctool/dataflow/engine/src/actors.cpp,
+                          function hook_send; trial process log, phase 4).
+                        - MillWheel limits skew by waiting to inject
+                          newer records at the
+                          source until downstream has caught up (Akidau et al. 2013,
+                          MillWheel, section 8.4, as noted in round 2).
+                        - Security asks what an attacker can reach and
+                          what it would
+                          cost.
+                          (_data/register/reg_concern.yaml at
+                          entries.concern_security.question)
+                        ASSUMPTION: a port writes once in a local
+                        step, so it overflows at most once in it, and
+                        runtime control can refuse a request with a
+                        reply that costs the engine nothing. Strength:
+                        strong for the event queue; it says nothing
+                        about a recorder whose store is slow, which is
+                        the other half of the decision.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_overflow_of_events_and_recordings
+    guid_target:        dec_8249bce12c5843f5a263b84a06c0ad14
+
+  - id_relation:        relation_supports
+    guid_relation:      relation_ac30f9ef05ac4016b99aba04561e1fa5
+    id_target:          opt_capacity_sized_for_a_declared_run
+    guid_target:        opt_eaec2c394a2f442cb4b14011a86c8cb1
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_counted_and_recording_marked
+    guid_target:        opt_1df177c561b449878dfb60bb324df942
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_overflow_fails_the_local_step
+    guid_target:        opt_bbf8597749f1450699b55ebbf865c197
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_functional_suitability
+    guid_target:        concern_a5e005c2c7944e178ade4790d0851ac1
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_security
+    guid_target:        concern_8826722e74c34e70ba6191b692938c83
