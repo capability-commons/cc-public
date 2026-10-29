@@ -546,6 +546,28 @@ def test_an_annotation_about_nothing_is_reported(tree):
     assert _check(tree) == {'missing_about': [('ann_x',)]}
 
 
+@pytest.mark.parametrize(('name', 'text'), [
+    ('x.yaml', 'title:                  No id\n'),
+    ('x.yaml', ''),
+    ('x.yml',  'id_self:                extdoc_x\n'),
+    ('x.txt',  'Notes.\n'),
+])
+def test_a_file_under_data_that_holds_no_item_is_reported(tree, name, text):
+    relative = '_data/external_document/' + name
+    (tree / relative).write_text(text)
+    assert _check(tree) == {'unidentified_document': [(relative,)]}
+
+
+def test_an_edge_whose_relation_is_not_a_relation_is_reported(tree):
+    edge = {**_edge(tree, 'relation_is_about', ID_ABOUT),
+            'id_relation':   'concept_concept',
+            'guid_relation': _guid_of(tree, 'concept_concept')}
+    _item(tree, '_data/annotation/ann_x.yaml', 'ann_x', [_edge(tree, 'relation_is_about', ID_ABOUT),
+                                                         edge])
+    assert [row[:2] for row in _check(tree).pop('edge_without_relation')] == [
+        ('ann_x', 'concept_concept')]
+
+
 def test_an_option_for_no_decision_is_reported(tree):
     _item(tree, '_data/option/opt_x.yaml', 'opt_x')
     assert _check(tree) == {'option_count': [('opt_x', '0')]}

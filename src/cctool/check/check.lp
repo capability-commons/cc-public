@@ -765,6 +765,52 @@ unrecorded_module(File) :-
 
 
 % -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.unidentified_document
+% guid_self:              lpp_954ed64d34114b51878ff2b2d5938392
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Unidentified document
+% brief:                  |
+%                         Every file under the _data folder of the tree
+%                         holds an item, so that each is read and
+%                         checked. A file there that holds no item, such
+%                         as one whose id_self is missing or misspelled,
+%                         one that is empty, or a YAML file named .yml,
+%                         is otherwise passed over by every check. The
+%                         shadows that a release writes are left out, as
+%                         are the trees consumed.
+% did:                    |
+%                         {file} is under _data and holds no item, so no
+%                         check reads it.
+% fix:                    |
+%                         Give it id_self and guid_self as an item of
+%                         its type, made with cctool new, or move it out
+%                         of _data. A file under _data is a YAML file
+%                         named .yaml that holds an item.
+% edge:                   []
+%
+% ...
+%
+% decl unidentified_document(file: symbol)
+#show unidentified_document/1.
+
+unidentified_document(File) :-
+    tree_file(File),
+    @match("_data/.*", File) = 1,
+    @match("_data/shadow/.*", File) = 0,
+    not item(_, _, _, File, _),
+    not unreadable(File, _, _).
+
+
+% -----------------------------------------------------------------------------
 % An interface member sits in an interface control document, and its
 % id is the id of what it sits in, then a period and a name of its
 % own. The member prefix takes the place of the prefix of the document.
@@ -1230,6 +1276,49 @@ dangling_reference(Holder, Field, Id, File, Line) :-
     not item(_, Guid, _, _, _),
     not alias(_, Id),
     Field != "mark".
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.edge_without_relation
+% guid_self:              lpp_6144fb443cac4ee280b574a5cb13de33
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Edge without relation
+% brief:                  |
+%                         The relation of an edge is a relation. An edge
+%                         whose id_relation names an item of another
+%                         type, as when the relation and the target are
+%                         swapped, is otherwise matched by no rule that
+%                         reads its relation.
+% did:                    |
+%                         {holder} has an edge whose id_relation is
+%                         {id}, which is not a relation.
+% fix:                    |
+%                         Name a relation in id_relation, and the item
+%                         the edge points to in id_target. cctool link
+%                         takes them in that order.
+% edge:                   []
+%
+% ...
+%
+% decl edge_without_relation(holder:   symbol,
+%                            id:       symbol,
+%                            file:     symbol,
+%                            line:     number)
+#show edge_without_relation/4.
+
+edge_without_relation(Holder, Id, File, Line) :-
+    reference(Holder, "relation", Id, _, File, Line),
+    item(Id, _, _, _, _),
+    not has_type(Id, "type_relation").
 
 
 % -----------------------------------------------------------------------------
