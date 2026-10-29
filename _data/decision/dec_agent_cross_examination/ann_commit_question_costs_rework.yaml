@@ -18,8 +18,9 @@ description:            |
                         The commit-msg hook runs after the pre-commit
                         gate (.githooks/pre-commit). The commit gate
                         leaves out the tests marked prepush, and runs
-                        no tests when no code is staged
-                        (src/cctool/gate/gate.py within stages).
+                        only the tests marked reads_data when data but
+                        no code is staged, and none for decisions
+                        alone (src/cctool/gate/gate.py within stages).
                         Measured on the maintainer's machine, a code
                         commit's gate takes 78 s and a data-only
                         commit's about 10 s (gate-speed proposal). The

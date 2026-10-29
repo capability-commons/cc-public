@@ -28,21 +28,23 @@ description:            |
                         full gate per ref (notes of 2026-10-22 on gate
                         speed). pre-commit runs the gate on each
                         commit (.githooks/pre-commit), without the
-                        tests marked prepush, and with no tests when
-                        no code is staged (src/cctool/gate/gate.py
-                        within stages). Measured 2026-10-15 in scratch
-                        clones of 89c74d8 on a 4-CPU container, not
-                        WTP's machine: history check without --gate
-                        took 31 to 56 s for the last 10 commits and
-                        5.5 to 7.4 s for one. An amend is a git commit
-                        and already runs the commit hooks, so it adds
-                        no gate run. ASSUMPTION: a rebase or squash
-                        guard would run the gate and the message check
-                        for each replayed commit, so a rebase of 10
-                        code commits would cost about 10 x 78 s, some
-                        13 minutes, against about 78 s plus 50 s at
-                        push. Grows at tenfold, since gate cost grows
-                        with the tree.
+                        tests marked prepush, and with only the tests
+                        marked reads_data when no code is staged, and
+                        none for decisions alone
+                        (src/cctool/gate/gate.py within stages).
+                        Measured 2026-10-15 in scratch clones of
+                        89c74d8 on a 4-CPU container, not WTP's
+                        machine: history check without --gate took 31
+                        to 56 s for the last 10 commits and 5.5 to 7.4
+                        s for one. An amend is a git commit and
+                        already runs the commit hooks, so it adds no
+                        gate run. ASSUMPTION: a rebase or squash guard
+                        would run the gate and the message check for
+                        each replayed commit, so a rebase of 10 code
+                        commits would cost about 10 x 78 s, some 13
+                        minutes, against about 78 s plus 50 s at push.
+                        Grows at tenfold, since gate cost grows with
+                        the tree.
 
 edge:
 
