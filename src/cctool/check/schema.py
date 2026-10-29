@@ -38,9 +38,12 @@ description:            |
                         sch_schema holds it to the metaschema of JSON
                         Schema. No document is validated against a
                         schema that fails the metaschema, which could
-                        not be used and is reported already. A $ref
-                        that names no schema is reported once, against
-                        the schema that holds it.
+                        not be used. Such a schema is reported with
+                        the errors the metaschema itself finds, unless
+                        its own schema reports it, so the report never
+                        depends on sch_schema being sound. A $ref that
+                        names no schema is reported once, against the
+                        schema that holds it.
 edge:                   []
 
 ...
@@ -251,8 +254,39 @@ def violations(map_document: cctool.graph.extract.Documents,
         set_row.update(list_row)
 
     kept.save()
+    set_row.update(_unusable(set_invalid, set_row, set_pair, map_file, map_document))
 
     return _once(set_row, kept)
+
+
+# -----------------------------------------------------------------------------
+def _unusable(set_invalid:  set[str],
+              set_row:      set[tuple[str, ...]],
+              set_pair:     set[tuple[str, ...]],
+              map_file:     dict[str, str],
+              map_document: cctool.graph.extract.Documents) -> list[tuple[str, ...]]:
+    """
+    Return a row for each error the metaschema finds in each schema of
+    set_invalid that no row of set_row reports already. When sch_schema
+    itself fails the metaschema, nothing is validated against it, so
+    without these rows no schema would be held to the metaschema at all.
+    Each row names the schema that the broken one must conform to, or
+    the broken one itself if it names none.
+
+    """
+
+    set_reported = {row[0] for row in set_row}
+    list_row     = []
+
+    for id_schema in sorted(set_invalid - set_reported):
+        file             = map_file[id_schema]
+        (document, base) = map_document[file]
+        set_own          = {pair[1] for pair in set_pair if pair[0] == id_schema}
+        id_own           = min(set_own) if set_own else id_schema
+        list_row.extend(_row(id_schema, id_own, file, document, base, error)
+                        for error in errors(META, document))
+
+    return list_row
 
 
 # -----------------------------------------------------------------------------

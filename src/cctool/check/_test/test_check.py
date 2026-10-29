@@ -1381,6 +1381,30 @@ def test_a_schema_with_a_string_for_a_subschema_is_reported(tree):
          "is not of type 'object', 'boolean'")]}
 
 
+def test_a_schema_schema_that_is_not_json_schema_is_reported(tree):
+    _replace(tree, '_data/schema/sch_schema.yaml', 'type:                   object',
+                                                   'type:                   objekt')
+    line = _line(tree, '_data/schema/sch_schema.yaml', 'type:                   objekt')
+    assert _check(tree) == {'schema_violation': [
+        ('sch_schema', 'sch_schema', '_data/schema/sch_schema.yaml', line, 'type',
+         "'objekt' is not valid under any of the given schemas")]}
+
+
+def test_each_schema_that_is_not_json_schema_is_reported_without_the_schema_schema(tree):
+    _option(tree, 'opt_x')
+    _replace(tree, '_data/schema/sch_schema.yaml', 'type:                   object',
+                                                   'type:                   objekt')
+    _replace(tree, '_data/schema/sch_option.yaml', '  - type:               object',
+                                                     '  - type:               objct')
+    line_schema = _line(tree, '_data/schema/sch_schema.yaml', 'type:                   objekt')
+    line_option = _line(tree, '_data/schema/sch_option.yaml', '  - type:               objct')
+    assert _check(tree) == {'schema_violation': [
+        ('sch_option', 'sch_schema', '_data/schema/sch_option.yaml', line_option, 'allOf/2/type',
+         "'objct' is not valid under any of the given schemas"),
+        ('sch_schema', 'sch_schema', '_data/schema/sch_schema.yaml', line_schema, 'type',
+         "'objekt' is not valid under any of the given schemas")]}
+
+
 def test_a_mention_of_nothing_is_reported(tree):
     location = _item(tree, '_data/annotation/ann_x.yaml', 'ann_x',
                      [_edge(tree, 'relation_is_about', ID_ABOUT)])
