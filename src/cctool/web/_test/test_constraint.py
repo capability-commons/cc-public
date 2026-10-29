@@ -88,8 +88,9 @@ def test_a_role_page_names_the_relations_that_exclude_it(tree):
         ['Excluded at the source of ',
          ('relation_has_actor', 'Has actor relation'), ', ',
          ('relation_has_criticality', 'Has criticality relation'), ', ',
-         ('relation_has_process', 'Has process relation'), ' and ',
-         ('relation_has_subject', 'Has subject relation'), '.']]
+         ('relation_has_process', 'Has process relation'), ', ',
+         ('relation_has_subject', 'Has subject relation'), ' and ',
+         ('relation_is_derived_from', 'Is derived from relation'), '.']]
 
 
 def test_an_item_that_is_neither_relation_nor_role_has_no_sentences(tree):

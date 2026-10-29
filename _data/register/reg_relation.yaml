@@ -1749,3 +1749,52 @@ entries:
         guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
         id_target:      relcon_is_criticality
         guid_target:    relcon_36b1e1e2e035449aa0a408bb3f3a2d13
+
+  # ---------------------------------------------------------------------------
+  # relation_is_derived_from -- Is derived from relation
+  #
+  relation_is_derived_from:
+    id_self:            relation_is_derived_from
+    guid_self:          relation_734595f075714337bb11e78b6561a7e7
+    title:              Is derived from relation
+    brief:              |
+                        SOURCE is derived from TARGET
+    description:        |
+                        The requirement identified by SOURCE states
+                        something the system shall do so that the
+                        ruling identified by TARGET holds. It is a
+                        derived requirement: one that arises from a
+                        design decision rather than from a
+                        stakeholder.
+
+                        A requirement may be derived from several
+                        rulings, and one ruling may give rise to
+                        several requirements. A requirement derived
+                        from no ruling states its reason in its
+                        rationale alone.
+
+                        The edge is recorded from the end of the
+                        ruling, with the inverse. A copy of the tree
+                        that leaves out the deliberations, as the
+                        tests make, then keeps its requirements whole,
+                        and a requirement that travels on its own
+                        carries no edge into a deliberation.
+
+    inverse:
+      id_self:          relation_gives_rise_to
+      guid_self:        relation_ac2c79dc6a1642e19287dc436573b2b4
+      brief:            SOURCE gives rise to TARGET
+
+    alias:              []
+
+    edge:
+
+      - id_relation:    relation_constrains_source
+        guid_relation:  relation_a821ab32d7f24bed8589434d1a146634
+        id_target:      relcon_is_requirement
+        guid_target:    relcon_fba49412a2f64e34a3927dc8f1cdb021
+
+      - id_relation:    relation_constrains_target
+        guid_relation:  relation_168347672c2647f2b2cd2bd2462be641
+        id_target:      relcon_is_ruling
+        guid_target:    relcon_4036530375554a17996915bdd942558b
