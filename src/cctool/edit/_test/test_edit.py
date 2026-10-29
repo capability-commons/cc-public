@@ -1277,10 +1277,18 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
     ('a: !t 1\n',                    'The document has a tag, !t.', None),
     ('a: !t {k: 1}\n',               'The document has a tag, !t.', None),
 ])
-def test_what_the_printer_would_drop_or_expand_is_refused(text, message, line):
+@pytest.mark.parametrize('is_fast', [False, True])
+def test_what_the_printer_would_drop_or_expand_is_refused(text, message, line, is_fast):
     with pytest.raises(cctool.check.layout.Unsupported) as info:
-        cctool.check.layout.format(text)
+        cctool.check.layout.format(text, is_fast)
     assert (str(info.value), info.value.line) == (message, line)
+
+
+@pytest.mark.parametrize('text', ['a: 1\n# A whole line.\nb: 2\n',
+                                  'a: "x # y"\nb: z#w\nc: 2 * 3\n',
+                                  'brief: |\n  one # two\n# after\nc: 1\n'])
+def test_the_fast_read_of_a_mark_in_prose_lays_out_as_ruamel_does(text):
+    assert cctool.check.layout.format(text, True) == cctool.check.layout.format(text)
 
 
 def test_a_fault_in_a_docstring_is_placed_at_its_line_of_the_file():

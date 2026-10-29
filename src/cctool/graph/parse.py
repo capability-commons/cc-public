@@ -44,6 +44,8 @@ edge:                   []
 """
 
 
+import bisect
+import re
 import threading
 import typing
 
@@ -86,6 +88,11 @@ MAP_STYLE_BLOCK   = {'|': ruamel.yaml.scalarstring.LiteralScalarString,
 MAP_STYLE_QUOTED  = {**MAP_STYLE_BLOCK,
                      "'": ruamel.yaml.scalarstring.SingleQuotedScalarString,
                      '"': ruamel.yaml.scalarstring.DoubleQuotedScalarString}
+SET_STYLE_BLOCK   = set(MAP_STYLE_BLOCK)
+
+# The mark that opens a comment, outside a scalar.
+#
+MARK_COMMENT      = '#'
 
 
 # -----------------------------------------------------------------------------
@@ -209,21 +216,67 @@ if IS_FAST:
 
 
 # -----------------------------------------------------------------------------
-def load(text: str, is_quoted: bool = False) -> typing.Any:
+def load(text: str, is_quoted: bool = False, is_commented: bool = False) -> typing.Any:
     """
     Return the YAML document text as a round trip load of ruamel.yaml
-    would, one that preserves quotes if is_quoted. Raise ERROR if it is
-    not YAML, or repeats a key.
+    would, one that preserves quotes if is_quoted, and records its
+    comments if is_commented. Raise ERROR if it is not YAML, or repeats
+    a key.
+
+    The fast reader records no comments, so if is_commented, a text
+    with a comment is left to ruamel.yaml.
 
     """
 
     map_style = MAP_STYLE_QUOTED if is_quoted else MAP_STYLE_BLOCK
     if IS_FAST:
         try:
-            return _build(yaml.compose(text, Loader = _Composer), set(), map_style, text)
+            node = yaml.compose(text, Loader = _Composer)
+            if is_commented and MARK_COMMENT in text and _has_comment(node, text):
+                raise Unbuilt('comment')
+            return _build(node, set(), map_style, text)
         except (Unbuilt, yaml.YAMLError):
             pass
     return (ROUND_TRIP_QUOTED if is_quoted else ROUND_TRIP).load(text)
+
+
+# -----------------------------------------------------------------------------
+def _has_comment(node: yaml.nodes.Node | None, text: str) -> bool:
+    """
+    Return True if text, which composes to node, holds a comment: a #
+    that no scalar holds. The header of a block scalar, the line of its
+    | or >, may hold a comment too, so it is not counted as held.
+
+    """
+
+    list_span = []
+    list_node = [] if node is None else [node]
+    set_seen  = set()
+
+    while list_node:
+        each = list_node.pop()
+        if id(each) in set_seen:
+            continue
+        set_seen.add(id(each))
+        if isinstance(each, yaml.nodes.ScalarNode):
+            start = each.start_mark.index
+            if each.style in SET_STYLE_BLOCK:
+                start = text.find('\n', start) + 1 or each.end_mark.index
+            list_span.append((start, each.end_mark.index))
+        elif isinstance(each, yaml.nodes.SequenceNode):
+            list_node.extend(each.value)
+        elif isinstance(each, yaml.nodes.MappingNode):
+            list_node.extend(part for pair in each.value for part in pair)
+
+    list_span.sort()
+    list_start = [start for (start, _) in list_span]
+
+    for index in (match.start() for match in re.finditer(MARK_COMMENT, text)):
+        position = bisect.bisect_right(list_start, index) - 1
+        if position < 0 or index >= list_span[position][1]:
+            return True
+
+    return False
 
 
 # -----------------------------------------------------------------------------

@@ -139,11 +139,10 @@ SET_TYPE_KEPT     = {str, int, bool, type(None),
                      ruamel.yaml.scalarstring.DoubleQuotedScalarString}
 COUNT_RENDER      = 65536
 
-# A text that holds one of these may hold a comment, an anchor, an
-# alias or a tag, which only a load by ruamel.yaml records, so that the
-# printer can refuse or keep them.
+# A text that holds this may hold a tag, which only a load by
+# ruamel.yaml records, so that the printer can refuse it.
 #
-TUPLE_MARK_RUAMEL = ('#', '&', '*', '!')
+MARK_TAG          = '!'
 
 
 # -----------------------------------------------------------------------------
@@ -504,17 +503,18 @@ def format(text: str, is_fast: bool = False) -> str:
 def _load(text: str) -> typing.Any:
     """
     Return the YAML document text as YAML loads it, or as near as the
-    layout check needs. A text that holds none of TUPLE_MARK_RUAMEL has
-    no comment, anchor, alias or tag, and is read by the fast reader,
-    which keeps quotes as YAML does but records no comments. Any other
-    text is read by YAML.
+    layout check needs. The fast reader keeps quotes as YAML does, and
+    leaves to YAML a text that holds a comment, an anchor or an alias,
+    which only YAML records. A # or a * in prose is none of those, so a
+    text that holds one is read fast too. A text that holds a !, which
+    may be a tag, even one the fast reader would build, is read by YAML.
 
     """
 
-    if any(mark in text for mark in TUPLE_MARK_RUAMEL):
+    if MARK_TAG in text:
         return YAML.load(text)
 
-    return cctool.graph.parse.load(text, is_quoted = True)
+    return cctool.graph.parse.load(text, is_quoted = True, is_commented = True)
 
 
 # -----------------------------------------------------------------------------

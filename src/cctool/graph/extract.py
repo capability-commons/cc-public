@@ -560,6 +560,10 @@ Documents         = dict[str, tuple[typing.Any, int]]
 #
 Terms             = tuple[dict[str, str], set[str]]
 
+# The terms whose longest term was last found, and its number of words.
+#
+SIZE_TERM         = [None, 0]
+
 
 # -----------------------------------------------------------------------------
 class ErrorRead(Exception):
@@ -944,7 +948,7 @@ def _term_words(text: str, terms: Terms) -> list[tuple[str, int]]:
     """
 
     (map_term, set_first) = terms
-    size_max              = max((key.count(' ') + 1 for key in map_term), default = 0)
+    size_max              = _size_max(map_term)
 
     list_match = list(REGEX_WORD.finditer(text))
     list_word  = [match.group(0).lower() for match in list_match]
@@ -965,6 +969,20 @@ def _term_words(text: str, terms: Terms) -> list[tuple[str, int]]:
             index += 1
 
     return list_found
+
+
+# -----------------------------------------------------------------------------
+def _size_max(map_term: dict[str, str]) -> int:
+    """
+    Return the number of words of the longest term of map_term, found
+    once for each map_term, since each text of a tree is searched for
+    the same terms.
+
+    """
+
+    if SIZE_TERM[0] is not map_term:
+        SIZE_TERM[:] = [map_term, max((key.count(' ') + 1 for key in map_term), default = 0)]
+    return SIZE_TERM[1]
 
 
 # -----------------------------------------------------------------------------

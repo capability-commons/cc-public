@@ -47,6 +47,7 @@ import typing
 import ruamel.yaml
 
 import cctool.graph.extract
+import cctool.graph.parse
 
 
 # A citation names a file of the tree and the part of it that it means:
@@ -339,11 +340,17 @@ def _names(path: str, text: str | None) -> frozenset[str]:
 def _names_yaml(text: str) -> typing.Iterator[str]:
     """
     Yield the dotted path of each key of the first YAML document in
-    text.
+    text. A file of one document, as nearly every one is, is read as
+    the extractor reads it, which is many times quicker than a second
+    read by ruamel.yaml.
 
     """
 
-    return _keys(next(iter(ruamel.yaml.YAML(typ = 'safe').load_all(text))), '')
+    try:
+        document = cctool.graph.parse.load(text)
+    except cctool.graph.parse.ERROR:
+        document = next(iter(ruamel.yaml.YAML(typ = 'safe').load_all(text)))
+    return _keys(document, '')
 
 
 # -----------------------------------------------------------------------------
