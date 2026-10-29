@@ -4166,6 +4166,50 @@ maturity_above_import(Module, Level, Imported, Below, File, Line) :-
 % -----------------------------------------------------------------------------
 % ---
 %
+% id_self:                lpp_cctool.check.check.relative_import
+% guid_self:              lpp_033ed1a9ad6a4a49a4625838b184dc85
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Relative import
+% brief:                  |
+%                         A python module or package names what it
+%                         imports by its dotted name, from the top of
+%                         src, and never by a relative name such as . or
+%                         ..graph. The import then says plainly what the
+%                         file rests on, and the checks of maturity and
+%                         of the imports a logical component allows,
+%                         which read the dotted name, see it.
+% did:                    |
+%                         {module} imports from {written}, a name
+%                         relative to where it is, so the checks of what
+%                         it imports do not see it.
+% fix:                    |
+%                         Import it by its dotted name from the top of
+%                         src, as in from cctool.graph import extract.
+% edge:                   []
+%
+% ...
+%
+% decl relative_import(module:  symbol,
+%                      written: symbol,
+%                      file:    symbol,
+%                      line:    number)
+#show relative_import/4.
+
+relative_import(Module, Written, File, Line) :-
+    python_relative(Module, Written, File, Line).
+
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
 % id_self:                lpp_cctool.check.check.unstated_procedure
 % guid_self:              lpp_66b1095644864cefbdc7751bd174ff85
 % copyright:              Copyright 2026 William Payne

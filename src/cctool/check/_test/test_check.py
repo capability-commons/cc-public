@@ -268,6 +268,16 @@ def test_a_file_at_or_below_the_maturity_of_what_it_imports_passes(tree):
     assert _matured(tree, None, 'maturity_60') == {}
 
 
+def test_a_relative_import_is_reported(tree):
+    _module(tree, 'src/x/__init__.py', 'pyp_x')
+    _module(tree, 'src/x/b.py', 'pym_x.b')
+    _module(tree, 'src/x/a.py', 'pym_x.a', code = 'import x.b\nfrom . import b\nfrom ..x.b import c\n')
+    line = (tree / 'src/x/a.py').read_text().splitlines().index('from . import b') + 1
+    assert _check(tree) == {'relative_import': [
+        ('pym_x.a', '.', 'src/x/a.py', str(line)),
+        ('pym_x.a', '..x.b', 'src/x/a.py', str(line + 1))]}
+
+
 def test_a_component_has_the_maturity_of_its_most_mature_file(tree):
     _item(tree, '_data/logical_component/lco_x.yaml', 'lco_x')
     _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
@@ -385,7 +395,7 @@ def _components(tree, list_depend = (), relation = 'relation_may_depend_on'):
     _module(tree, 'src/x/__init__.py', 'pyp_x', [_edge(tree, 'relation_realizes', 'lco_x')])
     _module(tree, 'src/x/y.py', 'pym_x.y')
     _module(tree, 'src/x/z/__init__.py', 'pyp_x.z', [_edge(tree, 'relation_realizes', 'lco_y')])
-    _module(tree, 'src/x/z/w.py', 'pym_x.z.w', code = 'import x.y\nfrom . import v\n')
+    _module(tree, 'src/x/z/w.py', 'pym_x.z.w', code = 'import x.y\n')
 
     (failures, advice, _) = cctool.check.check.review(tree)
     failures.pop(cctool.check.check.NAME_LAYOUT, None)
@@ -504,6 +514,15 @@ def test_with_the_full_switch_jsonschema_alone_validates(tree, monkeypatch):
     cctool.check.check.CACHE_REVIEW.clear()
     monkeypatch.setenv(cctool.check.schema.ENV_FULL, '1')
     assert list(_check(tree)) == ['schema_violation']
+
+
+def test_an_item_that_lists_an_edge_twice_is_reported(tree):
+    _item(tree, DIR_DECISION + 'dec_x.yaml', 'dec_x', [_subject(tree)])
+    edge     = _edge(tree, 'relation_is_option_for', 'dec_x')
+    _option(tree, 'opt_x', [edge])
+    failures = _check(tree)
+    assert list(failures) == ['schema_violation']
+    assert [row[4] for row in failures['schema_violation']] == ['edge']
 
 
 def test_a_title_that_ends_in_a_newline_is_reported(tree):

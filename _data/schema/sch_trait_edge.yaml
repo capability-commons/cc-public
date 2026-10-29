@@ -58,12 +58,17 @@ properties:
     type:               array
     description:        |
                         Outgoing traceability edges to other
-                        addressable items. Required wherever this
-                        trait is composed; use an empty array where
-                        there are no outgoing edges (edge: []).
+                        addressable items, each listed once, since a
+                        second copy of an edge adds nothing and a
+                        count of edges would read it once. Required
+                        wherever this trait is composed; use an empty
+                        array where there are no outgoing edges (edge:
+                        []).
 
     items:
       $ref:             '#/$defs/edge'
+
+    uniqueItems:        true
 
 $defs:
 

@@ -305,6 +305,11 @@ PREDICATE         = {
                            'The python module or package module imports what the item '
                            'imported would hold, if the tree holds it: a module or a '
                            'package, by the id its dotted name calls for.'),
+    'python_relative':    (('module', 'written', 'file', 'line:number'),
+                           'The python module or package module imports, at line of '
+                           'file, from the relative name written, such as . or '
+                           '..graph, which names what it imports by where module is '
+                           'and not by its dotted name.'),
     'python_within':      (('module', 'package', 'depth:number'),
                            'The python module or package module is inside the package '
                            'that the item package would hold, depth packages down from '
@@ -837,11 +842,15 @@ def _facts_of_document(file:             str,
         elif pathlib.Path(file).suffix in MAP_PREFIX_MODULE:
             id_self = str(document.get(KEY_ID_SELF))
             facts['module_name'].add((id_self, module_name(pathlib.Path(file))))
-            (held, list_dotted) = MAP_IMPORT.get(id(document), (None, []))
+            (held, list_dotted, list_relative) = MAP_IMPORT.get(id(document),
+                                                                (None, [], []))
             if held is not None and held() is document:
                 facts['python_import'].update((id_self, imported)
                                               for dotted in list_dotted
                                               for imported in _python_ids(dotted))
+                facts['python_relative'].update(
+                    (id_self, written, file, str(line))
+                    for (line, written) in list_relative)
             if pathlib.Path(file).suffix == SUFFIX_PYTHON:
                 list_part = module_name(pathlib.Path(file)).partition(DELIM_PREFIX)[2].split(
                                                                                 DELIM_MODULE)
@@ -1102,8 +1111,9 @@ def parse_all(text: str, relative: pathlib.Path) -> Documents:
 def _note_imports(document: typing.Any, text: str) -> None:
     """
     Note in MAP_IMPORT the dotted name of each module that the python
-    module text imports, anywhere in it, until document, the document
-    of its docstring, is gone. A module that cannot be parsed, or whose
+    module text imports, anywhere in it, and the line and the name of
+    each relative import, until document, the document of its
+    docstring, is gone. A module that cannot be parsed, or whose
     docstring holds no mapping, is noted as importing nothing.
 
     """
@@ -1115,15 +1125,19 @@ def _note_imports(document: typing.Any, text: str) -> None:
     except SyntaxError:
         return
 
-    set_dotted = set()
+    set_dotted   = set()
+    set_relative = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             set_dotted.update(alias.name for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+        elif isinstance(node, ast.ImportFrom) and node.level:
+            set_relative.add((node.lineno, DELIM_MODULE * node.level + (node.module or '')))
+        elif isinstance(node, ast.ImportFrom) and node.module:
             set_dotted.add(node.module)
             set_dotted.update(node.module + DELIM_MODULE + alias.name for alias in node.names)
 
-    MAP_IMPORT[id(document)] = (weakref.ref(document), sorted(set_dotted))
+    MAP_IMPORT[id(document)] = (weakref.ref(document), sorted(set_dotted),
+                                sorted(set_relative))
     weakref.finalize(document, MAP_IMPORT.pop, id(document), None)
 
 
