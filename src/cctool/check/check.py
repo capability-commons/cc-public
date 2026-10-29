@@ -107,8 +107,11 @@ NAME_DANGLING     = 'dangling_mention'
 WORDING_SCHEMA    = {'did': '{id} breaks {schema} at {path}: {message}',
                      'fix': 'Correct the field to what the schema asks. cctool set refuses '
                             'an edit that adds a failure, so it shows whether a value fits.'}
-WORDING_LAYOUT    = {'did': '{file} is not laid out as cctool format lays it out.',
-                     'fix': 'Run cctool format.'}
+WORDING_LAYOUT    = {'did': '{file}: {message}',
+                     'fix': 'Run cctool format, which lays the file out. Where the file '
+                            'cannot be laid out, as when it is not YAML, is not a mapping or '
+                            'holds what the layout does not keep, such as an anchor or a '
+                            'tab, correct what the message names by hand first.'}
 WORDING_VERSION   = {'did': '{id}, the newest release item, records the version {version}, '
                             'and the version module holds {module}.',
                      'fix': 'Let cctool release prepare write the version module and the '

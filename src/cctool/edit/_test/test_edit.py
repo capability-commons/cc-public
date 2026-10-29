@@ -1270,17 +1270,24 @@ def test_prose_is_refilled_by_paragraph_and_other_scalars_are_left_alone():
             'pattern:                ^(a b|c d)[0-9]{4} ' + 'x' * 70 + '$\n')
 
 
-@pytest.mark.parametrize(('text', 'message'), [
-    ('a: 1  # why\nb: 2\n',          'The document has a comment at the end of line 1.'),
-    ('a:\n  - x\n  - y  # why\n',   'The document has a comment at the end of line 3.'),
-    ('a: &n 1\nb: 2\n',              'The document has an anchor, &n.'),
-    ('a: !t 1\n',                    'The document has a tag, !t.'),
-    ('a: !t {k: 1}\n',               'The document has a tag, !t.'),
+@pytest.mark.parametrize(('text', 'message', 'line'), [
+    ('a: 1  # why\nb: 2\n',          'The document has a comment at the end of a line.', 1),
+    ('a:\n  - x\n  - y  # why\n',   'The document has a comment at the end of a line.', 3),
+    ('a: &n 1\nb: 2\n',              'The document has an anchor, &n.', None),
+    ('a: !t 1\n',                    'The document has a tag, !t.', None),
+    ('a: !t {k: 1}\n',               'The document has a tag, !t.', None),
 ])
-def test_what_the_printer_would_drop_or_expand_is_refused(text, message):
+def test_what_the_printer_would_drop_or_expand_is_refused(text, message, line):
     with pytest.raises(cctool.check.layout.Unsupported) as info:
         cctool.check.layout.format(text)
-    assert str(info.value) == message
+    assert (str(info.value), info.value.line) == (message, line)
+
+
+def test_a_fault_in_a_docstring_is_placed_at_its_line_of_the_file():
+    text = '#!/usr/bin/env python3\n"""\n---\n\na: 1  # why\n\n...\n"""\n'
+    with pytest.raises(cctool.check.layout.Unsupported) as info:
+        cctool.check.layout.format_file(text, pathlib.Path('src/x.py'))
+    assert info.value.line == 5
 
 
 @pytest.mark.parametrize('key', ['3', 'true', 'null', '~', 'a: b', '#c', '- x', '*x', '&x', '!x',

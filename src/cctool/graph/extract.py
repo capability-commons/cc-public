@@ -240,6 +240,10 @@ PREDICATE         = {
                            'as written. primary_edge reads edges through inverses.'),
     'type_prefix':        (('type', 'prefix', 'regex'),
                            'The type has the id prefix, and its ids match regex.'),
+    'regex_error':        (('type', 'regex', 'message', 'file', 'line:number'),
+                           'The type gives regex, at line of file, as the pattern of '
+                           'its ids, and it is not a regular expression, as message '
+                           'says.'),
     'prefix_family':      (('type', 'family'),
                            'The prefix of the type belongs to family, whose prefixes '
                            'may differ from one another by one letter.'),
@@ -1637,7 +1641,7 @@ def _walk(node:     typing.Any,
                            holder,
                            location[0],
                            _line(node, KEY_ID_SELF, location)))
-        _signature(id_self, node, facts)
+        _signature(id_self, node, facts, location)
         _stated(id_self, node, facts)
         _level(id_self, node, facts)
         for alias in _list_str(node.get(KEY_ALIAS)):
@@ -1827,9 +1831,14 @@ def _line(node: dict[str, typing.Any], key: str, location: tuple[str, int]) -> s
 
 
 # -----------------------------------------------------------------------------
-def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
+def _signature(id_self:  str,
+               node:     dict[str, typing.Any],
+               facts:    Facts,
+               location: tuple[str, int]) -> None:
     """
-    Add the type and relation facts that an entry declares.
+    Add the type and relation facts that an entry declares, and a fact
+    of regex_error if the pattern of the ids of a type is not a regular
+    expression, so that the check of each id can pass it over.
 
     """
 
@@ -1838,6 +1847,11 @@ def _signature(id_self: str, node: dict[str, typing.Any], facts: Facts) -> None:
 
     if isinstance(prefix, str) and isinstance(regex_id, str):
         facts['type_prefix'].add((id_self, prefix, regex_id))
+        try:
+            re.compile(regex_id)
+        except re.error as error:
+            facts['regex_error'].add((id_self, regex_id, str(error), location[0],
+                                    _line(node, KEY_REGEX_ID, location)))
 
     if node.get(KEY_ACYCLIC) is True:
         facts['acyclic_relation'].add((id_self,))

@@ -171,6 +171,15 @@ def test_format_names_the_files_it_would_change_and_then_changes_them(tree):
     assert _run(tree, 'format', '--check').stdout == ''
 
 
+def test_format_fails_a_file_it_cannot_lay_out_and_says_why(tree):
+    path = tree / '_data/register/reg_concern.yaml'
+    path.write_text(path.read_text().replace('title:                  Concern register',
+                                             'title:                  Concern register\t'))
+    result = _run(tree, 'format')
+    assert result.exit_code == 1
+    assert result.stderr.startswith('_data/register/reg_concern.yaml: The document is not YAML')
+
+
 TEXT_ONTOLOGY = '''\
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:  <http://www.w3.org/2002/07/owl#> .

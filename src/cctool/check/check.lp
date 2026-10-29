@@ -103,7 +103,52 @@ bad_id(Id, Regex, File, Line) :-
     item(Id, _, _, File, Line),
     has_type(Id, Type),
     type_prefix(Type, _, Regex),
+    not regex_error(Type, Regex, _, _, _),
     @match(Regex, Id) = 0.
+
+
+% -----------------------------------------------------------------------------
+% ---
+%
+% id_self:                lpp_cctool.check.check.bad_regex
+% guid_self:              lpp_a76122a67ebc42b3a7a396a221389698
+% copyright:              Copyright 2026 William Payne
+% license:                Apache-2.0
+%
+% protective_mark:
+%
+%   - id_mark:            mark_public
+%     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+%
+% title:                  Bad regex
+% brief:                  |
+%                         The pattern of the ids of a type is a regular
+%                         expression, so that each id can be checked
+%                         against it. One that is not is reported where
+%                         it is written, and matches nothing, so that
+%                         the other checks still run.
+% did:                    |
+%                         {type} gives {regex} as the pattern of its
+%                         ids, which is not a regular expression:
+%                         {message}.
+% fix:                    |
+%                         Correct the regex_id of the type in
+%                         reg_data_item_type, so that it reads as a
+%                         python regular expression. Until then, no id
+%                         of the type is checked against it.
+% edge:                   []
+%
+% ...
+%
+% decl bad_regex(type:    symbol,
+%                regex:   symbol,
+%                message: symbol,
+%                file:    symbol,
+%                line:    number)
+#show bad_regex/5.
+
+bad_regex(Type, Regex, Message, File, Line) :-
+    regex_error(Type, Regex, Message, File, Line).
 
 
 % -----------------------------------------------------------------------------

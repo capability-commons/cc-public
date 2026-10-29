@@ -122,15 +122,29 @@ class Context:
     """
 
     # -------------------------------------------------------------------------
+    def __init__(self, set_bad: frozenset[str] = frozenset()) -> None:
+        """
+        Keep set_bad, the regexes of the data that are known not to be
+        regular expressions, each reported by a check of its own.
+
+        """
+
+        self.set_bad = set_bad
+
+    # -------------------------------------------------------------------------
     def match(self, regex: clingo.Symbol, text: clingo.Symbol) -> clingo.Symbol:
         """
-        Return 1 if regex matches the whole of text, and 0 if not.
+        Return 1 if regex matches the whole of text, and 0 if not. A
+        regex of set_bad matches nothing. Any other that is not a
+        regular expression is a fault of the rules, so the run stops.
 
         """
 
         try:
             is_match = _compiled(regex.string).fullmatch(text.string) is not None
         except re.error as error:
+            if regex.string in self.set_bad:
+                return clingo.Number(0)
             raise ErrorLogic('Bad regex {regex!r}: {error}'.format(
                                   regex = regex.string, error = error)) from error
         return clingo.Number(int(is_match))
@@ -384,7 +398,8 @@ def run(facts:      cctool.graph.extract.Facts,
     try:
         control.add('base', [], defined(facts, map_column) + write(facts, map_column))
         control.add('base', [], prelude + rules)
-        control.ground([('base', [])], context = Context())
+        control.ground([('base', [])],
+                       context = Context(frozenset(row[1] for row in facts.get('regex_error', ()))))
     except RuntimeError as error:
         raise ErrorLogic(_message(''.join(list_message) or str(error), line)) from error
 

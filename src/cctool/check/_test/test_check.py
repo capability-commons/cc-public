@@ -534,6 +534,24 @@ def test_a_title_that_ends_in_a_newline_is_reported(tree):
     assert [row[4] for row in failures['schema_violation']] == ['title']
 
 
+@pytest.mark.parametrize(('old', 'new', 'start'), [
+    ('title: Test item', 'title: Test item\t', 'The document is not YAML: '),
+    (None, '- x\n', 'The document is not a mapping.')])
+def test_a_file_that_cannot_be_laid_out_says_why_at_its_line(tree, old, new, start):
+    _option(tree, 'opt_x')
+    path = tree / DIR_DECISION / 'opt_x.yaml'
+    path.write_text(new if old is None else path.read_text().replace(old, new, 1))
+    line = 1 if old is None else next(index for (index, text)
+                                      in enumerate(path.read_text().split('\n'), 1)
+                                      if new in text)
+    (failures, _, _) = cctool.check.check.review(tree)
+    [(at, message)] = [row[1:] for row in failures[cctool.check.check.NAME_LAYOUT]
+                       if row[0] == DIR_DECISION + 'opt_x.yaml']
+    assert at == str(line)
+    assert message.startswith(start)
+    assert '{message}' in cctool.check.check.WORDING_LAYOUT['did']
+
+
 def test_a_document_with_a_repeated_key_is_reported(tree):
     (tree / '_data/annotation').mkdir(exist_ok = True)
     (tree / '_data/annotation/ann_x.yaml').write_text('title: one\ntitle: two\n')
@@ -972,6 +990,19 @@ def _copied(tree):
     two  = _guid('extdoc')
     (tree / PATH_COPY).write_text(text.replace(one, two))
     return (one, two)
+
+
+def test_a_type_whose_id_pattern_is_not_a_regex_is_reported_where_it_is(tree):
+    relative = '_data/register/reg_data_item_type.yaml'
+    good     = '^extdoc_[a-z][a-z0-9_]*$'
+    bad      = '^extdoc_([a-z][a-z0-9_]*$'
+    _replace(tree, relative, 'regex_id:           ' + good, 'regex_id:           ' + bad)
+    line = next(index for (index, text) in enumerate((tree / relative).read_text().split('\n'), 1)
+                if bad in text)
+    [row] = _check(tree)['bad_regex']
+    assert row[:2] + row[3:] == ('type_external_document', bad, relative, str(line))
+    assert 'missing )' in row[2]
+    assert list(_check(tree)) == ['bad_regex']
 
 
 def test_an_id_given_to_two_items_is_reported(tree):

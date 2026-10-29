@@ -1042,7 +1042,10 @@ def rename(tree: Tree, id_old: str, id_new: str, guid: str | None = None) -> Edi
         raise ErrorEdit('A rename keeps the type, so {new} must have the prefix of {old}.'.format(
                                                                     new = id_new, old = id_old))
 
+    set_bad = {row[1] for row in tree.facts.get('regex_error', ())}
     for (id_type, prefix, regex_id) in tree.facts['type_prefix']:
+        if regex_id in set_bad:
+            continue
         if prefix == id_new.partition(DELIM_PREFIX)[0] and not re.search(regex_id, id_new):
             raise ErrorEdit('{new} is not an id of {type}, which match {regex}.'.format(
                                                 new = id_new, type = id_type, regex = regex_id))

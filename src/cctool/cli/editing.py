@@ -522,20 +522,24 @@ def format_(root, is_check):
     Lay out every YAML document in the tree under --root, or the working
     directory: the YAML files under _data, the module docstrings of
     python modules, and the comment headers of other files. A file that
-    cannot be read or written is named, and the exit is 2.
+    cannot be read or written is named, and the exit is 2. A file whose
+    document cannot be laid out, such as one that is not YAML, is named
+    with why, and the exit is 1, since cctool check fails it too.
 
     """
 
-    root         = root.resolve()
-    map_document = cctool.graph.extract.documents(root)
-    list_changed = []
+    root          = root.resolve()
+    map_document  = cctool.graph.extract.documents(root)
+    list_changed  = []
+    is_unlaid_out = False
 
     for (relative, (document, _)) in sorted(map_document.items()):
         if isinstance(document, cctool.graph.extract.Unreadable):
             click.echo('{file}: {error}'.format(file = relative, error = document.error),
                        err = True)
+            is_unlaid_out = True
 
-    list_error   = []
+    list_error    = []
 
     for relative in cctool.graph.extract.files(map_document):
         path = root / relative
@@ -546,6 +550,7 @@ def format_(root, is_check):
                 path.write_text(laid_out, encoding = 'utf-8')
         except cctool.check.layout.Unsupported as error:
             click.echo('{file}: {error}'.format(file = relative, error = error), err = True)
+            is_unlaid_out = True
             continue
         except (OSError, UnicodeError) as error:
             list_error.append('{file}: {error}'.format(file = relative, error = error))
@@ -561,7 +566,7 @@ def format_(root, is_check):
 
     if list_error:
         sys.exit(cctool.cli.group.EXIT_ERROR)
-    sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if (is_check and list_changed)
+    sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if (is_unlaid_out or (is_check and list_changed))
              else cctool.cli.group.EXIT_OK)
 
 

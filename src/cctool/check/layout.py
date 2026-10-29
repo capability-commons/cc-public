@@ -152,9 +152,21 @@ class Unsupported(Exception):
     The YAML document is outside the subset this printer lays out: anchors,
     aliases, tags, comments at the end of a line, nested sequences, folded
     scalars and documents that are not mappings. Refusing is better than
-    guessing at a layout for them, or dropping them.
+    guessing at a layout for them, or dropping them. line is the line of
+    the text laid out where the fault is, counted from 1, or None if no
+    one line is at fault.
 
     """
+
+    # -------------------------------------------------------------------------
+    def __init__(self, message: str, line: int | None = None) -> None:
+        """
+        Keep message and line.
+
+        """
+
+        super().__init__(message)
+        self.line = line
 
 
 # -----------------------------------------------------------------------------
@@ -237,7 +249,7 @@ def _violation(relative: str, text: str) -> tuple | None:
     try:
         laid_out = lay_out(text, pathlib.Path(relative))
     except Unsupported as error:
-        return (relative, '1', str(error))
+        return (relative, str(error.line or 1), str(error))
     if laid_out != text:
         return (relative, str(_first_difference(text, laid_out)), MESSAGE_LAYOUT)
 
@@ -360,7 +372,11 @@ def format_file(text: str, relative: pathlib.Path, is_fast: bool = False) -> str
     for (first, last, mark, indent) in reversed(_spans(text, relative)):
         list_doc  = [_unmark(line, mark).removeprefix(indent)
                      for line in list_line[first:last + 1]]
-        list_body = format('\n'.join(list_doc), is_fast).rstrip('\n').split('\n')
+        try:
+            list_body = format('\n'.join(list_doc), is_fast).rstrip('\n').split('\n')
+        except Unsupported as error:
+            raise Unsupported(str(error),
+                              None if error.line is None else first + error.line) from error
         list_new  = [LINE_OPEN, ''] + list_body + ['', LINE_CLOSE]
         list_line[first:last + 1] = [_mark(indent + line if line else '', mark)
                                      for line in list_new]
@@ -466,8 +482,10 @@ def format(text: str, is_fast: bool = False) -> str:
     try:
         document = _load(text) if is_fast else YAML.load(text)
     except ruamel.yaml.YAMLError as error:
+        mark = getattr(error, 'problem_mark', None)
         raise Unsupported('The document is not YAML: {error}'.format(
-                                    error = ' '.join(str(error).split()))) from error
+                              error = ' '.join(str(error).split())),
+                          None if mark is None else mark.line + 1) from error
 
     if not isinstance(document, Map):
         raise Unsupported('The document is not a mapping.')
@@ -533,8 +551,8 @@ def _refuse(node: typing.Any, list_line: list[str], set_seen: set[int]) -> None:
                     and token.value.lstrip(' ').startswith('#')):
                 (line, column) = (token.start_mark.line, token.start_mark.column)
                 if list_line[line][:column].strip():
-                    raise Unsupported('The document has a comment at the end of line '
-                                      '{line}.'.format(line = line + 1))
+                    raise Unsupported('The document has a comment at the end of a line.',
+                                      line + 1)
 
     for child in (node.values() if isinstance(node, Map) else node):
         _refuse(child, list_line, set_seen)
