@@ -28,12 +28,14 @@
 #                         pixi run browsers fetches the Chromium that
 #                         the browser tests of the review pages drive;
 #                         they are slow, so only pixi run test and pixi
-#                         run slow run them. The environment tool holds
-#                         what cctool needs to run and nothing used only
-#                         to develop it, so its part of pixi.lock is the
-#                         lock a release publishes for the tool. The
-#                         wheel holds the package and, under
-#                         cctool/_data, the data items of the tree.
+#                         run slow run them. pixi run release-gate runs
+#                         the release gate before a tag. The environment
+#                         tool holds what cctool needs to run and
+#                         nothing used only to develop it, so its part
+#                         of pixi.lock is the lock a release publishes
+#                         for the tool. The wheel holds the package and,
+#                         under cctool/_data, the data items of the
+#                         tree.
 # edge:                   []
 #
 # ...
@@ -149,6 +151,13 @@ check-full              = { cmd = "cctool check", env = { CCTOOL_SCHEMA_FULL = "
 slow                    = { depends-on = [{ task = "test", environment = "py312" },
                                           { task = "test", environment = "py313" },
                                           { task = "test", environment = "py314" }] }
+
+# The release gate, as ruling_release_gate says: the tests on every
+# Python, the full check of the tree, and then the smoke test, which
+# builds the package of HEAD, installs it fresh and checks with it. Run
+# it on the commit to be tagged, before cctool release check.
+#
+release-gate            = { cmd = "cctool release smoke", depends-on = ["slow", "check-full"] }
 
 # What cctool needs to run: python, clingo, the jq program that cctool
 # query jq runs, and cc-public itself, which brings the libraries that

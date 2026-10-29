@@ -19,9 +19,11 @@ description:            |
                         This module holds the release group: prepare
                         writes the release item and the version module
                         and prints the bump, the renames, the removals
-                        and the commits since the last release, and
-                        check says whether a commit may be tagged as a
-                        release. Neither commits, tags or pushes.
+                        and the commits since the last release, smoke
+                        builds and installs the package of a commit
+                        and checks with it, as the release gate does,
+                        and check says whether a commit may be tagged
+                        as a release. None commits, tags or pushes.
 edge:                   []
 
 ...
@@ -30,6 +32,7 @@ edge:                   []
 
 import pathlib
 import sys
+import tempfile
 
 import click
 
@@ -38,6 +41,7 @@ import cctool.edit.edit
 import cctool.gate.gate
 import cctool.graph.logic
 import cctool.release.release
+import cctool.release.smoke
 
 
 # What each level of bump says of the change since the last release.
@@ -95,8 +99,8 @@ def prepare(brief: str, maturity: str, root: pathlib.Path) -> None:
     since the tag, and the maturity level the release is for. The
     renames, the removals and the commits since the tag are printed.
     Nothing is committed or tagged: commit what is written, run the
-    release gate, then cctool release check, and tag the commit if the
-    release is to be made. The exit status is 2 when nothing can be
+    release gate with pixi run release-gate, then cctool release check,
+    and tag the commit if the release is to be made. The exit status is 2 when nothing can be
     written.
 
     """
@@ -156,9 +160,9 @@ def _prepared(result: dict) -> list[str]:
                       for (short, title) in result['notes']]
 
     list_line.append('')
-    list_line.append('Next: commit these files, run the release gate, then cctool release '
-                     'check v{version}, and tag the commit v{version} if it is to be '
-                     'released.'.format(version = version))
+    list_line.append('Next: commit these files, run the release gate with pixi run '
+                     'release-gate, then cctool release check v{version}, and tag the commit '
+                     'v{version} if it is to be released.'.format(version = version))
 
     return list_line
 
@@ -200,5 +204,49 @@ def check(tag: str, rev: str, root: pathlib.Path) -> None:
                    rev     = rev,
                    verdict = 'may not' if list_found else 'may',
                    tag     = tag))
+
+    sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if list_found else cctool.cli.group.EXIT_OK)
+
+
+# -----------------------------------------------------------------------------
+@release.command()
+@click.argument('rev', metavar = '[REV]', default = 'HEAD')
+@click.option('--root',
+              metavar = 'DIRPATH',
+              default = '.',
+              type    = click.Path(exists    = True,
+                                   file_okay = False,
+                                   path_type = pathlib.Path),
+              help    = 'The repository. Defaults to the working directory.')
+def smoke(rev: str, root: pathlib.Path) -> None:
+    """
+    Build the package of the commit REV, install it fresh, and check with it.
+
+    This is the smoke test of the release gate, which pixi run
+    release-gate runs after the tests on every Python and the full
+    check. The commit is copied as git stores it and its wheel built;
+    the wheel is installed in a fresh environment, whose dependencies
+    are resolved from their declared ranges, so the package indexes
+    must be reachable. The installed package must hold the data of the
+    commit, its cctool check must pass on the commit, and a fixture
+    peer that it makes must pass cctool check and cctool peer status.
+    Nothing is kept. REV is HEAD if left out. The exit status is 1 when
+    a step fails, and 2 when REV cannot be copied.
+
+    """
+
+    with tempfile.TemporaryDirectory() as dir_work:
+        try:
+            list_found = cctool.release.smoke.smoke(root.resolve(), rev, pathlib.Path(dir_work),
+                                                    click.echo)
+        except cctool.gate.gate.ErrorGate as error:
+            click.echo(str(error), err = True)
+            sys.exit(cctool.cli.group.EXIT_ERROR)
+
+    for found in list_found:
+        click.echo(found)
+    click.echo('{rev} {verdict} the smoke test of the release gate.'.format(
+                   rev     = rev,
+                   verdict = 'fails' if list_found else 'passes'))
 
     sys.exit(cctool.cli.group.EXIT_NONCONFORMITY if list_found else cctool.cli.group.EXIT_OK)
