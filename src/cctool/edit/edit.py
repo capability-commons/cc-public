@@ -47,6 +47,7 @@ import io
 import os
 import pathlib
 import re
+import stat
 import tokenize
 import typing
 import uuid
@@ -213,6 +214,7 @@ class Tree:
         self.map_original = cctool.check.segment.union(root)
         self.map_document = dict(self.map_original)
         self.edit         = {}
+        self.map_source   = {}
         self._index()
 
     # -------------------------------------------------------------------------
@@ -1056,8 +1058,10 @@ def _rename_all(tree: Tree, map_id: dict[str, str]) -> Edit:
     for (relative, id_old) in list_file:
         path = pathlib.Path(relative)
         if path.stem == id_old:
-            edit[str(path.with_name(map_id[id_old] + path.suffix))] = edit.pop(relative)
-            edit[relative] = None
+            relative_new                  = str(path.with_name(map_id[id_old] + path.suffix))
+            edit[relative_new]            = edit.pop(relative)
+            edit[relative]                = None
+            tree.map_source[relative_new] = relative
         if path.parent.name == id_old:
             _move_folder(tree, edit, path.parent, map_id[id_old])
 
@@ -1163,8 +1167,10 @@ def _move_folder(tree: Tree, edit: Edit, dir_old: pathlib.Path, id_new: str) -> 
         text = edit[file] if file in edit else tree.text(file)
         if text is None:
             continue
-        edit[str(dir_new / moved.relative_to(dir_old))] = text
-        edit[file] = None
+        relative_new                  = str(dir_new / moved.relative_to(dir_old))
+        edit[relative_new]            = text
+        edit[file]                    = None
+        tree.map_source[relative_new] = file
 
 
 # -----------------------------------------------------------------------------
@@ -1206,8 +1212,9 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
 
     edit_move = {}
     for (file_old, file_new) in map_move.items():
-        edit_move[file_new] = edit[file_old] if file_old in edit else _content(tree, file_old)
-        edit_move[file_old] = None
+        edit_move[file_new]       = edit[file_old] if file_old in edit else _content(tree, file_old)
+        edit_move[file_old]       = None
+        tree.map_source[file_new] = file_old
     edit.update(edit_move)
 
     return edit
@@ -1587,7 +1594,8 @@ def _place(tree: Tree, failures: cctool.check.check.Failures) -> bool:
     for (_, relative, expected) in failures.get(NAME_MISPLACED, []):
         is_new = relative not in tree.map_original and tree.edit.get(relative) is not None
         if is_new and expected not in tree.map_document:
-            edit[expected] = tree.edit.pop(relative)
+            edit[expected]            = tree.edit.pop(relative)
+            tree.map_source[expected] = relative
             tree.map_document.pop(relative)
 
     if edit:
@@ -1604,6 +1612,34 @@ def _write(tree: Tree) -> None:
     take the place of its file, so that a write that fails leaves the
     tree as it was. Raise ErrorEdit if one fails.
 
+    A file the edits leave as it is is not written, and is taken out of
+    them. A file that is written keeps the permissions of the file it
+    replaces, or of the file it was moved from, so that an edit of a
+    hook or a script leaves it executable.
+
+    """
+
+    for relative in [relative for (relative, text) in tree.edit.items()
+                     if _is_unchanged(tree.root / relative, text)]:
+        del tree.edit[relative]
+
+    for (staged, path) in _stage(tree):
+        os.replace(staged, path)
+
+    for (relative, text) in tree.edit.items():
+        if text is None:
+            (tree.root / relative).unlink(missing_ok = True)
+            _prune(tree.root, (tree.root / relative).parent)
+
+
+# -----------------------------------------------------------------------------
+def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
+    """
+    Write each new text of the edits of tree beside its file, with the
+    permissions it keeps, and return each staged file with the file it
+    is to replace. Raise ErrorEdit, and leave no staged file, if one
+    cannot be written.
+
     """
 
     list_staged = []
@@ -1614,25 +1650,58 @@ def _write(tree: Tree) -> None:
                 continue
             path   = tree.root / relative
             staged = path.with_name(path.name + SUFFIX_STAGED)
+            mode   = _mode(tree, relative)
             path.parent.mkdir(parents = True, exist_ok = True)
             list_staged.append((staged, path))
             if isinstance(text, bytes):
                 staged.write_bytes(text)
             else:
                 staged.write_text(text, encoding = 'utf-8')
+            if mode is not None:
+                os.chmod(staged, mode)
     except OSError as error:
         for (staged, _) in list_staged:
             staged.unlink(missing_ok = True)
         raise ErrorEdit('The edit could not be written, so nothing was changed: '
                         '{error}'.format(error = error)) from error
 
-    for (staged, path) in list_staged:
-        os.replace(staged, path)
+    return list_staged
 
-    for (relative, text) in tree.edit.items():
-        if text is None:
-            (tree.root / relative).unlink(missing_ok = True)
-            _prune(tree.root, (tree.root / relative).parent)
+
+# -----------------------------------------------------------------------------
+def _is_unchanged(path: pathlib.Path, text: str | bytes | None) -> bool:
+    """
+    Return True if the file at path holds text already.
+
+    """
+
+    if text is None or not path.is_file():
+        return False
+    if isinstance(text, str):
+        text = text.encode('utf-8')
+    return path.read_bytes() == text
+
+
+# -----------------------------------------------------------------------------
+def _mode(tree: Tree, relative: str) -> int | None:
+    """
+    Return the permissions that the file written at relative keeps:
+    those of the file there, or else of the file it was moved from,
+    through each move the edits make. Return None for a file that is
+    new.
+
+    """
+
+    set_seen = set()
+
+    while relative is not None and relative not in set_seen:
+        set_seen.add(relative)
+        path = tree.root / relative
+        if path.is_file():
+            return stat.S_IMODE(path.stat().st_mode)
+        relative = tree.map_source.get(relative)
+
+    return None
 
 
 # -----------------------------------------------------------------------------

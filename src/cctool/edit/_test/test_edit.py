@@ -113,6 +113,30 @@ def test_an_edit_that_cannot_be_written_changes_nothing(tree, monkeypatch):
     assert list(tree.rglob('*' + cctool.edit.edit.SUFFIX_STAGED)) == []
 
 
+def test_an_edit_keeps_the_permissions_of_the_file_it_writes(tree):
+    hook = tree / '.githooks/pre-commit'
+    hook.chmod(0o755)
+    assert _edit(tree, {'set': ['shell_githooks_pre_commit', 'title', 'Commit hook']}) == {}
+    assert '# title:                  Commit hook\n' in hook.read_text()
+    assert hook.stat().st_mode & 0o777 == 0o755
+
+
+def test_a_move_keeps_the_permissions_of_the_file_it_moves(tree):
+    (tree / 'src/cctool/check/layout.py').chmod(0o755)
+    assert _edit(tree, {'move': ['src/cctool/check/layout.py',
+                                 'src/cctool/edit/printer.py']}) == {}
+    assert (tree / 'src/cctool/edit/printer.py').stat().st_mode & 0o777 == 0o755
+
+
+def test_an_edit_that_changes_nothing_writes_nothing(tree):
+    edited = cctool.edit.edit.Tree(tree)
+    cctool.edit.edit.batch(edited, [{'set': ['shell_githooks_pre_commit',
+                                             'title',
+                                             'Pre-commit hook']}])
+    assert cctool.edit.edit.apply(edited) == {}
+    assert edited.edit == {}
+
+
 def test_a_new_standalone_item_is_written_in_a_file_of_its_own(tree, zero):
     assert _edit(tree, {'new':   'ann_x',
                         'field': FIELD_ANN,
