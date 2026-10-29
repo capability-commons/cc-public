@@ -1038,3 +1038,20 @@ surface:
 
 edge:                   []
 """
+
+
+def test_a_page_is_timed_by_phase(tree):
+    ((status, _, _), map_phase) = cctool.web.server.timed(
+        lambda: cctool.web.server.respond(tree, '/decision/' + ID_DECISION))
+    assert status == 200
+    assert {'wait', 'graph', 'render', 'total'} <= set(map_phase)
+    assert abs(sum(seconds for (name, seconds) in map_phase.items() if name != 'total')
+               - map_phase['total']) < 1e-6
+
+
+def test_the_times_of_a_page_are_sent_and_logged():
+    map_phase = {'graph': 0.4321, 'render': 0.0004, 'total': 0.4325}
+    assert cctool.web.server.server_timing(map_phase) == (
+        'graph;dur=432.1, render;dur=0.4, total;dur=432.5')
+    line = cctool.web.server.log_line('GET', '/decisions', 200, 1234, map_phase)
+    assert line.endswith(' GET /decisions 200 1234 B 432 ms (graph 432)')

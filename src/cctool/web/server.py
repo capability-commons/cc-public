@@ -45,18 +45,33 @@ description:            |
                         to a server by any other name than this
                         computer's, is refused, so that another page
                         open in the browser cannot change the tree.
+
+                        Each response says how long it took, and on
+                        what: waiting for another request to finish
+                        reading the tree (wait), reading the tree into
+                        a graph (graph), reading the facts of the
+                        interfaces (facts), checking an edit (check),
+                        and the rest, which is mostly making the page
+                        (render). serve writes one line for each
+                        request to the standard error, and sends the
+                        same times in a Server-Timing header, which
+                        the network panel of a browser shows.
 edge:                   []
 
 ...
 """
 
 
+import contextlib
 import http
 import http.server
 import ipaddress
 import mimetypes
 import pathlib
+import sys
 import threading
+import time
+import typing
 import urllib.parse
 
 import cctool.check.check
@@ -76,6 +91,8 @@ TYPE_HTML         = 'text/html; charset=utf-8'
 TYPE_DEFAULT      = 'application/octet-stream'
 SET_HOST_LOCAL    = {'127.0.0.1', 'localhost', '[::1]'}
 LOCK_READ         = threading.Lock()
+LOCAL_TIMING      = threading.local()
+PHASE_REST        = 'render'
 MAP_INDEX         = {cctool.web.page.PATH_HOME:         cctool.web.page.home,
                      cctool.web.page.PATH_DECISIONS:       cctool.web.page.decisions,
                      cctool.web.page.PATH_COMPONENTS:     cctool.web.page.components,
@@ -170,13 +187,19 @@ def submit(root:   pathlib.Path,
 
     try:
         request = cctool.web.request.parse(body.decode('utf-8'))
-        with LOCK_READ:
-            graph          = cctool.web.argument.Graph(root)
+        with _timed('wait'):
+            LOCK_READ.acquire()
+        try:
+            with _timed('graph'):
+                graph = cctool.web.argument.Graph(root)
             id_item        = cctool.web.request.id_new(graph, request)
             list_operation = cctool.web.request.operations(graph, request)
             tree           = cctool.edit.edit.Tree(root)
             cctool.edit.edit.batch(tree, list_operation)
-            added          = cctool.edit.edit.apply(tree)
+            with _timed('check'):
+                added = cctool.edit.edit.apply(tree)
+        finally:
+            LOCK_READ.release()
     except (cctool.web.request.ErrorRequest, cctool.edit.edit.ErrorEdit,
             UnicodeDecodeError) as error:
         return (http.HTTPStatus.BAD_REQUEST, TYPE_HTML,
@@ -227,6 +250,83 @@ def _name(host: str) -> str:
 
 
 # -----------------------------------------------------------------------------
+@contextlib.contextmanager
+def _timed(name: str) -> typing.Iterator[None]:
+    """
+    Add the time the block takes to the phase name of the request this
+    thread is answering, if timed is timing one.
+
+    """
+
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        map_phase = getattr(LOCAL_TIMING, 'map_phase', None)
+        if map_phase is not None:
+            map_phase[name] = map_phase.get(name, 0.0) + time.perf_counter() - start
+
+
+# -----------------------------------------------------------------------------
+def timed(answer: typing.Callable[[], tuple]) -> tuple[tuple, dict[str, float]]:
+    """
+    Return what answer returns, with the seconds that answering took on
+    each phase, and in all as total. The time that no phase took is
+    put to PHASE_REST.
+
+    """
+
+    LOCAL_TIMING.map_phase = {}
+    start                  = time.perf_counter()
+    try:
+        result = answer()
+    finally:
+        (map_phase, LOCAL_TIMING.map_phase) = (LOCAL_TIMING.map_phase, None)
+    total                = time.perf_counter() - start
+    map_phase[PHASE_REST] = max(total - sum(map_phase.values()), 0.0)
+    map_phase['total']    = total
+    return (result, map_phase)
+
+
+# -----------------------------------------------------------------------------
+def server_timing(map_phase: dict[str, float]) -> str:
+    """
+    Return the value of a Server-Timing header that gives the time of
+    each phase in map_phase, in milliseconds.
+
+    """
+
+    return ', '.join('{name};dur={ms:.1f}'.format(name = name, ms = 1000 * seconds)
+                     for (name, seconds) in map_phase.items())
+
+
+# -----------------------------------------------------------------------------
+def log_line(method:    str,
+             path:      str,
+             status:    int,
+             size:      int,
+             map_phase: dict[str, float]) -> str:
+    """
+    Return the line that the log gives to a request: what was asked
+    for, the answer, its size, the time it took, and the time of each
+    phase that took a millisecond or more.
+
+    """
+
+    list_part = ['{name} {ms:.0f}'.format(name = name, ms = 1000 * seconds)
+                 for (name, seconds) in map_phase.items()
+                 if name != 'total' and seconds >= 0.001]
+    return '{time} {method} {path} {status} {size} B {ms:.0f} ms ({part})'.format(
+                time   = time.strftime('%H:%M:%S'),
+                method = method,
+                path   = path,
+                status = int(status),
+                size   = size,
+                ms     = 1000 * map_phase['total'],
+                part   = ', '.join(list_part))
+
+
+# -----------------------------------------------------------------------------
 def _is_local(host: str, origin: str | None) -> bool:
     """
     Return True if host names this computer, and origin, if a browser
@@ -249,8 +349,13 @@ def _graph(root: pathlib.Path) -> cctool.web.argument.Graph:
 
     """
 
-    with LOCK_READ:
-        return cctool.web.argument.Graph(root)
+    with _timed('wait'):
+        LOCK_READ.acquire()
+    try:
+        with _timed('graph'):
+            return cctool.web.argument.Graph(root)
+    finally:
+        LOCK_READ.release()
 
 
 # -----------------------------------------------------------------------------
@@ -266,9 +371,15 @@ def _item_page(root:    pathlib.Path,
     """
 
     if prefix == cctool.web.page.PATH_INTERFACE:
-        with LOCK_READ:
-            (graph, facts) = (cctool.web.argument.Graph(root),
-                              cctool.web.contract.facts(root))
+        with _timed('wait'):
+            LOCK_READ.acquire()
+        try:
+            with _timed('graph'):
+                graph = cctool.web.argument.Graph(root)
+            with _timed('facts'):
+                facts = cctool.web.contract.facts(root)
+        finally:
+            LOCK_READ.release()
         return cctool.web.page.interface(graph, facts, id_item)
 
     graph = _graph(root)
@@ -379,12 +490,14 @@ def server(root: pathlib.Path, host: str, port: int) -> http.server.ThreadingHTT
                                 'an IP address.')
                 return
 
-            (status, type_content, body) = respond(root, self.path)
+            ((status, type_content, body), map_phase) = timed(lambda: respond(root, self.path))
             self.send_response(status)
             self.send_header('Content-Type', type_content)
             self.send_header('Content-Length', str(len(body)))
+            self.send_header('Server-Timing', server_timing(map_phase))
             self.end_headers()
             self.wfile.write(body)
+            self._log(status, len(body), map_phase)
 
         # ---------------------------------------------------------------------
         def do_POST(self) -> None:
@@ -403,17 +516,40 @@ def server(root: pathlib.Path, host: str, port: int) -> http.server.ThreadingHTT
                                 'The Content-Length is not a number of bytes.')
                 return
 
-            (status, type_content, body, location) = submit(root,
-                                                            self.headers.get('Host') or '',
-                                                            self.headers.get('Origin'),
-                                                            self.rfile.read(int(text)))
+            form = self.rfile.read(int(text))
+            ((status, type_content, body, location), map_phase) = timed(
+                lambda: submit(root,
+                               self.headers.get('Host') or '',
+                               self.headers.get('Origin'),
+                               form))
             self.send_response(status)
             if location:
                 self.send_header('Location', location)
             self.send_header('Content-Type', type_content)
             self.send_header('Content-Length', str(len(body)))
+            self.send_header('Server-Timing', server_timing(map_phase))
             self.end_headers()
             self.wfile.write(body)
+            self._log(status, len(body), map_phase)
+
+        # ---------------------------------------------------------------------
+        def log_request(self, code: int | str = '-', size: int | str = '-') -> None:
+            """
+            Write nothing when the response begins: _log writes its line
+            once it is sent, with its times.
+
+            """
+
+        # ---------------------------------------------------------------------
+        def _log(self, status: int, size: int, map_phase: dict[str, float]) -> None:
+            """
+            Write the line of the log for this request to the standard
+            error.
+
+            """
+
+            print(log_line(self.command, self.path, status, size, map_phase),
+                  file = sys.stderr, flush = True)
 
     return http.server.ThreadingHTTPServer((host, port), Handler)
 
@@ -427,7 +563,11 @@ def _warm(root: pathlib.Path) -> None:
 
     """
 
+    start = time.perf_counter()
     with LOCK_READ:
         cctool.web.argument.Graph(root)
         cctool.check.check.check_documents(cctool.graph.extract.documents(root),
                                            cctool.check.check.CACHE_SCHEMA)
+    print('{time} warmed up in {ms:.0f} ms'.format(time = time.strftime('%H:%M:%S'),
+                                                   ms   = 1000 * (time.perf_counter() - start)),
+          file = sys.stderr, flush = True)
