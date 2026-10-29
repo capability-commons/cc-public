@@ -353,6 +353,21 @@ def test_the_tests_log_the_seconds_of_each_test(repo):
     assert list(line['tests']) == ['src.test_marker::test_one']
 
 
+
+def test_a_skipped_test_fails_the_test_stage_with_its_reason(repo):
+    (repo / 'src/test_marker.py').write_text('import pytest\n\n\ndef test_one():\n    pass\n\n\n'
+                                             'def test_two():\n    pytest.skip("no compiler")\n')
+    _git(repo, 'add', 'src/test_marker.py')
+    stage = ('test', ('{python}', '-m', 'pytest', '-p', 'no:cacheprovider', 'src',
+                      '--junitxml={report}'))
+    [(_, is_passed, printed)] = cctool.gate.gate.gate(repo, (stage,))
+    assert not is_passed
+    assert printed.endswith('1 test was skipped, and a test the gate cannot run tests nothing. '
+                            'Install what each needs, as its reason says, or mark it slow if '
+                            'it belongs only to the slow run:\n'
+                            '  src.test_marker::test_two: no compiler\n')
+    assert _logged(repo)[0]['outcome'] == cctool.gate.gate.OUTCOME_FAIL
+
 def test_the_real_tests_report_the_seconds_of_each_test():
     assert '--junitxml={report}' in dict(cctool.gate.gate.TUPLE_STAGE)['test']
 

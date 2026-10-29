@@ -95,8 +95,10 @@ unfinished edits of another.
 - The pre-commit hook runs `cctool gate`, which checks, lints and
   tests the staged content. The tests leave out those marked slow,
   prepush and fuzz; a commit of data with no code runs only the tests
-  marked reads_data, and a commit of decisions alone runs none. Never bypass it with
-  `--no-verify`. If it fails, fix the cause, or report it.
+  marked reads_data, and a commit of decisions alone runs none. A
+  test that is skipped, such as for want of a tool, fails the gate.
+  Never bypass it with `--no-verify`. If it fails, fix the cause, or
+  report it.
 - Write each commit message with `cctool message new TITLE --brief
   TEXT`, then add the trailers. The title is an imperative sentence
   built from a template in `sch_commit`, such as `Add OBJECT` or

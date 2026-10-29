@@ -116,6 +116,30 @@ def durations(path_junit: pathlib.Path) -> dict[str, float]:
 
 
 # -----------------------------------------------------------------------------
+def skipped(path_junit: pathlib.Path) -> list[tuple[str, str]]:
+    """
+    Return each test that the JUnit XML report pytest wrote at
+    path_junit says was skipped, by the class name and name that the
+    report gives it, with the reason pytest gives. There are none if
+    the report is missing or not whole.
+
+    """
+
+    # The report is trusted, as in durations.
+    #
+    try:
+        element = xml.etree.ElementTree.parse(path_junit).getroot()  # noqa: S314
+    except (OSError, xml.etree.ElementTree.ParseError):
+        return []
+
+    return [('{classname}::{name}'.format(classname = case.get('classname', ''),
+                                          name      = case.get('name', '')),
+             ' '.join(str(skip.get('message', '')).split()))
+            for case in element.iter('testcase')
+            for skip in case.iter('skipped')]
+
+
+# -----------------------------------------------------------------------------
 def summary(list_line:  list[dict],
             count_run:  int = COUNT_RUN,
             count_test: int = COUNT_TEST) -> list[str]:

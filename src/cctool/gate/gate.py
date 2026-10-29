@@ -63,6 +63,12 @@ description:            |
                         long as its tests take divided among the
                         processors.
 
+                        A test that is skipped fails the test stage,
+                        with its reason, since a test the gate cannot
+                        run, as when a tool it needs is missing, tests
+                        nothing: a gate that passed it would pass code
+                        that no test has run.
+
                         Each run times its stages and appends a line
                         for each to a log of timings in the git
                         directory, as ruling_cpp_built_when_staged
@@ -163,6 +169,12 @@ PREFIX_REPORT = 'cc_gate_report_'
 FILE_REPORT   = 'junit.xml'
 DIR_STORE     = 'cctool_store'
 
+# Why the test stage fails when a test is skipped.
+#
+TEXT_SKIPPED  = ('{count} {noun} skipped, and a test the gate cannot run tests nothing. Install '
+                 'what each needs, as its reason says, or mark it slow if it belongs only to '
+                 'the slow run:\n{lines}\n')
+
 # What a stage came to, as the log of timings records it.
 #
 OUTCOME_OK    = 'passed'
@@ -224,6 +236,8 @@ def gate(root:        pathlib.Path,
                                           list_job))
 
         map_test    = cctool.gate.timing.durations(path_report)
+        list_done   = _with_skips(tuple_stage, list_done,
+                                  cctool.gate.timing.skipped(path_report))
 
     cctool.gate.timing.append(timing_log(root),
                               _timings(root, rev, tuple_stage, list_done, start, usage, map_test))
@@ -231,6 +245,32 @@ def gate(root:        pathlib.Path,
     return [(name_stage, outcome == OUTCOME_OK, printed)
             for ((name_stage, _), (outcome, printed, _)) in zip(tuple_stage, list_done,
                                                                  strict = True)]
+
+
+# -----------------------------------------------------------------------------
+def _with_skips(tuple_stage: tuple,
+                list_done:   list[tuple[str, str, float]],
+                list_skip:   list[tuple[str, str]]) -> list[tuple[str, str, float]]:
+    """
+    Return list_done, what each stage of tuple_stage came to, with the
+    stage named NAME_TEST failed and its skipped tests said if
+    list_skip holds any.
+
+    """
+
+    if not list_skip:
+        return list_done
+
+    text = TEXT_SKIPPED.format(count = len(list_skip),
+                               noun  = 'test was' if len(list_skip) == 1 else 'tests were',
+                               lines = '\n'.join('  {test}: {reason}'.format(test   = test,
+                                                                              reason = reason)
+                                                  for (test, reason) in list_skip))
+
+    return [(OUTCOME_FAIL, printed + text, seconds) if name_stage == NAME_TEST
+            else (outcome, printed, seconds)
+            for ((name_stage, _), (outcome, printed, seconds)) in zip(tuple_stage, list_done,
+                                                                      strict = True)]
 
 
 # -----------------------------------------------------------------------------
