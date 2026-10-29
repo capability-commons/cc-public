@@ -1,0 +1,36 @@
+id_self:                ann_whole_tree_layout_bound_to_ruamel_is_stale
+guid_self:              ann_9e3e524b1cb54fb8a923e5d0cd3c0f6e
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Layout read mostly by the fast reader
+brief:                  |
+                        The annotation says the layout of every YAML
+                        document comes from the round-trip parse of
+                        ruamel.yaml. Now the layout reads most files
+                        with the fast reader, and only a file the fast
+                        reader cannot lay out goes to ruamel.yaml.
+description:            |
+                        lay_out reads a document as _load reads it,
+                        which calls cctool.graph.parse.load, and falls
+                        back to ruamel.yaml otherwise
+                        (src/cctool/check/layout.py within lay_out and
+                        _load). Found in the weekly review of
+                        2026-10-29.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_layout_of_documents
+    guid_target:        dec_0dc8b3e1be164db2bbb6d697663d4c47
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          ann_whole_tree_layout_bound_to_ruamel
+    guid_target:        ann_3e9b0907598648d7b0833a2331f20702
