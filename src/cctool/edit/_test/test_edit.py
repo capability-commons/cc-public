@@ -620,6 +620,12 @@ def test_a_moved_name_keeps_the_lines_aligned_inside_its_brackets():
      'No file of the tree is at src/cctool/none.py.'),
     ({'move': ['src/cctool/check/layout.py', 'src/cctool/edit/edit.py']},
      'A file is at src/cctool/edit/edit.py already.'),
+    ({'move': ['.githooks/pre-push', '/outside/pre-push']},
+     '/outside/pre-push is not a path in the tree, so nothing is written there.'),
+    ({'move': ['.githooks/pre-push', '../outside/pre-push']},
+     '../outside/pre-push is not a path in the tree, so nothing is written there.'),
+    ({'move': ['.githooks/pre-push', '.git/hooks/pre-push']},
+     '.git/hooks/pre-push is not a path in the tree, so nothing is written there.'),
 ])
 def test_a_move_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cctool.edit.edit.ErrorEdit) as info:
@@ -710,6 +716,10 @@ def test_header_makes_a_logic_program_file_that_is_not_there(tree, zero):
     ({'header': 'tool/run'}, 'Give the id of the item of tool/run.'),
     ({'header': 'src/cctool/edit/edit.py'}, 'src/cctool/edit/edit.py already holds an item.'),
     ({'header': 'tool/run', 'id': 'zzz_run'}, 'No type has the prefix zzz. reg_data_item_type.yaml lists the types.'),
+    ({'header': '../outside/victim.txt', 'id': 'file_victim'},
+     '../outside/victim.txt is not a path in the tree, so nothing is written there.'),
+    ({'header': '_tools/run.sh', 'id': 'shell_run'},
+     '_tools/run.sh is not a path in the tree, so nothing is written there.'),
 ])
 def test_a_header_that_cannot_be_made_says_why(tree, operation, message):
     with pytest.raises(cctool.edit.edit.ErrorEdit) as info:

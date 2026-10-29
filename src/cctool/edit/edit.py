@@ -46,6 +46,7 @@ import collections
 import io
 import os
 import pathlib
+import posixpath
 import re
 import stat
 import tokenize
@@ -355,7 +356,8 @@ def header(tree:       Tree,
 
     """
 
-    path = pathlib.Path(relative)
+    relative = inside(relative)
+    path     = pathlib.Path(relative)
 
     if path.suffix in SET_SUFFIX_BARE:
         raise ErrorEdit('{file} cannot hold a header. A YAML, JSON or Markdown file is '
@@ -372,6 +374,9 @@ def header(tree:       Tree,
 
     if relative in tree.map_document and tree.map_document[relative][0] is not None:
         raise ErrorEdit('{file} already holds an item.'.format(file = relative))
+    if relative not in tree.map_document and (tree.root / relative).exists():
+        raise ErrorEdit('{file} is there, but the tree does not read it, so it cannot be '
+                        'given a header.'.format(file = relative))
 
     (prefix, _, _) = id_self.partition(DELIM_PREFIX)
     if prefix not in {row[1] for row in tree.facts['type_prefix']}:
@@ -1194,11 +1199,11 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
 
     """
 
-    old      = pathlib.PurePosixPath(path_old)
-    new      = pathlib.PurePosixPath(path_new)
+    old      = pathlib.PurePosixPath(inside(path_old))
+    new      = pathlib.PurePosixPath(inside(path_new))
     set_file = {cctool.graph.extract.file_of(key) for key in tree.map_document}
     set_file = {file for file in set_file | set(tree.edit) if tree.edit.get(file, '') is not None}
-    map_move = _moves(set_file, old, new)
+    map_move = _moves(tree.root, set_file, old, new)
     map_id   = _moved_ids(tree, map_move)
 
     for id_new in map_id.values():
@@ -1221,13 +1226,14 @@ def move(tree: Tree, path_old: str, path_new: str) -> Edit:
 
 
 # -----------------------------------------------------------------------------
-def _moves(set_file: set[str],
+def _moves(root:     pathlib.Path,
+           set_file: set[str],
            old:      pathlib.PurePosixPath,
            new:      pathlib.PurePosixPath) -> dict[str, str]:
     """
     Return the new path of each file of set_file that a move of old to
     new moves, keyed by its old path. Refuse a move of nothing, and one
-    onto a file that is there.
+    onto a file that is there, in the tree or on the disk under root.
 
     """
 
@@ -1243,10 +1249,33 @@ def _moves(set_file: set[str],
     if not map_move:
         raise ErrorEdit('No file of the tree is at {path}.'.format(path = old))
     for file in map_move.values():
-        if file in set_file:
+        if file in set_file or (file not in map_move and (root / file).exists()):
             raise ErrorEdit('A file is at {path} already.'.format(path = file))
 
     return map_move
+
+
+# -----------------------------------------------------------------------------
+def inside(relative: str) -> str:
+    """
+    Return relative, a path in the tree, in its normal form. Raise
+    ErrorEdit if it is absolute, leads out of the tree, or passes through
+    a folder the tree does not read, since only the tree under its root
+    is ever written.
+
+    """
+
+    normal    = posixpath.normpath(relative)
+    list_part = pathlib.PurePosixPath(normal).parts
+
+    if (posixpath.isabs(relative)
+            or normal == posixpath.curdir
+            or list_part[0] == posixpath.pardir
+            or any(part in cctool.graph.extract.SET_DIR_SKIP for part in list_part)):
+        raise ErrorEdit('{path} is not a path in the tree, so nothing is written '
+                        'there.'.format(path = relative))
+
+    return normal
 
 
 # -----------------------------------------------------------------------------
@@ -1640,6 +1669,9 @@ def _stage(tree: Tree) -> list[tuple[pathlib.Path, pathlib.Path]]:
     """
 
     list_staged = []
+
+    for relative in tree.edit:
+        inside(relative)
 
     try:
         for (relative, text) in tree.edit.items():
