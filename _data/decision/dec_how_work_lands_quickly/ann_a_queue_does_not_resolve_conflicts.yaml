@@ -1,0 +1,45 @@
+id_self:                ann_a_queue_does_not_resolve_conflicts
+guid_self:              ann_e4a0940c85d843b1ae013cc0f96d9128
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A queue does not resolve conflicts
+brief:                  |
+                        A queue removes the waiting on bundles that
+                        replay cleanly, but a bundle that conflicts
+                        still goes back to its thread. So does one
+                        that replays cleanly but fails its checks,
+                        because two threads changed things that work
+                        apart and not together. That second kind is
+                        caught today too, by the history check that
+                        cctool repo land runs on the replayed commits,
+                        and the queue keeps that check. Bundles that
+                        depend on one another must also arrive in
+                        order, or the later one bounces.
+description:            |
+                        Sources:
+                        - A replay that conflicts, or a check that
+                          fails, leaves the current branch where it
+                          was [src/cctool/commit/repo.py within land].
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          dec_how_work_lands_quickly
+    guid_target:        dec_33ea713470594129b0dfb28ef27e9bbe
+
+  - id_relation:        relation_challenges
+    guid_relation:      relation_7ef507cc69514a36910448016caef428
+    id_target:          opt_a_landing_queue_on_atlas
+    guid_target:        opt_8cb84b36847140188c492bbf20401439
+
+  - id_relation:        relation_speaks_for_concern
+    guid_relation:      relation_43b56fb16cb64206892bbcb88a0a6b67
+    id_target:          concern_reliability
+    guid_target:        concern_a94909f7acba471c8e258d8a7bb81024

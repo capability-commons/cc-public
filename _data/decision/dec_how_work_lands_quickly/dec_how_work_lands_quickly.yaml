@@ -1,0 +1,52 @@
+id_self:                dec_how_work_lands_quickly
+guid_self:              dec_33ea713470594129b0dfb28ef27e9bbe
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  How work lands on dev quickly
+brief:                  |
+                        How should the work of many threads land on
+                        dev with less waiting, fewer rebases and fewer
+                        conflicts, while every commit that lands stays
+                        signed, checked and open to review in git?
+description:            |
+                        Today each thread commits through the gate in
+                        a clone of its own, bundles its branch and
+                        leaves the bundle on atlas. WTP lands each
+                        bundle by hand with cctool repo land, which
+                        replays its commits onto dev, signs them and
+                        runs the history check on them, and then
+                        pushes, which runs the history check and the
+                        gate on the tip. When dev has moved since a
+                        bundle was made and the replay conflicts, its
+                        thread fetches the new dev, rebases, runs the
+                        gate again and makes a new bundle. With many
+                        threads at once, dev moves often, and the same
+                        bundle may be rebuilt several times before it
+                        lands.
+
+                        WTP named this the biggest point of friction
+                        and considered moving much of the graph to a
+                        graph database or MongoDB, then framed the
+                        question as how to make merging in git faster
+                        (WTP, 2026-10-29). It is close to the phased
+                        quality gates: the ruling on quality stages
+                        leaves the slow and thorough checks to the
+                        overnight run, so landing need only be as
+                        strict as the stage it is. The options are not
+                        exclusive. A queue cuts the waiting, while
+                        merging register files by entry or splitting
+                        them cuts the conflicts, so one ruling may
+                        uphold more than one.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          lco_change_control
+    guid_target:        lco_4062f1a4c34b4e31aa9dab546d9373d6
