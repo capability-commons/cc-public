@@ -822,7 +822,9 @@ def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) 
     """
     Return node with value put at the path list_part into it. A missing
     mapping on the way is made, and a field id_<field> that names an
-    item is given guid_<field> after it.
+    item is given guid_<field> after it. A number picks an element of a
+    list, so one that names neither an element nor a field is refused,
+    since a mapping keyed by it would be a mapping, and not the list.
 
     """
 
@@ -835,6 +837,11 @@ def _put(tree: Tree, node: typing.Any, list_part: list[str], value: typing.Any) 
 
     if not isinstance(node, dict):
         raise ErrorEdit('The path goes into {value}, which has no fields.'.format(value = node))
+
+    if part.isdigit() and part not in node:
+        raise ErrorEdit('{part} picks an element of a list, and there is no list there. Set '
+                        'the whole list instead, as a YAML value with --yaml.'.format(
+                                                                            part = part))
 
     if rest:
         node[part] = _put(tree, node.get(part, {}), rest, value)
@@ -2286,7 +2293,7 @@ def _format(text: str, relative: str) -> str:
     """
 
     try:
-        return cctool.check.layout.lay_out(text, pathlib.Path(relative))
+        return cctool.check.layout.format_kept(text, pathlib.Path(relative))
     except cctool.check.layout.Unsupported as error:
         raise ErrorEdit('The edit leaves {file} unlaid: {error}'.format(
                                                 file = relative, error = error)) from error

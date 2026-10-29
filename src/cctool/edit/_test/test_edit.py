@@ -26,10 +26,12 @@ edge:                   []
 """
 
 
+import json
 import pathlib
 import re
 
 import pytest
+import ruamel.yaml
 import ruamel.yaml.scalarstring
 
 import cctool.check.check
@@ -1190,6 +1192,24 @@ def test_what_the_printer_would_drop_or_expand_is_refused(text, message):
     assert str(info.value) == message
 
 
+@pytest.mark.parametrize('key', ['3', 'true', 'null', '~', 'a: b', '#c', '- x', '*x', '&x', '!x',
+                                 '@x', '%x', '1e3', '', ' lead', 'trail ', 'tab\tx', 'x #y',
+                                 '[a]', '{a}', '? q'])
+def test_a_key_that_needs_quotes_keeps_them(key):
+    text     = 'id_self:                x_y\n{key}: v\n'.format(key = json.dumps(key))
+    laid_out = cctool.check.layout.format(text)
+    assert ruamel.yaml.YAML(typ = 'safe').load(laid_out) == {'id_self': 'x_y', key: 'v'}
+    assert cctool.check.layout.format(laid_out) == laid_out
+
+
+def test_a_layout_that_does_not_read_as_the_same_data_is_not_written(monkeypatch):
+    monkeypatch.setattr(cctool.check.layout, 'lay_out',
+                        lambda text, _relative: text.replace("'3':", '3:  '))
+    with pytest.raises(cctool.check.layout.Unsupported, match = 'not read as the same data'):
+        cctool.check.layout.format_kept("id_self:                x_y\n'3':                    v\n",
+                                        pathlib.Path('_data/x.yaml'))
+
+
 def test_a_comment_on_a_line_of_its_own_is_kept():
     text = 'a:                      1\n\n# Why b.\nb:                      2\n'
     assert cctool.check.layout.format(text) == text
@@ -1207,6 +1227,40 @@ def test_a_filled_line_never_opens_with_a_list_marker():
     laid_out = cctool.check.layout.format(text)
     assert [line.split()[0] for line in laid_out.split('\n')[1:] if line] == ['wordy', 'and']
     assert cctool.check.layout.format(laid_out) == laid_out
+
+
+def test_no_filled_line_opens_with_a_list_marker_however_many_follow():
+    text = ('note:                   |\n'
+            '                        ' + 'w' * 75 + ' 2. - ccc and more words.\n')
+    laid_out = cctool.check.layout.format(text)
+    assert [line.split()[0] for line in laid_out.split('\n')[1:] if line] == ['w' * 75, 'ccc']
+    assert cctool.check.layout.format(laid_out) == laid_out
+
+
+def test_an_item_of_a_list_keeps_a_long_first_word_on_its_line():
+    text = ('note:                   |\n'
+            '                        The release is read from:\n'
+            '                        - https://raw.githubusercontent.com/CommonCoreOntology/'
+            'CommonCoreOntologies/develop/src/cco-merged/CommonCoreOntologiesMerged.ttl\n')
+    assert cctool.check.layout.format(text) == text
+
+
+def test_a_line_that_is_only_a_list_marker_opens_an_item():
+    text = ('note:                   |\n'
+            '                        A list:\n'
+            '                        -   \n'
+            '                        one\n')
+    laid_out = cctool.check.layout.format(text)
+    assert laid_out == ('note:                   |\n'
+                        '                        A list:\n'
+                        '                        - one\n')
+    assert cctool.check.layout.format(laid_out) == laid_out
+
+
+def test_a_number_in_a_path_where_there_is_no_list_is_refused(tree):
+    with pytest.raises(cctool.edit.edit.ErrorEdit,
+                       match = '0 picks an element of a list, and there is no list there'):
+        _edit(tree, {'set': ['concept_type', 'note.0', 'First note.']})
 
 
 def test_a_link_to_a_concept_is_never_broken_across_lines():

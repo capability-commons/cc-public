@@ -36,7 +36,10 @@ description:            |
 usage:                  |
                         The layout check, cctool format and every edit
                         use format_file, so that a file is laid out
-                        the same way whoever writes it.
+                        the same way whoever writes it. cctool format
+                        and every edit write through format_kept,
+                        which refuses a layout that does not read as
+                        the same data.
 note:                   |
                         Formatting is idempotent, and a formatted YAML
                         document reads as the same data as the
@@ -79,9 +82,11 @@ REGEX_COMMENT     = re.compile(r'^\s*#')
 REGEX_BLOCK       = re.compile(r'^(\s*)(?:[^#\s].*:|-)\s+[|>][-+0-9]*\s*$')
 
 # A line of prose that opens with a list marker, such as "- " or "2. ",
-# begins an item of a list, which is a paragraph of its own.
+# begins an item of a list, which is a paragraph of its own. So does a
+# line that is a marker and nothing more, since its text may follow on
+# the next line.
 #
-REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]{1,2}[.)]) ')
+REGEX_LIST_ITEM   = re.compile(r'^(?:[-*+]|[0-9]{1,2}[.)])(?: |$)')
 
 # A word of prose to fill, with each link to a concept in it kept whole,
 # since a link may not break across lines.
@@ -276,6 +281,60 @@ def lay_out(text: str, relative: pathlib.Path) -> str:
         pass
 
     return format_file(text, relative)
+
+
+# -----------------------------------------------------------------------------
+def format_kept(text: str, relative: pathlib.Path) -> str:
+    """
+    Return what lay_out returns for text, the content of the file at
+    relative, if it reads as the same data as text, its prose differing
+    only in where its lines break, and raise Unsupported if it does
+    not. cctool format and every edit write a file this way, so that a
+    fault of the printer refuses the write, and never breaks the file.
+
+    """
+
+    laid_out = lay_out(text, relative)
+
+    if laid_out != text and _data(laid_out, relative) != _data(text, relative):
+        raise Unsupported('The layout would not read as the same data, so it is not '
+                          'written. Report it as a fault of the printer.')
+
+    return laid_out
+
+
+# -----------------------------------------------------------------------------
+def _data(text: str, relative: pathlib.Path) -> dict | None:
+    """
+    Return the data of the YAML documents of text, the content of the
+    file at relative, with each string as its words, or None if they
+    cannot be read.
+
+    """
+
+    try:
+        map_document = cctool.graph.extract.parse_all(text, relative)
+    except cctool.graph.extract.ErrorRead:
+        return None
+
+    return {key: _words(document) for (key, (document, _)) in map_document.items()}
+
+
+# -----------------------------------------------------------------------------
+def _words(value: typing.Any) -> typing.Any:
+    """
+    Return value with each string in it as its words, and each mapping
+    and list as a plain one, its keys as they are.
+
+    """
+
+    if isinstance(value, dict):
+        return {key: _words(each) for (key, each) in value.items()}
+    if isinstance(value, list):
+        return [_words(each) for each in value]
+    if isinstance(value, str):
+        return ' '.join(value.split())
+    return value
 
 
 # -----------------------------------------------------------------------------
@@ -673,7 +732,7 @@ def _emit_map(mapping: Map, indent: int, lead: dict, out: list[str], is_item: bo
         else:
             _emit_lead(line, indent, lead, out, _is_multi(value), was_multi)
 
-        head   = prefix + str(key) + ':'
+        head   = prefix + _render(key) + ':'
         column = max(COLUMN_VALUE, len(head) + GAP_MIN)
 
         _emit_value(value, head, column, indent, lead, out)
@@ -830,8 +889,11 @@ def _fill(list_word: list[str], initial: str, subsequent: str) -> list[str]:
     indented by initial and the rest by subsequent, as many on each as
     fit. No line but the first opens with a word that would read as a
     list marker, such as - or 2., since laying the lines out again
-    would make it an item of a list: the word before it goes down with
-    it, or, if there is none, it stays on the line before.
+    would make it an item of a list: the words before it go down with
+    it, or, if none can, it stays on the line before. Nor is a list
+    marker that opens the first line ever left alone on it: the word
+    after it stays with it, however long, since an item with no text on
+    its line would read differently.
 
     """
 
@@ -843,20 +905,31 @@ def _fill(list_word: list[str], initial: str, subsequent: str) -> list[str]:
         if not list_now or len(pad + ' '.join([*list_now, word])) <= WIDTH_WRAP:
             list_now.append(word)
             continue
-        if not REGEX_LIST_ITEM.match(word + ' '):
-            list_line.append(pad + ' '.join(list_now))
-            list_now = [word]
-        elif len(list_now) > 1:
-            carry = list_now.pop()
-            list_line.append(pad + ' '.join(list_now))
-            list_now = [carry, word]
+        keep      = 2 if not list_line and _is_marker(list_now[0]) else 1
+        list_next = [word]
+        while _is_marker(list_next[0]) and len(list_now) > keep:
+            list_next.insert(0, list_now.pop())
+        if _is_marker(list_next[0]) or len(list_now) < keep:
+            list_now.extend(list_next)
         else:
-            list_now.append(word)
+            list_line.append(pad + ' '.join(list_now))
+            list_now = list_next
 
     if list_now:
         list_line.append((subsequent if list_line else initial) + ' '.join(list_now))
 
     return list_line
+
+
+# -----------------------------------------------------------------------------
+def _is_marker(word: str) -> bool:
+    """
+    Return True if word, opening a line of prose, would make the line
+    an item of a list.
+
+    """
+
+    return REGEX_LIST_ITEM.match(word) is not None
 
 
 # -----------------------------------------------------------------------------
@@ -890,7 +963,7 @@ def _body(value: str, column: int) -> list[str]:
             flush()
             list_out.append(pad + line.rstrip())
         else:
-            if REGEX_LIST_ITEM.match(line):
+            if REGEX_LIST_ITEM.match(line.rstrip()):
                 flush()
             list_para.append(line)
 

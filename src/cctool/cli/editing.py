@@ -499,7 +499,7 @@ def format_(root, is_check):
         path = root / relative
         text = path.read_text(encoding = 'utf-8')
         try:
-            laid_out = cctool.check.layout.lay_out(text, pathlib.Path(relative))
+            laid_out = cctool.check.layout.format_kept(text, pathlib.Path(relative))
         except cctool.check.layout.Unsupported as error:
             click.echo('{file}: {error}'.format(file = relative, error = error), err = True)
             continue

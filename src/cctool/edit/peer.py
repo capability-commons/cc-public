@@ -114,7 +114,7 @@ def init(root:      pathlib.Path,
 
     text = '\n'.join(cctool.check.layout.dump(map_field, 0)) + '\n'
     try:
-        text = cctool.check.layout.lay_out(text, pathlib.Path(relative))
+        text = cctool.check.layout.format_kept(text, pathlib.Path(relative))
     except cctool.check.layout.Unsupported as error:
         raise ErrorPeer('The segment item cannot be laid out: {error}. Give a brief '
                         'whose first line does not start with a space.'.format(

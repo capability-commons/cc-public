@@ -49,6 +49,7 @@ edge:                   []
 import contextlib
 import copy
 import functools
+import io
 import os
 import pathlib
 import re
@@ -57,6 +58,7 @@ import string
 import click.testing
 import pytest
 import ruamel.yaml
+import ruamel.yaml.scalarstring
 
 import cctool.check.check
 import cctool.check.citation
@@ -142,6 +144,18 @@ DOCUMENT          = strategies.dictionaries(KEY, strategies.one_of(SCALAR,
                                                                                     max_size = 4)),
                                             min_size = 1, max_size = 5)
 
+# Prose as the layout fills it: words that read as list markers, links
+# to concepts, words too long for a line, and spaces, laid out in lines.
+#
+WORD_PROSE        = strategies.sampled_from(('a', 'bb', 'ccc', '-', '- x', '2.', '10)', '1.',
+                                             '*', '+', '[[x]]', '[[a|b]]', '[', ']]', '#',
+                                             '# c', 'x:', 'k: v', '|', '>', '...', '---',
+                                             '"q"', "'", '\u00e9', 'word' * 5, 'w' * 75,
+                                             '\t', '  ', ' '))
+PROSE             = strategies.lists(strategies.lists(WORD_PROSE, max_size = 12).map(' '.join),
+                                     min_size = 1, max_size = 8).map(
+                                         lambda list_line: '\n'.join(list_line) + '\n')
+
 # The types of item that a rename may move without keeping an alias,
 # since only a register entry keeps one.
 #
@@ -189,6 +203,25 @@ def _standalone() -> list[str]:
 @hypothesis.given(document = DOCUMENT)
 def test_a_layout_of_a_layout_is_the_same_and_keeps_the_data(document):
     text = '\n'.join(cctool.check.layout.dump(document, 0)) + '\n'
+    try:
+        laid_out = cctool.check.layout.format(text)
+    except cctool.check.layout.Unsupported:
+        hypothesis.reject()
+    assert cctool.check.layout.format(laid_out) == laid_out
+    assert _words(laid_out) == _words(text)
+
+
+# -----------------------------------------------------------------------------
+@hypothesis.example(prose = 'The release is read from:\n- ' + 'w' * 75 + '\n')
+@hypothesis.example(prose = 'w' * 75 + ' 2. - ccc\n')
+@hypothesis.example(prose = 'A list:\n-   \none\n')
+@hypothesis.given(prose = PROSE)
+def test_a_layout_of_prose_is_the_same_laid_out_again_and_keeps_its_words(prose):
+    stream = io.StringIO()
+    ruamel.yaml.YAML(typ = 'rt').dump(
+        {'id_self':     'ann_x',
+         'description': ruamel.yaml.scalarstring.LiteralScalarString(prose)}, stream)
+    text   = stream.getvalue()
     try:
         laid_out = cctool.check.layout.format(text)
     except cctool.check.layout.Unsupported:
