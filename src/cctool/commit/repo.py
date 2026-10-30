@@ -27,11 +27,12 @@ description:            |
                         forward to them only if all of that succeeds.
                         sign signs the commits that the remote does
                         not have yet, and push refuses to push one
-                        that is not signed before the pre-push hook
-                        runs its own checks. bundle makes a bundle of
-                        the commits a branch holds beyond its base.
-                        Each step leaves the branch where it was when
-                        it fails.
+                        that is not signed, then runs the checks of
+                        the pre-push hook before git connects to the
+                        remote, and tells the hook the commit it
+                        checked. bundle makes a bundle of the commits
+                        a branch holds beyond its base. Each step
+                        leaves the branch where it was when it fails.
 usage:                  |
                         cctool repo land BUNDLE [--branch NAME] cctool
                         repo sign [--since REF] cctool repo push
@@ -230,15 +231,25 @@ def _checked(root:      pathlib.Path,
 
     """
 
-    env               = dict(os.environ)
-    list_path         = [str(root / DIR_SOURCE), env.get('PYTHONPATH', '')]
-    env['PYTHONPATH'] = os.pathsep.join(path for path in list_path if path)
-
     return subprocess.run([sys.executable, '-m', MODULE_COMMAND,
                            'history', 'check', rev_range, '--root', str(root),
                            *(['--gate'] if is_gated else [])],
-                          cwd = root, env = env, capture_output = True, text = True,
-                          check = False)
+                          cwd = root, env = _source_env(root), capture_output = True,
+                          text = True, check = False)
+
+
+# -----------------------------------------------------------------------------
+def _source_env(root: pathlib.Path) -> dict[str, str]:
+    """
+    Return the environment of this process, with the python path
+    starting at the source checked out at root.
+
+    """
+
+    env               = dict(os.environ)
+    list_path         = [str(root / DIR_SOURCE), env.get('PYTHONPATH', '')]
+    env['PYTHONPATH'] = os.pathsep.join(path for path in list_path if path)
+    return env
 
 
 # -----------------------------------------------------------------------------
@@ -323,12 +334,23 @@ def _unpushed(root: pathlib.Path, remote: str) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
-def push(root: pathlib.Path, remote: str) -> int:
+def push(root: pathlib.Path, remote: str, is_gated: bool = True) -> int:
     """
-    Push the current branch to the branch of the same name on remote,
-    and return the exit status of git push. Its output, and that of the
-    pre-push hook, is shown as it comes. A branch that holds a commit
-    no good signature signs is not pushed.
+    Push the tip of the current branch to the branch of the same name
+    on remote, once it passes the checks of the pre-push hook, and
+    return the exit status of the checks if they fail, or else of git
+    push. A branch that holds a commit no good signature signs is not
+    pushed.
+
+    The tip is checked first, as cctool history check --pre-push checks
+    a push, with the gate unless is_gated is false, and in a fresh
+    process with the source checked out at root, as the hook runs it.
+    Only then is that commit pushed, with the hook told that it was
+    checked, so that the hook passes it at once: git holds the
+    connection to the remote open while the hook runs, and the remote
+    may close a connection held for as long as the gate takes. The
+    output of the checks, of git push and of the hook is shown as it
+    comes.
 
     """
 
@@ -337,8 +359,25 @@ def push(root: pathlib.Path, remote: str) -> int:
         raise ErrorRepo('These commits are not signed, so nothing is pushed; sign them with '
                         'cctool repo sign:\n{list}'.format(list = '\n'.join(list_unsigned)))
 
-    return subprocess.run(['git', 'push', remote, _branch(root)], cwd = root,
-                          check = False).returncode
+    branch = _branch(root)
+    ref    = PREFIX_HEAD + branch
+    tip    = _git(root, 'rev-parse', 'HEAD').strip()
+    known  = _run(root, 'rev-parse', '--verify', '--quiet',
+                  'refs/remotes/{remote}/{branch}'.format(remote = remote, branch = branch))
+    line   = '{tip} {tip} {ref} {old}\n'.format(
+                 ref = ref, tip = tip, old = known.stdout.strip() or cctool.commit.history.ZERO)
+
+    done = subprocess.run([sys.executable, '-m', MODULE_COMMAND, 'history', 'check',
+                           '--pre-push', remote, '--root', str(root),
+                           *(['--gate'] if is_gated else [])],
+                          cwd = root, env = _source_env(root), input = line, text = True,
+                          check = False)
+    if done.returncode:
+        return done.returncode
+
+    env = {**os.environ, cctool.commit.history.ENV_CHECKED: tip}
+    return subprocess.run(['git', 'push', remote, '{tip}:{ref}'.format(tip = tip, ref = ref)],
+                          cwd = root, env = env, check = False).returncode
 
 
 # -----------------------------------------------------------------------------

@@ -33,6 +33,7 @@ edge:                   []
 
 
 import json
+import os
 import pathlib
 import sys
 
@@ -62,7 +63,9 @@ def history() -> None:
               default = None,
               metavar = 'REMOTE',
               help    = 'Check what a push to REMOTE would send, from the lines git gives a '
-                        'pre-push hook on stdin, in place of RANGE.')
+                        'pre-push hook on stdin, in place of RANGE. A branch whose new tip '
+                        'is the commit named by the variable ' + cctool.commit.history.ENV_CHECKED
+                        + ', which cctool repo push has just checked, is passed over.')
 @click.option('--gate', 'is_gate',
               is_flag = True,
               help    = 'Also check, lint and test the content of the newest commit, or of '
@@ -95,8 +98,13 @@ def check(list_arg: tuple[str, ...], remote: str | None, is_gate: bool, root: pa
     root = root.resolve()
     try:
         if remote is not None:
-            (list_commit, list_tip, list_tag) = cctool.commit.history.pushed(root, remote,
-                                                                                 sys.stdin.read())
+            text    = sys.stdin.read()
+            checked = os.environ.get(cctool.commit.history.ENV_CHECKED) or None
+            (list_commit, list_tip, list_tag) = cctool.commit.history.pushed(root, remote, text,
+                                                                                 checked)
+            if checked and any(line.split()[1:2] == [checked] for line in text.splitlines()):
+                click.echo('{short} was checked by cctool repo push, so it is not checked '
+                           'again.'.format(short = cctool.commit.history.short(root, checked)))
         else:
             list_commit = cctool.commit.history.commits(root, list(list_arg) or ['HEAD'])
             list_tip    = list_commit[-1:]

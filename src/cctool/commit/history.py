@@ -29,10 +29,11 @@ description:            |
                         id another commit's item has, as a cherry-pick
                         makes, is reported. pushed reads the lines git
                         gives a pre-push hook, and selects the commits
-                        the remote does not have. A pushed tag is not
-                        checked: it names history already made, and a
-                        commit it names is checked when a branch
-                        brings it in.
+                        the remote does not have, passing over a tip
+                        that cctool repo push has just checked. A
+                        pushed tag is not checked: it names history
+                        already made, and a commit it names is checked
+                        when a branch brings it in.
 usage:                  |
                         cctool history check [RANGE] [--gate]
                         [--pre-push REMOTE]
@@ -62,6 +63,12 @@ ZERO          = '0' * 40
 PREFIX_TAG    = 'refs/tags/'
 MARK_RELEASE  = 'v'
 
+# The variable by which cctool repo push tells the pre-push hook the
+# commit it has just checked as the hook would, so that the hook does
+# not check it again while git holds the connection to the remote open.
+#
+ENV_CHECKED   = 'CCTOOL_PUSH_CHECKED'
+
 # git am ends a commit message at its first --- line, so a commit
 # copied from another machine with format-patch and am loses its item.
 #
@@ -81,9 +88,10 @@ def commits(root: pathlib.Path, list_arg: list[str]) -> list[str]:
 
 
 # -----------------------------------------------------------------------------
-def pushed(root:   pathlib.Path,
-           remote: str,
-           text:   str) -> tuple[list[str], list[str], list[tuple[str, str]]]:
+def pushed(root:    pathlib.Path,
+           remote:  str,
+           text:    str,
+           checked: str | None = None) -> tuple[list[str], list[str], list[tuple[str, str]]]:
     """
     Return the commits that a push to remote would send, oldest first,
     the tip of each ref it updates, and each release tag it sets, as
@@ -94,7 +102,9 @@ def pushed(root:   pathlib.Path,
     What a line updates is told by the ref of the remote, since a local
     tag may be pushed to a branch. A tag of the remote names history
     already made, so its commits are passed over, but a release tag,
-    one whose name starts with v, is returned to be verified.
+    one whose name starts with v, is returned to be verified. So is a
+    branch whose new tip is checked, the commit that cctool repo push
+    has just checked, as this would, before git connected to remote.
 
     """
 
@@ -111,6 +121,8 @@ def pushed(root:   pathlib.Path,
             if tag.startswith(MARK_RELEASE):
                 list_tag.append((tag, _git(root, 'rev-parse',
                                            list_part[1] + '^{commit}').strip()))
+            continue
+        if list_part[1] == checked:
             continue
         list_tip.append(list_part[1])
         for commit in commits(root, [list_part[1], '--not', '--remotes=' + remote]):

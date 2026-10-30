@@ -25,10 +25,14 @@
 #                         were made, the gate on the content of each
 #                         branch the push updates, and the release check
 #                         on each release tag it sets, so that no tag
-#                         names a commit that may not be tagged. The
-#                         commit hooks give early feedback and can be
-#                         skipped; this is the check of record until CI
-#                         runs it too.
+#                         names a commit that may not be tagged. A
+#                         branch whose new tip cctool repo push has just
+#                         checked, as this would, is passed over, so a
+#                         push made with it does not hold the connection
+#                         to the remote open for the gate. The commit
+#                         hooks give early feedback and can be skipped;
+#                         this is the check of record until CI runs it
+#                         too.
 # edge:                   []
 #
 # ...

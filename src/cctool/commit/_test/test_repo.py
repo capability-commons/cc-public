@@ -247,7 +247,7 @@ def test_push_refuses_a_commit_that_is_not_signed_until_it_is_signed(topic, tmp_
     assert list_branch == ['copy']
     assert 'copy' not in _git(topic, 'branch', '--format=%(refname:short)').split()
     assert cctool.commit.repo.unsigned(topic, 'origin') == []
-    assert cctool.commit.repo.push(topic, 'origin') == 0
+    assert cctool.commit.repo.push(topic, 'origin', is_gated = False) == 0
 
 
 def test_push_of_a_branch_new_to_the_remote_signs_only_what_it_lacks(topic, tmp_path_factory):
@@ -267,8 +267,42 @@ def test_push_of_a_branch_new_to_the_remote_signs_only_what_it_lacks(topic, tmp_
     assert signed.endswith(' Change README.md so that it is shorter')
     assert _git(topic, 'rev-parse', 'HEAD~1') == _git(topic, 'rev-parse', 'main')
     assert cctool.commit.repo.unsigned(topic, 'origin') == []
-    assert cctool.commit.repo.push(topic, 'origin') == 0
+    assert cctool.commit.repo.push(topic, 'origin', is_gated = False) == 0
     assert _git(remote, 'branch', '--format=%(refname:short)').split() == ['main', 'trial']
+
+
+def test_push_checks_the_tip_before_git_connects_and_tells_the_hook(topic, tmp_path_factory):
+    remote = tmp_path_factory.mktemp('remote')
+    _git(remote, 'init', '--quiet', '--bare')
+    _git(topic, 'remote', 'add', 'origin', str(remote))
+    _git(topic, 'push', '--quiet', 'origin', 'main')
+    (topic / 'README.md').write_text('Shorter.\n')
+    _commit(topic, 'Change README.md so that it is shorter', 'It is shorter.')
+    tip       = _git(topic, 'rev-parse', 'HEAD').strip()
+    path_seen = topic.parent / 'seen'
+    path_hook = topic / '.git' / 'hooks' / 'pre-push'
+    path_hook.write_text('#!/bin/sh\nprintf "%s\\n" "$CCTOOL_PUSH_CHECKED" > {seen}\n'
+                         'cat >> {seen}\n'.format(seen = path_seen))
+    path_hook.chmod(0o755)
+
+    assert cctool.commit.repo.push(topic, 'origin', is_gated = False) == 0
+    [checked, line] = path_seen.read_text().splitlines()
+    assert checked == tip
+    assert line.split()[1:3] == [tip, 'refs/heads/main']
+    assert _git(remote, 'rev-parse', 'main').strip() == tip
+
+
+def test_push_of_a_tip_that_fails_its_checks_sends_nothing(topic, tmp_path_factory):
+    remote = tmp_path_factory.mktemp('remote')
+    _git(remote, 'init', '--quiet', '--bare')
+    _git(topic, 'remote', 'add', 'origin', str(remote))
+    _git(topic, 'push', '--quiet', 'origin', 'main')
+    (topic / 'AGENTS.md').write_text((topic / 'AGENTS.md').read_text() + 'Tidied.\n')
+    _git(topic, 'add', '--all')
+    _git(topic, 'commit', '--quiet', '--no-verify', '--message', 'Tidy up')
+
+    assert cctool.commit.repo.push(topic, 'origin', is_gated = False) == 1
+    assert _git(remote, 'rev-parse', 'main') == _git(topic, 'rev-parse', 'main~1')
 
 
 # -----------------------------------------------------------------------------

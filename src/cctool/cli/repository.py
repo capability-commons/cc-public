@@ -145,11 +145,15 @@ def sign(since: str | None, reset_author: bool, root: pathlib.Path) -> None:
 @OPTION_ROOT
 def push(remote: str, root: pathlib.Path) -> None:
     """
-    Push the current branch to the branch of the same name on the
-    remote, once each commit not yet pushed is signed.
+    Push the tip of the current branch to the branch of the same name
+    on the remote, once each commit not yet pushed is signed and the tip
+    passes the checks of the pre-push hook.
 
-    The pre-push hook then checks what is pushed, as it does for any
-    push. The exit status is that of git push.
+    The checks run before git connects, since the remote may close a
+    connection held open for as long as the gate takes. git push is then
+    told the commit checked, which the pre-push hook passes at once; it
+    checks anything else pushed as it does for any push. The exit status
+    is that of the checks if they fail, or else of git push.
 
     """
 

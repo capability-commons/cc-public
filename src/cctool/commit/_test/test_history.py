@@ -258,3 +258,34 @@ def test_a_pushed_release_tag_is_verified(repo):
                                                '--root', str(repo)], input = text)
     assert result.exit_code == 1
     assert result.stdout.startswith('v9.9.9: The tree at ')
+
+
+def test_a_branch_whose_tip_cctool_repo_push_checked_is_passed_over(repo):
+    head = _git(repo, 'rev-parse', 'HEAD').strip()
+    _commit(repo, 'An old message with no item')
+    tip  = _git(repo, 'rev-parse', 'HEAD').strip()
+    text = ('refs/heads/main {tip} refs/heads/main {zero}\n'
+            'refs/heads/old {head} refs/heads/old {zero}\n').format(
+                tip = tip, head = head, zero = cctool.commit.history.ZERO)
+    (list_commit, list_tip, _) = cctool.commit.history.pushed(repo, 'origin', text, tip)
+    assert (tip in list_commit, list_tip) == (False, [head])
+
+
+def test_the_hook_passes_the_push_of_a_tip_that_cctool_repo_push_checked(repo, monkeypatch):
+    _commit(repo, 'An old message with no item')
+    tip  = _git(repo, 'rev-parse', 'HEAD').strip()
+    text = 'refs/heads/main {tip} refs/heads/main {zero}\n'.format(
+               tip = tip, zero = cctool.commit.history.ZERO)
+
+    def check():
+        return click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                                ['history', 'check', '--pre-push', 'origin',
+                                                 '--root', str(repo)], input = text)
+
+    assert check().exit_code == 1
+    monkeypatch.setenv(cctool.commit.history.ENV_CHECKED, tip)
+    result = check()
+    assert result.exit_code == 0
+    assert result.stdout.startswith('{short} was checked by cctool repo push, so it is not '
+                                    'checked again.'.format(
+                                        short = cctool.commit.history.short(repo, tip)))
