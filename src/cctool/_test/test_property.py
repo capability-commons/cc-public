@@ -119,6 +119,13 @@ HEAVY             = hypothesis.settings(max_examples = COUNT_HEAVY[NAME_PROFILE]
 RENAME            = hypothesis.settings(max_examples = COUNT_RENAME[NAME_PROFILE])
 
 
+# A character that str.isprintable passes: a letter, mark, number,
+# punctuation or symbol, or a space.
+#
+PRINTED           = strategies.characters(categories         = ('L', 'M', 'N', 'P', 'S'),
+                                          include_characters = ' ')
+
+
 # Text as people and agents write it in a data item: printable, with
 # some punctuation that YAML gives a meaning to, and some letters beyond
 # ASCII.
@@ -270,7 +277,8 @@ def test_a_file_of_any_text_is_read_or_reported_unreadable(tmp_path, text, suffi
 @hypothesis.example(title = 'Add 0\r', brief = '0')
 @hypothesis.given(title = strategies.from_regex(
                       r'(Add|Remove|Fix [a-z ]{1,20} so that) [^ \n][^\n]{0,40}[^.\n]',
-                      fullmatch = True),
+                      fullmatch = True,
+                      alphabet  = PRINTED),
                   brief = TEXT.filter(str.strip))
 def test_a_message_that_message_new_prints_passes_message_check(title, brief):
     runner = click.testing.CliRunner()
