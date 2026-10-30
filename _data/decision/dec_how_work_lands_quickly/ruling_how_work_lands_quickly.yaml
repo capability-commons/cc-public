@@ -1,0 +1,58 @@
+id_self:                ruling_how_work_lands_quickly
+guid_self:              ruling_e83f7a15c2484bcaab230328ad147a78
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  A landing queue on atlas
+brief:                  |
+                        Threads submit finished work as queue branches
+                        after only a fast local check, and a daemon on
+                        atlas replays, signs and tests each patch in
+                        turn, landing on dev only the exact commit
+                        that passed the gate, and parking conflicts
+                        and failures for agents to fix. The other
+                        three options are not ruled on. Ruled by WTP
+                        on 2026-10-30.
+description:            |
+                        WTP upheld the option with the design worked
+                        out with him in the thread on 2026-10-30 (WTP,
+                        2026-10-30): "For dec_how_work_lands_quickly I
+                        uphold opt_a_landing_queue_on_atlas with the
+                        design discussed here."
+
+                        The design's main choices, each made by WTP on
+                        2026-10-30:
+                        - Branches named queue/00_candidate,
+                          queue/01_conflict, queue/02_test and
+                          queue/03_rework, each followed by the thread
+                          and then a UTC timestamp and the patch's
+                          name, so that age comes from the name.
+                        - The commit gate keeps its fast check, lint
+                          and message check, as long as they stay
+                          fast, and leaves the tests to the queue.
+                        - Every test failure, a flaky one included,
+                          sends the patch to rework, and nothing is
+                          retried.
+                        - The queue signs with a dedicated key of its
+                          own, registered under WTP, and pushes with a
+                          deploy key for cc-public only; the overnight
+                          run uses the same keys.
+                        - Failures and a paused queue reach WTP as a
+                          line in the daily review, until chat bots
+                          can carry them.
+
+                        The full design, as reviewed by another model
+                        and revised, is the Landing queue design
+                        document of 2026-10-30.
+
+edge:
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_a_landing_queue_on_atlas
+    guid_target:        opt_8cb84b36847140188c492bbf20401439
