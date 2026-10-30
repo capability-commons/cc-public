@@ -206,6 +206,19 @@ def test_check_refuses_an_author_who_is_no_team_member(staged):
     assert result.stderr.startswith('The commit is authored by Claude')
 
 
+@pytest.mark.parametrize('list_prose', [['--brief', ' Each commit message holds an item.'],
+                                        ['--brief', BRIEF, '--description', '  More.']])
+def test_new_refuses_prose_that_starts_with_a_space_and_says_why(list_prose):
+    result = click.testing.CliRunner().invoke(
+                    cctool.cli.command.main,
+                    ['message', 'new', 'Add the commit-msg hook', *list_prose,
+                     '--root', str(DIR_REPO)])
+    assert result.exit_code == 2
+    assert result.stdout == ''
+    assert result.stderr.startswith('The commit item cannot be laid out: Prose whose first '
+                                    'line starts with a space')
+
+
 def test_lines_that_git_treats_as_comments_are_left_out():
     assert _found(_message() + '# Please enter the commit message.\n') == []
 

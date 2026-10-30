@@ -31,6 +31,7 @@ import sys
 
 import click
 
+import cctool.check.layout
 import cctool.cli.group
 import cctool.commit.change
 import cctool.commit.message
@@ -80,11 +81,19 @@ def new(title: str, brief: str, description: str | None, root: pathlib.Path) -> 
     STATEMENT". The message is checked before it is printed. Add any
     trailers after it. A message that fails sch_commit is not printed:
     each way it fails is, with the templates if the title fits none,
-    and the exit status is 2.
+    and the exit status is 2. Nor is one whose item cannot be laid out,
+    such as one whose brief starts with a space: why it cannot is
+    printed, and the exit status is 2.
 
     """
 
-    text       = cctool.commit.message.compose(title, brief, description)
+    try:
+        text = cctool.commit.message.compose(title, brief, description)
+    except cctool.check.layout.Unsupported as error:
+        click.echo('The commit item cannot be laid out: {error}'.format(error = error),
+                   err = True)
+        sys.exit(cctool.cli.group.EXIT_ERROR)
+
     list_found = cctool.commit.message.violations(root.resolve(), text)
 
     for found in list_found:
