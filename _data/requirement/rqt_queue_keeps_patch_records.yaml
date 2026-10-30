@@ -1,0 +1,37 @@
+id_self:                rqt_queue_keeps_patch_records
+guid_self:              rqt_24293f08698f4c26bb7495964ad899d5
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Patch records kept
+brief:                  |
+                        Each patch has a durable record of what it is
+                        and what happened to it.
+modal_verb:             shall
+activity:               autonomous
+object:                 'a record of each patch: its thread, source tip, starting point, dependencies and their revisions, each attempt and outcome, and the [[concept_commit|commits]] it added to dev, held reachable by refs'
+rationale:              Branch names alone cannot hold commit boundaries, dependencies or results, and a hash written into a file does not keep its commit from being collected.
+verification_method:    test
+verification_approach:  After a patch lands and its branch is deleted, its record and the commits it names are still present.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_keep
+    guid_target:        concept_67873c78ec204ec58f2a0c1214628ceb
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793

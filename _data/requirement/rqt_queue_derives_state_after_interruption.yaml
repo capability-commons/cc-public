@@ -1,0 +1,34 @@
+id_self:                rqt_queue_derives_state_after_interruption
+guid_self:              rqt_741864419f5e42d5a76b877939ba62f9
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  State recovered after an interruption
+brief:                  |
+                        An interrupted run leaves nothing landed twice
+                        and nothing lost.
+condition_kind:         event
+condition:              a run of the daemon starts
+modal_verb:             shall
+activity:               autonomous
+object:                 the state of any interrupted attempt from the patch records and refs, before taking new work
+rationale:              A ref transaction cannot cover a file write or a push, so each step must be safe to run again.
+verification_method:    test
+verification_approach:  Interrupting the daemon at each transition, then running it again, leaves dev holding only tested work, no patch landed twice and every patch accounted for.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_derive
+    guid_target:        concept_fab42d44f4cb41fa8dc916e30919853b

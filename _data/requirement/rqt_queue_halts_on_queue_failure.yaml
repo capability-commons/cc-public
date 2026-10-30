@@ -1,0 +1,34 @@
+id_self:                rqt_queue_halts_on_queue_failure
+guid_self:              rqt_c00b0195d97644d5b48e2e2c95df99a4
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Queue halted on a failure of its own
+brief:                  |
+                        A broken environment pauses the queue instead
+                        of bouncing patches.
+condition_kind:         logic
+condition:              the queue itself fails, such as by a broken environment, an unusable signing key, a dirty main checkout, rejected push credentials or a diverged origin
+modal_verb:             shall
+activity:               autonomous
+object:                 all work, holds the patch in hand in its place, and counts nothing as passed
+rationale:              A broken environment would otherwise bounce innocent patches and make repair work out of nothing; nothing is retried automatically.
+verification_method:    test
+verification_approach:  A missing interpreter pauses the queue with its reason, and the patch in hand stays a candidate.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_halt
+    guid_target:        concept_fdbb4eb3cb40462b8683adff2289a56a

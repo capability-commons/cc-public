@@ -1,0 +1,32 @@
+id_self:                rqt_queue_admits_untested_submissions
+guid_self:              rqt_6a5db6c44c0543bd8ab850585602a574
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Submissions admitted without tests
+brief:                  |
+                        A thread hands finished work to the queue and
+                        moves on at once.
+modal_verb:             shall
+activity:               autonomous
+object:                 a submitted patch as a branch under queue/00_candidate, named by its thread, the UTC time of submission and the name of the patch, without running tests
+rationale:              Threads should not wait on lengthy commands before moving on to their next task (WTP, 2026-10-30).
+verification_method:    test
+verification_approach:  A submission returns before any test runs, and the candidate branch exists with the name given.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_admit
+    guid_target:        concept_c3240b8ea5614db195668970e6be36c2

@@ -1,0 +1,37 @@
+id_self:                rqt_queue_traces_every_move
+guid_self:              rqt_bc8579ac0f16432b8bb4b24d46ce9e24
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Every move journaled
+brief:                  |
+                        The queue keeps a journal of every move, from
+                        which its measures come.
+modal_verb:             shall
+activity:               autonomous
+object:                 every move of a patch in a journal, with its time, ref, stages, tip, dev [[commit]] and reason
+rationale:              The journal is the audit trail, and gives the time from submission to landing, the gate time, the rates of conflict and rework and the age of the oldest ready patch.
+verification_method:    test
+verification_approach:  A patch that goes through conflict and then lands leaves one line per move.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_trace
+    guid_target:        concept_733a1d459cad4116a0c908473afd8e7f
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793

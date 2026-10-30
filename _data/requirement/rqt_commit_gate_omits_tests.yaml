@@ -1,0 +1,47 @@
+id_self:                rqt_commit_gate_omits_tests
+guid_self:              rqt_4cc5e132d2d74411a5b1fae47fe71b72
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tests left out of the commit gate
+brief:                  |
+                        Committing stays fast because the tests move
+                        to the queue.
+modal_verb:             shall
+activity:               autonomous
+object:                 the tests from the [[commit gate]] on a topic branch, keeping its stages for the [[checks]], lint and the [[commit]] message
+rationale:              WTP keeps the fast stages at commit as long as they really are fast (WTP, 2026-10-30); the budget is about 20 seconds for a commit that changes code and about 10 for one that changes only data, and a slow stage is a defect.
+verification_method:    test
+verification_approach:  A commit that changes code runs no test stage, and the timing log shows its gate within the budget.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_change_control
+    guid_target:        lco_4062f1a4c34b4e31aa9dab546d9373d6
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_omit
+    guid_target:        concept_11a7e4b7b6d64f51be9b5ad9c3cf2377
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_check
+    guid_target:        concept_2bf4b971ce194741976edcf6a3419e91
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit_gate
+    guid_target:        concept_33206a1ae68747a08422bbcd4ea385ab

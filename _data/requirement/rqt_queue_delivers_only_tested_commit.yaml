@@ -1,0 +1,37 @@
+id_self:                rqt_queue_delivers_only_tested_commit
+guid_self:              rqt_a7ac48fc06a14f7ab0a2bb857367bc46
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Only the tested commit landed
+brief:                  |
+                        What lands on dev is exactly the commit the
+                        gate passed.
+modal_verb:             shall
+activity:               autonomous
+object:                 to dev only the signed [[commit]] that passed its landing run, by fast-forward in the main checkout
+rationale:              Commits are signed before testing and dev moves only by fast-forward, so nothing changes a commit between its test and its landing; moving dev in the main checkout keeps its index and files in step with the branch.
+verification_method:    test
+verification_approach:  After a landing, dev and the main checkout are at the tested commit.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_deliver
+    guid_target:        concept_e513ff5908bd4bd6b3cd18bf36b6bdc9
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793

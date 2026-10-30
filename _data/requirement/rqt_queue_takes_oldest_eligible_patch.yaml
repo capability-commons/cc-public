@@ -1,0 +1,33 @@
+id_self:                rqt_queue_takes_oldest_eligible_patch
+guid_self:              rqt_4d7e00fef31a43f78ff58378f64470ac
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Oldest eligible patch taken next
+brief:                  |
+                        The queue tests the oldest patch that is
+                        ready, and nothing else holds it up.
+modal_verb:             shall
+activity:               autonomous
+object:                 its next attempt to the oldest eligible candidate, ordered by the timestamp in the last segment of its name
+qualifier:              without interrupting an attempt already running
+rationale:              Ordering by the whole name would group patches by thread before time, and patches in conflict, in rework or waiting on a dependency must not hold up unrelated ones.
+verification_method:    test
+verification_approach:  With candidates from several threads and some patches blocked, the queue takes the oldest unblocked one.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_assign
+    guid_target:        concept_8ae0c33502ac470da81ef4a5182b8099

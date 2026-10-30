@@ -1,0 +1,37 @@
+id_self:                rqt_push_omits_only_proven_tests
+guid_self:              rqt_bf6506c5f1d44c63b4058e29a97001fa
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Tests at push omitted only on proof
+brief:                  |
+                        A push runs no tests that the queue has
+                        provably already run.
+modal_verb:             shall
+activity:               autonomous
+object:                 the tests of the [[commit gate]] at push for a tip only when a passing [[concept_commit_gate|gate]] result names that tip, with a policy and environment that match its own exactly
+rationale:              Testing again at push would double the cost of each landing, but a result from a narrower selection or another environment proves nothing.
+verification_method:    test
+verification_approach:  A push of a tip with a matching result runs no tests; one with a result from the narrower selection of the commit gate runs them.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_change_control
+    guid_target:        lco_4062f1a4c34b4e31aa9dab546d9373d6
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_omit
+    guid_target:        concept_11a7e4b7b6d64f51be9b5ad9c3cf2377
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit_gate
+    guid_target:        concept_33206a1ae68747a08422bbcd4ea385ab

@@ -1,0 +1,34 @@
+id_self:                rqt_queue_defers_dependent_patch
+guid_self:              rqt_93a598f39a04413a83786aa0883d5979
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Dependent patch waits for its dependency
+brief:                  |
+                        A patch built on another queued patch waits
+                        until that patch lands.
+condition_kind:         logic
+condition:              a patch depends on a queued patch that is not on dev
+modal_verb:             shall
+activity:               autonomous
+object:                 the patch until the patch it depends on has landed, and flags it as stale if that patch changed after it was built on it
+rationale:              The queue never assumes an unchanged dependency.
+verification_method:    test
+verification_approach:  A patch stacked on one in rework is not tried, and is marked stale once the patch below it changes.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_defer
+    guid_target:        concept_ce25d0b9b4424d09a9cf7ee67a91347e

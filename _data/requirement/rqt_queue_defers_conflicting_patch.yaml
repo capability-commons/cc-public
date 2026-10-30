@@ -1,0 +1,39 @@
+id_self:                rqt_queue_defers_conflicting_patch
+guid_self:              rqt_04da5152dedc4e6dbf3001c3723de65f
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Conflicting patch parked for resolution
+brief:                  |
+                        A patch that does not replay cleanly waits for
+                        an agent to resolve it.
+condition_kind:         event
+condition:              replaying a patch conflicts
+modal_verb:             shall
+activity:               autonomous
+object:                 the patch to queue/01_conflict, with a note naming the conflicting paths and the dev [[commit]] it was tried on, leaving its submitted [[concept_commit|commits]] untouched
+rationale:              The daemon does the mechanical work and agents resolve conflicts (WTP, 2026-10-30).
+verification_method:    test
+verification_approach:  A patch that conflicts with dev ends in queue/01_conflict with its note, and its source commits are unchanged.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_defer
+    guid_target:        concept_ce25d0b9b4424d09a9cf7ee67a91347e
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793

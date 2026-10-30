@@ -1,0 +1,37 @@
+id_self:                rqt_queue_replays_only_own_commits
+guid_self:              rqt_060b7e5e20f5482099fab6bd653492d3
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  Only the patch's own commits replayed
+brief:                  |
+                        A patch moves onto dev without the commits of
+                        other patches it was built on.
+modal_verb:             shall
+activity:               autonomous
+object:                 only the [[concept_commit|commits]] of a patch, from its recorded starting point to its source tip, onto the current dev, signing each as it is copied
+rationale:              A patch started on top of another queued patch would otherwise carry that patch's commits onto dev with it, and replaying rewrites commits, so ancestry alone cannot show where a patch begins.
+verification_method:    test
+verification_approach:  A patch stacked on a landed patch replays only its own commits.
+
+edge:
+
+  - id_relation:        relation_has_subject
+    guid_relation:      relation_aee10e49c6bf429e92be67c393b7b3d1
+    id_target:          lco_landing_queue
+    guid_target:        lco_6fb8deebc0c04a5f85904d6e59dddc54
+
+  - id_relation:        relation_has_process
+    guid_relation:      relation_3438822c54e5425eb31253e8a7ca51b7
+    id_target:          concept_copy
+    guid_target:        concept_12a223b7978e49adaa3dbdad96c79605
+
+  - id_relation:        relation_uses_concept
+    guid_relation:      relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
+    id_target:          concept_commit
+    guid_target:        concept_b2fa5ffe5feb4cc1854fb950afbd3793
