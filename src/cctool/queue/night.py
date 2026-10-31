@@ -34,7 +34,9 @@ description:            |
                         headless, in a worktree of its own beside the
                         main checkout, limited to reading, cctool and
                         committing, which records its findings as
-                        annotations and submits them to the queue.
+                        annotations and submits them to the queue. On
+                        Thursday it runs the weekly in-depth review in
+                        place of the daily one.
 edge:                   []
 
 ...
@@ -49,6 +51,7 @@ import pathlib
 import shutil
 import subprocess
 import time
+import zoneinfo
 
 import cctool.gate.gate
 import cctool.gate.result
@@ -90,6 +93,15 @@ SECONDS_TASK   = 3 * 3600
 FILE_MANIFEST  = 'pyproject.toml'
 PREFIX_PIXI    = 'PIXI_'
 SECONDS_REVIEW = 2 * 3600
+SECONDS_WEEKLY = 6 * 3600
+
+# The in-depth review takes the place of the daily one on Thursday, in
+# WTP's time zone, just before his weekly budget of tokens resets.
+#
+ZONE_REVIEW    = 'Europe/London'
+DAY_WEEKLY     = 3
+KIND_DAILY     = 'daily'
+KIND_WEEKLY    = 'weekly'
 COUNT_LINE     = 200
 
 # The review: Claude Code, run headless in a worktree of its own, with
@@ -102,7 +114,7 @@ ARG_PROMPT    = '{prompt}'
 ARG_GIT_DIR   = '{git_dir}'
 TUPLE_REVIEW  = ('claude', '-p', ARG_PROMPT, '--permission-mode', 'dontAsk',
                  '--add-dir', ARG_GIT_DIR, '--allowedTools',
-                 'Read', 'Glob', 'Grep', 'Write', 'Bash(cctool:*)', 'Bash(git status:*)',
+                 'Read', 'Glob', 'Grep', 'Write', 'Task', 'Bash(cctool:*)', 'Bash(git status:*)',
                  'Bash(git diff:*)', 'Bash(git log:*)', 'Bash(git show:*)', 'Bash(git add:*)',
                  'Bash(git commit:*)', 'Bash(git cherry:*)', 'Bash(date:*)')
 
@@ -124,6 +136,47 @@ record, commit nothing.
 
 Write the report to {report}, as the skill describes, and end by printing one
 line: the path of the report and the key of the patch submitted, if any.'''
+
+TEXT_WEEKLY   = '''Run the weekly in-depth review of cc-public, as the skill
+reviewing-the-repository describes, in this worktree, which is on the branch
+{branch} made from dev at {dev}. It takes the place of today's daily review, and
+runs just before WTP's weekly budget of tokens resets, so thoroughness is worth
+more than economy.
+
+The night's run of the overnight tasks is recorded in {record}. Read it first: a
+red night comes first in the report, since a failing test stops the line
+(ruling_what_work_comes_first). The landing queue's summary of the day is in
+{summary}, the log of gate timings is {timing}, and the earlier reports, daily
+and weekly, are in {reports}.
+
+Scope:
+- Everything in the daily review, over the commits on dev since the last weekly
+  report, or over the last 7 days if there is none.
+- Read the whole repository area by area. Split the areas between subagents and
+  merge their findings; give each this rule: read anywhere, and write nothing
+  but your findings, which you return.
+- Judge every design rule and every writing style rule: where the repository
+  breaks the parts of it that no check holds, and whether what holds it, its
+  relation_is_held_by edges or its enforcement field, still holds what the rule
+  claims.
+- Count the trends, advice by kind, exception entries and the time of the gate,
+  and compare them with last week's report.
+- List the patches that cctool queue status shows in conflict or rework, and
+  any daily report missing since the last weekly one.
+
+Record each finding the skill says to record as an annotation, with cctool new,
+and remove with cctool remove each annotation that no longer applies, saying why
+in the commit. Do not record rulings or adopt design rules: only WTP does that.
+Commit on this branch through the commit gate, with a title from cctool message
+new and the trailer Co-Authored-By: Claude <noreply@anthropic.com>, and submit
+with cctool queue submit {patch}. If there is nothing to record, commit nothing.
+
+Write the report to {report}, as the skill describes, ending with what needs
+WTP: decisions to rule on and rules to adopt. End by printing one line: the path
+of the report and the key of the patch submitted, if any.'''
+
+MAP_REVIEW    = {KIND_DAILY:  (TEXT_REVIEW, SECONDS_REVIEW),
+                 KIND_WEEKLY: (TEXT_WEEKLY, SECONDS_WEEKLY)}
 
 
 # -----------------------------------------------------------------------------
@@ -255,18 +308,22 @@ def review(root:    pathlib.Path,
            now:     datetime.datetime) -> list[str]:
     """
     Return what came of the review of the night of record: command, with
-    the prompt and the git directory put in, run in a worktree of its own beside the main
-    checkout, on a branch made from dev, with the cctool of that worktree
-    first on the path. What it prints is kept in the git directory. A
-    review worktree from an earlier night whose patch has landed, or that
-    holds no commit, is removed first.
+    the prompt and the git directory put in, run in a worktree of its own
+    beside the main checkout, on a branch made from dev, with the cctool
+    of that worktree first on the path. On Thursday it is the weekly
+    in-depth review, and on any other day the daily one. What it prints
+    is kept in the git directory. A review worktree from an earlier night
+    whose patch has landed, or that holds no commit, is removed first.
 
     """
 
     _sweep_reviews(root)
     day    = record['day']
-    branch = BRANCH_REVIEW + day
-    path   = root.parent / (PREFIX_REVIEW + day)
+    kind   = kind_of(now)
+    name   = day if kind == KIND_DAILY else '{day}-{kind}'.format(day = day, kind = kind)
+    (text, seconds) = MAP_REVIEW[kind]
+    branch = BRANCH_REVIEW + name
+    path   = root.parent / (PREFIX_REVIEW + name)
     git    = cctool.gate.gate.git_dir(root)
     if path.exists():
         return ['The review worktree {path} is already there, so no review runs.'.format(
@@ -275,14 +332,16 @@ def review(root:    pathlib.Path,
                            cctool.queue.patch.DEV)
     dir_review = git / DIR_REVIEW
     dir_review.mkdir(parents = True, exist_ok = True)
-    prompt = TEXT_REVIEW.format(
+    prompt = text.format(
                  branch  = branch,
                  dev     = cctool.queue.patch.rev(root, cctool.queue.patch.DEV)[:7],
                  record  = git / DIR_RECORD / (day + SUFFIX_RECORD),
                  summary = git / 'cctool_queue_summary' / (day + '.txt'),
                  timing  = git / 'cctool_timing.jsonl',
-                 patch   = 'review_' + day,
-                 report  = dir_review / '{date}-daily.md'.format(date = now.date().isoformat()))
+                 reports = dir_review,
+                 patch   = 'review_' + name.replace('-', '_'),
+                 report  = dir_review / '{date}-{kind}.md'.format(date = now.date().isoformat(),
+                                                                  kind = kind))
 
     env = {**os.environ, 'PATH': os.pathsep.join([str(path / '.pixi' / 'envs' / 'default' /
                                                        'bin'), os.environ.get('PATH', '')])}
@@ -295,7 +354,7 @@ def review(root:    pathlib.Path,
         list_arg = [prompt if arg == ARG_PROMPT else str(git) if arg == ARG_GIT_DIR else arg
                     for arg in command]
         done = subprocess.run(list_arg, cwd = path, env = env, capture_output = True,
-                              text = True, check = False, timeout = SECONDS_REVIEW)
+                              text = True, check = False, timeout = seconds)
         printed = done.stdout + done.stderr
         outcome = 'finished' if done.returncode == 0 else 'failed'
     except subprocess.TimeoutExpired:
@@ -304,12 +363,25 @@ def review(root:    pathlib.Path,
     except FileNotFoundError:
         printed = '{name} cannot be found.\n'.format(name = command[0])
         outcome = 'failed'
-    (dir_review / (day + '.log')).write_text(printed, encoding = 'utf-8')
+    (dir_review / (name + '.log')).write_text(printed, encoding = 'utf-8')
 
-    return ['The review {outcome} in {minutes:.1f} min: {last}'.format(
+    return ['The {kind} review {outcome} in {minutes:.1f} min: {last}'.format(
+                kind    = kind,
                 outcome = outcome,
                 minutes = (time.perf_counter() - clock) / 60,
                 last    = (printed.strip().splitlines() or ['it printed nothing'])[-1])]
+
+
+# -----------------------------------------------------------------------------
+def kind_of(now: datetime.datetime) -> str:
+    """
+    Return the kind of review that a night at now runs: the weekly one on
+    Thursday in WTP's time zone, and the daily one on any other day.
+
+    """
+
+    weekday = now.astimezone(zoneinfo.ZoneInfo(ZONE_REVIEW)).weekday()
+    return KIND_WEEKLY if weekday == DAY_WEEKLY else KIND_DAILY
 
 
 # -----------------------------------------------------------------------------

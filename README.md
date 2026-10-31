@@ -185,7 +185,8 @@ moves the branch `verified` forward to that commit and pushes it; if
 not, `verified` stays where it was. The night is recorded in
 `.git/cctool_night/`, and its outcome is a gate result of the commit.
 Then Claude Code reviews the tree, headless, in a worktree beside the
-main checkout, as the daily review describes. It may only read, run
+main checkout, as the daily review describes, or, on Thursday, as the
+weekly in-depth review does. It may only read, run
 cctool and commit, and it submits its findings, as annotations, to the
 queue. Its report is kept in `.git/cctool_review/`, and the summary of
 the day shows how the night went.

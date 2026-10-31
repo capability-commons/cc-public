@@ -119,7 +119,7 @@ def test_a_night_off_dev_records_why_it_could_not_run(dev_repo):
 
 def test_the_review_runs_in_a_worktree_of_its_own_with_the_prompt(dev_repo):
     list_line = cctool.queue.night.run(dev_repo, _night(TASK_PASS, review = TUPLE_REVIEW), NOW)
-    assert list_line[-1].startswith('The review finished in ')
+    assert list_line[-1].startswith('The daily review finished in ')
     assert list_line[-1].endswith(' min: Reviewed.')
     path   = dev_repo.parent / 'cc-public-review-20261101'
     prompt = (path / 'prompt.txt').read_text()
@@ -138,3 +138,25 @@ def test_the_review_runs_in_a_worktree_of_its_own_with_the_prompt(dev_repo):
 def test_a_night_runs_every_overnight_task_by_default(dev_repo):
     assert [name for (name, _) in cctool.queue.night.night(dev_repo).tasks] == [
         'slow', 'fuzz', 'coverage', 'check-full']
+
+
+def test_a_night_on_thursday_runs_the_weekly_review_in_its_place(dev_repo):
+    thursday  = datetime.datetime(2026, 11, 5, 1, 0, 0, tzinfo = datetime.UTC)
+    list_line = cctool.queue.night.run(dev_repo, _night(TASK_PASS, review = TUPLE_REVIEW),
+                                       thursday)
+    assert list_line[-1].startswith('The weekly review finished in ')
+    path   = dev_repo.parent / 'cc-public-review-20261105-weekly'
+    prompt = (path / 'prompt.txt').read_text()
+    assert prompt.startswith('Run the weekly in-depth review of cc-public')
+    assert 'cctool queue submit review_20261105_weekly' in prompt
+    assert '2026-11-05-weekly.md' in prompt
+    assert _git(path, 'branch', '--show-current').strip() == 'work/review/20261105-weekly'
+
+
+def test_the_kind_of_review_follows_the_calendar_of_wtp():
+    assert cctool.queue.night.kind_of(datetime.datetime(2026, 11, 5, 1, 0,
+                                                        tzinfo = datetime.UTC)) == 'weekly'
+    assert cctool.queue.night.kind_of(datetime.datetime(2026, 11, 4, 23, 30,
+                                                        tzinfo = datetime.UTC)) == 'daily'
+    assert cctool.queue.night.kind_of(datetime.datetime(2026, 7, 1, 23, 30,
+                                                        tzinfo = datetime.UTC)) == 'weekly'
