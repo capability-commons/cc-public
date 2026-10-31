@@ -128,6 +128,7 @@ def test_the_review_runs_in_a_worktree_of_its_own_with_the_prompt(dev_repo):
     assert _git(path, 'branch', '--show-current').strip() == 'work/review/20261101'
     log = cctool.gate.gate.git_dir(dev_repo) / cctool.queue.night.DIR_REVIEW / '20261101.log'
     assert log.read_text() == 'Reviewed.\n'
+    assert (log.parent / '2026-11-01-daily.md').read_text() == 'Reviewed.\n'
 
     later = NOW + datetime.timedelta(days = 1)
     cctool.queue.night.run(dev_repo, _night(TASK_PASS, review = TUPLE_REVIEW), later)

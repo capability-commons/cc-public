@@ -114,7 +114,8 @@ ARG_PROMPT    = '{prompt}'
 ARG_GIT_DIR   = '{git_dir}'
 TUPLE_REVIEW  = ('claude', '-p', ARG_PROMPT, '--permission-mode', 'dontAsk',
                  '--add-dir', ARG_GIT_DIR, '--allowedTools',
-                 'Read', 'Glob', 'Grep', 'Write', 'Task', 'Bash(cctool:*)', 'Bash(git status:*)',
+                 'Read', 'Glob', 'Grep', 'Task', 'Bash(cctool:*)', 'Bash(pixi run:*)',
+                 'Bash(git status:*)',
                  'Bash(git diff:*)', 'Bash(git log:*)', 'Bash(git show:*)', 'Bash(git add:*)',
                  'Bash(git commit:*)', 'Bash(git cherry:*)', 'Bash(date:*)')
 
@@ -128,14 +129,15 @@ red night comes first in the report, since a failing test stops the line
 
 Record each finding the skill says to record as an annotation, with cctool new,
 and remove with cctool remove each annotation that no longer applies, saying why
-in the commit. Fix nothing else: the review records, it does not repair. Commit
-the annotations on this branch through the commit gate, with a title from
-cctool message new and the trailer Co-Authored-By: Claude <noreply@anthropic.com>,
-and then submit them with cctool queue submit {patch}. If there is nothing to
-record, commit nothing.
+in the commit. A clear fix, such as a citation that no longer holds, may go in
+the same patch; record anything else as an annotation. Commit on this branch
+through the commit gate, with a title from cctool message new and the trailer
+Co-Authored-By: Claude <noreply@anthropic.com>, and then submit the patch with
+cctool queue submit {patch}. If there is nothing to record, commit nothing.
 
-Write the report to {report}, as the skill describes, and end by printing one
-line: the path of the report and the key of the patch submitted, if any.'''
+Give the report, as the skill describes, as your final message, with nothing
+after it: the night saves it to {report}. End it with the key of the patch
+submitted, if any.'''
 
 TEXT_WEEKLY   = '''Run the weekly in-depth review of cc-public, as the skill
 reviewing-the-repository describes, in this worktree, which is on the branch
@@ -166,14 +168,16 @@ Scope:
 
 Record each finding the skill says to record as an annotation, with cctool new,
 and remove with cctool remove each annotation that no longer applies, saying why
-in the commit. Do not record rulings or adopt design rules: only WTP does that.
-Commit on this branch through the commit gate, with a title from cctool message
-new and the trailer Co-Authored-By: Claude <noreply@anthropic.com>, and submit
-with cctool queue submit {patch}. If there is nothing to record, commit nothing.
+in the commit. A clear fix, such as a citation that no longer holds, may go in
+the same patch; record anything else as an annotation. Do not record rulings or
+adopt design rules: only WTP does that. Commit on this branch through the commit
+gate, with a title from cctool message new and the trailer Co-Authored-By:
+Claude <noreply@anthropic.com>, and submit with cctool queue submit {patch}. If
+there is nothing to record, commit nothing.
 
-Write the report to {report}, as the skill describes, ending with what needs
-WTP: decisions to rule on and rules to adopt. End by printing one line: the path
-of the report and the key of the patch submitted, if any.'''
+Give the report, as the skill describes, as your final message, with nothing
+after it: the night saves it to {report}. End it with what needs WTP, decisions
+to rule on and rules to adopt, and then the key of the patch submitted, if any.'''
 
 MAP_REVIEW    = {KIND_DAILY:  (TEXT_REVIEW, SECONDS_REVIEW),
                  KIND_WEEKLY: (TEXT_WEEKLY, SECONDS_WEEKLY)}
@@ -332,6 +336,8 @@ def review(root:    pathlib.Path,
                            cctool.queue.patch.DEV)
     dir_review = git / DIR_REVIEW
     dir_review.mkdir(parents = True, exist_ok = True)
+    path_report = dir_review / '{date}-{kind}.md'.format(date = now.date().isoformat(),
+                                                          kind = kind)
     prompt = text.format(
                  branch  = branch,
                  dev     = cctool.queue.patch.rev(root, cctool.queue.patch.DEV)[:7],
@@ -340,8 +346,7 @@ def review(root:    pathlib.Path,
                  timing  = git / 'cctool_timing.jsonl',
                  reports = dir_review,
                  patch   = 'review_' + name.replace('-', '_'),
-                 report  = dir_review / '{date}-{kind}.md'.format(date = now.date().isoformat(),
-                                                                  kind = kind))
+                 report  = path_report)
 
     env = {**os.environ, 'PATH': os.pathsep.join([str(path / '.pixi' / 'envs' / 'default' /
                                                        'bin'), os.environ.get('PATH', '')])}
@@ -364,6 +369,8 @@ def review(root:    pathlib.Path,
         printed = '{name} cannot be found.\n'.format(name = command[0])
         outcome = 'failed'
     (dir_review / (name + '.log')).write_text(printed, encoding = 'utf-8')
+    if outcome == 'finished' and done.stdout.strip():
+        path_report.write_text(done.stdout, encoding = 'utf-8')
 
     return ['The {kind} review {outcome} in {minutes:.1f} min: {last}'.format(
                 kind    = kind,
