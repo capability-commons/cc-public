@@ -23,12 +23,14 @@ before it is committed.
 | `src/cctool/check`                   | the checks, as logic program rules, and schema validation |
 | `src/cctool/edit`                    | edits that refuse to add a failure, and the layout printer |
 | `src/cctool/commit`                  | the commit item of each commit message, and the checks of a commit and of history |
-| `src/cctool/gate`                    | the gate: check, lint and test what a commit records |
+| `src/cctool/gate`                    | the gate: check and lint what a commit records, and test what a push sends |
+| `src/cctool/queue`                   | the landing queue, which tests each patch and lands it on `dev` |
 | `src/cctool/export`                  | the graph as pages of markdown, for Obsidian and OKF |
 | `src/cctool/requirement`             | the statement of a requirement, composed from its slots |
 | `src/cctool/web`                     | the review pages that `cctool serve` serves    |
 | `src/cctool/cli`                     | `cctool`, the command line                     |
 | `.githooks/`                         | the git hooks that `pixi run hooks` turns on   |
+| `systemd/`                           | the user timer that runs the landing queue on atlas |
 | `.agents/skills/`                    | procedures for coding agents; `AGENTS.md` is their guide |
 
 Every item has an id and a guid, each beginning with the prefix of its
@@ -70,16 +72,11 @@ repeat its check stage; `pixi run test` runs them.
 
 Once `pixi run hooks` has run, git runs `cctool gate` before each
 commit. It copies the staged content, which is what the commit will
-record, and runs the check, the lint and the tests over the copy. A
-failure stops the commit. All the tests run when code is staged:
-something under `src/`, `.githooks/` or `.agents/skills/`, or a change
-to `AGENTS.md`, `pyproject.toml` or `pixi.lock`. A commit of data with
-no code runs only the tests marked reads_data, and a commit of
-decisions alone runs none. The gate of a commit also leaves out the
-tests marked prepush, which test the commit and history machinery,
-and those marked fuzz, the property tests. The gate
-of a push runs every test but those marked slow, on what the push
-sends.
+record, and runs the check and the lint over the copy, in seconds. A
+failure stops the commit. No test runs at commit: the landing queue
+runs every test but those marked slow on the tip of each patch before
+it lands on `dev`, and the gate of a push runs them on what the push
+sends, unless a gate result proves that the tip passed them.
 
 The commit-msg hook then checks that the message holds a commit item
 whose title is built from one of the templates in `sch_commit`, and
@@ -106,7 +103,8 @@ Each run of the gate, of a commit or of a push, times each stage and
 appends a line for it to a log, `.git/cctool_timing.jsonl`, which
 every worktree shares and no commit records. A line holds when the
 stage started, its wall seconds, its outcome, the tree it gated, the
-host and the python, and for the tests the seconds of each test.
+host and the python, and for the tests the seconds of each test and
+the name of each test that failed.
 `cctool timing` sums up the newest runs.
 
 The commit hooks give early feedback, and git skips them for a rebase
@@ -116,11 +114,59 @@ checks each commit from what it records, however it was made. The
 pre-push hook runs it with `--gate` on the commits a push of a branch
 would send; a pushed tag names history already made, and is passed over.
 
+## The landing queue
+
+Work reaches `dev` only through the landing queue. A thread commits on
+its topic branch and runs `cctool queue submit ID_PATCH`, which makes
+the branch `queue/00_candidate/THREAD/KEY` and returns at once. The
+key is the UTC time of submission and the name of the patch.
+
+A systemd user timer on atlas runs `cctool queue run --once` each
+minute in the main checkout. A run takes the oldest patch that is
+ready, replays and signs its own commits onto `dev` in a worktree of
+its own, runs `cctool history check` on each and the gate of a push on
+the tip, and writes a gate result for the tip. A patch that conflicts
+goes to `queue/01_conflict`, and one that fails to `queue/03_rework`,
+with a note; no test is retried. A patch that passes is landed by a
+fast-forward of `dev` in the main checkout, and `dev` is pushed. A
+failure of the queue itself, such as a dirty main checkout or a key
+that cannot sign, pauses it until `cctool queue run --once --resume`.
+
+The records, the journal, the gate results and a summary for each day
+are kept in the git directory: `.git/cctool_queue/`,
+`.git/cctool_queue.jsonl`, `.git/cctool_gate_result/` and
+`.git/cctool_queue_summary/`. `cctool queue status [--measures]` reads
+them.
+
+To set the queue up on atlas, WTP makes two keys, which only atlas
+holds:
+
+1. A signing key with no passphrase, for the queue alone. Make it with
+   `gpg --batch --passphrase '' --quick-gen-key 'William Payne (cc-public
+   landing queue) <wtpayne@gmail.com>' ed25519 sign never`, read its
+   long key id with `gpg --list-secret-keys --keyid-format long`, and
+   tell git with `git config queue.signingKey KEYID` in the main
+   checkout. Register it in a commit signed with the personal key:
+   `cctool set member_william_payne git_queue_signing_key KEYID`.
+2. A deploy key that can write to cc-public only. Make it with
+   `ssh-keygen -t ed25519 -N '' -f ~/.ssh/cc_public_queue`, add the
+   public half to the repository on GitHub as a deploy key with write
+   access, and give it a host alias of its own in `~/.ssh/config`
+   (`Host github-cc-public-queue`, `HostName github.com`, `User git`,
+   `IdentityFile ~/.ssh/cc_public_queue`, `IdentitiesOnly yes`). Then
+   `git remote add queue git@github-cc-public-queue:capability-commons/cc-public.git`
+   and `git config queue.remote queue` in the main checkout.
+
+Then copy `systemd/cctool-queue.service` and `systemd/cctool-queue.timer`
+to `~/.config/systemd/user/`, set `WorkingDirectory` to the main
+checkout with `systemctl --user edit cctool-queue.service`, and run
+`systemctl --user enable --now cctool-queue.timer`.
+
 ## cctool
 
     cctool check                            check the tree
     cctool friction                         report signals of friction
-    cctool gate                             check, lint and test what is staged
+    cctool gate                             check and lint what is staged
     cctool timing [--runs N]                sum up the times of the gate
     cctool coverage [--data FILEPATH]       check coverage against maturity
     cctool message new TITLE --brief TEXT   write a commit message
@@ -130,6 +176,11 @@ would send; a pushed tag names history already made, and is passed over.
                                             check commits already made
     cctool history check --pre-push REMOTE  check what a push would send
     cctool impact [REV] [--staged]          what a commit touches, and what is near
+    cctool queue submit ID_PATCH            hand finished work to the landing queue
+    cctool queue resubmit REF               hand back a patch once it is fixed
+    cctool queue withdraw REF               take a patch out of the queue
+    cctool queue status [--measures]        where each patch stands, and why
+    cctool queue run --once [--resume]      one run of the daemon of the queue
     cctool release prepare --brief TEXT --maturity ID
                                             write the release item and the version
     cctool release check TAG [REV]          check a commit before it is tagged
