@@ -244,9 +244,14 @@ def test_a_layout_of_prose_is_the_same_laid_out_again_and_keeps_its_words(prose)
 def test_a_rename_undone_gives_back_the_tree(tree, data):
     list_id = _standalone()
     id_old  = data.draw(strategies.sampled_from(list_id))
-    prefix  = id_old.partition('_')[0]
-    id_new  = data.draw(WORD.map(lambda word: '{prefix}_{word}'.format(prefix = prefix,
-                                                                     word   = word)))
+
+    # The id of an embedded item, such as a member of an interface control
+    # document, is its holder's id and a dotted path, and a rename changes
+    # only its last step; any other id keeps its prefix.
+    #
+    (stem, dot, _) = id_old.rpartition('.')
+    head    = stem + dot if dot else id_old.partition('_')[0] + '_'
+    id_new  = data.draw(WORD.map(lambda word: head + word))
     hypothesis.assume(id_new not in list_id)
 
     edited = cctool.edit.edit.Tree(tree)
