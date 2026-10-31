@@ -61,12 +61,12 @@ def _queue(root, *list_arg):
 # -----------------------------------------------------------------------------
 def _topic(root):
     """
-    Check out the branch agent/topic in root, made from dev, with one
-    commit.
+    Check out the branch work/agent/topic in root, made from dev, with
+    one commit.
 
     """
 
-    _git(root, 'checkout', '--quiet', '-b', 'agent/topic')
+    _git(root, 'checkout', '--quiet', '-b', 'work/agent/topic')
     (root / 'one.txt').write_text('one\n')
     _git(root, 'add', '--all')
     _git(root, 'commit', '--quiet', '--no-verify', '--message', 'Add one.txt')
@@ -76,12 +76,12 @@ def test_a_submission_is_shown_by_status_and_withdrawn_by_its_branch(dev_repo):
     _topic(dev_repo)
     result = _queue(dev_repo, 'submit', 'add_one', '--agent', 'claude')
     assert result.exit_code == 0
-    assert result.stdout.startswith('Submitted queue/00_candidate/agent-topic/')
+    assert result.stdout.startswith('Submitted queue/00_candidate/agent/')
     branch = result.stdout.split()[1].rstrip('.')
 
     result = _queue(dev_repo, 'status')
     assert result.stdout.splitlines() == ['The queue is running.',
-                                          '00_candidate {key} from agent-topic'.format(
+                                          '00_candidate {key} from agent'.format(
                                               key = branch.rsplit('/', 1)[1])]
 
     assert _queue(dev_repo, 'withdraw', branch).exit_code == 0
@@ -130,4 +130,4 @@ def test_a_bundle_made_by_the_command_is_submitted_by_its_path(dev_repo, tmp_pat
 
     result = _queue(dev_repo, 'submit', str(path))
     assert result.exit_code == 0
-    assert result.stdout.startswith('Submitted queue/00_candidate/agent-topic/')
+    assert result.stdout.startswith('Submitted queue/00_candidate/agent/')

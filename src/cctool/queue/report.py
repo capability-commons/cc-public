@@ -54,15 +54,14 @@ import cctool.queue.run
 DIR_SUMMARY   = 'cctool_queue_summary'
 SUFFIX_DAY    = '.txt'
 FORMAT_DAY    = '%Y%m%d'
-PREFIX_TREE   = 'worktree '
-PREFIX_BRANCH = 'branch '
 
 
 # -----------------------------------------------------------------------------
 def status(root: pathlib.Path) -> list[str]:
     """
     Return the lines that say how the queue of the repository at root
-    stands: whether it runs or is paused and why, and for each patch not
+    stands: whether it runs or is paused and why, which local branches are
+    named outside the scheme, and for each patch not
     landed or withdrawn, oldest first, its stage and key, its latest
     attempt, what it waits on, the patches that wait on it, the worktree
     that has its branch checked out, as an agent does to repair it, and
@@ -72,8 +71,12 @@ def status(root: pathlib.Path) -> list[str]:
 
     list_record = cctool.queue.patch.records(root)
     map_record  = {record['key']: record for record in list_record}
-    map_claim   = _claims(root)
+    map_claim   = cctool.queue.patch.claims(root)
     list_line   = [_state(root)]
+    list_stray  = cctool.queue.patch.stray_branches(root)
+    if list_stray:
+        list_line.append('These branches are named neither work/THREAD/TOPIC nor trial/NAME: '
+                         '{names}.'.format(names = ', '.join(list_stray)))
 
     for record in sorted(list_record, key = lambda record: record['key'][:15]):
         if record['state'] not in cctool.queue.patch.TUPLE_STAGE:
@@ -169,6 +172,8 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
                                    cctool.queue.patch.STAGE_REWORK)]
     list_land = [line for line in list_move if line['to'] is None
                  and line['reason'] == 'landed']
+    list_kept = [line for line in list_move if line['reason'].startswith('branch ')
+                 and ' kept, ' in line['reason']]
     map_note  = {record['key']: record['note'] for record in cctool.queue.patch.records(root)}
 
     list_line = ['Landing queue, {day}, as of {time} UTC.'.format(
@@ -186,6 +191,8 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
     list_line.append('{count} landed.'.format(count = len(list_land)))
     list_line.extend('  {key} as {tip}'.format(key = line['key'], tip = (line['dev'] or '')[:7])
                      for line in list_land)
+    list_line.extend('  {reason}.'.format(reason = line['reason'][0].upper() + line['reason'][1:])
+                     for line in list_kept)
 
     inbox = cctool.queue.patch.try_git(root, 'config', '--get',
                                        cctool.queue.run.CONFIG_INBOX).stdout.strip()
@@ -225,25 +232,6 @@ def _state(root: pathlib.Path) -> str:
     if pause is None:
         return 'The queue is running.'
     return 'The queue is paused since {time}: {reason}'.format(**pause)
-
-
-# -----------------------------------------------------------------------------
-def _claims(root: pathlib.Path) -> dict[str, str]:
-    """
-    Return the worktree of root that has each branch checked out, by the
-    name of the branch.
-
-    """
-
-    map_claim = {}
-    path      = None
-    for line in cctool.queue.patch.git(root, 'worktree', 'list', '--porcelain').splitlines():
-        if line.startswith(PREFIX_TREE):
-            path = line.removeprefix(PREFIX_TREE)
-        elif line.startswith(PREFIX_BRANCH) and path:
-            map_claim[line.removeprefix(PREFIX_BRANCH).removeprefix(
-                cctool.queue.patch.PREFIX_HEAD)] = path
-    return map_claim
 
 
 # -----------------------------------------------------------------------------

@@ -47,11 +47,17 @@ unfinished edits of another.
   `cat .git/worktrees/*/locked` lists each worktree with its claimant
   and the area it changes. If another worktree claims files you need,
   agree it with the claimant, or ask the maintainer, WTP, first.
-- Start a topic from the main checkout. TOPIC is a short name for the
-  work, in lower case with hyphens:
+- Name each branch for what it holds. Work in progress is on
+  `work/THREAD/TOPIC`, where THREAD is a short name for your thread
+  and TOPIC a short name for the work, both in lower case with
+  hyphens; the queue reads the thread from the name. An experiment
+  never meant for `dev` is on `trial/NAME`. The branches under
+  `queue/` are the queue's own, and `dev`, `verified` and `main` stand
+  alone. `cctool queue status` names any other local branch.
+- Start a topic from the main checkout:
 
   ```bash
-  git worktree add -b TOPIC ../cc-public-TOPIC dev
+  git worktree add -b work/THREAD/TOPIC ../cc-public-TOPIC dev
   echo "gitdir: ../cc-public/.git/worktrees/cc-public-TOPIC" > ../cc-public-TOPIC/.git
   echo "CLAIMANT: AREA" > .git/worktrees/cc-public-TOPIC/locked
   ```
@@ -112,17 +118,20 @@ unfinished edits of another.
   clean, remove the worktree from the main checkout:
 
   ```bash
-  git cherry dev TOPIC                        # no line may start with +
+  git cherry dev work/THREAD/TOPIC            # no line may start with +
   git worktree unlock cc-public-TOPIC
   git worktree remove cc-public-TOPIC
-  git branch -D TOPIC
+  git branch -D work/THREAD/TOPIC
   ```
 
-  The queue lands copies of the commits of TOPIC, signed as it replays
-  them, so TOPIC itself never merges into `dev` and `git branch -d`
-  refuses it. `git cherry` compares the changes instead: a line that
-  starts with `+` is a commit of TOPIC whose change `dev` does not hold
-  yet, and TOPIC is kept until there is none. If the folder is still
+  The queue lands copies of the commits of the branch, signed as it
+  replays them, so the branch itself never merges into `dev` and
+  `git branch -d` refuses it. `git cherry` compares the changes
+  instead: a line that starts with `+` is a commit whose change `dev`
+  does not hold yet, and the branch is kept until there is none. When
+  it lands a patch, the queue deletes the work branch itself if no
+  worktree has it checked out and `dev` holds all of it, and the
+  summary of the day names a branch it kept. If the folder is still
   there afterwards, because the worktree was made in another session,
   delete it.
 

@@ -100,6 +100,7 @@ def submit(id_patch: str, source: str, thread: str | None, agent: str | None,
     """
 
     root = root.resolve()
+    _warn_name(root, thread, source)
     if id_patch.endswith(cctool.queue.bundle.SUFFIX_BUNDLE):
         record = _step(lambda: cctool.queue.bundle.submit(root, pathlib.Path(id_patch).resolve(),
                                                           agent))
@@ -150,6 +151,7 @@ def bundle(id_patch: str, source: str, thread: str | None, base: str,
     """
 
     list_commit = []
+    _warn_name(root.resolve(), thread, source)
 
     def step() -> dict:
         (written, list_made) = cctool.queue.bundle.make(root.resolve(), id_patch, source, thread,
@@ -264,6 +266,22 @@ def run(_is_once: bool, is_resume: bool, root: pathlib.Path) -> None:
         sys.exit(cctool.cli.group.EXIT_ERROR)
     finally:
         cctool.queue.report.write_summary(root)
+
+
+# -----------------------------------------------------------------------------
+def _warn_name(root: pathlib.Path, thread: str | None, source: str) -> None:
+    """
+    Warn, if the thread is to be read from the current branch, that the
+    branch is not named work/THREAD/TOPIC, and say what thread is read.
+
+    """
+
+    branch = cctool.queue.patch.try_git(root, 'branch', '--show-current').stdout.strip()
+    if thread or source != 'HEAD' or not branch or cctool.queue.patch.is_work(branch):
+        return
+    click.echo('{branch} is not named work/THREAD/TOPIC, so the thread is taken to be {thread}. '
+               'Name a branch of work in progress work/THREAD/TOPIC.'.format(
+                   branch = branch, thread = cctool.queue.patch.thread_of(branch)), err = True)
 
 
 # -----------------------------------------------------------------------------

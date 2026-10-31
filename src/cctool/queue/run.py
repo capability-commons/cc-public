@@ -399,7 +399,8 @@ def land(root: pathlib.Path, record: dict) -> list[str]:
     gate result of that commit shows the pass. Otherwise the patch is a
     candidate again, and dev is not changed. A main checkout that is not
     on dev, or has changes, pauses the queue, and the patch waits under
-    test for the next run.
+    test for the next run. Once landed, the work branch the patch came
+    from is deleted, or kept, as tidy decides.
 
     """
 
@@ -427,7 +428,9 @@ def land(root: pathlib.Path, record: dict) -> list[str]:
                              said = (done.stderr or done.stdout).strip()))
 
     _landed(root, record, last)
-    return ['{key} landed as {tip}.'.format(key = record['key'], tip = last['tip'][:7])]
+    tidied = cctool.queue.patch.tidy(root, record)
+    return ['{key} landed as {tip}.'.format(key = record['key'], tip = last['tip'][:7]),
+            *([tidied[0].upper() + tidied[1:] + '.'] if tidied else [])]
 
 
 # -----------------------------------------------------------------------------

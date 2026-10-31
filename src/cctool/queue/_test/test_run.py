@@ -900,6 +900,8 @@ def test_the_status_says_what_each_patch_waits_on_and_what_it_blocks(queue):
          cctool.queue.patch.branch(_record(root, below)))
     list_line = cctool.queue.report.status(root)
     assert list_line[0] == 'The queue is running.'
+    assert list_line.pop(1) == ('These branches are named neither work/THREAD/TOPIC nor '
+                                'trial/NAME: one, two.')
     assert list_line[1] == ('03_rework {key} from one; attempt 1 failed on dev {dev}; blocks '
                             '{above}; claimed by {path}').format(
                                 key   = below['key'],

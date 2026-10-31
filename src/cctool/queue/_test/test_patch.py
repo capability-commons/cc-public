@@ -351,3 +351,55 @@ def _move(root, record, stage):
     record['state'] = stage
     cctool.queue.patch.write(root, record)
     cctool.queue.patch.move(root, record, old, stage, 'moved by the test')
+
+
+def test_the_thread_is_read_from_a_work_branch_and_an_old_name_still_serves():
+    assert cctool.queue.patch.thread_of('work/claude-a1/fix-x') == 'claude-a1'
+    assert cctool.queue.patch.thread_of('work/claude-a1/fix/x') == 'claude-a1'
+    assert cctool.queue.patch.thread_of('claude/fix-x') == 'claude-fix-x'
+    assert cctool.queue.patch.thread_of('work/fix-x') == 'work-fix-x'
+    assert cctool.queue.patch.is_work('work/claude-a1/fix-x')
+    assert not cctool.queue.patch.is_work('work/fix-x')
+
+
+def test_a_branch_named_outside_the_scheme_is_stray_but_a_bridge_is_not(dev_repo):
+    for name in ('work/t/x', 'trial/dataflow-3', 'verified', 'topic', 'worktree-bridge-cse_1'):
+        _git(dev_repo, 'branch', name)
+    record = _submit_from(dev_repo, 'work/t/y', 'one.txt')
+    assert record['branch'] == 'work/t/y'
+    assert cctool.queue.patch.stray_branches(dev_repo) == ['topic']
+
+
+def test_a_landed_work_branch_is_deleted_unless_it_is_checked_out_or_ahead(dev_repo, tmp_path):
+    record = _submit_from(dev_repo, 'work/t/x', 'one.txt')
+    _git(dev_repo, 'cherry-pick', '--quiet', 'work/t/x')
+    record['state'] = cctool.queue.patch.STATE_LANDED
+
+    _git(dev_repo, 'worktree', 'add', '--quiet', str(tmp_path / 'x'), 'work/t/x')
+    assert cctool.queue.patch.tidy(dev_repo, record) == (
+        'branch work/t/x kept, as {path} has it checked out'.format(path = tmp_path / 'x'))
+    _git(dev_repo, 'worktree', 'remove', str(tmp_path / 'x'))
+
+    _work(dev_repo, 'work/t/x', 'more.txt')
+    _git(dev_repo, 'checkout', '--quiet', 'dev')
+    assert cctool.queue.patch.tidy(dev_repo, record) == (
+        'branch work/t/x kept, as dev lacks 1 of its commits')
+
+    _git(dev_repo, 'cherry-pick', '--quiet', 'work/t/x')
+    assert cctool.queue.patch.tidy(dev_repo, record) == 'branch work/t/x deleted'
+    assert _git(dev_repo, 'branch', '--list', 'work/t/x') == ''
+    assert cctool.queue.patch.read_journal(dev_repo)[-1]['reason'] == 'branch work/t/x deleted'
+
+
+# -----------------------------------------------------------------------------
+def _submit_from(root, branch, name):
+    """
+    Return the record of a patch submitted from branch, made from dev with
+    one commit that adds the file name, with dev checked out again.
+
+    """
+
+    _work(root, branch, name)
+    record = cctool.queue.patch.submit(root, 'patch_' + name.split('.')[0], now = NOW)
+    _git(root, 'checkout', '--quiet', 'dev')
+    return record

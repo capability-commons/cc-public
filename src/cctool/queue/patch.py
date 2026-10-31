@@ -95,6 +95,19 @@ FORMAT_TIME     = '%Y%m%d_%H%M%S'
 DELIM_BRANCH    = '/'
 DELIM_THREAD    = '-'
 DEV             = 'dev'
+
+# How the local branches are named. Work in progress is on
+# work/THREAD/TOPIC, so that its thread is in its name; an experiment
+# never meant for dev is on trial/NAME; the queue's own branches are under
+# queue/; and dev, verified and, later, main stand alone. A branch that
+# Claude Code makes for a bridge to a remote session is its own business.
+#
+PREFIX_WORK     = 'work/'
+PREFIX_TRIAL    = 'trial/'
+PREFIX_BRIDGE   = 'worktree-bridge-'
+TUPLE_LINE      = ('dev', 'verified', 'main')
+PREFIX_TREE     = 'worktree '
+PREFIX_CHECKED  = 'branch '
 ZERO            = '0' * 40
 
 
@@ -135,7 +148,11 @@ def submit(root:     pathlib.Path,
             raise ErrorQueue('The name of the {what}, {name}, is not one segment of letters, '
                              'digits, hyphens and underscores.'.format(what = what,
                                                                          name = name))
-    tip = rev(root, source)
+    tip    = rev(root, source)
+    origin = (try_git(root, 'branch', '--show-current').stdout.strip() if source == 'HEAD'
+              else source if not try_git(root, 'rev-parse', '--verify', '--quiet',
+                                         PREFIX_HEAD + source).returncode
+              else None)
 
     with locked(root):
         list_record = records(root)
@@ -147,6 +164,7 @@ def submit(root:     pathlib.Path,
                   'patch':    id_patch,
                   'agent':    agent,
                   'bundle':   bundle,
+                  'branch':   origin or None,
                   'state':    STAGE_CANDIDATE,
                   'source':   tip,
                   'base':     base,
@@ -534,8 +552,8 @@ def locked(root: pathlib.Path, name: str = FILE_LOCK,
 # -----------------------------------------------------------------------------
 def current_thread(root: pathlib.Path) -> str:
     """
-    Return the name of the current branch of root as the name of a
-    thread, with each slash written as a hyphen.
+    Return the thread that the current branch of root names, as
+    thread_of finds it.
 
     """
 
@@ -543,7 +561,98 @@ def current_thread(root: pathlib.Path) -> str:
     if not name:
         raise ErrorQueue('No branch is checked out, so the thread cannot be named; give it '
                          'with --thread.')
-    return name.replace(DELIM_BRANCH, DELIM_THREAD)
+    return thread_of(name)
+
+
+# -----------------------------------------------------------------------------
+def thread_of(branch: str) -> str:
+    """
+    Return the thread that branch names: THREAD, for work/THREAD/TOPIC,
+    and for any other name, as before work branches were named so, the
+    whole name with each slash written as a hyphen.
+
+    """
+
+    list_part = branch.removeprefix(PREFIX_WORK).split(DELIM_BRANCH)
+    if branch.startswith(PREFIX_WORK) and len(list_part) >= 2 and list_part[0]:
+        return list_part[0]
+    return branch.replace(DELIM_BRANCH, DELIM_THREAD)
+
+
+# -----------------------------------------------------------------------------
+def is_work(branch: str) -> bool:
+    """
+    Return whether branch is named as work in progress, work/THREAD/TOPIC.
+
+    """
+
+    return branch.startswith(PREFIX_WORK) and thread_of(branch) != branch.replace(
+                                                                DELIM_BRANCH, DELIM_THREAD)
+
+
+# -----------------------------------------------------------------------------
+def stray_branches(root: pathlib.Path) -> list[str]:
+    """
+    Return each local branch of root that is named neither as work in
+    progress, a trial, a branch of the queue, a line such as dev, nor a
+    bridge of Claude Code.
+
+    """
+
+    return [name for name in git(root, 'for-each-ref', '--format=%(refname:short)',
+                                 PREFIX_HEAD).split()
+            if not (name in TUPLE_LINE or is_work(name)
+                    or name.startswith((PREFIX_TRIAL, PREFIX_BRANCH, PREFIX_BRIDGE)))]
+
+
+# -----------------------------------------------------------------------------
+def claims(root: pathlib.Path) -> dict[str, str]:
+    """
+    Return the worktree of root that has each branch checked out, by the
+    name of the branch.
+
+    """
+
+    map_claim = {}
+    path      = None
+    for line in git(root, 'worktree', 'list', '--porcelain').splitlines():
+        if line.startswith(PREFIX_TREE):
+            path = line.removeprefix(PREFIX_TREE)
+        elif line.startswith(PREFIX_CHECKED) and path:
+            map_claim[line.removeprefix(PREFIX_CHECKED).removeprefix(PREFIX_HEAD)] = path
+    return map_claim
+
+
+# -----------------------------------------------------------------------------
+def tidy(root: pathlib.Path, record: dict) -> str | None:
+    """
+    Return what became of the work branch that the landed patch of record
+    was submitted from, once it is deleted if no worktree has it checked
+    out and dev holds the change of each of its commits, or else kept,
+    and the move journaled; or None if it came from no work branch, or
+    the branch is gone.
+
+    """
+
+    name = record.get('branch')
+    if not name or not is_work(name) or try_git(root, 'rev-parse', '--verify', '--quiet',
+                                                PREFIX_HEAD + name).returncode:
+        return None
+
+    claim  = claims(root).get(name)
+    count  = sum(1 for line in git(root, 'cherry', DEV, name).splitlines()
+                 if line.startswith('+'))
+    if claim:
+        reason = 'branch {name} kept, as {path} has it checked out'.format(name = name,
+                                                                             path = claim)
+    elif count:
+        reason = 'branch {name} kept, as dev lacks {count} of its commits'.format(
+                     name = name, count = count)
+    else:
+        git(root, 'branch', '--quiet', '-D', name)
+        reason = 'branch {name} deleted'.format(name = name)
+    journal(root, record, record['state'], record['state'], reason)
+    return reason
 
 
 # -----------------------------------------------------------------------------
