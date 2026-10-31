@@ -11,8 +11,8 @@ worktree of its own, on a branch of its own, so no agent sees the
 unfinished edits of another.
 
 - `dev` is the integration branch. The main checkout, `cc-public`,
-  stays on `dev`. Nobody edits files there; it is only where finished
-  branches land.
+  stays on `dev`. Nobody edits files there, and only the landing queue
+  moves `dev`: everyone commits and submits, WTP included.
 - Read the claims before you start. In the main checkout,
   `cat .git/worktrees/*/locked` lists each worktree with its claimant
   and the area it changes. If another worktree claims files you need,
@@ -37,35 +37,45 @@ unfinished edits of another.
   installs its environment. Where pixi cannot run, use the environment
   of the main checkout with `src` first on the path:
   `PYTHONPATH=src ../cc-public/.pixi/envs/default/bin/python -B -m cctool.cli.command check`.
-- Land the branch only when its work is agreed. In the worktree, run
-  `git rebase dev`, then `cctool history check dev..TOPIC --gate`. It
-  checks each rebased commit, and checks, lints and tests the content
-  of the newest with every test but those marked slow. `pixi run gate`
-  does not do this: it gates only what is staged, and after a rebase
-  nothing is. Then, in the main checkout, run
-  `git merge --ff-only TOPIC`. `dev` only moves forward, so its
-  history stays linear. If the merge refuses because `dev` has moved,
-  rebase again.
-- To move commits between machines, such as from a remote session to
-  the machine that holds the worktree, use `git bundle`:
+- Submit the work when it is done. Run the tests that bear on the
+  change first, since no test runs at commit. Then, in the worktree,
+  run `cctool queue submit ID_PATCH`, where ID_PATCH is a short name
+  for the change, in lower case with underscores. It makes the branch
+  `queue/00_candidate/THREAD/KEY` and returns at once, so move on to
+  the next task. Do not rebase onto `dev` first; the queue does that.
+- The daemon of the landing queue, on atlas, takes the oldest patch
+  that is ready. It replays and signs the patch's own commits onto
+  `dev` in a worktree of its own, runs `cctool history check` on each
+  and every test not marked slow on the tip, and fast-forwards `dev`
+  to exactly the commit it tested. Work built on the tip of a patch
+  still in the queue waits for that patch to land. Only a linear
+  stack is accepted.
+- `cctool queue status` shows where each patch stands, and why. A
+  patch that does not replay cleanly goes to
+  `queue/01_conflict/THREAD/KEY`, and one that fails its checks or a
+  test goes to `queue/03_rework/THREAD/KEY`; a failed test is never
+  retried, so a flaky test comes back as rework too. Any agent may
+  take such a patch: check out its branch in a worktree, read its
+  note, fix the work there, and run
+  `cctool queue resubmit REF` with the branch. It keeps its age. A
+  patch built on one that changed is marked stale; rebase it onto the
+  new tip and resubmit it. `cctool queue withdraw REF` takes a patch
+  out.
+- To move commits from a machine without the queue, such as a remote
+  session, use `git bundle`. Make the bundle where the commits are,
+  and on atlas fetch it into a branch and submit that branch:
 
   ```bash
   cctool repo bundle TOPIC                    # where the commits are
-  cctool repo land ../TOPIC.bundle            # on dev, where they go
+  git fetch ../TOPIC.bundle TOPIC:TOPIC       # on atlas
+  cctool queue submit ID_PATCH --source TOPIC --thread TOPIC
   ```
 
-  `cctool repo land` replays the commits onto `dev`, signs each, runs
-  `cctool history check` on them and only then moves `dev` forward.
-  Every commit pushed must be signed by a team member's key, which a
-  remote session does not hold, so its commits are signed when they
-  land. If a session committed under its own name, `--reset-author`
-  on `cctool repo land` or `cctool repo sign` makes whoever runs it
-  the author too. `cctool repo sign` signs the commits not yet pushed, and
-  `cctool repo push` pushes once they are. Never use
-  `git format-patch` and `git am`: `am` ends a commit message at its
-  first `---` line, which opens the commit item, so every copied
-  commit loses its item.
-- Once the branch is on `dev` and `git status` in the worktree is
+  The queue signs each commit as it replays it, so a remote session
+  needs no key. Never use `git format-patch` and `git am`: `am` ends a
+  commit message at its first `---` line, which opens the commit item,
+  so every copied commit loses its item.
+- Once the patch has landed and `git status` in the worktree is
   clean, remove the worktree from the main checkout:
 
   ```bash
@@ -82,7 +92,8 @@ unfinished edits of another.
 - `pixi run check`, `pixi run test` and `pixi run lint` all pass.
 - `cctool check` reports 0 failures. A failure that was there before
   your change is still yours to report, not to hide.
-- Commit locally. Do not push unless asked.
+- Commit locally, and submit the work to the queue. Do not push
+  unless asked; the queue pushes `dev`.
 - Every commit is authored by William Payne <wtpayne@gmail.com>, the
   person responsible for its being correct, whoever drafted it. Set
   `git config user.name "William Payne"` and
@@ -92,13 +103,12 @@ unfinished edits of another.
   of an entry in a team member register (reg_team_member, or one of
   a peer that names type_team_member), and `cctool history check`
   reports one.
-- The pre-commit hook runs `cctool gate`, which checks, lints and
-  tests the staged content. The tests leave out those marked slow,
-  prepush and fuzz; a commit of data with no code runs only the tests
-  marked reads_data, and a commit of decisions alone runs none. A
-  test that is skipped, such as for want of a tool, fails the gate.
-  Never bypass it with `--no-verify`. If it fails, fix the cause, or
-  report it.
+- The pre-commit hook runs `cctool gate`, which checks and lints the
+  staged content in seconds. It runs no test: the landing queue runs
+  every test not marked slow on the tip of each patch before it lands,
+  and a test that is skipped, such as for want of a tool, fails it.
+  Never bypass the hook with `--no-verify`. If it fails, fix the
+  cause, or report it.
 - Write each commit message with `cctool message new TITLE --brief
   TEXT`, then add the trailers. The title is an imperative sentence
   built from a template in `sch_commit`, such as `Add OBJECT` or
@@ -109,9 +119,10 @@ unfinished edits of another.
   prepare-commit-msg hook gives it its commit item, and names what it
   removes or renames.
 - The commit hooks are early feedback; git skips them for a rebase or
-  a cherry-pick. `cctool history check RANGE` is the check of record,
-  and the pre-push hook runs it. After a rebase, run it on the
-  rebased commits. Do not add hooks to cover more of git's paths: a
+  a cherry-pick. `cctool history check RANGE` is the check of record:
+  the landing queue runs it on each commit it replays, and the
+  pre-push hook runs it on what a push sends. After a rebase, run it
+  on the rebased commits. Do not add hooks to cover more of git's paths: a
   rule that keeps needing exceptions is fixed in the rule.
 - Name in the commit item (title, brief or description) the id of
   every item the commit removes or renames. A renamed register entry
