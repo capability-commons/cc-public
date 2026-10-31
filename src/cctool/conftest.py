@@ -92,6 +92,15 @@ FILE_MEMBERS   = '_data/register/reg_team_member.yaml'
 KEY_MAINTAINER = '9C4FB30F113CAB6A'
 LINE_KEY       = 'git_signing_key:    {key}\n'.format(key = KEY_MAINTAINER)
 
+# The global configuration of git in each test, in place of the user's.
+#
+DIR_HOME        = 'home'
+FILE_GIT_CONFIG = '.gitconfig'
+ENV_BROWSERS    = 'PLAYWRIGHT_BROWSERS_PATH'
+DIR_BROWSERS    = '.cache/ms-playwright'
+TEXT_GIT_CONFIG = ('[user]\n\tname = William Payne\n\temail = wtpayne@gmail.com\n'
+                   '[commit]\n\tgpgsign = false\n[tag]\n\tgpgsign = false\n')
+
 # The configuration a signed copy commits under: as the maintainer, whom
 # the register gives as git_author, signing each commit.
 #
@@ -221,6 +230,34 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     for item in items:
         if 'tree' in getattr(item, 'fixturenames', ()):
             item.add_marker(pytest.mark.reads_data)
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture(autouse = True)
+def git_config(tmp_path_factory, monkeypatch):
+    """
+    Give git, in each test, a global configuration of its own in place
+    of the user's: the maintainer as the identity, and no signing. A
+    test that commits in a repository of its own would otherwise sign
+    with the user's key, and fail wherever that key cannot sign without
+    a person to unlock it, as when the landing queue runs the tests
+    unattended. A fixture that signs sets its key itself.
+
+    git reads its global configuration from the home directory, so each
+    test has a home of its own. Many fixtures remove every variable of
+    git from the environment, so a variable could not carry this. The
+    browsers that playwright installed are found where they are.
+
+    """
+
+    dir_home = tmp_path_factory.getbasetemp() / DIR_HOME
+    if not dir_home.exists():
+        dir_home.mkdir()
+        (dir_home / FILE_GIT_CONFIG).write_text(TEXT_GIT_CONFIG, encoding = 'utf-8')
+    if ENV_BROWSERS not in os.environ:
+        monkeypatch.setenv(ENV_BROWSERS, str(pathlib.Path.home() / DIR_BROWSERS))
+    monkeypatch.setenv('HOME', str(dir_home))
+    monkeypatch.setenv('GIT_CONFIG_NOSYSTEM', '1')
 
 
 # -----------------------------------------------------------------------------
