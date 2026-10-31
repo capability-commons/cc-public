@@ -13,22 +13,18 @@ protective_mark:
 
 title:                  Repository commands
 brief:                  |
-                        The commands for the daily steps of the
-                        maintainer: land, sign, push and bundle.
+                        The command that bundles commits for the
+                        machine that runs the landing queue.
 description:            |
-                        This module holds the repo group, whose
-                        commands run the steps of
-                        pym_cctool.commit.repo, so that the maintainer
-                        need not remember the git commands each takes.
-                        A step that cannot be taken says why, with
-                        exit status 2, and leaves the branch where it
-                        was.
+                        This module holds the repo group, whose bundle
+                        command runs the step of
+                        pym_cctool.commit.repo. A step that cannot be
+                        taken says why, with exit status 2. Only the
+                        landing queue moves dev, so the group has no
+                        command that lands, signs or pushes.
 usage:                  |
-                        cctool repo land BUNDLE [--branch NAME]
-                        [--reset-author] cctool repo sign [--since
-                        REF] [--reset-author] cctool repo push
-                        [--remote NAME] cctool repo bundle BRANCH
-                        [--base REF] [--output FILEPATH]
+                        cctool repo bundle BRANCH [--base REF]
+                        [--output FILEPATH]
 edge:                   []
 
 ...
@@ -54,115 +50,14 @@ OPTION_ROOT = click.option('--root',
                                                 path_type = pathlib.Path),
                            help    = 'The repository. Defaults to the working directory.')
 
-OPTION_RESET_AUTHOR = click.option('--reset-author',
-                                   is_flag = True,
-                                   help    = 'Make whoever runs this the author of each commit '
-                                             'too, as when an agent committed under its own '
-                                             'name.')
-
 
 # -----------------------------------------------------------------------------
 @cctool.cli.group.main.group()
 def repo() -> None:
     """
-    Land, sign, push and bundle commits.
+    Bundle commits for the machine that runs the landing queue.
 
     """
-
-
-# -----------------------------------------------------------------------------
-@repo.command()
-@click.argument('path', metavar = 'BUNDLE', type = click.Path(exists    = True,
-                                                              dir_okay  = False,
-                                                              path_type = pathlib.Path))
-@click.option('--branch',
-              metavar = 'NAME',
-              default = None,
-              help    = 'The branch of the bundle to land, if it holds more than one.')
-@OPTION_RESET_AUTHOR
-@OPTION_ROOT
-def land(path: pathlib.Path, branch: str | None, reset_author: bool, root: pathlib.Path) -> None:
-    """
-    Land the commits of the branch that BUNDLE holds on the current
-    branch.
-
-    The commits are replayed onto the current branch, each signed as it
-    is replayed, and checked as cctool history check --gate checks
-    them, so the tree they come to is checked, linted and tested too.
-    Only if all of that succeeds is the current branch moved forward to
-    them. A bundle made on a commit the current branch does not hold is
-    refused, unless the branch holds the same change, as when the bundle
-    that commit came in has landed. With --reset-author, whoever lands
-    them also becomes their author. Push them with cctool repo push.
-
-    """
-
-    _report('Landed', lambda: cctool.commit.repo.land(root.resolve(), path.resolve(), branch,
-                                                             reset_author))
-
-
-# -----------------------------------------------------------------------------
-@repo.command()
-@click.option('--since',
-              metavar = 'REF',
-              default = None,
-              help    = 'Sign the commits after REF. Defaults to the commits not yet pushed '
-                        'to origin: those after the branch of the same name there or, for a '
-                        'branch origin does not have, those on none of its branches.')
-@OPTION_RESET_AUTHOR
-@OPTION_ROOT
-def sign(since: str | None, reset_author: bool, root: pathlib.Path) -> None:
-    """
-    Sign each commit of the current branch that is not yet pushed.
-
-    Each is replayed in place with a signature, so each gets a new
-    hash. Another branch that ended at one of them would be left naming
-    the unsigned copy, so it is removed. With --reset-author, whoever
-    signs them also becomes their author.
-
-    """
-
-    list_branch = []
-
-    def step() -> list[str]:
-        (list_commit, list_removed) = cctool.commit.repo.sign(root.resolve(), since,
-                                                               reset_author)
-        list_branch.extend(list_removed)
-        return list_commit
-
-    _report('Signed', step)
-    for name in list_branch:
-        click.echo('Removed the branch {name}, which ended at a commit now signed.'.format(
-                                                                                name = name))
-
-
-# -----------------------------------------------------------------------------
-@repo.command()
-@click.option('--remote',
-              metavar = 'NAME',
-              default = 'origin',
-              help    = 'The remote to push to.')
-@OPTION_ROOT
-def push(remote: str, root: pathlib.Path) -> None:
-    """
-    Push the tip of the current branch to the branch of the same name
-    on the remote, once each commit not yet pushed is signed and the tip
-    passes the checks of the pre-push hook.
-
-    The checks run before git connects, since the remote may close a
-    connection held open for as long as the gate takes. git push is then
-    told the commit checked, which the pre-push hook passes at once; it
-    checks anything else pushed as it does for any push. The exit status
-    is that of the checks if they fail, or else of git push.
-
-    """
-
-    try:
-        status = cctool.commit.repo.push(root.resolve(), remote)
-    except cctool.commit.repo.ErrorRepo as error:
-        click.echo(str(error), err = True)
-        sys.exit(cctool.cli.group.EXIT_ERROR)
-    sys.exit(status)
 
 
 # -----------------------------------------------------------------------------
@@ -171,8 +66,8 @@ def push(remote: str, root: pathlib.Path) -> None:
 @click.option('--base',
               metavar = 'REF',
               default = 'dev',
-              help    = 'The commit the bundle starts after, which whoever lands it must '
-                        'have.')
+              help    = 'The commit the bundle starts after, which the machine it goes to '
+                        'must have.')
 @click.option('--output', 'path',
               metavar = 'FILEPATH',
               default = None,
@@ -182,8 +77,8 @@ def push(remote: str, root: pathlib.Path) -> None:
 @OPTION_ROOT
 def bundle(branch: str, base: str, path: pathlib.Path | None, root: pathlib.Path) -> None:
     """
-    Write a bundle of the commits that BRANCH holds beyond the base, for
-    cctool repo land to land elsewhere.
+    Write a bundle of the commits that BRANCH holds beyond the base, to
+    submit to the landing queue on the machine that runs it.
 
     """
 

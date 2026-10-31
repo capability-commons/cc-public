@@ -2334,7 +2334,8 @@ surface:
           guid_self:    icm_dcde4c06518c4b6e9aad2a4610dfbcbe
           name:         repo
           brief:        |
-                        Land, sign, push and bundle commits.
+                        Bundle commits for the machine that runs the
+                        landing queue.
 
           command:
 
@@ -2344,8 +2345,8 @@ surface:
               name:     bundle
               brief:    |
                         Write a bundle of the commits that branch
-                        holds beyond the base, for cctool repo land to
-                        land elsewhere.
+                        holds beyond the base, to submit to the
+                        landing queue on the machine that runs it.
 
               parameter:
 
@@ -2367,8 +2368,8 @@ surface:
                   guid_self:  icm_8c0a7842585240a4a63f8d5463375c9f
                   name:  --base
                   brief:  |
-                        The commit the bundle starts after, which
-                        whoever lands it must have.
+                        The commit the bundle starts after, which the
+                        machine it goes to must have.
                   kind:  option
 
                   type:
@@ -2397,180 +2398,6 @@ surface:
 
                 - id_self:  icm_cctool_command_line.repo.bundle.root
                   guid_self:  icm_618968ba0d7e43a9867068a2c68ecc8a
-                  name:  --root
-                  brief:  |
-                        The repository. Defaults to the working
-                        directory.
-                  kind:  option
-
-                  type:
-                    spelling:  directory
-
-                  default:  .
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-            land:
-              id_self:  icm_cctool_command_line.repo.land
-              guid_self:  icm_dd6d49ffb3b5492f91965a2e6b4a4ba1
-              name:     land
-              brief:    |
-                        Land the commits of the branch that the bundle
-                        at path holds on the current branch, replayed,
-                        signed and checked.
-
-              parameter:
-
-                - id_self:  icm_cctool_command_line.repo.land.path
-                  guid_self:  icm_3ad17b1583734f48979d216d626b4ca9
-                  name:  path
-                  brief:  |
-                        The bundle to land.
-                  kind:  argument
-
-                  type:
-                    spelling:  file
-
-                  optional:  false
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.land.branch
-                  guid_self:  icm_91190cc284ee44d798e444498ab5fe3f
-                  name:  --branch
-                  brief:  |
-                        The branch of the bundle to land, if it holds
-                        more than one.
-                  kind:  option
-
-                  type:
-                    spelling:  text
-
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.land.reset_author
-                  guid_self:  icm_f1bc10eb5d874a90953bc3a9c68b802c
-                  name:  --reset-author
-                  brief:  |
-                        Make whoever runs this the author of each
-                        commit too, as when an agent committed under
-                        its own name.
-                  kind:  option
-
-                  type:
-                    spelling:  boolean
-
-                  default:  'false'
-                  optional:  true
-                  variadic:  false
-                  flag:  true
-
-                - id_self:  icm_cctool_command_line.repo.land.root
-                  guid_self:  icm_a342994444df4a069df042d43454ff31
-                  name:  --root
-                  brief:  |
-                        The repository. Defaults to the working
-                        directory.
-                  kind:  option
-
-                  type:
-                    spelling:  directory
-
-                  default:  .
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-            push:
-              id_self:  icm_cctool_command_line.repo.push
-              guid_self:  icm_a0a4a29af510442392773ebf0ad50668
-              name:     push
-              brief:    |
-                        Push the tip of the current branch to the
-                        branch of the same name on the remote, once
-                        each commit not yet pushed is signed and the
-                        tip passes the checks of the pre-push hook.
-
-              parameter:
-
-                - id_self:  icm_cctool_command_line.repo.push.remote
-                  guid_self:  icm_1a4380dccf2a49328a91ba01b0f60acb
-                  name:  --remote
-                  brief:  |
-                        The remote to push to.
-                  kind:  option
-
-                  type:
-                    spelling:  text
-
-                  default:  origin
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.push.root
-                  guid_self:  icm_487dff3d986d404a8b249ab36586a6ea
-                  name:  --root
-                  brief:  |
-                        The repository. Defaults to the working
-                        directory.
-                  kind:  option
-
-                  type:
-                    spelling:  directory
-
-                  default:  .
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-            sign:
-              id_self:  icm_cctool_command_line.repo.sign
-              guid_self:  icm_9020ccbaa9b2449eaf53df6073da9f77
-              name:     sign
-              brief:    |
-                        Sign each commit of the current branch that is
-                        not yet pushed.
-
-              parameter:
-
-                - id_self:  icm_cctool_command_line.repo.sign.since
-                  guid_self:  icm_2d0e902e95f24f33b03cc12596cb5921
-                  name:  --since
-                  brief:  |
-                        Sign the commits after this ref. Defaults to
-                        the branch of the same name on origin.
-                  kind:  option
-
-                  type:
-                    spelling:  text
-
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.sign.reset_author
-                  guid_self:  icm_d9ca3a606e284a9e9c13d1ede7ab8305
-                  name:  --reset-author
-                  brief:  |
-                        Make whoever runs this the author of each
-                        commit too, as when an agent committed under
-                        its own name.
-                  kind:  option
-
-                  type:
-                    spelling:  boolean
-
-                  default:  'false'
-                  optional:  true
-                  variadic:  false
-                  flag:  true
-
-                - id_self:  icm_cctool_command_line.repo.sign.root
-                  guid_self:  icm_0f88d2941d334f258b7b7c0c1ffd5c5b
                   name:  --root
                   brief:  |
                         The repository. Defaults to the working
