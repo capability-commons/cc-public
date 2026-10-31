@@ -1,0 +1,53 @@
+#!/bin/sh
+# ---
+#
+# id_self:                shell_systemd_cctool_queue_run
+# guid_self:              shell_cd48dbc7c3d34a29a791c084b8fe39c1
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Landing queue run
+# brief:                  |
+#                         Run the landing queue once, and pause it
+#                         instead if the main checkout is not on dev.
+# description:            |
+#                         cctool-queue.service runs this script,
+#                         installed as ~/.local/bin/cctool-queue-run so
+#                         that it is the same whatever branch the main
+#                         checkout is on. On dev it runs cctool queue
+#                         run --once in the pixi environment of the
+#                         checkout. On any other branch it writes the
+#                         pause file of the queue with the branch and
+#                         the remedy, unless the queue is already
+#                         paused, and exits with status 0, so that the
+#                         timer keeps running and the daily summary
+#                         shows the pause once the checkout is back on
+#                         dev.
+# edge:                   []
+#
+# ...
+
+# The queue fast-forwards dev in the main checkout and runs the cctool
+# that the checkout holds, so it runs only while the checkout is on dev.
+# A checkout on another branch may hold no queue at all, so the check is
+# made here, outside it, and the queue is paused with the reason.
+#
+branch=$(git branch --show-current) || exit 1
+if [ "$branch" != dev ]; then
+    dir=$(git rev-parse --git-common-dir)/cctool_queue
+    name=$(printf '%s' "${branch:-a detached HEAD}" | tr -d '"\\')
+    mkdir -p "$dir"
+    if [ ! -f "$dir/paused.json" ]; then
+        printf '{"time": "%s", "reason": "The main checkout is on %s, not dev. Run git checkout dev there, then cctool queue run --once --resume."}\n' \
+            "$(date -u +%Y-%m-%dT%H:%M:%S+00:00)" "$name" > "$dir/paused.json"
+    fi
+    echo "The queue is paused: the main checkout is on $name, not dev." >&2
+    exit 0
+fi
+
+exec pixi run --locked cctool queue run --once

@@ -165,10 +165,14 @@ holds:
    `git remote add queue git@github-cc-public-queue:capability-commons/cc-public.git`
    and `git config queue.remote queue` in the main checkout.
 
-Then copy `systemd/cctool-queue.service` and `systemd/cctool-queue.timer`
-to `~/.config/systemd/user/`, set `WorkingDirectory` to the main
-checkout with `systemctl --user edit cctool-queue.service`, and run
-`systemctl --user enable --now cctool-queue.timer`.
+Then copy `systemd/cctool-queue-run` to `~/.local/bin/`, and
+`systemd/cctool-queue.service` and `systemd/cctool-queue.timer` to
+`~/.config/systemd/user/`, set `WorkingDirectory` to the main checkout
+with `systemctl --user edit cctool-queue.service`, and run
+`systemctl --user enable --now cctool-queue.timer`. The script runs
+the queue while the main checkout is on `dev`, and pauses it with the
+reason while it is not, since a checkout on another branch may hold no
+queue at all.
 
 ## cctool
 

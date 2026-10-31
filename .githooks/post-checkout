@@ -1,0 +1,52 @@
+#!/bin/sh
+# ---
+#
+# id_self:                shell_githooks_post_checkout
+# guid_self:              shell_6ae08a9175cf4b1e91d339c9e02c5828
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Post-checkout hook
+# brief:                  |
+#                         Warn loudly when the main checkout leaves dev.
+# description:            |
+#                         git runs this hook after a checkout, once
+#                         core.hooksPath names .githooks. In a linked
+#                         worktree it does nothing. In the main
+#                         checkout, which must stay on dev for the
+#                         landing queue, it warns on any other branch,
+#                         says how to go back and resume the queue, and
+#                         how to make a worktree instead. It changes
+#                         nothing, and cannot stop a checkout that git
+#                         has already made.
+# edge:                   []
+#
+# ...
+
+# Only the main checkout is watched: a worktree may be on any branch.
+#
+if [ "$(git rev-parse --git-dir)" != "$(git rev-parse --git-common-dir)" ]; then
+    exit 0
+fi
+
+branch=$(git branch --show-current)
+if [ "$branch" != dev ]; then
+    cat >&2 <<WARN
+
+******************************************************************************
+  The main checkout has left dev for ${branch:-a detached HEAD}.
+  The landing queue lands work here and pauses until it is back on dev.
+  Run: git checkout dev
+  Then: cctool queue run --once --resume
+  To work on another branch, make a worktree of your own instead:
+  git worktree add ../cc-public-TOPIC TOPIC
+******************************************************************************
+
+WARN
+fi
+exit 0

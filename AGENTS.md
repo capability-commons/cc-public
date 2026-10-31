@@ -13,6 +13,14 @@ unfinished edits of another.
 - `dev` is the integration branch. The main checkout, `cc-public`,
   stays on `dev`. Nobody edits files there, and only the landing queue
   moves `dev`: everyone commits and submits, WTP included.
+- Never check out, switch or commit in the main checkout. The landing
+  queue lands work there and runs the cctool it holds, so while it is
+  on any branch but `dev` the queue pauses, and nothing lands until
+  someone runs `git checkout dev` there and `cctool queue run --once
+  --resume`. To look at or work on another branch, make a worktree of
+  your own, as below; `git worktree add ../cc-public-TOPIC TOPIC` does
+  it for a branch that exists. The post-checkout hook warns when the
+  main checkout leaves `dev`.
 - Read the claims before you start. In the main checkout,
   `cat .git/worktrees/*/locked` lists each worktree with its claimant
   and the area it changes. If another worktree claims files you need,

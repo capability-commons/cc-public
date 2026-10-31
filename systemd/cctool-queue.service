@@ -16,16 +16,19 @@
 #                         the main checkout.
 # description:            |
 #                         A systemd user unit, started each minute by
-#                         cctool-queue.timer. It runs cctool queue run
-#                         --once in the pixi environment of the main
-#                         checkout, which the queue fast-forwards dev
-#                         in, so WorkingDirectory must name that
-#                         checkout; on atlas, override it with systemctl
-#                         --user edit cctool-queue.service. The git
-#                         hooks run pixi by name, so its folder is put
-#                         on the PATH, which a user service does not
-#                         take from the shell. A run that finds another
-#                         still running does nothing.
+#                         cctool-queue.timer. It runs cctool-queue-run,
+#                         installed in ~/.local/bin, which runs cctool
+#                         queue run --once in the pixi environment of
+#                         the main checkout, or pauses the queue if the
+#                         checkout is not on dev. The queue
+#                         fast-forwards dev in that checkout, so
+#                         WorkingDirectory must name that checkout; on
+#                         atlas, override it with systemctl --user edit
+#                         cctool-queue.service. The git hooks run pixi
+#                         by name, so its folder is put on the PATH,
+#                         which a user service does not take from the
+#                         shell. A run that finds another still running
+#                         does nothing.
 # edge:                   []
 #
 # ...
@@ -37,4 +40,4 @@ Description=One run of the cc-public landing queue
 Type=oneshot
 WorkingDirectory=%h/dev/cc/cc-public
 Environment=PATH=%h/.pixi/bin:/usr/local/bin:/usr/bin:/bin
-ExecStart=%h/.pixi/bin/pixi run --locked cctool queue run --once
+ExecStart=%h/.local/bin/cctool-queue-run
