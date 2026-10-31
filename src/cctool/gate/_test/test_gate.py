@@ -198,13 +198,6 @@ def test_a_stage_runs_without_the_variables_that_steer_pytest_cctool_or_python(r
     assert output.startswith("['PYTHONPATH']\n")
 
 
-def test_a_staged_path_that_git_would_quote_is_read_as_it_is(repo):
-    _commit(repo)
-    (repo / 'src/caf\u00e9.py').write_text('TEXT = 1\n')
-    _git(repo, 'add', 'src/caf\u00e9.py')
-    assert cctool.gate.gate.staged(repo) == ['src/caf\u00e9.py']
-    assert cctool.gate.gate.is_code_staged(repo)
-
 
 def test_a_tree_that_is_not_a_repository_cannot_be_gated(tmp_path):
     with pytest.raises(cctool.gate.gate.ErrorGate) as info:
@@ -213,69 +206,60 @@ def test_a_tree_that_is_not_a_repository_cannot_be_gated(tmp_path):
 
 
 def test_the_command_prints_a_failure_before_its_verdict(repo, monkeypatch):
-    monkeypatch.setattr(cctool.gate.gate, 'TUPLE_STAGE',
+    monkeypatch.setattr(cctool.gate.gate, 'TUPLE_COMMIT',
                         (_stage('pass', 'pass'),
                          _stage('fail', 'import sys; print("Wrong."); sys.exit(1)')))
     result = click.testing.CliRunner().invoke(cctool.cli.command.main,
                                               ['gate', '--root', str(repo)])
     assert result.exit_code == 1
     assert result.stdout.startswith('pass: passed\nWrong.\n')
-    assert result.stdout.endswith('\nfail: failed\n')
+    assert result.stdout.endswith('\nfail: failed\ntest: left to the landing queue\n')
 
 
-def test_a_commit_that_stages_only_data_runs_the_tests_that_read_data(repo):
-    _commit(repo)
-    (repo / '_data').mkdir()
-    (repo / '_data/item.yaml').write_text('title: Data\n')
-    _git(repo, 'add', '_data/item.yaml')
-    assert not cctool.gate.gate.is_code_staged(repo)
-    map_stage = dict(cctool.gate.gate.stages(repo))
-    assert list(map_stage) == ['check', 'lint', 'test']
-    assert cctool.gate.gate.MARK_DATA in map_stage['test']
 
 
-def test_a_commit_that_stages_only_decisions_leaves_out_the_tests(repo):
-    _commit(repo)
-    (repo / '_data/decision/dec_x').mkdir(parents = True)
-    (repo / '_data/decision/dec_x/dec_x.yaml').write_text('title: X\n')
-    _git(repo, 'add', '_data/decision/dec_x/dec_x.yaml')
-    assert [name for (name, _) in cctool.gate.gate.stages(repo)] == ['check', 'lint']
 
 
-def test_a_commit_that_stages_code_runs_the_tests(repo):
-    _commit(repo)
-    _git(repo, 'rm', '--quiet', '--cached', 'src/marker.py')
-    assert cctool.gate.gate.is_code_staged(repo)
-    map_stage = dict(cctool.gate.gate.stages(repo))
-    assert list(map_stage) == ['check', 'lint', 'test']
-    assert cctool.gate.gate.MARK_COMMIT in map_stage['test']
+
+
+def test_the_gate_of_a_commit_runs_no_tests_and_logs_its_stages(repo, monkeypatch):
+    """
+    ---
+
+    id_self:                pyf_cctool.gate._test.test_gate.test_the_gate_of_a_commit_runs_no_tests_and_logs_its_stages
+    guid_self:              pyf_a7e80d833e4e4b7fa1791bc8a7b10c55
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that the commit gate runs no tests
+    brief:                  |
+                            The gate of a commit runs the check and the
+                            lint, leaves the tests to the landing queue,
+                            and logs the time of each stage it runs.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_commit_gate_omits_tests
+        guid_target:        rqt_4cc5e132d2d74411a5b1fae47fe71b72
+
+    ...
+    """
+
+    assert [name for (name, _) in cctool.gate.gate.TUPLE_COMMIT] == ['check', 'lint']
     assert cctool.gate.gate.MARK_PUSH in dict(cctool.gate.gate.TUPLE_STAGE)['test']
-
-
-def test_a_commit_that_stages_agent_guidance_runs_the_tests(repo):
-    _commit(repo)
-    (repo / 'AGENTS.md').write_text('# Guidance for agents\n')
-    _git(repo, 'add', 'AGENTS.md')
-    assert cctool.gate.gate.is_code_staged(repo)
-
-
-def test_the_first_commit_runs_the_tests(repo):
-    assert cctool.gate.gate.is_code_staged(repo)
-
-
-def test_the_command_says_when_it_leaves_out_the_tests(repo, monkeypatch):
-    _commit(repo)
-    (repo / '_data/decision').mkdir(parents = True)
-    (repo / '_data/decision/dec_x.yaml').write_text('title: X\n')
-    _git(repo, 'add', '_data/decision/dec_x.yaml')
-    monkeypatch.setattr(cctool.gate.gate, 'TUPLE_STAGE',
-                        (_stage('check', 'pass'),
-                         _stage('test', 'import sys; sys.exit(1)')))
+    monkeypatch.setattr(cctool.gate.gate, 'TUPLE_COMMIT', (_stage('check', 'pass'),))
     result = click.testing.CliRunner().invoke(cctool.cli.command.main,
                                               ['gate', '--root', str(repo)])
     assert result.exit_code == 0
-    assert result.stdout == 'check: passed\ntest: skipped, as only decisions are staged\n'
-
+    assert result.stdout == 'check: passed\ntest: left to the landing queue\n'
+    assert [line['stage'] for line in _logged(repo)] == ['check']
 
 def test_the_gate_of_a_commit_keeps_a_store_in_the_git_directory(repo):
     stage = _stage('store', 'import os; print(os.environ.get("CC_PUBLIC_STORE"))')

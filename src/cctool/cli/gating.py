@@ -52,18 +52,14 @@ import cctool.graph.logic
                         'working directory.')
 def gate(root: pathlib.Path) -> None:
     """
-    Check, lint and test what a commit of the repository would record.
+    Check and lint what a commit of the repository would record.
 
     The staged content is copied out, and each stage runs in the copy.
     The output of a stage that fails is printed before its verdict.
-    All the tests run when code is staged: something under src/,
-    .githooks/ or .agents/skills/, or a change to AGENTS.md,
-    pyproject.toml or pixi.lock. When only data is staged, only the
-    tests marked reads_data run, and none run when only decisions are
-    staged. They leave out the tests marked slow, which pixi run test
-    runs, those marked prepush, which the gate of a push runs, and
-    those marked fuzz, which pixi run fuzz runs.
-    The check keeps the layout and schema verdicts of
+    No test runs: the landing queue runs the tests of a patch before it
+    lands, and the gate of a push runs them on what is pushed, so that a
+    commit takes seconds. Run the tests that bear on a change while
+    working on it. The check keeps the layout and schema verdicts of
     each file in a store in the git directory, which every worktree
     shares. The exit status is 1 when any stage fails, and 2 when the
     gate cannot run.
@@ -72,8 +68,7 @@ def gate(root: pathlib.Path) -> None:
 
     try:
         root        = root.resolve()
-        tuple_stage = cctool.gate.gate.stages(root)
-        list_result = cctool.gate.gate.gate(root, tuple_stage)
+        list_result = cctool.gate.gate.gate(root, cctool.gate.gate.TUPLE_COMMIT)
     except cctool.gate.gate.ErrorGate as error:
         click.echo(str(error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
@@ -84,9 +79,7 @@ def gate(root: pathlib.Path) -> None:
         click.echo('{name}: {verdict}'.format(name    = name,
                                               verdict = 'passed' if is_passed else 'failed'))
 
-    if len(tuple_stage) < len(cctool.gate.gate.TUPLE_STAGE):
-        click.echo('{name}: skipped, as only decisions are staged'.format(
-                       name = cctool.gate.gate.NAME_TEST))
+    click.echo('{name}: left to the landing queue'.format(name = cctool.gate.gate.NAME_TEST))
 
     sys.exit(cctool.cli.group.EXIT_OK if all(row[1] for row in list_result)
              else cctool.cli.group.EXIT_NONCONFORMITY)

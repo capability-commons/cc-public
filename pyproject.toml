@@ -210,15 +210,14 @@ py315                   = ["py315", "tool"]
 # What pytest is allowed to assume. strict_config refuses an ini key it
 # does not know, strict_markers a marker nobody registered, and
 # xfail_strict an expected failure that passed. A test marked slow
-# grows with the data or repeats a stage of the gate, so the gate leaves
-# it out; pixi run test and pixi run slow run it. A test marked prepush
-# tests the commit and history machinery, so the pre-commit gate leaves
-# it out and the pre-push gate runs it, as it does a test marked fuzz,
-# a property test, with few examples; pixi run fuzz runs those with
-# many. A test marked reads_data reads
-# the data of the repository or a copy of it, so the pre-commit gate
-# runs it when data is staged with no code; a test that copies the
-# repository is marked so when it is collected.
+# grows with the data or repeats a stage of the gate, so the gate of a
+# push and the landing queue leave it out; pixi run test and pixi run
+# slow run it. The gate of a commit runs no tests. A test marked prepush
+# tests the commit and history machinery. A test marked fuzz is a
+# property test, run with few examples, and pixi run fuzz runs it with
+# many. A test marked reads_data reads the data of the repository or a
+# copy of it; a test that copies the repository is marked so when it is
+# collected.
 #
 [tool.pytest.ini_options]
 minversion              = "9.1"
@@ -228,10 +227,10 @@ addopts                 = "-q"
 strict_config           = true
 strict_markers          = true
 xfail_strict            = true
-markers                 = ["slow: left out by the gate; it grows with the data or repeats a stage",
-                           "prepush: left out of the pre-commit gate, which the pre-push gate is not; it tests the commit and history machinery",
-                           "reads_data: run by the pre-commit gate when data is staged with no code; it reads the data of the repository or a copy of it",
-                           "fuzz: left out of the pre-commit gate; a property test, run with few examples, or many overnight"]
+markers                 = ["slow: left out by the gate of a push and the landing queue; it grows with the data or repeats a stage",
+                           "prepush: tests the commit and history machinery",
+                           "reads_data: reads the data of the repository or a copy of it",
+                           "fuzz: a property test, run with few examples, or many overnight"]
 
 # Lint. The house style aligns values in columns and formats strings
 # with format rather than f-strings, so the rules that would fight it

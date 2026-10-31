@@ -18,20 +18,20 @@ brief:                  |
                         prepush, and reuses stored verdicts for
                         unchanged files.
 description:            |
-                        src/cctool/gate/gate.py within stages drops
-                        the test stage when is_code_staged finds no
-                        staged path under TUPLE_CODE (among them src/,
-                        pyproject.toml, pixi.lock, .githooks/), and
-                        runs the commit tests with "not slow and not
-                        prepush" (gate.py within MARK_COMMIT). The
-                        gate of a commit sets a store (gate.py within
-                        gate and store) that keeps layout and schema
-                        verdicts for unchanged text
-                        (src/cctool/check/store.py). The check still
-                        extracts the whole tree and evaluates every
-                        rule, so its cost still grows with the graph.
-                        README.md#getting-started describe this. Found
-                        in the review of 2026-10-22.
+                        a10a3a2d:src/cctool/gate/gate.py within stages
+                        drops the test stage when is_code_staged finds
+                        no staged path under TUPLE_CODE (among them
+                        src/, pyproject.toml, pixi.lock, .githooks/),
+                        and runs the commit tests with "not slow and
+                        not prepush" (a10a3a2d:src/cctool/gate/gate.py
+                        within MARK_COMMIT). The gate of a commit sets
+                        a store (gate.py within gate and store) that
+                        keeps layout and schema verdicts for unchanged
+                        text (src/cctool/check/store.py). The check
+                        still extracts the whole tree and evaluates
+                        every rule, so its cost still grows with the
+                        graph. README.md#getting-started describe
+                        this. Found in the review of 2026-10-22.
 
 edge:
 

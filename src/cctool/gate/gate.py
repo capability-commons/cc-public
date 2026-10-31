@@ -47,15 +47,13 @@ description:            |
                         so that the verdict does not depend on the
                         shell that started it.
 
-                        A commit that stages no code, only data, runs
-                        only the tests that read the data of the
-                        repository or a copy of it, and a commit that
-                        stages only decisions, which the tests do not
-                        need to see, runs none. The gate of a push
-                        runs every test on what is pushed. The tests
-                        marked prepush, which test the commit and
-                        history machinery, are left to the gate of a
-                        push too.
+                        The gate of a commit runs the check and the
+                        lint, and no tests: the landing queue runs the
+                        tests of a patch on its tip before it lands,
+                        and writes a gate result. The gate of a push
+                        runs every test not marked slow on what is
+                        pushed, unless a gate result proves that the
+                        tip passed them.
 
                         The stages run side by side, and pytest-xdist
                         hands the tests out to one worker for each
@@ -101,16 +99,10 @@ import cctool.check.store
 import cctool.gate.timing
 
 
-# The tests that the gate of a push runs, those that the gate of a
-# commit runs, and those that it runs when the commit stages data but no
-# code. The tests marked prepush test the commit and history machinery,
-# and are left to the gate of a push, as are the property tests, marked
-# fuzz. The tests marked reads_data read the data of the repository, or
-# a copy of it, so a change to the data alone can break them.
+# The tests that the gate of a push runs, and the landing queue on the
+# tip of each patch: every test but those marked slow.
 #
 MARK_PUSH     = 'not slow'
-MARK_COMMIT   = 'not slow and not prepush and not fuzz'
-MARK_DATA     = 'reads_data and not slow and not prepush and not fuzz'
 
 # Each stage: its name, and the command that runs it in the root of the
 # copy. {python} is the interpreter that runs the gate. The tests run on
@@ -127,26 +119,11 @@ TUPLE_STAGE   = (('check', ('{python}', '-m', 'cctool.cli.command', 'check')),
 DIR_SOURCE    = 'src'
 NAME_TEST     = 'test'
 
-# The paths that hold code, or what the code runs with. A commit that
-# stages none of them changes no code, so its gate leaves out the
-# tests, which test the code. The gate of a push runs every stage on
-# what is pushed, so a test that the data breaks is still caught there.
+# The stages of the gate of a commit: those of a push but the tests,
+# which the landing queue runs on each patch before it lands, so that a
+# commit takes seconds. A stage that makes a commit slow is a defect.
 #
-# The skills and AGENTS.md count as code: they quote cctool commands,
-# and the tests check those quotes, so that the guidance for agents is
-# kept aligned with the code of the command line.
-#
-TUPLE_CODE    = ('src/', 'pyproject.toml', 'pixi.lock', '.githooks/', '.agents/skills/',
-                 'AGENTS.md')
-
-# The paths whose change no test needs to see: the decisions. A copy
-# made for a test holds the frozen decisions of the fixture in place of
-# those of the repository, and the one test that reads the decisions of
-# the repository repeats the check of their layout, which the check
-# stage makes anyway. A commit that stages only these leaves out the
-# tests.
-#
-TUPLE_UNREAD  = ('_data/decision/',)
+TUPLE_COMMIT  = tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
 
 # The variables a stage runs without: those git sets for its hooks, and
 # those that would change what pytest, cctool or python does. The python
@@ -351,63 +328,6 @@ def _git(root: pathlib.Path, rev: str) -> str | None:
                               check          = True).stdout.strip()
     except subprocess.CalledProcessError:
         return None
-
-
-# -----------------------------------------------------------------------------
-def stages(root: pathlib.Path) -> tuple:
-    """
-    Return the stages that gate the staged content of the repository at
-    root: TUPLE_STAGE, with the tests marked prepush left out. If no
-    code is staged, only the tests marked reads_data run, and none at
-    all if only paths of TUPLE_UNREAD are staged.
-
-    """
-
-    list_path = staged(root)
-    if list_path is None or any(path.startswith(TUPLE_CODE) for path in list_path):
-        mark = MARK_COMMIT
-    elif any(not path.startswith(TUPLE_UNREAD) for path in list_path):
-        mark = MARK_DATA
-    else:
-        return tuple(stage for stage in TUPLE_STAGE if stage[0] != NAME_TEST)
-
-    return tuple((name, tuple(mark if arg == MARK_PUSH else arg for arg in tuple_arg))
-                 for (name, tuple_arg) in TUPLE_STAGE)
-
-
-# -----------------------------------------------------------------------------
-def is_code_staged(root: pathlib.Path) -> bool:
-    """
-    Return whether the staged content of the repository at root adds,
-    changes or removes a path of TUPLE_CODE. Before the first commit,
-    everything staged is new, and code is taken to be staged.
-
-    """
-
-    list_path = staged(root)
-    return list_path is None or any(path.startswith(TUPLE_CODE) for path in list_path)
-
-
-# -----------------------------------------------------------------------------
-def staged(root: pathlib.Path) -> list[str] | None:
-    """
-    Return the paths that the staged content of the repository at root
-    adds, changes or removes, or None before the first commit, when
-    everything staged is new.
-
-    """
-
-    try:
-        text = subprocess.run(['git', 'diff', '--cached', '--name-only', '--no-renames', '-z',
-                               'HEAD'],
-                              cwd            = root,
-                              capture_output = True,
-                              text           = True,
-                              check          = True).stdout
-    except subprocess.CalledProcessError:
-        return None
-
-    return [path for path in text.split('\0') if path]
 
 
 # -----------------------------------------------------------------------------

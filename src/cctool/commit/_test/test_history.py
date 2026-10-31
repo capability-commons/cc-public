@@ -420,10 +420,8 @@ def test_a_push_of_a_tip_with_a_result_of_the_commit_gate_runs_the_tests(pushed)
     """
 
     (root, text, path) = pushed
-    _write_result(root, text, tuple(
-        (name, tuple(cctool.gate.gate.MARK_COMMIT if arg == cctool.gate.gate.MARK_PUSH else arg
-                     for arg in tuple_arg))
-        for (name, tuple_arg) in cctool.gate.gate.TUPLE_STAGE))
+    _write_result(root, text, tuple(stage for stage in cctool.gate.gate.TUPLE_STAGE
+                                    if stage[0] != cctool.gate.gate.NAME_TEST))
     result = _push(root, text)
     assert 'not run again' not in result.stdout
     assert path.read_text() == 'ran\n'
