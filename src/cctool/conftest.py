@@ -69,6 +69,14 @@ TUPLE_SKIP = ('.git', '.pixi', '.venv', '_tools', '__pycache__', '.ruff_cache',
 DIR_DECISION         = DIR_REPO / '_data' / 'decision'
 DIR_FIXTURE_DECISION = pathlib.Path(__file__).resolve().parent / '_test' / '_fixture' / 'decision'
 
+# An annotation outside the decisions may name an item of a decision, and
+# a copy that holds only the decisions of the fixture would hold it
+# dangling, so a copy leaves out each annotation that names an item of a
+# decision the fixture does not hold.
+#
+DIR_ANNOTATION       = DIR_REPO / '_data' / 'annotation'
+REGEX_NAME           = re.compile(r'[a-z][a-z0-9_]*')
+
 
 # The source a copy keeps: only the modules and logic programs that the
 # rest of the copy names, and those that they name in turn, so that each
@@ -121,8 +129,10 @@ TUPLE_CONFIG   = (('user.name',      'William Payne'),
 def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
     """
     Return the names in dir_from that a copy leaves out: those that
-    match TUPLE_SKIP; in _data/decision, every decision; and in src,
-    what _source_kept does not keep.
+    match TUPLE_SKIP; in _data/decision, every decision; in
+    _data/annotation, each annotation that names an item of a decision
+    the fixture does not hold; and in src, what _source_kept does not
+    keep.
 
     """
 
@@ -130,10 +140,39 @@ def _ignore(dir_from: str, list_name: list[str]) -> set[str]:
     dir_here = pathlib.Path(dir_from)
     if dir_here == DIR_DECISION:
         set_skip |= set(list_name)
+    if dir_here == DIR_ANNOTATION:
+        set_skip |= {name for name in list_name
+                     if names_absent_decision_item((dir_here / name).read_text(
+                                                       encoding = 'utf-8', errors = 'replace'))}
     if dir_here == DIR_SOURCE or DIR_SOURCE in dir_here.parents:
         set_kept  = _source_kept()
         set_skip |= {name for name in list_name if dir_here / name not in set_kept}
     return set_skip
+
+
+# -----------------------------------------------------------------------------
+def names_absent_decision_item(text: str) -> bool:
+    """
+    Return whether text names the id of an item that a decision of the
+    repository holds and no decision of the fixture does.
+
+    """
+
+    return not _absent_decision_items().isdisjoint(REGEX_NAME.findall(text))
+
+
+# -----------------------------------------------------------------------------
+@functools.cache
+def _absent_decision_items() -> frozenset[str]:
+    """
+    Return the id of each item that a decision of the repository holds in
+    a file of its own and no decision of the fixture holds.
+
+    """
+
+    set_held = {path.stem for path in DIR_FIXTURE_DECISION.rglob('*.yaml')}
+    return frozenset(path.stem for path in DIR_DECISION.rglob('*.yaml')
+                     if path.stem not in set_held)
 
 
 # -----------------------------------------------------------------------------
