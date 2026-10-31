@@ -8,16 +8,19 @@ protective_mark:
   - id_mark:            mark_public
     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
 
-title:                  A landing queue on atlas
+title:                  A landing queue on atlas, with register files merged by entry
 brief:                  |
                         Threads submit finished work as queue branches
                         after only a fast local check, and a daemon on
                         atlas replays, signs and tests each patch in
                         turn, landing on dev only the exact commit
                         that passed the gate, and parking conflicts
-                        and failures for agents to fix. The other
-                        three options are not ruled on. Ruled by WTP
-                        on 2026-10-30.
+                        and failures for agents to fix. Ruled by WTP
+                        on 2026-10-30. A custom git merge driver
+                        merges the files of some data item types entry
+                        by entry, and one file per entry and the graph
+                        held in a database are rejected. Ruled by WTP
+                        on 2026-10-31.
 description:            |
                         WTP upheld the option with the design worked
                         out with him in the thread on 2026-10-30 (WTP,
@@ -49,6 +52,26 @@ description:            |
                         The full design, as reviewed by another model
                         and revised, is the Landing queue design
                         document of 2026-10-30.
+
+                        On 2026-10-31 WTP ruled on the three options
+                        left open (WTP, 2026-10-31): "I'd reject the
+                        one-file-per-entry decision. I think writing a
+                        custom merge driver for some data item types
+                        sounds like a good idea - We really understand
+                        the structure of them and how merges should
+                        work, so writing a custom driver to reduce
+                        conflicts sounds like an easy win. I think I
+                        agree with you that we're not at the right
+                        point to have the 'golden' copy of the graph
+                        in a graph database yet."
+
+                        The merge driver is upheld for some data item
+                        types, not for every file. Which types it
+                        covers first is settled with its design. A
+                        database that syncs back to the repository, to
+                        make the review pages more responsive, is a
+                        separate decision, which WTP noted and which
+                        is not ruled on here.
 
 edge:
 
@@ -166,3 +189,18 @@ edge:
     guid_relation:      relation_ac2c79dc6a1642e19287dc436573b2b4
     id_target:          rqt_queue_traces_every_move
     guid_target:        rqt_bc8579ac0f16432b8bb4b24d46ce9e24
+
+  - id_relation:        relation_upholds
+    guid_relation:      relation_538f3139da924083bff07cb94193bf14
+    id_target:          opt_register_files_merge_by_entry
+    guid_target:        opt_9c7e307d2fe7402c80b5b3f1229a7578
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_one_file_per_entry
+    guid_target:        opt_dda6cf942a2d4fd9a9b88c4d23280bfe
+
+  - id_relation:        relation_rejects
+    guid_relation:      relation_25a7cd4f3bcd4eb493d6a1d159520479
+    id_target:          opt_graph_in_a_database
+    guid_target:        opt_414868b80af04b38a9eb84312f2d0013
