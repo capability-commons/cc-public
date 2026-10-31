@@ -61,18 +61,21 @@ unfinished edits of another.
   patch built on one that changed is marked stale; rebase it onto the
   new tip and resubmit it. `cctool queue withdraw REF` takes a patch
   out.
-- To move commits from a machine without the queue, such as a remote
-  session, use `git bundle`. Make the bundle where the commits are,
-  and on atlas fetch it into a branch and submit that branch:
+- Where the queue cannot be reached, as in a remote session, bundle
+  the work instead of submitting it, and put the bundle in the inbox
+  of the queue, `/media/wtp/Data1/dev/cc/_queue_inbox` on atlas:
 
   ```bash
-  cctool repo bundle TOPIC                    # where the commits are
-  git fetch ../TOPIC.bundle TOPIC:TOPIC       # on atlas
-  cctool queue submit ID_PATCH --source TOPIC --thread TOPIC
+  cctool queue bundle ID_PATCH --output /media/wtp/Data1/dev/cc/_queue_inbox/TOPIC-ID_PATCH.bundle
   ```
 
-  The queue signs each commit as it replays it, so a remote session
-  needs no key. Never use `git format-patch` and `git am`: `am` ends a
+  The daemon sweeps the inbox at each run and submits each bundle as
+  `cctool queue submit` would, under the thread and patch it names. It
+  moves a bundle it takes to `processed` in the inbox, and one it
+  refuses, such as one made on a commit atlas lacks, to `rejected`,
+  with a note that says why. On atlas, `cctool queue submit
+  PATH.bundle` submits a bundle by hand. The queue signs each commit
+  as it replays it, so a remote session needs no key. Never use `git format-patch` and `git am`: `am` ends a
   commit message at its first `---` line, which opens the commit item,
   so every copied commit loses its item.
 - Once the patch has landed and `git status` in the worktree is

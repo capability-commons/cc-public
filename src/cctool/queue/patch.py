@@ -112,7 +112,8 @@ def submit(root:     pathlib.Path,
            source:   str = 'HEAD',
            thread:   str | None = None,
            agent:    str | None = None,
-           now:      datetime.datetime | None = None) -> dict:
+           now:      datetime.datetime | None = None,
+           bundle:   str | None = None) -> dict:
     """
     Return the record of a new patch of the commits that source holds
     beyond dev, of the repository at root, once its candidate branch
@@ -123,7 +124,8 @@ def submit(root:     pathlib.Path,
     time of now, or of this moment, under the lock of the queue; if
     another patch holds that second, it takes the next free one, so
     that no two keys share a time. A source built on a patch of the
-    queue depends on it, as placed finds it.
+    queue depends on it, as placed finds it. bundle names the bundle
+    file the commits came in, if they came in one.
 
     """
 
@@ -144,6 +146,7 @@ def submit(root:     pathlib.Path,
                   'thread':   thread,
                   'patch':    id_patch,
                   'agent':    agent,
+                  'bundle':   bundle,
                   'state':    STAGE_CANDIDATE,
                   'source':   tip,
                   'base':     base,

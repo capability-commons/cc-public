@@ -41,6 +41,7 @@ import sys
 import click
 
 import cctool.cli.group
+import cctool.queue.bundle
 import cctool.queue.patch
 import cctool.queue.report
 import cctool.queue.run
@@ -66,7 +67,7 @@ def queue() -> None:
 
 # -----------------------------------------------------------------------------
 @queue.command()
-@click.argument('id_patch', metavar = 'ID_PATCH')
+@click.argument('id_patch', metavar = 'ID_PATCH|BUNDLE')
 @click.option('--source',
               metavar = 'REF',
               default = 'HEAD',
@@ -91,16 +92,78 @@ def submit(id_patch: str, source: str, thread: str | None, agent: str | None,
     is the UTC time of submission and ID_PATCH, and no test runs. Work
     built on the tip of a patch still in the queue depends on it, and
     is tried only once that patch has landed. Work that overlaps a patch
-    in any other way is refused.
+    in any other way is refused. Given a file that ends in .bundle, as
+    cctool queue bundle makes, in place of ID_PATCH, the patch and its
+    thread are those the bundle names, and --source and --thread are
+    not used.
 
     """
 
-    record = _step(lambda: cctool.queue.patch.submit(root.resolve(), id_patch, source, thread,
-                                                     agent))
+    root = root.resolve()
+    if id_patch.endswith(cctool.queue.bundle.SUFFIX_BUNDLE):
+        record = _step(lambda: cctool.queue.bundle.submit(root, pathlib.Path(id_patch).resolve(),
+                                                          agent))
+    else:
+        record = _step(lambda: cctool.queue.patch.submit(root, id_patch, source, thread, agent))
     click.echo('Submitted {branch}.'.format(branch = cctool.queue.patch.branch(record)))
     if record['depends']:
         click.echo('It depends on {key}, and waits for it to land.'.format(
                        key = record['depends']['key']))
+
+
+# -----------------------------------------------------------------------------
+@queue.command()
+@click.argument('id_patch', metavar = 'ID_PATCH')
+@click.option('--source',
+              metavar = 'REF',
+              default = 'HEAD',
+              help    = 'The tip of the work to bundle. Defaults to HEAD.')
+@click.option('--thread',
+              metavar = 'NAME',
+              default = None,
+              help    = 'The thread that made the work. Defaults to the current branch, with '
+                        'each slash written as a hyphen.')
+@click.option('--base',
+              metavar = 'REF',
+              default = 'dev',
+              help    = 'The commit the bundle starts after, which the machine that runs the '
+                        'queue must have.')
+@click.option('--output', 'path',
+              metavar = 'FILEPATH',
+              default = None,
+              type    = click.Path(dir_okay = False, path_type = pathlib.Path),
+              help    = 'The bundle to write. Defaults to THREAD-ID_PATCH.bundle in the inbox '
+                        'that git config queue.inbox names, or else beside the repository.')
+@OPTION_ROOT
+def bundle(id_patch: str, source: str, thread: str | None, base: str,
+           path: pathlib.Path | None, root: pathlib.Path) -> None:
+    """
+    Write a bundle of the commits that the source holds beyond the base,
+    as the patch ID_PATCH, for the landing queue on another machine.
+
+    Use it where the queue cannot be reached, as in a remote session,
+    and write the bundle to the inbox of the queue, which the daemon
+    sweeps at each run and submits as cctool queue submit would. The
+    bundle names the thread and the patch, and is written whole or not
+    at all.
+
+    """
+
+    list_commit = []
+
+    def step() -> dict:
+        (written, list_made) = cctool.queue.bundle.make(root.resolve(), id_patch, source, thread,
+                                                        base, path)
+        list_commit.extend(list_made)
+        return {'path': written}
+
+    made = _step(step)
+    click.echo('Bundled {count} {noun} into {path}:'.format(
+                   count = len(list_commit),
+                   noun  = 'commit' if len(list_commit) == 1 else 'commits',
+                   path  = made['path']))
+    for commit in list_commit:
+        click.echo('  ' + commit)
 
 
 # -----------------------------------------------------------------------------

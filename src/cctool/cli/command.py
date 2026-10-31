@@ -39,7 +39,6 @@ import cctool.cli.peering
 import cctool.cli.querying
 import cctool.cli.queueing
 import cctool.cli.releasing
-import cctool.cli.repository
 import cctool.cli.serving
 
 

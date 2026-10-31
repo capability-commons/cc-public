@@ -2329,89 +2329,6 @@ surface:
               variadic:  false
               flag:     true
 
-        repo:
-          id_self:      icm_cctool_command_line.repo
-          guid_self:    icm_dcde4c06518c4b6e9aad2a4610dfbcbe
-          name:         repo
-          brief:        |
-                        Bundle commits for the machine that runs the
-                        landing queue.
-
-          command:
-
-            bundle:
-              id_self:  icm_cctool_command_line.repo.bundle
-              guid_self:  icm_769c4164f5e44f6cb681ddb982ac2782
-              name:     bundle
-              brief:    |
-                        Write a bundle of the commits that branch
-                        holds beyond the base, to submit to the
-                        landing queue on the machine that runs it.
-
-              parameter:
-
-                - id_self:  icm_cctool_command_line.repo.bundle.branch
-                  guid_self:  icm_e1f6b64ec78e4e65a066314bb1b81608
-                  name:  branch
-                  brief:  |
-                        The branch whose commits are bundled.
-                  kind:  argument
-
-                  type:
-                    spelling:  text
-
-                  optional:  false
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.bundle.base
-                  guid_self:  icm_8c0a7842585240a4a63f8d5463375c9f
-                  name:  --base
-                  brief:  |
-                        The commit the bundle starts after, which the
-                        machine it goes to must have.
-                  kind:  option
-
-                  type:
-                    spelling:  text
-
-                  default:  dev
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.bundle.path
-                  guid_self:  icm_d5191b671d2f45a1957f538cf9029110
-                  name:  --output
-                  brief:  |
-                        The bundle to write. Defaults to the name of
-                        the branch with .bundle, beside the
-                        repository.
-                  kind:  option
-
-                  type:
-                    spelling:  file
-
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
-                - id_self:  icm_cctool_command_line.repo.bundle.root
-                  guid_self:  icm_618968ba0d7e43a9867068a2c68ecc8a
-                  name:  --root
-                  brief:  |
-                        The repository. Defaults to the working
-                        directory.
-                  kind:  option
-
-                  type:
-                    spelling:  directory
-
-                  default:  .
-                  optional:  true
-                  variadic:  false
-                  flag:  false
-
         serve:
           id_self:      icm_cctool_command_line.serve
           guid_self:    icm_ab429f74c44a4059a1e866d97d9de5a3
@@ -3037,6 +2954,109 @@ surface:
 
                 - id_self:  icm_cctool_command_line.queue.withdraw.root
                   guid_self:  icm_539661ad82db405988d90576e6ff8283
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            bundle:
+              id_self:  icm_cctool_command_line.queue.bundle
+              guid_self:  icm_b2d79ce35ee24fc48333db7fe95d9b2a
+              name:     bundle
+              brief:    |
+                        Write a bundle of the commits that the source
+                        holds beyond the base, as a patch, for the
+                        landing queue on another machine.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.bundle.id_patch
+                  guid_self:  icm_9c0f8aca2008420d986a09ca96539325
+                  name:  id_patch
+                  brief:  |
+                        The name of the patch.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.bundle.source
+                  guid_self:  icm_d1d5612941e64a62ab209c851cc0b324
+                  name:  --source
+                  brief:  |
+                        The tip of the work to bundle.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  default:  HEAD
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.bundle.thread
+                  guid_self:  icm_1ba327ca29bb4cd68cb387dad2fcc139
+                  name:  --thread
+                  brief:  |
+                        The thread that made the work. Defaults to the
+                        current branch.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.bundle.base
+                  guid_self:  icm_35b8c47cddfb4fc3a02c6440567e69b2
+                  name:  --base
+                  brief:  |
+                        The commit the bundle starts after, which the
+                        machine that runs the queue must have.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  default:  dev
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.bundle.path
+                  guid_self:  icm_5c677d73226e45089f04c34d6f172989
+                  name:  --output
+                  brief:  |
+                        The bundle to write. Defaults to
+                        THREAD-ID_PATCH.bundle in the inbox of the
+                        queue, or else beside the repository.
+                  kind:  option
+
+                  type:
+                    spelling:  file
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.bundle.root
+                  guid_self:  icm_476509bbb8b84fc293c6c1bbc166b440
                   name:  --root
                   brief:  |
                         The repository. Defaults to the working

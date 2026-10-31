@@ -117,3 +117,17 @@ def test_status_with_measures_says_there_are_none_yet(dev_repo):
                                               'attempts gone to conflict: none tried',
                                               'attempts gone to rework: none tried',
                                               'oldest ready patch: none ready']
+
+
+def test_a_bundle_made_by_the_command_is_submitted_by_its_path(dev_repo, tmp_path):
+    clone = tmp_path / 'remote'
+    _git(tmp_path, 'clone', '--quiet', '--branch', 'dev', str(dev_repo), str(clone))
+    _topic(clone)
+    path   = tmp_path / 'topic.bundle'
+    result = _queue(clone, 'bundle', 'add_one', '--output', str(path))
+    assert result.exit_code == 0
+    assert result.stdout.startswith('Bundled 1 commit into {path}:\n'.format(path = path))
+
+    result = _queue(dev_repo, 'submit', str(path))
+    assert result.exit_code == 0
+    assert result.stdout.startswith('Submitted queue/00_candidate/agent-topic/')

@@ -132,6 +132,14 @@ fast-forward of `dev` in the main checkout, and `dev` is pushed. A
 failure of the queue itself, such as a dirty main checkout or a key
 that cannot sign, pauses it until `cctool queue run --once --resume`.
 
+Work from a machine that cannot reach the queue, such as a remote
+session, comes as a bundle: `cctool queue bundle ID_PATCH` writes the
+commits beyond `dev` into the inbox that `git config queue.inbox` names,
+`/media/wtp/Data1/dev/cc/_queue_inbox` on atlas. Each run of the daemon
+submits each bundle there and moves it to `processed`, or to
+`rejected` with a note that says why. `cctool queue submit PATH.bundle`
+submits one by hand.
+
 The records, the journal, the gate results and a summary for each day
 are kept in the git directory: `.git/cctool_queue/`,
 `.git/cctool_queue.jsonl`, `.git/cctool_gate_result/` and
@@ -176,7 +184,8 @@ checkout with `systemctl --user edit cctool-queue.service`, and run
                                             check commits already made
     cctool history check --pre-push REMOTE  check what a push would send
     cctool impact [REV] [--staged]          what a commit touches, and what is near
-    cctool queue submit ID_PATCH            hand finished work to the landing queue
+    cctool queue submit ID_PATCH|BUNDLE     hand finished work to the landing queue
+    cctool queue bundle ID_PATCH            bundle work for the queue on another machine
     cctool queue resubmit REF               hand back a patch once it is fixed
     cctool queue withdraw REF               take a patch out of the queue
     cctool queue status [--measures]        where each patch stands, and why

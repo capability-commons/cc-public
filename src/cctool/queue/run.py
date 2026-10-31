@@ -55,6 +55,7 @@ import sys
 
 import cctool.gate.gate
 import cctool.gate.result
+import cctool.queue.bundle
 import cctool.queue.patch
 
 
@@ -72,6 +73,12 @@ DIR_WORKTREE  = 'cctool_queue_worktree'
 #
 CONFIG_KEY    = 'queue.signingKey'
 CONFIG_REMOTE = 'queue.remote'
+
+# The setting that names the inbox, a folder that the daemon sweeps for
+# bundles at each run and submits as patches. With no inbox, a bundle is
+# submitted only by cctool queue submit.
+#
+CONFIG_INBOX  = 'queue.inbox'
 
 # The outcomes of an attempt.
 #
@@ -117,8 +124,8 @@ class Policy:
     """
     How the daemon makes a landing run: the stages of the gate it runs on
     the tip of a patch, whether it runs the history check on each of its
-    commits, the key it signs with, the remote it pushes dev to, and how
-    long a stage may run.
+    commits, the key it signs with, the remote it pushes dev to, how
+    long a stage may run, and the inbox it sweeps for bundles.
 
     """
 
@@ -127,6 +134,7 @@ class Policy:
     key:       str | None    = None
     remote:    str | None    = None
     seconds:   float         = cctool.gate.gate.SECONDS_STAGE
+    inbox:     pathlib.Path | None = None
 
 
 # -----------------------------------------------------------------------------
@@ -134,13 +142,15 @@ def policy(root: pathlib.Path) -> Policy:
     """
     Return the policy of the daemon of the repository at root: the stages
     of the gate of a push, with every test not marked slow, the history
-    check, and the key and remote that its git settings give.
+    check, and the key, remote and inbox that its git settings give.
 
     """
 
+    inbox = _config(root, CONFIG_INBOX)
     return Policy(stages = cctool.gate.gate.TUPLE_STAGE,
                   key    = _config(root, CONFIG_KEY),
-                  remote = _config(root, CONFIG_REMOTE))
+                  remote = _config(root, CONFIG_REMOTE),
+                  inbox  = pathlib.Path(inbox) if inbox else None)
 
 
 # -----------------------------------------------------------------------------
@@ -151,7 +161,8 @@ def run(root: pathlib.Path, policy: Policy) -> list[str]:
 
     A run that finds another holding the queue does nothing, and so does
     one that finds the queue paused. Otherwise it first recovers each
-    patch that an interrupted run left under test, then tries the oldest
+    patch that an interrupted run left under test, then submits each
+    bundle in the inbox of policy, if it has one, then tries the oldest
     eligible patch, and the next, until none is left, and then pushes
     dev if a remote is set. A failure of the queue itself pauses it,
     with the patch in hand back where it was. Each run rewrites the
@@ -168,6 +179,12 @@ def run(root: pathlib.Path, policy: Policy) -> list[str]:
             if pause is not None:
                 return ['The queue is paused since {time}: {reason}'.format(**pause)]
             list_line += recover(root)
+            if policy.inbox is not None:
+                if not policy.inbox.is_dir():
+                    raise ErrorPause('The inbox {inbox}, which git config {name} names, is not '
+                                     'a folder.'.format(inbox = policy.inbox,
+                                                        name  = CONFIG_INBOX))
+                list_line += cctool.queue.bundle.sweep(root, policy.inbox)
             list_tried = []
             while True:
                 list_ready = [record for record in cctool.queue.patch.eligible(

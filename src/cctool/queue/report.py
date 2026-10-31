@@ -43,6 +43,7 @@ import pathlib
 import statistics
 
 import cctool.gate.gate
+import cctool.queue.bundle
 import cctool.queue.patch
 import cctool.queue.run
 
@@ -153,8 +154,9 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
     """
     Return the lines of the summary of the UTC day of now, for the daily
     review: whether the queue runs or is paused and why, each patch that
-    went to conflict or rework that day with its reason and its age, and
-    what landed that day.
+    went to conflict or rework that day with its reason and its age,
+    what landed that day, and each bundle that the inbox refused that
+    day, if there is an inbox.
 
     """
 
@@ -184,6 +186,14 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
     list_line.append('{count} landed.'.format(count = len(list_land)))
     list_line.extend('  {key} as {tip}'.format(key = line['key'], tip = (line['dev'] or '')[:7])
                      for line in list_land)
+
+    inbox = cctool.queue.patch.try_git(root, 'config', '--get',
+                                       cctool.queue.run.CONFIG_INBOX).stdout.strip()
+    if inbox:
+        list_refused = cctool.queue.bundle.rejected(pathlib.Path(inbox), now.date())
+        list_line.append('{count} refused from the inbox.'.format(count = len(list_refused)))
+        list_line.extend('  {name}: {why}'.format(name = name, why = why)
+                         for (name, why) in list_refused)
 
     return list_line
 
