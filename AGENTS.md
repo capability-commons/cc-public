@@ -4,6 +4,28 @@ This file is for any coding agent working in cc-public. `README.md`
 says what the repository is and how to run it. This file says how to
 work in it.
 
+## What comes first
+
+WTP ruled on 2026-10-31 that work on the process comes before work on
+features (ruling_what_work_comes_first). The measure is how quickly
+the project responds to a change in what its users need, and the
+thesis is that a more mature process and tooling responds faster.
+
+- A failing or flaky test stops the line, as the Andon Cord stops a
+  production line. Fix it before you start anything else, even when
+  your own change did not cause it. A patch that the queue sends to
+  rework for a flaky test is fixed, never resubmitted unchanged.
+- Prefer work that makes the process systematic, consistent, smooth,
+  functional and fast: a slow stage, a manual step, a check that
+  misleads, a command that is easy to misuse. Report such a fault even
+  when you do not fix it.
+- The graph improves itself. Logic rules keep it consistent,
+  simulations and test cases keep it working, evals govern it with
+  measured evidence, and periodic review brings in what is known
+  elsewhere. Record what you learn as an annotation, and remove an
+  annotation that no longer applies with `cctool remove ID`, so that
+  the findings stay few enough to act on.
+
 ## Working beside other agents
 
 Several agents work in this repository at once. Each works in a git
