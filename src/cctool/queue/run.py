@@ -93,6 +93,12 @@ TUPLE_DENIED  = ('Permission denied', 'denied', 'Authentication failed',
 #
 BYTES_FREE    = 1 << 30
 COUNT_LINE    = 200
+
+# How pytest begins the line of its summary that names a test that
+# failed, or raised an error, so that the first line of a note can name
+# it.
+#
+TUPLE_FAILED  = ('FAILED ', 'ERROR ')
 STAGE_HISTORY = 'history'
 MODULE_COMMAND = 'cctool.cli.command'
 
@@ -262,11 +268,16 @@ def attempt(root: pathlib.Path, policy: Policy, record: dict) -> list[str]:
         (name, output) = list_failed[0]
         last['outcome'] = OUTCOME_FAILED
         last['stage']   = name
+        list_test       = [line.split()[1] for line in output.splitlines()
+                           if line.startswith(TUPLE_FAILED) and len(line.split()) > 1]
         last['note']    = ('The {name} stage failed on {tip}, replayed onto dev at {dev}, and '
-                           'is not retried:\n{output}').format(
+                           'is not retried.{which}\n{output}').format(
                                name   = name,
                                tip    = tip[:7],
                                dev    = dev[:7],
+                               which  = (' {count} failed, the first {first}.'.format(
+                                             count = len(list_test), first = list_test[0])
+                                         if list_test else ''),
                                output = _tail(output))
         record['note']  = last['note']
         _to(root, record, cctool.queue.patch.STAGE_REWORK,

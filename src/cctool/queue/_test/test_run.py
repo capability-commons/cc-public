@@ -368,7 +368,10 @@ def test_a_patch_whose_tip_fails_a_test_marked_prepush_is_not_landed(queue):
                      '    assert False')
     before = _git(root, 'rev-parse', 'dev')
     cctool.queue.run.run(root, policy)
-    assert _record(root, record)['state'] == '03_rework'
+    held = _record(root, record)
+    assert held['state'] == '03_rework'
+    assert held['note'].splitlines()[0].endswith(
+        'and is not retried. 1 failed, the first test_marked.py::test_marked.')
     assert _git(root, 'rev-parse', 'dev') == before
 
 
