@@ -171,6 +171,18 @@ def test_a_commit_signed_with_the_key_of_no_team_member_is_reported(repo, keyrin
                      'no team member that a team member register holds.'.format(key = keyring[1]))
 
 
+def test_a_commit_signed_with_the_queue_key_of_a_team_member_passes(repo, keyring):
+    line = cctool.conftest.LINE_KEY.replace(cctool.conftest.KEY_MAINTAINER, keyring[1])
+    _replace(repo, cctool.conftest.FILE_MEMBERS, line,
+             'git_signing_key:    ABCDEF0123456789\n'
+             '    git_queue_signing_key: {key}\n'.format(key = keyring[1]))
+    _commit(repo, cctool.commit.message.compose('Change the team member register so that the '
+                                                'queue signs', 'The queue signs.'))
+    (repo / 'README.md').write_text('Changed.\n')
+    _commit(repo, cctool.commit.message.compose('Change README.md so that it is short',
+                                                'It is short.'))
+    assert cctool.commit.history.check(repo, 'HEAD') == []
+
 def test_a_tree_that_gives_no_signing_key_checks_no_signature(repo, keyring):
     _replace(repo, cctool.conftest.FILE_MEMBERS, '    ' + cctool.conftest.LINE_KEY.replace(cctool.conftest.KEY_MAINTAINER, keyring[1]), '')
     _commit(repo, cctool.commit.message.compose('Change the team member register so that it '

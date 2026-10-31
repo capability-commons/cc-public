@@ -112,6 +112,7 @@ KEY_ID_RELATION = 'id_relation'
 KEY_ID_TARGET   = 'id_target'
 KEY_GIT_AUTHOR  = 'git_author'
 KEY_SIGNING_KEY = 'git_signing_key'
+KEY_QUEUE_KEY   = 'git_queue_signing_key'
 
 # A trailer that names the team member who supplied the content of the
 # commit, by the guid of their register entry.
@@ -375,8 +376,8 @@ def author_violations(root: pathlib.Path, ident: str) -> list[str]:
 def signature_violations(root: pathlib.Path, status: str, list_key: list[str]) -> list[str]:
     """
     Return a sentence if a commit is not signed with the git_signing_key
-    of a team member that a team member register of the tree at root
-    holds.
+    or the git_queue_signing_key of a team member that a team member
+    register of the tree at root holds.
     status is the letter git gives for its signature, as %G? prints
     it, and list_key the ids and fingerprints of the key that made it,
     as %GK, %GF and %GP print them. Registers that give no
@@ -452,13 +453,15 @@ def _authors(map_document: dict) -> set[str]:
 # -----------------------------------------------------------------------------
 def _signing_keys(map_document: dict) -> set[str]:
     """
-    Return the git_signing_key of each team member that a team member
-    register in map_document holds, in capitals.
+    Return the git_signing_key and the git_queue_signing_key of each
+    team member that a team member register in map_document holds, in
+    capitals. The landing queue signs the commits it lands with the
+    second, on behalf of the member who is responsible for them.
 
     """
 
-    return {str(entry[KEY_SIGNING_KEY]).upper() for entry in _member_entries(map_document)
-            if entry.get(KEY_SIGNING_KEY)}
+    return {str(entry[key]).upper() for entry in _member_entries(map_document)
+            for key in (KEY_SIGNING_KEY, KEY_QUEUE_KEY) if entry.get(key)}
 
 
 # -----------------------------------------------------------------------------

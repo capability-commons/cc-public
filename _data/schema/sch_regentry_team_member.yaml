@@ -58,4 +58,18 @@ properties:
                         signed with a key no member gives, so a push
                         of such a commit is refused.
 
+  git_queue_signing_key:
+    type:               string
+    pattern:            '^[0-9A-F]{16}([0-9A-F]{24})?$'
+    description:        |
+                        Optional. The OpenPGP key, as its long key id
+                        or its fingerprint in capitals, with which the
+                        landing queue signs the commits it lands on
+                        behalf of this member, who stays their author.
+                        The key has no passphrase and is kept only on
+                        the machine that runs the queue, so that its
+                        signatures are told apart from the member's
+                        own. cctool history check accepts it as it
+                        accepts git_signing_key.
+
 edge:                   []
