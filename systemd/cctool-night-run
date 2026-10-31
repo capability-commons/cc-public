@@ -1,0 +1,42 @@
+#!/bin/sh
+# ---
+#
+# id_self:                shell_systemd_cctool_night_run
+# guid_self:              shell_d5c3618e4c714667b8672290e318e57d
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Night run
+# brief:                  |
+#                         Run one night of the overnight tasks and the
+#                         review, if the main checkout is on dev.
+# description:            |
+#                         cctool-night.service runs this script,
+#                         installed as ~/.local/bin/cctool-night-run so
+#                         that it is the same whatever branch the main
+#                         checkout is on. On dev it runs cctool queue
+#                         night in the pixi environment of the checkout.
+#                         On any other branch it skips the night and
+#                         says why, and the queue, which makes the same
+#                         check each minute, pauses with the reason.
+# edge:                   []
+#
+# ...
+
+# The night tests the tip of dev and moves verified in the main checkout,
+# with the cctool that the checkout holds, so it runs only on dev, as the
+# queue does. A night off dev is skipped, and the pause of the queue
+# that the same check makes shows why in the daily summary.
+#
+branch=$(git branch --show-current) || exit 1
+if [ "$branch" != dev ]; then
+    echo "The night is skipped: the main checkout is on ${branch:-a detached HEAD}, not dev." >&2
+    exit 0
+fi
+
+exec pixi run --locked cctool queue night

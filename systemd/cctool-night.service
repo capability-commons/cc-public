@@ -1,0 +1,40 @@
+# ---
+#
+# id_self:                file_systemd_cctool_night_service
+# guid_self:              file_b4b68d3adebf43bc9a4fdf1815c3739e
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Night service
+# brief:                  |
+#                         Runs one night of the overnight tasks and the
+#                         review, in the main checkout.
+# description:            |
+#                         A systemd user unit, started each night by
+#                         cctool-night.timer. It runs cctool-night-run,
+#                         installed in ~/.local/bin. The night holds the
+#                         lock of the landing queue while its tasks run,
+#                         so landings wait for it, and may take some
+#                         hours, so it is allowed eight. Set
+#                         WorkingDirectory and PATH as for
+#                         cctool-queue.service, with systemctl --user
+#                         edit cctool-night.service; the PATH must hold
+#                         claude, which the review runs.
+# edge:                   []
+#
+# ...
+
+[Unit]
+Description=One night of the cc-public overnight tasks and review
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/dev/cc/cc-public
+Environment=PATH=%h/.local/bin:%h/.pixi/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.local/bin/cctool-night-run
+TimeoutStartSec=8h

@@ -1,0 +1,41 @@
+# ---
+#
+# id_self:                file_systemd_cctool_night_timer
+# guid_self:              file_89383cee78834e90b31b198d0cb77d24
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Night timer
+# brief:                  |
+#                         Starts cctool-night.service once each night.
+# description:            |
+#                         A systemd user timer. The night and its review
+#                         must start no earlier than about 00:30 and end
+#                         by about 08:30, as WTP asked on 2026-10-31,
+#                         with a margin each side; the time of day is
+#                         set from the measured length of the tasks.
+#                         Measured on 2026-10-31, during the day with
+#                         the queue busy, they took 36 minutes: slow
+#                         14.5, fuzz 8.2, coverage 13.0 and check-full
+#                         0.6. Started at 01:00 in WTP's own time zone,
+#                         with the review allowed two hours, the night
+#                         ends by about 03:45. Enable it with systemctl
+#                         --user enable --now cctool-night.timer.
+# edge:                   []
+#
+# ...
+
+[Unit]
+Description=Run the cc-public overnight tasks and review each night
+
+[Timer]
+OnCalendar=*-*-* 01:00:00 Europe/London
+Unit=cctool-night.service
+
+[Install]
+WantedBy=timers.target

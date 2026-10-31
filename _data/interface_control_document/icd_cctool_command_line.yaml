@@ -3071,6 +3071,49 @@ surface:
                   variadic:  false
                   flag:  false
 
+            night:
+              id_self:  icm_cctool_command_line.queue.night
+              guid_self:  icm_5bb0d22146684ffd95e0e3eab2bd7103
+              name:     night
+              brief:    |
+                        Run the overnight tasks on the tip of dev,
+                        move the verified branch to it if they all
+                        pass, and then review the tree.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.night.is_review
+                  guid_self:  icm_14faa759380542fcad5e08b5c1c87a25
+                  name:  --review
+                  brief:  |
+                        Review the tree with Claude Code after the
+                        tasks, or with --no-review, do not.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'true'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.queue.night.root
+                  guid_self:  icm_eedc142b154f4d94a288bb5141542fdc
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
       exit_status:
 
         ok:

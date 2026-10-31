@@ -42,6 +42,7 @@ import click
 
 import cctool.cli.group
 import cctool.queue.bundle
+import cctool.queue.night
 import cctool.queue.patch
 import cctool.queue.report
 import cctool.queue.run
@@ -264,6 +265,39 @@ def run(_is_once: bool, is_resume: bool, root: pathlib.Path) -> None:
     except cctool.queue.patch.ErrorQueue as error:
         click.echo(str(error), err = True)
         sys.exit(cctool.cli.group.EXIT_ERROR)
+    finally:
+        cctool.queue.report.write_summary(root)
+
+
+# -----------------------------------------------------------------------------
+@queue.command()
+@click.option('--review/--no-review', 'is_review',
+              default = True,
+              help    = 'Review the tree with Claude Code after the tasks. Defaults to review.')
+@OPTION_ROOT
+def night(is_review: bool, root: pathlib.Path) -> None:
+    """
+    Run the overnight tasks on the tip of dev, in the main checkout, and
+    move the verified branch to it if they all pass; then review the tree.
+
+    The tasks are the slow run on every supported python, the property
+    tests with many examples, coverage against the floors and the full
+    check, run under the lock of the queue in a worktree of the night's
+    own. Each night is recorded in the git directory, and its outcome is
+    a gate result of the commit tested. The review runs Claude Code
+    headless in a worktree of its own, which records its findings as
+    annotations and submits them to the queue. The summary of the day
+    shows the night.
+
+    """
+
+    root   = root.resolve()
+    policy = cctool.queue.night.night(root)
+    if not is_review:
+        policy = cctool.queue.night.Night(remote = policy.remote, review = None)
+    try:
+        for line in cctool.queue.night.run(root, policy):
+            click.echo(line)
     finally:
         cctool.queue.report.write_summary(root)
 

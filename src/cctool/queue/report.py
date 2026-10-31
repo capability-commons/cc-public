@@ -44,6 +44,7 @@ import statistics
 
 import cctool.gate.gate
 import cctool.queue.bundle
+import cctool.queue.night
 import cctool.queue.patch
 import cctool.queue.run
 
@@ -158,8 +159,8 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
     Return the lines of the summary of the UTC day of now, for the daily
     review: whether the queue runs or is paused and why, each patch that
     went to conflict or rework that day with its reason and its age,
-    what landed that day, and each bundle that the inbox refused that
-    day, if there is an inbox.
+    what landed that day, how the night of that day went, and each
+    bundle that the inbox refused that day, if there is an inbox.
 
     """
 
@@ -193,6 +194,21 @@ def summary(root: pathlib.Path, now: datetime.datetime | None = None) -> list[st
                      for line in list_land)
     list_line.extend('  {reason}.'.format(reason = line['reason'][0].upper() + line['reason'][1:])
                      for line in list_kept)
+
+    list_night = [record for record in cctool.queue.night.records(root)
+                  if record['day'] == now.strftime(cctool.queue.night.FORMAT_DAY)]
+    for record in list_night:
+        if record['reason']:
+            list_line.append('The night could not run: {reason}'.format(
+                                 reason = record['reason']))
+        elif record['passed']:
+            list_line.append('The night passed on {tip}, and verified is at it.'.format(
+                                 tip = record['commit'][:7]))
+        else:
+            list_line.append('The night failed on {tip}: {names}.'.format(
+                                 tip   = record['commit'][:7],
+                                 names = ', '.join(task['name'] for task in record['tasks']
+                                                   if not task['passed'])))
 
     inbox = cctool.queue.patch.try_git(root, 'config', '--get',
                                        cctool.queue.run.CONFIG_INBOX).stdout.strip()

@@ -421,7 +421,7 @@ def land(root: pathlib.Path, record: dict) -> list[str]:
         return ['{key} no longer matches dev, so it is a candidate again.'.format(
                     key = record['key'])]
 
-    _check_main(root)
+    check_main(root)
     done = cctool.queue.patch.try_git(root, 'merge', '--quiet', '--ff-only', last['tip'])
     if done.returncode:
         raise ErrorPause('dev cannot be fast-forwarded in the main checkout: {said}'.format(
@@ -500,7 +500,7 @@ def preflight(root: pathlib.Path, policy: Policy) -> None:
 
     """
 
-    _check_main(root)
+    check_main(root)
     if shutil.disk_usage(cctool.gate.gate.git_dir(root)).free < BYTES_FREE:
         raise ErrorPause('The git directory has less than {gib} GiB free.'.format(
                              gib = BYTES_FREE >> 30))
@@ -559,7 +559,7 @@ def resume(root: pathlib.Path) -> dict | None:
 
 
 # -----------------------------------------------------------------------------
-def _check_main(root: pathlib.Path) -> None:
+def check_main(root: pathlib.Path) -> None:
     """
     Raise ErrorPause unless root is the main checkout, on dev, with no
     change to a tracked file.

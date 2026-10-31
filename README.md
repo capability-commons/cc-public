@@ -174,6 +174,29 @@ the queue while the main checkout is on `dev`, and pauses it with the
 reason while it is not, since a checkout on another branch may hold no
 queue at all.
 
+## The night
+
+Each night a systemd user timer on atlas runs `cctool queue night` in
+the main checkout. It takes the lock of the landing queue, so landings
+wait while it runs, and runs the overnight tasks on the tip of `dev` in
+a worktree of its own: `pixi run slow`, `pixi run fuzz`,
+`pixi run coverage` and `pixi run check-full`. If every task passes, it
+moves the branch `verified` forward to that commit and pushes it; if
+not, `verified` stays where it was. The night is recorded in
+`.git/cctool_night/`, and its outcome is a gate result of the commit.
+Then Claude Code reviews the tree, headless, in a worktree beside the
+main checkout, as the daily review describes. It may only read, run
+cctool and commit, and it submits its findings, as annotations, to the
+queue. Its report is kept in `.git/cctool_review/`, and the summary of
+the day shows how the night went.
+
+To set the night up, copy `systemd/cctool-night-run` to `~/.local/bin/`,
+and `systemd/cctool-night.service` and `systemd/cctool-night.timer` to
+`~/.config/systemd/user/`, set `WorkingDirectory` and `PATH` with
+`systemctl --user edit cctool-night.service` as for the queue, with
+the folder that holds `claude` on the `PATH`, and run
+`systemctl --user enable --now cctool-night.timer`.
+
 ## cctool
 
     cctool check                            check the tree
@@ -194,6 +217,7 @@ queue at all.
     cctool queue withdraw REF               take a patch out of the queue
     cctool queue status [--measures]        where each patch stands, and why
     cctool queue run --once [--resume]      one run of the daemon of the queue
+    cctool queue night [--no-review]        the overnight tasks, verified and the review
     cctool release prepare --brief TEXT --maturity ID
                                             write the release item and the version
     cctool release check TAG [REV]          check a commit before it is tagged
