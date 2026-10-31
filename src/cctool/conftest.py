@@ -303,3 +303,31 @@ def signed_repo(tree, keyring, monkeypatch):
                      ['commit', '--quiet', '--no-verify', '--message', message]):
         subprocess.run(['git', *list_arg], cwd = tree, check = True, capture_output = True)
     return tree
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def dev_repo(tmp_path, monkeypatch):
+    """
+    Return the root of a small repository, checked out on dev, whose one
+    commit holds README.md. git commits in it as the maintainer and,
+    unless told otherwise, signs nothing.
+
+    """
+
+    for key_env in [key_env for key_env in os.environ if key_env.startswith('GIT_')]:
+        monkeypatch.delenv(key_env)
+    tuple_config = (*TUPLE_CONFIG[:2], ('commit.gpgsign', 'false'))
+    for (index, (name, value)) in enumerate(tuple_config):
+        monkeypatch.setenv('GIT_CONFIG_KEY_{index}'.format(index = index), name)
+        monkeypatch.setenv('GIT_CONFIG_VALUE_{index}'.format(index = index), value)
+    monkeypatch.setenv('GIT_CONFIG_COUNT', str(len(tuple_config)))
+
+    root = tmp_path / 'cc-public'
+    root.mkdir()
+    (root / 'README.md').write_text('Start.\n')
+    for list_arg in (['init', '--quiet', '--initial-branch', 'dev'],
+                     ['add', '--all'],
+                     ['commit', '--quiet', '--no-verify', '--message', 'Start']):
+        subprocess.run(['git', *list_arg], cwd = root, check = True, capture_output = True)
+    return root
