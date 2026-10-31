@@ -39,6 +39,7 @@ import weakref
 
 import click.testing
 import pytest
+import ruamel.yaml.scalarstring
 import ruamel.yaml
 
 import cctool.check.check
@@ -2072,6 +2073,17 @@ def test_a_link_in_double_quotes_is_quoted_and_not_judged(tree):
     _text_item(tree, 'lco_y', 'It is written "[[item]]".')
     assert _check(tree) == {}
 
+
+def test_a_quotation_wrapped_onto_the_next_line_keeps_its_own_spelling(tree):
+    _text_item(tree, 'lco_y', ruamel.yaml.scalarstring.LiteralScalarString(
+                   'We formalise it.\n'))
+    assert [row[1] for row in _check(tree)['word_to_replace']] == ['formalise']
+    _text_item(tree, 'lco_y', ruamel.yaml.scalarstring.LiteralScalarString(
+                   'WTP wrote "we should\nformalise it".\n'))
+    assert 'word_to_replace' not in _check(tree)
+    _text_item(tree, 'lco_y', ruamel.yaml.scalarstring.LiteralScalarString(
+                   'WTP wrote "yes.\n\nWe formalise it".\n'))
+    assert [row[1] for row in _check(tree)['word_to_replace']] == ['formalise']
 
 def test_a_concept_used_with_no_link_to_it_is_advice(tree):
     _text_item(tree, 'lco_y', 'Each item has a guid.', ['concept_item'])

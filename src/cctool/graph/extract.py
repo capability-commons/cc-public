@@ -120,9 +120,11 @@ SIZE_CITED        = 400
 
 # A word, and a span in double quotes, which quotes another's words as
 # they were written and so is not held to the rules of the text around it.
+# Prose is wrapped, so a quotation may run onto the next line, but not
+# across a blank line, which ends a paragraph.
 #
 REGEX_WORD        = re.compile(r'[A-Za-z]+')
-REGEX_QUOTED      = re.compile(r'"[^"\n]*"')
+REGEX_QUOTED      = re.compile(r'"(?:[^"\n]|\n(?!\n))*"')
 
 # A date followed by a time of day, as in 2026-10-26T21:13,
 # 2026-10-26 21:13 or 2026-10-26 at 21:13 UTC.
