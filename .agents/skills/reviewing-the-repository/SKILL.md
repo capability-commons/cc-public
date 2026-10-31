@@ -82,10 +82,15 @@ choice; do not call everything a tension.
    `cctool release check` against the newest release item if there is
    one. Report any check, command or interface control document added
    in the range, and whether it passes.
-8. List the work waiting to land: each git bundle in the shared notes
-   folder whose head is not on `dev` (`git bundle list-heads`, then
-   `git merge-base --is-ancestor`), and how far behind `dev` it is. A
-   finished branch left unlanded drifts.
+8. Read the landing queue's summary of the day on atlas,
+   `.git/cctool_queue_summary/YYYYMMDD.txt` in the main checkout, which
+   each run of the queue rewrites. Put one line for it in the report:
+   whether the queue is running or paused, and how many patches landed,
+   went to conflict or rework, or were refused from the inbox. Add a
+   line for each pause, and for each patch gone to conflict or rework
+   or bundle refused since the last review, with its reason and age.
+   `cctool queue status` shows what still waits, and which patches no
+   agent has taken up; a patch left in rework drifts.
 9. Write the report (below). State its range and the counts it
    compares at the top. Keep it short.
 
