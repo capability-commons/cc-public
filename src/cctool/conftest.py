@@ -36,6 +36,7 @@ import fnmatch
 import functools
 import os
 import pathlib
+import re
 import shutil
 import subprocess
 import tempfile
@@ -91,6 +92,12 @@ FILE_PACKAGE        = '__init__.py'
 FILE_MEMBERS   = '_data/register/reg_team_member.yaml'
 KEY_MAINTAINER = '9C4FB30F113CAB6A'
 LINE_KEY       = 'git_signing_key:    {key}\n'.format(key = KEY_MAINTAINER)
+
+# The line that gives the key the landing queue signs with, which a
+# signed copy leaves out, so that the key of the keyring is the only key
+# its register gives.
+#
+REGEX_QUEUE_KEY = re.compile(r'^ *git_queue_signing_key: .*\n', re.MULTILINE)
 
 # The global configuration of git in each test, in place of the user's.
 #
@@ -322,7 +329,7 @@ def signed_repo(tree, keyring, monkeypatch):
     Return the root of a copy of the repository, committed on main as
     the maintainer under a message that conforms. git signs each commit
     made in it with the key of keyring, which the copy's register gives
-    as the maintainer's.
+    as the maintainer's, and as the only key it gives.
 
     """
 
@@ -336,7 +343,8 @@ def signed_repo(tree, keyring, monkeypatch):
     monkeypatch.setenv('GIT_CONFIG_COUNT', str(len(TUPLE_CONFIG) + 1))
 
     path = tree / FILE_MEMBERS
-    path.write_text(path.read_text().replace(LINE_KEY, LINE_KEY.replace(KEY_MAINTAINER, key)))
+    path.write_text(REGEX_QUEUE_KEY.sub('', path.read_text().replace(
+                        LINE_KEY, LINE_KEY.replace(KEY_MAINTAINER, key))))
     message = cctool.commit.message.compose('Add the first version of cc-public',
                                             'The first version.')
     for list_arg in (['init', '--quiet', '--initial-branch', 'main'],
