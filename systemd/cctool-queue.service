@@ -21,8 +21,11 @@
 #                         checkout, which the queue fast-forwards dev
 #                         in, so WorkingDirectory must name that
 #                         checkout; on atlas, override it with systemctl
-#                         --user edit cctool-queue.service. A run that
-#                         finds another still running does nothing.
+#                         --user edit cctool-queue.service. The git
+#                         hooks run pixi by name, so its folder is put
+#                         on the PATH, which a user service does not
+#                         take from the shell. A run that finds another
+#                         still running does nothing.
 # edge:                   []
 #
 # ...
@@ -33,4 +36,5 @@ Description=One run of the cc-public landing queue
 [Service]
 Type=oneshot
 WorkingDirectory=%h/dev/cc/cc-public
+Environment=PATH=%h/.pixi/bin:/usr/local/bin:/usr/bin:/bin
 ExecStart=%h/.pixi/bin/pixi run --locked cctool queue run --once
