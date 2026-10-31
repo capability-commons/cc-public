@@ -79,13 +79,19 @@ unfinished edits of another.
   clean, remove the worktree from the main checkout:
 
   ```bash
+  git cherry dev TOPIC                        # no line may start with +
   git worktree unlock cc-public-TOPIC
   git worktree remove cc-public-TOPIC
-  git branch -d TOPIC
+  git branch -D TOPIC
   ```
 
-  If the folder is still there afterwards, because the worktree was
-  made in another session, delete it.
+  The queue lands copies of the commits of TOPIC, signed as it replays
+  them, so TOPIC itself never merges into `dev` and `git branch -d`
+  refuses it. `git cherry` compares the changes instead: a line that
+  starts with `+` is a commit of TOPIC whose change `dev` does not hold
+  yet, and TOPIC is kept until there is none. If the folder is still
+  there afterwards, because the worktree was made in another session,
+  delete it.
 
 ## Before you finish
 
