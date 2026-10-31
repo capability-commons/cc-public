@@ -1,0 +1,51 @@
+id_self:                ann_citation_check_passes_a_removed_name_in_a_list
+guid_self:              ann_83db802c2b474e29bb2d05319106e840
+copyright:              Copyright 2026 William Payne
+license:                Apache-2.0
+
+protective_mark:
+
+  - id_mark:            mark_public
+    guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+title:                  The check of citations passes a removed name in a list
+brief:                  |
+                        A citation that names a list of parts, such as
+                        at A and B, has its first part checked, but
+                        each later part only if the cited file still
+                        holds it, so a part the file no longer holds
+                        is taken as prose and passes. A citation
+                        written at function NAME is taken as prose
+                        too. So unresolved_citation stays silent in
+                        just the case it is for: a name removed from
+                        the code.
+description:            |
+                        Sources:
+                        - citations checks the first named part, and a
+                          later part of the list only where parts
+                          finds it in the file
+                          [src/cctool/check/citation.py within
+                          citations].
+                        - d80e3e32 removed MARK_COMMIT, MARK_DATA,
+                          TUPLE_UNREAD and stages from the gate
+                          module, and moved to a10a3a2d the citations
+                          it found.
+                          ann_push_gate_already_runs_the_tests_to_measure
+                          still cites MARK_COMMIT as the second part
+                          of a list, another argument on
+                          dec_where_test_evidence_is_measured cited
+                          stages, MARK_DATA and TUPLE_UNREAD after at
+                          function, and cctool check reported 0
+                          failures on 2fc407a.
+                        - Both arguments state that the commit gate
+                          runs tests, which has not held since
+                          d80e3e32.
+
+                        Found in the daily review of 2026-10-31.
+
+edge:
+
+  - id_relation:        relation_is_about
+    guid_relation:      relation_1bb0463a053f42c498e3e9285df99c8f
+    id_target:          pym_cctool.check.citation
+    guid_target:        pym_d64fb797adf84ca2b7348786859f0ca1
