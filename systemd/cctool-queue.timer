@@ -1,0 +1,38 @@
+# ---
+#
+# id_self:                file_systemd_cctool_queue_timer
+# guid_self:              file_fcdee48f9f744ae3b8298f5c15f8bee3
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Landing queue timer
+# brief:                  |
+#                         Starts cctool-queue.service a minute after
+#                         boot and a minute after each run ends.
+# description:            |
+#                         A systemd user timer. Install both units in
+#                         ~/.config/systemd/user, then enable the timer
+#                         with systemctl --user enable --now
+#                         cctool-queue.timer. Since each run starts a
+#                         minute after the last one ended, runs never
+#                         overlap, and the run lock of the queue guards
+#                         against a run started by hand.
+# edge:                   []
+#
+# ...
+
+[Unit]
+Description=Run the cc-public landing queue each minute
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=1min
+Unit=cctool-queue.service
+
+[Install]
+WantedBy=timers.target

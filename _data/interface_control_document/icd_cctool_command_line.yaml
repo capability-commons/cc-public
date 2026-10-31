@@ -2952,6 +2952,278 @@ surface:
               variadic:  false
               flag:     true
 
+        queue:
+          id_self:      icm_cctool_command_line.queue
+          guid_self:    icm_6ad511f11b5e48aaa9e9949fbed84e0b
+          name:         queue
+          brief:        |
+                        Submit work to the landing queue, and run it.
+
+          command:
+
+            resubmit:
+              id_self:  icm_cctool_command_line.queue.resubmit
+              guid_self:  icm_38ff2d2950ac49e78f414f91e43c77a2
+              name:     resubmit
+              brief:    |
+                        Make a patch in conflict or rework a candidate
+                        again, holding the commits its branch now
+                        holds.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.resubmit.ref
+                  guid_self:  icm_b64219c7a6e24b039a3e2777fff27d40
+                  name:  ref
+                  brief:  |
+                        The branch of the patch, or its key.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.resubmit.root
+                  guid_self:  icm_dab59391f2bc42ffb282656fb11146e1
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            run:
+              id_self:  icm_cctool_command_line.queue.run
+              guid_self:  icm_d91142950f7446f6aeadc745a712d957
+              name:     run
+              brief:    |
+                        Make one run of the daemon of the landing
+                        queue, in the main checkout.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.run.is_once
+                  guid_self:  icm_f27b058f373247eeb26e256ef6cc7925
+                  name:  --once
+                  brief:  |
+                        Make one run.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  optional:  false
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.queue.run.is_resume
+                  guid_self:  icm_acab022f94a5461ab4726e93f5e13941
+                  name:  --resume
+                  brief:  |
+                        Lift a pause first.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.queue.run.root
+                  guid_self:  icm_b8f865a03b614c7aa2f18923e9790490
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            status:
+              id_self:  icm_cctool_command_line.queue.status
+              guid_self:  icm_67f02778a063494f859cadaedf1d822a
+              name:     status
+              brief:    |
+                        Show whether the landing queue is running or
+                        paused and why, and where each patch stands.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.status.is_measures
+                  guid_self:  icm_88c3f8ff69b24093834b2e8915a024f6
+                  name:  --measures
+                  brief:  |
+                        Also show the measures of the queue.
+                  kind:  option
+
+                  type:
+                    spelling:  boolean
+
+                  default:  'false'
+                  optional:  true
+                  variadic:  false
+                  flag:  true
+
+                - id_self:  icm_cctool_command_line.queue.status.root
+                  guid_self:  icm_3671f586ca604c92b594cc75361e7e57
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            submit:
+              id_self:  icm_cctool_command_line.queue.submit
+              guid_self:  icm_57db9017a12a46baae9f8d2003bab462
+              name:     submit
+              brief:    |
+                        Submit the commits that the source holds
+                        beyond dev as a patch of the landing queue,
+                        and return at once.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.submit.id_patch
+                  guid_self:  icm_50b429787fa04878869727e34587509b
+                  name:  id_patch
+                  brief:  |
+                        The name of the patch.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.submit.source
+                  guid_self:  icm_7c377dd8373d4fcdba20df4895dd8f76
+                  name:  --source
+                  brief:  |
+                        The tip of the work to submit.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  default:  HEAD
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.submit.thread
+                  guid_self:  icm_1d4374067b4741ec9a89523dd23c37b8
+                  name:  --thread
+                  brief:  |
+                        The thread that made the work. Defaults to the
+                        current branch.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.submit.agent
+                  guid_self:  icm_cb23505561894797ba853d26d995240f
+                  name:  --agent
+                  brief:  |
+                        The agent that submits the work, for the
+                        record.
+                  kind:  option
+
+                  type:
+                    spelling:  text
+
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.submit.root
+                  guid_self:  icm_87c9d24069564637b447fab9071dd78d
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
+            withdraw:
+              id_self:  icm_cctool_command_line.queue.withdraw
+              guid_self:  icm_098de85d47d64293bafce3246b58bab2
+              name:     withdraw
+              brief:    |
+                        Take a patch out of the landing queue, keeping
+                        its record.
+
+              parameter:
+
+                - id_self:  icm_cctool_command_line.queue.withdraw.ref
+                  guid_self:  icm_e6dd78bc79f5494281fe1d252f077507
+                  name:  ref
+                  brief:  |
+                        The branch of the patch, or its key.
+                  kind:  argument
+
+                  type:
+                    spelling:  text
+
+                  optional:  false
+                  variadic:  false
+                  flag:  false
+
+                - id_self:  icm_cctool_command_line.queue.withdraw.root
+                  guid_self:  icm_539661ad82db405988d90576e6ff8283
+                  name:  --root
+                  brief:  |
+                        The repository. Defaults to the working
+                        directory.
+                  kind:  option
+
+                  type:
+                    spelling:  directory
+
+                  default:  .
+                  optional:  true
+                  variadic:  false
+                  flag:  false
+
       exit_status:
 
         ok:

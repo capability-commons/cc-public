@@ -1,0 +1,36 @@
+# ---
+#
+# id_self:                file_systemd_cctool_queue_service
+# guid_self:              file_ff1835acd34445408b89a3779b21878a
+# copyright:              Copyright 2026 William Payne
+# license:                Apache-2.0
+#
+# protective_mark:
+#
+#   - id_mark:            mark_public
+#     guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+#
+# title:                  Landing queue service
+# brief:                  |
+#                         Runs the daemon of the landing queue once, in
+#                         the main checkout.
+# description:            |
+#                         A systemd user unit, started each minute by
+#                         cctool-queue.timer. It runs cctool queue run
+#                         --once in the pixi environment of the main
+#                         checkout, which the queue fast-forwards dev
+#                         in, so WorkingDirectory must name that
+#                         checkout; on atlas, override it with systemctl
+#                         --user edit cctool-queue.service. A run that
+#                         finds another still running does nothing.
+# edge:                   []
+#
+# ...
+
+[Unit]
+Description=One run of the cc-public landing queue
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/dev/cc/cc-public
+ExecStart=%h/.pixi/bin/pixi run --locked cctool queue run --once

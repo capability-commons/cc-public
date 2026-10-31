@@ -42,6 +42,7 @@ import cctool.commit.message
 import cctool.gate.gate
 import cctool.gate.result
 import cctool.queue.patch
+import cctool.queue.report
 import cctool.queue.run
 
 
@@ -842,3 +843,81 @@ def test_a_patch_whose_replayed_commit_fails_the_history_check_goes_to_rework(ch
     held = _record(root, record)
     assert (held['state'], held['attempts'][-1]['stage']) == ('03_rework', 'history')
     assert _git(root, 'rev-parse', 'dev') == before
+
+
+def test_the_summary_after_a_run_with_a_failure_names_the_patch_and_its_reason(queue):
+    """
+    ---
+
+    id_self:                pyf_cctool.queue._test.test_run.test_the_summary_after_a_run_with_a_failure_names_the_patch_and_its_reason
+    guid_self:              pyf_f6eb2a62af964673bdff8e22824a7563
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that the daily summary names each failure
+    brief:                  |
+                            After a run with a failure, the summary names
+                            the patch and its reason.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_queue_publishes_daily_summary
+        guid_target:        rqt_353067f2da39444fb7bf615cff507f2f
+
+    ...
+    """
+
+    (root, policy, _) = queue
+    _submit(root, 'one', 'FAIL.txt')
+    _submit(root, 'two', 'two.txt')
+    cctool.queue.run.run(root, policy)
+    path = cctool.queue.report.write_summary(root)
+    text = path.read_text()
+    assert path.parent.name == cctool.queue.report.DIR_SUMMARY
+    assert 'The queue is running.' in text
+    assert '1 gone to conflict or rework.' in text
+    assert '  20261030_120000_one to 03_rework, ' in text
+    assert 'old: The test stage failed on ' in text
+    assert '1 landed.\n  20261030_120001_two as ' in text
+
+
+def test_the_status_says_what_each_patch_waits_on_and_what_it_blocks(queue):
+    (root, policy, _) = queue
+    below = _submit(root, 'one', 'FAIL.txt')
+    above = _submit(root, 'two', 'two.txt', start = 'one')
+    cctool.queue.run.run(root, policy)
+    _git(root, 'worktree', 'add', '--quiet', str(root.parent / 'repair'),
+         cctool.queue.patch.branch(_record(root, below)))
+    list_line = cctool.queue.report.status(root)
+    assert list_line[0] == 'The queue is running.'
+    assert list_line[1] == ('03_rework {key} from one; attempt 1 failed on dev {dev}; blocks '
+                            '{above}; claimed by {path}').format(
+                                key   = below['key'],
+                                dev   = _git(root, 'rev-parse', '--short=7', 'dev').strip(),
+                                above = above['key'],
+                                path  = root.parent / 'repair')
+    assert list_line[2].startswith('  The test stage failed on ')
+    assert list_line[3] == '00_candidate {key} from two; waits: depends on {below}, which is in rework'.format(
+        key = above['key'], below = below['key'])
+
+
+def test_the_measures_come_from_the_records(queue):
+    (root, policy, _) = queue
+    _submit(root, 'one', 'FAIL.txt')
+    _submit(root, 'two', 'two.txt')
+    cctool.queue.run.run(root, policy)
+    _submit(root, 'three', 'three.txt')
+    now       = datetime.datetime(2026, 10, 30, 14, 0, 0, tzinfo = datetime.UTC)
+    list_line = cctool.queue.report.measures(root, now)
+    assert list_line[0].startswith('submission to landing: median ')
+    assert list_line[1].startswith('landing run: median ')
+    assert list_line[2:] == ['attempts gone to conflict: 0 of 2',
+                             'attempts gone to rework: 1 of 2',
+                             'oldest ready patch: 2.0 h']
