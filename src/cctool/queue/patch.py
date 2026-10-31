@@ -180,12 +180,14 @@ def submit(root:     pathlib.Path,
 
 
 # -----------------------------------------------------------------------------
-def resubmit(root: pathlib.Path, ref: str) -> dict:
+def resubmit(root: pathlib.Path, ref: str, source: str | None = None) -> dict:
     """
     Return the record of the patch whose branch is ref, of the repository
-    at root, once its commits are those its branch now holds and it is
-    a candidate again under the same key, so that it keeps its age and
-    its attempts. A patch under test, landed or withdrawn is refused.
+    at root, once its commits are those its branch now holds, or that
+    source holds if it is given, as when the work was fixed on a work
+    branch, and it is a candidate again under the same key, so that it
+    keeps its age and its attempts. A patch under test, landed or
+    withdrawn is refused.
 
     """
 
@@ -194,7 +196,7 @@ def resubmit(root: pathlib.Path, ref: str) -> dict:
         if record['state'] not in (STAGE_CANDIDATE, STAGE_CONFLICT, STAGE_REWORK):
             raise ErrorQueue('{key} is {state}, so it cannot be resubmitted.'.format(
                                  key = record['key'], state = describe(record['state'])))
-        tip = rev(root, PREFIX_HEAD + branch(record))
+        tip = rev(root, source or PREFIX_HEAD + branch(record))
         (base, depends) = placed(root, tip, [other for other in records(root)
                                              if other['key'] != record['key']])
         stage = record['state']
@@ -314,16 +316,24 @@ def move(root:   pathlib.Path,
     with the refs that keep its source and base, and journal the move
     with reason, and with dev if it is given. The new branch points at
     the source of record. The old branch is deleted only if it still
-    points where it was read, so that a move made since is not lost.
+    points where it was read, so that a move made since is not lost. A
+    move within one stage, as a resubmission of a candidate is, updates
+    the branch in place, under the same condition, since one transaction
+    cannot both delete and make a ref.
 
     """
 
     list_line = ['start']
     name_old  = PREFIX_HEAD + branch(record, old) if old else None
-    if old:
+    is_same   = bool(old) and old == new
+    if is_same:
+        list_line.append('update {ref} {tip} {was}'.format(ref = name_old,
+                                                           tip = record['source'],
+                                                           was = rev(root, name_old)))
+    elif old:
         list_line.append('delete {ref} {tip}'.format(ref = name_old,
                                                      tip = rev(root, name_old)))
-    if new:
+    if new and not is_same:
         list_line.append('update {ref} {tip}'.format(ref = PREFIX_HEAD + branch(record, new),
                                                      tip = record['source']))
     for (name, tip) in ((REF_SOURCE, record['source']), (REF_BASE, record['base'])):

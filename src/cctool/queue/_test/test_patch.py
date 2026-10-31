@@ -403,3 +403,15 @@ def _submit_from(root, branch, name):
     record = cctool.queue.patch.submit(root, 'patch_' + name.split('.')[0], now = NOW)
     _git(root, 'checkout', '--quiet', 'dev')
     return record
+
+
+def test_a_candidate_is_resubmitted_in_place_from_the_branch_its_fix_is_on(dev_repo):
+    _work(dev_repo, 'work/t/x', 'one.txt')
+    record = cctool.queue.patch.submit(dev_repo, 'x', now = NOW)
+    tip    = _work(dev_repo, 'work/t/x', 'fixed.txt')
+    _git(dev_repo, 'checkout', '--quiet', 'dev')
+    again  = cctool.queue.patch.resubmit(dev_repo, record['key'], 'work/t/x')
+    assert (again['key'], again['source'], again['state']) == (record['key'], tip,
+                                                               '00_candidate')
+    assert _git(dev_repo, 'rev-parse', cctool.queue.patch.branch(again)).strip() == tip
+    assert cctool.queue.patch.read_journal(dev_repo)[-1]['reason'] == 'resubmitted'

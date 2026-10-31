@@ -172,8 +172,13 @@ def bundle(id_patch: str, source: str, thread: str | None, base: str,
 # -----------------------------------------------------------------------------
 @queue.command()
 @click.argument('ref', metavar = 'REF')
+@click.option('--source',
+              metavar = 'REF',
+              default = None,
+              help    = 'Take the commits from this ref, such as the work branch the fix was '
+                        'made on. Defaults to the branch of the patch.')
 @OPTION_ROOT
-def resubmit(ref: str, root: pathlib.Path) -> None:
+def resubmit(ref: str, source: str | None, root: pathlib.Path) -> None:
     """
     Make the patch whose branch is REF a candidate again, holding the
     commits its branch now holds.
@@ -184,7 +189,7 @@ def resubmit(ref: str, root: pathlib.Path) -> None:
 
     """
 
-    record = _step(lambda: cctool.queue.patch.resubmit(root.resolve(), ref))
+    record = _step(lambda: cctool.queue.patch.resubmit(root.resolve(), ref, source))
     click.echo('Resubmitted {branch}.'.format(branch = cctool.queue.patch.branch(record)))
 
 
