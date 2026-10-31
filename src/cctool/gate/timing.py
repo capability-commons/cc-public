@@ -27,9 +27,11 @@ description:            |
                         gated, the host and the version of python. The
                         line of the tests holds the seconds of each
                         test, setup and teardown included, which
-                        pytest reports in JUnit XML. The summary takes
-                        the newest runs, and gives the mean and the
-                        most wall seconds of each stage, and the
+                        pytest reports in JUnit XML, and names each
+                        test that failed, so that a test that fails
+                        only now and then leaves a trace. The summary
+                        takes the newest runs, and gives the mean and
+                        the most wall seconds of each stage, and the
                         slowest tests.
 edge:                   []
 
@@ -137,6 +139,29 @@ def skipped(path_junit: pathlib.Path) -> list[tuple[str, str]]:
              ' '.join(str(skip.get('message', '')).split()))
             for case in element.iter('testcase')
             for skip in case.iter('skipped')]
+
+
+# -----------------------------------------------------------------------------
+def failed(path_junit: pathlib.Path) -> list[str]:
+    """
+    Return each test that the JUnit XML report pytest wrote at
+    path_junit says failed or raised an error, by the class name and
+    name that the report gives it. There are none if the report is
+    missing or not whole.
+
+    """
+
+    # The report is trusted, as in durations.
+    #
+    try:
+        element = xml.etree.ElementTree.parse(path_junit).getroot()  # noqa: S314
+    except (OSError, xml.etree.ElementTree.ParseError):
+        return []
+
+    return ['{classname}::{name}'.format(classname = case.get('classname', ''),
+                                         name      = case.get('name', ''))
+            for case in element.iter('testcase')
+            if case.find('failure') is not None or case.find('error') is not None]
 
 
 # -----------------------------------------------------------------------------

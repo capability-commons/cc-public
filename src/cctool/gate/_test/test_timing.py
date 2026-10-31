@@ -78,6 +78,19 @@ def test_a_report_that_is_missing_or_not_whole_gives_no_durations(tmp_path):
     assert cctool.gate.timing.durations(path_junit) == {}
 
 
+def test_the_failed_tests_are_read_from_a_junit_report(tmp_path):
+    path_junit = tmp_path / 'junit.xml'
+    assert cctool.gate.timing.failed(path_junit) == []
+    path_junit.write_text('<testsuites><testsuite>'
+                          '<testcase classname="src.a.test_a" name="test_one" time="0.25"/>'
+                          '<testcase classname="src.a.test_a" name="test_two" time="1.5">'
+                          '<failure message="assert False"/></testcase>'
+                          '<testcase classname="src.a.test_a" name="test_three" time="0.5">'
+                          '<error message="fixture"/></testcase>'
+                          '</testsuite></testsuites>')
+    assert cctool.gate.timing.failed(path_junit) == ['src.a.test_a::test_two',
+                                                     'src.a.test_a::test_three']
+
 def test_the_summary_gives_the_mean_and_most_of_each_stage_over_the_newest_runs():
     list_line = [_line('a', 'check', 9.0),
                  _line('b', 'check', 1.0), _line('b', 'test', 4.0, {'t1': 3.0, 't2': 0.5}),

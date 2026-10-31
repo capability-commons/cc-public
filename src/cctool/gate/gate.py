@@ -213,11 +213,13 @@ def gate(root:        pathlib.Path,
                                           list_job))
 
         map_test    = cctool.gate.timing.durations(path_report)
+        list_failed = cctool.gate.timing.failed(path_report)
         list_done   = _with_skips(tuple_stage, list_done,
                                   cctool.gate.timing.skipped(path_report))
 
     cctool.gate.timing.append(timing_log(root),
-                              _timings(root, rev, tuple_stage, list_done, start, usage, map_test))
+                              _timings(root, rev, tuple_stage, list_done, start, usage, map_test,
+                                       list_failed))
 
     return [(name_stage, outcome == OUTCOME_OK, printed)
             for ((name_stage, _), (outcome, printed, _)) in zip(tuple_stage, list_done,
@@ -257,14 +259,16 @@ def _timings(root:        pathlib.Path,
              list_done:   list[tuple[str, str, float]],
              start:       str,
              usage:       resource.struct_rusage,
-             map_test:    dict[str, float]) -> list[dict]:
+             map_test:    dict[str, float],
+             list_failed: list[str]) -> list[dict]:
     """
     Return a line of the log of timings for each stage of a run of the
     gate that started at start, when the children of this process had
     used usage: its name, outcome and wall seconds, and what the run
     gated and where. The stages run side by side, so the processor
     seconds are those of the whole run, on each line. The line of the
-    stage named NAME_TEST holds the seconds of each test in map_test.
+    stage named NAME_TEST holds the seconds of each test in map_test,
+    and names each test of list_failed, which failed.
 
     """
 
@@ -284,7 +288,8 @@ def _timings(root:        pathlib.Path,
         line = {'stage': name_stage, **map_base, 'seconds': round(seconds, 3),
                 'outcome': outcome}
         if name_stage == NAME_TEST:
-            line['tests'] = map_test
+            line['tests']  = map_test
+            line['failed'] = list_failed
         list_line.append(line)
 
     return list_line
