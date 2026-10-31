@@ -1209,7 +1209,7 @@ entries:
                         graph: its [[dataflow nodes]], the
                         [[dataflow edges]] that carry [[data]] between
                         their ports, and where each [[dataflow node]]
-                        runs.
+                        executes.
     description:        |
                         A dataflow graph holds enough to be run,
                         unless it is a dataflow variant that is not
@@ -1359,8 +1359,8 @@ entries:
     title:              OS process
     brief:              |
                         An executable unit managed by an operating
-                        system scheduler, where [[dataflow nodes]] run
-                        in order.
+                        system scheduler, where [[dataflow nodes]]
+                        execute in order.
     description:        |
                         An OS process is part of a dataflow graph.
                         Each runs on one host, and each dataflow node
@@ -1411,7 +1411,7 @@ entries:
     guid_self:          concept_96848bd06b514560aea72ebcc2c9cdb5
     title:              Dataflow engine
     brief:              |
-                        The engine of cc-public that runs a
+                        The engine of cc-public that executes a
                         [[dataflow graph]]: it places each
                         [[dataflow node]] on its [[OS process]] and
                         passes values along the [[dataflow edges]].
@@ -1598,7 +1598,8 @@ entries:
     title:              Shell script
     brief:              |
                         One [[file]] of commands for a Unix shell,
-                        whose first line names the shell that runs it.
+                        whose first line names the shell that executes
+                        it.
     description:        |
                         The git hooks of this repository are shell
                         scripts for the POSIX shell, /bin/sh, and use
@@ -2036,8 +2037,8 @@ entries:
     guid_self:          concept_00662bd60fc740748e7029bea254bdf8
     title:              Dataflow step
     brief:              |
-                        The behavior an interface presents at run
-                        time: it reads its input ports, writes its
+                        The behavior an interface presents while it
+                        executes: it reads its input ports, writes its
                         output ports and retains state between
                         invocations.
     description:        |
@@ -2240,7 +2241,7 @@ entries:
     guid_self:          concept_33206a1ae68747a08422bbcd4ea385ab
     title:              Commit gate
     brief:              |
-                        The procedure that cctool gate runs on the
+                        The procedure that cctool gate executes on the
                         staged content before each [[commit]]: the
                         [[checks]], lint and tests.
     description:        |
@@ -3371,15 +3372,22 @@ entries:
     guid_self:          concept_d068df3fbf2240d19a060fde90d4405b
     title:              Dataflow run
     brief:              |
-                        One run of one [[resolved dataflow graph]],
-                        recorded with what went in and what came out.
+                        One [[run]] of one
+                        [[resolved dataflow graph]], recorded with
+                        what went in and what came out.
     description:        |
                         A dataflow run is not one run of a dataflow
                         step, which is an invocation
                         (concept_dataflow_step).
     term_preferred:     dataflow run
     alias:              []
-    edge:               []
+
+    edge:
+
+      - id_relation:    relation_is_narrower_than
+        guid_relation:  relation_698cfb11be904a3f8e7d2821aa926ccd
+        id_target:      concept_run
+        guid_target:    concept_a7f84f3ece4f4fbba2de945b86eecd55
 
   # ---------------------------------------------------------------------------
   # concept_member_product -- Member product
@@ -3572,7 +3580,7 @@ entries:
     brief:              |
                         A [[dataflow variant]] that is neither
                         abstract nor superset, and the only kind whose
-                        [[resolved dataflow graph]] is run.
+                        [[resolved dataflow graph]] is executed.
     description:        |
                         Operational is not used, since Arcadia uses it
                         for its operational analysis level (WTP,
@@ -3708,9 +3716,9 @@ entries:
     brief:              |
                         One pass of an execution unit through its
                         fixed order, in which everything placed in it
-                        runs once. Local steps of different execution
-                        units are not aligned, and no such pass is
-                        common to a whole system.
+                        executes once. Local steps of different
+                        execution units are not aligned, and no such
+                        pass is common to a whole system.
     description:        |
                         The sense of step in the rulings on the
                         dataflow engine: a stretch of time, not the
@@ -3763,7 +3771,7 @@ entries:
     guid_self:          concept_32731e753feb4a9581b389870c27d60c
     title:              Invoking
     brief:              |
-                        Calling on something to run once.
+                        Calling on something to execute once.
     description:        |
                         A [[process word]]: the verb a requirement
                         obliges its subject to do. What it acts on is
@@ -3977,7 +3985,7 @@ entries:
     title:              Installing
     brief:              |
                         Putting a change into effect in something that
-                        runs.
+                        is executing.
     description:        |
                         A [[process word]]: the verb a requirement
                         obliges its subject to do. What it acts on is
@@ -4283,7 +4291,8 @@ entries:
     guid_self:          concept_fdbb4eb3cb40462b8683adff2289a56a
     title:              Halting
     brief:              |
-                        Bringing something that runs to an end.
+                        Bringing something that is executing to an
+                        end.
     description:        |
                         A [[process word]]: the verb a requirement
                         obliges its subject to do. What it acts on is
@@ -4401,3 +4410,32 @@ entries:
         guid_relation:  relation_aedbfcabf8a14e859ca8cfd58fbd0b5c
         id_target:      concept_commit
         guid_target:    concept_b2fa5ffe5feb4cc1854fb950afbd3793
+
+  # ---------------------------------------------------------------------------
+  # concept_run -- Run
+  #
+  concept_run:
+    id_self:            concept_run
+    guid_self:          concept_a7f84f3ece4f4fbba2de945b86eecd55
+    title:              Run
+    brief:              |
+                        One execution of a defined procedure, such as
+                        a [[review]], a test suite or a simulation,
+                        which leaves a record of what it did and what
+                        it found.
+    description:        |
+                        A run is named by the procedure it executes,
+                        general to specific, so that the record of a
+                        review is a run_review, of a test suite a
+                        run_test_suite, and of a simulation a
+                        run_simulation, and each is told apart from
+                        the others and from the procedure itself.
+    note:               |
+                        WTP chose the term and the naming on
+                        2026-10-31, so that a run of a review is told
+                        apart from a run of a test suite or a
+                        simulation. No standard is cited, as none was
+                        checked.
+    term_preferred:     run
+    alias:              []
+    edge:               []
