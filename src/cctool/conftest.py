@@ -49,10 +49,14 @@ import cctool.graph.extract
 DIR_REPO  = pathlib.Path(__file__).resolve().parents[2]
 
 # What a copy leaves out: version control, environments, caches, local
-# tools and the fixture, which goes in its own place.
+# tools and the fixture, which goes in its own place. The tests run in
+# parallel, and a copy is made while other workers run, so a cache that
+# a test writes in the repository must be left out: hypothesis writes
+# and removes files under .hypothesis, and a copy that listed one of
+# them before it was removed failed with no such file.
 #
 TUPLE_SKIP = ('.git', '.pixi', '.venv', '_tools', '__pycache__', '.ruff_cache',
-              '.pytest_cache', '*.egg-info', '_fixture')
+              '.pytest_cache', '.hypothesis', '*.egg-info', '_fixture')
 
 
 # The decisions of a copy are those of the fixture, frozen copies of the
