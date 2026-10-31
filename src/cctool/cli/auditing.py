@@ -19,10 +19,11 @@ description:            |
                         check command, which checks each commit of a
                         range, or of what a push would send, as the
                         commit hooks would, and with --gate checks,
-                        lints and tests the newest content too. The
-                        pre-push hook runs it, and it is the check of
-                        record: the commit hooks give early feedback,
-                        and can be skipped.
+                        lints and tests the newest content too,
+                        leaving out the tests where a gate result
+                        proves them passed. The pre-push hook runs it,
+                        and it is the check of record: the commit
+                        hooks give early feedback, and can be skipped.
 usage:                  |
                         cctool history check [RANGE] [--gate]
                         [--pre-push REMOTE]
@@ -43,6 +44,7 @@ import cctool.cli.group
 import cctool.commit.history
 import cctool.commit.impact
 import cctool.gate.gate
+import cctool.gate.result
 import cctool.graph.logic
 import cctool.release.release
 
@@ -69,7 +71,8 @@ def history() -> None:
 @click.option('--gate', 'is_gate',
               is_flag = True,
               help    = 'Also check, lint and test the content of the newest commit, or of '
-                        'each ref a push updates.')
+                        'each ref a push updates. The tests are left out for a commit whose '
+                        'gate result shows that it passed them in this environment.')
 @click.option('--root',
               metavar = 'DIRPATH',
               default = '.',
@@ -140,13 +143,24 @@ def _gated(root: pathlib.Path, list_tip: list[str]) -> list[str]:
     Return the output and verdict of each stage of the gate that fails
     for the content of a commit of list_tip.
 
+    The tests are left out for a commit whose gate result shows that it
+    passed this gate's policy in this environment, as the landing queue
+    writes one for each commit it lands, so that a push does not run
+    them a second time. The other stages still run.
+
     """
 
     list_found = []
 
     for tip in list_tip:
-        head = cctool.commit.history.short(root, tip)
-        for (name, is_passed, output) in cctool.gate.gate.gate(root, rev = tip):
+        head        = cctool.commit.history.short(root, tip)
+        tuple_stage = cctool.gate.gate.TUPLE_STAGE
+        if cctool.gate.result.proves(root, tip, tuple_stage):
+            click.echo('{head} passed the tests of this gate in this environment, as its gate '
+                       'result shows, so they are not run again.'.format(head = head))
+            tuple_stage = tuple(stage for stage in tuple_stage
+                                if stage[0] != cctool.gate.gate.NAME_TEST)
+        for (name, is_passed, output) in cctool.gate.gate.gate(root, tuple_stage, rev = tip):
             if not is_passed:
                 list_found.append('{head}: {output}\n{name}: failed'.format(
                                       head = head, output = output.rstrip('\n'), name = name))

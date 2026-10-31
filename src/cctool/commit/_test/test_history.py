@@ -25,6 +25,7 @@ edge:                   []
 """
 
 
+import os
 import subprocess
 
 import click.testing
@@ -34,6 +35,8 @@ import cctool.cli.command
 import cctool.commit.history
 import cctool.commit.message
 import cctool.conftest
+import cctool.gate.gate
+import cctool.gate.result
 
 
 pytestmark = pytest.mark.prepush
@@ -289,3 +292,138 @@ def test_the_hook_passes_the_push_of_a_tip_that_cctool_repo_push_checked(repo, m
     assert result.stdout.startswith('{short} was checked by cctool repo push, so it is not '
                                     'checked again.'.format(
                                         short = cctool.commit.history.short(repo, tip)))
+
+
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def pushed(tmp_path, monkeypatch):
+    """
+    Return the root of a repository of one commit, the lines that git
+    gives a pre-push hook for a push of it, and the file that the test
+    stage of the gate appends a line to each time it runs, once the gate
+    is made of stand-in stages that select the tests as the gate of a
+    push does.
+
+    """
+
+    for key in [key for key in os.environ if key.startswith('GIT_')]:
+        monkeypatch.delenv(key)
+
+    path = tmp_path / 'ran.txt'
+    code = 'open({path!r}, "a").write("ran\\n")'.format(path = str(path))
+    monkeypatch.setattr(cctool.gate.gate, 'TUPLE_STAGE',
+                        (('check', ('{python}', '-c', 'pass')),
+                         ('test',  ('{python}', '-c', code, cctool.gate.gate.MARK_PUSH))))
+
+    root = tmp_path / 'repo'
+    root.mkdir()
+    subprocess.run(['git', 'init', '--quiet'], cwd = root, check = True)
+    _git(root, '-c', 'commit.gpgsign=false', 'commit', '--quiet', '--allow-empty',
+         '--no-verify', '--message', 'Start')
+    tip  = _git(root, 'rev-parse', 'HEAD').strip()
+    text = 'refs/heads/dev {tip} refs/heads/dev {zero}\n'.format(
+               tip = tip, zero = cctool.commit.history.ZERO)
+    return (root, text, path)
+
+
+# -----------------------------------------------------------------------------
+def _push(root, text):
+    """
+    Return the run of the checks of the pre-push hook, with the gate, for
+    the push that text gives to the repository at root.
+
+    """
+
+    return click.testing.CliRunner().invoke(cctool.cli.command.main,
+                                            ['history', 'check', '--gate', '--pre-push', 'origin',
+                                             '--root', str(root)], input = text)
+
+
+# -----------------------------------------------------------------------------
+def _write_result(root, text, tuple_stage):
+    """
+    Write a passing gate result, for the gate of tuple_stage, of the tip
+    that text pushes from the repository at root.
+
+    """
+
+    tip = text.split()[1]
+    cctool.gate.result.write(root, tip, tip, tuple_stage,
+                             [(name, True, '') for (name, _) in tuple_stage])
+
+
+def test_a_push_of_a_tip_with_a_matching_gate_result_runs_no_tests(pushed):
+    """
+    ---
+
+    id_self:                pyf_cctool.commit._test.test_history.test_a_push_of_a_tip_with_a_matching_gate_result_runs_no_tests
+    guid_self:              pyf_73771ded0fad41e9b06e615508a25ac6
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that a push proven by its gate result runs no tests
+    brief:                  |
+                            A push of a tip whose passing gate result
+                            matches the policy and environment of the gate
+                            of a push runs no tests.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_push_omits_only_proven_tests
+        guid_target:        rqt_bf6506c5f1d44c63b4058e29a97001fa
+
+    ...
+    """
+
+    (root, text, path) = pushed
+    _write_result(root, text, cctool.gate.gate.TUPLE_STAGE)
+    result = _push(root, text)
+    assert 'as its gate result shows, so they are not run again.' in result.stdout
+    assert not path.exists()
+
+
+def test_a_push_of_a_tip_with_a_result_of_the_commit_gate_runs_the_tests(pushed):
+    """
+    ---
+
+    id_self:                pyf_cctool.commit._test.test_history.test_a_push_of_a_tip_with_a_result_of_the_commit_gate_runs_the_tests
+    guid_self:              pyf_9f202e3f76914b78b18bef924fc8455b
+    copyright:              Copyright 2026 William Payne
+    license:                Apache-2.0
+
+    protective_mark:
+
+      - id_mark:            mark_public
+        guid_mark:          mark_0c96ccb7b7534574acf6ed42f9deba0f
+
+    title:                  Test that a result of the commit gate does not spare a push its tests
+    brief:                  |
+                            A push of a tip whose gate result comes from
+                            the narrower selection of the commit gate runs
+                            the tests.
+
+    edge:
+
+      - id_relation:        relation_verifies
+        guid_relation:      relation_fc0c6e647b114e2d82abbfb938b09774
+        id_target:          rqt_push_omits_only_proven_tests
+        guid_target:        rqt_bf6506c5f1d44c63b4058e29a97001fa
+
+    ...
+    """
+
+    (root, text, path) = pushed
+    _write_result(root, text, tuple(
+        (name, tuple(cctool.gate.gate.MARK_COMMIT if arg == cctool.gate.gate.MARK_PUSH else arg
+                     for arg in tuple_arg))
+        for (name, tuple_arg) in cctool.gate.gate.TUPLE_STAGE))
+    result = _push(root, text)
+    assert 'not run again' not in result.stdout
+    assert path.read_text() == 'ran\n'
